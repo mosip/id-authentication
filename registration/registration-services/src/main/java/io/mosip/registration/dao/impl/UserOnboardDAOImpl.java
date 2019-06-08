@@ -106,7 +106,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				UserBiometricId biometricId = new UserBiometricId();
 
 				biometricId.setBioAttributeCode(fingerPrintData.getFingerprintImageName());
-				biometricId.setBioTypeCode(RegistrationConstants.FIN);
+				biometricId.setBioTypeCode(fingerPrintData.getFingerType());
 				biometricId.setUsrId(SessionContext.userContext().getUserId());
 				bioMetrics
 						.setBioMinutia(new FingerprintTemplate().convert(fingerPrintData.getFingerPrint()).serialize());
@@ -128,7 +128,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 				UserBiometricId biometricId = new UserBiometricId();
 
 				biometricId.setBioAttributeCode(iries.getIrisImageName());
-				biometricId.setBioTypeCode(RegistrationConstants.IRS);
+				biometricId.setBioTypeCode(iries.getIrisType());
 				biometricId.setUsrId(SessionContext.userContext().getUserId());
 				bioMetrics.setBioIsoImage(iries.getIris());
 				bioMetrics.setNumberOfRetry(iries.getNumOfIrisRetry());

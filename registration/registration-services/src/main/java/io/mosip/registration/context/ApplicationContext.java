@@ -9,6 +9,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
+import io.mosip.registration.service.BaseService;
 
 /**
  * The Class ApplicationContext.
@@ -22,36 +23,37 @@ public class ApplicationContext {
 
 	/** The application context. */
 	private static ApplicationContext applicationContext;
-
+	
 	/** The application language bundle. */
 	private ResourceBundle applicationLanguageBundle;
-
+	
 	/** The local language bundle. */
 	private ResourceBundle localLanguageBundle;
-
+	
 	/** The application messages bundle. */
 	private ResourceBundle applicationMessagesBundle;
-
+	
 	/** The local messages bundle. */
 	private ResourceBundle localMessagesBundle;
-
+	
 	/** The application map. */
 	private static Map<String, Object> applicationMap = new HashMap<>();
-
+	
 	/** The application languagevalidation bundle. */
 	private ResourceBundle applicationLanguagevalidationBundle;
-
+	
 	/** The local language. */
 	private String localLanguage;
-
+	
 	/** The application languge. */
 	private String applicationLanguge;
-
+	
 	/** The primary language right to left. */
 	private boolean primaryLanguageRightToLeft;
-
+	
 	/** The secondary language right to left. */
 	private boolean secondaryLanguageRightToLeft;
+	
 
 	/**
 	 * Checks if is primary language right to left.
@@ -78,7 +80,7 @@ public class ApplicationContext {
 	 * Instantiates a new application context.
 	 */
 	private ApplicationContext() {
-
+	
 	}
 
 	/**
@@ -107,8 +109,8 @@ public class ApplicationContext {
 					? (String) applicationMap.get(RegistrationConstants.SECONDARY_LANGUAGE)
 					: null;
 			String rightToLeft = (String) applicationContext.getApplicationMap().get("mosip.right_to_left_orientation");
-
-			if (null != rightToLeft) {
+			
+			if(null != rightToLeft) {
 				if (rightToLeft.contains(applicationLanguge)) {
 					primaryLanguageRightToLeft = true;
 				}
@@ -130,23 +132,25 @@ public class ApplicationContext {
 		localLanguageBundle = ResourceBundle.getBundle("labels", secondaryLanguageLocale);
 		applicationMessagesBundle = ResourceBundle.getBundle("messages", applicationLanguageLocale);
 		localMessagesBundle = ResourceBundle.getBundle("messages", secondaryLanguageLocale);
-		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations");
+		applicationLanguagevalidationBundle = ResourceBundle.getBundle("validations", applicationLanguageLocale);
 	}
 
 	/**
 	 * Sets the application languagevalidation bundle.
 	 *
-	 * @param applicationLanguagevalidationBundle
-	 *            the new application languagevalidation bundle
+	 * @param applicationLanguagevalidationBundle 
+	 * 					the new application languagevalidation bundle
 	 */
 	public void setApplicationLanguagevalidationBundle(ResourceBundle applicationLanguagevalidationBundle) {
 		this.applicationLanguagevalidationBundle = applicationLanguagevalidationBundle;
 	}
+	
 
 	/**
 	 * Gets the single instance of ApplicationContext.
 	 *
-	 * @return single instance of ApplicationContext
+	 * @return single 
+	 * 				instance of ApplicationContext
 	 */
 	public static ApplicationContext getInstance() {
 		if (applicationContext == null) {
@@ -175,7 +179,7 @@ public class ApplicationContext {
 	public static String applicationLanguage() {
 		return applicationContext.getApplicationLanguage();
 	}
-
+	
 	/**
 	 * Secondary language local.
 	 *
@@ -185,9 +189,9 @@ public class ApplicationContext {
 	 * To return the local language code with two letter
 	 */
 	public static String secondaryLanguageLocal() {
-		return applicationContext.getLocalLanguage().substring(0, 2);
+		return applicationContext.getLocalLanguage().substring(0,2);
 	}
-
+	
 	/**
 	 * Primary language local.
 	 *
@@ -195,9 +199,9 @@ public class ApplicationContext {
 	 */
 	/*
 	 * To return the application language code with two letter
-	 */
+	 */		
 	public static String primaryLanguageLocal() {
-		return applicationContext.getApplicationLanguage().substring(0, 2);
+		return applicationContext.getApplicationLanguage().substring(0,2);
 	}
 
 	/**
@@ -262,7 +266,7 @@ public class ApplicationContext {
 	public static ResourceBundle applicationMessagesBundle() {
 		return applicationContext.getApplicationMessagesBundle();
 	}
-
+	
 	/**
 	 * Local messages bundle.
 	 *
@@ -282,8 +286,7 @@ public class ApplicationContext {
 	/**
 	 * Sets the auth token DTO.
 	 *
-	 * @param authTokenDTO
-	 *            the new auth token DTO
+	 * @param authTokenDTO the new auth token DTO
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
 		applicationContext.authTokenDTO = authTokenDTO;
@@ -310,11 +313,12 @@ public class ApplicationContext {
 	/**
 	 * Sets the application map.
 	 *
-	 * @param applicationMap
-	 *            the applicationMap to set
+	 * @param applicationMap            
+	 * 				the applicationMap to set
 	 */
-	public static void setApplicationMap(Map<String, Object> applicationMap) {
-		ApplicationContext.applicationMap.putAll(applicationMap);
+	public void setApplicationMap(Map<String, Object> applicationMap) {
+		this.applicationMap = applicationMap;
+		BaseService.setBaseGlobalMap(applicationMap);
 	}
 
 	/**
@@ -330,9 +334,10 @@ public class ApplicationContext {
 	 * Sets the application language bundle.
 	 */
 	public void setApplicationLanguageBundle() {
-		applicationLanguageBundle = ResourceBundle.getBundle("labels", new Locale("eng"));
+		applicationLanguageBundle = ResourceBundle.getBundle("labels",
+				new Locale("eng"));
 	}
-
+	
 	/**
 	 * Get application language.
 	 *
@@ -364,7 +369,8 @@ public class ApplicationContext {
 	 * Sets the local language property.
 	 */
 	public void setLocalLanguageProperty() {
-		localLanguageBundle = ResourceBundle.getBundle("labels", new Locale("ara"));
+		localLanguageBundle = ResourceBundle.getBundle("labels",
+				new Locale("ara"));
 	}
 
 	/**
@@ -380,7 +386,8 @@ public class ApplicationContext {
 	 * Sets the application messages bundle.
 	 */
 	public void setApplicationMessagesBundle() {
-		applicationMessagesBundle = ResourceBundle.getBundle("messages", new Locale("eng"));
+		applicationMessagesBundle = ResourceBundle.getBundle("messages",
+				new Locale("eng"));
 	}
 
 	/**
@@ -396,16 +403,17 @@ public class ApplicationContext {
 	 * Sets the local messages bundle.
 	 */
 	public void setLocalMessagesBundle() {
-		localMessagesBundle = ResourceBundle.getBundle("messages", new Locale("ara"));
+		localMessagesBundle = ResourceBundle.getBundle("messages",
+				new Locale("ara"));
 	}
-
+	
 	/**
 	 * Sets the global config value of.
 	 *
-	 * @param code
-	 *            the code
-	 * @param val
-	 *            the val
+	 * @param code 
+	 * 				the code
+	 * @param val 
+	 * 				the val
 	 */
 	public static void setGlobalConfigValueOf(String code, String val) {
 		applicationMap.put(code, val);
@@ -414,11 +422,11 @@ public class ApplicationContext {
 	/**
 	 * Removes the global config value of.
 	 *
-	 * @param code
-	 *            the code
+	 * @param code 
+	 * 				the code
 	 */
 	public static void removeGlobalConfigValueOf(String code) {
 		applicationMap.remove(code);
 
-	}
+}
 }

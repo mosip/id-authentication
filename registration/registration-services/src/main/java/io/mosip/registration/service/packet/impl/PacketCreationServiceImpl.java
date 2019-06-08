@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
@@ -36,7 +37,11 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
-import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -70,10 +75,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 import io.mosip.registration.service.packet.PacketCreationService;
-import io.mosip.registration.util.advice.AuthenticationAdvice;
-import io.mosip.registration.util.advice.PreAuthorizeUserId;
 import io.mosip.registration.util.hmac.HMACGeneration;
-import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
  * Class for creating the Resident Registration as zip file
@@ -91,7 +93,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	@Autowired
 	private CbeffImpl cbeffI;
 	@Autowired
-	private RegIdObjectValidator idObjectValidator;
+	@Qualifier("schema")
+	private IdObjectValidator idObjectValidator;
 	private static SecureRandom random = new SecureRandom(String.valueOf(5000).getBytes());
 	@Autowired
 	private AuditManagerService auditFactory;
@@ -101,7 +104,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditDAO auditDAO;
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -110,22 +113,12 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	@PreAuthorizeUserId(roles= {AuthenticationAdvice.OFFICER_ROLE,AuthenticationAdvice.SUPERVISOR_ROLE, AuthenticationAdvice.ADMIN_ROLE})
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
 		try {
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
 
-			String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
-			//validate the input against the schema, mandatory, pattern and master data. if any error then stop the rest of the process
-			//and display error message to the user.
-			if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
-
-				idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
-						registrationCategory);
-			}
-			
 			// Map object to store the UUID's generated for BIR in CBEFF
 			Map<String, String> birUUIDs = new HashMap<>();
 			SessionContext.map().put(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME, birUUIDs);
@@ -143,7 +136,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
 						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 			}
-
+			
 			cbeffInBytes = registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace();
 			if (cbeffInBytes != null) {
 				if (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
@@ -156,7 +149,33 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				}
 			}
 
-			introducerCbeff(registrationDTO, rid, loggerMessageForCBEFF, birUUIDs, filesGeneratedForPacket);
+			if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
+				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
+
+				if (cbeffInBytes != null) {
+					
+					filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
+
+					LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+							String.format(loggerMessageForCBEFF, RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
+					auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
+							AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
+				}
+
+				cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
+						.getFace();
+				if (cbeffInBytes != null) {
+					if (registrationDTO.isUpdateUINChild()
+							&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
+									.equals(RegistrationConstants.ENABLE)) {
+						filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+					} else {
+						filesGeneratedForPacket.put(RegistrationConstants.PARENT
+								.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
+					}
+				}
+			}
 
 			if (registrationDTO.getBiometricDTO().getOperatorBiometricDTO() != null) {
 				cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.OFFICER, birUUIDs);
@@ -185,6 +204,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			}
 
 			// Generating Demographic JSON as byte array
+			idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME,
 					javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO()).getBytes());
 
@@ -219,8 +239,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			// Generating packet_osi_hash text file as byte array
-			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME, HMACGeneration
-					.generatePacketOSIHash(filesGeneratedForPacket, hashSequence.getOsiDataHashSequence()));
+			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME,
+					HMACGeneration.generatePacketOSIHash(filesGeneratedForPacket, hashSequence.getOsiDataHashSequence()));
 
 			LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					String.format(loggerMessageForCBEFF, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
@@ -267,48 +287,21 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
+		} catch (IdObjectValidationProcessingException | IdObjectIOException | IdObjectSchemaIOException
+				| FileIOException idSchemaValidationException) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
+					idSchemaValidationException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());
-		} catch (BaseCheckedException baseCheckedException) {
-			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
 		} finally {
 			SessionContext.map().remove(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME);
 		}
 	}
 
-	private void introducerCbeff(final RegistrationDTO registrationDTO, String rid, String loggerMessageForCBEFF,
-			Map<String, String> birUUIDs, Map<String, byte[]> filesGeneratedForPacket) throws RegBaseCheckedException {
-		byte[] cbeffInBytes;
-		if (registrationDTO.getBiometricDTO().getIntroducerBiometricDTO() != null) {
-			cbeffInBytes = createCBEFFXML(registrationDTO, RegistrationConstants.INTRODUCER, birUUIDs);
-
-			if (cbeffInBytes != null) {
-
-				filesGeneratedForPacket.put(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME, cbeffInBytes);
-
-				LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, String.format(loggerMessageForCBEFF,
-						RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME));
-				auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, Components.PACKET_CREATOR, rid,
-						AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
-			}
-
-			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
-					.getFace();
-			if (cbeffInBytes != null) {
-				if (registrationDTO.isUpdateUINChild()
-						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-								.equals(RegistrationConstants.ENABLE)) {
-					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
-							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
-				} else {
-					filesGeneratedForPacket.put(RegistrationConstants.PARENT
-							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
-				}
-			}
-		}
-	}
-
+	
 	private List<FieldValueArray> buildHashSequence(final HashSequence hashSequence) {
 		List<FieldValueArray> hashSequenceList = new LinkedList<>();
 		// Add Sequence of Applicant Biometric
@@ -316,19 +309,19 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		fieldValueArray.setLabel("applicantBiometricSequence");
 		fieldValueArray.setValue(hashSequence.getBiometricSequence().getApplicant());
 		hashSequenceList.add(fieldValueArray);
-
+		
 		// Add Sequence of Introducer Biometric
 		fieldValueArray = new FieldValueArray();
 		fieldValueArray.setLabel("introducerBiometricSequence");
 		fieldValueArray.setValue(hashSequence.getBiometricSequence().getIntroducer());
 		hashSequenceList.add(fieldValueArray);
-
+		
 		// Add Sequence of Applicant Demographic
 		fieldValueArray = new FieldValueArray();
 		fieldValueArray.setLabel("applicantDemographicSequence");
 		fieldValueArray.setValue(hashSequence.getDemographicSequence().getApplicant());
 		hashSequenceList.add(fieldValueArray);
-
+		
 		return hashSequenceList;
 	}
 
@@ -364,7 +357,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFace().getFace(),
 						(int) Math.round(biometricInfoDTO.getFace().getQualityScore()),
 						RegistrationConstants.VALIDATION_TYPE_FACE);
-
+					
 			}
 
 			byte[] cbeffXMLInBytes = null;
@@ -427,8 +420,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			Map<String, String> birUUIDs) {
 		if (isListNotEmpty(fingerprints)) {
 			for (FingerprintDetailsDTO fingerprint : fingerprints) {
-				if ((personType.equals(RegistrationConstants.INDIVIDUAL)
-						|| personType.equals(RegistrationConstants.INTRODUCER))
+				if ((personType.equals(RegistrationConstants.INDIVIDUAL) || personType.equals(RegistrationConstants.INTRODUCER))
 						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
 						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());
@@ -468,8 +460,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		String testTagType = null;
 		String testTagElementName = null;
 
-		if (RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE
-				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CBEFF_UNQ_TAG)))) {
+		if (RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.CBEFF_UNQ_TAG)))) {
 			testTagType = "Unique";
 		} else {
 			testTagType = random.nextInt() % 2 == 0 ? "Duplicate" : "Unique";

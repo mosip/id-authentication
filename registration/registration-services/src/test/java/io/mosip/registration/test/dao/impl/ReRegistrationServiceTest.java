@@ -3,7 +3,6 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -40,13 +38,10 @@ public class ReRegistrationServiceTest {
 	public void testGetAllReRegistrationPackets() {
 		String[] packetStatus = { RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode(),
 				RegistrationConstants.RE_REGISTRATION_STATUS };
-		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
-
 		List<Registration> reRegisterList = new ArrayList<>();
 		Registration reg = new Registration();
 		reg.setId("11111");
 		reg.setAckFilename("path");
-		reg.setCrDtime(time);
 		reRegisterList.add(reg);
 		Mockito.when(registrationDAO.getAllReRegistrationPackets(packetStatus)).thenReturn(reRegisterList);
 		assertEquals("11111", reRegistrationServiceImpl.getAllReRegistrationPackets().get(0).getFileName());

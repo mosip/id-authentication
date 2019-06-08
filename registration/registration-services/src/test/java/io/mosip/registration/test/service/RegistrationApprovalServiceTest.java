@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
@@ -66,7 +64,6 @@ public class RegistrationApprovalServiceTest {
 
 	@Test
 	public void testGetEnrollmentByStatus() {
-		Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		List<Registration> details = new ArrayList<>();
 		Registration regobject = new Registration();
 		UserDetail regUserDetail = new UserDetail();
@@ -77,7 +74,6 @@ public class RegistrationApprovalServiceTest {
 		regobject.setId("123456");
 		regobject.setClientStatusCode("R");
 		regobject.setCrBy("Mosip123");
-		regobject.setCrDtime(time);
 		regobject.setAckFilename("file1");
 
 		regobject.setUserdetail(regUserDetail);

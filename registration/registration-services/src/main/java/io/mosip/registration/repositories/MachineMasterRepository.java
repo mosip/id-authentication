@@ -19,13 +19,5 @@ public interface MachineMasterRepository extends BaseRepository<MachineMaster, R
 	 */
 	MachineMaster findByIsActiveTrueAndMacAddress(String macAddress);
 
-	/**
-	 * Find the {@link MachineMaster} based on active status and machine name
-	 * 
-	 * @param machineName
-	 *            the name of the machine
-	 * @return the {@link MachineMaster} entity satisfying the given criteria
-	 */
-	MachineMaster findByIsActiveTrueAndName(String machineName);
 	
 }

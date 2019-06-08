@@ -9,7 +9,7 @@ import org.junit.Test;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
-import io.mosip.registration.dto.demographic.IndividualIdentity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mapper.CustomObjectMapper;
 import io.mosip.registration.test.util.datastub.DataProvider;
@@ -46,11 +46,11 @@ public class CustomObjectMapperTest {
 
 	@Test
 	public void testDemographicInfoConversion() {
-		assertDemographicInfo(mapperFacade.map(demographicInfoDTO.getIdentity(), IndividualIdentity.class));
+		assertDemographicInfo(mapperFacade.map(demographicInfoDTO.getIdentity(), MoroccoIdentity.class));
 	}
 
-	private void assertDemographicInfo(IndividualIdentity actualIdentity) {
-		IndividualIdentity expectedIdentity = (IndividualIdentity) demographicInfoDTO.getIdentity();
+	private void assertDemographicInfo(MoroccoIdentity actualIdentity) {
+		MoroccoIdentity expectedIdentity = (MoroccoIdentity) demographicInfoDTO.getIdentity();
 		assertEquals(expectedIdentity.getDateOfBirth(), actualIdentity.getDateOfBirth());
 		assertEquals(expectedIdentity.getGender().get(0).getValue(), actualIdentity.getGender().get(0).getValue());
 		assertEquals(expectedIdentity.getAddressLine1().get(0).getValue(),

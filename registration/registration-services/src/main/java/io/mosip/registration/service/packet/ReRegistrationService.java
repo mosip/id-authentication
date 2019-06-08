@@ -21,7 +21,7 @@ public interface ReRegistrationService {
 
 	/**
 	 * THis method is used to update the status of the packets once it is approved.
-	 * @param reRegistrationStatus List of Rereggistering packets
+	 * @param reRegistrationStatus List of Re-registering packets
 	 * @return Is Re-Registration updated or not
 	 */
 	boolean updateReRegistrationStatus(Map<String, String> reRegistrationStatus);

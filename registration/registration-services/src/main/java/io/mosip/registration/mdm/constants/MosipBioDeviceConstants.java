@@ -22,9 +22,7 @@ public class MosipBioDeviceConstants {
 	public static final String VALUE_VEIN = "VEIN";
 
 	public static final String VALUE_SINGLE = "SINGLE";
-	public static final String VALUE_SLAP_LEFT = "SLAP_LEFT";
-	public static final String VALUE_SLAP_RIGHT = "SLAP_RIGHT";
-	public static final String VALUE_SLAP_THUMB = "SLAP_THUMB";
+	public static final String VALUE_SLAP = "SLAP";
 	public static final String VALUE_TOUCHLESS = "TOUCHLESS";
 	public static final String VALUE_DOUBLE = "DOUBLE";
 

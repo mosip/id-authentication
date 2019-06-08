@@ -20,6 +20,7 @@ public class LoggerConstants {
 	private static final String PKT_CREATION = APP_NAME + "PACKET_CREATION - ";
 	private static final String PKT_STORAGE = APP_NAME + "PACKET_STORAGE_MANAGER - ";
 	private static final String AUDIT_LOG_SYNC = APP_NAME + "AUDIT_LOG_SYNCHER - ";
+	private static final String DEVICE_ONBOARD = APP_NAME + "DEVICE_ONBOARDING - ";
 	private static final String PKT_APPROVAL = APP_NAME + "REGISTRATION_APPROVAL - ";
 	private static final String USER_REGISTRATION = APP_NAME + "USER_REGISTRATION - ";
 	private static final String MASTER_SYNC = APP_NAME + "MASTER_SYNC - ";
@@ -28,17 +29,17 @@ public class LoggerConstants {
 	private static final String PKT_SCAN = APP_NAME + "PACKET_SCAN - ";
 	private static final String SYNC = APP_NAME + "SYNC - ";
 	private static final String OTP = APP_NAME + "OTP";
-	private static final String PKT_HANDLER = APP_NAME + "PACKET_HANDLER - ";
-	private static final String HEADER = APP_NAME + "HEADER - ";
-	private static final String HOME = APP_NAME + "HOME - ";
-	private static final String BASE = APP_NAME + "BASE - ";
-	private static final String LOGIN = APP_NAME + "LOGIN - ";
-	private static final String PGE_FLW = APP_NAME + "PAGE_FLOW - ";
-	private static final String AUTH = APP_NAME + "AUTHENTICATION - ";
+	private static final String PKT_HANDLER= APP_NAME + "PACKET_HANDLER - ";
+	private static final String HEADER= APP_NAME + "HEADER - ";
+	private static final String HOME= APP_NAME + "HOME - ";
+	private static final String BASE= APP_NAME + "BASE - ";
+	private static final String LOGIN= APP_NAME + "LOGIN - ";
+	private static final String PGE_FLW= APP_NAME + "PAGE_FLOW - ";
+	private static final String AUTH= APP_NAME + "AUTHENTICATION - ";
 	private static final String AUTHZ = APP_NAME + "AUTHORIZATION - ";
 	private static final String SERVICE_DELEGATE_UTIL = APP_NAME + "SERVICE_DELEGATE_UTIL - ";
 	private static final String UI_VALIDATIONS = APP_NAME + "VALIDATION - ";
-	private static final String REG_ID_MASTER_DATA_VALIDATOR = APP_NAME + "MASTER_DATA_VALIDATION - ";
+	
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -51,7 +52,7 @@ public class LoggerConstants {
 	public static final String LOG_PKT_RSA_ENCRYPTION = PKT_CREATION + "RSA_ENCRYPTION_SERVICE";
 	public static final String LOG_SAVE_PKT = PKT_CREATION + "SAVE_REGISTRATION";
 	public static final String LOG_PKT_STORAGE = PKT_STORAGE + "PACKET_STORAGE_SERVICE";
-	public static final String LOG_AUDIT_DAO = AUDIT_LOG_SYNC + "AUDIT_DAO";
+	public static final String LOG_AUDIT_DAO = AUDIT_LOG_SYNC + "AUDIT_DAO";	
 	public static final String LOG_REG_PENDING_APPROVAL = PKT_APPROVAL + "REGISTRATION_APPROVAL_CONTROLLER";
 	public static final String LOG_REG_PENDING_ACTION = PKT_APPROVAL + "REGISTRATION_PENDING_ACTION_CONTROLLER";
 	public static final String LOG_REG_EOD_CONTROLLER = PKT_APPROVAL + "EOD_CONTROLLER";
@@ -61,9 +62,12 @@ public class LoggerConstants {
 	public static final String LOG_REG_BIOMETRIC_SCAN_CONTROLLER = USER_REGISTRATION + "FINGERPRINT_SCAN_CONTROLLER";
 	public static final String LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER = USER_REGISTRATION
 			+ "FINGERPRINT_CAPTURE_CONTROLLER";
-	public static final String MDM_REQUEST_RESPONSE_BUILDER = USER_REGISTRATION + "MDM_REQUEST_RESPONSE_BUILDER";
-	public static final String MOSIP_BIO_DEVICE_INTEGERATOR = USER_REGISTRATION + "MOSIP_BIO_DEVICE_INTEGERATOR";
-	public static final String MOSIP_BIO_DEVICE_MANAGER = USER_REGISTRATION + "MOSIP BIO DEVICE MANAGER";
+	public static final String MDM_REQUEST_RESPONSE_BUILDER = USER_REGISTRATION
+			+ "MDM_REQUEST_RESPONSE_BUILDER";
+	public static final String MOSIP_BIO_DEVICE_INTEGERATOR = USER_REGISTRATION
+			+ "MOSIP_BIO_DEVICE_INTEGERATOR";
+	public static final String MOSIP_BIO_DEVICE_MANAGER = USER_REGISTRATION
+			+ "MOSIP BIO DEVICE MANAGER";
 	public static final String LOG_REG_REGISTRATION_CONTROLLER = USER_REGISTRATION + "REGISTRATION_CONTROLLER";
 	public static final String LOG_REG_SCAN_CONTROLLER = USER_REGISTRATION + "SCAN_CONTROLLER";
 	public static final String LOG_REG_FINGERPRINT_FACADE = USER_REGISTRATION + "FINGERPRINT_FACADE";
@@ -82,11 +86,6 @@ public class LoggerConstants {
 	public static final String LOG_REG_HOME = HOME + "HOME_CONTROLLER";
 	public static final String LOG_REG_BASE = BASE + "BASE_CONTROLLER";
 	public static final String LOG_REG_LOGIN = LOGIN + "LOGIN_CONTROLLER";
-	public static final String AUTHENTICATION_SRVICE = "AUTHENTICATION_SRVICE";
-	public static final String FINGER_PRINT_AUTHENTICATION = "FINGER_PRINT_AUTHENTICATION";
-	public static final String VALIDATE_FP_WITH_BIO_API = " VALIDATE_FP_WITH_BIO_API";
-	
-	public static final String BIO_SERVICE = "BIO_SERVICE";
 	public static final String LOG_REG_PAGE_FLOW = PGE_FLW + "PAGE_FLOW";
 	public static final String LOG_REG_USER_DETAIL = SYNC + "USER_DETAIL_SERVICE_IMPL";
 	public static final String LOG_REG_USER_DETAIL_DAO = SYNC + "USER_DETAIL_DAO_IMPL";
@@ -114,7 +113,7 @@ public class LoggerConstants {
 	public static final String GLOBAL_PARAM_SERVICE_LOGGER_TITLE = SYNC + "GLOBAL_PARAMS_SERVICE";
 	public static final String AUDIT_SERVICE_LOGGER_TITLE = SYNC + "AUDIT_MANAGER_SERVICE";
 	public static final String DELETE_AUDIT_LOGS_JOB = SYNC + "Delete_Audit_Logs_Job";
-	public static final String KEY_POLICY_SYNC_JOB_TITLE = SYNC + "key_policy_synch_Job";
+	public static final String KEY_POLICY_SYNC_JOB_TITLE =SYNC+"key_policy_synch_Job";
 	public static final String REG_PACKET_SYNC_STATUS_JOB = SYNC + "Packet_Sync Status_Job";
 	public static final String PACKET_HANDLER = PKT_HANDLER + "Packet_Handler_Controller";
 	public static final String OTP_MANAGER_LOGGER_TITLE = OTP + "OTP_MANAGER";
@@ -131,19 +130,17 @@ public class LoggerConstants {
 	public static final String LOG_SERVICE_DELEGATE_VALIDATE_TOKEN = SERVICE_DELEGATE_UTIL + "IS_AUTH_TOKEN_VALID";
 	public static final String DATE_VALIDATION = UI_VALIDATIONS + "DATE_VALIDATIONS";
 	public static final String RESPONSE_SIGNATURE_VALIDATION = "RESPONSE_SIGNATURE_VALIDATION";
-	public static final String AUTHORIZE_USER_ID = "AUTHORIZE_USER_ID";
 	public static final String REGISTRATION_PUBLIC_KEY_SYNC ="REGISTRATION_PUBLIC_KEY_SYNC";
 	public static final String PUBLIC_KEY_SYNC_STATUS_JOB_TITLE = SYNC + "Public_key_Sync_Status_Job";
-	public static final String USER_SALT_SYNC_STATUS_JOB_TITLE = SYNC + "User_Salt_Sync_Status_Job";
-	public static final String REG_ID_OBJECT_MASTER_DATA_VALIDATOR = REG_ID_MASTER_DATA_VALIDATOR + "REGISTRATION_ID_OBJECT_MASTER_DATA_VALIDATOR";
+    public static final String USER_SALT_SYNC_STATUS_JOB_TITLE = SYNC + "User_Salt_Sync_Status_Job";   
 
 	// Util
 	public static final String UTIL_PUBLIC_KEY_GENERATION = APP_NAME
 			+ "PUBLIC_KEY_GENRATION_UTIL - GENERATE_PUBLIC_KEY";
-
-	// Registration Update
+	
+	//Registration Update
 	public static final String LOG_REG_UPDATE = HEADER + "REGISTARTION_UPDATE";
-
+	
 	// TPM
 	private static final String TPM_SIGNATURE = APP_NAME + "SIGNATURE_SERVICE - ";
 	private static final String TPM_SIGN_VALIDATION = APP_NAME + "SIGNATURE_VALIDATION_SERVICE - ";
@@ -152,7 +149,6 @@ public class LoggerConstants {
 	private static final String TPM_ASYMMETRIC_DECRYPTION = APP_NAME + "ASYMMETRIC_DECRYPTION_SERVICE - ";
 	private static final String TPM_SERVICE = APP_NAME + "TPM_SERVICE - ";
 	private static final String LOG_MODULE = APP_NAME + "TPM - ";
-	private static final String TPM_PUBLIC_KEY_SYNC = APP_NAME + "TPM_PUBLIC_KEY_SYNC - ";
 
 	public static final String LOG_TPM_INITIALIZATION = LOG_MODULE + "PLATFORM_TPM_INITIALIZATION";
 	public static final String LOG_PUBLIC_KEY = LOG_MODULE + "SIGN_KEY_CREATION_SERVICE";
@@ -167,11 +163,8 @@ public class LoggerConstants {
 	public static final String TPM_SERVICE_ASYMMETRIC_ENCRYPTION = TPM_SERVICE + "ASYMMETRIC_ENCRYPT";
 	public static final String TPM_SERVICE_ASYMMETRIC_DECRYPTION = TPM_SERVICE + "ASYMMETRIC_DECRYPT";
 	public static final String TPM_SERVICE_GET_SIGN_PUBLIC = TPM_SERVICE + "GET_SIGNING_PUBLIC_PART";
-	public static final String TPM_PUBLIC_KEY_UPLOAD = TPM_PUBLIC_KEY_SYNC + "SYNC_TPM_PUBLIC_KEY";
-
+	
 	public static final String LOG_REG_MAC_ADDRESS = "MAC_ADDRESS_UTILL";
-
-	public static final String ID_OBJECT_SCHEMA_VALIDATOR = UI_VALIDATIONS + "ID_OBJECT_SCHEMA_VALIDATOR";
-	public static final String ID_OBJECT_PATTERN_VALIDATOR = UI_VALIDATIONS + "ID_OBJECT_PATTERN_VALIDATOR";
+	
 
 }

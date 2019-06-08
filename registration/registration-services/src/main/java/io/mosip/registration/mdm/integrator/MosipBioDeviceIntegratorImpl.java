@@ -91,7 +91,7 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public CaptureResponseDto capture(String url, Object request, Class<?> responseType)
+	public Map<String, byte[]> capture(String url, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
 		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID, "Getting into capture method");
 
@@ -116,7 +116,7 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 		}
 
-		return mosipBioCaptureResponseDto;
+		return MdmRequestResponseBuilder.parseBioCaptureResponse(mosipBioCaptureResponseDto);
 
 	}
 

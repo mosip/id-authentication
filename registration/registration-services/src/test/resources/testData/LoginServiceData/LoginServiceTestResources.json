@@ -1,13 +1,13 @@
 {
 	"roles": [
-		"SUPERVISOR",
-		"OFFICER",
-		"SUPERADMIN"
+		"REGISTRATION_SUPERVISOR",
+		"REGISTRATION_OFFICER",
+		"REGISTRATION_ADMIN"
 	],
 	"userIds" : [
-		"mosip"
+		"110017"
 	],
 	"regCenterIds":[
-		"20916"
+		"10022"
 	]
 }

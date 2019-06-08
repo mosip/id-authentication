@@ -2,10 +2,22 @@ package io.mosip.registration.service.security;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 
-public interface AuthenticationService {
+/**
+ * Service class for Authentication
+ * 
+ * @author SaravanaKumar G
+ *
+ */
+@Service
+public class AuthenticationService {
+
+	private List<AuthenticationBaseValidator> authenticationBaseValidators;
 
 	/**
 	 * Common Validator for all the Authentications
@@ -13,19 +25,23 @@ public interface AuthenticationService {
 	 * @param authenticationValidatorDTO The authentication validation inputs
 	 * @return Boolean returning whether it is matched or not
 	 */
-	Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO);
+	public Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO) {
+
+		for (AuthenticationBaseValidator validator : authenticationBaseValidators) {
+			if (validator.getClass().getName().toLowerCase().contains(validatorType.toLowerCase())) {
+				return validator.validate(authenticationValidatorDTO);
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * This method is used to set the Authentication validators
 	 * @param authBaseValidators List of validators
 	 */
-	void setAuthenticationBaseValidator(List<AuthenticationBaseValidator> authBaseValidators);
-	
-	/**
-	 * This method is used to validate pwd authentication
-	 * @param authenticationValidatorDTO The authentication validation inputs
-	 * @return String
-	 */
-	String validatePassword(AuthenticationValidatorDTO authenticationValidatorDTO);
+	@Autowired
+	public void setAuthenticationBaseValidator(List<AuthenticationBaseValidator> authBaseValidators) {
+		this.authenticationBaseValidators = authBaseValidators;
+	}
 
 }

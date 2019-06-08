@@ -1,6 +1,5 @@
 package io.mosip.registration.context;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +10,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.dto.UserDTO;
 
 /**
  * Class for SessionContext details
@@ -36,7 +34,6 @@ public class SessionContext {
 
 	private UUID id;
 	private static UserContext userContext;
-	private static SecurityContext securityContext;
 	private Date loginTime;
 	private long refreshedLoginTime;
 	private long timeoutInterval;
@@ -61,37 +58,9 @@ public class SessionContext {
 			return sessionContext;
 		}
 	}
-	
-	/**
-	 * making sessionContext as singleton
-	 * 
-	 * @param userDTO - UserInfo to create session
-	 * 
-	 * @return sessionContext
-	 */
-	public static SessionContext create(UserDTO userDTO){
-		if (userDTO != null) {
-			List<String> roleList = new ArrayList<>();
-
-			userDTO.getUserRole().forEach(roleCode -> {
-				if (roleCode.isActive()) {
-					roleList.add(String.valueOf(roleCode.getRoleCode()));
-				}
-			});
-			
-			securityContext = sessionContext.new SecurityContext();
-			securityContext.setUserId(userDTO.getId());
-			securityContext.setRoles(roleList);
-			securityContext.setSecurityAuthenticationMap(new HashMap<>());
-			
-			return sessionContext;
-		} else {
-			return sessionContext;
-		}
-	}
 
 	/**
-	 * Reading map from sessionContext
+	 * Reading map from sessioncontext
 	 * 
 	 * @return map
 	 */
@@ -102,36 +71,26 @@ public class SessionContext {
 	/**
 	 * Return the Type casted object based on the input
 	 * 
-	 * @param map - map that contains key and values to be typecasted
-	 * @param key - input to typecast
-	 * @param returnType - the type to which the object has to be typecasted
-	 * @param <T> - Generic type
-	 * @return T - typecasted object
+	 * @param map
+	 * @param key
+	 * @param returnType
+	 * @return
 	 */
 	public static <T> T getValue(Map<String,Object> map, String key, Class<T> returnType){
 		return returnType.cast(map.get(key));
 	}
 
 	/**
-	 * Reading userContext from sessionContext
+	 * Reading userContext from sessioncontext
 	 * 
 	 * @return userContext
 	 */
 	public static UserContext userContext() {
 		return sessionContext.getUserContext();
 	}
-	
-	/**
-	 * Reading SecurityContext from sessioncontext
-	 * 
-	 * @return securityContext
-	 */
-	public static SecurityContext securityContext() {
-		return sessionContext.getSecurityContext();
-	}
 
 	/**
-	 * Reading userMap from sessionContext
+	 * Reading userMap from sessioncontext
 	 * 
 	 * @return userMap
 	 */
@@ -140,7 +99,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading refreshedLoginTime from sessionContext
+	 * Reading refreshedLoginTime from sessioncontext
 	 * 
 	 * @return refreshedLoginTime
 	 */
@@ -158,7 +117,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading timeoutInterval from sessionContext
+	 * Reading timeoutInterval from sessioncontext
 	 * 
 	 * @return timeoutInterval
 	 */
@@ -167,7 +126,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading idealTime from sessionContext
+	 * Reading idealTime from sessioncontext
 	 * 
 	 * @return idealTime
 	 */
@@ -182,11 +141,11 @@ public class SessionContext {
 	 *            DTO for auth token
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
-		SessionContext.getInstance().authTokenDTO = authTokenDTO;
+		sessionContext.getInstance().authTokenDTO = authTokenDTO;
 	}
 
 	/**
-	 * Reading authTokenDTO from sessionContext
+	 * Reading authTokenDTO from sessioncontext
 	 * 
 	 * @return authTokenDTO
 	 */
@@ -195,7 +154,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userId from sessionContext
+	 * Reading userId from sessioncontext
 	 * 
 	 * @return userId
 	 */
@@ -208,7 +167,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading userName from sessionContext
+	 * Reading userName from sessioncontext
 	 * 
 	 * @return userName
 	 */
@@ -221,7 +180,7 @@ public class SessionContext {
 	}
 
 	/**
-	 * Reading isSessionContextAvailable from sessionContext
+	 * Reading isSessionContextAvailable from sessioncontext
 	 * 
 	 * @return boolean
 	 */
@@ -255,15 +214,6 @@ public class SessionContext {
 	 */
 	public UserContext getUserContext() {
 		return userContext;
-	}
-	
-	/**
-	 * Getter for securityContext
-	 * 
-	 * @return securityContext
-	 */
-	public SecurityContext getSecurityContext() {
-		return securityContext;
 	}
 
 	/**
@@ -502,84 +452,6 @@ public class SessionContext {
 		 */
 		public void setUserMap(Map<String, Object> userMap) {
 			this.userMap = userMap;
-		}
-
-	}
-	
-	/**
-	 * class for User context
-	 *
-	 */
-	public class SecurityContext {
-		private String userId;
-		private List<String> roles;
-		private Map<String, Object> securityAuthenticationMap;
-
-		/**
-		 * Constructor for User context
-		 */
-		private SecurityContext() {
-
-		}
-
-		/**
-		 * Getter for userId
-		 * 
-		 * @return userId
-		 */
-		public String getUserId() {
-			if(userId==null) {
-				return RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM;
-			}
-			return userId;
-		}
-
-		/**
-		 * Setter for userId
-		 * 
-		 * @param userId
-		 *            id of the user
-		 */
-		public void setUserId(String userId) {
-			this.userId = userId;
-		}
-
-		/**
-		 * Getter for roles
-		 * 
-		 * @return list of roles
-		 */
-		public List<String> getRoles() {
-			return roles;
-		}
-
-		/**
-		 * Setter for roles
-		 * 
-		 * @param roles
-		 *            user roles
-		 */
-		public void setRoles(List<String> roles) {
-			this.roles = roles;
-		}
-
-
-		/**
-		 * Getter for userMap
-		 * 
-		 * @return userMap
-		 */
-		public Map<String, Object> getSecurityAuthenticationMap() {
-			return securityAuthenticationMap;
-		}
-
-		/**
-		 * Setter for securityAuthenticationMap
-		 * 
-		 * @param securityAuthenticationMap - Security Authentication Map
-		 */
-		public void setSecurityAuthenticationMap(Map<String, Object> securityAuthenticationMap) {
-			this.securityAuthenticationMap = securityAuthenticationMap;
 		}
 
 	}

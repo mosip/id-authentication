@@ -1,4 +1,3 @@
-
 package io.mosip.registration.mdm.service.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.MOSIP_BIO_DEVICE_MANAGER;
@@ -30,8 +29,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.mdm.dto.BioDevice;
-import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
-import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.dto.DeviceInfoResponseData;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
@@ -75,7 +72,7 @@ public class MosipBioDeviceManager {
 	 * Biometric devices and saves it for future access
 	 * 
 	 * @throws RegBaseCheckedException
-	 *             - generalised exception with errorCode and errorMessage
+	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	public void init() throws RegBaseCheckedException {
@@ -134,29 +131,18 @@ public class MosipBioDeviceManager {
 
 							case MosipBioDeviceConstants.VALUE_FINGERPRINT:
 								if (StringUtils.isNotEmpty(deviceInfoResponse.getSubType())) {
-									deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + deviceSubType,
-											bioDevice);
 
-									// if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
-									// } else if
-									// (MosipBioDeviceConstants.VALUE_SLAP_LEFT.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SLAP_LEFT, bioDevice);
-									// }else if
-									// (MosipBioDeviceConstants.VALUE_SLAP_RIGHT.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SLAP_RIGHT, bioDevice);
-									// } else if
-									// (MosipBioDeviceConstants.VALUE_SLAP_THUMB.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SLAP_THUMB, bioDevice);
-									// } else if
-									// (MosipBioDeviceConstants.VALUE_TOUCHLESS.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_TOUCHLESS, bioDevice);
-									// }
+									if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
+										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+												+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
+									} else if (MosipBioDeviceConstants.VALUE_SLAP.equalsIgnoreCase(deviceSubType)) {
+										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+												+ MosipBioDeviceConstants.VALUE_SLAP, bioDevice);
+									} else if (MosipBioDeviceConstants.VALUE_TOUCHLESS
+											.equalsIgnoreCase(deviceSubType)) {
+										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
+												+ MosipBioDeviceConstants.VALUE_TOUCHLESS, bioDevice);
+									}
 
 								}
 
@@ -220,11 +206,10 @@ public class MosipBioDeviceManager {
 	 * 
 	 * @param deviceType
 	 *            - The type of the device
-	 * @return CaptureResponseDto - captured biometric values from the device
+	 * @return Map<String, byte[]> - captured biometric values from the device
 	 * @throws RegBaseCheckedException
-	 *             - generalised exception with errorCode and errorMessage
 	 */
-	public CaptureResponseDto scan(String deviceType) throws RegBaseCheckedException {
+	public Map<String, byte[]> scan(String deviceType) throws RegBaseCheckedException {
 
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID, "Enter scan method");
 
@@ -235,43 +220,17 @@ public class MosipBioDeviceManager {
 		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
 			init();
 		}
+
 		BioDevice bioDevice = deviceRegistry.get(deviceType);
 		if (bioDevice != null) {
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device found in the device registery");
 			return bioDevice.capture();
-		} else {
-			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-					"Device not found in the device registery");
-			throw new RegBaseCheckedException();
 		}
+		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+				"Device not found in the device registery");
+		return null;
 
-	}
-
-	public byte[] getSingleBioExtract(CaptureResponseDto captureResponseDto) {
-		byte[] capturedByte = null;
-		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
-				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
-
-			CaptureResponseBioDto captureResponseBioDtos = captureResponseDto.getMosipBioDeviceDataResponses().get(0);
-			if (null != captureResponseBioDtos && null != captureResponseBioDtos.getCaptureResponseData()) {
-				return captureResponseBioDtos.getCaptureResponseData().getBioValue();
-			}
-		}
-		return capturedByte;
-	}
-
-	public byte[] extractSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto) {
-		byte[] capturedByte = null;
-		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
-				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
-
-			CaptureResponseBioDto captureResponseBioDtos = captureResponseDto.getMosipBioDeviceDataResponses().get(0);
-			if (null != captureResponseBioDtos && null != captureResponseBioDtos.getCaptureResponseData()) {
-				return captureResponseBioDtos.getCaptureResponseData().getBioExtract();
-			}
-		}
-		return capturedByte;
 	}
 
 	/**
@@ -281,7 +240,6 @@ public class MosipBioDeviceManager {
 	 *            - type of bio device
 	 * @return List - list of device details
 	 * @throws RegBaseCheckedException
-	 *             - generalized exception with errorCode and errorMessage
 	 */
 	public List<DeviceDiscoveryResponsetDto> getDeviceDiscovery(String deviceType) throws RegBaseCheckedException {
 
@@ -294,15 +252,13 @@ public class MosipBioDeviceManager {
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
 				deviceDiscoveryResponsetDtos = mosipBioDeviceIntegrator.getDeviceDiscovery(url, deviceType, null);
 
-				auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND,
-						RegistrationConstants.APPLICATION_NAME,
+				auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND, RegistrationConstants.APPLICATION_NAME,
 						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 				break;
-			} else {
+			}else {
 				LOGGER.debug(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-						"this" + url + " is unavailable");
-				auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE,
-						RegistrationConstants.APPLICATION_NAME,
+						"this" +url +" is unavailable");
+				auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE, RegistrationConstants.APPLICATION_NAME,
 						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 			}

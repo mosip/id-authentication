@@ -54,7 +54,7 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 				"getting packets by status uploaded-successfully has been started");
 
 		return registrationRepository
-				.findByclientStatusCodeOrderByCrDtime(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+				.findByclientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 
 	}
 

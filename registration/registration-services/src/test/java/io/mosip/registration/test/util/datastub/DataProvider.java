@@ -30,7 +30,7 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.Identity;
-import io.mosip.registration.dto.demographic.IndividualIdentity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -101,9 +101,7 @@ public class DataProvider {
 			biometricInfoDTO.setFace(DataProvider.getFaceDTO());
 			biometricInfoDTO.setExceptionFace(DataProvider.getExceptionFaceDTO(biometricInfoDTO));
 		} else {
-			biometricInfoDTO.setBiometricExceptionDTO(DataProvider.getExceptionFingerprintDetailsDTO());
 			biometricInfoDTO.setFingerprintDetailsDTO(DataProvider.getFingerprintDetailsDTO(persontype));
-			biometricInfoDTO.setIrisDetailsDTO(DataProvider.getIrisDetailsDTO());
 			biometricInfoDTO.setFace(DataProvider.getFaceDTO());
 			biometricInfoDTO.setExceptionFace(DataProvider.getExceptionFaceDTO(biometricInfoDTO));
 		}
@@ -128,7 +126,7 @@ public class DataProvider {
 		return exceptionFaceDetailsDTO;
 	}
 
-	private static List<FingerprintDetailsDTO> getFingerprintDetailsDTO(String personType)
+	public static List<FingerprintDetailsDTO> getFingerprintDetailsDTO(String personType)
 			throws RegBaseCheckedException {
 		List<FingerprintDetailsDTO> fingerList = new ArrayList<>();
 
@@ -245,7 +243,7 @@ public class DataProvider {
 		String localLanguageCode = "ara";
 
 		DemographicInfoDTO demographicInfoDTO = Builder.build(DemographicInfoDTO.class)
-				.with(demographicInfo -> demographicInfo.setIdentity((IndividualIdentity)Builder.build(IndividualIdentity.class)
+				.with(demographicInfo -> demographicInfo.setIdentity((MoroccoIdentity)Builder.build(MoroccoIdentity.class)
 						.with(identity -> identity.setFullName((List<ValuesDTO>)Builder.build(LinkedList.class)
 								.with(values -> values.add(Builder.build(ValuesDTO.class)
 										.with(value -> value.setLanguage(platformLanguageCode))
@@ -364,7 +362,7 @@ public class DataProvider {
 
 	private static void getDocumentDetailsDTO(Identity identity, Map<String, DocumentDetailsDTO> documents) throws RegBaseCheckedException {
 
-		IndividualIdentity individualIdentity = (IndividualIdentity) identity;
+		MoroccoIdentity moroccoIdentity = (MoroccoIdentity) identity;
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
@@ -373,7 +371,7 @@ public class DataProvider {
 		documentDetailsDTO.setValue("ProofOfIdentity");
 		documentDetailsDTO.setOwner("Self");
 		
-		individualIdentity.setProofOfIdentity(documentDetailsDTO);
+		moroccoIdentity.setProofOfIdentity(documentDetailsDTO);
 		documents.put("POI", documentDetailsDTO);
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
@@ -383,7 +381,7 @@ public class DataProvider {
 		documentDetailsResidenceDTO.setValue("ProofOfAddress");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
-		individualIdentity.setProofOfAddress(documentDetailsResidenceDTO);
+		moroccoIdentity.setProofOfAddress(documentDetailsResidenceDTO);
 		documents.put("POA", documentDetailsResidenceDTO);
 
 		documentDetailsDTO = new DocumentDetailsDTO();
@@ -393,7 +391,7 @@ public class DataProvider {
 		documentDetailsDTO.setValue("ProofOfRelationship");
 		documentDetailsDTO.setOwner("Self");
 		
-		individualIdentity.setProofOfRelationship(documentDetailsDTO);
+		moroccoIdentity.setProofOfRelationship(documentDetailsDTO);
 		documents.put("POR", documentDetailsDTO);
 
 		documentDetailsResidenceDTO = new DocumentDetailsDTO();
@@ -403,7 +401,7 @@ public class DataProvider {
 		documentDetailsResidenceDTO.setValue("DateOfBirthProof");
 		documentDetailsResidenceDTO.setOwner("hof");
 		
-		individualIdentity.setProofOfDateOfBirth(documentDetailsResidenceDTO);
+		moroccoIdentity.setProofOfDateOfBirth(documentDetailsResidenceDTO);
 		documents.put("POB", documentDetailsResidenceDTO);
 	}
 

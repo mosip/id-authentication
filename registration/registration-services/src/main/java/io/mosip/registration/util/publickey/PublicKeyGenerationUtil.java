@@ -9,7 +9,9 @@ import java.security.spec.X509EncodedKeySpec;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 
 /**
  * Utility class to generate the RSA Public Key from encoded bytes

@@ -138,18 +138,4 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		return machineMappingRepository.findByUserMachineMappingIdUserID(userId) != null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.dao.MachineMappingDAO#getMachineByName(java.lang.
-	 * String)
-	 */
-	@Override
-	public MachineMaster getMachineByName(String name) {
-		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetching Machine Master details based on name");
-
-		return machineMasterRepository.findByIsActiveTrueAndName(name);
-	}
-
 }

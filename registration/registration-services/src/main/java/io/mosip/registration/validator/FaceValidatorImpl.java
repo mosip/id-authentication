@@ -13,9 +13,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.device.face.FaceFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.service.bio.BioService;
 
 /**
  * This class is for validating Face Authentication
@@ -30,9 +30,9 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator{
 
 	@Autowired
 	private UserDetailDAO userDetailDAO;
-	
+
 	@Autowired
-	private BioService bioService;
+	private FaceFacade faceFacade;
 
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
@@ -46,7 +46,7 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator{
 		LOGGER.info(LOG_REG_FACE_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"validating face details for user registration");
 		
-		return bioService.validateFaceAgainstDb(authenticationValidatorDTO.getFaceDetail(), userFaceDetails);
+		return faceFacade.validateFace(authenticationValidatorDTO.getFaceDetail(), userFaceDetails);
 	}
-	
+
 }

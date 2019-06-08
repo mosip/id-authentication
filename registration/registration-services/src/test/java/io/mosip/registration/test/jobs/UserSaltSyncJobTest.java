@@ -27,8 +27,10 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.JobManager;
 import io.mosip.registration.jobs.SyncManager;
+import io.mosip.registration.jobs.impl.PublicKeySyncJob;
 import io.mosip.registration.jobs.impl.UserSaltSyncJob;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
+import io.mosip.registration.service.sync.PublicKeySync;
 
 public class UserSaltSyncJobTest {
 	@Mock

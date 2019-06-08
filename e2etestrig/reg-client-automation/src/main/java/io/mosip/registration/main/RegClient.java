@@ -8,7 +8,7 @@ import org.testng.collections.Lists;
 
 public class RegClient {
 	public static ResourceBundle prop = ResourceBundle.getBundle("config");
- 
+
 	public void createPacket() {
 		TestNG testng = new TestNG();
 		System.setProperty("spring.profiles.active", prop.getString("enviroment"));

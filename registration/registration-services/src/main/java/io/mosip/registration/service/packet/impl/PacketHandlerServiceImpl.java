@@ -5,6 +5,10 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_PACKET_CREATION_ERROR_CODE;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +32,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.packet.PacketHandlerService;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * The class to handle the registration data to create packet out of it and save
  * the registration packet data in {@link Registration}
@@ -73,10 +77,19 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	public ResponseDTO handle(RegistrationDTO registrationDTO) {
 		
 		LOGGER.info(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
-
+		
+		
 		ResponseDTO responseDTO = new ResponseDTO();
 		String rid = registrationDTO == null ? "RID" : registrationDTO.getRegistrationId();
 		try {
+			/*ObjectMapper mapper = new ObjectMapper();
+			String obj=mapper.writeValueAsString(registrationDTO);
+			File f= new File("registrationDTO.json");
+			FileWriter fw = new FileWriter(f);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(obj);
+			bw.flush();
+			bw.close();*/
 			// 1. create packet
 			byte[] inMemoryZipFile = packetCreationService.create(registrationDTO);
 

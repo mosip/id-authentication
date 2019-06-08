@@ -1,30 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
+ <!--  <parent>
     <groupId>io.mosip.e2etestrig</groupId>
     <artifactId>e2etestrig</artifactId>
     <version>0.12.2</version>
-  </parent>
+  </parent> -->
   <artifactId>e2etests</artifactId>
+  <groupId>io.mosip.e2etestrig</groupId>
+  <version>0.1</version>
 
   <dependencies>
 
-<!-- 	<dependency>
+
+		 <dependency>
 		<groupId>io.mosip.registration</groupId>
-		<artifactId>reg-client-automation</artifactId>
-		<version>0.12.2</version>
-	</dependency> -->
-	
-	<dependency>
+		 <artifactId>reg-client-automation</artifactId>
+		 <version>0.12.0</version>
+	</dependency>
+ 	<dependency>
 	<groupId>customlib</groupId>
 	<artifactId>preregistration</artifactId>
 	<version>0.12.2</version>
-	</dependency>
+	</dependency> 
 	<dependency>
 	<groupId>io.mosip.e2etestrig</groupId>
 	 <artifactId>reg-proc-automation</artifactId>
 	 <version>0.12.2</version>
 	</dependency>
+
 	<dependency>
     <groupId>javax.mail</groupId>
     <artifactId>javax.mail-api</artifactId>
@@ -35,7 +38,124 @@
     <artifactId>extentreports</artifactId>
     <version>2.41.2</version>
 </dependency>
+  <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+    <version>2.9.9</version>
+</dependency>
+  <dependency>
+    <groupId>com.googlecode.json-simple</groupId>
+    <artifactId>json-simple</artifactId>
+    <version>1.1.1</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>2.9.9</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    <version>2.9.9</version>
+</dependency>
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.9</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>1.3.2</version>
+</dependency>
 
+  <dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured</artifactId>
+    <version>3.0.0</version>
+    
+</dependency>
+ 
+  <dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>5.4.2.Final</version>
+</dependency>
+  
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.2</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+<dependency>
+    <groupId>javax.ws.rs</groupId>
+    <artifactId>javax.ws.rs-api</artifactId>
+    <version>2.0</version>
+</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+			
+		
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.11</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+
+
+	
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+		
 	
   </dependencies>
   

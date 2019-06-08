@@ -24,7 +24,7 @@ import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.IndividualIdentity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.impl.ZipCreationServiceImpl;
@@ -112,7 +112,7 @@ public class ZipCreationServiceTest {
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicDTO demographicDTO = new DemographicDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		demographicInfoDTO.setIdentity(new IndividualIdentity());
+		demographicInfoDTO.setIdentity(new MoroccoIdentity());
 		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
 		registrationDTO.setDemographicDTO(demographicDTO);
 		BiometricDTO biometricDTO = new BiometricDTO();

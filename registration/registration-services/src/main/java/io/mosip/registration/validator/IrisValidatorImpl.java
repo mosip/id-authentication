@@ -13,9 +13,9 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.entity.UserBiometric;
-import io.mosip.registration.service.bio.BioService;
 
 /**
  * This class is for validating Iris Authentication
@@ -30,9 +30,9 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 	
 	@Autowired
 	private UserDetailDAO userDetailDAO;
-	
+
 	@Autowired
-	private BioService BioService;
+	private IrisFacade irisFacade;
 
 	/**
 	 * Validate the Iris with the AuthenticationValidatorDTO as input
@@ -44,12 +44,12 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 				"Stubbing iris details for user registration");
 		
 		List<UserBiometric> userIrisDetails = userDetailDAO
-				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.IRS);
+				.getUserSpecificBioDetails(authenticationValidatorDTO.getUserId(), RegistrationConstants.IRIS);
 		
 		LOGGER.info(LOG_REG_IRIS_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"validating iris details for user registration");
 		
-		return BioService.validateIrisAgainstDb(authenticationValidatorDTO.getIrisDetails().get(RegistrationConstants.PARAM_ZERO), userIrisDetails);
+		return irisFacade.validateIris(authenticationValidatorDTO.getIrisDetails().get(RegistrationConstants.PARAM_ZERO), userIrisDetails);
 	}
 
 }

@@ -7,8 +7,8 @@ public class MosioBioDeviceHelperUtil {
 	/**
 	 * Checks the given collection is not empty
 	 * 
-	 * @param values - the collection to be checked
-	 * @return boolean - is not empty or empty
+	 * @param values
+	 * @return
 	 */
 	public static boolean isListNotEmpty(Collection<?> values) {
 		return values != null && !values.isEmpty();

@@ -1,7 +1,5 @@
 package io.mosip.registration.repositories;
 
-import java.util.List;
-
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.Language;
 
@@ -14,5 +12,5 @@ import io.mosip.registration.entity.Language;
 public interface LanguageRepository extends BaseRepository<Language, String> {
 
 	
-		List<Language> findAllByIsActiveTrue();
+
 }

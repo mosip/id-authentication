@@ -16,9 +16,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.validator.IrisValidatorImpl;
 
 public class IrisValidatorTest {
@@ -30,7 +30,7 @@ public class IrisValidatorTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
 	@Mock
-	private BioService bioService;
+	private IrisFacade irisFacade;
 	
 	@Mock
 	private UserDetailDAO userDetailDAO;

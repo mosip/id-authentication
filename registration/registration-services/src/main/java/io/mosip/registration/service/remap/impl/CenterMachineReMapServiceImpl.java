@@ -3,6 +3,7 @@ package io.mosip.registration.service.remap.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -126,14 +127,6 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 	}
 
-	@Override
-	public void startRemapProcess() {
-		for (int i = 1; i <= 4; i++) {
-			/* starts the remap process */
-			handleReMapProcess(i);
-		}
-	}
-	
 	/**
 	 * disable all sync jobs
 	 */
@@ -207,7 +200,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 				/* disable the remap flag after completing the remap process */
 				GlobalParam globalParam = getRemapFlagValue();
 				if (null != globalParam) {
-					globalParam.setVal(RegistrationConstants.FALSE);
+					globalParam.setVal("false");
 					globalParamDAO.saveAll(Arrays.asList(globalParam));
 				}
 
@@ -247,7 +240,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	 * disables all the sync jobs
 	 */
 	private void updateAllSyncJobs(boolean isJobActive) {
-		List<SyncJobDef> jobDefs = jobConfigDAO.getAll();
+		List<SyncJobDef> jobDefs = jobConfigDAO.getActiveJobs();
 		if (isNotNullNotEmpty(jobDefs)) {
 			jobDefs.forEach(job -> {
 				job.setIsActive(isJobActive);
@@ -289,7 +282,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 				preRegistrationDataSyncDAO.deleteAll(preRegistrationLists);
 			}
 			FileUtils.deleteDirectory(
-					FileUtils.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
+					new File((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,

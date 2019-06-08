@@ -54,6 +54,7 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
 			// Create folder structure for Biometric
 
+			registrationDTO.getBiometricDTO();
 			if (checkNotNull(registrationDTO.getBiometricDTO())) {
 				// Biometric -> Applicant Folder
 				if (filesGeneratedForPacket.containsKey(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME)) {
@@ -75,20 +76,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 					LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Authentication biometric added");
 				}
-				
-				if (filesGeneratedForPacket.containsKey(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME)) {
-					writeFileToZip(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME,
-							filesGeneratedForPacket.get(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
-							zipOutputStream);
-				}
-
-				if (filesGeneratedForPacket.containsKey(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME)) {
-					writeFileToZip(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME,
-							filesGeneratedForPacket.get(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
-							zipOutputStream);
-				}
-
-				LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Supervisor's Biometric added");
 			}
 
 			// Create folder structure for Demographic
@@ -110,6 +97,22 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 					filesGeneratedForPacket.get(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME), zipOutputStream);
 
 			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC added");
+
+			if (checkNotNull(registrationDTO.getBiometricDTO())) {
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME)) {
+					writeFileToZip(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME,
+							filesGeneratedForPacket.get(RegistrationConstants.SUPERVISOR_BIO_CBEFF_FILE_NAME),
+							zipOutputStream);
+				}
+
+				if (filesGeneratedForPacket.containsKey(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME)) {
+					writeFileToZip(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME,
+							filesGeneratedForPacket.get(RegistrationConstants.OFFICER_BIO_CBEFF_FILE_NAME),
+							zipOutputStream);
+				}
+
+				LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Supervisor's Biometric added");
+			}
 
 			// Add Registration Meta JSON
 			writeFileToZip(RegistrationConstants.PACKET_META_JSON_NAME,

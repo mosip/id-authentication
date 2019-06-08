@@ -63,20 +63,9 @@ public class TemplateGeneratorTest {
 	@Mock
 	QrCodeGenerator<QrVersion> qrCodeGenerator;
 	
-	Map<String,Object> appMap = new HashMap<>();
-	
-	private RegistrationDTO registrationDTO;
-	
 	@Before
-	public void initialize() throws RegBaseCheckedException, QrcodeGenerationException, IOException {
-		registrationDTO = DataProvider.getPacketDTO();
-		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
-		segmentedFingerprints.add(new FingerprintDetailsDTO());
-		
-		registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
-				.forEach(fingerPrintDTO -> {
-					fingerPrintDTO.setSegmentedFingerprints(segmentedFingerprints);
-				});
+	public void initialize() {
+		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.DOC_DISABLE_FLAG, "Y");
 		appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, "Y");
 		appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, "Y");
@@ -84,23 +73,6 @@ public class TemplateGeneratorTest {
 		appMap.put(RegistrationConstants.PRIMARY_LANGUAGE, "ara");
 		appMap.put(RegistrationConstants.SECONDARY_LANGUAGE, "fra");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
-		templateGenerator.setGuidelines("My GuideLines");
-		ApplicationContext.getInstance().loadResourceBundle();
-		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
-		BufferedImage image = null;
-		PowerMockito.mockStatic(ImageIO.class);
-		when(ImageIO.read(
-				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH)))
-						.thenReturn(image);
-		when(ImageIO.read(
-				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH)))
-						.thenReturn(image);
-		when(ImageIO.read(
-				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH)))
-						.thenReturn(image);
-		when(ImageIO.read(
-				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_PATH)))
-						.thenReturn(image);
 	}
 	
 	ResourceBundle dummyResourceBundle = new ResourceBundle() {
@@ -116,86 +88,52 @@ public class TemplateGeneratorTest {
 	};
 
 	@Test
-	public void generateAckTemplateTest() throws IOException, URISyntaxException {
+	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException, QrcodeGenerationException {
+		ApplicationContext.getInstance().loadResourceBundle();
+		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
+		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
+		segmentedFingerprints.add(new FingerprintDetailsDTO());
+		
+		registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO()
+				.forEach(fingerPrintDTO -> {
+					fingerPrintDTO.setSegmentedFingerprints(segmentedFingerprints);
+				});
+		PowerMockito.mockStatic(ImageIO.class);
 		PowerMockito.mockStatic(ApplicationContext.class);
-
+		BufferedImage image = null;
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_EYE_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_LEFT_SLAP_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_RIGHT_SLAP_IMAGE_PATH)))
+						.thenReturn(image);
+		when(ImageIO.read(
+				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_PATH)))
+						.thenReturn(image);
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("mosip");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 		SessionContext.map().put(RegistrationConstants.IS_Child, false);
 
-		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
-		when(ApplicationContext.localLanguage()).thenReturn("ar");
-		when(ApplicationContext.localLanguageProperty()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.map()).thenReturn(appMap);
-	
-		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
-		assertNotNull(response.getSuccessResponseDTO());
-	}
-	
-	@Test
-	public void generatePreviewTemplateTest() throws IOException, URISyntaxException {
-		PowerMockito.mockStatic(ApplicationContext.class);
-		
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
-		SessionContext.map().put(RegistrationConstants.IS_Child, false);
+		when(qrCodeGenerator.generateQrCode(Mockito.anyString(), Mockito.any())).thenReturn(new byte[1024]);
 		
 		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
 		when(ApplicationContext.localLanguage()).thenReturn("ar");
 		when(ApplicationContext.localLanguageProperty()).thenReturn(dummyResourceBundle);
 		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.map()).thenReturn(appMap);
-		
-		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.TEMPLATE_PREVIEW);
-		assertNotNull(response.getSuccessResponseDTO());
-	}
-	
-	@Test
-	public void generateAckTemplateChildTest() throws IOException, URISyntaxException {
-		PowerMockito.mockStatic(ApplicationContext.class);
-		
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
-		SessionContext.map().put(RegistrationConstants.IS_Child, true);
 
-		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
-		when(ApplicationContext.localLanguage()).thenReturn("ar");
-		when(ApplicationContext.localLanguageProperty()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.map()).thenReturn(appMap);
-		
 		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE);
-		assertNotNull(response.getSuccessResponseDTO());
-	}
-	
-	@Test
-	public void generatePreviewTemplateChildTest() throws IOException, URISyntaxException {
-		PowerMockito.mockStatic(ApplicationContext.class);
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
-		SessionContext.map().put(RegistrationConstants.IS_Child, true);
-		
-		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
-		when(ApplicationContext.localLanguage()).thenReturn("ar");
-		when(ApplicationContext.localLanguageProperty()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.applicationLanguageBundle()).thenReturn(dummyResourceBundle);
-		when(ApplicationContext.map()).thenReturn(appMap);
-		
-		ResponseDTO response = templateGenerator.generateTemplate("sample text", registrationDTO, template, RegistrationConstants.TEMPLATE_PREVIEW);
 		assertNotNull(response.getSuccessResponseDTO());
 	}
 
 	@Test
 	public void generateNotificationTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
+		ApplicationContext.getInstance().loadResourceBundle();
+		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		Writer writer = templateGenerator.generateNotificationTemplate("sample text", registrationDTO, template);
 		assertNotNull(writer);
 	}

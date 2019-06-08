@@ -8,9 +8,13 @@ import static io.mosip.registration.exception.RegistrationExceptionConstants.REG
 import static java.io.File.separator;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -24,19 +28,22 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.exception.FileIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectSchemaIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationProcessingException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -47,13 +54,13 @@ import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.PreRegistrationDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.IndividualIdentity;
+import io.mosip.registration.dto.demographic.Identity;
+import io.mosip.registration.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
-import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
  * This class is used to handle the pre-registration packet zip files
@@ -66,7 +73,8 @@ import io.mosip.registration.validator.RegIdObjectValidator;
 public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	@Autowired
-	private RegIdObjectValidator idObjectValidator;
+	@Qualifier("schema")
+	private IdObjectValidator idObjectValidator;
 
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -131,12 +139,12 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		documentDetailsDTO.setType(docCatgory);
 		documentDetailsDTO.setFormat(fileName.substring(fileName.lastIndexOf(RegistrationConstants.DOT) + 1));
 
-		IndividualIdentity individualIdentity = (IndividualIdentity) getRegistrationDtoContent().getDemographicDTO()
+		MoroccoIdentity moroccoIdentity = (MoroccoIdentity) getRegistrationDtoContent().getDemographicDTO()
 				.getDemographicInfoDTO().getIdentity();
 
 		String docTypeName = null;
-		if (individualIdentity != null) {
-			docTypeName = getDocTypeName(fileName, docCatgory, individualIdentity);
+		if (moroccoIdentity != null) {
+			docTypeName = getDocTypeName(fileName, docCatgory, moroccoIdentity);
 		}
 
 		/*
@@ -162,24 +170,24 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		return docTypeName;
 	}
 
-	private String getDocTypeName(String fileName, String docCatgory, IndividualIdentity individualIdentity) {
+	private String getDocTypeName(String fileName, String docCatgory, MoroccoIdentity moroccoIdentity) {
 		String docTypeName;
 		if (RegistrationConstants.POA_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != individualIdentity.getProofOfAddress()) {
+				&& null != moroccoIdentity.getProofOfAddress()) {
 
-			docTypeName = individualIdentity.getProofOfAddress().getType();
+			docTypeName = moroccoIdentity.getProofOfAddress().getType();
 
 		} else if (RegistrationConstants.POI_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != individualIdentity.getProofOfIdentity()) {
-			docTypeName = individualIdentity.getProofOfIdentity().getType();
+				&& null != moroccoIdentity.getProofOfIdentity()) {
+			docTypeName = moroccoIdentity.getProofOfIdentity().getType();
 
 		} else if (RegistrationConstants.POR_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != individualIdentity.getProofOfRelationship()) {
-			docTypeName = individualIdentity.getProofOfRelationship().getType();
+				&& null != moroccoIdentity.getProofOfRelationship()) {
+			docTypeName = moroccoIdentity.getProofOfRelationship().getType();
 
 		} else if (RegistrationConstants.DOB_DOCUMENT.equalsIgnoreCase(docCatgory)
-				&& null != individualIdentity.getProofOfDateOfBirth()) {
-			docTypeName = individualIdentity.getProofOfDateOfBirth().getType();
+				&& null != moroccoIdentity.getProofOfDateOfBirth()) {
+			docTypeName = moroccoIdentity.getProofOfDateOfBirth().getType();
 
 		} else {
 			docTypeName = fileName.substring(fileName.indexOf("_") + 1, fileName.lastIndexOf("."));
@@ -205,30 +213,55 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			StringBuilder jsonString = new StringBuilder();
 			while ((value = bufferedReader.readLine()) != null) {
 				jsonString.append(value);
+				
 			}
+			/*BufferedWriter bwr = new BufferedWriter(new FileWriter(new File("//demo.txt")));
 
+			// write contents of StringBuffer to a file
+			bwr.write(jsonString.toString());
+
+			// flush the stream
+			bwr.flush();
+
+			// close the stream
+			bwr.close();*/
 			if (!StringUtils.isEmpty(jsonString)) {
 				/* validate id json schema */
-				IndividualIdentity individualIdentity = (IndividualIdentity) JsonUtils.jsonStringToJavaObject(
-						IndividualIdentity.class, new JSONObject(jsonString.toString()).get("identity").toString());
-				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().setIdentity(individualIdentity);
-				idObjectValidator.validateIdObject(
-						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),
-						RegistrationConstants.PACKET_TYPE_NEW);
+				// getDemographicDTO().getDemographicInfoDTO().setIdentity(identity)
 
+				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO()
+						.setIdentity(validateJSONAndConvertToIdentity(jsonString));
+				idObjectValidator
+						.validateIdObject(getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO());
 			}
 		} catch (IOException exception) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
-		} catch (JsonParseException | JsonMappingException | JSONException
-				| io.mosip.kernel.core.exception.IOException jsonValidationException) {
+		} catch (JSONException | IdObjectValidationProcessingException | IdObjectIOException | IdObjectSchemaIOException
+				| FileIOException | ClassNotFoundException jsonValidationException) {
+			LOGGER.error("REGISTRATION - PRE_REG_ZIP_HANDLING_SERVICE_IMPL", RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage()
+							+ jsonValidationException.getMessage()
+							+ ExceptionUtils.getStackTrace(jsonValidationException));
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_JSON_VALIDATOR_ERROR_CODE.getErrorMessage(),
 					jsonValidationException);
-		} catch (BaseCheckedException baseCheckedException) {
-			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
 		}
 
+	}
+
+	@SuppressWarnings("unchecked")
+	private Identity validateJSONAndConvertToIdentity(StringBuilder jsonString)
+			throws IOException, JSONException, ClassNotFoundException {
+		Class<? extends Identity> identityClass = (Class<? extends Identity>) Class
+				.forName(String.valueOf(ApplicationContext.map().get(RegistrationConstants.IDENTITY_CLASS_NAME)));
+
+		return new ObjectMapper().readValue(new JSONObject(jsonString.toString()).get("identity").toString(),
+				identityClass);
 	}
 
 	/**
@@ -288,7 +321,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 					.concat(separator).concat(PreRegistrationId).concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket),
-					FileUtils.getFile(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
+					new File(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
 
 			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration Encrypted packet saved");
 

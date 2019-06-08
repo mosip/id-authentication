@@ -8,6 +8,7 @@ import static io.mosip.registration.constants.RegistrationConstants.ZIP_FILE_EXT
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class StorageServiceImpl implements StorageService {
 			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION)).concat(seperator).concat(formatDate(new Date(), String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT))))
 					.concat(seperator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
-			FileUtils.copyToFile(new ByteArrayInputStream(CryptoUtil.encodeBase64(packet).getBytes()), FileUtils.getFile(filePath.concat(ZIP_FILE_EXTENSION)));
+			FileUtils.copyToFile(new ByteArrayInputStream(CryptoUtil.encodeBase64(packet).getBytes()), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 
 			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted packet saved");
 

@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
-  <test thread-count="5" name="Default test(failed)">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Registration Client Integration Scenario]">
+  <test thread-count="5" name="EmailNotificationServiceTest(failed)">
     <classes>
-      <class name="io.mosip.e2e.tests.EndToEndRun">
+      <class name="io.mosip.registration.main.PacketCreation">
         <methods>
-          <include name="getPrids"/>
-          <include name="setResultTestName"/>
+          <include name="springTestContextBeforeTestClass"/>
+          <include name="createPacket"/>
+          <include name="springTestContextPrepareTestInstance"/>
+          <include name="springTestContextAfterTestClass"/>
+          <include name="springTestContextBeforeTestMethod"/>
+          <include name="springTestContextAfterTestMethod"/>
         </methods>
-      </class> <!-- io.mosip.e2e.tests.EndToEndRun -->
+      </class> <!-- io.mosip.registration.main.PacketCreation -->
     </classes>
-  </test> <!-- Default test(failed) -->
-</suite> <!-- Failed suite [Default suite] -->
+  </test> <!-- EmailNotificationServiceTest(failed) -->
+</suite> <!-- Failed suite [Registration Client Integration Scenario] -->
