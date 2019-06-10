@@ -7,13 +7,18 @@ import static org.mockito.Matchers.anyString;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -26,35 +31,40 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
+import io.mosip.registration.processor.core.auth.dto.ResponseDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -77,7 +87,7 @@ public class BiometricAuthenticationStageTest {
 
 	/** The filesystem ceph adapter impl. */
 	@Mock
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private PacketManager filesystemManager;
 
 	/** The registration status service. */
 	@Mock
@@ -86,6 +96,9 @@ public class BiometricAuthenticationStageTest {
 	/** The packet info manager. */
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+	
+	@Mock
+	private AuthUtil authUtil;
 
 	@Mock
 	InternalRegistrationStatusDto registrationStatusDto;
@@ -140,9 +153,8 @@ public class BiometricAuthenticationStageTest {
 
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
-
-	@Mock
-	JsonValidator jsonValidatorImpl;
+	
+	
 
 	@Mock
 	private Utilities utility;
@@ -158,7 +170,6 @@ public class BiometricAuthenticationStageTest {
 
 	StatusResponseDto statusResponseDto;
 
-	ValidationReport validationReport;
 
 	/**
 	 * Sets the up.
@@ -169,6 +180,7 @@ public class BiometricAuthenticationStageTest {
 	@Before
 	public void setUp() throws Exception {
 		ReflectionTestUtils.setField(biometricAuthenticationStage, "ageLimit", "5");
+		
 		list = new ArrayList<InternalRegistrationStatusDto>();
 
 		listAppender = new ListAppender<>();
@@ -203,9 +215,9 @@ public class BiometricAuthenticationStageTest {
 		Mockito.when(registrationStatusService.getByStatus(anyString())).thenReturn(list);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
-		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(filesystemManager.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(identityIteratorUtil.getFieldValue(any(), any())).thenReturn("UPDATE");
-		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
+		Mockito.when(filesystemManager.getFile(any(), any())).thenReturn(inputStream);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
@@ -237,7 +249,7 @@ public class BiometricAuthenticationStageTest {
 		Mockito.when(utility.getApplicantAge(any())).thenReturn(21);
 		HashMap<String,String> hashMap = new HashMap<String,String>();
 
-		hashMap.put("VALUE", "testFile");
+		hashMap.put("value", "testFile");
 		JSONObject jSONObject = new JSONObject(hashMap);
 		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
 		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(jSONObject);
@@ -245,16 +257,26 @@ public class BiometricAuthenticationStageTest {
 
 	
 	@Test
-	public void biometricAuthenticationSuccessTest(){
-		
+	public void biometricAuthenticationSuccessTest() throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, IOException, ParserConfigurationException, SAXException{
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(true);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
+
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
 		assertTrue(messageDto.getIsValid());
 	}
 	
 	@Test
-	public void biometricAuthenticationSuccessWithoutBiometricTest() throws IOException{
+	public void biometricAuthenticationSuccessWithoutBiometricTest() throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, ParserConfigurationException, SAXException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException{
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(true);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
 		HashMap<String,String> hashMap = new HashMap<String,String>();
-		hashMap.put("VALUE", "testFile");
+		hashMap.put("value", "testFile");
 		JSONObject jSONObject = new JSONObject(hashMap);
 		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
 		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(null);
@@ -263,27 +285,23 @@ public class BiometricAuthenticationStageTest {
 	}
 	
 	@Test
-	public void IDAuthFailureTest() throws IOException{
-		Mockito.when(utility.getUIn(any())).thenReturn(null);
-		FieldValue fieldValue = new FieldValue();
-		FieldValue fieldValue1 = new FieldValue();
-		fieldValue.setLabel("registrationType");
-		fieldValue.setValue("update");
-		fieldValue1.setLabel("authenticationBiometricFileName");
-		fieldValue1.setValue("biometricTestFileName");
-		List<FieldValue> metadata = new ArrayList<>();
-		metadata.add(fieldValue);
-		metadata.add(fieldValue1);
-		identity.setMetaData(metadata);
-		packetMetaInfo.setIdentity(identity);
-		Mockito.when(utility.getPacketMetaInfo(any())).thenReturn(packetMetaInfo);
-		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(null);
+	public void IDAuthFailureTest() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, ParserConfigurationException, SAXException{
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(false);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
+		HashMap<String,String> hashMap = new HashMap<String,String>();
+		hashMap.put("value", "testFile");
+		JSONObject jSONObject = new JSONObject(hashMap);
+		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
+		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(null);
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
 		assertFalse(messageDto.getIsValid());
 	}
 	
 	@Test
-	public void childPacketTest() throws ApisResourceAccessException, IOException{
+	public void childPacketTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException{
 		
 		Mockito.when(utility.getApplicantAge(any())).thenReturn(2);
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
@@ -291,15 +309,32 @@ public class BiometricAuthenticationStageTest {
 	}
 	
 	@Test
-	public void inputStreamNullTest() {
-		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(null);
+	public void inputStreamNullTest() throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+		Mockito.when(filesystemManager.getFile(any(), any())).thenReturn(null);
+		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
+		assertFalse(messageDto.getIsValid());
+	}
+	
+	@Test
+	public void inputStreamNullIndividualAuthTest() throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		Mockito.when(filesystemManager.getFile(any(), any())).thenReturn(null);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(true);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
+		HashMap<String,String> hashMap = new HashMap<String,String>();
+		hashMap.put("value", "testFile");
+		JSONObject jSONObject = new JSONObject(hashMap);
+		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
+		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(null);
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
 		assertFalse(messageDto.getIsValid());
 	}
 	
 
 	@Test
-	public void testIOException() throws ApisResourceAccessException, IOException   {
+	public void testIOException() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException   {
 
 		Mockito.when(utility.getApplicantAge(any())).thenThrow(new IOException("IOException"));
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
@@ -307,7 +342,7 @@ public class BiometricAuthenticationStageTest {
 	}
 	
 	@Test
-	public void testApisResourceAccessException() throws ApisResourceAccessException, IOException  {
+	public void testApisResourceAccessException() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException  {
 
 		Mockito.when(utility.getApplicantAge(any())).thenThrow(new ApisResourceAccessException("ApisResourceAccessException"));
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
@@ -315,13 +350,69 @@ public class BiometricAuthenticationStageTest {
 	}
 	
 	@Test
-	public void testEmptyJSONObject() throws IOException {
+	public void testException() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException  {
+
+		Mockito.when(utility.getApplicantAge(any())).thenThrow(new PacketDecryptionFailureException("testCode", "test message"));
+		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
+		assertTrue(messageDto.getInternalError());
+	}
+	
+	@Test
+	public void testEmptyJSONObject() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		HashMap<String,String> hashMap = new HashMap<String,String>();
 
-		hashMap.put("VALUE", "");
+		hashMap.put("value", "");
 		JSONObject jSONObject = new JSONObject(hashMap);
 		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
 		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(jSONObject);
+		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+	}
+	
+	@Test
+	public void resupdatePacketTest() throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, IOException, ParserConfigurationException, SAXException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException{
+		FieldValue fieldValue = new FieldValue();
+		FieldValue fieldValue1 = new FieldValue();
+		fieldValue1.setLabel("authenticationBiometricFileName");
+		fieldValue1.setValue("biometricTestFileName");
+		fieldValue.setLabel("registrationType");
+		fieldValue.setValue("res_update");
+		List<FieldValue> metadata = new ArrayList<>();
+		metadata.add(fieldValue);
+		metadata.add(fieldValue1);
+
+		identity.setMetaData(metadata);
+		packetMetaInfo.setIdentity(identity);
+		Mockito.when(utility.getPacketMetaInfo(any())).thenReturn(packetMetaInfo);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(false);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
+		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
+		assertTrue(messageDto.getIsValid());
+	}
+	
+	@Test
+	public void testNewPacket() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		FieldValue fieldValue = new FieldValue();
+		FieldValue fieldValue1 = new FieldValue();
+		fieldValue1.setLabel("authenticationBiometricFileName");
+		fieldValue1.setValue("biometricTestFileName");
+		fieldValue.setLabel("registrationType");
+		fieldValue.setValue("new");
+		List<FieldValue> metadata = new ArrayList<>();
+		metadata.add(fieldValue);
+		metadata.add(fieldValue1);
+
+		identity.setMetaData(metadata);
+		packetMetaInfo.setIdentity(identity);
+		Mockito.when(utility.getPacketMetaInfo(any())).thenReturn(packetMetaInfo);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(false);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
 		assertTrue(messageDto.getIsValid());
 	}
@@ -331,6 +422,4 @@ public class BiometricAuthenticationStageTest {
 		
 	 biometricAuthenticationStage.deployVerticle();;
 	}
-	
-	
 }

@@ -1,12 +1,8 @@
 package io.mosip.idrepository.identity.httpfilter;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
@@ -18,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,6 +21,7 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
+import io.mosip.idrepository.core.httpfilter.BaseIdRepoFilter;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -37,7 +33,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  */
 @Component
-public class IdRepoFilter extends OncePerRequestFilter {
+public class IdRepoFilter extends BaseIdRepoFilter {
 
 	/** The Constant GET. */
 	private static final String GET = "GET";
@@ -73,65 +69,18 @@ public class IdRepoFilter extends OncePerRequestFilter {
 	private Map<String, String> id;
 
 	String uin;
+	
 
-	/**
-	 * Allowed end points.
-	 *
-	 * @return the string[] allowed endpoints
-	 */
-	private String[] allowedEndPoints() {
-		return new String[] { "/assets/**", "/icons/**", "/screenshots/**", "/favicon**", "/**/favicon**", "/css/**",
-				"/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html" };
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.filter.OncePerRequestFilter#shouldNotFilter(javax.
-	 * servlet.http.HttpServletRequest)
-	 */
 	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		if (Objects.nonNull(request.getPathInfo())) {
-			return Arrays.stream(allowedEndPoints()).anyMatch(p -> pathMatcher.match(p, request.getPathInfo()));
-		}
-		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.filter.OncePerRequestFilter#doFilterInternal(javax.
-	 * servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
-	 * javax.servlet.FilterChain)
-	 */
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-
-		Instant requestTime = Instant.now();
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
-
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request received");
-
+	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws IOException, ServletException {
 		if (request.getMethod().equals(GET) && (request.getParameterMap().size() > 1
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE)))) {
 			response.getWriter().write(buildErrorResponse());
 		} else {
 			filterChain.doFilter(request, response);
 		}
-
-		Instant responseTime = Instant.now();
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
-		long duration = Duration.between(requestTime, responseTime).toMillis();
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER,
-				"Time taken to respond in ms: " + duration
-						+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000)
-						+ " for url : " + request.getRequestURL() + " method: " + request.getMethod());
 	}
 
 	/**

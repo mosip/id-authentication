@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -48,6 +47,7 @@ import io.mosip.registration.processor.core.notification.template.generator.dto.
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -90,7 +90,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import org.junit.Test;
 

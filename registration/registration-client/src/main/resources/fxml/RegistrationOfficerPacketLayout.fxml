@@ -352,6 +352,35 @@
                      </rowConstraints>
                   </GridPane>
                   <ProgressIndicator fx:id="progressIndicator" progress="0.0" visible="false" GridPane.rowIndex="3" />
+                  <GridPane fx:id="userOnboardMsg">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <HBox fx:id="userOnboardMessage" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false">
+                           <children>
+                              <Label graphicTextGap="10.0" styleClass="onboardAlertMsg" text="%onboardAlertMsg" wrapText="true">
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/tick.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </HBox>
+                     </children>
+                  </GridPane>
                </children>
             </GridPane>
             <Label styleClass="powerdBy" text="© 2019, Powered by MOSIP" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />

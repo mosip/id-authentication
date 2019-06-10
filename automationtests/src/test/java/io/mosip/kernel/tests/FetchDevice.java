@@ -58,7 +58,7 @@ public class FetchDevice extends BaseTestCase implements ITest {
 	private final String apiName = "FetchDevice";
 	private final String requestJsonName = "fetchDeviceRequest";
 	private final String outputJsonName = "fetchDeviceOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchDevice_lang_URI = props.get("FetchDevice_lang_URI").toString();
 	private final String FetchDevice_id_lang_URI = props.get("FetchDevice_id_lang_URI").toString();
 
@@ -119,9 +119,9 @@ public class FetchDevice extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		if (objectData.containsKey("deviceType"))
-			response = applicationLibrary.getRequestPathPara(FetchDevice_id_lang_URI, objectData, cookie);
+			response = applicationLibrary.getWithPathParam(FetchDevice_id_lang_URI, objectData, cookie);
 		else
-			response = applicationLibrary.getRequestPathPara(FetchDevice_lang_URI, objectData, cookie);
+			response = applicationLibrary.getWithPathParam(FetchDevice_lang_URI, objectData, cookie);
 		// DB Validation
 
 		// This method is for checking the authentication is pass or fail in rest
@@ -134,15 +134,15 @@ public class FetchDevice extends BaseTestCase implements ITest {
 					.get("response");
 			if (responseJson == null || !responseJson.containsKey("devices"))
 				Assert.assertTrue(false, "Response does not contain devices");
-			String queryPart = "select count(*) from master.device_master";
+			String queryPart = "select count(*) from master.device_master where is_active = true";
 			String query = queryPart;
 			if (objectData != null) {
 				if (objectData.containsKey("deviceType"))
-					query = query + " where dspec_id IN (select id from master.device_spec where dtyp_code = '"
+					query = query + " and dspec_id IN (select id from master.device_spec where dtyp_code = '"
 							+ objectData.get("deviceType") + "') and lang_code = '" + objectData.get("languagecode")
 							+ "'";
 				else
-					query = queryPart + " where lang_code = '" + objectData.get("languagecode") + "'";
+					query = queryPart + " and lang_code = '" + objectData.get("languagecode") + "'";
 			}
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 

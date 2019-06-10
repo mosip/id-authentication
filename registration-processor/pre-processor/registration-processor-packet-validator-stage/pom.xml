@@ -96,7 +96,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-jsonvalidator</artifactId>
+			<artifactId>kernel-idobjectvalidator</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>

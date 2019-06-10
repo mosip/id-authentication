@@ -23,6 +23,8 @@ import io.mosip.authentication.core.spi.indauth.service.BioAuthService;
 
 /**
  * 
+ * Bio-service to implement Biometric Authentication
+ * 
  * @author Dinesh Karuppiah.T
  */
 

@@ -144,7 +144,9 @@ public class DeviceCaptureController {
 				e.printStackTrace();
 			}
 
-			captureResponseSegmentedData.setBioSubType(mosipBioRequest.getDeviceSubId());
+			imageFileName[3] = imageFileName[3].replace("left", "Left ").replace("right", "Right ").replace("thumb",
+					"Thumb ");
+			captureResponseSegmentedData.setBioSubType(imageFileName[3]);
 			captureResponseSegmentedData.setBioType(mosipBioRequest.getDeviceId());
 			captureResponseSegmentedData.setDeviceCode("");
 			captureResponseSegmentedData.setDeviceProviderID("");

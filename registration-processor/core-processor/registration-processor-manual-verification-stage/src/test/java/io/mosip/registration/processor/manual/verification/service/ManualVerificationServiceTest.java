@@ -23,13 +23,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTO;
 import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTOWrapper;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
@@ -69,7 +71,7 @@ public class ManualVerificationServiceTest {
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 	@Mock
-	FileSystemAdapter filesystemCephAdapterImpl;
+	PacketManager filesystemCephAdapterImpl;
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 	@Mock
@@ -240,7 +242,7 @@ public class ManualVerificationServiceTest {
 	}
 
 	@Test
-	public void getApplicantFileMethodCheck() {
+	public void getApplicantFileMethodCheck() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
 		String regId = "Id";
 
 		byte[] file = "Str".getBytes();
@@ -325,7 +327,7 @@ public class ManualVerificationServiceTest {
 	}
 
 	@Test
-	public void getApplicantPacketInfoSuccess() throws UnsupportedEncodingException, FileNotFoundException {
+	public void getApplicantPacketInfoSuccess() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File idJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		InputStream idJsonStream = new FileInputStream(idJsonFile);

@@ -974,6 +974,7 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
+	public static final String BIOMETRIC_PANES_SELECTED = "biometricPaneSelected";
 	public static final Set<String> BIO_TYPE = new HashSet<>(
 			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
 	public static final String LEFTSLAPCOUNT = "leftSlapCount";
@@ -1093,7 +1094,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
-	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
+	public static final String NO_INTERNET = "NO_INTERNET";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
 	public static final String MASTER_CENTER_REMAP_SERVICE_NAME="center_remap_sync";
 	public static final String MASTER_CENTER_PARAM="regcenterId";
@@ -1265,6 +1266,7 @@ public class RegistrationConstants {
 			.concat("addressLine2.[*].value");
 	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
 			.concat("addressLine3.[*].value");
+	public static final String AGE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("age");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
 	public static String CNI_MANDATORY = String.valueOf(false);
@@ -1443,5 +1445,7 @@ public class RegistrationConstants {
 	
 	public static final String RESPONSE_SIGNATURE="response-signature";
 	public static final String ON_BOARD_FACE="FACE";
+	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
+	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
 
 }

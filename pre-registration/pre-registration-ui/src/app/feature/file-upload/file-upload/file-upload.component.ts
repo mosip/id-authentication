@@ -26,16 +26,9 @@ export class FileUploadComponent implements OnInit {
   fileInputVariable: ElementRef;
 
   @ViewChild('docCatSelect')
+  viewFileTrue = false;
   docCatSelect: ElementRef;
   sortedUserFiles: any[] = [];
-  noneApplicant = {
-    fullname: [
-      {
-        value: 'none'
-      }
-    ],
-    preRegistrationId: ''
-  };
   applicantType: string;
   allowedFilesHtml: string = '';
   allowedFileSize: string = '';
@@ -86,6 +79,18 @@ export class FileUploadComponent implements OnInit {
   applicants: any[] = [];
   allowedFiles: string[];
   firstFile: Boolean = true;
+  noneApplicant = {
+    demographicMetadata: {
+      fullName: [
+        {
+          language: '',
+          value: 'None'
+        }
+      ]
+    },
+    preRegistrationId: ''
+  };
+
   constructor(
     private registration: RegistrationService,
     private dataStroage: DataStorageService,
@@ -100,6 +105,8 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('users', this.users);
+
     this.getFileSize();
     this.allowedFiles = this.config
       .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
@@ -114,6 +121,7 @@ export class FileUploadComponent implements OnInit {
       if (response['message']) this.fileUploadLanguagelabels = response['message'];
       if (response['error']) this.errorlabels = response['error'];
     });
+
     if (this.registration.getUsers().length > 1) {
       this.multipleApplicants = true;
     }
@@ -248,17 +256,21 @@ export class FileUploadComponent implements OnInit {
     let i = 0;
     let j = 0;
     let allApplicants: any[] = [];
+    console.log('applicants', applicants);
+
     allApplicants = applicants;
     for (let applicant of allApplicants) {
-      for (let name of applicant.fullname) {
-        if (name.language != localStorage.getItem('langCode')) {
-          allApplicants[i].fullname.splice(j, 1);
+      for (let name of applicant.demographicMetadata) {
+        if (name['fullName'].language != localStorage.getItem('langCode') && name.proofOfAddress == null) {
+          allApplicants[i].demographicMetadata.fullname.splice(j, 1);
         } else {
         }
         j++;
       }
       i++;
     }
+    console.log('allApplicants local', allApplicants);
+
     return allApplicants;
   }
   /**
@@ -354,6 +366,7 @@ export class FileUploadComponent implements OnInit {
       if (res['errors'] == null) {
         this.LOD = res['response'].documentCategories;
         this.registration.setDocumentCategories(res['response'].documentCategories);
+        console.log('LOD', this.LOD);
       } else {
         this.displayMessage('Error', this.errorlabels.error);
       }
@@ -391,6 +404,8 @@ export class FileUploadComponent implements OnInit {
     this.applicants = this.bookingService.getAllApplicants();
     this.updateApplicants();
     this.allApplicants = this.getApplicantsName(this.applicants);
+    console.log('all applicants', this.allApplicants);
+
     this.setNoneApplicant();
   }
 
@@ -409,14 +424,20 @@ export class FileUploadComponent implements OnInit {
       }
       x++;
     }
+    let fullName: FullName = {
+      language: '',
+      value: ''
+    };
     let user: Applicants = {
       preRegistrationId: '',
-      fullname: []
+      demographicMetadata: {
+        fullname: [fullName]
+      }
     };
     let activeUsers: any[] = [];
     for (let i of this.activeUsers) {
       user.preRegistrationId = i.preRegId;
-      user.fullname = i.request.demographicDetails.identity.fullName;
+      user.demographicMetadata.fullname = i.request.demographicDetails.identity.fullName;
       activeUsers.push(user);
     }
     for (let i of activeUsers) {
@@ -454,6 +475,7 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFile(fileMeta: FileModel) {
+    this.viewFileTrue = true;
     this.fileIndex = 0;
     this.disableNavigation = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
@@ -519,6 +541,8 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
+    console.log('event file input', event);
+
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
@@ -591,6 +615,8 @@ export class FileUploadComponent implements OnInit {
   selectChange(event, index: number) {
     this.documentCategory = event.source.placeholder;
     this.documentType = event.source.value;
+    console.log('document type', this.documentType);
+
     this.documentIndex = index;
   }
 
@@ -639,6 +665,8 @@ export class FileUploadComponent implements OnInit {
   sendFile(event) {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.documentRequest));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
+    console.log('formdata', this.formData);
+
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
         if (response['errors'] == null) {
@@ -677,7 +705,7 @@ export class FileUploadComponent implements OnInit {
     this.userFile[0].prereg_id = this.users[0].preRegId;
 
     for (let file of this.users[0].files.documentsMetaData) {
-      if (file.docCatCode == this.userFile[0].docCatCode || file.docCatCode == null) {
+      if (file.docCatCode == this.userFile[0].docCatCode || file.docCatCode == null || file.docCatCode == '') {
         this.users[this.step].files.documentsMetaData[i] = this.userFile[0];
         break;
       }
@@ -865,9 +893,10 @@ export interface DocumentCategory {
 }
 
 export interface Applicants {
-  bookingRegistrationDTO?: string;
+  bookingMetadata?: string;
   preRegistrationId: string;
-  fullname: FullName[];
+  demographicMetadata: DemographicMetaData;
+  statusCode?: string;
 }
 export interface FullName {
   language: string;
@@ -878,10 +907,11 @@ export interface ProofOfAddress {
   docName: string;
   docCatCode: string;
   docTypCode: string;
-  docFileFormat: string;
+  docFileFormat?: string;
 }
 
 export interface DemographicMetaData {
-  fullname: FullName[];
-  proofOfAddress: ProofOfAddress;
+  fullname?: FullName[];
+  postalCode?: string;
+  proofOfAddress?: ProofOfAddress;
 }

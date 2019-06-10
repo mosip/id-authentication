@@ -82,8 +82,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		String triggerPoint = (isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
-				: RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		if (isJob && RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"NO Internet Connection So calling off global param sync");
+
+			return setErrorResponse(responseDTO, RegistrationConstants.NO_INTERNET, null);
+		}
+		String triggerPoint = isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
+				: RegistrationConstants.JOB_TRIGGER_POINT_USER;
 
 		saveGlobalParams(responseDTO, triggerPoint);
 
@@ -306,7 +312,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	private void updateApplicationMap(String code, String val) {
 		ApplicationContext.setGlobalConfigValueOf(code, val);
-//		getBaseGlobalMap().put(code, val);
+		// getBaseGlobalMap().put(code, val);
 
 	}
 }

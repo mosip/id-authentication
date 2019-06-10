@@ -30,8 +30,9 @@ import com.google.common.base.Verify;
 
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertResponses;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -54,7 +55,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String uingenerator =props.get("uingenerator");
 	private String folderPath = "kernel/UINStatusUpdate";
 	private String outputFile = "UINStatusUpdateOutput.json";
@@ -68,6 +69,10 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 	private Response res1=null;
 	private String uin1="";
 	private JSONObject response=null;
+	public KernelDataBaseAccess dbConnection=new KernelDataBaseAccess();
+	private String query=null;
+	private String UIN=null;
+	private AssertKernel assertKernel = new AssertKernel();
 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -108,9 +113,10 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		innerKeys.add("status");
 		
 		//Fetching UIN which status is unused
-		res1=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		res1=applicationLibrary.getWithoutParams(uingenerator,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res1);
+	
 	switch(testCaseName)
 		{
 		case "Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused": 
@@ -127,7 +133,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			request.put("uin", uin1);
 			request.put("status", "ASSIGNED");
 			actualRequest.put("request", request);
-			res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+			res=applicationLibrary.putWithJson(uingenerator, actualRequest,cookie);
 			break;
 
 		case "Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused":
@@ -135,7 +141,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			request=(JSONObject) actualRequest.get("request");
 			request.put("uin", uin1);
 			request.put("status", "ASSIGNED");
-			res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+			res=applicationLibrary.putWithJson(uingenerator, actualRequest,cookie);
 			request.put("status", "UNASSIGNED");
 			break;
 
@@ -146,11 +152,26 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 			response=(JSONObject) Expectedresponse.get("response");
 			response.put("uin", uin1);
 			break;
-	
+			
+		case "Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned":
+			//Getting the status of the UIN 
+			 query="select u.uin from kernel.uin u where u.uin_status='UNUSED'";
+			 UIN = dbConnection.getDbData( query,"kernel").get(0);
+			request=(JSONObject) actualRequest.get("request");
+			request.put("uin", UIN);
+			break;
+			
+		case "Kernel_UINStatusUpdate_UIN_Status_empty_status":
+			//Getting the status of the UIN 
+			 query="select u.uin from kernel.uin u where u.uin_status='UNUSED'";
+			 UIN = dbConnection.getDbData( query,"kernel").get(0);
+			request=(JSONObject) actualRequest.get("request");
+			request.put("uin", UIN);
+			break;
+			
 		default : break;
 		}
-		
-		res=applicationLibrary.putRequestWithBody(uingenerator, actualRequest,cookie);
+		res=applicationLibrary.putWithJson(uingenerator, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
@@ -158,7 +179,7 @@ public class UINStatusUpdate extends BaseTestCase implements ITest {
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		// Comparing expected and actual response
-		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 				finalStatus ="Pass";
       }
