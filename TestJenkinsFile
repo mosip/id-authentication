@@ -14,7 +14,7 @@ def mvnHome = tool name: 'M2_HOME', type: 'maven'
     stage('build'){
         pom = readMavenPom file: 'pom.xml' 
         version=pom.version  
-        echo ${version}
+        echo "${version}"
        cleanWs()
 
     }
