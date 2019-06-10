@@ -28,6 +28,7 @@ import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserDetailRestClientDto;
 import io.mosip.admin.accountmgmt.dto.UserDetailsDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
+import io.mosip.admin.accountmgmt.dto.ValidationResponseDto;
 import io.mosip.admin.accountmgmt.dto.request.UserDetailRequestDto;
 import io.mosip.admin.accountmgmt.entity.RegistrationCenterUser;
 import io.mosip.admin.accountmgmt.exception.AccountManagementServiceException;
@@ -82,6 +83,10 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	/** The user detail url. */
 	@Value("${mosip.admin.accountmgmt.user-detail-url}")
 	private String userDetailUrl;
+	
+	/** The user detail url. */
+	@Value("${mosip.admin.accountmgmt.validate-url}")
+	private String validateUrl;
 
 	@Value("${mosip.admin.accountmgmt.user-detail}")
 	private String userDetailBasedOnUidUrl;
@@ -203,16 +208,13 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 	@Override
 	public UserNameDto getUserNameBasedOnMobileNumber(String mobile) {
 		StringBuilder urlBuilder = new StringBuilder();
-		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + appId + "/").append(mobile);
+		urlBuilder.append(authManagerBaseUrl).append(userNameUrl + appId+"/").append(mobile);
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserDetailFromResponse(response);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#
-	 * getUserDetailBasedOnMobileNumber(java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#getUserDetailBasedOnMobileNumber(java.lang.String)
 	 */
 	@Override
 	public UserDetailsDto getUserDetailBasedOnMobileNumber(String mobile) {
@@ -221,6 +223,18 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
 		return getUserFromResponse(response);
 
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.admin.accountmgmt.service.AccountManagementService#validateResponseDto(java.lang.String)
+	 */
+	@Override
+	public ValidationResponseDto validateUserName(String userId) {
+		StringBuilder urlBuilder = new StringBuilder();
+		urlBuilder.append(authManagerBaseUrl).append(validateUrl + appId+"/").append(userId);
+		String response = callAuthManagerService(urlBuilder.toString(), HttpMethod.GET, null);
+		return getValidateResponse(response);
 	}
 
 	@Override
@@ -330,7 +344,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		return new HttpEntity<>(requestWrapper, syncDataRequestHeaders);
 
 	}
-
+	
 	/**
 	 * Gets the user detail from response.
 	 *
@@ -423,5 +437,32 @@ public class AccountManagementServiceImpl implements AccountManagementService {
 		requestWrapper.setRequest(userDetailsDto);
 		return new HttpEntity<>(requestWrapper, syncDataRequestHeaders);
 
+	}
+	/**
+	 * Gets the user detail from response.
+	 *
+	 * @param responseBody
+	 *            the response body
+	 * @return the user detail from response
+	 */
+	private ValidationResponseDto getValidateResponse(String responseBody) {
+		List<ServiceError> validationErrorsList = null;
+		validationErrorsList = ExceptionUtils.getServiceErrorList(responseBody);
+		ValidationResponseDto validationResponseDto = null;
+		if (!validationErrorsList.isEmpty()) {
+			throw new AccountServiceException(validationErrorsList);
+		}
+		ResponseWrapper<ValidationResponseDto> responseObject = null;
+		try {
+
+			responseObject = objectMapper.readValue(responseBody, new TypeReference<ResponseWrapper<ValidationResponseDto>>() {
+			});
+			validationResponseDto = responseObject.getResponse();
+		} catch (IOException | NullPointerException exception) {
+			throw new ParseResponseException(AccountManagementErrorCode.PARSE_EXCEPTION.getErrorCode(),
+					AccountManagementErrorCode.PARSE_EXCEPTION.getErrorMessage() + exception.getMessage(), exception);
+		}
+
+		return validationResponseDto;
 	}
 }

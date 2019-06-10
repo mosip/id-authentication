@@ -6,8 +6,9 @@ import io.mosip.admin.accountmgmt.dto.StatusResponseDto;
 import io.mosip.admin.accountmgmt.dto.UserDetailRestClientDto;
 import io.mosip.admin.accountmgmt.dto.UserDetailsDto;
 import io.mosip.admin.accountmgmt.dto.UserNameDto;
+import io.mosip.admin.accountmgmt.dto.ValidationResponseDto;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface AccountManagementService.
  *
@@ -77,4 +78,13 @@ public interface AccountManagementService {
 	 * @return the user detail based on reg id
 	 */
 	public UserDetailRestClientDto getUserDetailBasedOnRegId(String userId);
+	
+	
+	/**
+	 * Validate response dto.
+	 *
+	 * @param userId the user id
+	 * @return {@link ValidationResponseDto}
+	 */
+	public ValidationResponseDto validateUserName(String userId);
 }

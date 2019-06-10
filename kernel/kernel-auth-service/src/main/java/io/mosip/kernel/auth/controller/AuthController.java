@@ -43,6 +43,7 @@ import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.UserRoleDto;
+import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
@@ -493,6 +494,25 @@ public class AuthController {
 		MosipUserDto mosipUserDto = authService.getUserDetailBasedonMobileNumber(appId, mobile);
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
+		return responseWrapper;
+	}
+
+	/**
+	 * 
+	 * @param mobile
+	 *            - mobile number
+	 * @param appId
+	 *            - applicationId
+	 * @return {@link MosipUserDto}
+	 * @throws Exception
+	 */
+	@ResponseFilter
+	@GetMapping(value = "/validate/{appid}/{userid}")
+	public ResponseWrapper<ValidationResponseDto> validateUserName(@PathVariable("userid") String userId,
+			@PathVariable("appid") String appId) {
+		ValidationResponseDto validationResponseDto = authService.validateUserName(appId, userId);
+		ResponseWrapper<ValidationResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(validationResponseDto);
 		return responseWrapper;
 	}
 
