@@ -765,7 +765,7 @@ Working on new Css by taleev
 	
 }
 
-#biometricPane{
+.biometricPaneSelected{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
 	-fx-border-width : 5;
