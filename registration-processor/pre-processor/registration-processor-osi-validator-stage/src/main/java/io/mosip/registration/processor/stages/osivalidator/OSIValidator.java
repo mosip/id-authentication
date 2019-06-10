@@ -533,8 +533,8 @@ public class OSIValidator {
 	 *            the otp
 	 * @return true, if successful
 	 */
-	boolean validateOtpAndPwd(String password, String otp) {
-		return (password != null && password.equals(ISTRUE) || otp != null && otp.equals(ISTRUE));
+	boolean validateOtpAndPwd(String pwd, String otp) {
+		return (pwd != null && pwd.equals(ISTRUE) || otp != null && otp.equals(ISTRUE));
 	}
 
 	/**
