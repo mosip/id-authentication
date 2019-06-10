@@ -11,7 +11,7 @@ Date Raised | 28-MAY-2019
 Impact of Release|NA
 Implementation Start Date |20-MAY-2019
 Implementation end date	|31-MAY-2019
-Jenkins Build #	|Min Version : 1686  [Any later version also]
+Jenkins Build #	|Min Version : 1767  [Any later version also]
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
@@ -85,6 +85,14 @@ MOS-24442|FIXED|YES
 MOS-14575|FIXED|YES
 MOS-24775|FIXED|YES
 MOS-24788|FIXED|YES
+MOS-24448|FIXED|YES
+MOS-25514|FIXED|YES
+MOS-25517|FIXED|YES
+MOS-25474|FIXED|YES
+MOS-25473|FIXED|YES
+MOS-25472|FIXED|YES
+MOS-25471|FIXED|YES
+MOS-24772|FIXED|YES
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
