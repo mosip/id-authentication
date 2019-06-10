@@ -178,7 +178,8 @@ public class HeaderController extends BaseController {
 
 		LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
 
-		if (SessionContext.authTokenDTO() != null && SessionContext.authTokenDTO().getCookie() != null && RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+		if (SessionContext.authTokenDTO() != null && SessionContext.authTokenDTO().getCookie() != null
+				&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
 			serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
 
@@ -234,49 +235,32 @@ public class HeaderController extends BaseController {
 	 */
 	public void syncData(ActionEvent event) {
 
-		if (isMachineRemapProcessStarted()) {
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		AnchorPane syncData;
-		try {
-			auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
-					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			executeSyncDataTask();
-			while (restartController.isToBeRestarted()) {
-				/* Clear the completed job map */
-				BaseJob.clearCompletedJobMap();
-
-				/* Restart the application */
-				restartController.restart();
+				LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+						RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+				return;
 			}
+			try {
+				auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
+						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				executeSyncDataTask();
+				while (restartController.isToBeRestarted()) {
+					/* Clear the completed job map */
+					BaseJob.clearCompletedJobMap();
 
-			/*
-			 * if ("Y".equalsIgnoreCase((String)
-			 * ApplicationContext.getInstance().getApplicationMap()
-			 * .get(RegistrationConstants.UI_SYNC_DATA))) { syncData =
-			 * BaseController.load(getClass().getResource(RegistrationConstants.
-			 * SYNC_DATA));
-			 * 
-			 * VBox pane = (VBox) menu.getParent().getParent().getParent(); Object parent =
-			 * pane.getChildren().get(0); pane.getChildren().clear();
-			 * pane.getChildren().add((Node) parent); pane.getChildren().add(syncData); }
-			 */
+					/* Restart the application */
+					restartController.restart();
+				}
 
-		} /*
-			 * catch (IOException ioException) {
-			 * LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME,
-			 * APPLICATION_ID, ioException.getMessage() +
-			 * ExceptionUtils.getStackTrace(ioException));
-			 * 
-			 * }
-			 */ catch (RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			}
+		} else {
+			generateAlert(RegistrationUIConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
-
 	}
 
 	/**
@@ -360,11 +344,10 @@ public class HeaderController extends BaseController {
 	}
 
 	public void intiateRemapProcess() {
-		
-		masterSyncService.getMasterSync(
-				RegistrationConstants.OPT_TO_REG_MDS_J00001,
+
+		masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
 				RegistrationConstants.JOB_TRIGGER_POINT_USER);
-		
+
 		if (!isMachineRemapProcessStarted()) {
 
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
