@@ -12,6 +12,6 @@ def mvnHome = tool name: 'M2_HOME', type: 'maven'
         userRemoteConfigs: [[credentialsId: 'tarun', url: 'https://github.com/mosip/mosip.git']]])
     }
     stage('build'){
-        pom = readMavenPom file: 'pom.xml'
+       // pom = readMavenPom file: 'pom.xml'
     }
 }
