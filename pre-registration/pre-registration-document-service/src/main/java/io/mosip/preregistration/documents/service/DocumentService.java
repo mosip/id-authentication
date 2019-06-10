@@ -22,14 +22,12 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
-//import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -172,7 +170,6 @@ public class DocumentService {
 	 */
 	@PostConstruct
 	public void setup() {
-		// requiredRequestMap.put("id", uploadId);
 		requiredRequestMap.put("version", ver);
 	}
 
@@ -207,7 +204,7 @@ public class DocumentService {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
-					ValidationUtil.langvalidation(docReqDto.getRequest().getLangCode());
+					validationUtil.langvalidation(docReqDto.getRequest().getLangCode());
 					validationUtil.validateDocuments(docReqDto.getRequest().getLangCode(),
 							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode());
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);

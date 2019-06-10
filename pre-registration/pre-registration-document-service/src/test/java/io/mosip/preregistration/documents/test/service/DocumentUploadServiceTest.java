@@ -122,8 +122,8 @@ public class DocumentUploadServiceTest {
 	private MockMultipartFile mockMultipartSaveCheck;
 	String preRegistrationId = "48690172097498";
 	String docId = "af91b0f0-61bb-11e9-b68f-c19fa9cb12b4";
-	DocumentRequestDTO documentDto = new DocumentRequestDTO("RNC", "POA", "ENG");
-	DocumentRequestDTO dummyDto = new DocumentRequestDTO("RNC", "POI", "ENG");
+	DocumentRequestDTO documentDto = new DocumentRequestDTO("RNC", "POA", "eng");
+	DocumentRequestDTO dummyDto = new DocumentRequestDTO("CIN", "POI", "eng");
 	private DocumentEntity entity;
 	private DocumentEntity copyEntity;
 	String documentId = "1";
@@ -148,12 +148,12 @@ public class DocumentUploadServiceTest {
 		String presentDate = dateformat.format(date);
 		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\"," + "\"requesttime\" : \""
 				+ presentDate + "\",\"request\" :" + "{\"docCatCode\" "
-				+ ": \"POA\",\"docTypCode\" : \"RNC\",\"langCode\":\"ENG\"}}";
+				+ ": \"POA\",\"docTypCode\" : \"RNC\",\"langCode\":\"eng\"}}";
 
 		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\","
 				+ "\"requesttime\" : \"2020-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
-				+ ": \"\",\"doc_typ_code\" : \"RNC\",\"lang_code\":\"ENG\"}}";
+				+ ": \"\",\"doc_typ_code\" : \"RNC\",\"lang_code\":\"eng\"}}";
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -183,13 +183,13 @@ public class DocumentUploadServiceTest {
 		InputStream sourceFile = new FileInputStream(file);
 		byte[] cephBytes = IOUtils.toByteArray(sourceFile);
 
-		entity = new DocumentEntity("1", "48690172097498", "Doc.pdf", "POA", "RNC", "PDF", "Pending_Appointment", "ENG",
+		entity = new DocumentEntity("1", "48690172097498", "Doc.pdf", "POA", "RNC", "PDF", "Pending_Appointment", "eng",
 				"Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
 				DateUtils.parseDateToLocalDateTime(new Date()), DateUtils.parseDateToLocalDateTime(new Date()), "",
 				new String(HashUtill.hashUtill(cephBytes)));
 
 		copyEntity = new DocumentEntity("2", "48690172097499", "Doc.pdf", "POA", "RNC", "PDF", "Pending_Appointment",
-				"ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
+				"eng", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
 				DateUtils.parseDateToLocalDateTime(new Date()), DateUtils.parseDateToLocalDateTime(new Date()), "", "");
 
 		map.put("DocumentId", "1");
@@ -218,56 +218,67 @@ public class DocumentUploadServiceTest {
 		Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
 	}
 
-//	@Test -- jags
-//	public void uploadDocumentSuccessTest() throws IOException {
-//		MainResponseDTO<DemographicResponseDTO> restRes = new MainResponseDTO<DemographicResponseDTO>();
-//		docResp.setDocCatCode("POA");
-//		responseUpload.setResponse(docResp);
-//		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
-//				HttpStatus.OK);
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-//				}), Mockito.anyMap())).thenReturn(rescenter);
-//		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
-//		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-//		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
-//				.thenReturn(entity);
-//		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
-//				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
-//		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
-//		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
-//				docJson, preRegistrationId);
-//		assertEquals(responseDto.getResponse().getDocCatCode(), responseUpload.getResponse().getDocCatCode());
-//	}
+	@Test
+	public void uploadDocumentSuccessTest() throws IOException {
+		MainResponseDTO<DemographicResponseDTO> restRes = new MainResponseDTO<DemographicResponseDTO>();
+		documentDto.setDocCatCode("POA");
+		documentDto.setDocTypCode("RNC");
+		documentDto.setLangCode("eng");
 
-//	@Test(expected = DemographicGetDetailsException.class) --Jags
-//	public void DemographicGetDetailsExceptionTest() throws IOException {
-//		DemographicGetDetailsException ex = new DemographicGetDetailsException(null, null);
-//		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
-//		MainResponseDTO<DemographicResponseDTO> restRes = new MainResponseDTO<DemographicResponseDTO>();
-//		DemographicResponseDTO dto = new DemographicResponseDTO();
-//		ExceptionJSONInfoDTO exception = new ExceptionJSONInfoDTO();
-//		List<ExceptionJSONInfoDTO> excetionList = new ArrayList<>();
-//		exception.setMessage(ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
-//		excetionList.add(exception);
-//		restRes.setErrors(excetionList);
-//		responseUpload.setResponse(docResp);
-//		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
-//				HttpStatus.OK);
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-//				}), Mockito.anyMap())).thenReturn(rescenter);
-//		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
-//		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-//		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
-//				.thenReturn(entity);
-//		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
-//				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
-//		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
-//		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
-//				docJson, preRegistrationId);
-//		assertEquals(responseDto.getResponse().getDocCatCode(), responseUpload.getResponse().getDocCatCode());
-//	}
+		docResp.setDocCatCode("POA");
+		docResp.setDocTypCode("RNC");
+		responseUpload.setResponse(docResp);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
+		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
+				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
+		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
+				docJson, preRegistrationId);
+		assertEquals(responseUpload.getResponse().getDocCatCode(), responseDto.getResponse().getDocCatCode());
+	}
+
+	@Test(expected = DemographicGetDetailsException.class)
+	public void DemographicGetDetailsExceptionTest() throws IOException {
+		DemographicGetDetailsException ex = new DemographicGetDetailsException(null, null);
+		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
+		MainResponseDTO<DemographicResponseDTO> restRes = new MainResponseDTO<DemographicResponseDTO>();
+		DemographicResponseDTO dto = new DemographicResponseDTO();
+		ExceptionJSONInfoDTO exception = new ExceptionJSONInfoDTO();
+		List<ExceptionJSONInfoDTO> excetionList = new ArrayList<>();
+		exception.setMessage(ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
+		excetionList.add(exception);
+		restRes.setErrors(excetionList);
+		responseUpload.setResponse(docResp);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
+		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
+				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
+		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
+				docJson, preRegistrationId);
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
+		assertEquals(responseDto.getResponse().getDocCatCode(), responseUpload.getResponse().getDocCatCode());
+	}
 
 	@Test(expected = DTOMappigException.class)
 	public void mandatoryFeildNotPresentTest() throws IOException {
@@ -317,60 +328,68 @@ public class DocumentUploadServiceTest {
 		documentUploadService.uploadDocument(mockMultipartFileExtnCheck, docJson, preRegistrationId);
 	}
 
-//	@Test(expected = DocumentFailedToUploadException.class) -- Jags
-//	public void DocumentFailedToUploadExceptionTest() throws IOException {
-//		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
-//		MainResponseDTO restRes = new MainResponseDTO<>();
-//		responseUpload.setResponse(null);
-//		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
-//				HttpStatus.OK);
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-//				}), Mockito.anyMap())).thenReturn(rescenter);
-//		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
-//		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-//		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
-//				.thenReturn(entity);
-//		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
-//				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
-//		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(null);
-//		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
-//	}
+	@Test(expected = DocumentFailedToUploadException.class)
+	public void DocumentFailedToUploadExceptionTest() throws IOException {
+		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
+		Mockito.doReturn(true).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
+				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(null);
 
-//	@Test(expected = TableNotAccessibleException.class) --Jags
-//	public void uploadDocumentRepoFailurTest1() throws IOException {
-//		MainResponseDTO restRes = new MainResponseDTO<>();
-//		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
-//				HttpStatus.OK);
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-//				}), Mockito.anyMap())).thenReturn(rescenter);
-//		Mockito.when(virusScan.scanDocument(mockMultipartSaveCheck.getBytes())).thenReturn(true);
-//		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
-//				.thenThrow(DataAccessLayerException.class);
-//		documentUploadService.uploadDocument(mockMultipartSaveCheck, docJson, preRegistrationId);
-//	}
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
+		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
+	}
 
-//	@Test(expected = FSServerException.class) -- Jags
-//	public void uploadDocumentRepoFailurTest2() throws IOException {
-//		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
-//		MainResponseDTO restRes = new MainResponseDTO<>();
-//
-//		responseUpload.setResponse(docResp);
-//		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
-//				HttpStatus.OK);
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-//				}), Mockito.anyMap())).thenReturn(rescenter);
-//		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
-//		Mockito.doReturn(false).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
-//		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
-//				.thenReturn(entity);
-//		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
-//				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
-//		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
-//		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
-//	}
+	@Test(expected = TableNotAccessibleException.class)
+	public void uploadDocumentRepoFailurTest1() throws IOException {
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartSaveCheck.getBytes())).thenReturn(true);
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(DataAccessLayerException.class);
+		documentUploadService.uploadDocument(mockMultipartSaveCheck, docJson, preRegistrationId);
+	}
+
+	@Test(expected = FSServerException.class)
+	public void uploadDocumentRepoFailurTest2() throws IOException {
+		List<DocumentResponseDTO> responseUploadList = new ArrayList<>();
+		MainResponseDTO restRes = new MainResponseDTO<>();
+
+		responseUpload.setResponse(docResp);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
+		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenReturn(true);
+		Mockito.doReturn(false).when(fs).storeFile(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(documentRepository.findSingleDocument(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(entity);
+		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
+				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
+		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
+
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
+		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
+	}
 
 	@Test
 	public void documentCopySuccessTest() throws Exception {
@@ -391,6 +410,10 @@ public class DocumentUploadServiceTest {
 		Mockito.doReturn(true).when(fs).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
+
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
 		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.copyDocument("POA", "48690172097498",
 				"48690172097499");
 		assertEquals(responseDto.getResponse().getDocCatCode().toString(),

@@ -46,6 +46,7 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.datasync.DataSyncApplicationTest;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
@@ -85,6 +86,9 @@ public class DataSyncServiceUtilTest {
 
 	@MockBean
 	AuditLogUtil auditLogUtil;
+
+	@MockBean
+	ValidationUtil validationUtil;
 
 	@MockBean
 	RestTemplate restTemplate;
@@ -478,99 +482,105 @@ public class DataSyncServiceUtilTest {
 	private JSONObject jsonObject;
 	private JSONParser parser = null;
 
-//	@Test --jags
-//	public void archivingFilesTest() throws FileNotFoundException, IOException, ParseException {
-//		parser = new JSONParser();
-//
-//		ClassLoader classLoader = getClass().getClassLoader();
-//		File file = new File(classLoader.getResource("pre-registration-test.json").getFile());
-//		jsonObject = (JSONObject) parser.parse(new FileReader(file));
-//
-//		demographicResponseDTO.setPreRegistrationId(preId);
-//		demographicResponseDTO.setDemographicDetails(jsonObject);
-//
-//		bookingRegistrationDTO.setRegistrationCenterId("1005");
-//		bookingRegistrationDTO.setRegDate(resTime);
-//
-//		multipartResponseDTOs.setDocName("RNC.pdf");
-//		multipartResponseDTOs.setDocumentId("1234");
-//		multipartResponseDTOs.setDocCatCode("POA");
-//		multipartResponseDTOs.setLangCode("ENG");
-//		multipartResponseDTOs.setDocTypCode("RNC");
-//		responsestatusDto.add(multipartResponseDTOs);
-//		multipartResponseDTOs = new DocumentMultipartResponseDTO();
-//		multipartResponseDTOs.setDocName("CIN.pdf");
-//		multipartResponseDTOs.setDocumentId("1235");
-//		multipartResponseDTOs.setDocCatCode("POI");
-//		multipartResponseDTOs.setLangCode("ENG");
-//		multipartResponseDTOs.setDocTypCode("CIN");
-//		responsestatusDto.add(multipartResponseDTOs);
-//		multipartResponseDTOs = new DocumentMultipartResponseDTO();
-//		multipartResponseDTOs.setDocName("COB.pdf");
-//		multipartResponseDTOs.setDocumentId("4223");
-//		multipartResponseDTOs.setDocCatCode("POB");
-//		multipartResponseDTOs.setLangCode("ENG");
-//		multipartResponseDTOs.setDocTypCode("COB");
-//		responsestatusDto.add(multipartResponseDTOs);
-//		multipartResponseDTOs = new DocumentMultipartResponseDTO();
-//		multipartResponseDTOs.setDocName("drivingLicense.pdf");
-//		multipartResponseDTOs.setDocumentId("5324");
-//		multipartResponseDTOs.setLangCode("ENG");
-//		multipartResponseDTOs.setDocCatCode("POR");
-//		multipartResponseDTOs.setDocTypCode("CRN");
-//		documentDTO.setDocument(file.toString().getBytes());
-//		responsestatusDto.add(multipartResponseDTOs);
-//		documentsMetaData.setDocumentsMetaData(responsestatusDto);
-//		MainResponseDTO<DocumentDTO> mainResponseDTO = new MainResponseDTO<>();
-//		mainResponseDTO.setResponse(documentDTO);
-//		mainResponseDTO.setErrors(null);
-//		ResponseEntity<MainResponseDTO<DocumentDTO>> responseEntity = new ResponseEntity<>(mainResponseDTO,
-//				HttpStatus.OK);
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentDTO>>() {
-//				}), Mockito.anyMap())).thenReturn(responseEntity);
-//		serviceUtil.archivingFiles(demographicResponseDTO, bookingRegistrationDTO, documentsMetaData);
-//	}
+	@Test
+	public void archivingFilesTest() throws FileNotFoundException, IOException, ParseException {
+		parser = new JSONParser();
 
-//	@Test --jags
-//	public void archivingFilesFailureTest() throws FileNotFoundException, IOException, ParseException {
-//		parser = new JSONParser();
-//
-//		ClassLoader classLoader = getClass().getClassLoader();
-//		File file = new File(classLoader.getResource("pre-registration-test.json").getFile());
-//		jsonObject = (JSONObject) parser.parse(new FileReader(file));
-//
-//		demographicResponseDTO.setPreRegistrationId(preId);
-//		demographicResponseDTO.setDemographicDetails(jsonObject);
-//
-//		bookingRegistrationDTO.setRegistrationCenterId("1005");
-//		bookingRegistrationDTO.setRegDate(resTime);
-//
-//		multipartResponseDTOs.setDocName("CIN.pdf");
-//		multipartResponseDTOs.setDocumentId("1235");
-//		multipartResponseDTOs.setDocCatCode("POI");
-//		multipartResponseDTOs.setDocTypCode("RNC");
-//		multipartResponseDTOs.setLangCode("ENG");
-//		responsestatusDto.add(multipartResponseDTOs);
-//		// documentDTO.setDocument(file.toString().getBytes());
-//		documentDTO = null;
-//		responsestatusDto.add(multipartResponseDTOs);
-//		documentsMetaData.setDocumentsMetaData(responsestatusDto);
-//		MainResponseDTO<DocumentDTO> mainResponseDTO = new MainResponseDTO<>();
-//		mainResponseDTO.setResponse(documentDTO);
-//		ExceptionJSONInfoDTO dto = new ExceptionJSONInfoDTO();
-//		dto.setErrorCode("");
-//		dto.setMessage("");
-//		List<ExceptionJSONInfoDTO> dtos = new ArrayList<>();
-//		dtos.add(dto);
-//		mainResponseDTO.setErrors(dtos);
-//		ResponseEntity<MainResponseDTO<DocumentDTO>> responseEntity = new ResponseEntity<>(mainResponseDTO,
-//				HttpStatus.OK);
-//		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentDTO>>() {
-//				}), Mockito.anyMap())).thenReturn(responseEntity);
-//		serviceUtil.archivingFiles(demographicResponseDTO, bookingRegistrationDTO, documentsMetaData);
-//	}
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("pre-registration-test.json").getFile());
+		jsonObject = (JSONObject) parser.parse(new FileReader(file));
+
+		demographicResponseDTO.setPreRegistrationId(preId);
+		demographicResponseDTO.setDemographicDetails(jsonObject);
+
+		bookingRegistrationDTO.setRegistrationCenterId("1005");
+		bookingRegistrationDTO.setRegDate(resTime);
+
+		multipartResponseDTOs.setDocName("RNC.pdf");
+		multipartResponseDTOs.setDocumentId("1234");
+		multipartResponseDTOs.setDocCatCode("POA");
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocTypCode("RNC");
+		responsestatusDto.add(multipartResponseDTOs);
+		multipartResponseDTOs = new DocumentMultipartResponseDTO();
+		multipartResponseDTOs.setDocName("CIN.pdf");
+		multipartResponseDTOs.setDocumentId("1235");
+		multipartResponseDTOs.setDocCatCode("POI");
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocTypCode("CIN");
+		responsestatusDto.add(multipartResponseDTOs);
+		multipartResponseDTOs = new DocumentMultipartResponseDTO();
+		multipartResponseDTOs.setDocName("COB.pdf");
+		multipartResponseDTOs.setDocumentId("4223");
+		multipartResponseDTOs.setDocCatCode("POB");
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocTypCode("COB");
+		responsestatusDto.add(multipartResponseDTOs);
+		multipartResponseDTOs = new DocumentMultipartResponseDTO();
+		multipartResponseDTOs.setDocName("drivingLicense.pdf");
+		multipartResponseDTOs.setDocumentId("5324");
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocCatCode("POR");
+		multipartResponseDTOs.setDocTypCode("CRN");
+		documentDTO.setDocument(file.toString().getBytes());
+		responsestatusDto.add(multipartResponseDTOs);
+		documentsMetaData.setDocumentsMetaData(responsestatusDto);
+		MainResponseDTO<DocumentDTO> mainResponseDTO = new MainResponseDTO<>();
+		mainResponseDTO.setResponse(documentDTO);
+		mainResponseDTO.setErrors(null);
+		ResponseEntity<MainResponseDTO<DocumentDTO>> responseEntity = new ResponseEntity<>(mainResponseDTO,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentDTO>>() {
+				}), Mockito.anyMap())).thenReturn(responseEntity);
+		Map<String, String> documentTypeMap = new HashMap<>();
+		Mockito.when(validationUtil.getDocumentTypeNameByTypeCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(documentTypeMap);
+		serviceUtil.archivingFiles(demographicResponseDTO, bookingRegistrationDTO, documentsMetaData);
+	}
+
+	@Test
+	public void archivingFilesFailureTest() throws FileNotFoundException, IOException, ParseException {
+		parser = new JSONParser();
+
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("pre-registration-test.json").getFile());
+		jsonObject = (JSONObject) parser.parse(new FileReader(file));
+
+		demographicResponseDTO.setPreRegistrationId(preId);
+		demographicResponseDTO.setDemographicDetails(jsonObject);
+
+		bookingRegistrationDTO.setRegistrationCenterId("1005");
+		bookingRegistrationDTO.setRegDate(resTime);
+
+		multipartResponseDTOs.setDocName("CIN.pdf");
+		multipartResponseDTOs.setDocumentId("1235");
+		multipartResponseDTOs.setDocCatCode("POI");
+		multipartResponseDTOs.setDocTypCode("RNC");
+		multipartResponseDTOs.setLangCode("ENG");
+		responsestatusDto.add(multipartResponseDTOs);
+		// documentDTO.setDocument(file.toString().getBytes());
+		documentDTO = null;
+		responsestatusDto.add(multipartResponseDTOs);
+		documentsMetaData.setDocumentsMetaData(responsestatusDto);
+		MainResponseDTO<DocumentDTO> mainResponseDTO = new MainResponseDTO<>();
+		mainResponseDTO.setResponse(documentDTO);
+		ExceptionJSONInfoDTO dto = new ExceptionJSONInfoDTO();
+		dto.setErrorCode("");
+		dto.setMessage("");
+		List<ExceptionJSONInfoDTO> dtos = new ArrayList<>();
+		dtos.add(dto);
+		mainResponseDTO.setErrors(dtos);
+		ResponseEntity<MainResponseDTO<DocumentDTO>> responseEntity = new ResponseEntity<>(mainResponseDTO,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentDTO>>() {
+				}), Mockito.anyMap())).thenReturn(responseEntity);
+		Map<String, String> documentTypeMap = new HashMap<>();
+		Mockito.when(validationUtil.getDocumentTypeNameByTypeCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(documentTypeMap);
+		serviceUtil.archivingFiles(demographicResponseDTO, bookingRegistrationDTO, documentsMetaData);
+	}
 
 	@Test
 	public void reverseDateSyncSaveTest() {

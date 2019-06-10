@@ -90,18 +90,10 @@ public class ValidationUtil {
 		return false;
 	}
 
-	/** The doc type map. */
-	private Map<String, String> documentTypeMap;
-
-	// @Value("${mosip.kernel.idobjectvalidator.masterdata.documentcategories.rest.uri}")
-	// private String documentCategoryUri;
-
 	@Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
 	public void setDocType(String value) {
 		ValidationUtil.documentTypeUri = value;
 	}
-	// @Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
-	// private String documentTypeUri;
 
 	@Value("${mosip.kernel.idobjectvalidator.masterdata.documentcategories.rest.uri}")
 	public void setDocCatCode(String value) {
@@ -280,7 +272,7 @@ public class ValidationUtil {
 
 	}
 
-	public static boolean langvalidation(String langCode) {
+	public boolean langvalidation(String langCode) {
 		List<String> reqParams = new ArrayList<>();
 		String[] langList = langCodes.split(",");
 		for (int i = 0; i < langList.length; i++) {
@@ -296,7 +288,8 @@ public class ValidationUtil {
 	}
 
 	public void getAllDocCategories(String langcode) {
-		String uri = UriComponentsBuilder.fromUriString(documentCategoryUri).buildAndExpand(langcode).toUriString();
+		String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentCategoryUri).buildAndExpand(langcode)
+				.toUriString();
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
 				.getForObject(uri, ResponseWrapper.class);
@@ -311,8 +304,8 @@ public class ValidationUtil {
 	public void getAllDocumentTypes(String langCode, String catCode) {
 		docTypeMap = new HashSetValuedHashMap<>();
 		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
-			String uri = UriComponentsBuilder.fromUriString(documentTypeUri).buildAndExpand(catCode, langCode)
-					.toUriString();
+			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentTypeUri)
+					.buildAndExpand(catCode, langCode).toUriString();
 			@SuppressWarnings("unchecked")
 			ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
 					.getForObject(uri, ResponseWrapper.class);
@@ -343,20 +336,20 @@ public class ValidationUtil {
 	}
 
 	public Map<String, String> getDocumentTypeNameByTypeCode(String langCode, String catCode) {
-		documentTypeMap = new HashMap<>();
-			String uri = UriComponentsBuilder.fromUriString(documentTypeUri).buildAndExpand(catCode, langCode)
-					.toUriString();
-			@SuppressWarnings("unchecked")
-			ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
-					.getForObject(uri, ResponseWrapper.class);
-			if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
-				ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
-				IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
-						.forEach(index -> {
-							documentTypeMap.put(String.valueOf(response.get(index).get(CODE)),
-									String.valueOf(response.get(index).get(NAME)));
-						});
-			}
+		Map<String, String> documentTypeMap = new HashMap<>();
+		String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentTypeUri)
+				.buildAndExpand(catCode, langCode).toUriString();
+		@SuppressWarnings("unchecked")
+		ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
+				.getForObject(uri, ResponseWrapper.class);
+		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
+			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
+			IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
+					.forEach(index -> {
+						documentTypeMap.put(String.valueOf(response.get(index).get(CODE)),
+								String.valueOf(response.get(index).get(NAME)));
+					});
+		}
 		return documentTypeMap;
 	}
 

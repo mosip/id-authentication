@@ -386,23 +386,5 @@ public class DocumentServiceUtil {
 		return true;
 	}
 
-	// public boolean validateDocuments(String langCode, String catCode, String
-	// typeCode) {
-	// validationUtil.getAllDocCategories(langCode);
-	// if (docCatMap.get(langCode).contains(catCode)) {
-	// validationUtil.getAllDocumentTypes(langCode, catCode);
-	// if (docTypeMap.get(catCode).contains(typeCode)) {
-	// return true;
-	// } else {
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_019.toString(),
-	// ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage(), null);
-	// }
-	// } else {
-	// throw new
-	// InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_019.toString(),
-	// ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage(), null);
-	// }
-	// }
 
 }
