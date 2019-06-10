@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
@@ -27,7 +28,7 @@ public class IdObjectsSchemaValidationOperationMapper {
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
 	
-	public IdObjectValidatorSupportedOperations getOperation(String registrationId) throws ApisResourceAccessException, IOException {
+	public IdObjectValidatorSupportedOperations getOperation(String registrationId) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		
 		int age = utility.getApplicantAge(registrationId);
 		int ageThreshold = Integer.parseInt(ageLimit);

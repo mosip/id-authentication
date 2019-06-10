@@ -3,15 +3,16 @@ package io.mosip.registration.processor.stages.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -23,7 +24,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 public class CheckSumValidation {
 
 	/** The adapter. */
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto;
@@ -36,7 +37,7 @@ public class CheckSumValidation {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public CheckSumValidation(FileSystemAdapter adapter, InternalRegistrationStatusDto registrationStatusDto) {
+	public CheckSumValidation(PacketManager adapter, InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 
@@ -52,8 +53,11 @@ public class CheckSumValidation {
 	 * @return true, if successful
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public boolean checksumvalidation(String registrationId, Identity identity) throws IOException {
+	public boolean checksumvalidation(String registrationId, Identity identity) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		List<FieldValueArray> hashSequence = identity.getHashSequence1();
 		List<FieldValueArray> hashSequence2 = identity.getHashSequence2();
 

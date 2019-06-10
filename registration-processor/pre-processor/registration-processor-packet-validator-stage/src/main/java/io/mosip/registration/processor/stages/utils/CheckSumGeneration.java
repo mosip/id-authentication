@@ -7,13 +7,15 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 
 /**
  * The Class CheckSumGeneration.
@@ -30,7 +32,7 @@ public class CheckSumGeneration {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(CheckSumGeneration.class);
 
 	/** The adapter. */
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/**
 	 * Instantiates a new check sum generation.
@@ -38,7 +40,7 @@ public class CheckSumGeneration {
 	 * @param adapter
 	 *            the adapter
 	 */
-	public CheckSumGeneration(FileSystemAdapter adapter) {
+	public CheckSumGeneration(PacketManager adapter) {
 		this.adapter = adapter;
 	}
 
@@ -92,7 +94,7 @@ public class CheckSumGeneration {
 						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + file.toUpperCase());
 
 				filebyte = IOUtils.toByteArray(fileStream);
-			} catch (IOException e) {
+			} catch (IOException | PacketDecryptionFailureException | ApisResourceAccessException | io.mosip.kernel.core.exception.IOException e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -118,7 +120,7 @@ public class CheckSumGeneration {
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + document.toUpperCase());
 
 				filebyte = IOUtils.toByteArray(fileStream);
-			} catch (IOException e) {
+			} catch (IOException | PacketDecryptionFailureException | ApisResourceAccessException | io.mosip.kernel.core.exception.IOException e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
 						e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -150,7 +152,7 @@ public class CheckSumGeneration {
 					InputStream fileStream = adapter.getFile(registrationId, value.toUpperCase());
 
 					valuebyte = IOUtils.toByteArray(fileStream);
-				} catch (IOException e) {
+				} catch (IOException | PacketDecryptionFailureException | ApisResourceAccessException | io.mosip.kernel.core.exception.IOException e) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.APPLICATIONID.toString(), StatusMessage.INPUTSTREAM_NOT_READABLE,
 							e.getMessage() + ExceptionUtils.getStackTrace(e));
