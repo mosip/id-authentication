@@ -213,7 +213,8 @@ public class DataSyncServiceTest {
 		multipartResponseDTOs.setDocName("Address.pdf");
 		multipartResponseDTOs.setDocumentId("1234");
 		multipartResponseDTOs.setDocCatCode("POA");
-
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocTypCode("RNC");
 		list2.add(multipartResponseDTOs);
 		documentsMetaData.setDocumentsMetaData(list2);
 

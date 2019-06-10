@@ -82,7 +82,7 @@
      <div>
       <table class="time-selection__name-list">
         <tr class="time-selection__name-list-item" *ngFor="let item of deletedNames; let k = index;">
-          <td>{{item.fullName}}</td><td><mat-icon (click)="addItem(k)" class="name-delete-button">add</mat-icon></td>
+          <td>{{item.fullName}}</td><td><mat-icon (click)="addItem(k)" [ngClass]="disableAddButton ? 'name-delete-button disable_add' : 'name-delete-button'">add</mat-icon></td>
         </tr>
       </table>
      </div>
