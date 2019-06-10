@@ -263,7 +263,6 @@ stage('Deploy - Private Zone Services - in K8'){
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '305c7f35-2eb5-44b4-b574-a0855ef70c26',
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 def label_env=env.NEXT_BRANCH_NAME
-echo "${label_env}"
 sh """ssh  madmin@52.172.39.154 /bin/bash << EOF
 docker login -u "${USERNAME}" -p "${PASSWORD}"  docker-registry.mosip.io:5000 
 docker ps -aq | xargs docker stop | xargs docker rm
