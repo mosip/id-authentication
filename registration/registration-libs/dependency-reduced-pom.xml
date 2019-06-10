@@ -131,6 +131,13 @@
       <version>1.7.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.oracle</groupId>
+      <artifactId>javafx</artifactId>
+      <version>${javafx.version}</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
+    </dependency>
   </dependencies>
   <properties>
     <main.basedir>${project.parent.basedir}</main.basedir>
