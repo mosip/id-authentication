@@ -66,7 +66,7 @@ public interface MachineMappingDAO {
 	/**
 	 * Get the key index of the Machine based on MAC Id
 	 * 
-	 * @param name
+	 * @param macId
 	 *            the MAC Id of the machine
 	 * @return the key index of the machine
 	 */
