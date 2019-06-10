@@ -1,7 +1,10 @@
 package io.mosip.preregistration.core.util;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -177,23 +180,21 @@ public class ValidationUtil {
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) == null) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
 						ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), null);
-				// } else if (key.equals(RequestCodes.REQ_TIME) &&
-				// requestMap.get(RequestCodes.REQ_TIME) != null) {
-				// try {
-				// LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
-				// LocalDate serverDate=new
-				// Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-				// if (localDate.isBefore(serverDate) || localDate.isAfter(serverDate)) {
-				// throw new
-				// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
-				// ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
-				// }
-				//
-				// } catch (Exception ex) {
-				// throw new
-				// InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
-				// ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
-				// }
+
+			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
+				try {
+					LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
+					LocalDate serverDate=new Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+					if (localDate.isBefore(serverDate) || localDate.isAfter(serverDate)) {
+						throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
+								ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
+					}
+
+				} catch (Exception ex) {
+					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
+							ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
+				}
+
 			} else if (key.equals(RequestCodes.REQUEST) && (requestMap.get(RequestCodes.REQUEST) == null
 					|| requestMap.get(RequestCodes.REQUEST).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),

@@ -20,6 +20,7 @@ import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.IdValidationException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
@@ -142,8 +143,8 @@ public class DemographicExceptionCatcher {
 			throw new SchemaValidationException(((IdObjectIOException) ex).getErrorCode(),
 					((IdObjectIOException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof IdObjectValidationFailedException) {
-			throw new SchemaValidationException(((IdObjectValidationFailedException) ex).getErrorCode(),
-					((IdObjectValidationFailedException) ex).getErrorText(), mainResponsedto);
+			throw new IdValidationException(((IdObjectValidationFailedException) ex).getErrorCode(),
+					((IdObjectValidationFailedException) ex).getErrorTexts(), mainResponsedto);
 		} else if (ex instanceof PreIdInvalidForUserIdException) {
 			throw new PreIdInvalidForUserIdException(((PreIdInvalidForUserIdException) ex).getErrorCode(),
 					((PreIdInvalidForUserIdException) ex).getErrorText(), mainResponsedto);
