@@ -5,6 +5,7 @@ import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorE
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.MANDATORY_FIELDS_NOT_FOUND;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.MISSING_INPUT_PARAMETER;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.APPLICATION_ID;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -94,9 +95,7 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectValidationFailedException e) {
-			e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode());
-			e.getErrorTexts().get(0).equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), "identity/UIN"));
-			e.getErrorTexts().get(1).equals(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/UIN1"));
+			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
 		}
 	}
 
@@ -108,8 +107,8 @@ public class IdObjectValidatorTest {
 			schemaValidator.validateIdObject(
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class), null);
 		} catch (IdObjectIOException e) {
-			e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode());
-			e.getErrorText().equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), "operation"));
+			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorText().equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), "operation")));
 		}
 	}
 
@@ -123,8 +122,9 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
-			e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode());
-			e.getErrorText().equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
+			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorText()
+					.equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue())));
 		}
 	}
 
@@ -141,9 +141,9 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
-			e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode());
-			e.getErrorText().equals(String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(),
-					IdObjectValidatorSupportedOperations.NEW_REGISTRATION.getOperation()));
+			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorText().equals(String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(),
+					IdObjectValidatorSupportedOperations.NEW_REGISTRATION.getOperation())));
 		}
 	}
 
@@ -156,11 +156,7 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectValidationFailedException e) {
-			e.getErrorCode().equals(INVALID_INPUT_PARAMETER.getErrorCode());
-			e.getErrorTexts().get(0)
-					.equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), "identity/gender/0/language"));
-			e.getErrorTexts().get(1)
-					.equals(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/addressLine3/0/language"));
+			assertTrue(e.getErrorCode().equals(INVALID_INPUT_PARAMETER.getErrorCode()));
 		}
 	}
 
@@ -173,10 +169,7 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectValidationFailedException e) {
-			e.getErrorCode().equals(INVALID_INPUT_PARAMETER.getErrorCode());
-			e.getErrorTexts().get(0)
-					.equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), "identity/dateOfBirth"));
-			e.getErrorTexts().get(1).equals(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/CNIENumber"));
+			assertTrue(e.getErrorCode().equals(INVALID_INPUT_PARAMETER.getErrorCode()));
 		}
 	}
 
@@ -190,8 +183,8 @@ public class IdObjectValidatorTest {
 			ReflectionTestUtils.setField(schemaValidator, "mapper", mockMapper);
 			schemaValidator.validateIdObject(null, IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
-			e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode());
-			e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage());
+			assertTrue(e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode()));
+			assertTrue(e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage()));
 		}
 	}
 
@@ -205,8 +198,8 @@ public class IdObjectValidatorTest {
 			ReflectionTestUtils.setField(patternValidator, "mapper", mockMapper);
 			patternValidator.validateIdObject(null, IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
-			e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode());
-			e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage());
+			assertTrue(e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode()));
+			assertTrue(e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage()));
 		}
 	}
 
@@ -220,8 +213,8 @@ public class IdObjectValidatorTest {
 			ReflectionTestUtils.setField(masterDataValidator, "mapper", mockMapper);
 			masterDataValidator.validateIdObject(null, IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
-			e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode());
-			e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage());
+			assertTrue(e.getErrorCode().equals(ID_OBJECT_PARSING_FAILED.getErrorCode()));
+			assertTrue(e.getErrorText().equals(ID_OBJECT_PARSING_FAILED.getMessage()));
 		}
 	}
 
