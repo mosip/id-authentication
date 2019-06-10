@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -25,6 +24,8 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -39,6 +40,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
@@ -140,7 +142,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	/** The filesystem ceph adapter impl. */
 	@Autowired
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private PacketManager filesystemCephAdapterImpl;
 
 	/** The utility. */
 	@Autowired
@@ -218,8 +220,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param documentName
 	 *            the document name
 	 * @return the document as byte array
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
+	private byte[] getDocumentAsByteArray(String registrationId, String documentName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		try {
 
 			@Cleanup

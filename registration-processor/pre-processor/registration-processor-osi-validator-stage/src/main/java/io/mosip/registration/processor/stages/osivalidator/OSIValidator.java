@@ -24,6 +24,8 @@ import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
@@ -39,6 +41,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -46,6 +49,7 @@ import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.ServerError;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -54,8 +58,8 @@ import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -91,7 +95,7 @@ public class OSIValidator {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The rest client service. */
 	@Autowired
@@ -169,7 +173,7 @@ public class OSIValidator {
 
 	private static final String INDIVIDUAL_TYPE_USERID = "USERID";
 
-	
+
 
 	/**
 	 * Checks if is valid OSI.
@@ -188,10 +192,12 @@ public class OSIValidator {
 	 * @throws BioTypeException
 	 * @throws BiometricException
 	 * @throws NumberFormatException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 */
 	public boolean isValidOSI(String registrationId)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException {
+			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
@@ -328,12 +334,14 @@ public class OSIValidator {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 * @throws ApisResourceAccessException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 * @throws Exception
 	 * @throws NumberFormatException
 	 */
 	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+			BiometricException, BioTypeException, ParserConfigurationException, SAXException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		boolean isValid = false;
 		String officerId = regOsi.getOfficerId();
 		if (officerId != null) {
@@ -401,11 +409,13 @@ public class OSIValidator {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 * @throws ApisResourceAccessException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 * @throws Exception
 	 */
 	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+			BiometricException, BioTypeException, ParserConfigurationException, SAXException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidSupervisor()::entry");
 		String supervisorId = regOsi.getSupervisorId();
@@ -463,10 +473,12 @@ public class OSIValidator {
 	 * @throws InvalidKeySpecException
 	 * @throws BioTypeException
 	 * @throws BiometricException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 */
 	private boolean isValidIntroducer(String registrationId)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
@@ -590,6 +602,8 @@ public class OSIValidator {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws BioTypeException
 	 * @throws BiometricException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 */
 
 	/**
@@ -617,7 +631,7 @@ public class OSIValidator {
 
 	private boolean validateUserBiometric(String registrationId, String userId, byte[] userbiometric, String individualType)
 			throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException,
-			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException , PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(userId, individualType,
 					userbiometric);

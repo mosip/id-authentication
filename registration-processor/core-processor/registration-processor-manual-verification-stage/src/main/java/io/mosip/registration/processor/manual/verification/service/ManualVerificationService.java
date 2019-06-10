@@ -2,6 +2,9 @@ package io.mosip.registration.processor.manual.verification.service;
 
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -35,8 +38,12 @@ public interface ManualVerificationService {
 	 * @param fileName
 	 *            The file required
 	 * @return The file as bytes
+	 * @throws java.io.IOException 
+	 * @throws IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public byte[] getApplicantFile(String regId, String fileName);
+	public byte[] getApplicantFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException;
 
 	/**
 	 * This method updates the Manual Verification status of a regId according to
@@ -54,6 +61,10 @@ public interface ManualVerificationService {
 	 * @param regId
 	 *            the reg id
 	 * @return the applicant packet info
+	 * @throws java.io.IOException 
+	 * @throws IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public PacketMetaInfo getApplicantPacketInfo(String regId);
+	public PacketMetaInfo getApplicantPacketInfo(String regId) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException;
 }

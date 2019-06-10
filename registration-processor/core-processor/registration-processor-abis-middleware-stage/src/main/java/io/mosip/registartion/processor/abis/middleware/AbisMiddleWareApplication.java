@@ -13,10 +13,14 @@ import io.mosip.registration.processor.core.exception.RegistrationProcessorCheck
 public class AbisMiddleWareApplication {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
-		configApplicationContext.scan("io.mosip.registration.processor.stages.config",
-				"io.mosip.registration.processor.demo.dedupe.config", "io.mosip.registration.processor.status.config",
-				"io.mosip.registration.processor.packet.storage.config", "io.mosip.registration.processor.core.config",
-				"io.mosip.registration.processor.core.kernel.beans","io.mosip.registration.processor.packet.manager.config");
+		configApplicationContext.scan("io.mosip.registration.processor.abis.handler.config",
+                "io.mosip.registration.processor.status.config",
+                "io.mosip.registration.processor.rest.client.config",
+                "io.mosip.registration.processor.packet.storage.config",
+                "io.mosip.registration.processor.core.config",
+                "io.mosip.registration.processor.core.kernel.beans",
+                "io.mosip.registration.processor.packet.manager.config",
+                "io.mosip.registration.processor.stages.config");
 		configApplicationContext.refresh();
 		AbisMiddleWareStage demodedupeStage = configApplicationContext.getBean(AbisMiddleWareStage.class);
 	

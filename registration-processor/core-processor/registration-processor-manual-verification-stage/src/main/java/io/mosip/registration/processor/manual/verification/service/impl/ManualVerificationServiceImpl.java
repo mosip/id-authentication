@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -33,6 +32,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -40,6 +40,7 @@ import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTOWra
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -88,7 +89,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	/** The filesystem ceph adapter impl. */
 	@Autowired
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private PacketManager filesystemCephAdapterImpl;
 
 	/** The base packet repository. */
 	@Autowired
@@ -185,7 +186,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * java.lang.String)
 	 */
 	@Override
-	public byte[] getApplicantFile(String regId, String fileName) {
+	public byte[] getApplicantFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		byte[] file = null;
 		InputStream fileInStream = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -217,8 +218,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @param fileName
 	 *            the file name
 	 * @return the applicant biometric file
+	 * @throws IOException 
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private InputStream getApplicantBiometricFile(String regId, String fileName) {
+	private InputStream getApplicantBiometricFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.BIOMETRIC + fileName);
 	}
 
@@ -230,8 +235,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @param fileName
 	 *            the file name
 	 * @return the applicant demographic file
+	 * @throws IOException 
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private InputStream getApplicantDemographicFile(String regId, String fileName) {
+	private InputStream getApplicantDemographicFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
 	}
 
@@ -345,7 +354,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * ManualVerificationService#getApplicantPacketInfo(java.lang.String)
 	 */
 	@Override
-	public PacketMetaInfo getApplicantPacketInfo(String regId) {
+	public PacketMetaInfo getApplicantPacketInfo(String regId) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
