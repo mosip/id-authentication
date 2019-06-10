@@ -41,13 +41,13 @@ import org.xml.sax.SAXException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.auth.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -62,11 +62,12 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsDto;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsResponseDto;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -95,7 +96,7 @@ public class OSIValidatorTest {
 
 	/** The adapter. */
 	@Mock
-	FileSystemAdapter adapter;
+	PacketManager adapter;
 
 	/** The rest client service. */
 	@Mock
@@ -218,8 +219,6 @@ public class OSIValidatorTest {
 		regOsiDto.setSupervisorHashedPin("supervisorHashedPin");
 		regOsiDto.setIntroducerTyp("Parent");
 		demographicDedupeDtoList.add(demographicInfoDto);
-
-		Mockito.when(env.getProperty("registration.processor.fingerType")).thenReturn("LeftThumb");
 
 		Mockito.when(env.getProperty("mosip.kernel.applicant.type.age.limit")).thenReturn("5");
 
@@ -504,7 +503,7 @@ public class OSIValidatorTest {
 	@Test
 	public void testIntroducerRIDProcessingOnHold() throws NumberFormatException, ApisResourceAccessException,
 			InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, IOException,
-			ParserConfigurationException, SAXException {
+			ParserConfigurationException, SAXException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = new InternalRegistrationStatusDto();
 

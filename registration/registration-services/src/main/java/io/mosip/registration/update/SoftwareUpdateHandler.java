@@ -28,7 +28,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -316,6 +315,7 @@ public class SoftwareUpdateHandler extends BaseService {
 		}
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Backup of current version completed");
+
 		return backUpFolder.toPath();
 
 	}
@@ -595,17 +595,29 @@ public class SoftwareUpdateHandler extends BaseService {
 	private void rollBackSetup(File backUpFolder) throws io.mosip.kernel.core.exception.IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Replacing Backup of current version started");
-		FileUtils.copyDirectory(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
-				FileUtils.getFile(FilenameUtils.getName(binFolder)));
-		FileUtils.copyDirectory(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
-				FileUtils.getFile(FilenameUtils.getName(libFolder)));
-		FileUtils.copyFile(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
-				FileUtils.getFile(FilenameUtils.getName(manifestFile)));
+		// TODO Working in Ecllipse but not in zip
+		/*
+		 * FileUtils.copyDirectory( FileUtils.getFile(backUpFolder.getAbsolutePath() +
+		 * SLASH + FilenameUtils.getName(binFolder)),
+		 * FileUtils.getFile(FilenameUtils.getName(binFolder)));
+		 * FileUtils.copyDirectory( FileUtils.getFile(backUpFolder.getAbsolutePath() +
+		 * SLASH + FilenameUtils.getName(libFolder)),
+		 * FileUtils.getFile(FilenameUtils.getName(libFolder)));
+		 * FileUtils.copyFile(FileUtils.getFile(backUpFolder.getAbsolutePath()+SLASH+
+		 * FilenameUtils.getName(manifestFile)),
+		 * FileUtils.getFile(FilenameUtils.getName(manifestFile)));
+		 */
+
+		FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + SLASH + binFolder), new File(binFolder));
+		FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + SLASH + libFolder), new File(libFolder));
+
+		FileUtils.copyFile(new File(backUpFolder.getAbsolutePath() + SLASH + manifestFile), new File(manifestFile));
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Replacing Backup of current version completed");
 	}
 
 	private void rollback(ResponseDTO responseDTO, String previousVersion) {
+
 		File file = FileUtils.getFile(backUpPath);
 
 		boolean isBackUpCompleted = false;

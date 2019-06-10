@@ -82,19 +82,6 @@ public class DocumentServiceUtilTest {
 		serviceUtil.isValidRequest(documentDto,null);
 	}
 	
-	
-	@Test(expected=InvalidRequestParameterException.class)
-	public void inValidDocTypeTest() throws Exception {
-		documentDto.setDocTypCode(null);
-		serviceUtil.isValidRequest(documentDto,preRegistrationId);
-	}
-	
-	@Test(expected=InvalidRequestParameterException.class)
-	public void inValidLangCodeTest() throws Exception {
-		documentDto.setLangCode(null);
-		serviceUtil.isValidRequest(documentDto,preRegistrationId);
-	}
-	
 	@Test(expected=VirusScannerException.class)
 	public void virusscannerFailureTest() throws Exception{
 		Mockito.when(virusScan.scanDocument(mockMultipartFile.getBytes())).thenThrow(java.io.IOException.class);

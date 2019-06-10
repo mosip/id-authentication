@@ -54,7 +54,7 @@ public class GetUsersBasedOnRegCenter extends BaseTestCase implements ITest {
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getusersBasedOnRegCenter = props.get("getusersBasedOnRegCenter");
 	private String folderPath = "kernel/GetusersBasedOnRegCenter";
 	private String outputFile = "GetusersBasedOnRegCenterOutput.json";
@@ -95,7 +95,7 @@ public class GetUsersBasedOnRegCenter extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(getusersBasedOnRegCenter, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(getusersBasedOnRegCenter, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

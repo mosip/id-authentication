@@ -49,7 +49,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	private SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String uingenerator =props.get("uingenerator");
 	private String folderPath = "kernel/UINGeneration";
 	private String outputFile = "UINGenerationOutput.json";
@@ -70,7 +70,6 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "UINValidator")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 	}
 	/**
@@ -87,7 +86,7 @@ public class UINGeneration extends BaseTestCase implements ITest{
 	public void getUIN(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		// Calling the get method with no parameter
-		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		Response res=applicationLibrary.getWithoutParams(uingenerator,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
@@ -133,7 +132,6 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		else
 			finalStatus="Fail";
         		  
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

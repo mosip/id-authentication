@@ -302,10 +302,10 @@ public class GuardianBiometricsController extends BaseController implements Init
 								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
 				scanFingers(RegistrationConstants.LEFTPALM,
-						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS_USERONBOARD, popupStage, Double.parseDouble(
+						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
-				scanFingers(RegistrationConstants.THUMBS, RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS_USERONBOARD,
+				scanFingers(RegistrationConstants.THUMBS, RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS,
 						popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_IRIS)) {
@@ -848,7 +848,11 @@ public class GuardianBiometricsController extends BaseController implements Init
 				}
 			} else {
 				biometricTypecombo.setVisible(true);
-				biometricBox.setVisible(false);
+				if (bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
+					biometricBox.setVisible(false);
+				} else {
+					biometricBox.setVisible(true);
+				}
 				thresholdBox.setVisible(true);
 				scanBtn.setText(RegistrationUIConstants.SCAN);
 				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);

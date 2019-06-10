@@ -52,7 +52,7 @@ public class UploadPublickey extends BaseTestCase implements ITest {
 	private final String apiName = "UploadPublickey";
 	private final String requestJsonName = "UploadPublickeyRequest";
 	private final String outputJsonName = "UploadPublickeyOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String uploadpublickey = props.get("uploadpublickey").toString();
 
 	protected String testCaseName = "";
@@ -111,7 +111,7 @@ public class UploadPublickey extends BaseTestCase implements ITest {
 
 			JSONObject objectData = objectDataArray[0];
 			responseObject = objectDataArray[1];
-				response = applicationLibrary.postRequest(objectData.toJSONString(), uploadpublickey,cookie);
+				response = applicationLibrary.postWithJson(uploadpublickey, objectData.toJSONString(), cookie);
 				
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);

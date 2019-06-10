@@ -143,7 +143,6 @@
 		<module>kernel-idvalidator-uin</module>
 		<module>kernel-idvalidator-vid</module>
 		<module>kernel-idvalidator-mispid</module>
-		<module>kernel-datavalidator</module>
 		<module>kernel-jsonvalidator</module>
 		<module>kernel-pinvalidator</module>
 		<module>kernel-virusscanner-clamav</module>
@@ -175,7 +174,6 @@
 		<module>kernel-applicanttype-service</module>
 		<module>kernel-ridgenerator-service</module>
 		<module>kernel-tokenidgenerator-service</module>
-		<module>kernel-syncjob-service</module>
 		<module>kernel-config-server</module>
 		<module>kernel-signature-service</module>
 		<module>kernel-cryptomanager-service</module>

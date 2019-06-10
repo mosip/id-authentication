@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
@@ -34,11 +33,10 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
-import io.mosip.registration.processor.packet.uploader.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.packet.uploader.util.StatusMessage;
@@ -71,7 +69,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 	/** The hdfs adapter. */
 	@Autowired
-	private FileSystemAdapter hdfsAdapter;
+	private PacketManager fileSystemManager;
 
 	/** The ppk file location. */
 	// @Value("${registration.processor.server.ppk.filelocation}")
@@ -135,12 +133,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	@Autowired
 	private VirusScanner<Boolean, InputStream> virusScannerService;
 
-	/** The decryptor. */
-	@Autowired
-	private Decryptor packetUploaderDecryptor;
-
 	/** The max retry count. */
-	@Value("${registration.processor.uploader.max.retry.count}")
+	@Value("${registration.processor.max.retry}")
 	private int maxRetryCount;
 
 	/** The description. */
@@ -172,7 +166,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
 		messageDTO.setIsValid(false);
-		InputStream decryptedData = null;
 		this.registrationId = regId;
 		isTransactionSuccessful = false;
 		SftpJschConnectionDto jschConnectionDto = new SftpJschConnectionDto();
@@ -181,7 +174,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		jschConnectionDto.setPpkFileLocation(ppkFileLocation + File.separator + ppkFileName);
 		jschConnectionDto.setUser(dmzServerUser);
 		jschConnectionDto.setProtocal(dmzServerProtocal);
-		byte[] decryptedByteArray = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
 		messageDTO.setRid(registrationId);
@@ -202,10 +194,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				if (validateHashCode(new ByteArrayInputStream(encryptedByteArray))) {
 
 					if (scanFile(new ByteArrayInputStream(encryptedByteArray))) {
-
-						decryptedData = packetUploaderDecryptor.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
-						decryptedByteArray = IOUtils.toByteArray(decryptedData);
-						if (scanFile(new ByteArrayInputStream(decryptedByteArray))) {
 							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 							dto.setRetryCount(retrycount);
 							if (retrycount < getMaxRetryCount()) {
@@ -213,7 +201,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 										LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 										"PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
 
-								messageDTO = uploadPacket(dto, new ByteArrayInputStream(decryptedByteArray), messageDTO,
+								messageDTO = uploadPacket(dto, new ByteArrayInputStream(encryptedByteArray), messageDTO,
 										jschConnectionDto);
 								if (messageDTO.getIsValid()) {
 									dto.setLatestTransactionStatusCode(
@@ -239,7 +227,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 								dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
 								dto.setUpdatedBy(USER);
 							}
-						}
 					}
 				}
 			} else {
@@ -298,16 +285,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.name() + e.getMessage());
-
-			description = "The Sftp operation failed during file processing for registrationId " + registrationId + "::"
-					+ e.getMessage();
-		} catch (PacketDecryptionFailureException e) {
-			dto.setLatestTransactionStatusCode(
-					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
-			messageDTO.setInternalError(true);
-			messageDTO.setIsValid(false);
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_DECRYPTION_FAILED.name() + e.getMessage());
 
 			description = "The Sftp operation failed during file processing for registrationId " + registrationId + "::"
 					+ e.getMessage();
@@ -442,10 +419,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 		object.setIsValid(false);
 		registrationId = dto.getRegistrationId();
-		hdfsAdapter.storePacket(registrationId, decryptedData);
-		hdfsAdapter.unpackPacket(registrationId);
-
-		if (hdfsAdapter.isPacketPresent(registrationId)) {
+		fileSystemManager.storePacket(registrationId, decryptedData);
+		if (fileSystemManager.isPacketPresent(registrationId)) {
 
 			if (packetArchiver.archivePacket(dto.getRegistrationId(), jschConnectionDto)) {
 
