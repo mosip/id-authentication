@@ -28,6 +28,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.ModuleName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
+import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
@@ -72,7 +73,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 	private static final String INDIVIDUALBIOMETRICS = "individualBiometrics";
 	private static final String VALUE = "value";
 	private static final String INDIVIDUALAUTHENTICATION = "authenticationBiometricFileName";
-	private static final String FILENOTPRESENT = "Biometric File is not present";
+	private static final String FILENOTPRESENT = "File is not present";
 	private static final String INDIVIDUALAUTHENTICATIONFAILED = "Individual authentication failed";
 	private static final String REGISTRATIONTYPE = "registrationType";
 	private static final String INDIVIDUAL_TYPE_USERID = "UIN";
@@ -139,10 +140,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 							isTransactionSuccessful = false;
 							description = PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage() + FILENOTPRESENT;
 						} else {
-							isTransactionSuccessful = checkIndividualAuthentication(registrationId, metadata);
-							description = isTransactionSuccessful
-									? PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage()
-									: PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage();
+							isTransactionSuccessful = true;
 						}
 
 					} else {
@@ -205,6 +203,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusComment(PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage());
 			}
 			else {
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				registrationStatusDto.setStatusComment(PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage());
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
@@ -223,7 +222,6 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-
 		return object;
 	}
 
@@ -253,6 +251,8 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 		InputStream inputStream = adapter.getFile(registrationId,
 				PacketFiles.BIOMETRIC + FILE_SEPERATOR + individualAuthentication.toUpperCase());
 		if (inputStream == null) {
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage() + FILENOTPRESENT);
 			return false;
 		}
 		Long uin = utility.getUIn(registrationId);

@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -284,21 +285,17 @@ public class BiometricAuthenticationStageTest {
 	}
 	
 	@Test
-	public void IDAuthFailureTest() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException{
-		Mockito.when(utility.getUIn(any())).thenReturn(null);
-		FieldValue fieldValue = new FieldValue();
-		FieldValue fieldValue1 = new FieldValue();
-		fieldValue.setLabel("registrationType");
-		fieldValue.setValue("update");
-		fieldValue1.setLabel("authenticationBiometricFileName");
-		fieldValue1.setValue("biometricTestFileName");
-		List<FieldValue> metadata = new ArrayList<>();
-		metadata.add(fieldValue);
-		metadata.add(fieldValue1);
-		identity.setMetaData(metadata);
-		packetMetaInfo.setIdentity(identity);
-		Mockito.when(utility.getPacketMetaInfo(any())).thenReturn(packetMetaInfo);
-		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(null);
+	public void IDAuthFailureTest() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, ParserConfigurationException, SAXException{
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(false);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
+		HashMap<String,String> hashMap = new HashMap<String,String>();
+		hashMap.put("value", "testFile");
+		JSONObject jSONObject = new JSONObject(hashMap);
+		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
+		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(null);
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
 		assertFalse(messageDto.getIsValid());
 	}
@@ -318,6 +315,23 @@ public class BiometricAuthenticationStageTest {
 		assertFalse(messageDto.getIsValid());
 	}
 	
+	@Test
+	public void inputStreamNullIndividualAuthTest() throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		Mockito.when(filesystemManager.getFile(any(), any())).thenReturn(null);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(true);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
+		HashMap<String,String> hashMap = new HashMap<String,String>();
+		hashMap.put("value", "testFile");
+		JSONObject jSONObject = new JSONObject(hashMap);
+		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jSONObject);
+		PowerMockito.when(JsonUtil.getJSONObject(jSONObject, "individualBiometrics")).thenReturn(null);
+		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
+		assertFalse(messageDto.getIsValid());
+	}
+	
 
 	@Test
 	public void testIOException() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException   {
@@ -331,6 +345,14 @@ public class BiometricAuthenticationStageTest {
 	public void testApisResourceAccessException() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException  {
 
 		Mockito.when(utility.getApplicantAge(any())).thenThrow(new ApisResourceAccessException("ApisResourceAccessException"));
+		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
+		assertTrue(messageDto.getInternalError());
+	}
+	
+	@Test
+	public void testException() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException  {
+
+		Mockito.when(utility.getApplicantAge(any())).thenThrow(new PacketDecryptionFailureException("testCode", "test message"));
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
 		assertTrue(messageDto.getInternalError());
 	}
@@ -368,7 +390,31 @@ public class BiometricAuthenticationStageTest {
 		authResponseDTO.setResponse(responseDTO);
 		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
 		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
-		assertFalse(messageDto.getIsValid());
+		assertTrue(messageDto.getIsValid());
+	}
+	
+	@Test
+	public void testNewPacket() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+		FieldValue fieldValue = new FieldValue();
+		FieldValue fieldValue1 = new FieldValue();
+		fieldValue1.setLabel("authenticationBiometricFileName");
+		fieldValue1.setValue("biometricTestFileName");
+		fieldValue.setLabel("registrationType");
+		fieldValue.setValue("new");
+		List<FieldValue> metadata = new ArrayList<>();
+		metadata.add(fieldValue);
+		metadata.add(fieldValue1);
+
+		identity.setMetaData(metadata);
+		packetMetaInfo.setIdentity(identity);
+		Mockito.when(utility.getPacketMetaInfo(any())).thenReturn(packetMetaInfo);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		 ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setAuthStatus(false);
+		authResponseDTO.setResponse(responseDTO);
+		Mockito.when(authUtil.authByIdAuthentication(any(),any(),any())).thenReturn(authResponseDTO);
+		MessageDTO messageDto = biometricAuthenticationStage.process(dto);
+		assertTrue(messageDto.getIsValid());
 	}
 	
 	@Test
