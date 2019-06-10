@@ -962,7 +962,7 @@ public class AuthTestsUtil extends BaseTestCase {
 						+ "/authentication-partnerdemo-service-" + getDemoAppVersion() + ".jar").getAbsolutePath();
 				demoAppBatchFilePath = new File("./src/test/resources/demoApp.bat");
 				content = '"' + javaHome + "/bin/java" + '"'
-						+ " -Dspring.cloud.config.label=QA_IDA -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Dspring.cloud.config.uri=http://104.211.212.28:51000 -Djava.net.useSystemProxies=true -agentlib:jdwp=transport=dt_socket,server=y,address=4000,suspend=n -jar "
+						+ " -Dspring.cloud.config.label=QA_IDA -Dspring.profiles.active=test"+RunConfigUtil.getRunEvironment()+" -Dspring.cloud.config.uri=http://104.211.212.28:51000 -jar "
 						+ '"' + demoAppJarPath.toString() + '"';
 			} else if (getOSType().toString().equals("OTHERS")) {
 				IDASCRIPT_LOGGER.info("Maven Path: " + System.getenv(RunConfigUtil.getLinuxMavenEnvVariableKey()));
@@ -1029,7 +1029,7 @@ public class AuthTestsUtil extends BaseTestCase {
 		try {
 			Runtime.getRuntime().exec(
 					new String[] { "cmd", "/c", "start", "cmd.exe", "/K", demoAppBatchFilePath.getAbsolutePath() });
-			//Thread.sleep(60000);
+			Thread.sleep(60000);
 		} catch (Exception e) {
 			IDASCRIPT_LOGGER.error("Execption in launching demoApp application: " + e.getMessage());
 		}
