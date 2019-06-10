@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.registration.processor.stages.osivalidator.utils;
 
 import java.io.IOException;

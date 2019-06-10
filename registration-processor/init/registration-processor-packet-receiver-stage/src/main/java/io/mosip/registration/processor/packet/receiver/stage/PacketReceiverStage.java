@@ -161,10 +161,10 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 
 		try {
 			listObj.add(env.getProperty(MODULE_ID));
-			FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
-					new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
-			FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
-			file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
+			FileUtils.copyFile(FileUtils.getFile(fileUpload.uploadedFileName()),
+					FileUtils.getFile(FileUtils.getFile(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
+			FileUtils.forceDelete(FileUtils.getFile(fileUpload.uploadedFileName()));
+			file = FileUtils.getFile(FileUtils.getFile(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 			MessageDTO messageDTO = packetReceiverService.validatePacket(file, this.getClass().getSimpleName());
 			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			listObj.add(env.getProperty(APPLICATION_VERSION));

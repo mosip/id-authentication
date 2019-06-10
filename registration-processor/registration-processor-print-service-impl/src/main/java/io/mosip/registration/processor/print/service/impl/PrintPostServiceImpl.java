@@ -17,6 +17,7 @@ import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -113,15 +114,16 @@ public class PrintPostServiceImpl {
 
 			isPdfAddedtoQueue = mosipQueueManager.send(queue, response.toString().getBytes("UTF-8"),
 					printPostalAddress);
-
-			Path dirPathObj = Paths.get(printPostServiceDirectory + seperator + printQueueDTO.getUin());
-			boolean dirExists = Files.exists(dirPathObj);
+			File dirPathObj = FileUtils.getFile(printPostServiceDirectory + seperator + printQueueDTO.getUin());
+			
+			//Path dirPathObj = Paths.get(printPostServiceDirectory + seperator + printQueueDTO.getUin()).normalize();;
+			boolean dirExists = dirPathObj.exists();//exists(dirPathObj);
 			if (dirExists) {
 				printConsumedFileFromQueue(dirPathObj);
 
 			} else {
 				// Creating The New Directory Structure
-				Files.createDirectories(dirPathObj);
+				dirPathObj.mkdirs();//createDirectories();
 				printConsumedFileFromQueue(dirPathObj);
 			}
 
@@ -133,7 +135,7 @@ public class PrintPostServiceImpl {
 		return isPdfAddedtoQueue;
 	}
 
-	private void printConsumedFileFromQueue(Path dirPathObj) throws IOException {
+	private void printConsumedFileFromQueue(File dirPathObj) throws IOException {
 
 		try (OutputStream out = new FileOutputStream(dirPathObj + seperator + printQueueDTO.getUin() + ".pdf");) {
 			out.write(printQueueDTO.getPdfBytes());

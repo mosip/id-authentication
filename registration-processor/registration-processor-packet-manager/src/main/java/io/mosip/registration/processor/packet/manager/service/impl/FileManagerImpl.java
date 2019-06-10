@@ -302,11 +302,11 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::deleteFolder()::entry");
 
-		// String filepath=env.getProperty(destinationDirectory.toString());
-		// File srcFile=FileUtils.getFile(filepath, getFileName(fileName));
-		File filePath = new File(env.getProperty(destinationDirectory.toString()) + File.separator + fileName);
+		 String filepath=env.getProperty(destinationDirectory.toString());
+		 File srcFile=FileUtils.getFile(filepath, fileName);
+		//File filePath = new File(env.getProperty(destinationDirectory.toString()) + File.separator + fileName);
 
-		FileUtils.forceDelete(filePath);
+		FileUtils.forceDelete(srcFile);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::deleteFolder()::exit");
 
@@ -505,7 +505,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public String getPPKPath() throws  IOException {
 		RestTemplate restTemplate = new RestTemplate();
 		String data= restTemplate.getForObject(configServerFileStorageURL + regProcPPK, String.class);
-		File file = new File(regProcPPK);
+		File file = FileUtils.getFile(regProcPPK);
 		FileOutputStream out = new FileOutputStream(file);
 		try {
 			out.write(data.getBytes());

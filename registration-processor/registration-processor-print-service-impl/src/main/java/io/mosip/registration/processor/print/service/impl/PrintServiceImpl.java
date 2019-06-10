@@ -372,7 +372,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		jsonDto.setRequest(request);
 
-		File jsonText = new File(attributes.get(UIN).toString() + TXT);
+		File jsonText = FileUtils.getFile(attributes.get(UIN).toString() + TXT);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		mapper.writeValue(jsonText, jsonDto);

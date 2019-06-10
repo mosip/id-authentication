@@ -13,6 +13,7 @@ import java.security.PrivilegedExceptionAction;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQBytesMessage;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -190,13 +191,14 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
 			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			if (SystemUtils.IS_OS_WINDOWS) {
-				Path binPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "bin"));
+				File binPath = FileUtils.getFile(hadoopLibPath.toString(), "bin");
+				binPath.mkdir();
 				Resource resource = resourceLoader.getResource(CLASSPATH_PREFIX + WIN_UTIL);
 				if (resource.exists()) {
 					java.nio.file.Path c = Paths.get("s", "x");
-					Path winUtilsPath = Paths.get(binPath.toString(), resource.getFilename());
-					Files.copy(resource.getInputStream(), winUtilsPath);
-				}
+					File winUtilsPath = FileUtils.getFile(binPath.toString(), resource.getFilename());
+					   FileUtils.copyInputStreamToFile(resource.getInputStream(), winUtilsPath);
+					   }
 			}
 
 			if (isAuthEnable) {
@@ -242,8 +244,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 		configuration.set("dfs.data.transfer.protection", "authentication");
 		configuration.set("hadoop.security.authentication", "kerberos");
 		InputStream krbStream = getClass().getClassLoader().getResourceAsStream("krb5.conf");
-		Path krbPath = Paths.get(hadoopLibPath.toString(), "krb5.conf");
-		Files.copy(krbStream, krbPath);
+		File krbPath = FileUtils.getFile(hadoopLibPath.toString(), "krb5.conf");
+		 FileUtils.copyInputStreamToFile(krbStream, krbPath);
 		System.setProperty("java.security.krb5.conf", krbPath.toString());
 		UserGroupInformation.setConfiguration(configuration);
 		String user = hdfsUserName + "@" + kdcDomain;
@@ -259,7 +261,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	private void loginWithKeyTab(String user, String keytabPath) throws Exception {
 		Path keyPath = null;
 		Resource resource = resourceLoader.getResource(keytabPath);
-		Path dataPath = Files.createDirectory(Paths.get(hadoopLibPath.toString(), "data"));
+		File dataPath = FileUtils.getFile(hadoopLibPath.toString(), "data");
+		dataPath.mkdir();
 		if (resource.exists()) {
 			keyPath = Paths.get(dataPath.toString(), resource.getFilename());
 			Files.copy(resource.getInputStream(), keyPath, StandardCopyOption.REPLACE_EXISTING);

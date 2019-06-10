@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -46,7 +47,8 @@ public class TokenValidator {
 			throw new InvalidTokenException(INVALIDTOKENMESSAGE);
 		try {	
 			URL obj = new URL(env.getProperty("TOKENVALIDATE"));
-			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+			URLConnection urlConnection= obj.openConnection();
+			HttpsURLConnection con = (HttpsURLConnection) urlConnection;
 
 			con.setRequestProperty("Cookie", token);
 			con.setRequestMethod("POST");
