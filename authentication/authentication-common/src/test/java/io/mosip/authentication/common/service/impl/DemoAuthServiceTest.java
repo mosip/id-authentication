@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -571,9 +570,8 @@ public class DemoAuthServiceTest {
 		Set<String> valueSet = new HashSet<>();
 		valueSet.add("fra");
 		try {
-			 demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,"1234567890");
-		 }
-		catch(IdAuthenticationBusinessException ex) {
+			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
+		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(), ex.getErrorCode());
 		}
 	}
@@ -608,16 +606,12 @@ public class DemoAuthServiceTest {
 		nameListEntity.add(identityInfoDTOEntity);
 		demoEntity.put("fullName", nameListEntity);
 		try {
-			 demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,"1234567890");
-		 }
-		catch(IdAuthenticationBusinessException ex) {
+			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
+		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(), ex.getErrorCode());
 		}
 	}
-		
-	
-	
-	
+
 	@Test
 	public void TestInValidDemographicData() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO = getTestData();
@@ -628,16 +622,12 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setValue("Dinesh1");
 		demoEntity.put("fullName", nameList);
 		String individualId = "274390482564";
-		demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
-				"1234567890");
 		try {
-			 demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,"1234567890");
-		 }
-		catch(IdAuthenticationBusinessException ex) {
+			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
+		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.DEMO_MISSING.getErrorCode(), ex.getErrorCode());
 		}
 	}
-	
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestcontstructMatchInputisNull() throws IdAuthenticationBusinessException {

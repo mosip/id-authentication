@@ -974,6 +974,7 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
+	public static final String BIOMETRIC_PANES_SELECTED = "biometricPaneSelected";
 	public static final Set<String> BIO_TYPE = new HashSet<>(
 			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
 	public static final String LEFTSLAPCOUNT = "leftSlapCount";
@@ -1445,6 +1446,6 @@ public class RegistrationConstants {
 	public static final String RESPONSE_SIGNATURE="response-signature";
 	public static final String ON_BOARD_FACE="FACE";
 	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
-	
+	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
 
 }
