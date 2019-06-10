@@ -3,7 +3,7 @@ def branch=env.NEXT_BRANCH_NAME
 def mvnHome = tool name: 'M2_HOME', type: 'maven'
 
     stage('checkout') {
-    sh 'git --version'
+    sh 'pwd'
 //   input 'Do you want to promote the code to QA?'
         checkout([$class: 'GitSCM',
         branches: [[name: '*/0.12.0']], 
