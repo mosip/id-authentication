@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -90,12 +89,15 @@ public class RestClientAuthAdvice {
 					.setHttpEntity(new HttpEntity<>(requestHTTPDTO.getRequestBody(), requestHTTPDTO.getHttpHeaders()));
 			Object response = joinPoint.proceed(joinPoint.getArgs());
 
+			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+					"Adding authZ token to web service request header if required completed ---> "+ response);
+			
 			if (handleInvalidTokenFromResponse(response, joinPoint)) {
 				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 						"Adding new authZ token to web service request header if present token is invalid");
 				return joinPoint.proceed(joinPoint.getArgs());
 			}
-			
+
 			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 					"Adding authZ token to web service request header if required completed");
 
@@ -104,7 +106,7 @@ public class RestClientAuthAdvice {
 		} catch (HttpClientErrorException httpClientErrorException) {
 			String errorResponseBody = httpClientErrorException.getResponseBodyAsString();
 
-			if (errorResponseBody != null && StringUtils.containsIgnoreCase(errorResponseBody, "Invalid Token")
+			if (errorResponseBody != null && StringUtils.containsIgnoreCase(errorResponseBody, INVALID_TOKEN_STRING)
 					|| 401 == httpClientErrorException.getRawStatusCode()) {
 				try {
 					RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
@@ -255,15 +257,15 @@ public class RestClientAuthAdvice {
 
 	private boolean handleInvalidTokenFromResponse(Object response, ProceedingJoinPoint joinPoint)
 			throws RegBaseCheckedException {
-		if (response instanceof ResponseEntity) {
-			ResponseEntity<?> responseEntity = (ResponseEntity<?>) response;
-			if (responseEntity.hasBody()
-					&& StringUtils.containsIgnoreCase(responseEntity.getBody().toString(), INVALID_TOKEN_STRING)) {
-				RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
-				getNewAuthZToken(requestHTTPDTO);
-				return true;
-			}
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"Entering into the invlalid token check" + response);
+		if (response != null && StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING)) {
+			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
+			getNewAuthZToken(requestHTTPDTO);
+			return true;
 		}
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"leaving to this invlalid token check" + response);
 		return false;
 	}
 }

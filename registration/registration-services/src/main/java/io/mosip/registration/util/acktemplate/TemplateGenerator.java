@@ -1467,7 +1467,7 @@ public class TemplateGenerator extends BaseService {
 	/**
 	 * Exception fingers count.
 	 */
-	protected Map<String, Integer> exceptionFingersCount(RegistrationDTO registration, int leftSlapCount,
+	private Map<String, Integer> exceptionFingersCount(RegistrationDTO registration, int leftSlapCount,
 			int rightSlapCount, int thumbCount, int irisCount) {
 
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
