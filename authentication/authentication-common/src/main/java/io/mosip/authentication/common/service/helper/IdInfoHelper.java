@@ -389,7 +389,10 @@ public class IdInfoHelper {
 		} else {
 			entityInfo = Collections.emptyMap();
 		}
-		if (null == entityInfo || entityInfo.isEmpty()) {
+
+		if (null == entityInfo || entityInfo.isEmpty()
+				|| entityInfo.entrySet().stream().anyMatch(value -> value.getValue() == null
+						|| value.getValue().isEmpty() || value.getValue().trim().length() == 0)) {
 			Category category = matchType.getCategory();
 			if (category == Category.BIO) {
 				throw new IdAuthenticationBusinessException(
