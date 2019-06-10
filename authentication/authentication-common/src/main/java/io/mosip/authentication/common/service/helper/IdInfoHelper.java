@@ -49,6 +49,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Dinesh Karuppiah.T
  */
 
+/**
+ * 
+ * Helper class to build Authentication request
+ *
+ */
+
 @Component
 public class IdInfoHelper {
 
@@ -86,7 +92,7 @@ public class IdInfoHelper {
 	 * @param name                 the name
 	 * @param languageForMatchType the language for match type
 	 * @param identityInfo         the demo info
-	 * @param matchType 
+	 * @param matchType
 	 * @return the identity value
 	 */
 	private Stream<String> getIdentityValueFromMap(String name, String languageForMatchType,
@@ -94,7 +100,8 @@ public class IdInfoHelper {
 		List<IdentityInfoDTO> identityInfoList = identityInfo.get(name).getValue();
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
 			return identityInfoList.stream()
-					.filter(idinfo -> !matchType.isPropMultiLang(name, idMappingConfig) || idInfoFetcher.checkLanguageType(languageForMatchType, idinfo.getLanguage()))
+					.filter(idinfo -> !matchType.isPropMultiLang(name, idMappingConfig)
+							|| idInfoFetcher.checkLanguageType(languageForMatchType, idinfo.getLanguage()))
 					.map(idInfo -> idInfo.getValue());
 		}
 		return Stream.empty();
@@ -195,10 +202,12 @@ public class IdInfoHelper {
 			String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
 		Map<String, Entry<String, List<IdentityInfoDTO>>> mappedIdEntity = matchType.mapEntityInfo(idEntity,
 				idInfoFetcher);
-		return propertyNames.stream().filter(propName -> mappedIdEntity.containsKey(propName)).collect(Collectors.toMap(
-				propName -> mappedIdEntity.get(propName).getKey(),
-				propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity,matchType).findAny().orElse(""),
-				(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
+		return propertyNames.stream().filter(propName -> mappedIdEntity.containsKey(propName))
+				.collect(
+						Collectors.toMap(propName -> mappedIdEntity.get(propName).getKey(),
+								propName -> getIdentityValueFromMap(propName, languageCode, mappedIdEntity, matchType)
+										.findAny().orElse(""),
+								(p1, p2) -> p1, () -> new LinkedHashMap<String, String>()));
 	}
 
 	/**

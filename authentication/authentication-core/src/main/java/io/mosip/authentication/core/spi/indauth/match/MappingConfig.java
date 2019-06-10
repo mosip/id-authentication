@@ -2,7 +2,6 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MappingConfig.
  *

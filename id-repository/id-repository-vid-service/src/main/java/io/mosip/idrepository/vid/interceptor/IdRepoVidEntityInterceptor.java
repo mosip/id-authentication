@@ -3,7 +3,6 @@ package io.mosip.idrepository.vid.interceptor;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
@@ -36,7 +35,7 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 	private static final long serialVersionUID = 4985336846122302850L;
 
 	@Autowired
-	private IdRepoSecurityManager securityManager;
+	private transient IdRepoSecurityManager securityManager;
 
 	/*
 	 * (non-Javadoc)
@@ -50,9 +49,9 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof Vid) {
 				Vid vidEntity = (Vid) entity;
-				List<Object> propertyNamesList = Arrays.stream(propertyNames).collect(Collectors.toList());
+				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int uinIndex = propertyNamesList.indexOf("uin");
-				List<String> uinList = Arrays.stream(vidEntity.getUin().split("_")).collect(Collectors.toList());
+				List<String> uinList = Arrays.asList(vidEntity.getUin().split("_"));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
 				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
@@ -73,10 +72,10 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 		try {
 			if (entity instanceof Vid) {
 
-				List<Object> propertyNamesList = Arrays.stream(propertyNames).collect(Collectors.toList());
+				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int uinIndex = propertyNamesList.indexOf("uin");
 				Vid vidEntity = (Vid) entity;
-				List<String> uinList = Arrays.stream(vidEntity.getUin().split("_")).collect(Collectors.toList());
+				List<String> uinList = Arrays.asList(vidEntity.getUin().split("_"));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
 				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);

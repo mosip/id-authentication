@@ -31,31 +31,47 @@ import io.mosip.idrepository.saltgenerator.constant.IdRepoSaltGeneratorConstant;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
- * @author Manoj SP
+ * The Class IdRepoSaltGeneratorConfig - Provides configuration for Salt
+ * generator application.
  *
+ * @author Manoj SP
  */
 @Configuration
 @EnableTransactionManagement
 public class IdRepoSaltGeneratorConfig {
 	
+	/** The env. */
 	@Autowired
 	private Environment env;
 	
+	/** The naming resolver. */
 	@Autowired
 	private PhysicalNamingStrategyResolver namingResolver;
 	
+	/**
+	 * Batch config.
+	 *
+	 * @return the batch configurer
+	 */
 	@Bean
 	public BatchConfigurer batchConfig() {
 		return new DefaultBatchConfigurer(null) {
 			
 			@Override
 			public void setDataSource(DataSource dataSource) {
-				// override to do not set datasource even if a datasource exist.
-		        // initialize will use a Map based JobRepository (instead of database)
+				// By default, Spring batch will try to create/update records in the provided
+				// datasource related to Job completion, schedule etc.
+				// This override will stop spring batch to create/update any tables in provided
+				// Datasource and instead use Map based implementation internally.
 			}
 		};
 	}
 	
+	/**
+	 * Entity manager factory.
+	 *
+	 * @return the local container entity manager factory bean
+	 */
 	@Bean
 	@Primary
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -67,6 +83,11 @@ public class IdRepoSaltGeneratorConfig {
 		return em;
 	}
 	
+	/**
+	 * Data source.
+	 *
+	 * @return the data source
+	 */
 	@Bean
 	@Primary
 	public DataSource dataSource() {
@@ -80,12 +101,23 @@ public class IdRepoSaltGeneratorConfig {
 		return dataSource;
 	}
 	
+	/**
+	 * Jpa transaction manager.
+	 *
+	 * @param emf the emf
+	 * @return the jpa transaction manager
+	 */
 	@Bean
 	@Primary
 	public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
 		return new JpaTransactionManager(emf);
 	}
 	
+	/**
+	 * Additional properties.
+	 *
+	 * @return the map
+	 */
 	private Map<String, Object> additionalProperties() {
 		Map<String, Object> jpaProperties = new HashMap<>();
 		jpaProperties.put("hibernate.implicit_naming_strategy", SpringImplicitNamingStrategy.class.getName());

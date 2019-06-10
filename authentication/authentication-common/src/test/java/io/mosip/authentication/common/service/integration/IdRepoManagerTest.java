@@ -166,7 +166,7 @@ public class IdRepoManagerTest {
 		Map<String, Object> responseBody = new HashMap<>();
 		List<Map<String, Object>> valuelist = new ArrayList<>();
 		Map<String, Object> errorcode = new HashMap<>();
-		errorcode.put("errCode", IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+		errorcode.put("errorCode", IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 		valuelist.add(errorcode);
 		responseBody.put("errors", valuelist);
 		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
@@ -324,8 +324,7 @@ public class IdRepoManagerTest {
 			idReposerviceImpl.getRIDByUID("76746685");
 		}
 		catch(IdAuthenticationBusinessException ex) {
-			  assertEquals(IdAuthenticationErrorConstants.INVALID_USERID.getErrorCode(), ex.getErrorCode());
-			  assertEquals(IdAuthenticationErrorConstants.INVALID_USERID.getErrorMessage(), ex.getErrorText());
+			  assertEquals(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(), ex.getErrorCode());
 		}
 	}
 	
@@ -400,8 +399,7 @@ public class IdRepoManagerTest {
 		 idReposerviceImpl.getIdByRID("234433356", false);
 		}
 		catch(IdAuthenticationBusinessException ex) {
-			  assertEquals(IdAuthenticationErrorConstants.INVALID_USERID.getErrorCode(), ex.getErrorCode());
-			  assertEquals(IdAuthenticationErrorConstants.INVALID_USERID.getErrorMessage(), ex.getErrorText());
+			  assertEquals(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(), ex.getErrorCode());
 		}
 	}
 	

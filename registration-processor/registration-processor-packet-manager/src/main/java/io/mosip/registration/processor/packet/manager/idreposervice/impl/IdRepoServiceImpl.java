@@ -27,16 +27,22 @@ public class IdRepoServiceImpl implements IdRepoService {
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
+	
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Number getUinFromIDRepo(String machedRegId, String regProcessorDemographicIdentity)
+	public Number getUinByRid(String rid, String regProcessorDemographicIdentity)
 			throws IOException, ApisResourceAccessException {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add("rid");
-		pathSegments.add(machedRegId);
-		Number uin = null;
+		pathSegments.add(rid);
+		return getUin(pathSegments, regProcessorDemographicIdentity);
 
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Number getUin(List<String> pathSegments, String regProcessorDemographicIdentity) throws IOException, ApisResourceAccessException  {
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<IdResponseDTO> response;
 
@@ -48,9 +54,18 @@ public class IdRepoServiceImpl implements IdRepoService {
 			String jsonString = gsonObj.toJson(response.getResponse());
 			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
 			JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson, regProcessorDemographicIdentity);
-			uin = JsonUtil.getJSONValue(demographicIdentity, AbisConstant.UIN);
+			return JsonUtil.getJSONValue(demographicIdentity, AbisConstant.UIN);
 		}
-		return uin;
+		return null;
+	}
+	
+	@Override
+	public Number findUinFromIdrepo(String uin, String regProcessorDemographicIdentity)
+			throws IOException, ApisResourceAccessException {
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add("uin");
+		pathSegments.add(uin);
+		return getUin(pathSegments, regProcessorDemographicIdentity);
 	}
 
 	@SuppressWarnings("unchecked")

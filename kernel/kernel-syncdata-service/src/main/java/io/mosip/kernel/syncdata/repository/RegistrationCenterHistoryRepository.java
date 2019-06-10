@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.RegistrationCenterHistory;
 
 /**
@@ -16,7 +16,7 @@ import io.mosip.kernel.syncdata.entity.RegistrationCenterHistory;
  *
  */
 @Repository
-public interface RegistrationCenterHistoryRepository extends BaseRepository<RegistrationCenterHistory, String> {
+public interface RegistrationCenterHistoryRepository extends JpaRepository<RegistrationCenterHistory, String> {
 
 	/**
 	 * Function to fetch registration center by id language code and effective time

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.12.6</version>
+		<version>0.12.7</version>
 	</parent>
 	<artifactId>kernel-syncdata-service</artifactId>
 	<name>kernel-syncdata-service</name>
@@ -23,10 +23,12 @@
 			<artifactId>kernel-auth-adapter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!-- <dependency> <groupId>io.mosip.kernel</groupId> <artifactId>kernel-dataaccess-hibernate</artifactId> 
+			<version>${project.version}</version> </dependency> -->
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-dataaccess-hibernate</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -43,7 +45,11 @@
 			<artifactId>kernel-crypto-signature</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

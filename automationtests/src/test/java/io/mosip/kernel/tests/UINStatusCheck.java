@@ -51,7 +51,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 	private SoftAssert softAssert=new SoftAssert();
 	public static JSONArray arr = new JSONArray();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String uingenerator =props.get("uingenerator");
 	private String folderPath = "kernel/UINStatusCheck";
 	private String outputFile = "UINStatusCheckOutput.json";
@@ -92,7 +92,7 @@ public class UINStatusCheck extends BaseTestCase implements ITest{
 		List<String>list=dbConnection.getDbData( query,"kernel");
 
 		// Calling the GET method with no parameters 
-		Response res=applicationLibrary.getRequestNoParameter(uingenerator,cookie);
+		Response res=applicationLibrary.getWithoutParams(uingenerator,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

@@ -319,7 +319,7 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-exceed-2-iris-data:
-      identityReq.bioSubType: $TestData:bio_iris_left_subType$
+      identityReq.bioSubType: $TestData:bio_iris_leftOnly_subType$
       identityReq.bioType: $TestData:bio_iris_type$
       identityReq.timestamp: $TIMESTAMP$
       identityReq.data.timestamp: $TIMESTAMP$
@@ -327,7 +327,8 @@ testdata:
       identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       identityReq.deviceProviderID: $TestData:bio_iris_deviceProviderID$
       identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-      identityReq.bioSubType1: $TestData:bio_iris_right_subType$
+      identityReq.bioSubType1: $TestData:bio_iris_rightOnly_subType$
+      identityReq.bioSubType1: $TestData:bio_iris_unknownOnly_subType$
       identityReq.bioType1: $TestData:bio_iris_type$
       identityReq.data.timestamp1: $TIMESTAMP$
       identityReq.deviceCode1: $TestData:bio_iris_deviceCode$
@@ -426,7 +427,6 @@ testdata:
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.bio: $TestData:boolean_false$
-      AuthReq.pin: $TestData:boolean_true$
       AuthReq.otp: $TestData:boolean_true$
       AuthReq.demo: $TestData:boolean_true$
     input.identity-encrypt-data:
@@ -442,8 +442,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $IGNORE$
+      output.1.response.error.errorMessage: $IGNORE$
       
   Authentication_Biometric_Iris_With_requestedAuth_bio_otherThan_true_or_false_Neg:
     endpoint.url:
@@ -617,8 +617,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   Authentication_Biometric_Iris_Without_consentObtained_Neg:
     endpoint.url:
@@ -645,32 +645,7 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
-      
-  Authentication_Biometric_Iris_Without_deviceProviderID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_iris_left_subType$
-      identityReq.bioType: $TestData:bio_iris_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_iris_deviceCode$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $REMOVE$
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
-      
+            
   Authentication_Biometric_Iris_Without_Id_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -1274,8 +1249,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidRequest:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidRequest:errorMessage$
+      output.1.response.error.errorCode: $errors:MissingBioValue:errorCode$
+      output.1.response.error.errorMessage: $errors:MissingBioValue:errorMessage$
       
   Authentication_Biometric_Iris_Null_consentObtained_Neg:
     endpoint.url:
@@ -1302,32 +1277,7 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ConsentNotSet:errorCode$
       output.1.response.error.errorMessage: $errors:ConsentNotSet:errorMessage$
-      
-  Authentication_Biometric_Iris_Null_deviceProviderID_In_Bio_Identity_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
-      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-      AuthReq.bio: $TestData:boolean_true$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_iris_left_subType$
-      identityReq.bioType: $TestData:bio_iris_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_iris_deviceCode$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: ''
-      identityReq.bioValue: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Left']//following::BDB$
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:MissingDeviceProviderId:errorCode$
-      output.1.response.error.errorMessage: $errors:MissingDeviceProviderId:errorMessage$
-      
+            
   Authentication_Biometric_Iris_Null_Id_In_Request_Neg:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
@@ -1592,7 +1542,6 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
       output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:ExpiredVID:actionMessage$ 
       
   Authentication_Biometric_Iris_With_Revoke_VID_Neg:
     endpoint.url:
@@ -1640,32 +1589,7 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InactiveVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InactiveVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:InactiveVID:actionMessage$  
-      
-  Authentication_Biometric_Iris_With_Deactivated_VID_Neg:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.bio-auth-request:
-      AuthReq.individualId: $VID:WITH:DEACTIVATED$
-      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.bioSubType: $TestData:bio_iris_left_subType$
-      identityReq.bioType: $TestData:bio_iris_type$
-      identityReq.timestamp: $TIMESTAMP$
-      identityReq.data.timestamp: $TIMESTAMP$
-      identityReq.deviceCode: $TestData:bio_iris_deviceCode$
-      identityReq.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      identityReq.deviceProviderID: $TestData:bio_iris_deviceProviderID$
-      identityReq.bioValue: uaufiuashhascahfhdoancknkjwhh
-    output.output-1-expected-n-res:
-      output.1.response.status: $TestData:auth_Fail_status$
-      output.1.response.responseTime: $TIMESTAMP$
-      output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:DeactivatedVID:errorCode$
-      output.1.response.error.errorMessage: $errors:DeactivatedVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:DeactivatedVID:actionMessage$   
+      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
+      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
+       
   

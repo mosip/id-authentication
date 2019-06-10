@@ -50,10 +50,6 @@ spec:
         backend:
           serviceName: kernel-syncdata-service
           servicePort: 8089
-      - path: /v1/idrepo
-        backend:
-          serviceName: kernel-idrepo-service
-          servicePort: 8090
       - path: /v1/authmanager
         backend:
           serviceName: kernel-auth-service
@@ -78,10 +74,6 @@ spec:
         backend:
           serviceName: kernel-tokenidgenerator-service
           servicePort: 8097
-      - path: /v1/syncjob
-        backend:
-          serviceName: kernel-syncjob-service
-          servicePort: 8099
       - path: /v1/admin
         backend:
           serviceName: admin-service

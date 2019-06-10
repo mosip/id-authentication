@@ -36,6 +36,7 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
@@ -49,7 +50,7 @@ import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({  HMACUtils.class, ApplicationContext.class })
+@PrepareForTest({  HMACUtils.class, ApplicationContext.class, SessionContext.class })
 public class RegPacketStatusServiceTest {
 	private Map<String, Object> applicationMap = new HashMap<>();
 
@@ -70,14 +71,17 @@ public class RegPacketStatusServiceTest {
 	RegistrationDAO registrationDAO;
 
 	@Before
-	public void initiate() {
+	public void initiate() throws Exception{
 		PowerMockito.mockStatic(HMACUtils.class);
 		
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
 		applicationMap.put("PRIMARY_LANGUAGE", "ENG");
 
 		ApplicationContext.setApplicationMap(applicationMap);
-		SessionContext.getInstance();
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
 
 	}
 

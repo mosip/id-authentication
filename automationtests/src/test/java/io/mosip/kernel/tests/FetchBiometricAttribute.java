@@ -53,7 +53,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	private final String apiName = "fetchBiometricAttribute";
 	private final String requestJsonName = "fetchBiometricAttributeRequest";
 	private final String outputJsonName = "fetchBiometricAttributeOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchBiometricAttribute_URI = props.get("FetchBiometricAttribute_URI").toString();
 
 	protected String testCaseName = "";
@@ -113,7 +113,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		// sending get request
-		response = applicationLibrary.getRequestPathPara(FetchBiometricAttribute_URI, objectData, cookie);
+		response = applicationLibrary.getWithPathParam(FetchBiometricAttribute_URI, objectData, cookie);
 
 		// This method is for checking the authentication is pass or fail in rest
 		// services
@@ -126,7 +126,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 				Assert.assertTrue(false, "Response does not contain biometricattributes");
 
 			String query = "select count(*) from master.biometric_attribute where lang_code = '"
-					+ objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "'";
+					+ objectData.get("langcode") + "' and bmtyp_code = '" + objectData.get("biometrictypecode") + "' and is_active = true";
 
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 
@@ -164,6 +164,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 			listOfElementToRemove.add("responsetime");
+			listOfElementToRemove.add("timestamp");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 

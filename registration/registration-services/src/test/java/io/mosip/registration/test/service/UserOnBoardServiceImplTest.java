@@ -29,6 +29,8 @@ import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.UserOnboardDAO;
 import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.dto.biometric.BiometricDTO;
@@ -50,7 +52,8 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  * @since 1.0.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ UserOnBoardServiceImplTest.class ,RegistrationSystemPropertiesChecker.class,ApplicationContext.class,RegistrationAppHealthCheckUtil.class,KeyGenerator.class,SecretKey.class})
+@PrepareForTest({ UserOnBoardServiceImplTest.class, RegistrationSystemPropertiesChecker.class, ApplicationContext.class,
+		RegistrationAppHealthCheckUtil.class, KeyGenerator.class, SecretKey.class, SessionContext.class })
 public class UserOnBoardServiceImplTest {
 	
 	@Rule
@@ -81,13 +84,19 @@ public class UserOnBoardServiceImplTest {
 	io.mosip.registration.context.ApplicationContext context;
 	
 	@Before
-	public void init() {
+	public void init() throws Exception {
 		Map<String,Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.USER_ON_BOARD_THRESHOLD_LIMIT, "10");		
 		appMap.put("mosip.registration.fingerprint_disable_flag", "Y");
 		appMap.put("mosip.registration.iris_disable_flag", "Y");
 		appMap.put("mosip.registration.face_disable_flag", "Y");
+		appMap.put("mosip.registration.onboarduser_ida_auth", "Y");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
+		
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
 	}
 	
 	@Test

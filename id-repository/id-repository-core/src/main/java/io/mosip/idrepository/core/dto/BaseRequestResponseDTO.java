@@ -18,5 +18,5 @@ public class BaseRequestResponseDTO {
 	/** The identity. */
 	private Object identity;
 
-	private List<Documents> documents;
+	private List<DocumentsDTO> documents;
 }

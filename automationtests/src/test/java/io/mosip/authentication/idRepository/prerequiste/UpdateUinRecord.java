@@ -118,7 +118,7 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 		Object[][] object = DataProviderClass.getDataProvider(
 				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
 				RunConfigUtil.objRunConfig.getScenarioPath(), "smokeandregression");
-		cookieValue=getAuthorizationCookie(getCookieRequestFilePath(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
+		cookieValue=getAuthorizationCookie(getCookieRequestFilePathForUinGenerator(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
 		for (int i = 1; i < object.length; i++) {
 			updateUinRecordTest(new TestParameters((TestParameters) object[i][0]), object[i][1].toString(),
 					object[i][2].toString());
@@ -148,7 +148,6 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, UpdateUinRecord.testCaseName);
-			test=extent.createTest(testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -201,3 +200,4 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 		+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
 	}
 }
+

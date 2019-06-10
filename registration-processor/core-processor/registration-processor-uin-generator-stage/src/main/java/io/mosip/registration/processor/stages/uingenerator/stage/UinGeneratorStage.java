@@ -116,16 +116,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	/** The mosip event bus. */
 	MosipEventBus mosipEventBus = null;
 
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
 	@Value("${registration.processor.id.repo.vidType}")
 	private String vidType;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
 
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
@@ -344,7 +336,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 		} catch (FSAdapterException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto
 					.setStatusComment(PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
@@ -358,7 +350,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			object.setIsValid(Boolean.FALSE);
 			object.setRid(registrationId);
 		} catch (ApisResourceAccessException ex) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
@@ -994,7 +986,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			throws ApisResourceAccessException, IOException {
 
 		IdResponseDTO idResponse = null;
-		Number number = idRepoService.getUinFromIDRepo(matchedRegId, utility.getGetRegProcessorDemographicIdentity());
+		Number number = idRepoService.getUinByRid(matchedRegId, utility.getGetRegProcessorDemographicIdentity());
 
 		Long uinFieldValue = number != null ? number.longValue() : null;
 		RequestDto requestDto = new RequestDto();

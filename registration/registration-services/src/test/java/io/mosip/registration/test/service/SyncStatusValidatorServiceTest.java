@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -36,6 +34,7 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.GlobalParamDAO;
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
@@ -55,7 +54,7 @@ import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.sync.impl.SyncStatusValidatorServiceImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class })
+@PrepareForTest({ io.mosip.registration.context.ApplicationContext.class, SessionContext.class })
 public class SyncStatusValidatorServiceTest {
 
 	@Rule
@@ -85,16 +84,15 @@ public class SyncStatusValidatorServiceTest {
 	}
 
 	@Before
-	public void initialize() throws IOException, URISyntaxException {
+	public void initialize() throws Exception {
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterLatitude("12.991276");
 		centerDetailDTO.setRegistrationCenterLongitude("80.2461");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
-
-		Instant lastCapturedTime = null;
-		Map<String, Object> maplastTime = new HashMap<>();
-		maplastTime.put("lastCapturedTime", lastCapturedTime);
-		SessionContext.getInstance().setMapObject(maplastTime);
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(centerDetailDTO);
+		SessionContext.map().put("lastCapturedTime", null);		
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());

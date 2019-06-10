@@ -51,14 +51,14 @@ import io.mosip.registration.entity.ValidDocument;
 import net.minidev.json.JSONArray;
 
 /**
- *  This class validates the user selected (which is provided by the UI layer) dropdown data against one available at the database layer, which is 
- * 	synced from MOSIP server. 
+ * This class validates the user selected (which is provided by the UI layer)
+ * dropdown data against one available at the database layer, which is synced
+ * from MOSIP server.
  *
  * @author SaravanaKumar G
  */
 @Service
 public class RegIdObjectMasterDataValidator {
-
 
 	/** Instance of {@link Logger}. */
 
@@ -102,9 +102,9 @@ public class RegIdObjectMasterDataValidator {
 	 */
 	@PostConstruct
 	public void loadData() {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading data has been started post construct");
-		
-		mapper.registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading data has been started post construct");
+
 		loadLanguages();
 		loadGenderTypes();
 		loadLocationDetails();
@@ -124,9 +124,10 @@ public class RegIdObjectMasterDataValidator {
 	 */
 	public boolean validateIdObject(Object identityObject, IdObjectValidatorSupportedOperations operation)
 			throws IdObjectIOException, IdObjectValidationFailedException {
-		
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating ID object has been started");
-		
+
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating ID object has been started");
+
 		try {
 			String identityString = mapper.writeValueAsString(identityObject);
 			List<ServiceError> errorList = new ArrayList<>();
@@ -138,7 +139,8 @@ public class RegIdObjectMasterDataValidator {
 			//validatePostalCode(identityString, errorList);
 			validateLocalAdministrativeAuthority(identityString, errorList);
 			validateDocuments(identityString, errorList);
-			LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating ID object has been ended");
+			LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+					"Validating ID object has been ended");
 			if (errorList.isEmpty()) {
 				return true;
 			} else {
@@ -154,7 +156,8 @@ public class RegIdObjectMasterDataValidator {
 	 * Load languages.
 	 */
 	private void loadLanguages() {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading languages has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading languages has been started");
 
 		List<Language> langList = masterSyncDao.getActiveLanguages();
 		languageList = new ArrayList<>();
@@ -163,23 +166,27 @@ public class RegIdObjectMasterDataValidator {
 				languageList.add(lang.getCode());
 			});
 		}
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading languages has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading languages has been ended");
 	}
 
 	/**
 	 * Load gender types.
 	 */
 	private void loadGenderTypes() {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading gender types has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading gender types has been started");
 
 		List<Gender> genderList = masterSyncDao.getGenders();
 		if (!genderList.isEmpty()) {
 			genderMap = new HashSetValuedHashMap<>(genderList.size());
 			genderList.forEach(gender -> {
 				genderMap.put(gender.getLangCode(), gender.getGenderName());
+				genderMap.put(gender.getLangCode(), gender.getCode().trim());
 			});
 		}
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading gender types has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading gender types has been ended");
 
 	}
 
@@ -187,7 +194,8 @@ public class RegIdObjectMasterDataValidator {
 	 * Load doc categories.
 	 */
 	private void loadDocCategories() {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading document categories has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading document categories has been started");
 
 		List<DocumentCategory> docList = masterSyncDao.getDocumentCategory();
 		if (!docList.isEmpty()) {
@@ -196,15 +204,17 @@ public class RegIdObjectMasterDataValidator {
 				docCatMap.put(doc.getLangCode(), doc.getCode());
 			});
 		}
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading document categories has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading document categories has been ended");
 	}
 
 	/**
 	 * Load doc types.
 	 */
 	private void loadDocTypes() {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading document types has been started");
-		
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading document types has been started");
+
 		docTypeMap = new HashSetValuedHashMap<>();
 		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
 			docCatMap.keySet().stream().forEach(langCode -> docCatMap.get(langCode).stream().forEach(docCat -> {
@@ -224,7 +234,8 @@ public class RegIdObjectMasterDataValidator {
 				}
 			}));
 		}
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading document types has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading document types has been ended");
 
 	}
 
@@ -232,32 +243,33 @@ public class RegIdObjectMasterDataValidator {
 	 * Load location details.
 	 */
 	private void loadLocationDetails() {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading location details has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading location details has been started");
 
 		locationHierarchyDetails = new HashSetValuedHashMap<>();
 		locationDetails = new LinkedHashMap<>();
 		List<Location> locationList = masterSyncDao.getLocationDetails();
-			if (!locationList.isEmpty()) {
+		if (!locationList.isEmpty()) {
+			locationList.forEach(location -> {
+				locationHierarchyDetails.put(String.valueOf(location.getHierarchyLevel()), location.getHierarchyName());
+				locationDetails.put(location.getHierarchyName(), null);
+			});
+
+			Set<String> locationHierarchyNames = locationDetails.keySet().stream().collect(Collectors.toSet());
+			locationHierarchyNames.stream().forEach(hierarchyName -> {
+				SetValuedMap<String, String> locations = new HashSetValuedHashMap<>();
 				locationList.forEach(location -> {
-						locationHierarchyDetails.put(String.valueOf(location.getHierarchyLevel()),
-								location.getHierarchyName());
-						locationDetails.put(location.getHierarchyName(), null);
+					if (location.getHierarchyName().equalsIgnoreCase(hierarchyName)) {
+						locations.put(location.getLangCode(), location.getName());
+						locations.put(location.getLangCode(), location.getCode());
+					}
 				});
-				
-				Set<String> locationHierarchyNames = locationDetails.keySet().parallelStream().collect(Collectors.toSet());
-				locationHierarchyNames.stream().forEach(hierarchyName -> {
-					SetValuedMap<String, String> locations = new HashSetValuedHashMap<>();
-					locationList.forEach(location -> {
-						if(location.getHierarchyName().equalsIgnoreCase(hierarchyName)) {
-							locations.put(location.getLangCode(), location.getName());
-							locations.put(location.getLangCode(), location.getCode());
-						}
-					});
-					locationDetails.put(hierarchyName, locations);
-				});
-			}
-			
-			LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Loading location details has been ended");
+				locationDetails.put(hierarchyName, locations);
+			});
+		}
+
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Loading location details has been ended");
 
 	}
 
@@ -270,19 +282,21 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validateLanguage(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating language has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating language has been started");
 		JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_LANGUAGE_PATH.getValue());
 		JSONArray pathList = jsonPath.read(identityString, PATH_LIST_OPTIONS);
 		Map<String, String> dataMap = IntStream.range(0, pathList.size()).boxed().parallel()
 				.collect(Collectors.toMap(i -> String.valueOf(pathList.get(i)),
 						i -> JsonPath.compile(String.valueOf(pathList.get(i))).read(identityString, READ_OPTIONS)));
-		dataMap.entrySet().parallelStream().filter(entry -> !languageList.contains(entry.getValue()))
+		dataMap.entrySet().stream().filter(entry -> !languageList.contains(entry.getValue()))
 				.forEach(entry -> errorList
 						.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 										convertToPath(entry.getKey())))));
-		
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating language has been ended");
+
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating language has been ended");
 	}
 
 	/**
@@ -294,7 +308,8 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validateGender(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating Gender has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating Gender has been started");
 
 		JsonPath genderLangPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_GENDER_LANGUAGE_PATH.getValue());
 		List<String> genderLangPathList = genderLangPath.read(identityString, PATH_LIST_OPTIONS);
@@ -307,7 +322,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(genderLangPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(genderValuePathList.get(i),
 								JsonPath.compile(genderValuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			System.out.println(
 					"Entry Val**" + lang + "->>>>" + genderMap.get(lang).contains(entry.getValue().getValue()));
@@ -316,7 +331,8 @@ public class RegIdObjectMasterDataValidator {
 				.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 								convertToPath(entry.getValue().getKey())))));
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating Gender has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating Gender has been ended");
 
 	}
 
@@ -329,11 +345,12 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validateRegion(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating region has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating region has been started");
 
 		SetValuedMap<String, String> regionMap = new HashSetValuedHashMap<>();
 		Set<String> regionNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.REGION.getLevel());
-		Optional.ofNullable(regionNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(regionNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> regionMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_REGION_LANGUAGE_PATH.getValue());
@@ -347,7 +364,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return regionMap.containsKey(lang) && !regionMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
@@ -355,7 +372,8 @@ public class RegIdObjectMasterDataValidator {
 						String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 								convertToPath(entry.getValue().getKey())))));
 
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating region has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating region has been ended");
 	}
 
 	/**
@@ -367,12 +385,13 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validateProvince(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating province has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating province has been started");
 
 		SetValuedMap<String, String> provinceMap = new HashSetValuedHashMap<>();
 		Set<String> provinceNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.PROVINCE.getLevel());
-		Optional.ofNullable(provinceNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(provinceNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> provinceMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_PROVINCE_LANGUAGE_PATH.getValue());
@@ -386,14 +405,15 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return provinceMap.containsKey(lang) && !provinceMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
 				.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 								convertToPath(entry.getValue().getKey())))));
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating province has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating province has been ended");
 	}
 
 	/**
@@ -405,11 +425,12 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validateCity(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating city has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating city has been started");
 
 		SetValuedMap<String, String> cityMap = new HashSetValuedHashMap<>();
 		Set<String> cityNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.CITY.getLevel());
-		Optional.ofNullable(cityNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(cityNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> cityMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_CITY_LANGUAGE_PATH.getValue());
@@ -423,14 +444,15 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return cityMap.containsKey(lang) && !cityMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
 				.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 								convertToPath(entry.getValue().getKey())))));
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating city has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating city has been ended");
 	}
 
 	/**
@@ -442,12 +464,13 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validateLocalAdministrativeAuthority(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating local administrative authority has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating local administrative authority has been started");
 
 		SetValuedMap<String, String> localAdministrativeAuthorityMap = new HashSetValuedHashMap<>();
 		Set<String> localAdminAuthNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.LOCAL_ADMINISTRATIVE_AUTHORITY.getLevel());
-		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> localAdministrativeAuthorityMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath
@@ -463,7 +486,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return localAdministrativeAuthorityMap.containsKey(lang)
 					&& !localAdministrativeAuthorityMap.get(lang).contains(entry.getValue().getValue());
@@ -471,8 +494,9 @@ public class RegIdObjectMasterDataValidator {
 				.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 								convertToPath(entry.getValue().getKey())))));
-		
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating local administrative authority has been ended");
+
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating local administrative authority has been ended");
 	}
 
 	/**
@@ -484,25 +508,19 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validatePostalCode(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating postal code has been started");
-
 		SetValuedMap<String, String> postalCodeMap = new HashSetValuedHashMap<>();
 		Set<String> postalCodeNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.POSTAL_CODE.getLevel());
-		Optional.ofNullable(postalCodeNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(postalCodeNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
-						.ifPresent(locationDetail -> postalCodeMap.putAll(locationDetail)));
+						.ifPresent(postalCodeMap::putAll));
 		JsonPath jsonPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_POSTAL_CODE_PATH.getValue());
 		String value = jsonPath.read(identityString, READ_OPTIONS);
-		System.out.println("Val**"+value);
-		System.out.println("Values : "+postalCodeMap.values());
-		if (Objects.nonNull(value) && !postalCodeMap.values().parallelStream()
-				.allMatch(postalCodeList -> postalCodeList.contains(value.trim()))) {	
+		if (Objects.nonNull(value) && !postalCodeMap.values().contains(value)) {
 			errorList.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
 							convertToPath(jsonPath.getPath()))));
 		}
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating postal code has been ended");
 	}
 
 	/**
@@ -514,9 +532,10 @@ public class RegIdObjectMasterDataValidator {
 	 *            the error list
 	 */
 	private void validateDocuments(String identityString, List<ServiceError> errorList) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating documents has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating documents has been started");
 
-		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().parallelStream()
+		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().stream()
 				.filter(entry -> docTypeMap.containsKey(entry.getKey())).forEach(entry -> {
 					JsonPath jsonPath = JsonPath.compile("identity." + entry.getValue() + ".type");
 					Object value = jsonPath.read(identityString, READ_OPTIONS);
@@ -528,7 +547,8 @@ public class RegIdObjectMasterDataValidator {
 												convertToPath(jsonPath.getPath()))));
 					}
 				});
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "Validating documents has been ended");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Validating documents has been ended");
 	}
 
 	/**
@@ -539,11 +559,13 @@ public class RegIdObjectMasterDataValidator {
 	 * @return the string
 	 */
 	private String convertToPath(String jsonPath) {
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "converting to path has been started");
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"converting to path has been started");
 
 		String path = String.valueOf(jsonPath.replaceAll("[$']", ""));
-		
-		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID, "converting to path has been ended");
+
+		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"converting to path has been ended");
 		return path.substring(1, path.length() - 1).replace("][", "/");
 	}
 }

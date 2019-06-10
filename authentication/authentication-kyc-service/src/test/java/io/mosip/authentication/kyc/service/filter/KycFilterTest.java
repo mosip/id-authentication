@@ -41,7 +41,6 @@ import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
 @RunWith(SpringRunner.class)

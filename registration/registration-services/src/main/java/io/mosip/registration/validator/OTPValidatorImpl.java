@@ -3,8 +3,8 @@ package io.mosip.registration.validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.util.common.OTPManager;
 
 /**
@@ -28,9 +28,13 @@ public class OTPValidatorImpl extends AuthenticationBaseValidator {
 	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
-		 ResponseDTO responseDTO = otpManager.validateOTP(authenticationValidatorDTO.getUserId(), authenticationValidatorDTO.getOtp());
+		// TODO Auto-generated method stub
+		 return false;
+	}
 
-		return responseDTO.getSuccessResponseDTO()!=null;
+	@Override
+	public AuthTokenDTO validate(String userId, String otp) {
+		return otpManager.validateOTP(userId, otp);
 	}
 
 }

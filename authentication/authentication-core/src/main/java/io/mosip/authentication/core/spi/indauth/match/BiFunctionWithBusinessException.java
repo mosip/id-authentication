@@ -2,6 +2,15 @@ package io.mosip.authentication.core.spi.indauth.match;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
+/**
+ * 
+ * 
+ * 
+ * 
+ * Functional interface to throw Business Exception
+ * 
+ * @author Dinesh Karuppiah.T
+ */
 @FunctionalInterface
 public interface BiFunctionWithBusinessException<T, U, R> {
 

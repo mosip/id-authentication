@@ -1,18 +1,14 @@
 package io.mosip.registration.processor.stages.osivalidator;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -26,11 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.xml.sax.SAXException;
 
-import io.mosip.kernel.bioapi.impl.BioApiImpl;
-import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
-import io.mosip.kernel.core.bioapi.spi.IBioApi;
-import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -40,8 +32,6 @@ import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
 import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
 import io.mosip.registration.processor.core.auth.dto.PinInfo;
-import io.mosip.registration.processor.core.auth.util.BioSubTypeMapperUtil;
-import io.mosip.registration.processor.core.auth.util.BioTypeMapperUtil;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.constant.JsonConstant;
@@ -179,13 +169,7 @@ public class OSIValidator {
 
 	private static final String INDIVIDUAL_TYPE_USERID = "USERID";
 
-	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
-
-	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
-
-	IBioApi bioAPi = new BioApiImpl();
-
-	CbeffUtil cbeffUtil = new CbeffImpl();
+	
 
 	/**
 	 * Checks if is valid OSI.
@@ -371,35 +355,18 @@ public class OSIValidator {
 							StatusMessage.PASSWORD_OTP_FAILURE);
 				}
 			} else {
-				isValid = validateUserBiometric(registrationId, officerBiometricFileName, regOsi.getOfficerId());
-				if (!isValid) {
-					registrationStatusDto.setStatusComment(StatusMessage.IDA_AUTHENTICATION_FAILURE);
-					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-							.getStatusCode(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE));
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				}
+				InputStream biometricStream = adapter.getFile(registrationId, officerBiometricFileName.toUpperCase());
+				byte[] officerbiometric = IOUtils.toByteArray(biometricStream);
+				isValid= validateUserBiometric(registrationId, officerId, officerbiometric,
+						INDIVIDUAL_TYPE_USERID);
 			}
 
 		} else
 			isValid = true; // either officer or supervisor information is mandatory. Officer id can be null
-
+							// null
 		return isValid;
 	}
 
-	private boolean validateUserBiometric(String registrationId, String fileName, String userId)
-			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
-		InputStream biometricStream = adapter.getFile(registrationId, fileName.toUpperCase());
-		byte[] officerbiometric = IOUtils.toByteArray(biometricStream);
-		AuthResponseDTO response = authUtil.authByIdAuthentication(userId, INDIVIDUAL_TYPE_USERID, officerbiometric);
-		if (!response.getResponse().isAuthStatus()) {
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, StatusMessage.IDA_AUTHENTICATION_FAILURE + " " + response.getErrors().get(0));
-		}
-
-		return response.getResponse().isAuthStatus();
-
-	}
 
 	/**
 	 * Check biometric null.
@@ -464,13 +431,10 @@ public class OSIValidator {
 							StatusMessage.PASSWORD_OTP_FAILURE);
 				}
 			} else {
-				isValid = validateUserBiometric(registrationId, supervisorBiometricFileName, regOsi.getSupervisorId());
-				if (!isValid) {
-					registrationStatusDto.setStatusComment(StatusMessage.IDA_AUTHENTICATION_FAILURE);
-					registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-							.getStatusCode(RegistrationExceptionTypeCode.IDA_AUTHENTICATION_FAILURE));
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				}
+				InputStream biometricStream = adapter.getFile(registrationId, supervisorBiometricFileName.toUpperCase());
+				byte[] supervisorbiometric = IOUtils.toByteArray(biometricStream);
+				isValid= validateUserBiometric(registrationId, supervisorId, supervisorbiometric,
+						INDIVIDUAL_TYPE_USERID);
 			}
 
 		} else
@@ -539,7 +503,7 @@ public class OSIValidator {
 
 				if (introducerUIN == null && validateIntroducerRid(introducerRID, registrationId)) {
 
-					introducerUinNumber = idRepoService.getUinFromIDRepo(introducerRID,
+					introducerUinNumber = idRepoService.getUinByRid(introducerRID,
 							utility.getGetRegProcessorDemographicIdentity());
 					introducerUIN = numberToString(introducerUinNumber);
 					if (introducerUIN == null) {
@@ -555,7 +519,22 @@ public class OSIValidator {
 
 				}
 				if (introducerUIN != null) {
-					return validateIntroducer(registrationId, introducerUIN, introducerBiometricsFileName);
+					if (introducerBiometricsFileName != null && (!introducerBiometricsFileName.trim().isEmpty())) {
+						InputStream packetMetaInfoStream = adapter.getFile(registrationId,
+								PacketStructure.BIOMETRIC + introducerBiometricsFileName.toUpperCase());
+						byte[] introducerbiometric = IOUtils.toByteArray(packetMetaInfoStream);
+						return validateUserBiometric(registrationId, introducerUIN, introducerbiometric,
+								INDIVIDUAL_TYPE_UIN);
+					}
+					else {
+						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+							.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
+						registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+						registrationStatusDto.setStatusComment(StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET + registrationId);
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+							registrationId, StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
+					return false;
+					}
 				} else {
 					return false;
 				}
@@ -570,52 +549,6 @@ public class OSIValidator {
 
 	private String numberToString(Number number) {
 		return number != null ? number.toString() : null;
-	}
-
-	/**
-	 * Sets the finger biometric dto.
-	 *
-	 * @param obj
-	 *            the obj
-	 * @param fieldName
-	 *            the field name
-	 * @param value
-	 *            the value
-	 */
-	private void setFingerBiometricDto(IdentityDTO obj, String fieldName, Object value) {
-		PropertyDescriptor pd;
-		try {
-			pd = new PropertyDescriptor(fieldName, obj.getClass());
-			pd.getWriteMethod().invoke(obj, value);
-		} catch (IntrospectionException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"OSIValidator", e.getMessage());
-		}
-	}
-
-	/**
-	 * Sets the finger biometric.
-	 *
-	 * @param biometricData
-	 *            the biometric data
-	 * @param type
-	 *            the type
-	 */
-	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type) {
-		String finger = null;
-		String[] fingerType = env.getProperty("registration.processor.fingerType").split(",");
-		List<String> list = new ArrayList<>(Arrays.asList(fingerType));
-		finger = type;
-		Iterator<String> it = list.iterator();
-		while (it.hasNext()) {
-			String ftype = it.next();
-			if (ftype.equalsIgnoreCase(type)) {
-				finger = ftype;
-				break;
-			}
-		}
-		this.setFingerBiometricDto(identityDTO, finger, biometricData);
 	}
 
 	/**
@@ -659,15 +592,35 @@ public class OSIValidator {
 	 * @throws BiometricException
 	 */
 
-	private boolean validateIntroducer(String registrationId, String introducerUin, String introducerBiometricsFile)
+	/**
+	 * Validate user.
+	 *
+	 * @param userId
+	 *            the userid
+	 * @param registrationId
+	 *            the registration id
+	 * @param userbiometric
+	 *            biometric data in byte array
+	 * @param individualType user type
+	 * @return true, if successful
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws ApisResourceAccessException
+	 *             the apis resource access exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws BioTypeException
+	 * @throws BiometricException
+	 */
+
+	private boolean validateUserBiometric(String registrationId, String userId, byte[] userbiometric, String individualType)
 			throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException,
 			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
-		if (introducerBiometricsFile != null && (!introducerBiometricsFile.trim().isEmpty())) {
-			InputStream packetMetaInfoStream = adapter.getFile(registrationId,
-					PacketStructure.BIOMETRIC + introducerBiometricsFile.toUpperCase());
-			byte[] introducerbiometric = IOUtils.toByteArray(packetMetaInfoStream);
-			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(introducerUin, INDIVIDUAL_TYPE_UIN,
-					introducerbiometric);
+
+			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(userId, individualType,
+					userbiometric);
 			if (authResponseDTO.getErrors() == null || authResponseDTO.getErrors().isEmpty()) {
 				if (authResponseDTO.getResponse().isAuthStatus()) {
 					return true;
@@ -684,20 +637,12 @@ public class OSIValidator {
 				registrationStatusDto.setLatestTransactionStatusCode(
 						registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_ERROR));
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				registrationStatusDto.setStatusComment(errors.get(0).getErrorMessage());
+				String result = errors.stream().map(s -> s.getErrorMessage()+" ").collect(Collectors.joining());
+				registrationStatusDto.setStatusComment(result);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, errors.get(0).getErrorMessage());
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, result);
 				return false;
 			}
-		} else {
-			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-					.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-			registrationStatusDto.setStatusComment(StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET + registrationId);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
-			return false;
-		}
 
 	}
 

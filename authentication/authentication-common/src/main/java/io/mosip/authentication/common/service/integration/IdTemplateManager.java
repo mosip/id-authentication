@@ -25,9 +25,10 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 
 /**
  * 
+ * Manage fetching / applying Templates based on entity.
+ *
  * @author Dinesh Karuppiah.T
  */
-
 @Component
 public class IdTemplateManager {
 
@@ -38,7 +39,6 @@ public class IdTemplateManager {
 
 	/** The Constant PRIMARY. */
 	private static final String PRIMARY = "primary";
-
 
 	/** The Constant NOTIFICATION_LANGUAGE_SUPPORT. */
 

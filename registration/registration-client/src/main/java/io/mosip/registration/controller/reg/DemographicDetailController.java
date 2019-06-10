@@ -604,7 +604,7 @@ public class DemographicDetailController extends BaseController {
 	private ImageView addressLine3KeyboardImage;
 	@FXML
 	private ImageView parentNameKeyboardImage;
-
+	
 	@FXML
 	private VBox localFullName;
 	@FXML
@@ -653,6 +653,13 @@ public class DemographicDetailController extends BaseController {
 	private int minAge;
 	private int maxAge;
 
+	@FXML
+	private HBox parentDetailsHbox;
+	@FXML
+	private HBox localParentDetailsHbox;
+	@FXML
+	private AnchorPane ridOrUinToggle;
+	
 	@Autowired
 	private MasterSyncService masterSyncService;
 	@FXML
@@ -1138,6 +1145,7 @@ public class DemographicDetailController extends BaseController {
 									parentDetailPane.setVisible(true);
 									parentDetailPane.setDisable(false);
 									parentName.clear();
+									parentNameLocalLanguage.clear();
 									parentRegId.clear();
 									isChild = true;
 									parentNameKeyboardImage.setDisable(!isChild);
@@ -1156,6 +1164,7 @@ public class DemographicDetailController extends BaseController {
 								isChild = false;
 								validation.setChild(isChild);
 								parentName.clear();
+								parentNameLocalLanguage.clear();
 								parentRegId.clear();
 								parentRegIdLocalLanguage.clear();
 								parentRegId.clear();
@@ -1218,11 +1227,11 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.populateLocalComboBox(parentFlowPane, localAdminAuthority, localAdminAuthorityLocalLanguage);
 
 			dateValidation.validateDate(parentFlowPane, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 			dateValidation.validateMonth(parentFlowPane, dd, mm, yyyy, validation, fxUtils, mmLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 			dateValidation.validateYear(parentFlowPane, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1434,7 +1443,6 @@ public class DemographicDetailController extends BaseController {
 
 			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
 
-			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
 			registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1616,6 +1624,10 @@ public class DemographicDetailController extends BaseController {
 	public void uinUpdate() {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 
+			clearAllValues();
+			documentScanController.getBioExceptionToggleLabel1().setLayoutX(0);
+			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,false);
+			
 			keyboardNode.setDisable(false);
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
 
@@ -1681,6 +1693,23 @@ public class DemographicDetailController extends BaseController {
 				parentNameKeyboardImage.setDisable(!isChild);
 			}
 
+			if (isChild) {
+
+				applicationUinIdPane.setDisable(false);
+				applicationRidPane.setDisable(true);
+				applicationRidPane.setVisible(false);
+				applicationRidPane.setManaged(false);
+				ridOrUinToggle.setVisible(false);
+				ridOrUinToggle.setManaged(false);
+				localRidPane.setDisable(true);
+				localRidPane.setVisible(false);
+				localRidPane.setManaged(false);
+				localRidOrUinToggle.setVisible(false);
+				localRidOrUinToggle.setManaged(false);
+				
+				parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
+				localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
+			}
 		}
 	}
 

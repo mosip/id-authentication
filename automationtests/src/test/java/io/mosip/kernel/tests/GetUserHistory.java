@@ -5,8 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -28,10 +30,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -51,7 +53,7 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getUserHistory = props.get("getUserHistory");
 	private String folderPath = "kernel/GetUserHistory";
 	private String outputFile = "GetUserHistoryOutput.json";
@@ -60,6 +62,7 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
+	private AssertKernel assertKernel = new AssertKernel();
 	
 	// Before method is to get the test case name from the input folders
 	@BeforeMethod(alwaysRun=true)
@@ -90,20 +93,28 @@ public class GetUserHistory extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
+		if(testCaseName.contains("smoke") | testCaseName.contains("validating_request")|testCaseName.contains("firstUpdateDate")|testCaseName.contains("secondUpdateDate")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			actualRequest.put("eff_dtimes", time);
+		}
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(getUserHistory, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(getUserHistory, actualRequest,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		
-		// Removing of unstable attributes from response		
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		outerKeys.add("responsetime");
-		innerKeys.add("lastSyncTime");
-
+		// Removing of unstable attributes from response
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
+		listOfElementToRemove.add("lastSyncTime");
+		
 		// Comparing expected and actual response
-		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		status=assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 	            
 				finalStatus = "Pass";

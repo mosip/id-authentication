@@ -23,7 +23,7 @@ public class RegistrationExternalStatusUtility {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationExternalStatusUtility.class);
 
 	/** The threshold time. */
-	@Value("${registration.processor.threshold}")
+	@Value("${registration.processor.max.retry}")
 	private int thresholdTime;
 
 	/** The elapsed time. */

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.BlacklistedWords;
 
 /**
@@ -14,7 +14,7 @@ import io.mosip.kernel.syncdata.entity.BlacklistedWords;
  * @author Abhishek Kumar
  * @since 1.0.0
  */
-public interface BlacklistedWordsRepository extends BaseRepository<BlacklistedWords, String> {
+public interface BlacklistedWordsRepository extends JpaRepository<BlacklistedWords, String> {
 
 	/**
 	 * Method to find list of BlacklistedWords created , updated or deleted time is

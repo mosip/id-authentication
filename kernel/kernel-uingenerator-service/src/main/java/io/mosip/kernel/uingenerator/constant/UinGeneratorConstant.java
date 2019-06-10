@@ -49,34 +49,6 @@ public final class UinGeneratorConstant {
 	public static final String VUIN = "/uin";
 
 	/**
-	 * The string field HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS
-	 */
-	public static final String HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS = "hibernate.current_session_context_class";
-	/**
-	 * HIBERNATE_JDBC_LOB_NON_CONTEXTUAL_CREATION
-	 */
-	public static final String HIBERNATE_JDBC_LOB_NON_CONTEXTUAL_CREATION = "hibernate.jdbc.lob.non_contextual_creation";
-	/**
-	 * The string field HIBERNATE_DIALECT
-	 */
-	public static final String HIBERNATE_DIALECT = "hibernate.dialect";
-	/**
-	 * The string field JAVAX_PERSISTENCE_JDBC_PASS
-	 */
-	public static final String JAVAX_PERSISTENCE_JDBC_PASS = "uin_database_password";
-	/**
-	 * The string field JAVAX_PERSISTENCE_JDBC_USER
-	 */
-	public static final String JAVAX_PERSISTENCE_JDBC_USER = "uin_database_username";
-	/**
-	 * The string field JAVAX_PERSISTENCE_JDBC_URL
-	 */
-	public static final String JAVAX_PERSISTENCE_JDBC_URL = "uin_database_url";
-	/**
-	 * The string field JAVAX_PERSISTENCE_JDBC_DRIVER
-	 */
-	public static final String JAVAX_PERSISTENCE_JDBC_DRIVER = "javax.persistence.jdbc.driver";
-	/**
 	 * The string field COMMA
 	 */
 	public static final String COMMA = ",";

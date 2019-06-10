@@ -56,11 +56,13 @@ public enum IdRepoErrorConstants {
 
 	FILE_NOT_FOUND("IDR-IDS-006", "File(s) not found in DFS"),
 	
+	MASTERDATA_RETRIEVE_ERROR("IDR-IDS-007", "Failed to retrieve data from kernel Masterdata"),
+	
 	// VID Service
 	
 	INVALID_VID("IDR-VID-001","VID is %s"),
 	
-	VID_GENERATION_FAILED("IDR-VID-002","Failed to %s VID"),
+	VID_GENERATION_FAILED("IDR-VID-002","Failed to generate VID"),
 	
 	VID_POLICY_FAILED("IDR-VID-003","Could not generate/regenerate VID as per policy"),
 	
@@ -68,7 +70,7 @@ public enum IdRepoErrorConstants {
 	
 	UIN_RETRIEVAL_FAILED("IDR-VID-005", "Failed to retrieve uin data using Identity Service"),
 	
-	UIN_HASH_MISMATCH("IDR-IDS-006", "Uin hash does not match");
+	UIN_HASH_MISMATCH("IDR-VID-006", "Uin hash does not match");
 	
 
 	/** The error code. */

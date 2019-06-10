@@ -64,7 +64,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
 				uinEntity.setUin(encryptedUinWithSalt);
 				
-				List<Object> propertyNamesList = Arrays.asList(propertyNames);
+				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = encryptedData;
 				int indexOfUin = propertyNamesList.indexOf("uin");
@@ -101,7 +101,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 	public boolean onLoad(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 		try {
 			if (entity instanceof Uin || entity instanceof UinHistory) {
-				List<Object> propertyNamesList = Arrays.asList(propertyNames);
+				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				state[indexOfData] = securityManager.decrypt((byte[]) state[indexOfData]);
 
@@ -124,7 +124,7 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 			if (entity instanceof Uin) {
 				Uin uinEntity = (Uin) entity;
 				byte[] encryptedData = securityManager.encrypt(uinEntity.getUinData());
-				List<Object> propertyNamesList = Arrays.asList(propertyNames);
+				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int indexOfData = propertyNamesList.indexOf(UIN_DATA);
 				currentState[indexOfData] = encryptedData;
 				return super.onFlushDirty(uinEntity, id, currentState, previousState, propertyNames, types);
