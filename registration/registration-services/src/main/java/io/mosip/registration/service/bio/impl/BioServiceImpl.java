@@ -409,8 +409,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 				byte[] isoImageBytes = bioData.getBioValue();
 				segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
 
-				segmentedDetailsDTO.setFingerType(bioData.getBioSegmentedType());
-				segmentedDetailsDTO.setFingerprintImageName(bioData.getBioSegmentedType());
+				segmentedDetailsDTO.setFingerType(bioData.getBioSubType());
+				segmentedDetailsDTO.setFingerprintImageName(bioData.getBioSubType());
 				segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
 				segmentedDetailsDTO.setForceCaptured(false);
 				segmentedDetailsDTO.setQualityScore(90);
