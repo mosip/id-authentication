@@ -69,6 +69,7 @@ public class LocationController {
 		return responseWrapper;
 	}
 
+	
 	@ResponseFilter
 	@PostMapping()
 	public ResponseWrapper<PostLocationCodeResponseDto> createLocationHierarchyDetails(
@@ -120,6 +121,7 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
+	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(

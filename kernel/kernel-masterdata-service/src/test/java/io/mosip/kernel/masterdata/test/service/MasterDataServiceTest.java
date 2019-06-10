@@ -223,13 +223,18 @@ public class MasterDataServiceTest {
 	LocationService locationHierarchyService;
 
 	List<Location> locationHierarchies = null;
+	List<Location> locationHierarchyList = null;
 	List<Object[]> locObjList = null;
 	LocationCodeResponseDto locationCodeResponseDto = null;
 	Location locationHierarchy = null;
 	Location locationHierarchy1 = null;
 	LocationDto locationDtos = null;
+	Location locationHierarchy2 = null;
+	Location locationHierarchy3 = null;
+	
 
 	RequestWrapper<LocationDto> requestLocationDto = null;
+	RequestWrapper<LocationDto> requestLocationDto1 = null;
 
 	@MockBean
 	private TemplateRepository templateRepository;
@@ -383,6 +388,30 @@ public class MasterDataServiceTest {
 		locationDto.setIsActive(true);
 		requestLocationDto = new RequestWrapper<>();
 		requestLocationDto.setRequest(locationDto);
+
+		locationHierarchyList = new ArrayList<>();
+		locationHierarchy3 = new Location();
+		locationHierarchy3.setCode("KAR");
+		locationHierarchy3.setName("KARNATAKA");
+		locationHierarchy3.setHierarchyLevel((short) 1);
+		locationHierarchy3.setHierarchyName(null);
+		locationHierarchy3.setParentLocCode("IND");
+		locationHierarchy3.setLangCode("KAN");
+		locationHierarchy3.setCreatedBy("dfs");
+		locationHierarchy3.setUpdatedBy("sdfsd");
+		locationHierarchy3.setIsActive(true);
+		locationHierarchyList.add(locationHierarchy3);
+		
+		LocationDto locationDto1 = new LocationDto();
+		locationDto1.setCode("IND");
+		locationDto1.setName("INDIA");
+		locationDto1.setHierarchyLevel(1);
+		locationDto1.setHierarchyName("CONTRY");
+		locationDto1.setLangCode("HIN");
+		locationDto1.setParentLocCode(null);
+		locationDto1.setIsActive(false);
+		requestLocationDto1 = new RequestWrapper<>();
+		requestLocationDto1.setRequest(locationDto1);
 
 	}
 
@@ -1212,6 +1241,17 @@ public class MasterDataServiceTest {
 	public void locationHierarchySaveNegativeTest() {
 		Mockito.when(locationHierarchyRepository.create(Mockito.any())).thenThrow(DataAccessLayerException.class);
 		locationHierarchyService.createLocationHierarchy(requestLocationDto.getRequest());
+	}
+
+	@Test(expected = RequestException.class)
+	public void updateLocationDetailsIsActiveTest() {
+
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy2);
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(locationHierarchyList);
+
+		locationHierarchyService.updateLocationDetails(requestLocationDto1.getRequest());
 	}
 
 	@Test
