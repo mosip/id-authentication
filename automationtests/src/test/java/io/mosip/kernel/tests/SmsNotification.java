@@ -55,7 +55,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	private final String apiName = "SmsNotification";
 	private final String requestJsonName = "SmsNotificationRequest";
 	private final String outputJsonName = "SmsNotificationOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String SmsNotification_URI = props.get("SmsNotification_URI").toString();
 
 	protected String testCaseName = "";
@@ -132,7 +132,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.postRequest(objectData.toJSONString(), SmsNotification_URI,cookie);
+				response = applicationLibrary.postWithJson(SmsNotification_URI, objectData.toJSONString(), cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));

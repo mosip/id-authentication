@@ -522,7 +522,7 @@ public class Validations extends BaseController {
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.AGE_FIELD:
-				validation[0] = getValueFromApplicationContext(RegistrationConstants.AGE_REGEX);
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.AGE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.ADDRESS_LINE1:

@@ -1375,14 +1375,14 @@ public class SyncDataIntegrationTest {
 
 	}
 
-	@Test
-	@WithUserDetails(value = "reg-officer")
-	public void syncJobDefException() throws Exception {
-		mockSuccess();
-		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
-		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
-		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
-	}
+//	@Test
+//	@WithUserDetails(value = "reg-officer")
+//	public void syncJobDefException() throws Exception {
+//		mockSuccess();
+//		MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
+//		server.expect(requestTo(baseUri + "/1970-01-01T00:00")).andRespond(withServerError().body(JSON_SYNC_JOB_DEF));
+//		mockMvc.perform(get(syncDataUrlMacAdress, "10001")).andExpect(status().isInternalServerError());
+//	}
 
 	@Test
 	@WithUserDetails(value = "reg-officer")

@@ -54,7 +54,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String syncConf = props.get("syncConf");
 	private String folderPath = "kernel/SyncConfigurations";
 	private String outputFile = "SyncConfigurationsOutput.json";
@@ -102,7 +102,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		configDetail.put("globalConfiguration", globalConfig);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestNoParameter(syncConf,cookie);
+		Response res=applicationLibrary.getWithoutParams(syncConf,cookie);
 		
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);

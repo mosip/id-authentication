@@ -57,7 +57,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	private final String requestJsonName = "encryptdecryptRequest";
 	private final String outputJsonName = "encryptdecryptOutput";
 
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 
 	private final String encrypt_URI = props.get("encrypt_URI").toString();
 	private final String decrypt_URI = props.get("decrypt_URI").toString();
@@ -135,7 +135,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 
 		logger.info("Json Request Is : " + objectData.toJSONString());
 
-		response = applicationLibrary.postRequest(objectData.toJSONString(), encrypt_URI, cookie);
+		response = applicationLibrary.postWithJson(encrypt_URI, objectData.toJSONString(), cookie);
 
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
@@ -172,7 +172,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 			}
 			objectData.put("request", request);
 			
-			response = applicationLibrary.postRequest(objectData.toJSONString(), decrypt_URI, cookie);
+			response = applicationLibrary.postWithJson(decrypt_URI, objectData.toJSONString(), cookie);
 			statusCode = response.statusCode();
 			logger.info("Decryption Status Code is : " + statusCode);
 			//This method is for checking the authentication is pass or fail in rest services
@@ -209,7 +209,6 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 		arr.add(object);
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

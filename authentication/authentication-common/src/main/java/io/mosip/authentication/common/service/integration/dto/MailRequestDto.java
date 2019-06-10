@@ -3,9 +3,13 @@ package io.mosip.authentication.common.service.integration.dto;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.Data;
 
+
 /**
+ * General-purpose of {@code MailRequestDto} class used to store Mail request
+ * Info's
  * 
  * @author Dinesh Karuppiah.T
+ * @author Rakesh Roshan
  */
 @Data
 public class MailRequestDto {

@@ -298,7 +298,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				scanFingers(RegistrationConstants.RIGHTPALM,
-						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
+						RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
 				scanFingers(RegistrationConstants.LEFTPALM,
@@ -848,7 +848,11 @@ public class GuardianBiometricsController extends BaseController implements Init
 				}
 			} else {
 				biometricTypecombo.setVisible(true);
-				biometricBox.setVisible(false);
+				if (!bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
+					biometricBox.setVisible(true);
+				} else {
+					biometricBox.setVisible(false);
+				}
 				thresholdBox.setVisible(true);
 				scanBtn.setText(RegistrationUIConstants.SCAN);
 				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);

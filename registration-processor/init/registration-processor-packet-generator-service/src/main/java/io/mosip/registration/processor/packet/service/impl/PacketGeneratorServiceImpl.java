@@ -77,7 +77,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The primary languagecode. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
 	@Autowired

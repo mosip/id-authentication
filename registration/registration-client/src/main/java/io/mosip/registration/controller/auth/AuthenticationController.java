@@ -29,12 +29,9 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
-import io.mosip.registration.dto.AuthenticationValidatorDTO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.bio.BioService;
@@ -115,7 +112,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	private Label photoLabel;
 	@FXML
 	private Label pwdLabel;
-
+	@FXML
+	private Button getOTP;
+	
 	@Autowired
 	private PacketHandlerController packetHandlerController;
 
@@ -174,6 +173,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				// Enable submit button
 				// Generate alert to show OTP
+				getOTP.setVisible(false);
 				generateAlert(RegistrationConstants.ALERT_INFORMATION,
 						RegistrationUIConstants.OTP_GENERATION_SUCCESS_MESSAGE);
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
@@ -202,10 +202,7 @@ public class AuthenticationController extends BaseController implements Initiali
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
 					if (fetchUserRole(otpUserId.getText())) {
-						AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-						authenticationValidatorDTO.setUserId(otpUserId.getText());
-						authenticationValidatorDTO.setOtp(otp.getText());
-						if (authenticationService.authValidator(RegistrationConstants.OTP, authenticationValidatorDTO)) {
+						if (null != authenticationService.authValidator(RegistrationConstants.OTP, otpUserId.getText(), otp.getText())) {
 							userAuthenticationTypeListValidation.remove(0);
 							userNameField = otpUserId.getText();
 							if (!isEODAuthentication) {
@@ -224,10 +221,7 @@ public class AuthenticationController extends BaseController implements Initiali
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 				}
 			} else {
-				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-				authenticationValidatorDTO.setUserId(otpUserId.getText());
-				authenticationValidatorDTO.setOtp(otp.getText());
-				if (authenticationService.authValidator(RegistrationConstants.OTP, authenticationValidatorDTO)) {
+				if (null != authenticationService.authValidator(RegistrationConstants.OTP, otpUserId.getText(), otp.getText())) {
 					if (!isEODAuthentication) {
 						getOSIData().setOperatorAuthenticatedByPIN(true);
 					}
@@ -512,6 +506,9 @@ public class AuthenticationController extends BaseController implements Initiali
 				String authenticationType = String
 						.valueOf(userAuthenticationTypeList.get(RegistrationConstants.PARAM_ZERO));
 
+				if(authenticationType.equalsIgnoreCase(RegistrationConstants.OTP)) {
+					getOTP.setVisible(true);
+				}
 				if ((RegistrationConstants.DISABLE.equalsIgnoreCase(
 						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
 						&& authenticationType.equalsIgnoreCase(RegistrationConstants.FINGERPRINT))

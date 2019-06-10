@@ -49,7 +49,7 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getRIDByUserId = props.get("getRIDByUserId");
 	private String folderPath = "kernel/GetRIDByUserIDAndAppID";
 	private String outputFile = "GetRIDByUserIDAndAppIDOutput.json";
@@ -88,11 +88,12 @@ public class GetRIDByUserId extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(getRIDByUserId, actualRequest,cookie);
-		
-		//This method is for checking the authentication is pass or fail in rest services
-		new CommonLibrary().responseAuthValidation(res);
-		
+		Response res=applicationLibrary.getWithPathParam(getRIDByUserId, actualRequest,cookie);
+		logger.info("res----"+res.asString());
+		if(testCaseName.equalsIgnoreCase("Kernel_GetRIDByUserId_smoke")) {
+			//This method is for checking the authentication is pass or fail in rest services
+			new CommonLibrary().responseAuthValidation(res);
+		}
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");

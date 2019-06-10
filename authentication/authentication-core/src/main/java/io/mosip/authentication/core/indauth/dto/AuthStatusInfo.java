@@ -5,12 +5,10 @@ import java.util.List;
 import lombok.Data;
 
 /**
+ * General-purpose of {@code AuthStatusInfo} class used to provide Auth status
+ * Info
+ * 
  * @author Dinesh Karuppiah.T
- *
- */
-
-/**
- * Instantiates a new auth status info.
  */
 @Data
 public class AuthStatusInfo {

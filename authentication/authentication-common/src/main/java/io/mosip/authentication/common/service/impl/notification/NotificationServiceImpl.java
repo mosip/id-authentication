@@ -40,12 +40,11 @@ import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.notification.service.NotificationService;
 
-/**
+/***
+ * 
+ * Service class to notify users via SMS or Email notification.
  * 
  * @author Dinesh Karuppiah.T
- * 
- * 
- *
  */
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -299,6 +298,5 @@ public class NotificationServiceImpl implements NotificationService {
 		String mailContent = applyTemplate(values, contentTemplate);
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
-
 
 }

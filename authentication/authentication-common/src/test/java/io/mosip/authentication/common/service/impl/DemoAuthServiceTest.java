@@ -2,7 +2,6 @@ package io.mosip.authentication.common.service.impl;
 
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -40,8 +39,6 @@ import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
@@ -631,7 +628,7 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setValue("Dinesh1");
 		demoEntity.put("fullName", nameList);
 		String individualId = "274390482564";
-		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
+		demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
 				"1234567890");
 		try {
 			 demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,"1234567890");
