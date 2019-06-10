@@ -531,7 +531,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean schemaValidation(JSONObject idObject,InternalRegistrationStatusDto registrationStatusDto)
-			throws ApisResourceAccessException, IOException, IdObjectValidationFailedException, IdObjectIOException
+			throws ApisResourceAccessException, IOException, IdObjectValidationFailedException, IdObjectIOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException
 			 {
 
 		if (env.getProperty(VALIDATESCHEMA).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
