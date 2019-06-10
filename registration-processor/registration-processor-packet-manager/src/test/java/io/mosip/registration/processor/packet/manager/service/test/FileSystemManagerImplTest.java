@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.packet.manager.service.test;
+package io.mosip.registration.processor.packet.manager.service.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,26 +26,26 @@ import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
-import io.mosip.registration.processor.core.spi.decryptor.Decryptor;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.packet.manager.PacketManagerBootApplication;
+import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 
-*//**
+/**
  * FileSystemManagerImpl test
  * 
  * @author Abhishek Kumar
  * @since 1.0.0
- *//*
+ */
 @SpringBootTest(classes = PacketManagerBootApplication.class)
 @RunWith(SpringRunner.class)
 public class FileSystemManagerImplTest {
 
 	@Autowired
-	private FileSystemManager fsManager;
+	private PacketManager packetManager;
 
 	@MockBean
-	private Decryptor decryptor;
+	private Decryptor decryptorImpl;
 
 	@MockBean
 	private FileSystemAdapter fsAdapter;
@@ -64,22 +64,22 @@ public class FileSystemManagerImplTest {
 	public void getPacketSuccess() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException,
 			io.mosip.kernel.core.exception.IOException {
 		when(fsAdapter.getPacket(anyString())).thenReturn(IOUtils.toInputStream("DATA", "UTF-8"));
-		when(decryptor.decrypt(any(), anyString())).thenReturn(IOUtils.toInputStream("DATA", "UTF-8"));
-		fsManager.getPacket("12345678901234567890");
+		when(decryptorImpl.decrypt(any(), anyString())).thenReturn(IOUtils.toInputStream("DATA", "UTF-8"));
+		packetManager.getPacket("12345678901234567890");
 	}
 
 	@Test(expected = FileNotFoundInDestinationException.class)
 	public void getPacketPacketNoFound() throws IOException, PacketDecryptionFailureException,
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
-		when(decryptor.decrypt(any(), anyString())).thenReturn(IOUtils.toInputStream("DATA", "UTF-8"));
-		fsManager.getPacket("12345678901234567890");
+		when(decryptorImpl.decrypt(any(), anyString())).thenReturn(IOUtils.toInputStream("DATA", "UTF-8"));
+		packetManager.getPacket("12345678901234567890");
 	}
 
 	@Test(expected = PacketDecryptionFailureException.class)
 	public void getPacketDecryptionFailed() throws IOException, PacketDecryptionFailureException,
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		when(fsAdapter.getPacket(anyString())).thenReturn(IOUtils.toInputStream("DATA", "UTF-8"));
-		fsManager.getPacket("12345678901234567890");
+		packetManager.getPacket("12345678901234567890");
 	}
 
 	@Test
@@ -87,8 +87,8 @@ public class FileSystemManagerImplTest {
 			io.mosip.kernel.core.exception.IOException {
 		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
 		when(fsAdapter.getPacket(Mockito.anyString())).thenReturn(inputStream);
-		when(decryptor.decrypt(any(), anyString())).thenReturn(zipFile);
-		InputStream result = fsManager.getFile("12345678901234567890", "DEMOGRAPHIC/ID");
+		when(decryptorImpl.decrypt(any(), anyString())).thenReturn(zipFile);
+		InputStream result = packetManager.getFile("12345678901234567890", "DEMOGRAPHIC/ID");
 		assertNotNull(result);
 
 	}
@@ -98,8 +98,8 @@ public class FileSystemManagerImplTest {
 			io.mosip.kernel.core.exception.IOException {
 		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
 		when(fsAdapter.getPacket(Mockito.anyString())).thenReturn(inputStream);
-		when(decryptor.decrypt(any(), anyString())).thenReturn(zipFile);
-		boolean result = fsManager.checkFileExistence("12345678901234567890", "DEMOGRAPHIC/ID");
+		when(decryptorImpl.decrypt(any(), anyString())).thenReturn(zipFile);
+		boolean result = packetManager.checkFileExistence("12345678901234567890", "DEMOGRAPHIC/ID");
 		assertTrue(result);
 
 	}
@@ -107,34 +107,34 @@ public class FileSystemManagerImplTest {
 	@Test
 	public void storeFilePacketSuccess() {
 		when(fsAdapter.storePacket(Mockito.anyString(), Mockito.any(File.class))).thenReturn(true);
-		boolean result = fsManager.storePacket("12345678901234567890", new File("12345678901234567890"));
+		boolean result = packetManager.storePacket("12345678901234567890", new File("12345678901234567890"));
 		assertTrue(result);
 	}
 
 	@Test(expected = FSAdapterException.class)
 	public void storeFileFailure() {
 		when(fsAdapter.storePacket(Mockito.anyString(), Mockito.any(File.class))).thenThrow(FSAdapterException.class);
-		fsManager.storePacket("12345678901234567890", new File("12345678901234567890"));
+		packetManager.storePacket("12345678901234567890", new File("12345678901234567890"));
 	}
 
 	@Test
 	public void storeFilePacket() {
 		when(fsAdapter.storePacket(Mockito.anyString(), Mockito.any(File.class))).thenReturn(true);
-		boolean result = fsManager.storePacket("12345678901234567890", new File("12345678901234567890"));
+		boolean result = packetManager.storePacket("12345678901234567890", new File("12345678901234567890"));
 		assertTrue(result);
 	}
 
 	@Test(expected = FSAdapterException.class)
 	public void storeFilePacketFailure() {
 		when(fsAdapter.storePacket(Mockito.anyString(), Mockito.any(File.class))).thenThrow(FSAdapterException.class);
-		fsManager.storePacket("12345678901234567890", new File("12345678901234567890"));
+		packetManager.storePacket("12345678901234567890", new File("12345678901234567890"));
 	}
 
 	@Test
 	public void storePacketSuccess() throws IOException {
 		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
 		when(fsAdapter.storePacket(Mockito.anyString(), Mockito.any(InputStream.class))).thenReturn(true);
-		boolean result = fsManager.storePacket("12345678901234567890", inputStream);
+		boolean result = packetManager.storePacket("12345678901234567890", inputStream);
 		assertTrue(result);
 	}
 
@@ -143,31 +143,7 @@ public class FileSystemManagerImplTest {
 		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
 		when(fsAdapter.storePacket(Mockito.anyString(), Mockito.any(InputStream.class)))
 				.thenThrow(FSAdapterException.class);
-		fsManager.storePacket("12345678901234567890", inputStream);
-	}
-
-	@Test
-	public void storeFileWithKeySuccess() throws IOException {
-		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
-		when(fsAdapter.storeFile(anyString(), anyString(), Mockito.any(InputStream.class))).thenReturn(true);
-		boolean result = fsManager.storeFile("12345678901234567890", "12345678901234567890", inputStream);
-		assertTrue(result);
-	}
-
-	@Test(expected = FSAdapterException.class)
-	public void storeFileWithKeyFailure() throws IOException {
-		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
-		when(fsAdapter.storeFile(anyString(), anyString(), Mockito.any(InputStream.class)))
-				.thenThrow(FSAdapterException.class);
-		fsManager.storeFile("12345678901234567890", "12345678901234567890", inputStream);
-	}
-
-	@Test
-	public void unpackPacketSuccess() throws IOException {
-		File folder = tempFolder.newFolder("12345678901234567890");
-		fsManager.unpackPacket(zipFile, folder.getPath());
-		folder.delete();
+		packetManager.storePacket("12345678901234567890", inputStream);
 	}
 
 }
-*/

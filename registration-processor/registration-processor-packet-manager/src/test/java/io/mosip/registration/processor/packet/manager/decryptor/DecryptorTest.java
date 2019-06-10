@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.packet.manager.decryptor;
+package io.mosip.registration.processor.packet.manager.decryptor;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +27,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
-import io.mosip.registration.processor.core.spi.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.PacketManagerBootApplication;
 import io.mosip.registration.processor.packet.manager.dto.CryptomanagerResponseDto;
@@ -145,4 +144,3 @@ public class DecryptorTest {
 
 	}
 }
-*/
