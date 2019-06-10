@@ -95,6 +95,15 @@ MOS-25471|FIXED|YES
 MOS-24772|FIXED|YES
 MOS-25491|FIXED|YES
 MOS-25492|FIXED|YES
+MOS-25490|FIXED|YES
+MOS-25504|FIXED|YES
+MOS-25478|FIXED|YES
+MOS-24727|FIXED|YES
+MOS-25469|FIXED|YES
+MOS-25470|FIXED|YES
+MOS-25493|FIXED|YES
+MOS-25511|FIXED|YES
+
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
