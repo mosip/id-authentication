@@ -375,6 +375,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 				byte[] photoInBytes = byteArrayOutputStream.toByteArray();
 				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace().setFace(photoInBytes);
 				guardianBiometricsController.getBiometricImage().setImage(capture);
+				guardianBiometricsController.getBiometricPane().getStyleClass().clear();
+				guardianBiometricsController.getBiometricPane().getStyleClass().add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
 				guardianBiometricsController.getContinueBtn().setDisable(false);
 			} catch (Exception ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
