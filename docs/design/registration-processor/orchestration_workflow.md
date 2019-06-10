@@ -1,4 +1,5 @@
-### Orchestration
+### Orchestration and Workflow
+------------
 
 MOSIP architecture fallows SEDA architecture pattern, which encourage to create stages which can be executed and deployed independently.
 Registration processor is spilt into multiple fine-grained tasks which is executed by stages. In registration processor, orchestration is archived by composing all these stages together to achieve business objective, which is to create unique user identity.
