@@ -20,14 +20,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -73,6 +78,7 @@ import io.mosip.registration.processor.stages.utils.ApplicantDocumentValidation;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
+import io.mosip.registration.processor.stages.utils.IdObjectsSchemaValidationOperationMapper;
 import io.mosip.registration.processor.stages.utils.MandatoryValidation;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
@@ -132,10 +138,13 @@ public class PacketValidateProcessor {
 	DocumentUtility documentUtility;
 
 	@Autowired
+	IdObjectsSchemaValidationOperationMapper idObjectsSchemaValidationOperationMapper;
+
+	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	@Autowired
-	JsonValidator jsonValidator;
+	IdObjectValidator idObjectValidator;
 
 	@Autowired
 	private Utilities utility;
@@ -263,7 +272,7 @@ public class PacketValidateProcessor {
 			registrationStatusDto.setUpdatedBy(USER);
 
 		} catch (FSAdapterException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto
 					.setStatusComment(PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
@@ -278,7 +287,7 @@ public class PacketValidateProcessor {
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
 		} catch (ApisResourceAccessException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto
 					.setStatusComment(PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -290,7 +299,7 @@ public class PacketValidateProcessor {
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 		} catch (DataAccessException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_DATA_ACCESS_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
@@ -335,7 +344,7 @@ public class PacketValidateProcessor {
 			object.setRid(registrationStatusDto.getRegistrationId());
 
 		} catch (TablenotAccessibleException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto
 					.setStatusComment(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -349,7 +358,7 @@ public class PacketValidateProcessor {
 
 		} catch (BaseUncheckedException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_PVM_BASE_UNCHECKED_EXCEPTION.getMessage());
+			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_PVM_BASE_UNCHECKED_EXCEPTION.getMessage()+"-"+e.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BASE_UNCHECKED_EXCEPTION));
 			isTransactionSuccessful = false;
@@ -410,17 +419,18 @@ public class PacketValidateProcessor {
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
 			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
 			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException, ParseException,
-			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException,
+			IdObjectValidationFailedException, IdObjectIOException , PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		InputStream idJsonStream = fileSystemManager.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
 		String jsonString = new String(bytearray);
-
+		ObjectMapper mapper=new ObjectMapper();
+		JSONObject idObject=mapper.readValue(bytearray, JSONObject.class);
 		Identity identity = packetMetaInfo.getIdentity();
 		Long uin = null;
-		
-		if (!schemaValidation(jsonString)) {
+		if (!schemaValidation(idObject, registrationStatusDto)) {
 			return false;
 		}
 
@@ -520,19 +530,20 @@ public class PacketValidateProcessor {
 		return isMandatoryValidation;
 	}
 
-	private boolean schemaValidation(String jsonString)
-			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+	private boolean schemaValidation(JSONObject idObject,InternalRegistrationStatusDto registrationStatusDto)
+			throws ApisResourceAccessException, IOException, IdObjectValidationFailedException, IdObjectIOException
+			 {
 
 		if (env.getProperty(VALIDATESCHEMA).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			isSchemaValidated = true;
 			return isSchemaValidated;
 		}
-		ValidationReport validationReport = jsonValidator.validateJson(jsonString);
+		IdObjectValidatorSupportedOperations operation= idObjectsSchemaValidationOperationMapper.
+				getOperation(registrationStatusDto.getRegistrationId());
+		isSchemaValidated = idObjectValidator.validateIdObject(idObject, operation);
 
-		if (validationReport.isValid()) {
-			isSchemaValidated = true;
-		} else {
-			packetValidaionFailure = " Schema validation failed ";
+		if (!isSchemaValidated) {
+			packetValidaionFailure=" Schema validation failed ";
 
 		}
 

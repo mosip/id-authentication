@@ -174,6 +174,13 @@ public class DocumentScanController extends BaseController {
 	private Button backBtn;
 
 
+	/**
+	 * @return the bioExceptionToggleLabel1
+	 */
+	public Label getBioExceptionToggleLabel1() {
+		return bioExceptionToggleLabel1;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

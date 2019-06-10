@@ -41,6 +41,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
+import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
@@ -78,6 +82,7 @@ import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequest
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.DocumentUtility;
+import io.mosip.registration.processor.stages.utils.IdObjectsSchemaValidationOperationMapper;
 import io.mosip.registration.processor.stages.utils.MasterDataValidation;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -160,7 +165,10 @@ public class PacketValidateProcessorTest {
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
 	@Mock
-	JsonValidator jsonValidatorImpl;
+	IdObjectValidator idObjectValidator;
+
+	@Mock
+	IdObjectsSchemaValidationOperationMapper idObjectsSchemaValidationOperationMapper;
 
 	@Mock
 	private Utilities utility;
@@ -346,7 +354,7 @@ public class PacketValidateProcessorTest {
 		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("false");
 		when(env.getProperty(VALIDATEMASTERDATA)).thenReturn("true");
 		when(env.getProperty(VALIDATEMANDATORY)).thenReturn("false");
-		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
+		Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenReturn(true);
 
 		JSONObject demographicIdentity = new JSONObject();
 		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
@@ -401,12 +409,10 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	public void testSchemaValidationFailure()
-			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
-		validationReport = new ValidationReport();
-		validationReport.setValid(false);
+	public void testSchemaValidationFailure() throws IdObjectValidationFailedException, IdObjectIOException
+	{
 
-		Mockito.when(jsonValidatorImpl.validateJson(any())).thenReturn(validationReport);
+		Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenReturn(false);
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 	}
@@ -662,7 +668,7 @@ public class PacketValidateProcessorTest {
 
 	@Test
 	public void testBAseUncheckedExceptions() throws Exception {
-		Mockito.when(jsonValidatorImpl.validateJson(any())).thenThrow(new BaseUncheckedException());
+		Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenThrow(new IdObjectValidationFailedException("", ""));
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 

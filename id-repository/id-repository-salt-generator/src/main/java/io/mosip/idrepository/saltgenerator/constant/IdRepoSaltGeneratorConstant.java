@@ -11,6 +11,7 @@ public enum IdRepoSaltGeneratorConstant {
 	PACKAGE_TO_SCAN("io.mosip.idrepository.saltgenerator.*"),
 	DB_SCHEMA_NAME("mosip.idrepo.salt-generator.schemaName"),
 	DB_TABLE_NAME("mosip.idrepo.salt-generator.tableName"),
+	CHUNK_SIZE("mosip.idrepo.salt-generator.chunk-size"),
 	START_SEQ("mosip.idrepo.salt-generator.start-sequence"),
 	END_SEQ("mosip.idrepo.salt-generator.end-sequence"),
 	DATASOURCE_URL("mosip.idrepo.%s.url"),

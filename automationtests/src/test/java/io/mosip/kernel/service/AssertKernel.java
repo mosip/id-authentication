@@ -50,7 +50,7 @@ public class AssertKernel {
 				logger.info(e.getMessage());
 			}
 		
-		return jsonComparison1(actualResponseBody, expectedResponseBody);
+		return jsonComparison(actualResponseBody, expectedResponseBody);
 
 	}
 	

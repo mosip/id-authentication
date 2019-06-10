@@ -17,6 +17,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.uingenerator.constant.HibernatePersistenceConstant;
 import io.mosip.kernel.uingenerator.constant.UINHealthConstants;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.netty.handler.codec.http.HttpResponse;
@@ -70,10 +71,10 @@ public class UinServiceHealthCheckerhandler implements HealthCheckHandler {
 		this.healthChecks = new HealthChecksImpl(vertx);
 		this.authProvider = provider;
 		this.objectMapper = objectMapper;
-		this.driver = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_DRIVER);
-		this.url = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_URL);
-		this.username = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_USER);
-		this.password = environment.getProperty(UinGeneratorConstant.JAVAX_PERSISTENCE_JDBC_PASS);
+		this.driver = environment.getProperty(HibernatePersistenceConstant.JAVAX_PERSISTENCE_JDBC_DRIVER);
+		this.url = environment.getProperty(HibernatePersistenceConstant.JAVAX_PERSISTENCE_JDBC_URL);
+		this.username = environment.getProperty(HibernatePersistenceConstant.JAVAX_PERSISTENCE_JDBC_USER);
+		this.password = environment.getProperty(HibernatePersistenceConstant.JAVAX_PERSISTENCE_JDBC_PASS);
 		this.currentWorkingDirPath = new File(System.getProperty(UinGeneratorConstant.CURRENT_WORKING_DIRECTORY));
 		this.resultBuilder = new UinServiceHealthCheckerhandler.JSONResultBuilder();
 	}
