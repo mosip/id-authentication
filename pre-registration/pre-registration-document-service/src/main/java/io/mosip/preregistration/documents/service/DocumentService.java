@@ -158,6 +158,9 @@ public class DocumentService {
 	@Autowired
 	private CryptoUtil cryptoUtil;
 
+	@Autowired
+	ValidationUtil validationUtil;
+
 	/**
 	 * Logger configuration for document service
 	 */
@@ -204,6 +207,9 @@ public class DocumentService {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
+					ValidationUtil.langvalidation(docReqDto.getRequest().getLangCode());
+					validationUtil.validateDocuments(docReqDto.getRequest().getLangCode(),
+							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode());
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
@@ -248,12 +254,12 @@ public class DocumentService {
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
 	public DocumentResponseDTO createDoc(DocumentRequestDTO document, MultipartFile file, String preRegistrationId)
-			throws IOException,EncryptionFailedException {
+			throws IOException, EncryptionFailedException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, "test@gmail.com",
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
 					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
@@ -513,6 +519,7 @@ public class DocumentService {
 			allDocDto.setDocName(doc.getDocName());
 			allDocDto.setDocumentId(doc.getDocumentId());
 			allDocDto.setDocTypCode(doc.getDocTypeCode());
+			allDocDto.setLangCode(doc.getLangCode());
 			allDocRes.add(allDocDto);
 		}
 		documentsMetaData.setDocumentsMetaData(allDocRes);

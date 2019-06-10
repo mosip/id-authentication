@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,7 +80,7 @@ public class DocumentServiceUtil {
 	 * Reference for ${max.file.size} from property file
 	 */
 	@Value("${max.file.size}")
-	private int maxFileSize;	
+	private int maxFileSize;
 
 	/**
 	 * Reference for ${file.extension} from property file
@@ -91,6 +90,7 @@ public class DocumentServiceUtil {
 
 	@Value("${mosip.utc-datetime-pattern}")
 	private String utcDateTimePattern;
+
 	/**
 	 * Autowired reference for {@link #RestTemplateBuilder}
 	 */
@@ -246,8 +246,9 @@ public class DocumentServiceUtil {
 		if (catCode.equals("POA")) {
 			return true;
 		} else {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage(), null);
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_017.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
 		}
 	}
 
@@ -330,16 +331,6 @@ public class DocumentServiceUtil {
 		if (isNull(preRegistrationId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
 					ErrorMessages.INVALID_PRE_ID.getMessage(), null);
-		} else if (isNull(dto.getDocCatCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
-		} else if (isNull(dto.getDocTypCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage(), null);
-		} else if (isNull(dto.getLangCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_LANG_CODE.getMessage(), null);
-
 		}
 		return true;
 	}
@@ -394,5 +385,24 @@ public class DocumentServiceUtil {
 		}
 		return true;
 	}
+
+	// public boolean validateDocuments(String langCode, String catCode, String
+	// typeCode) {
+	// validationUtil.getAllDocCategories(langCode);
+	// if (docCatMap.get(langCode).contains(catCode)) {
+	// validationUtil.getAllDocumentTypes(langCode, catCode);
+	// if (docTypeMap.get(catCode).contains(typeCode)) {
+	// return true;
+	// } else {
+	// throw new
+	// InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_019.toString(),
+	// ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage(), null);
+	// }
+	// } else {
+	// throw new
+	// InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_019.toString(),
+	// ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage(), null);
+	// }
+	// }
 
 }
