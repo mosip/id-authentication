@@ -48,7 +48,8 @@ public class LocationController {
 	/**
 	 * This API fetches all location hierachy details irrespective of the arguments.
 	 * 
-	 * @param langcode language code
+	 * @param langcode
+	 *            language code
 	 * @return list of location hierarchies
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
@@ -72,8 +73,10 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationCode location code
-	 * @param langCode     language code
+	 * @param locationCode
+	 *            location code
+	 * @param langCode
+	 *            language code
 	 * @return list of location hierarchies
 	 */
 	@ResponseFilter
@@ -87,7 +90,8 @@ public class LocationController {
 	}
 
 	/**
-	 * @param hierarchyName hierarchy Name
+	 * @param hierarchyName
+	 *            hierarchy Name
 	 * @return list of location hierarchies
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
@@ -104,7 +108,8 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationRequestDto - location request DTO
+	 * @param locationRequestDto
+	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
 	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
@@ -121,7 +126,8 @@ public class LocationController {
 	/**
 	 * This API call would update isDeleted to true when called.
 	 * 
-	 * @param locationCode -location code
+	 * @param locationCode
+	 *            -location code
 	 * @return CodeResponseDto
 	 */
 	@ResponseFilter
@@ -135,8 +141,10 @@ public class LocationController {
 
 	/**
 	 * 
-	 * @param locationCode location code
-	 * @param langCode     language code
+	 * @param locationCode
+	 *            location code
+	 * @param langCode
+	 *            language code
 	 * @return list of location hierarchies
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")

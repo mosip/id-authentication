@@ -37,7 +37,8 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 
 	/**
 	 *
-	 * @param hierarchyName - hierarchy name
+	 * @param hierarchyName
+	 *            - hierarchy name
 	 * @return List
 	 */
 	@Query(value = "FROM Location l where LOWER(l.hierarchyName)=LOWER(?1) AND (l.isDeleted is null OR l.isDeleted=false) AND l.isActive=true")
@@ -45,8 +46,10 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 
 	/**
 	 *
-	 * @param langCode language code
-	 * @param level    hierarchy level
+	 * @param langCode
+	 *            language code
+	 * @param level
+	 *            hierarchy level
 	 * @return List of Locations
 	 * 
 	 */
@@ -56,17 +59,13 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	/**
 	 * checks whether the location name is valid location or not
 	 * 
-	 * @param locationName location name
+	 * @param locationName
+	 *            location name
 	 * @return {@link Boolean} true or false
 	 */
 	@Query(value = "SELECT EXISTS(select name FROM master.location where (LOWER(name)=LOWER(?1)) and (is_active=true) and (is_deleted is null or is_deleted =false))", nativeQuery = true)
 	boolean isLocationNamePresent(String locationName);
-	
-	
-	/*@Query(value = "FROM Location l where parentLocCode=?1 and langCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
-	List<Location> findIsActiveLocationHierarchyByParentLocCodeAndLanguageCode(String parentLocCode, String languageCode);*/
-	
-	
+
 	/**
 	 * give list of the immediate Locations for the given parent location code
 	 * 
@@ -74,6 +73,6 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 *            location name
 	 * @return {@link Boolean} true or false
 	 */
-	@Query("FROM Location l where l.parentLocCode=?1 and l.langCode=?2 and (l.isDeleted is null or l.isDeleted=false)")
+	@Query("FROM Location l where l.parentLocCode=?1 and l.langCode=?2 and l.isActive=true and (l.isDeleted is null or l.isDeleted=false)")
 	List<Location> findDistinctByparentLocCode(String parentLocCode, String langCode);
 }
