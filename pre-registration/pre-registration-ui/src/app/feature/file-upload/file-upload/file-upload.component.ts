@@ -366,6 +366,7 @@ export class FileUploadComponent implements OnInit {
       if (res['errors'] == null) {
         this.LOD = res['response'].documentCategories;
         this.registration.setDocumentCategories(res['response'].documentCategories);
+        console.log('LOD', this.LOD);
       } else {
         this.displayMessage('Error', this.errorlabels.error);
       }
@@ -540,6 +541,8 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
+    console.log('event file input', event);
+
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
@@ -612,6 +615,8 @@ export class FileUploadComponent implements OnInit {
   selectChange(event, index: number) {
     this.documentCategory = event.source.placeholder;
     this.documentType = event.source.value;
+    console.log('document type', this.documentType);
+
     this.documentIndex = index;
   }
 
@@ -660,6 +665,8 @@ export class FileUploadComponent implements OnInit {
   sendFile(event) {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.documentRequest));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
+    console.log('formdata', this.formData);
+
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
         if (response['errors'] == null) {
