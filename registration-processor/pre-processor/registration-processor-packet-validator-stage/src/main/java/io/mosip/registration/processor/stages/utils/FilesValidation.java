@@ -8,7 +8,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -23,7 +23,7 @@ public class FilesValidation {
 	public static final String BIOMETRIC = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR;
 
 	/** The adapter. */
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
@@ -36,7 +36,7 @@ public class FilesValidation {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public FilesValidation(FileSystemManager adapter, InternalRegistrationStatusDto registrationStatusDto) {
+	public FilesValidation(PacketManager adapter, InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 	}

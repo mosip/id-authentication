@@ -46,9 +46,9 @@ import io.mosip.registration.processor.core.exception.PacketDecryptionFailureExc
 import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
-import io.mosip.registration.processor.core.spi.decryptor.Decryptor;
+import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
@@ -98,7 +98,7 @@ public class PacketUploaderServiceTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();

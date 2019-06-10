@@ -33,7 +33,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -104,7 +104,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 
 	/** The core audit request builder. */
 	@Autowired

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.printing.config.PrintServiceBeanConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
@@ -22,7 +22,7 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 public class PrintServiceConfigTest {
 
 	@MockBean
-	public FileSystemManager filesystemAdapter;
+	public PacketManager filesystemAdapter;
 
 	@MockBean
 	public ConnectionUtils connectionUtil;

@@ -16,7 +16,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 
@@ -25,7 +25,7 @@ public class OSIUtils {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 	
 	private IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 	

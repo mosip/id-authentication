@@ -9,7 +9,7 @@ import org.springframework.context.annotation.FilterType;
 import io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils;
 import io.mosip.registration.processor.core.config.CoreConfigBean;
 import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
@@ -20,7 +20,7 @@ import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfi
 public class RegistrationStatusConfigTest {
 
 	@MockBean
-	public FileSystemManager filesystemAdapter;
+	public PacketManager filesystemAdapter;
 
 	@MockBean
 	public ConnectionUtils connectionUtil;

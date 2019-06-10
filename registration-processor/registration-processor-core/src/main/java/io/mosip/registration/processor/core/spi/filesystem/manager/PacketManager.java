@@ -13,7 +13,7 @@ import io.mosip.registration.processor.core.exception.PacketDecryptionFailureExc
  * @author Abhishek Kumar
  * @since 1.0.0
  */
-public interface FileSystemManager {
+public interface PacketManager {
 
 	/**
 	 * This method checks whether a file exists in DFS.
@@ -55,32 +55,6 @@ public interface FileSystemManager {
 	 */
 	public InputStream getFile(String id, String fileName) throws IOException, PacketDecryptionFailureException,
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException;
-
-	/**
-	 * This method to unzip data ,which extract zip content to provide destination
-	 * folder path
-	 * 
-	 * @param input
-	 *            data to unzip
-	 * @param desDir
-	 *            directory where unzip files to be extracted
-	 * @throws IOException
-	 *             if an error occured while unzipping
-	 */
-	public void unpackPacket(InputStream input, String desDir) throws IOException;
-
-	/**
-	 * This method stores the packet corresponding to an ID
-	 * 
-	 * @param id
-	 *            The id
-	 * @param key
-	 *            Physical path of the packet which needs to be stored
-	 * @param document
-	 *            document to be stored
-	 * @return True If the packet is stored successfully
-	 */
-	public boolean storeFile(String id, String key, InputStream document);
 
 	/**
 	 * This method stores the packet corresponding to an ID.

@@ -40,7 +40,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessag
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
@@ -51,6 +51,7 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @Service
@@ -61,7 +62,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 	@Autowired
 	private Utilities utility;
 	@Autowired
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -153,7 +154,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 			else {
 				object.setIsValid(true);
 				object.setInternalError(false);
-				if ("New".equalsIgnoreCase(registartionType)) {
+				if (SyncTypeDto.NEW.toString().equalsIgnoreCase(registartionType)) {
 					description = "The packet is New and adult packet for registration id" + registrationId;
 				} else
 					description = "The packet is child packet for registration id" + registrationId;

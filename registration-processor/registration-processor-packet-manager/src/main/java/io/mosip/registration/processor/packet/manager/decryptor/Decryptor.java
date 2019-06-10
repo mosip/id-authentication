@@ -1,17 +1,10 @@
-package io.mosip.registration.processor.core.spi.decryptor;
+package io.mosip.registration.processor.packet.manager.decryptor;
 
 import java.io.InputStream;
-import java.time.format.DateTimeParseException;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 
-/**
- * Interface provide functionality for the packet decryption.
- * 
- * @author Abhishek Kumar
- * @since 1.0.0
- */
 public interface Decryptor {
 
 	/**

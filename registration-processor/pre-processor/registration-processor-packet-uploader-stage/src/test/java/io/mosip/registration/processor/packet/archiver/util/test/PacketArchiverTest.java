@@ -26,7 +26,7 @@ import io.mosip.registration.processor.core.exception.SftpFileOperationException
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -45,7 +45,7 @@ public class PacketArchiverTest {
 
 	/** The filesystem adapter impl. */
 	@Mock
-	private FileSystemManager filesystemAdapterImpl;
+	private PacketManager filesystemAdapterImpl;
 
 	/** The filemanager. */
 	@Mock

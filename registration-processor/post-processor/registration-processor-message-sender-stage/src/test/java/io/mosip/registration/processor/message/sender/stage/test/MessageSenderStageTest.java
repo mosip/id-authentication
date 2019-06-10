@@ -38,7 +38,7 @@ import io.mosip.registration.processor.core.notification.template.generator.dto.
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -81,7 +81,7 @@ public class MessageSenderStageTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 
 	/** The packet meta info. */
 	private PacketMetaInfo packetMetaInfo = new PacketMetaInfo();

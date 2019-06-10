@@ -12,7 +12,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
@@ -24,7 +24,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 public class CheckSumValidation {
 
 	/** The adapter. */
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto;
@@ -37,7 +37,7 @@ public class CheckSumValidation {
 	 * @param registrationStatusDto
 	 *            the registration status dto
 	 */
-	public CheckSumValidation(FileSystemManager adapter, InternalRegistrationStatusDto registrationStatusDto) {
+	public CheckSumValidation(PacketManager adapter, InternalRegistrationStatusDto registrationStatusDto) {
 		this.registrationStatusDto = registrationStatusDto;
 		this.adapter = adapter;
 

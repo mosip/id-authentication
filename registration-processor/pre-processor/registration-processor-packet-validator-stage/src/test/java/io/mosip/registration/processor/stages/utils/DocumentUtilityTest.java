@@ -26,7 +26,7 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.IdentityJsonValues;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
@@ -46,7 +46,7 @@ public class DocumentUtilityTest {
 
 	/** The filesystem adapter impl. */
 	@Mock
-	private FileSystemManager filesystemAdapterImpl;
+	private PacketManager filesystemAdapterImpl;
 
 	/** The utility. */
 	@Mock

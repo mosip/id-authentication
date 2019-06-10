@@ -33,7 +33,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
@@ -69,7 +69,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 	/** The hdfs adapter. */
 	@Autowired
-	private FileSystemManager fileSystemManager;
+	private PacketManager fileSystemManager;
 
 	/** The ppk file location. */
 	// @Value("${registration.processor.server.ppk.filelocation}")

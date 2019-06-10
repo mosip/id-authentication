@@ -13,8 +13,8 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.spi.decryptor.Decryptor;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import io.mosip.registration.processor.packet.manager.exception.PacketDecryptionFailureExceptionConstant;
 import io.mosip.registration.processor.packet.manager.utils.ZipUtils;
@@ -27,7 +27,7 @@ import io.mosip.registration.processor.packet.manager.utils.ZipUtils;
  *
  */
 @Component
-public class FileSystemManagerImpl implements FileSystemManager {
+public class FileSystemManagerImpl implements PacketManager {
 
 	@Autowired
 	private FileSystemAdapter fileSystemAdapter;
@@ -88,34 +88,6 @@ public class FileSystemManagerImpl implements FileSystemManager {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 				"HdfsFileSystemManagerImpl::getFile()::extractZip");
 		return ZipUtils.unzipAndGetFile(decryptedData, fileName);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager
-	 * #unpackPacket(java.io.InputStream, java.lang.String)
-	 */
-	@Override
-	public void unpackPacket(InputStream input, String desDir) throws IOException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"HdfsFileSystemManagerImpl::unpackPacket(data,{})::extractZip " + desDir);
-		ZipUtils.unZipFromInputStream(input, desDir);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager
-	 * #storeFile(java.lang.String, java.lang.String, java.io.InputStream)
-	 */
-	@Override
-	public boolean storeFile(String id, String key, InputStream document) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
-				"HdfsFileSystemManagerImpl::storePacket({},{},data)::entry" + id + " " + key);
-		return fileSystemAdapter.storeFile(id, key, document);
 	}
 
 	/*

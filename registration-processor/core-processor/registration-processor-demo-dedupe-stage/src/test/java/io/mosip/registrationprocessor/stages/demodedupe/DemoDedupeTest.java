@@ -25,7 +25,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
@@ -57,7 +57,7 @@ public class DemoDedupeTest {
 
 	/** The filesystem adapter impl. */
 	@Mock
-	FileSystemManager filesystemAdapterImpl;
+	PacketManager filesystemAdapterImpl;
 
 	/** The registration status service. */
 	@Mock

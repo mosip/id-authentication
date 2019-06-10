@@ -22,7 +22,7 @@ import io.mosip.registration.processor.core.exception.PacketDecryptionFailureExc
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -38,7 +38,7 @@ public class MandatoryValidation {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MandatoryValidation.class);
 
 	/** The adapter. */
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 
 	private Utilities utility;
 
@@ -47,7 +47,7 @@ public class MandatoryValidation {
 
 	public static final String FILE_SEPARATOR = "\\";
 
-	public MandatoryValidation(FileSystemManager adapter, InternalRegistrationStatusDto registrationStatusDto,
+	public MandatoryValidation(PacketManager adapter, InternalRegistrationStatusDto registrationStatusDto,
 			Utilities utility) {
 		this.adapter = adapter;
 		this.registrationStatusDto = registrationStatusDto;

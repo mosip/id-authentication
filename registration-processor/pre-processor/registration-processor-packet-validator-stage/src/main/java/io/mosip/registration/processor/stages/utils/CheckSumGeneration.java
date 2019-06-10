@@ -15,7 +15,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileSystemManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 
 /**
  * The Class CheckSumGeneration.
@@ -32,7 +32,7 @@ public class CheckSumGeneration {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(CheckSumGeneration.class);
 
 	/** The adapter. */
-	private FileSystemManager adapter;
+	private PacketManager adapter;
 
 	/**
 	 * Instantiates a new check sum generation.
@@ -40,7 +40,7 @@ public class CheckSumGeneration {
 	 * @param adapter
 	 *            the adapter
 	 */
-	public CheckSumGeneration(FileSystemManager adapter) {
+	public CheckSumGeneration(PacketManager adapter) {
 		this.adapter = adapter;
 	}
 
