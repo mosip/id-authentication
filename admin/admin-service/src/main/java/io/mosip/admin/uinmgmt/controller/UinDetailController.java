@@ -1,6 +1,7 @@
 package io.mosip.admin.uinmgmt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +42,7 @@ public class UinDetailController {
 	 * @return ResponseWrapper return complete detail of the given uin
 	 * 
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN','ID_AUTHENTICATION')")
 	@GetMapping(value = "/detail/{uin}")
 	public ResponseWrapper<UinDetailResponseDto> getUinDetailsNew(@PathVariable("uin") String uin) {
 		ResponseWrapper<UinDetailResponseDto> response = new ResponseWrapper<>();

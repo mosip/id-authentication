@@ -3,6 +3,7 @@ package io.mosip.admin.accountmgmt.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,6 +50,7 @@ public class AccountManagementController {
 	 * @return the string
 	 */
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping("/changepassword")
 	public ResponseWrapper<StatusResponseDto> changePassword(
 			@RequestBody @Valid RequestWrapper<PasswordDto> passwordDto) {
@@ -65,6 +67,7 @@ public class AccountManagementController {
 	 * @param otpChannel
 	 *            the otp channel
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping("/resetpassword")
 	public ResponseWrapper<StatusResponseDto> resetPassword(@RequestBody RequestWrapper<ResetPasswordDto> passwordDto) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -81,6 +84,7 @@ public class AccountManagementController {
 	 */
 	@ApiIgnore
 	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@GetMapping("/forgotusername")
 	public UserNameDto forgotUsername(String userId) {
 		return accountManagementService.getUserName(userId);

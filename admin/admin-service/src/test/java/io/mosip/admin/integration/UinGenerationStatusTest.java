@@ -72,7 +72,7 @@ public class UinGenerationStatusTest {
 	private ObjectMapper mapper;
 
 	@Test
-	@WithUserDetails("reg-admin")
+	@WithUserDetails("zonal-admin")
 	public void testGetUinGenerationStatus() throws Exception {
 
 		ResponseWrapper<List<UinGenerationStatusDto>> response = new ResponseWrapper<>();
