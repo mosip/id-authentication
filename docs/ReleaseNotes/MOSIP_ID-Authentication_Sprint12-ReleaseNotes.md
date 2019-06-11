@@ -50,6 +50,7 @@ Kernel|ID Object Validator|0.12.7|Java API
 Kernel|Kernel ID Generator – VID|0.12.7|Java API
 Kernel|Kernel ID Generator – Token ID|0.12.7|Java API
 Kernel|Kernel Crypto Manager - KeyGenarator|0.12.7|Java API
+Kernel|Kernel Bio API Provider|0.12.7|Java API - Mock BioAPI provider
 
 ### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
