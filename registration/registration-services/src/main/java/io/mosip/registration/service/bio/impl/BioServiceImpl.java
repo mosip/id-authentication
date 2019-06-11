@@ -347,7 +347,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
 								.getBiometricExceptionDTO();
 			} else if (((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
-					.isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+					.isUpdateUINonBiometric() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getIntroducerBiometricDTO()
 								.getBiometricExceptionDTO();
