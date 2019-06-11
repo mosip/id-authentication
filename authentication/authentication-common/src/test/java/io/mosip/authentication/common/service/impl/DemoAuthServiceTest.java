@@ -543,7 +543,7 @@ public class DemoAuthServiceTest {
 		IdentityDTO demographics = new IdentityDTO();
 		demographics.setPhoneNumber("0000000000");
 		demographics.setEmailId("abc@test.com");
-		demographics.setDob("11/09/1898");
+		demographics.setDob("1898/09/11");
 		List<IdentityInfoDTO> dobType = new ArrayList<>();
 		IdentityInfoDTO reqIdentityInfodto = new IdentityInfoDTO();
 		reqIdentityInfodto.setValue(DOBType.VERIFIED.name());
@@ -572,7 +572,7 @@ public class DemoAuthServiceTest {
 		try {
 			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
 		} catch (IdAuthenticationBusinessException ex) {
-			assertEquals(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(), ex.getErrorCode());
 		}
 	}
 

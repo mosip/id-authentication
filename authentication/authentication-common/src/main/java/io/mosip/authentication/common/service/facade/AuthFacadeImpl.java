@@ -306,8 +306,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
 			throws IdAuthenticationBusinessException {
 		if (authRequestDTO.getRequestedAuth().isOtp()) {
-			AuthStatusInfo otpValidationStatus;
-			AuthStatusInfo statusInfo = null;
+			AuthStatusInfo otpValidationStatus = null;
 			try {
 				otpValidationStatus = otpService.authenticate(authRequestDTO, uin, Collections.emptyMap(), partnerId);
 				authStatusList.add(otpValidationStatus);
@@ -324,9 +323,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				}
 				otpValidationStatus.setErr(Collections.singletonList(authError));
 				authStatusList.add(otpValidationStatus);
-				statusInfo = otpValidationStatus;
 			} finally {
-				boolean isStatus = statusInfo != null && statusInfo.isStatus();
+				boolean isStatus = otpValidationStatus != null && otpValidationStatus.isStatus();
 				logger.info(IdAuthCommonConstants.SESSION_ID, env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID),
 						AUTH_FACADE, "OTP Authentication status : " + isStatus);
 				auditHelper.audit(AuditModules.OTP_AUTH, getAuditEvent(isAuth),

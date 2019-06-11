@@ -57,8 +57,6 @@ public class IdRepoManager {
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
 	
-	private static final String LDAP_ERRORCODE = "KER-ATH-101";
-
 	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
 			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
 
@@ -178,14 +176,6 @@ public class IdRepoManager {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
 					}
-					//TODO FIXME subject to change this once kernel fixed error codes
-					else if(!idRepoerrorList.isEmpty()
-							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERRORMESSAGE)
-									&& ((String) map.get(ERRORMESSAGE)).contains(LDAP_ERRORCODE))) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
-						}
-					
 					else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
