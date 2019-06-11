@@ -46,7 +46,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationExternalStat
 @PropertySource("classpath:bootstrap.properties")
 @Import({ HibernateDaoConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration.processor", repositoryBaseClass = HibernateRepositoryImpl.class)
-public class RegistrationStatusBeanConfig {
+public class RegistrationStatusServiceBeanConfig {
 
 	@Bean
 	public RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> getRegistrationStatusService() {
@@ -58,10 +58,10 @@ public class RegistrationStatusBeanConfig {
 		return new AuditLogRequestBuilder();
 	}
 
-	@Bean
-	public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
-		return new RegistrationProcessorRestClientServiceImpl();
-	}
+//	@Bean
+//	public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
+//		return new RegistrationProcessorRestClientServiceImpl();
+//	}
 	
 	@Bean
 	public SyncRegistrationDao getSyncRegistrationDao() {

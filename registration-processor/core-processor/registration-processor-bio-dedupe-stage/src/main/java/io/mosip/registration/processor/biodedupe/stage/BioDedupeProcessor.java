@@ -17,7 +17,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.biodedupe.stage.exception.CbeffNotFoundException;
 import io.mosip.registration.processor.biodedupe.stage.utils.StatusMessage;
@@ -36,11 +35,13 @@ import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -78,7 +79,7 @@ public class BioDedupeProcessor {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The packet info manager. */
 	@Autowired
@@ -285,9 +286,11 @@ public class BioDedupeProcessor {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private void newPacketPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object)
-			throws ApisResourceAccessException, IOException {
+			throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		if (isValidCbeff(registrationStatusDto.getRegistrationId(), registrationStatusDto.getRegistrationType())) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIODEDUPE_INPROGRESS);
@@ -315,9 +318,12 @@ public class BioDedupeProcessor {
 	 *            the object
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private void updatePacketPreAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
-			MessageDTO object) throws IOException {
+			MessageDTO object) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 
 		InputStream idJsonStream = adapter.getFile(registrationStatusDto.getRegistrationId(),
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -365,9 +371,11 @@ public class BioDedupeProcessor {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private void postAbisIdentification(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object,
-			String registrationType) throws ApisResourceAccessException, IOException {
+			String registrationType) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		List<String> matchedRegIds = abisHandlerUtil.getUniqueRegIds(registrationStatusDto.getRegistrationId(),
 				registrationType);
@@ -402,9 +410,11 @@ public class BioDedupeProcessor {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private Boolean isValidCbeff(String registrationId, String registrationType)
-			throws ApisResourceAccessException, IOException {
+			throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(registrationId);
@@ -452,7 +462,7 @@ public class BioDedupeProcessor {
 	}
 
 	private void lostPacketPostAbisIdentification(InternalRegistrationStatusDto registrationStatusDto,
-			MessageDTO object, List<String> matchedRegIds) throws IOException, ApisResourceAccessException {
+			MessageDTO object, List<String> matchedRegIds) throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		String registrationId = registrationStatusDto.getRegistrationId();
 

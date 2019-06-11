@@ -11,7 +11,6 @@ import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.kernel.virusscanner.clamav.impl.VirusScannerImpl;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
-import io.mosip.registration.processor.packet.receiver.decrypter.Decryptor;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
@@ -78,13 +77,4 @@ public class PacketReceiverConfig {
 		return new VirusScannerImpl();
 	}
 
-	/**
-	 * Decryptor.
-	 *
-	 * @return the decryptor
-	 */
-	@Bean
-	public Decryptor packetReceiverDecryptor() {
-		return new Decryptor();
-	}
 }

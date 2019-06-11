@@ -296,7 +296,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 					.getFace();
 			if (cbeffInBytes != null) {
-				if (registrationDTO.isUpdateUINChild()
+				if (registrationDTO.isUpdateUINNonBiometric()
 						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
 								.equals(RegistrationConstants.ENABLE)) {
 					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
@@ -488,7 +488,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	private List<String> getFingerSubType(String fingerType) {
 		List<String> fingerSubTypes = new ArrayList<>();
-
+		fingerType=fingerType.toLowerCase();
 		if (fingerType.startsWith(RegistrationConstants.LEFT.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.LEFT.value());
 			fingerType = fingerType.replace(RegistrationConstants.LEFT.toLowerCase(), RegistrationConstants.EMPTY);
@@ -496,7 +496,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			fingerSubTypes.add(SingleAnySubtypeType.RIGHT.value());
 			fingerType = fingerType.replace(RegistrationConstants.RIGHT.toLowerCase(), RegistrationConstants.EMPTY);
 		}
-
+		fingerType=fingerType.trim();
 		if (fingerType.equalsIgnoreCase(RegistrationConstants.THUMB.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.THUMB.value());
 		} else {

@@ -181,6 +181,8 @@ public class SendNotificationController extends BaseController implements Initia
 					}
 					popupStage.close();
 				}
+			} else {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error("REGISTRATION - UI - SEND_NOTIFICATION", APPLICATION_NAME, APPLICATION_ID,

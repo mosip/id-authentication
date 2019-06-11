@@ -98,7 +98,7 @@ public class ValidationUtil {
 		ValidationUtil.documentTypeUri = value;
 	}
 
-	@Value("${mosip.kernel.idobjectvalidator.masterdata.documentcategories.rest.uri}")
+	@Value("${mosip.kernel.idobjectvalidator.masterdata.documentcategories.lang.rest.uri}")
 	public void setDocCatCode(String value) {
 		ValidationUtil.documentCategoryUri = value;
 	}
