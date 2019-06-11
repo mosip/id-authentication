@@ -54,7 +54,7 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	}
 
 	private static Logger logger = Logger.getLogger(TokenIdGenerator.class);
-	private final String jiraID = "MOS-18217";
+	private final String jiraID = "MOS-21930";
 	private final String moduleName = "kernel";
 	private final String apiName = "TokenIdGenerator";
 	private final String requestJsonName = "TokenIdGeneratorRequest";

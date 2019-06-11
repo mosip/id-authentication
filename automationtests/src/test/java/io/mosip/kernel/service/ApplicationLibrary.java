@@ -17,6 +17,10 @@ public class ApplicationLibrary extends BaseTestCase {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
 	// post requests
+	public Response postWithoutJson(String endpoint, String cookie) {
+		return commonLibrary.postWithoutJson(ApplnURI + endpoint, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
+	}
 	public Response postWithJson(String endpoint, Object body) {
 		return commonLibrary.postWithJson(ApplnURI + endpoint, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
@@ -56,6 +60,10 @@ public class ApplicationLibrary extends BaseTestCase {
 			String cookie) {
 		return commonLibrary.postWithQueryParams(ApplnURI + endpoint, queryparams, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, cookie);
+	}
+	public Response postWithMultiHeaders(String endpoint, Object body, HashMap<String, String> headers,
+			String contentHeader, String cookie) {
+		return commonLibrary.postWithMultiHeaders(ApplnURI + endpoint, body, headers, MediaType.APPLICATION_JSON, cookie);
 	}
 	public Response postRequestEmailNotification(String endpoint, JSONObject jsonString, String cookie) {
 		return commonLibrary.postRequestEmailNotification(ApplnURI+endpoint, jsonString, cookie);

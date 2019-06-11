@@ -241,7 +241,11 @@
 			<artifactId>icu4j</artifactId>
 			<version>63.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.6.0</version>
+		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk -->

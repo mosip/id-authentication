@@ -6,10 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +25,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.Assert;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.mosip.service.BaseTestCase;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
@@ -83,158 +86,6 @@ public class CommonLibrary extends BaseTestCase {
 		cloneProperties.store(fileOut, null);
 	}
 
-	public static void scenarioFileCreator(String fileName, String module, String testType, String ouputFile)
-			throws IOException, ParseException {
-		String input = "";
-		// String cpyModule="";
-		// for(int i=0;i<module.length();i++){
-		// if(module.charAt(i)=='\\')
-		// cpyModule+='/';
-		// else
-		// cpyModule+=module.charAt(i);
-		// }
-		// module=cpyModule;
-		List<String> scenario = new ArrayList<String>();
-		String filepath = "src/test/resources/" + module + "/" + fileName;
-
-		String configPaths = "src/test/resources/" + module;
-
-		File folder = new File(configPaths);
-		System.out.println("Config Path is : " + configPaths);
-		System.out.println("Folder exists  : " + folder.exists());
-		File[] listOfFolders = folder.listFiles();
-		Map<String, String> jiraID = new HashMap<String, String>();
-		int id = 1000;
-		for (int k = 0; k < listOfFolders.length; k++) {
-			jiraID.put(listOfFolders[k].getName(), "MOS-" + id);
-			id++;
-		}
-		JSONObject requestKeys = (JSONObject) new JSONParser().parse(new FileReader(filepath));
-		if (testType.equals("smoke")) {
-			input += "{";
-			input += "\"testType\":" + "\"smoke\",";
-			for (int k = 0; k < listOfFolders.length; k++) {
-				if (listOfFolders[k].getName().toLowerCase().contains("smoke")) {
-					input += "\"testCaseName\":" + "\"" + listOfFolders[k].getName() + "\"" + ",";
-					input += "\"jiraId\":" + "\"" + jiraID.get(listOfFolders[k].getName()) + "\"" + ",";
-					for (Object obj : requestKeys.keySet()) {
-						input += '"' + obj.toString() + '"' + ":" + "\"valid\",";
-					}
-					input += "\"status\":" + "\"\"";
-					input += "}";
-					scenario.add(input);
-					input = "";
-					input += "{";
-					input += "\"testType\":" + "\"smoke\",";
-				}
-			}
-		} else if (testType.equals("regression")) {
-			input = "";
-			int[] permutationValidInvalid = new int[requestKeys.size()];
-			permutationValidInvalid[0] = 1;
-			for (Integer data : permutationValidInvalid) {
-				input += data;
-			}
-			List<String> validInvalid = permutation.pack.Permutation.permutation(input);
-			input = "";
-			for (String validInv : validInvalid) {
-				input += "{";
-				input += "\"testType\":" + "\"regression\",";
-				int i = 0;
-				for (Object obj : requestKeys.keySet()) {
-					if (validInv.charAt(i) == '0') {
-						input += '"' + obj.toString() + '"' + ":" + "\"valid\"" + ",";
-					} else if (validInv.charAt(i) == '1') {
-						input += '"' + obj.toString() + '"' + ":" + "\"invalid\"" + ",";
-						for (int k = 0; k < listOfFolders.length; k++) {
-							if (listOfFolders[k].getName().toLowerCase().contains(obj.toString().toLowerCase())) {
-								input += "\"testCaseName\":" + "\"" + listOfFolders[k].getName() + "\"" + ",";
-								input += "\"jiraId\":" + "\"" + jiraID.get(listOfFolders[k].getName()) + "\"" + ",";
-								id++;
-								break;
-							}
-						}
-					}
-					i++;
-				}
-				input += "\"status\":" + "\"\"";
-				input += "}";
-				scenario.add(input);
-				input = "";
-			}
-		} else if (testType.toLowerCase().equals("smokeandregression")) {
-			input += "{";
-			input += "\"testType\":" + "\"smoke\",";
-			// input += "\"jiraId\":" + "\"MOS-1000\",";
-			for (int k = 0; k < listOfFolders.length; k++) {
-				if (listOfFolders[k].getName().contains("smoke")) {
-					input += "\"testCaseName\":" + "\"" + listOfFolders[k].getName() + "\"" + ",";
-					input += "\"jiraId\":" + "\"" + jiraID.get(listOfFolders[k].getName()) + "\"" + ",";
-					for (Object obj : requestKeys.keySet()) {
-						input += '"' + obj.toString() + '"' + ":" + "\"valid\",";
-					}
-					input += "\"status\":" + "\"\"";
-					input += "}";
-					scenario.add(input);
-					input = "";
-					input += "{";
-					input += "\"testType\":" + "\"smoke\",";
-				}
-			}
-
-			input = "";
-			int[] permutationValidInvalid = new int[requestKeys.size()];
-			permutationValidInvalid[0] = 1;
-			for (Integer data : permutationValidInvalid) {
-				input += data;
-			}
-			List<String> validInvalid = permutation.pack.Permutation.permutation(input);
-			input = "";
-			for (String validInv : validInvalid) {
-				input += "{";
-				input += "\"testType\":" + "\"regression\",";
-				// input += "\"jiraId\":" + "\"MOS-1000\",";
-				int i = 0;
-				/*
-				 * for (Field f : fields) { if (validInv.charAt(i) == '0') input +=
-				 * '"' + f.getName() + '"' + ":" + "\"valid\"" + ","; if (validInv.charAt(i) ==
-				 * '1') input += '"' + f.getName() + '"' + ":" + "\"invalid\"" + ","; i++; }
-				 */
-				for (Object obj : requestKeys.keySet()) {
-					if (validInv.charAt(i) == '0') {
-						input += '"' + obj.toString() + '"' + ":" + "\"valid\"" + ",";
-					} else if (validInv.charAt(i) == '1') {
-						input += '"' + obj.toString() + '"' + ":" + "\"invalid\"" + ",";
-						for (int k = 0; k < listOfFolders.length; k++) {
-							if (listOfFolders[k].getName().toLowerCase().contains(obj.toString().toLowerCase())) {
-								input += "\"testCaseName\":" + "\"" + listOfFolders[k].getName() + "\"" + ",";
-								input += "\"jiraId\":" + "\"" + jiraID.get(listOfFolders[k].getName()) + "\"" + ",";
-								id++;
-								break;
-							}
-						}
-					}
-					i++;
-
-				}
-
-				input += "\"status\":" + "\"\"";
-				input += "}";
-				scenario.add(input);
-				input = "";
-			}
-		}
-
-		String configpath = "src/test/resources/" + module + "/" + ouputFile;
-
-		File json = new File(configpath);
-		FileWriter fw = new FileWriter(json);
-		fw.write(scenario.toString());
-		fw.flush();
-		fw.close();
-
-	}
-
 	/**
 	 * @param propertyFileName
 	 * @return this method is for reading property file from src/config folder by
@@ -269,7 +120,7 @@ public class CommonLibrary extends BaseTestCase {
 	 	// fetching json array of objects from response
 		try {
 			if(firstLetterChar=='5')
-				Assert.assertTrue(false, "Service is Unavailable and the statsCode="+statusCode);
+				Assert.assertTrue(false, "Service is Unavailable and the statusCode="+statusCode);
 			
 			errors = (JSONArray) ((JSONObject) new JSONParser().parse(response.asString())).get("errors");
 		} catch (ParseException pe) {
@@ -289,6 +140,33 @@ public class CommonLibrary extends BaseTestCase {
 	 				Assert.assertTrue(false, "Failed due to Authentication failure. Error message is='"+errorMessage+"'");
 	 			}
 	 		}
+	 	}
+	 	
+	 	public boolean isValidToken(String cookie) {
+	 		 // we will have to read configCookieTime, token and secret from property file
+	 		String token_base = "Mosip-Token";
+            String secret = "authjwtsecret";
+            long configCookieTime = 20;
+            Integer cookieGenerationTimeMili = null;
+            
+                   try {
+					cookieGenerationTimeMili = (Integer) Jwts.parser().setSigningKey(secret)
+					                       .parseClaimsJws(cookie.substring(token_base.length())).getBody().get("iat");
+				} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
+						| IllegalArgumentException | NullPointerException e) {
+					logger.info(e.getMessage());
+					return false;
+				}
+            
+            Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) * 1000);
+            Date currentDate = new Date();
+            long intervalMin = (currentDate.getTime() - date.getTime()) / (60 * 1000) % 60;
+            
+            if(intervalMin <= configCookieTime)
+                   return true;
+            else
+            return false;
+
 	 	}
 	 	
 	 	/**
@@ -333,7 +211,7 @@ public class CommonLibrary extends BaseTestCase {
 	public void responseLogger(Response response) {
 		int statusCode = response.statusCode();
 		if (statusCode < 200 || statusCode > 299) {
-			logger.info(response.jsonPath().prettify());
+			logger.info(response.asString());
 		}
 		else logger.info("status code: "+statusCode +"(success)");
 
@@ -342,6 +220,26 @@ public class CommonLibrary extends BaseTestCase {
 	// rest services methods.
 
 	// Post Requests:
+	/**
+	 * @param url
+	 * @param contentHeader
+	 * @param acceptHeader
+	 * @param cookie
+	 * @return this method is for post request with authentication(cookie) and only
+	 *         with jsonData in request body.
+	 */
+	public Response postWithoutJson(String url, String contentHeader, String acceptHeader, String cookie) {
+		logger.info("REST:ASSURED:Sending post request to" + url);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation()
+				.contentType(contentHeader).accept(acceptHeader).log().all().when().post(url).then().log().all()
+				.extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
+	
 
 	/**
 	 * @param url
@@ -356,6 +254,7 @@ public class CommonLibrary extends BaseTestCase {
 		Response postResponse = given().relaxedHTTPSValidation().body(body).contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
 		// log then response
+		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
@@ -376,6 +275,7 @@ public class CommonLibrary extends BaseTestCase {
 				.contentType(contentHeader).accept(acceptHeader).log().all().when().post(url).then().log().all()
 				.extract().response();
 		// log then response
+		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
@@ -398,6 +298,7 @@ public class CommonLibrary extends BaseTestCase {
 				.body(body).contentType(contentHeader).accept(acceptHeader).log().all().when().post(url).then().log()
 				.all().extract().response();
 		// log then response
+		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
@@ -412,10 +313,12 @@ public class CommonLibrary extends BaseTestCase {
 	public Response postWithOnlyFile(String url, File file,String fileKeyName, String cookie) {
 		logger.info("REST:ASSURED:Sending post request to" + url);
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
-		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file).expect()
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file).expect()
 				.when().post(url).then().log().all().extract().response();
-		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
-		return getResponse;
+		// log then response
+				logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + postResponse.time());
+		return postResponse;
 	}
 	/**
 	 * @param file
@@ -427,10 +330,12 @@ public class CommonLibrary extends BaseTestCase {
 	public Response postWithFile(String url, Object body, File file, String fileKeyName, String contentHeader, String cookie) {
 		logger.info("REST:ASSURED:Sending post request to" + url);
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
-		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file).body(body).contentType(contentHeader).expect()
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file).body(body).contentType(contentHeader).expect()
 				.when().post(url).then().log().all().extract().response();
-		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
-		return getResponse;
+		// log then response
+		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + postResponse.time());
+		return postResponse;
 	}
 
 	/**
@@ -447,10 +352,12 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST:ASSURED:Sending post request to" + url);
 		logger.info("Name of the file is" + file.getName());
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
-		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file)
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file)
 				.formParams(formParams).contentType(contentHeader).expect().when().post(url);
-		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
-		return getResponse;
+		// log then response
+				logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + postResponse.time());
+		return postResponse;
 	}
 
 	/**
@@ -470,10 +377,12 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("Name of the file is" + file.getName());
 
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
-		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(pathParams)
+		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(pathParams)
 				.multiPart(fileKeyName, file).formParams(formParams).contentType(contentHeader).expect().when().post(url);
-		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
-		return getResponse;
+		// log then response
+		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + postResponse.time());
+		return postResponse;
 	}
 
 	/**
@@ -494,7 +403,28 @@ public class CommonLibrary extends BaseTestCase {
 				.queryParams(queryparams).contentType(contentHeader).accept(acceptHeader).log().all().when().post(url)
 				.then().log().all().extract().response();
 		// log then response
+				logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
+	
+	/**
+	 * @param url
+	 * @param body
+	 * @param headers
+	 * @param contentHeader
+	 * @param regProcAuthToken
+	 * @return this method is for post request with authentication(cookie)
+	 *         containing json body and Map of headers(name, value). Used by RegProc. 
+	 */
+	public Response postWithMultiHeaders(String endpoint, Object body, HashMap<String, String> headers,
+			String contentHeader, String cookie) {
+		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
+		Response postResponse = given().cookie(builder.build()).headers(headers).relaxedHTTPSValidation().body("\"" + body + "\"").contentType(contentHeader)
+				.log().all().when().post(endpoint).then().log().all().extract().response();
+		// log then response
+		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
+				logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
 
