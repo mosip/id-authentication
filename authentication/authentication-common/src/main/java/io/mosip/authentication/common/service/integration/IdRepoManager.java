@@ -57,8 +57,6 @@ public class IdRepoManager {
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
 	
-	private static final String LDAP_ERRORCODE = "KER-ATH-101";
-
 	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
 			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
 
