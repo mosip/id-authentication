@@ -1541,7 +1541,7 @@ public class DemographicDetailController extends BaseController {
 												localAdminAuthority, localAdminAuthorityLocalLanguage,
 												isComboBoxValueNotRequired(localAdminAuthority))))
 								.with(identity -> identity.setPostalCode(
-										buildDemoTextValue(postalCode, isTextFieldNotRequired(postalCode))))
+										buildDemoTextValue(postalCode, postalCodeFieldValidation(postalCode))))
 								.with(identity -> identity
 										.setPhone(buildDemoTextValue(mobileNo, isTextFieldNotRequired(mobileNo))))
 								.with(identity -> identity
@@ -1619,6 +1619,10 @@ public class DemographicDetailController extends BaseController {
 
 	private boolean isTextFieldNotRequired(TextField demoField) {
 		return demoField.isDisabled() || demoField.getText().isEmpty();
+	}
+	
+	private boolean postalCodeFieldValidation(TextField demoField) {
+		return demoField.getText().isEmpty();
 	}
 
 	private boolean isComboBoxValueNotRequired(ComboBox<?> demoComboBox) {
