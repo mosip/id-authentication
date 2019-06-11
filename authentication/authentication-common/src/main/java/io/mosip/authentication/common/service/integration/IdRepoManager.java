@@ -178,14 +178,6 @@ public class IdRepoManager {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
 					}
-					//TODO FIXME subject to change this once kernel fixed error codes
-					else if(!idRepoerrorList.isEmpty()
-							&& idRepoerrorList.stream().anyMatch(map -> map.containsKey(ERRORMESSAGE)
-									&& ((String) map.get(ERRORMESSAGE)).contains(LDAP_ERRORCODE))) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
-			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
-						}
-					
 					else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
