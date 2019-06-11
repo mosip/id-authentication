@@ -17,8 +17,5 @@ public class FileRequestDto implements Serializable {
 	
 	/** The reg id. */
 	String regId;
-	
-	/** The file name. */
-	String fileName;
 
 }
