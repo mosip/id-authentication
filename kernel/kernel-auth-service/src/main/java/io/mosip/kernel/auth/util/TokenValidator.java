@@ -2,6 +2,7 @@ package io.mosip.kernel.auth.util;
 
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
-import io.mosip.kernel.auth.constant.AuthErrorConstant;
 import io.mosip.kernel.auth.dto.MosipUser;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserTokenDto;
@@ -23,6 +23,8 @@ import io.mosip.kernel.auth.service.TokenService;
 
 @Component
 public class TokenValidator {
+	
+	Logger log = Logger.getLogger(TokenValidator.class);
 
 	@Autowired
 	MosipEnvironment mosipEnvironment;
@@ -64,6 +66,7 @@ public class TokenValidator {
 		} catch (JwtException e) {
 			if( e instanceof ExpiredJwtException)
 			{
+				log.info("Token expired message "+ e.getMessage());
 				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(), AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
 			}
 			else
