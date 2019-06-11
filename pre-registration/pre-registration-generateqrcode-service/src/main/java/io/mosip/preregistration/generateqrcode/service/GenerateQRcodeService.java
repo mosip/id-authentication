@@ -89,6 +89,8 @@ public class GenerateQRcodeService {
 			qrcodedto.setId(qrCodeReqData.get("id").toString());
 			qrcodedto.setVersion(qrCodeReqData.get("version").toString());
 			qrcodedto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(qrCodeReqData.get("requesttime").toString()) );
+			response.setId(qrcodedto.getId());
+			response.setVersion(qrcodedto.getVersion());
 			JSONObject requestvalue=(JSONObject) qrCodeReqData.get("request");
 			if(requestvalue.length()==0) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
@@ -96,8 +98,7 @@ public class GenerateQRcodeService {
 			}
 			String qrCodeData =   qrCodeReqData.get("request").toString();
 			qrcodedto.setRequest(qrCodeData);
-			response.setId(qrcodedto.getId());
-			response.setVersion(qrcodedto.getVersion());
+			
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(qrcodedto),requiredRequestMap)) {
 			qrCode = qrCodeGenerator.generateQrCode(qrCodeData,QrVersion.valueOf(qrversion));
 			}
