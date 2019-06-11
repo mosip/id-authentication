@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
@@ -55,8 +54,6 @@ import io.mosip.kernel.auth.util.TokenValidator;
 
 @Component
 public class AuthServiceImpl implements AuthService {
-	
-	Logger log = Logger.getLogger(AuthServiceImpl.class);
 
 	@Autowired
 	UserStoreFactory userStoreFactory;
@@ -275,13 +272,13 @@ public class AuthServiceImpl implements AuthService {
 			} catch (AuthManagerException auth) {
 				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
 					mosipToken = null;
-					log.info("Token expired for user "+authToken);
+					System.out.println("Token expired for user "+authToken);
 				} else {
 					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(),auth);
 				}
 			}
 			if (authToken != null && mosipToken != null) {
-				log.info("Token not expired old token ");
+				System.out.println("Token not expired old token ");
 				authNResponseDto = new AuthNResponseDto();
 				authNResponseDto.setToken(authToken.getAccessToken());
 				authNResponseDto.setUserId(mosipUser.getUserId());
@@ -290,7 +287,7 @@ public class AuthServiceImpl implements AuthService {
 				authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
 				authNResponseDto.setMessage(AuthConstant.CLIENT_SECRET_SUCCESS_MESSAGE);
 			} else {
-				log.info("New Token generation ");
+				System.out.println("New Token generation ");
 				basicTokenDto = tokenGenerator.basicGenerate(mosipUser);
 				if (basicTokenDto != null) {
 					authNResponseDto = new AuthNResponseDto();

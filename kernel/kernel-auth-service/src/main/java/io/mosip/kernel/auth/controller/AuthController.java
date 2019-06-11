@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
@@ -64,8 +63,6 @@ import io.swagger.annotations.Api;
 @RestController
 @Api(value = "Operation related to Authentication and Authorization", tags = { "authmanager" })
 public class AuthController {
-	
-	Logger log = Logger.getLogger(AuthController.class);
 
 	/**
 	 * Autowired reference for {@link MosipEnvironment}
@@ -209,7 +206,7 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			log.info("Token added in response "+authResponseDto.getToken());
+			System.out.println("Token added in response "+authResponseDto.getToken());
 		}
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
@@ -244,7 +241,7 @@ public class AuthController {
 						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
 			mosipUserDtoToken = authService.validateToken(authToken);
-			log.info("Token check after validate :::"+mosipUserDtoToken.getToken());
+			System.out.println("Token check after validate :::"+mosipUserDtoToken.getToken());
 			if (mosipUserDtoToken != null) {
 				mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
 			}
