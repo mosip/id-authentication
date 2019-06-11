@@ -120,10 +120,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	@Resource
 	private List<String> allowedBioAttributes;
 
-	// /** The shard resolver. */
-	// @Autowired
-	// private ShardResolver shardResolver;
-
 	/** The uin repo. */
 	@Autowired
 	private UinRepo uinRepo;

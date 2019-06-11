@@ -860,7 +860,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 */
 	@Override
 	public Uin retrieveIdentityByRid(String rid, String filter) throws IdRepoAppException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
