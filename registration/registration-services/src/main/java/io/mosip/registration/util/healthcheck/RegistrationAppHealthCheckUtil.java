@@ -3,18 +3,12 @@ package io.mosip.registration.util.healthcheck;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -76,26 +70,27 @@ public class RegistrationAppHealthCheckUtil {
 		try {
 			RestClientUtil.turnOffSslChecking();
 			// acceptAnySSLCerticficate();
-			System.setProperty("java.net.useSystemProxies", "true");
+			// System.setProperty("java.net.useSystemProxies", "true");
 			URL url = new URL(serviceUrl);
-			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
-			Proxy proxy = proxyList.get(0);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+			// List<Proxy> proxyList = ProxySelector.getDefault().select(new
+			// URI(url.toString()));
+			// Proxy proxy = proxyList.get(0);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setConnectTimeout(10000);
 			connection.connect();
 
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				isNWAvailable = true;
 				LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
-						APPLICATION_ID, "Internet Access Available.");
+						APPLICATION_ID, "Internet Access Available." + "====>" + connection.getResponseCode());
 			} else {
 				isNWAvailable = false;
 				LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
-						APPLICATION_ID, "Internet Access Not Available.");
+						APPLICATION_ID, "Internet Access Not Available." + "====>" + connection.getResponseCode());
 			}
 		} catch (Exception exception) {
-			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE" + isNWAvailable , APPLICATION_NAME,
-					APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(exception));
+			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE" + isNWAvailable,
+					APPLICATION_NAME, APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(exception));
 		}
 		return isNWAvailable;
 	}
