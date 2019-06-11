@@ -28,6 +28,8 @@ public class RegistrationDTO extends BaseDTO {
 	private SelectionListDTO selectionListDTO;
 	private Timestamp auditLogStartTime;
 	private Timestamp auditLogEndTime;
-	private boolean isUpdateUINonBiometric;	
+	private boolean isUpdateUINNonBiometric;	
 	private boolean isNameNotUpdated;	
+	private boolean isUpdateUINChild;
+	
 }

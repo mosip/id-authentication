@@ -296,7 +296,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 					.getFace();
 			if (cbeffInBytes != null) {
-				if (registrationDTO.isUpdateUINonBiometric()
+				if (registrationDTO.isUpdateUINNonBiometric()
 						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
 								.equals(RegistrationConstants.ENABLE)) {
 					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
