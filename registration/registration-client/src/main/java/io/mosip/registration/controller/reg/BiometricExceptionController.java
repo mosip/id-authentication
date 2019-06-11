@@ -168,16 +168,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		continueBtn.setDisable(true);
 
 		setExceptionImage();
-		fingerExceptionListener(rightLittle);
-		fingerExceptionListener(rightRing);
-		fingerExceptionListener(rightMiddle);
-		fingerExceptionListener(rightIndex);
-		fingerExceptionListener(rightThumb);
-		fingerExceptionListener(leftLittle);
-		fingerExceptionListener(leftRing);
-		fingerExceptionListener(leftMiddle);
-		fingerExceptionListener(leftIndex);
-		fingerExceptionListener(leftThumb);
+		fingerException();
 		irisExceptionListener(leftEye);
 		irisExceptionListener(rightEye);
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -256,6 +247,19 @@ public class BiometricExceptionController extends BaseController implements Init
 		};
 		rightEyePaneHolder.setOnMouseClicked(mouseClick);
 		leftEyePaneHolder.setOnMouseClicked(mouseClick);
+	}
+
+	public void fingerException() {
+		fingerExceptionListener(rightLittle);
+		fingerExceptionListener(rightRing);
+		fingerExceptionListener(rightMiddle);
+		fingerExceptionListener(rightIndex);
+		fingerExceptionListener(rightThumb);
+		fingerExceptionListener(leftLittle);
+		fingerExceptionListener(leftRing);
+		fingerExceptionListener(leftMiddle);
+		fingerExceptionListener(leftIndex);
+		fingerExceptionListener(leftThumb);
 	}
 
 	/**
