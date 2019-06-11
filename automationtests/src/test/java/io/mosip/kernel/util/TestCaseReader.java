@@ -56,17 +56,8 @@ public class TestCaseReader extends BaseTestCase {
 		Object[][] testParam = new Object[testCaseNames.size()][];
 		int k = 0;
 		for (String testcaseName : testCaseNames) {
-			String fieldName = testcaseName.split("_")[1];
-			String path =  configPath + requestjsonName + ".json";
-			JSONObject outputObject = readJsonData(path);
-			for (Object key : outputObject.keySet()) {
-				if (fieldName.equals(key.toString()))
-					outputObject.put(key.toString(), "invalid");
-				else
-					outputObject.put(key.toString(), "valid");
-			}
-			outputObject.put("testCaseName", testcaseName);
-			testParam[k] = new Object[] {testcaseName, outputObject};
+			
+			testParam[k] = new Object[] {testcaseName};
 			k++;
 		}
 		return testParam;

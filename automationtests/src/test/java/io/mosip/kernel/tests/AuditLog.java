@@ -1,6 +1,5 @@
 package io.mosip.kernel.tests;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -15,7 +14,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -28,12 +26,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
-import io.mosip.service.BaseTestCase;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.TestCaseReader;
+import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 
 /**
@@ -100,11 +98,9 @@ public class AuditLog extends BaseTestCase implements ITest {
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void auditLog(String testcaseName, JSONObject object) {
+	public void auditLog(String testcaseName) {
 		logger.info("Test Case Name:" + testcaseName);
-		object.put("Jira ID", jiraID);
 		
 		// getting request and expected response jsondata from json files.
 		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
@@ -123,13 +119,9 @@ public class AuditLog extends BaseTestCase implements ITest {
 
 		if (!status) {
 			logger.debug(response);
-			object.put("status", "Fail");
-		} else if (status) {
-			object.put("status", "Pass");
-		}
+		} 
 		Verify.verify(status);
 		softAssert.assertAll();
-		arr.add(object);
 	}
 
 	@Override
@@ -149,18 +141,6 @@ public class AuditLog extends BaseTestCase implements ITest {
 			f.set(baseTestMethod, testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
-		}
-	}
-
-	/**
-	 * this method write the output to corressponding json
-	 */
-	@AfterClass
-	public void updateOutput() throws IOException {
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
-		try (FileWriter file = new FileWriter(configPath)) {
-			file.write(arr.toString());
-			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
 		}
 	}
 }

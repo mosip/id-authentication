@@ -17,8 +17,37 @@
 
 				<test name="Kernel Tests">
 						 <classes>
-						 <class name="io.mosip.kernel.tests.RIDGenerator" />
-                          <!--  <class name="io.mosip.kernel.tests.AuditLog" /> 
+						 <class name="io.mosip.kernel.tests.AuditLog" />
+                           <class name="io.mosip.kernel.tests.EmailNotification" />
+                           <class name="io.mosip.kernel.tests.EncrptionDecryption" />
+                           <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
+                           <class name="io.mosip.kernel.tests.FetchBiometricAuthType" />
+                           <class name="io.mosip.kernel.tests.FetchBlackListedWord" />
+                           <class name="io.mosip.kernel.tests.FetchDevice" />
+                           <class name="io.mosip.kernel.tests.FetchDeviceSpec" />
+                           <class name="io.mosip.kernel.tests.FetchDocumentCategories" />
+                           <class name="io.mosip.kernel.tests.FetchDocumentTypes" />
+                           <class name="io.mosip.kernel.tests.FetchGenderType" />
+                           <class name="io.mosip.kernel.tests.FetchHolidays" />
+                           <class name="io.mosip.kernel.tests.FetchIDlist" />
+                           <class name="io.mosip.kernel.tests.FetchLocationHierarchy" />
+                           <class name="io.mosip.kernel.tests.FetchMachine" />
+                            <class name="io.mosip.kernel.tests.FetchMachineHistory" /> 
+                           <class name="io.mosip.kernel.tests.FetchRegCent" />                
+                           <class name="io.mosip.kernel.tests.FetchRegCentHistory" />
+                           <class name="io.mosip.kernel.tests.FetchRegCentHolidays" />       
+                           <class name="io.mosip.kernel.tests.FetchRegcentMachUserMaping" /> 
+                           <class name="io.mosip.kernel.tests.FetchRejectionReason" />
+                           <class name="io.mosip.kernel.tests.FetchTemplate" />        
+                           <class name="io.mosip.kernel.tests.FetchTitle" /> 
+                           <class name="io.mosip.kernel.tests.OTP" />  
+                           <class name="io.mosip.kernel.tests.RIDGenerator" />   
+                           <class name="io.mosip.kernel.tests.SmsNotification" />
+                           <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndex" />
+                           <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId" />
+                           <class name="io.mosip.kernel.tests.TokenIdGenerator" /> 
+                           <class name="io.mosip.kernel.tests.UploadPublickey" />
+                          <!-- <class name="io.mosip.kernel.tests.AuditLog" /> 
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -34,7 +63,7 @@
                            <class name="io.mosip.kernel.tests.FetchIDlist" />
                            <class name="io.mosip.kernel.tests.FetchLocationHierarchy" />
                            <class name="io.mosip.kernel.tests.FetchMachine" />
-                           <class name="io.mosip.kernel.tests.FetchMachineHistory" /> 
+                            <class name="io.mosip.kernel.tests.FetchMachineHistory" /> 
                            <class name="io.mosip.kernel.tests.FetchRegCent" />                
                            <class name="io.mosip.kernel.tests.FetchRegCentHistory" />
                            <class name="io.mosip.kernel.tests.FetchRegCentHolidays" />       
@@ -71,8 +100,7 @@
                            <class name="io.mosip.kernel.tests.UploadPublickey" /> 
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />  
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />            
- -->
-               
+                -->
                  </classes>
 				</test>  
 </suite>
