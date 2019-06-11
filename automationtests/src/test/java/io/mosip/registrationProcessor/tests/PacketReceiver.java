@@ -176,18 +176,17 @@ public void getToken() {
 				if(!isError){
 					String actualStatus = null;
 					String expectedStatus = null;
-					List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
-					JSONArray expected = (JSONArray) expectedResponse.get("response");
-					Iterator<Object> iterator = expected.iterator();
+					Map<String,String> response = actualResponse.jsonPath().get("response"); 
+					JSONObject expected = (JSONObject) expectedResponse.get("response");
+					
 					//extracting status from the expected response
-					while(iterator.hasNext()){
-						JSONObject jsonObject = (JSONObject) iterator.next();
-						expectedStatus = jsonObject.get("status").toString().trim();
-					}
+						expectedStatus = expected.get("status").toString().trim();
+					
 
 
-					for(Map<String,String> res : response){
-						actualStatus=res.get("status").toString();
+					for(Map.Entry<String,String> res: response.entrySet()){
+						if(res.getKey().equals("status"))
+							actualStatus =  res.getValue().toString();
 						if (expectedStatus.matches(actualStatus)){
 							logger.info("STATUS MATCHED....");
 							finalStatus = "Pass";

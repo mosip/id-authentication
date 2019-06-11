@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
 
@@ -25,9 +26,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import io.mosip.dbdto.DecrypterDto;
+import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.registrationProcessor.tests.UpdatePacket;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.EncrypterDecrypter;
+import io.mosip.util.TokenGeneration;
 import net.lingala.zip4j.exception.ZipException;
 
 
@@ -49,7 +52,15 @@ public class TweakRegProcPackets extends BaseTestCase {
 	EncrypterDecrypter encryptDecrypt = new EncrypterDecrypter();
 	DecrypterDto decrypterDto = new DecrypterDto();
 	PacketValidator validate = new PacketValidator();
-	String token="";
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	String validToken="";
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+		}
 
 	/**
 	 * 
@@ -375,8 +386,19 @@ public class TweakRegProcPackets extends BaseTestCase {
 									metaInfo = (JSONObject) new JSONParser().parse(metaFileReader);
 									metaFileReader.close();
 									identity = (JSONObject) metaInfo.get("identity");
-									identity.put("fullName", property);
-									logger.info("Identity is :: " + identity.get("fullName"));
+									
+									//identity.put("fullName", property);
+									JSONArray updatedProperty = updateProperty(identity,testCaseName,property);
+									Long updtedUin = updateUIN(f.getName().substring(0, f.getName().lastIndexOf(".")));
+									double idSchema = updateIdSchema(identity);
+									JSONObject poi = updatePOI(identity);
+									identity.clear();
+									logger.info("identity..........: " +identity);
+									identity.put(testCaseName, updatedProperty);
+									identity.put("UIN", updtedUin);
+									identity.put("IDSchemaVersion", idSchema);
+									identity.put("proofOfIdentity", poi);
+									//logger.info("Identity is :: " + identity.get("fullName"));
 									try (FileWriter updatedFile = new FileWriter(metaFile.getAbsolutePath())) {
 										try {
 											updatedFile.write(metaInfo.toString());
@@ -385,7 +407,6 @@ public class TweakRegProcPackets extends BaseTestCase {
 											logger.error("Could not find ID.json", e);
 										}
 										logger.info("Successfully updated json object to file...!!");
-
 									} catch (IOException e1) {
 										logger.error("Could not update ID.json", e1);
 									}
@@ -405,8 +426,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 							JSONObject identityObject = (JSONObject) metaInfoBio.get("identity");
 							JSONArray metaData = (JSONArray) identityObject.get("metaData");
 							JSONArray updatedData = updateRegId(metaData, regId);
-							JSONArray updateType = updateRegType(metaData, regId);
-							//JSONArray updateUIN = updateUIN(metaData,"" );
+							JSONArray updateType = updateRegType(metaData, "Update");
+							JSONArray authentication = updateAuth(metaData,"authentication_bio_CBEFF");
 							logger.info("updatedData : " + updatedData);
 							metaInfoBio.put("identity", identityObject);
 							logger.info("metaInfoBio : " + metaInfoBio);
@@ -436,7 +457,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 							writer.print("");
 							writer.print(str);
 							writer.close();
-							encryptDecrypt.encryptFile(decryptedPacket, configPath, invalidPacketsPath, regId);
+							encryptDecrypt.encryptFile(decryptedPacket, configPath, invalidPacketsPath, regId, validToken);
 						}
 
 					}
@@ -448,11 +469,9 @@ public class TweakRegProcPackets extends BaseTestCase {
 		}
 		
 	}
-
-
+	
 
 	/**
-	 * 
 	 * @param metaData
 	 * @param parameter
 	 * @param value
@@ -728,21 +747,52 @@ public class TweakRegProcPackets extends BaseTestCase {
 	}
 
 	
-	/*private JSONArray updateUIN(JSONArray metaData, String regId) {
+	private long updateUIN(String regId) {
+		validToken = getToken("syncTokenGenerationFilePath");
 		UpdatePacket updatePacket  = new UpdatePacket();
-		Long uin = updatePacket.getUINByRegId(regId);
+		Long uin = updatePacket.getUINByRegId(regId, validToken);
+
+		return uin;
+	}
+	
+
+
+	private JSONArray updateProperty(JSONObject identity, String testcaseName, String property) {
+		JSONArray propertyfield = (JSONArray) identity.get(testcaseName);
+		
+		for (int i = 0; i < propertyfield.size(); i++) {
+			JSONObject labels = (JSONObject) propertyfield.get(i);
+			if (labels.get("language").equals("fra")) {
+				labels.put("value", property);
+			}
+		}
+		
+		return propertyfield;
+		
+	}
+
+	private double updateIdSchema(JSONObject identity) {
+		double idSchema = (double) identity.get("IDSchemaVersion");
+		return idSchema;	
+		
+	}
+
+	private JSONObject updatePOI(JSONObject identity) {
+		JSONObject poi  = (JSONObject) identity.get("proofOfIdentity");
+		return poi;
+	}
+
+
+	private JSONArray updateAuth(JSONArray metaData, String bioAuthFile) {
 		for (int i = 0; i < metaData.size(); i++) {
 			JSONObject labels = (JSONObject) metaData.get(i);
-			if (labels.get("label").equals("UIN")) {
-				labels.put("value", uin);
+			if (labels.get("label").equals("authenticationBiometricFileName")) {
+				labels.put("value", bioAuthFile);
 			}
 		}
 
 		return metaData;
 	}
-*/
-
-	
 
 
 }

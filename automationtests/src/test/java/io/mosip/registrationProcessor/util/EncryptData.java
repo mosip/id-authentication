@@ -94,7 +94,7 @@ public class EncryptData {
 		syncRegistrationDto.setPacketHashValue(packetHash);
 		syncRegistrationDto.setPacketSize(BigInteger.valueOf(f.length()));
 		syncRegistrationDto.setRegistrationId(regId);
-		syncRegistrationDto.setRegistrationType("NEW");
+		syncRegistrationDto.setRegistrationType("UPDATE");
 		syncRegistrationDto.setSupervisorComment("APPROVED");
 		syncRegistrationDto.setSupervisorStatus("APPROVED");
 		List<SyncRegistrationDto> syncRegistrationList=new ArrayList<SyncRegistrationDto>();

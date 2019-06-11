@@ -54,6 +54,7 @@ import io.mosip.registrationProcessor.util.EncryptData;
 import io.mosip.registrationProcessor.util.HashSequenceUtil;
 import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.registrationProcessor.util.StageValidationMethods;
+import io.mosip.registrationProcessor.util.TweakRegProcPackets;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -201,9 +202,10 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 				boolean isError = uploadPacketResponse.asString().contains("errors");
 				logger.info("isError : "+isError);
 				if(!isError) {
-					List<Map<String,String>> uploadResponse = uploadPacketResponse.jsonPath().get("response"); 
-					for(Map<String,String> res : uploadResponse){
-						uploadStatus=res.get("status").toString();
+					Map<String,String> uploadResponse = uploadPacketResponse.jsonPath().get("response"); 
+					for(Map.Entry<String,String> res: uploadResponse.entrySet()){
+						if(res.getKey().equals("status"))
+							uploadStatus =  res.getValue().toString();
 						if (uploadStatus.matches("\"Packet is in PACKET_RECEIVED status\"")){
 							logger.info("Packet Uploaded ...........");
 						} 
@@ -219,7 +221,14 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 						}
 					}
 				}
-				Long uin = getUINByRegId(regId);
+				Long uin = getUINByRegId(regId, validToken);
+				
+				TweakRegProcPackets e = new TweakRegProcPackets();
+				String validPacketPath = prop.getProperty("newPacketForUpdatePacket");
+				String updatedPacketFolderPath = prop.getProperty("updatedPacketFolderPath");
+				e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,updatedPacketFolderPath);
+
+				
 			}
 			
 			
@@ -230,8 +239,8 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 		}
 	}
 
-	public Long getUINByRegId(String regId) {
-		Response idRepoResponse = getIDRepoResponse(regId);
+	public Long getUINByRegId(String regId, String validToken) {
+		Response idRepoResponse = getIDRepoResponse(regId, validToken);
 		Long uin = null;
 		Map<String, Object> identity = null ;
 		Map<String,Map<String,Object>> idRepoResponseBody = idRepoResponse.jsonPath().get("response"); 
@@ -249,14 +258,14 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 		return uin;
 	}
 
-	private Response getIDRepoResponse(String regId) {
-		String idRepoUrl = prop.getProperty("idRepoByRid") + regId + "?type=all" ;
+	private Response getIDRepoResponse(String regId, String validToken) {
+		String idRepoUrl = "/idrepository/v1/identity/rid/" + regId + "?type=all" ;
 		Response idRepoResponse = apiRequests.regProcGetIdRepo(idRepoUrl, validToken);
 		return idRepoResponse;
 	}  
 	
 	public boolean comapreIDResponse(String regId) {
-		Response idRepoResponse = getIDRepoResponse(regId);
+		Response idRepoResponse = getIDRepoResponse(regId, validToken);
 		Long uin = null;
 		Map<String, Object> identity = null ;
 		Map<String,Map<String,Object>> idRepoOldResponseBody = idRepoResponse.jsonPath().get("response"); 

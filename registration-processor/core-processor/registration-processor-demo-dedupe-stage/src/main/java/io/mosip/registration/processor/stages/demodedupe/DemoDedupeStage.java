@@ -21,16 +21,6 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIMan
 @Service
 public class DemoDedupeStage extends MosipVerticleAPIManager {
 
-	/** The reg proc logger. */
-
-	/** The cluster address. */
-	@Value("${registration.processor.vertx.cluster.address}")
-	private String clusterAddress;
-
-	/** The localhost. */
-	@Value("${registration.processor.vertx.localhost}")
-	private String localhost;
-
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
 
