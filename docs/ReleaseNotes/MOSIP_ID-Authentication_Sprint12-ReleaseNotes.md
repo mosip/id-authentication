@@ -81,6 +81,8 @@ Requirement Id|Description|Future Date / Sprint when expected to release | Reaso
 ### 1.8 DB Changes :
 |DB Script Name|Description|
 |---------------|-------------|
+|ida-static_pin.sql|Removed ida.static_pin table|
+|ida-static_pin_h.sql|Removed ida.static_pin_h table|
 
 
 
