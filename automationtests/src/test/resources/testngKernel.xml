@@ -33,7 +33,7 @@
                            <class name="io.mosip.kernel.tests.FetchIDlist" />
                            <class name="io.mosip.kernel.tests.FetchLocationHierarchy" />
                            <class name="io.mosip.kernel.tests.FetchMachine" />
-                            <class name="io.mosip.kernel.tests.FetchMachineHistory" /> 
+                           <class name="io.mosip.kernel.tests.FetchMachineHistory" /> 
                            <class name="io.mosip.kernel.tests.FetchRegCent" />                
                            <class name="io.mosip.kernel.tests.FetchRegCentHistory" />
                            <class name="io.mosip.kernel.tests.FetchRegCentHolidays" />       
@@ -43,7 +43,7 @@
                            <class name="io.mosip.kernel.tests.FetchTitle" />   
                            <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />   
                            <class name="io.mosip.kernel.tests.GetApplicantType" /> 
-                            <class name="io.mosip.kernel.tests.GetDeviceHistory" />
+                           <class name="io.mosip.kernel.tests.GetDeviceHistory" />
                            <class name="io.mosip.kernel.tests.GetDocTypeDocCatByLangCode" /> 
                            <class name="io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode" />
                            <class name="io.mosip.kernel.tests.GetIndividualType" />
