@@ -15,11 +15,11 @@ This event based approach gives flexibility to create work flow by putting these
 ![MOSIP Stage](_images/registrationprocessor_stages_diagram.png)
 
 ##### Lost UIN Flow:
-###### *A workflow is orchestrated using reusable stages to perform Lost UIN business activity.*
+###### *A workflow orchestrated using reusable stages to perform Lost UIN business activity.*
 ------------
 ![MOSIP Stage](_images/registrationprocessor_lost_uin_diagram.png)
 
 ##### Activate Deactivate UIN Flow:
-###### *A workflow is orchestrated using reusable stages to perform Activate Deactivate UIN.*
+###### *A workflow orchestrated using reusable stages to perform Activate Deactivate UIN.*
 ------------
 ![MOSIP Stage](_images/registrationprocessor_activate_diagram.png)
