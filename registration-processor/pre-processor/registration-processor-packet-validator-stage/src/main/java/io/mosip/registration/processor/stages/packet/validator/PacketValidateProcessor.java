@@ -23,15 +23,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -400,9 +395,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
-			MessageDTO object) throws IOException, JsonValidationProcessingException, JsonIOException,
-			JsonSchemaIOException, FileIOException, ApisResourceAccessException, JSONException, ParseException,
-			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException,
+			MessageDTO object) throws IOException, ApisResourceAccessException, JSONException, RegistrationProcessorCheckedException,
 			IdObjectValidationFailedException, IdObjectIOException , PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		InputStream idJsonStream = fileSystemManager.getFile(registrationId,
@@ -463,8 +456,9 @@ public class PacketValidateProcessor {
 				||RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
 				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
 
-			if (!ifUinIDRepo(String.valueOf(uin)))
+			if (!ifUinIDRepo(String.valueOf(uin))) {
 				return false;
+			}
 		}
 
 		if (RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())
@@ -474,18 +468,12 @@ public class PacketValidateProcessor {
 
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
 		// Sync list table
-		if (!validateRegIdAndTypeFromSyncTable(metadataList)) {
-			return false;
-		}
-
-		return true;
-
+		return !validateRegIdAndTypeFromSyncTable(metadataList);
 	}
 
 	private boolean ifUinIDRepo(String uin) throws ApisResourceAccessException, IOException {
-		if (idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) == null)
-			return false;
-		return true;
+		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) == null;
+			
 	}
 
 	private boolean validateRegIdAndTypeFromSyncTable(List<FieldValue> metadataList) {
@@ -508,7 +496,7 @@ public class PacketValidateProcessor {
 			throws IOException, JSONException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		if (env.getProperty(VALIDATEMANDATORY).trim().equalsIgnoreCase(VALIDATIONFALSE))
 			return true;
-		MandatoryValidation mandatoryValidation = new MandatoryValidation(adapter, registrationStatusDto, utility);
+		MandatoryValidation mandatoryValidation = new MandatoryValidation(fileSystemManager, registrationStatusDto, utility);
 		return mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId());
 
 	}
@@ -594,7 +582,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean applicantDocumentValidation(String jsonString)
-			throws IOException, ApisResourceAccessException, ParseException, org.json.simple.parser.ParseException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			isApplicantDocumentValidation = true;
 			return isApplicantDocumentValidation;

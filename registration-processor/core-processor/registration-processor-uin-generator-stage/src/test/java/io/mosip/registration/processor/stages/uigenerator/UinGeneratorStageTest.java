@@ -1069,7 +1069,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void updateTestSuccess() throws ApisResourceAccessException {
+	public void updateTestSuccess() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type(RegistrationType.valueOf("UPDATE"));
@@ -1099,7 +1099,7 @@ public class UinGeneratorStageTest {
 	}
 	
     @Test
-    public void vidException() throws ApisResourceAccessException, FileNotFoundException {
+    public void vidException() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
           MessageDTO messageDTO = new MessageDTO();
           messageDTO.setRid("27847657360002520181210094052");
           String str = "{\"id\":\"mosip.id.read\",\"version\":\"1.0\",\"responsetime\":\"2019-04-05\",\"metadata\":null,\"response\":{\"uin\":\"2812936908\"},\"errors\":[{\"errorCode\":null,\"errorMessage\":null}]}";
@@ -1159,7 +1159,7 @@ public class UinGeneratorStageTest {
     
     @SuppressWarnings("unchecked")
     @Test
-    public void vidJSONException() throws ApisResourceAccessException, FileNotFoundException {
+    public void vidJSONException() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
           MessageDTO messageDTO = new MessageDTO();
           messageDTO.setRid("27847657360002520181210094052");
           String str = "{\"id\":\"mosip.id.read\",\"version\":\"1.0\",\"responsetime\":\"2019-04-05\",\"metadata\":null,\"response\":{\"uin\":\"2812936908\"},\"errors\":[{\"errorCode\":null,\"errorMessage\":null}]}";

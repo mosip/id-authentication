@@ -25,13 +25,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.PacketFiles;import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTO;
 import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTOWrapper;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
@@ -44,6 +46,7 @@ import io.mosip.registration.processor.manual.verification.exception.NoRecordAss
 import io.mosip.registration.processor.manual.verification.exception.UserIDNotPresentException;
 import io.mosip.registration.processor.manual.verification.service.impl.ManualVerificationServiceImpl;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationPKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -72,6 +75,11 @@ public class ManualVerificationServiceTest {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 	@Mock
 	PacketManager filesystemCephAdapterImpl;
+	
+	@Mock
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
+	
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 	@Mock
@@ -123,6 +131,7 @@ public class ManualVerificationServiceTest {
 		manualVerificationDTO.setMvUsrId("test");
 		registrationStatusDto.setStatusCode(ManualVerificationStatus.PENDING.name());
 		registrationStatusDto.setStatusComment("test");
+		registrationStatusDto.setRegistrationType(RegistrationType.LOST.toString());
 		manualVerificationDTO.setMatchedRefType("Type");
 		manualVerificationDTO.setStatusCode("PENDING");
 		entities.add(manualVerificationEntity);

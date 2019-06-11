@@ -53,7 +53,6 @@ import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -324,7 +323,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					} else if (RegistrationType.UPDATE.toString().equalsIgnoreCase(object.getReg_type().toString())
 							|| (RegistrationType.RES_UPDATE.toString()
 									.equalsIgnoreCase(object.getReg_type().toString()))) {
-						idResponseDTO = uinUpdate(registrationId, object);
+						idResponseDTO = uinUpdate(registrationId,uinFieldCheck, object);
 					}
 				}
 

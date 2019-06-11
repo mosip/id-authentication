@@ -53,6 +53,8 @@ import io.mosip.registration.processor.status.dto.SyncResponseSuccessDto;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
+import io.mosip.registration.processor.status.service.impl.SyncRegistrationServiceImpl;
 import io.mosip.registration.processor.status.validator.RegistrationStatusRequestValidator;
 import io.mosip.registration.processor.status.validator.RegistrationSyncRequestValidator;
 
@@ -78,11 +80,11 @@ public class RegistrationStatusAndSyncControllerTest {
 
 	/** The registration status service. */
 	@MockBean
-	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusServiceImpl registrationStatusService;
 
 	/** The sync registration service. */
 	@MockBean
-	SyncRegistrationService<SyncResponseDto, SyncRegistrationDto> syncRegistrationService;
+	SyncRegistrationServiceImpl syncRegistrationService;
 
 	/** The sync registration dto. */
 	@MockBean
