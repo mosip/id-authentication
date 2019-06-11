@@ -1151,6 +1151,10 @@ public class DemographicDetailController extends BaseController {
 									isChild = true;
 									parentNameKeyboardImage.setDisable(!isChild);
 									validation.setChild(isChild);
+									
+									if(getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO()!=null) {
+										enableParentUIN();
+									}
 								}
 							} else {
 								updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
@@ -1720,23 +1724,28 @@ public class DemographicDetailController extends BaseController {
 				parentNameKeyboardImage.setDisable(!isChild);
 			}
 
-			if (isChild) {
+			enableParentUIN();
+		}
+	}
 
-				applicationUinIdPane.setDisable(false);
-				applicationRidPane.setDisable(true);
-				applicationRidPane.setVisible(false);
-				applicationRidPane.setManaged(false);
-				ridOrUinToggle.setVisible(false);
-				ridOrUinToggle.setManaged(false);
-				localRidPane.setDisable(true);
-				localRidPane.setVisible(false);
-				localRidPane.setManaged(false);
-				localRidOrUinToggle.setVisible(false);
-				localRidOrUinToggle.setManaged(false);
-				
-				parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
-				localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
-			}
+	private void enableParentUIN() {
+		if (isChild || (null != ageField.getText() && !ageField.getText().isEmpty()
+				&& Integer.parseInt(ageField.getText()) <= 5)) {
+
+			applicationUinIdPane.setDisable(false);
+			applicationRidPane.setDisable(true);
+			applicationRidPane.setVisible(false);
+			applicationRidPane.setManaged(false);
+			ridOrUinToggle.setVisible(false);
+			ridOrUinToggle.setManaged(false);
+			localRidPane.setDisable(true);
+			localRidPane.setVisible(false);
+			localRidPane.setManaged(false);
+			localRidOrUinToggle.setVisible(false);
+			localRidOrUinToggle.setManaged(false);
+			
+			parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
+			localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
 		}
 	}
 
