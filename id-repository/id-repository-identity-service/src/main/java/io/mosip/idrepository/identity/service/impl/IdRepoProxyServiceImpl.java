@@ -404,7 +404,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		try {
 			String uinHash = retrieveUinHash(uin);
 			if (uinRepo.existsByUinHash(uinHash)) {
-				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
+				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())
+						|| uinHistoryRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
