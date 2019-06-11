@@ -604,7 +604,7 @@ public class DemographicDetailController extends BaseController {
 	private ImageView addressLine3KeyboardImage;
 	@FXML
 	private ImageView parentNameKeyboardImage;
-	
+
 	@FXML
 	private VBox localFullName;
 	@FXML
@@ -659,7 +659,7 @@ public class DemographicDetailController extends BaseController {
 	private HBox localParentDetailsHbox;
 	@FXML
 	private AnchorPane ridOrUinToggle;
-	
+
 	@Autowired
 	private MasterSyncService masterSyncService;
 	@FXML
@@ -697,7 +697,7 @@ public class DemographicDetailController extends BaseController {
 
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
-				getRegistrationDTOFromSession().setUpdateUINonBiometric(false);
+				getRegistrationDTOFromSession().setUpdateUINNonBiometric(false);
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
 						RegistrationConstants.DISABLE);
 			}
@@ -1010,8 +1010,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when national button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void national(ActionEvent event) {
@@ -1035,8 +1034,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when mail button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void male(ActionEvent event) {
@@ -1065,8 +1063,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when foriegner button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void foreigner(ActionEvent event) {
@@ -1090,8 +1087,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when female button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void female(ActionEvent event) {
@@ -1217,8 +1213,7 @@ public class DemographicDetailController extends BaseController {
 
 			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage,
 					!hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, ageField, validation, ageFieldLocalLanguage,
-					!hasToBeTransliterated);
+			fxUtils.validateOnType(parentFlowPane, ageField, validation, ageFieldLocalLanguage, !hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, postalCode, validation, postalCodeLocalLanguage,
 					!hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, emailId, validation, emailIdLocalLanguage,
@@ -1408,8 +1403,7 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
@@ -1442,6 +1436,7 @@ public class DemographicDetailController extends BaseController {
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
 	}
+
 	/**
 	 * 
 	 * Saving the detail into concerned DTO'S
@@ -1546,7 +1541,7 @@ public class DemographicDetailController extends BaseController {
 												localAdminAuthority, localAdminAuthorityLocalLanguage,
 												isComboBoxValueNotRequired(localAdminAuthority))))
 								.with(identity -> identity.setPostalCode(
-										buildDemoTextValue(postalCode, isTextFieldNotRequired(postalCode))))
+										buildDemoTextValue(postalCode, postalCodeFieldValidation(postalCode))))
 								.with(identity -> identity
 										.setPhone(buildDemoTextValue(mobileNo, isTextFieldNotRequired(mobileNo))))
 								.with(identity -> identity
@@ -1575,11 +1570,16 @@ public class DemographicDetailController extends BaseController {
 								.with(identity -> identity
 										.setIndividualBiometrics(buildCBEFFDTO(isCBEFFNotAvailable(applicantBiometric),
 												RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME)))
-								.with(identity -> identity.setParentOrGuardianBiometrics(
-										buildCBEFFDTO(isCBEFFNotAvailable(introducerBiometric),
-												RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)))
+								.with(identity -> identity
+										.setParentOrGuardianBiometrics( buildCBEFFDTO(isParentORGuardian(registrationDTO, introducerBiometric),
+														RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)))
 								.get()))
 				.get();
+	}
+	
+	private boolean isParentORGuardian(RegistrationDTO registrationDTO,BiometricInfoDTO introducerBiometric) {
+		return !((registrationDTO.getSelectionListDTO() !=null && registrationDTO.isUpdateUINChild() && !isCBEFFNotAvailable(introducerBiometric)) 
+				|| (registrationDTO.getSelectionListDTO() == null && !isCBEFFNotAvailable(introducerBiometric)));
 	}
 
 	private List<ValuesDTO> buildDemoComboValues(String platformLanguageCode, String localLanguageCode,
@@ -1620,6 +1620,10 @@ public class DemographicDetailController extends BaseController {
 	private boolean isTextFieldNotRequired(TextField demoField) {
 		return demoField.isDisabled() || demoField.getText().isEmpty();
 	}
+	
+	private boolean postalCodeFieldValidation(TextField demoField) {
+		return demoField.getText().isEmpty();
+	}
 
 	private boolean isComboBoxValueNotRequired(ComboBox<?> demoComboBox) {
 		return demoComboBox.isDisable() || demoComboBox.getValue() == null;
@@ -1647,6 +1651,7 @@ public class DemographicDetailController extends BaseController {
 		return personBiometric.getFingerprintDetailsDTO().isEmpty() && personBiometric.getIrisDetailsDTO().isEmpty()
 				&& personBiometric.getFace().getFace() == null;
 	}
+	
 
 	/**
 	 * Method will be called for uin Update
@@ -1657,8 +1662,8 @@ public class DemographicDetailController extends BaseController {
 
 			clearAllValues();
 			documentScanController.getBioExceptionToggleLabel1().setLayoutX(0);
-			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION,false);
-			
+			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, false);
+
 			keyboardNode.setDisable(false);
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
 

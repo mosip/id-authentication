@@ -83,7 +83,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		boolean fingerPrintStatus = false;
 		if (isMdmEnabled()) {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGER_SINGLE);
-			isoTemplate = mosipBioDeviceManager.extractSingleBiometricIsoTemplate(captureResponseDto);
+			isoTemplate = mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
 		} else {
 			isoTemplate = IOUtils.toByteArray(
 					this.getClass().getResourceAsStream("/UserOnboard/rightHand/rightLittle/ISOTemplate.iso"));
@@ -347,7 +347,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 						.get(RegistrationConstants.USER_ONBOARD_DATA)).getOperatorBiometricDTO()
 								.getBiometricExceptionDTO();
 			} else if (((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
-					.isUpdateUINonBiometric() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+					.isUpdateUINNonBiometric() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				biometricExceptionDTOs = ((RegistrationDTO) SessionContext.map()
 						.get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO().getIntroducerBiometricDTO()
 								.getBiometricExceptionDTO();
@@ -489,7 +489,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		if (isMdmEnabled()) {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.IRIS_SINGLE);
-			capturedByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
+			capturedByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
 		} else
 			capturedByte = IOUtils
 					.toByteArray(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
@@ -563,7 +563,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		}
 
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(eyeType);
-		byte[] irisByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
+		byte[] irisByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
 		detailsDTO.setIris(irisByte);
 		detailsDTO.setIrisType(type);
 		detailsDTO.setQualityScore(80);
@@ -671,7 +671,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		try {
 			if (isMdmEnabled()) {
 				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
-				capturedByte = mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
+				capturedByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
 			} else
 				capturedByte = RegistrationConstants.FACE.toLowerCase().getBytes();
 		} catch (RegBaseCheckedException | RuntimeException exception) {

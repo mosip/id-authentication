@@ -272,7 +272,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.PARENT_PHOTO_CAPTURED,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		}
-		if (isChild || registration.isUpdateUINonBiometric()) {
+		if (isChild || registration.isUpdateUINNonBiometric()) {
 			if (registration.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace() != null && registration
 					.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace().getFace() != null) {
 				byte[] exceptionImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO()
@@ -300,7 +300,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_LOCAL_LANG,
 					localProperties.getString("individualphoto"));
 			byte[] applicantImageBytes;
-			if (registration.isUpdateUINonBiometric() && !SessionContext.map()
+			if (registration.isUpdateUINNonBiometric() && !SessionContext.map()
 					.get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN).equals(RegistrationConstants.ENABLE)) {
 				applicantImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace();
 			} else {
@@ -341,7 +341,7 @@ public class TemplateGenerator extends BaseService {
 						|| (registration.getSelectionListDTO() == null && isChild)
 						|| (registration.getSelectionListDTO() != null
 								&& registration.getSelectionListDTO().isBiometrics()))) {
-			if (isChild || registration.isUpdateUINonBiometric()) {
+			if (isChild || registration.isUpdateUINNonBiometric()) {
 				if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace() == null
 						|| (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace() != null && registration
 								.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() == null)
@@ -390,9 +390,9 @@ public class TemplateGenerator extends BaseService {
 			}
 		} else {
 			if (!RegistrationConstants.ENABLE.equalsIgnoreCase(faceDisableFlag)
-					|| (((isChild || registration.isUpdateUINonBiometric()) && registration.getBiometricDTO()
+					|| (((isChild || registration.isUpdateUINNonBiometric()) && registration.getBiometricDTO()
 							.getIntroducerBiometricDTO().getExceptionFace().getFace() == null)
-							|| ((!isChild && !registration.isUpdateUINonBiometric()) && registration.getBiometricDTO()
+							|| ((!isChild && !registration.isUpdateUINNonBiometric()) && registration.getBiometricDTO()
 									.getApplicantBiometricDTO().getExceptionFace().getFace() == null))) {
 				templateValues.put(RegistrationConstants.TEMPLATE_IRIS_DISABLED,
 						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -418,7 +418,7 @@ public class TemplateGenerator extends BaseService {
 					applicationLanguageProperties.getString("thumbs"));
 			templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_LOCAL_LANG_LABEL,
 					localProperties.getString("thumbs"));
-			if (isChild || registration.isUpdateUINonBiometric()) {
+			if (isChild || registration.isUpdateUINNonBiometric()) {
 				if (parentPhotoCaptured) {
 					templateValues.put(RegistrationConstants.PARENT_PHOTO_NOT_CAPTURED,
 							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -560,7 +560,7 @@ public class TemplateGenerator extends BaseService {
 		List<IrisDetailsDTO> capturedIris;
 
 		if ((registration.getSelectionListDTO() == null && !isChild)
-				|| (registration.getSelectionListDTO() != null && !registration.isUpdateUINonBiometric())) {
+				|| (registration.getSelectionListDTO() != null && !registration.isUpdateUINNonBiometric())) {
 			// get the total count of fingerprints captured and irises captured
 			capturedFingers = registration.getBiometricDTO().getApplicantBiometricDTO().getFingerprintDetailsDTO();
 			capturedIris = registration.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
@@ -794,7 +794,7 @@ public class TemplateGenerator extends BaseService {
 		templateValues.put(RegistrationConstants.TEMPLATE_CNIE_NUMBER, getValue(individualIdentity.getCnieNumber()));
 		boolean isChild = individualIdentity.getParentOrGuardianName() != null;
 
-		if (isChild || registration.isUpdateUINonBiometric()) {
+		if (isChild || registration.isUpdateUINNonBiometric()) {
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME_USER_LANG_LABEL,
 					applicationLanguageProperties.getString("parentName"));
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_NAME,
@@ -872,7 +872,7 @@ public class TemplateGenerator extends BaseService {
 			boolean rightPalmCaptured = false;
 			boolean thumbsCaptured = false;
 			List<FingerprintDetailsDTO> fingerprintDetailsDTO;
-			if (isChild || registration.isUpdateUINonBiometric()) {
+			if (isChild || registration.isUpdateUINNonBiometric()) {
 				fingerprintDetailsDTO = registration.getBiometricDTO().getIntroducerBiometricDTO()
 						.getFingerprintDetailsDTO();
 			} else {
@@ -1108,7 +1108,7 @@ public class TemplateGenerator extends BaseService {
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))) {
 			List<IrisDetailsDTO> irisDetailsDTOs;
-			if (isChild || registration.isUpdateUINonBiometric()) {
+			if (isChild || registration.isUpdateUINNonBiometric()) {
 				irisDetailsDTOs = registration.getBiometricDTO().getIntroducerBiometricDTO().getIrisDetailsDTO();
 			} else {
 				irisDetailsDTOs = registration.getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
@@ -1140,7 +1140,7 @@ public class TemplateGenerator extends BaseService {
 			} else if (irisDetailsDTOs.size() == 1) {
 				if (irisDetailsDTOs.get(0).getIrisType().contains(RegistrationConstants.LEFT)) {
 					if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
-						if (isChild || registration.isUpdateUINonBiometric()) {
+						if (isChild || registration.isUpdateUINNonBiometric()) {
 							templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE,
 									RegistrationConstants.TEMPLATE_RIGHT_MARK);
 							templateValues.put(RegistrationConstants.PARENT_RIGHT_EYE,
@@ -1163,7 +1163,7 @@ public class TemplateGenerator extends BaseService {
 
 				} else {
 					if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
-						if (isChild || registration.isUpdateUINonBiometric()) {
+						if (isChild || registration.isUpdateUINNonBiometric()) {
 							templateValues.put(RegistrationConstants.TEMPLATE_RIGHT_EYE,
 									RegistrationConstants.TEMPLATE_RIGHT_MARK);
 							templateValues.put(RegistrationConstants.PARENT_LEFT_EYE,
@@ -1186,7 +1186,7 @@ public class TemplateGenerator extends BaseService {
 				}
 			} else if (irisDetailsDTOs.isEmpty()) {
 				if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
-					if (isChild || registration.isUpdateUINonBiometric()) {
+					if (isChild || registration.isUpdateUINNonBiometric()) {
 						if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace() != null && registration
 								.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() != null) {
 							templateValues.put(RegistrationConstants.TEMPLATE_LEFT_EYE,
@@ -1472,7 +1472,7 @@ public class TemplateGenerator extends BaseService {
 
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
-		if (registration.isUpdateUINonBiometric() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+		if (registration.isUpdateUINNonBiometric() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			biometricExceptionDTOs = registration.getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
 			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {
