@@ -14,7 +14,5 @@ import io.mosip.registration.entity.DocumentCategory;
 public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, String> {
 
 	List<DocumentCategory> findByLangCode(String langCode);
-	
-	List<DocumentCategory> findAllByIsActiveTrue();
 
 }

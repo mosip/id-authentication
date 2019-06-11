@@ -5,7 +5,6 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -39,6 +38,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 @Import({ DaoConfig.class, AuditConfig.class, PropertiesConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan(excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
+		"io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator",
 		"io.mosip.kernel.idobjectvalidator.impl.IdObjectCompositeValidator",
 		"io.mosip.kernel.idobjectvalidator.impl.IdObjectMasterDataValidator" }), basePackages = {
 				"io.mosip.registration", "io.mosip.kernel.core", "io.mosip.kernel.keygenerator",
@@ -47,10 +47,9 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 				"io.mosip.kernel.idgenerator", "io.mosip.kernel.virusscanner", "io.mosip.kernel.transliteration",
 				"io.mosip.kernel.applicanttype", "io.mosip.kernel.cbeffutil", "io.mosip.kernel.core.pdfgenerator.spi",
 				"io.mosip.kernel.pdfgenerator.itext.impl", "io.mosip.kernel.cryptosignature",
-				"io.mosip.kernel.core.signatureutil", "io.mosip.kernel.idobjectvalidator.impl","io.mosip.kernel.bioapi.impl" })
+				"io.mosip.kernel.core.signatureutil", "io.mosip.kernel.idobjectvalidator.impl" })
 @PropertySource(value = { "classpath:spring.properties", "classpath:spring-${spring.profiles.active}.properties" })
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)
-@EnableConfigurationProperties
 public class AppConfig {
 
 	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();

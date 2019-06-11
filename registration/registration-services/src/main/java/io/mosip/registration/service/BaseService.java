@@ -3,13 +3,11 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
@@ -62,8 +59,20 @@ public class BaseService {
 	@Autowired
 	private UserOnboardDAO userOnboardDAO;
 
+	/**
+	 * Application context
+	 */
+	private ApplicationContext applicationContext;
+
+	/**
+	 * Global Param Map as a Application Map
+	 */
+	private static Map<String, Object> applicationMap = new HashMap<>();
+
 	@Autowired
 	private GlobalParamService globalParamService;
+
+	
 
 	/**
 	 * create success response.
@@ -269,16 +278,13 @@ public class BaseService {
 	 */
 	public String getGlobalConfigValueOf(String key) {
 
-		ApplicationContext.getInstance();
-		// Check application map
-		if (ApplicationContext.map().isEmpty()) {
+		if (applicationMap.isEmpty()) {
 
-			// Load Global params if application map is empty
-			ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
+			applicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
+
 		}
 
-		// Get Value of global param
-		return (String) ApplicationContext.map().get(key);
+		return (String) applicationMap.get(key);
 	}
 
 	/**
@@ -298,43 +304,30 @@ public class BaseService {
 		statusDTO.setPacketStatus(registration.getStatusCode());
 		statusDTO.setSupervisorStatus(registration.getClientStatusCode());
 		statusDTO.setSupervisorComments(registration.getClientStatusComments());
-
-		try (FileInputStream fis = new FileInputStream(FileUtils.getFile(registration.getAckFilename().replace(
-				RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))) {
+		
+		try (FileInputStream fis = new FileInputStream(new File(registration.getAckFilename()
+				.replace(RegistrationConstants.ACKNOWLEDGEMENT_FILE_EXTENSION, RegistrationConstants.ZIP_FILE_EXTENSION)))){
 			byte[] byteArray = new byte[(int) fis.available()];
 			fis.read(byteArray);
 			byte[] packetHash = HMACUtils.generateHash(byteArray);
 			statusDTO.setPacketHash(HMACUtils.digestAsPlainText(packetHash));
-			statusDTO.setPacketSize(BigInteger.valueOf(byteArray.length));
-
+			statusDTO.setPacketSize(BigInteger.valueOf(byteArray.length));		
+			
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION_BASE_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-		}
-
+		} 
+		
+		
 		return statusDTO;
 	}
 
-	/*
-	 * public static void setBaseGlobalMap(Map<String, Object> map) { applicationMap
-	 * = map; }
-	 * 
-	 * public static Map<String, Object> getBaseGlobalMap() { return applicationMap;
-	 * }
-	 */
+	public static void setBaseGlobalMap(Map<String, Object> map) {
+		applicationMap = map;
+	}
 
-	/**
-	 * Registration date conversion.
-	 *
-	 * @param timestamp
-	 *            the timestamp
-	 * @return the string
-	 */
-	protected String regDateConversion(Timestamp timestamp) {
-
-		DateFormat dateFormat = new SimpleDateFormat(RegistrationConstants.EOD_PROCESS_DATE_FORMAT);
-		Date date = new Date(timestamp.getTime());
-		return dateFormat.format(date);
+	public static Map<String, Object> getBaseGlobalMap() {
+		return applicationMap;
 	}
 
 }

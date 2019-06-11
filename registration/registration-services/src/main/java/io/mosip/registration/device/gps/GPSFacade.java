@@ -46,8 +46,8 @@ public class GPSFacade extends GPSBU343Connector {
 	/**
 	 * Gets the latitudeFromGps long details from GPS device.
 	 *
-	 * @param centerLat           the center lat
-	 * @param centerLngt          the center lngt
+	 * @param centerLat the center lat
+	 * @param centerLngt the center lngt
 	 * @param gpsConnectionDevice the gps connection device
 	 * @return the latitudeFromGps long details
 	 */
@@ -55,9 +55,8 @@ public class GPSFacade extends GPSBU343Connector {
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Entering GPS fetch details methos");
-
-		String serialPortConnected = String
-				.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_SERIAL_PORT_WINDOWS));
+		
+		String serialPortConnected = String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_SERIAL_PORT_WINDOWS));
 
 		if (System.getProperty("os.name").equals("Linux")) {
 
@@ -219,8 +218,7 @@ public class GPSFacade extends GPSBU343Connector {
 					"GPS Response after parsing" + geoLocation);
 
 		} catch (Exception exception) {
-			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString(),
-					exception);
+			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString(), exception);
 		}
 		return geoLocation;
 

@@ -7,8 +7,6 @@ import static org.mockito.Mockito.doNothing;
 
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -97,9 +95,7 @@ public class PacketSynchServiceImplTest {
 	public void testFetchPacketsToBeSynched() {
 		List<Registration> syncList = new ArrayList<>();
 		Registration reg = new Registration();
-		reg.setCrDtime(Timestamp.from(Instant.now()));
 		reg.setId("12345");
-		reg.setCrDtime(Timestamp.from(Instant.now()));
 		syncList.add(reg);
 		List<PacketStatusDTO> packetsList = new ArrayList<>();
 		PacketStatusDTO packetStatusDTO = new PacketStatusDTO();

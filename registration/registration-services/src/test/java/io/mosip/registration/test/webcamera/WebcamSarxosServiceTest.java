@@ -43,15 +43,15 @@ public class WebcamSarxosServiceTest {
 	private ApplicationContext applicationContext = ApplicationContext.getInstance();
 	
 	@Mock
-	private WebcamDiscoveryService discoveryService;
+	WebcamDiscoveryService discoveryService;
 	
 	@Mock
-	private Webcam webcam;
+	Webcam webcam;
 	
 	@Before
 	public void initialize() {
 		Map<String, Object> temp = new HashMap<String, Object>();
-		temp.put("mosip.registration.webcam_name", "Test-Cam");
+		temp.put("mosip.registration.webcam_name", "logitech");
 		applicationContext.setApplicationMap(temp);
 	}
 	
@@ -66,20 +66,6 @@ public class WebcamSarxosServiceTest {
 		Webcam webcam = Mockito.mock(Webcam.class);
 		List<Webcam> webcams = new ArrayList<>();
 		when(webcam.getName()).thenReturn("Test-Cam");
-		when(webcam.getViewSize()).thenReturn(new Dimension(640, 480));
-		webcams.add(webcam);
-		when(Webcam.getWebcams()).thenReturn(webcams);
-		when(Webcam.getDiscoveryService()).thenReturn(discoveryService);
-		discoveryService.stop();
-		webcamSarxosServiceImpl.connect(640, 480);		
-	}
-	
-	@Test
-	public void connectTest() {
-		PowerMockito.mockStatic(Webcam.class);
-		Webcam webcam = Mockito.mock(Webcam.class);
-		List<Webcam> webcams = new ArrayList<>();
-		when(webcam.getName()).thenReturn("Logitech");
 		when(webcam.getViewSize()).thenReturn(new Dimension(640, 480));
 		webcams.add(webcam);
 		when(Webcam.getWebcams()).thenReturn(webcams);

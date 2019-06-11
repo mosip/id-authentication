@@ -14,5 +14,4 @@ import io.mosip.registration.entity.Gender;
 
 public interface GenderRepository extends BaseRepository<Gender, String> {
 	List<Gender> findByIsActiveTrueAndLangCode(String langCode);
-	List<Gender> findAllByIsActiveTrue();
 }

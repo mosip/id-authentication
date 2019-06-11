@@ -3,6 +3,7 @@ package io.mosip.registration.test.dao.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class DocumentCategoryDAOImplTest {
 
 	@Test
 	public void test() {
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		DocumentCategory documentCategory = new DocumentCategory();
 		documentCategory.setDescription("description");
 		documentCategory.setName("name");

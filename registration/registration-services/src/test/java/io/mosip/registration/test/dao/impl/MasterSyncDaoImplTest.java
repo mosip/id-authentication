@@ -1,14 +1,11 @@
 package io.mosip.registration.test.dao.impl;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
@@ -27,7 +24,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.dao.DataAccessException;
 
 import io.mosip.kernel.core.util.DateUtils;
+<<<<<<< HEAD
+import io.mosip.registration.context.ApplicationContext;
+=======
 import io.mosip.registration.constants.RegistrationConstants;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.MasterSyncDao;
@@ -175,7 +176,7 @@ public class MasterSyncDaoImplTest {
 	@Mock
 	private SyncJobControlRepository syncStatusRepository;
 	@Mock
-	private BiometricAttributeRepository biometricAttributeRepository;
+	private BiometricAttributeRepository masterSyncBiometricAttributeRepository;
 	@Mock
 	private BiometricTypeRepository masterSyncBiometricTypeRepository;
 	@Mock
@@ -1852,23 +1853,6 @@ public class MasterSyncDaoImplTest {
 
 		assertTrue(masterIndividualType != null);
 
-	}
-	
-	@Test
-	public void getBiometricType() {
-		
-		List<String> biometricType = new LinkedList<>(Arrays.asList(RegistrationConstants.FNR, RegistrationConstants.IRS));
-		List<BiometricAttribute> biometricAttributes = new ArrayList<>();
-		BiometricAttribute biometricAttribute = new BiometricAttribute();
-		biometricAttribute.setCode("RS");
-		biometricAttribute.setBiometricTypeCode("FNR");
-		biometricAttribute.setName("Right Slap");
-		biometricAttribute.setLangCode("eng");
-		biometricAttributes.add(biometricAttribute);
-		
-		Mockito.when(biometricAttributeRepository.findByLangCodeAndBiometricTypeCodeIn("eng",biometricType)).thenReturn(biometricAttributes);
-		assertNotNull(masterSyncDaoImpl.getBiometricType("eng", biometricType));
-		
 	}
 
 }

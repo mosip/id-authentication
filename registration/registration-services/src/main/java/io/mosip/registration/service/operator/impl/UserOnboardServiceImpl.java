@@ -4,47 +4,28 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_USER_ONBOA
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.crypto.SecretKey;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 
-import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.UserOnboardDAO;
-import io.mosip.registration.dto.PublicKeyResponse;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.operator.UserOnboardService;
-import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-import io.mosip.registration.util.publickey.PublicKeyGenerationUtil;
 
 /**
  * Implementation for {@link UserOnboardService}
@@ -54,16 +35,10 @@ import io.mosip.registration.util.publickey.PublicKeyGenerationUtil;
  * @since 1.0.0
  */
 @Service
-public class UserOnboardServiceImpl extends BaseService implements UserOnboardService {
+public class UserOnboardServiceImpl implements UserOnboardService {
 
 	@Autowired
 	private UserOnboardDAO userOnBoardDao;
-
-	@Autowired
-	private KeyGenerator keyGenerator;
-
-	@Autowired
-	private Encryptor<?, PublicKey, SecretKey> encryptor;
 
 	/**
 	 * logger for logging
@@ -76,10 +51,15 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 	 * @see io.mosip.registration.service.UserOnBoardService#validate(io.mosip.
 	 * registration.dto.biometric.BiometricDTO)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public ResponseDTO validate(BiometricDTO biometricDTO) {
 
+<<<<<<< HEAD
+		int UserOnBoardThresholdLimit = Integer
+				.parseInt((String) ApplicationContext.map().get(RegistrationConstants.USER_ON_BOARD_THRESHOLD_LIMIT));
+
+		ResponseDTO responseDTO = null;
+=======
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		Map<String, Object> idaRequestMap = new LinkedHashMap<>();
@@ -175,11 +155,30 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 
 				if (null != publicKeyResponse && !publicKeyResponse.getResponse().isEmpty()
 						&& publicKeyResponse.getResponse().size() > 0) {
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
-					// Getting Public Key
-					PublicKey publicKey = PublicKeyGenerationUtil.generatePublicKey(publicKeyResponse.getResponse()
-							.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
+		FaceDetailsDTO photoDetails = biometricDTO.getOperatorBiometricDTO().getFace();
 
+<<<<<<< HEAD
+		long count = biometricDTO.getOperatorBiometricDTO().getFingerprintDetailsDTO().stream()
+				.flatMap(o -> o.getSegmentedFingerprints().stream()).count();
+
+		count = count + biometricDTO.getOperatorBiometricDTO().getIrisDetailsDTO().size();
+
+		count = count + (photoDetails == null ? 0 : 1);
+
+		// API for validating biometrics need to be implemented
+
+		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)))
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG)))
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.FACE_DISABLE_FLAG)))) {
+
+			if (count >= UserOnBoardThresholdLimit) {
+				responseDTO = save(biometricDTO);
+=======
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Getting Symmetric Key.....");
 					// Symmetric key alias session key
 					SecretKey symmentricKey = keyGenerator.getSymmetricKey();
@@ -231,16 +230,16 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 							RegistrationConstants.ON_BOARD_PUBLIC_KEY_ERROR);
 					setErrorResponse(responseDTO, RegistrationConstants.ON_BOARD_PUBLIC_KEY_ERROR, null);
 				}
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 			} else {
-				LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.NO_INTERNET);
-				setErrorResponse(responseDTO, RegistrationConstants.NO_INTERNET, null);
+				responseDTO = errorRespone(RegistrationConstants.ERROR,
+						RegistrationConstants.USER_ON_BOARDING_THRESHOLD_NOT_MET_MSG);
 			}
 
-		} catch (HttpClientErrorException | ResourceAccessException | RegBaseCheckedException | InvalidKeySpecException
-				| NoSuchAlgorithmException | IOException regBasedCheckedException) {
-			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					ExceptionUtils.getStackTrace(regBasedCheckedException));
+		} else {
+			responseDTO = save(biometricDTO);
 		}
+
 		return responseDTO;
 	}
 
@@ -252,37 +251,50 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 	 */
 	private ResponseDTO save(BiometricDTO biometricDTO) {
 
-		ResponseDTO responseDTO = new ResponseDTO();
+		ResponseDTO responseDTO = null;
 		String onBoardingResponse = RegistrationConstants.EMPTY;
 
 		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "Entering save method");
 
 		try {
-
 			onBoardingResponse = userOnBoardDao.insert(biometricDTO);
 
 			if (onBoardingResponse.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
 
 				LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "operator details inserted");
-
-				if ((RegistrationConstants.SUCCESS).equalsIgnoreCase(userOnBoardDao.save())) {
+				
+				String saveUser = userOnBoardDao.save();
+				if (saveUser.equalsIgnoreCase(RegistrationConstants.SUCCESS)) {
 
 					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 							"center user machine details inserted");
 
-					setSuccessResponse(responseDTO, RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG, null);
-
-					LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "user onbaording sucessful");
+					SuccessResponseDTO sucessResponse = new SuccessResponseDTO();
+					sucessResponse.setCode(RegistrationConstants.USER_ON_BOARDING_SUCCESS_CODE);
+					sucessResponse.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+					sucessResponse.setMessage(RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);
+					responseDTO = new ResponseDTO();
+					responseDTO.setSuccessResponseDTO(sucessResponse);
 				}
 			}
+
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "user onbaording sucessful");
 
 		} catch (RegBaseUncheckedException uncheckedException) {
 
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, uncheckedException.getMessage()
 					+ onBoardingResponse + ExceptionUtils.getStackTrace(uncheckedException));
 
-			setErrorResponse(responseDTO, RegistrationConstants.USER_ON_BOARDING_ERROR_RESPONSE, null);
+			responseDTO = errorRespone(RegistrationConstants.ERROR,
+					RegistrationConstants.USER_ON_BOARDING_ERROR_RESPONSE);
 
+		} catch (RuntimeException runtimeException) {
+
+			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, runtimeException.getMessage()
+					+ onBoardingResponse + ExceptionUtils.getStackTrace(runtimeException));
+
+			responseDTO = errorRespone(RegistrationConstants.USER_ON_BOARDING_EXCEPTION_MSG_CODE,
+					RegistrationConstants.USER_ON_BOARDING_ERROR_RESPONSE);
 		}
 
 		return responseDTO;
@@ -332,34 +344,28 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 	}
 
 	/**
-	 * User on board status flag.
+	 * Builds the error respone.
 	 *
-	 * @param onBoardResponseMap the on board response map
-	 * @return the boolean
+	 * @param errCode the error code
+	 * @param errMsg  the message
+	 * @return the response DTO
 	 */
-	@SuppressWarnings("unchecked")
-	private Boolean userOnBoardStatusFlag(LinkedHashMap<String, Object> onBoardResponseMap) {
+	private ResponseDTO errorRespone(final String errCode, final String errMsg) {
 
-		Boolean userOnbaordFlag = false;
+		ResponseDTO responseDto = new ResponseDTO();
 
-		if (null != onBoardResponseMap
-				&& null != onBoardResponseMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)
-				&& null == onBoardResponseMap.get(RegistrationConstants.ERRORS)) {
-			LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) onBoardResponseMap
-					.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
-			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "authStatus true");
-			userOnbaordFlag = (Boolean) responseMap.get(RegistrationConstants.ON_BOARD_AUTH_STATUS);
-		} else if (null != onBoardResponseMap && null != onBoardResponseMap.get(RegistrationConstants.ERRORS)) {
-			List<LinkedHashMap<String, Object>> listOfFailureResponse = (List<LinkedHashMap<String, Object>>) onBoardResponseMap
-					.get(RegistrationConstants.ERRORS);
-			LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) onBoardResponseMap
-					.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
-			userOnbaordFlag = (Boolean) responseMap.get(RegistrationConstants.ON_BOARD_AUTH_STATUS);
-			LOGGER.debug(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, listOfFailureResponse.toString());
-		}
+		LinkedList<ErrorResponseDTO> errResponsesList = new LinkedList<>();
 
-		return userOnbaordFlag;
+		/* Error response Dto */
+		ErrorResponseDTO errResponse = new ErrorResponseDTO();
+		errResponse.setCode(errCode);
+		errResponse.setInfoType(RegistrationConstants.ERROR);
+		errResponse.setMessage(errMsg);
+		errResponsesList.add(errResponse);
 
+		responseDto.setErrorResponseDTOs(errResponsesList);
+
+		return responseDto;
 	}
 
 }

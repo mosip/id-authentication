@@ -1,11 +1,14 @@
 package io.mosip.registration.main;
 
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -27,6 +30,7 @@ import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.sync.MasterSyncService;
+import io.mosip.registration.service.sync.PolicySyncService;
 import io.mosip.registration.service.sync.impl.PublicKeySyncImpl;
 import io.mosip.registration.util.CommonUtil;
 import io.mosip.registration.util.ConstantValues;
@@ -53,6 +57,8 @@ public class PacketCreation extends AbstractTestNGSpringContextTests {
 	MasterSyncService masterSyncService;
 	@Autowired
 	UserSaltDetailsService userSaltDetailsService;
+	@Autowired
+	PolicySyncService policySyncService;
 	/**
 	 * Declaring CenterID,StationID global
 	 */
@@ -77,7 +83,7 @@ public class PacketCreation extends AbstractTestNGSpringContextTests {
 
 		ResponseDTO userSaltResponse = userSaltDetailsService
 				.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
+		policySyncService.fetchPolicy();
 		// Common PreRequisite SetUp to create Packet
 		ApplicationContext.map().put(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG, ConstantValues.NO);
 		SessionContext.getInstance().getMapObject().put(RegistrationConstants.IS_Child, true);
@@ -102,7 +108,7 @@ public class PacketCreation extends AbstractTestNGSpringContextTests {
 			// Set CBEFF to UNIQUE & DUPLICATE
 			ApplicationContext.map().put(RegistrationConstants.CBEFF_UNQ_TAG, ConstantValues.NO);
 		}
- 
+
 		for (Entry<String, String> entry : preRegIDs.entrySet()) {
 			System.out.println(entry.getKey());
 			RegistrationDTO preRegistrationDTO = null;

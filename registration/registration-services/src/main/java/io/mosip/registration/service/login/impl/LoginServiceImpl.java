@@ -2,41 +2,41 @@ package io.mosip.registration.service.login.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
+<<<<<<< HEAD
+=======
 import java.sql.Timestamp;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
-import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+<<<<<<< HEAD
+=======
 import io.mosip.registration.context.ApplicationContext;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.ScreenAuthorizationDAO;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
-import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.dto.UserDTO;
-import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.entity.UserDetail;
+<<<<<<< HEAD
+import io.mosip.registration.service.login.LoginService;
+=======
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -47,6 +47,7 @@ import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PublicKeySync;
 import io.mosip.registration.service.sync.TPMPublicKeySyncService;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 /**
  * Class for implementing login service
@@ -56,7 +57,7 @@ import io.mosip.registration.service.sync.TPMPublicKeySyncService;
  *
  */
 @Service
-public class LoginServiceImpl extends BaseService implements LoginService {
+public class LoginServiceImpl implements LoginService {
 
 	/**
 	 * Instance of LOGGER
@@ -93,6 +94,8 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	@Autowired
 	private ScreenAuthorizationDAO screenAuthorizationDAO;
 
+<<<<<<< HEAD
+=======
 	@Autowired
 	private PublicKeySync publicKeySyncImpl;
 
@@ -113,6 +116,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	@Autowired
 	private TPMPublicKeySyncService tpmPublicKeySyncService;
 
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -139,17 +143,20 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	 * String)
 	 */
 	@Override
-	public UserDTO getUserDetail(String userId) {
+	public UserDetail getUserDetail(String userId) {
 		// Retrieving Officer details
 		LOGGER.info("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 
 		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, RegistrationConstants.APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+<<<<<<< HEAD
+=======
 
 		UserDetail userDetail = userDetailDAO.getUserDetail(userId);
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
-		return MAPPER_FACADE.map(userDetail, UserDTO.class);
+		return userDetailDAO.getUserDetail(userId);
 	}
 
 	/*
@@ -194,13 +201,15 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
-	 * registration.dto.UserDTO)
+	 * registration.entity.UserDetail)
 	 */
-	public void updateLoginParams(UserDTO userDTO) {
+	public void updateLoginParams(UserDetail userDetail) {
 
 		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating Login Params");
 
+<<<<<<< HEAD
+=======
 		UserDetail userDetail = userDetailDAO.getUserDetail(userDTO.getId());
 
 		userDetail.setLastLoginDtimes(userDTO.getLastLoginDtimes());
@@ -208,12 +217,15 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		userDetail.setUnsuccessfulLoginCount(userDTO.getUnsuccessfulLoginCount());
 		userDetail.setUserlockTillDtimes(userDTO.getUserlockTillDtimes());
 
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		userDetailDAO.updateLoginParams(userDetail);
 
 		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updated Login Params");
 
 	}
+<<<<<<< HEAD
+=======
 
 	/*
 	 * (non-Javadoc)
@@ -404,4 +416,5 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		}
 		return responseDTO;
 	}
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 }

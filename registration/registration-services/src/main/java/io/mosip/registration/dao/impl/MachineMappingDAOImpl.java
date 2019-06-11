@@ -138,6 +138,8 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		return machineMappingRepository.findByUserMachineMappingIdUserID(userId) != null;
 	}
 
+<<<<<<< HEAD
+=======
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -157,4 +159,5 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		return machineMaster == null ? null : machineMaster.getKeyIndex();
 	}
 
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 }

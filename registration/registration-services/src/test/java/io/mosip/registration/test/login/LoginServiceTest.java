@@ -41,16 +41,19 @@ import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.AppAuthenticationDetails;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.ScreenAuthorizationDAO;
-import io.mosip.registration.dao.ScreenAuthorizationDetails;
 import io.mosip.registration.dao.UserDetailDAO;
+import io.mosip.registration.dao.ScreenAuthorizationDetails;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+<<<<<<< HEAD
+=======
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegCenterUser;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
@@ -155,26 +158,34 @@ public class LoginServiceTest {
 						"LOGIN", roleSet))
 				.thenReturn(loginList);
 
+<<<<<<< HEAD
+	@Test
+=======
 		Mockito.when(appAuthenticationDAO.getModesOfLogin("LOGIN", roleSet)).thenReturn(modes);
 		assertEquals(modes, loginServiceImpl.getModesOfLogin("LOGIN", roleSet));
 	}
 
 	@Test
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	public void getUserDetailTest() {
 
 		UserDetail userDetail = new UserDetail();
-		userDetail.setId("mosip");
 		List<UserDetail> userDetailList = new ArrayList<UserDetail>();
 		userDetailList.add(userDetail);
 		Mockito.when(userDetailRepository.findByIdIgnoreCaseAndIsActiveTrue(Mockito.anyString()))
 				.thenReturn(userDetailList);
 
 		Mockito.when(userDetailDAO.getUserDetail(Mockito.anyString())).thenReturn(userDetail);
+<<<<<<< HEAD
+		
+		assertEquals(userDetail,loginServiceImpl.getUserDetail("mosip"));		
+=======
 
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId(userDetail.getId());
 
 		assertEquals(userDTO, loginServiceImpl.getUserDetail("mosip"));
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	}
 
 	@Test
@@ -208,12 +219,20 @@ public class LoginServiceTest {
 		assertNotNull(loginServiceImpl.getScreenAuthorizationDetails(roleList));
 
 	}
+<<<<<<< HEAD
 
 	@Test
+=======
+
+	@Test
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	public void updateLoginParamsTest() {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
 		doNothing().when(userDetailDAO).updateLoginParams(Mockito.any(UserDetail.class));
+<<<<<<< HEAD
+		
+=======
 
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId("mosip");
@@ -222,10 +241,16 @@ public class LoginServiceTest {
 		userDTO.setLastLoginMethod("PWD");
 		userDTO.setUserlockTillDtimes(new Timestamp(System.currentTimeMillis()));
 
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		UserDetail userDetail = new UserDetail();
-		userDetail.setId(userDTO.getId());
-		userDetail.setUnsuccessfulLoginCount(userDTO.getUnsuccessfulLoginCount());
+		userDetail.setId("mosip");
+		userDetail.setUnsuccessfulLoginCount(0);
 		userDetail.setLastLoginDtimes(new Timestamp(System.currentTimeMillis()));
+<<<<<<< HEAD
+		userDetail.setLastLoginMethod("PWD");
+		
+		loginServiceImpl.updateLoginParams(userDetail);
+=======
 		userDetail.setLastLoginMethod(userDTO.getLastLoginMethod());
 		userDetail.setUserlockTillDtimes(userDTO.getUserlockTillDtimes());
 
@@ -639,5 +664,6 @@ public class LoginServiceTest {
 		Mockito.doNothing().when(userDetailDAO).updateLoginParams(userDetail);
 		
 		assertEquals("sample", loginServiceImpl.validateInvalidLogin(userDTO, "sample", 3, 3));
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	}
 }

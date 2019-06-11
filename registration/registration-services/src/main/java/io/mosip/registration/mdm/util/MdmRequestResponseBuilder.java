@@ -13,12 +13,14 @@ import java.util.Random;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
-import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
+import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
+import io.mosip.registration.mdm.integrator.MosipBioDeviceIntegratorImpl;
 import io.mosip.registration.mdm.dto.CaptureRequestDto;
 import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
-import io.mosip.registration.mdm.dto.DeviceDiscoveryRequestDto;
+import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
 
 /**
  * Handles all the request response parsing of biometric data
@@ -39,7 +41,7 @@ public class MdmRequestResponseBuilder {
 	/**
 	 * Builds the capture request dto
 	 * 
-	 * @param bioDevice
+	 * @param BioDevice
 	 *            - type of device
 	 * @return captureRequestDto
 	 */
@@ -84,8 +86,8 @@ public class MdmRequestResponseBuilder {
 	
 	/**
 	 * Returns the map for captured byte
-	 * @param mosipBioCaptureResponseDto - CaptureResponseDto
-	 * @return {@link Map}
+	 * @param CaptureResponseDto
+	 * @return Map<String, byte[])
 	 */
 	public static Map<String, byte[]> parseBioCaptureResponse(CaptureResponseDto mosipBioCaptureResponseDto) {
 
@@ -100,7 +102,7 @@ public class MdmRequestResponseBuilder {
 			for (CaptureResponseBioDto mosipBioCaptureResponse : mosipBioCaptureResponseDto
 					.getMosipBioDeviceDataResponses()) {
 				// TODO - have to clarify how the array of bio data response handled
-				// TODO- clarify how the segmented values handled
+				// TODO- clarify how the sengmented values handled
 				if (mosipBioCaptureResponse.getCaptureResponseData() != null) {
 					String capturedType= mosipBioCaptureResponse.getCaptureResponseData().getBioType();
 					if(mosipBioCaptureResponse.getCaptureResponseData().getBioSubType()!=null || !mosipBioCaptureResponse.getCaptureResponseData().getBioSubType().isEmpty()) {
@@ -117,8 +119,8 @@ public class MdmRequestResponseBuilder {
 
 	/**
 	 * Returns the map for captured byte
-	 * @param deviceType
-	 * 			- type of the device
+	 * @param String
+	 * 			-deviceType
 	 * @return DeviceDiscoveryRequestDto
 	 */
 	public static DeviceDiscoveryRequestDto buildDeviceDiscoveryRequest(String deviceType) {

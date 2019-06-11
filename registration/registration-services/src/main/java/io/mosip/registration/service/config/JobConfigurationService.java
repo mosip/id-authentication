@@ -4,6 +4,7 @@ import java.util.Map;
 
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * service for configuring jobs

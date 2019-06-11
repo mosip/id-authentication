@@ -28,7 +28,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.FileUtils;
+import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
@@ -72,7 +72,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	@Autowired
 	private PacketSynchService packetSynchService;
-
+	
 	@Autowired
 	private AESEncryptionService aesEncryptionService;
 
@@ -228,6 +228,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		/* Validator response service API creation */
 		final String SERVICE_NAME = RegistrationConstants.PACKET_STATUS_SYNC_SERVICE_NAME;
 
+		/* prepare request params to pass through URI */
+		Map<String, String> requestParamMap = new HashMap<>();
+
 		PacketStatusReaderDTO packetStatusReaderDTO = new PacketStatusReaderDTO();
 		packetStatusReaderDTO.setId(RegistrationConstants.PACKET_STATUS_READER_ID);
 		packetStatusReaderDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
@@ -244,9 +247,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 		try {
 			if (!packetIds.isEmpty()) {
+				String requestJson = JsonUtils.javaObjectToJsonString(packetStatusReaderDTO);
+				requestParamMap.put(RegistrationConstants.PACKET_STATUS_READER_URL_PARAMETER, requestJson);
+
 				/* Obtain RegistrationStatusDTO from service delegate util */
 				LinkedHashMap<String, Object> packetStatusResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
-						.post(SERVICE_NAME, packetStatusReaderDTO, triggerPoint);
+						.get(SERVICE_NAME, requestParamMap, true, triggerPoint);
 				List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) packetStatusResponse
 						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
 				if (!registrations.isEmpty()) {
@@ -291,7 +297,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 						"Success Response Created");
 			}
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException
-				| HttpServerErrorException | ResourceAccessException exception) {
+				| HttpServerErrorException | ResourceAccessException | JsonProcessingException exception) {
 			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
@@ -365,9 +371,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		File ackFile = null;
 		File zipFile = null;
 		String ackPath = registration.getAckFilename();
-		ackFile = FileUtils.getFile(ackPath);
+		ackFile = new File(ackPath);
 		String zipPath = ackPath.replace("_Ack.html", RegistrationConstants.ZIP_FILE_EXTENSION);
-		zipFile = FileUtils.getFile(zipPath);
+		zipFile = new File(zipPath);
 
 		if (zipFile.exists()) {
 
@@ -402,7 +408,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 				for (PacketStatusDTO packetToBeSynch : packetDto) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-					syncDto.setLangCode(getGlobalConfigValueOf(RegistrationConstants.PRIMARY_LANGUAGE));
+					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
 					syncDto.setRegistrationType(packetToBeSynch.getPacketStatus().toUpperCase());
 					syncDto.setPacketHashValue(packetToBeSynch.getPacketHash());
@@ -416,8 +422,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-				response = packetSynchService.syncPacketsToServer(CryptoUtil.encodeBase64(
-						aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
+				response = packetSynchService.syncPacketsToServer(
+						CryptoUtil.encodeBase64(
+								aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						triggerPoint);
 			}
 			if (response != null && response.getSuccessResponseDTO() != null) {

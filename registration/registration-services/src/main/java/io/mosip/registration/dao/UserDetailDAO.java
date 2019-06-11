@@ -55,21 +55,6 @@ public interface UserDetailDAO {
 	List<UserBiometric> getUserSpecificBioDetails(String userId, String bioType);
 
 	/**
-	 * Gets the user specific bio details.
-	 *
-	 * @param userId
-	 *            the user id
-	 * @param bioType
-	 *            the bio type
-	 * @param subType
-	 *            the bio subtype
-	 * @return the user specific bio details
-	 * 
-	 */
-	UserBiometric getUserSpecificBioDetail(String userId, String bioType, String subType);
-
-	
-	/**
 	 * Saves the user details response
 	 *
 	 * @param userDetailsResponse

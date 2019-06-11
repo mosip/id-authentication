@@ -19,7 +19,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.context.SessionContext;
+<<<<<<< HEAD
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
+=======
 import io.mosip.registration.context.SessionContext.UserContext;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import io.mosip.registration.dto.mastersync.LanguageDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
 import io.mosip.registration.entity.Language;

@@ -121,21 +121,11 @@ public class ServiceDelegateUtil {
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
 
-			Map<String, String> queryParams = new HashMap<>();
-			for (String key : requestParams.keySet()) {
-				if (!url.contains("{" + key + "}")) {
-					queryParams.put(key, requestParams.get(key));
-				}
-
-			}
-
 			if (hasPathParams) {
 				requestHTTPDTO.setUri(UriComponentsBuilder.fromUriString(url).build(requestParams));
-				url = requestHTTPDTO.getUri().toString();
-			}
-			if (!queryParams.isEmpty()) {
+			} else {
 				/** Set URI */
-				setURI(requestHTTPDTO, queryParams, url);
+				setURI(requestHTTPDTO, requestParams, url);
 			}
 
 			LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
@@ -210,6 +200,18 @@ public class ServiceDelegateUtil {
 	/**
 	 * Builds the request and passess it to REST client util
 	 * 
+<<<<<<< HEAD
+	 * @param url
+	 *            - MDM service url
+	 * @param serviceName
+	 *            - MDM service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+	 * @return
+	 * @throws RegBaseCheckedException
+=======
 	 * @param url          - MDM service url
 	 * @param serviceName  - MDM service name
 	 * @param request      - request data
@@ -217,6 +219,7 @@ public class ServiceDelegateUtil {
 	 * @return Object - response body
 	 * @throws RegBaseCheckedException - generalized exception with errorCode and
 	 *                                 errorMessage
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	 */
 	public Object invokeRestService(String url, String serviceName, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
@@ -248,15 +251,26 @@ public class ServiceDelegateUtil {
 		return responseBody;
 
 	}
-
+	
 	/**
 	 * prepares the request
 	 * 
+<<<<<<< HEAD
+	 * @param requestHTTPDTO
+	 *            - holds the request data for a REST call
+	 * @param serviceName
+	 *            - service name
+	 * @param request
+	 *            - request data
+	 * @param responseType
+	 *            - response format
+=======
 	 * @param requestHTTPDTO - holds the request data for a REST call
 	 * @param serviceName    - service name
 	 * @param request        - request data
 	 * @param responseType   - response format
 	 * @param url            - the URL
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	 */
 	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
 			Class<?> responseType, String url) {
@@ -271,7 +285,7 @@ public class ServiceDelegateUtil {
 		requestHTTPDTO.setIsSignRequired(false);
 		try {
 			requestHTTPDTO.setUri(new URI(url));
-		} catch (URISyntaxException uriSyntaxException) {
+		} catch (URISyntaxException e) {
 		}
 		// set timeout
 		setTimeout(requestHTTPDTO);
@@ -279,7 +293,7 @@ public class ServiceDelegateUtil {
 		setHeaders(requestHTTPDTO.getHttpHeaders(), getEnvironmentProperty(serviceName, RegistrationConstants.HEADERS));
 		requestHTTPDTO.setAuthRequired(false);
 	}
-
+	
 	/**
 	 * Prepare GET request.
 	 *
@@ -395,14 +409,14 @@ public class ServiceDelegateUtil {
 			for (String subheader : header) {
 				if (subheader != null) {
 					headerValues = subheader.split(":");
-					if (headerValues[0].equalsIgnoreCase("timestamp")) {
+					if(headerValues[0].equalsIgnoreCase("timestamp")) {
 						headerValues[1] = DateUtils.getUTCCurrentDateTimeString();
-					} else if (headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
+					} else if(headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
 						headerValues[1] = String
 								.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_CENTER_ID))
 								.concat(RegistrationConstants.UNDER_SCORE).concat(String
 										.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID)));
-					}
+					} 
 					httpHeaders.add(headerValues[0], headerValues[1]);
 				}
 			}
@@ -507,7 +521,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setHttpHeaders(headers);
 			requestHTTPDTO.setIsSignRequired(false);
 			requestHTTPDTO.setRequestSignRequired(false);
-
+			
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
 
@@ -515,6 +529,7 @@ public class ServiceDelegateUtil {
 
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
+			
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 

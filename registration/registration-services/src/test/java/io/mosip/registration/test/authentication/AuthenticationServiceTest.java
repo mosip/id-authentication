@@ -26,10 +26,14 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
+<<<<<<< HEAD
+import io.mosip.registration.service.security.AuthenticationService;
+=======
 import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.dto.UserPasswordDTO;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import io.mosip.registration.validator.AuthenticationBaseValidator;
 import io.mosip.registration.validator.FingerprintValidatorImpl;
 import io.mosip.registration.validator.OTPValidatorImpl;
@@ -38,6 +42,8 @@ import io.mosip.registration.validator.OTPValidatorImpl;
 @PrepareForTest({ HMACUtils.class, CryptoUtil.class})
 public class AuthenticationServiceTest {
 
+	@InjectMocks
+	private AuthenticationService authenticationService;
 	
 	@Mock
 	FingerprintValidatorImpl fingerprintValidator;
@@ -51,6 +57,8 @@ public class AuthenticationServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
+<<<<<<< HEAD
+=======
 	@InjectMocks
 	private AuthenticationServiceImpl authenticationServiceImpl;
 	
@@ -60,34 +68,42 @@ public class AuthenticationServiceTest {
 		PowerMockito.mockStatic(CryptoUtil.class);
 	}
 	
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	@Test
 	public void getOtpValidatorTest() {
 		List<AuthenticationBaseValidator> authenticationBaseValidators=new ArrayList<>();
 		authenticationBaseValidators.add(otpValidator);
+<<<<<<< HEAD
+		authenticationService.setAuthenticationBaseValidator(authenticationBaseValidators);
+		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		when(otpValidator.validate(authenticationValidatorDTO)).thenReturn(true);
+		assertTrue(authenticationService.authValidator("otp", authenticationValidatorDTO));
+=======
 		authenticationServiceImpl.setAuthenticationBaseValidator(authenticationBaseValidators);
 		AuthTokenDTO authTokenDTO =new AuthTokenDTO();
 		when(otpValidator.validate("mosip", "12345")).thenReturn(authTokenDTO);
 		assertNotNull(authenticationServiceImpl.authValidator("otp", "mosip", "12345"));
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	}
 	
 	@Test
 	public void getFPValidatorTest() {
 		List<AuthenticationBaseValidator> authenticationBaseValidators=new ArrayList<>();
 		authenticationBaseValidators.add(fingerprintValidator);
-		authenticationServiceImpl.setAuthenticationBaseValidator(authenticationBaseValidators);
+		authenticationService.setAuthenticationBaseValidator(authenticationBaseValidators);
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		when(fingerprintValidator.validate(authenticationValidatorDTO)).thenReturn(true);
-		assertTrue(authenticationServiceImpl.authValidator("Fingerprint", authenticationValidatorDTO));
+		assertTrue(authenticationService.authValidator("Fingerprint", authenticationValidatorDTO));
 	}
 	
 	@Test
 	public void getFPValidatorNegativeTest() {
 		List<AuthenticationBaseValidator> authenticationBaseValidators=new ArrayList<>();
 		authenticationBaseValidators.add(fingerprintValidator);
-		authenticationServiceImpl.setAuthenticationBaseValidator(authenticationBaseValidators);
+		authenticationService.setAuthenticationBaseValidator(authenticationBaseValidators);
 		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
 		when(fingerprintValidator.validate(authenticationValidatorDTO)).thenReturn(false);
-		assertFalse(authenticationServiceImpl.authValidator("otp", authenticationValidatorDTO));
+		assertFalse(authenticationService.authValidator("otp", authenticationValidatorDTO));
 	}
 	
 	@Test

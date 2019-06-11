@@ -6,7 +6,9 @@
 	<parent>
 		<groupId>io.mosip.registration</groupId>
 		<artifactId>registration-parent</artifactId>
+
 		<version>0.12.7</version>
+
 	</parent>
 	<artifactId>registration-services</artifactId>
 	<name>registration-services</name>
@@ -298,10 +300,12 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-idobjectvalidator</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-bioapi-provider </artifactId>
 		</dependency>
+
 
 	</dependencies>
 

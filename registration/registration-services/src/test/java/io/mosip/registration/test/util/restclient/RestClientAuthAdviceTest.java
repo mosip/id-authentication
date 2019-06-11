@@ -21,27 +21,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.LoginUserDTO;
-import io.mosip.registration.entity.MachineMaster;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.tpm.spi.TPMUtil;
-import io.mosip.registration.util.advice.RestClientAuthAdvice;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
+import io.mosip.registration.util.restclient.RestClientAuthAdvice;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JsonUtils.class, ApplicationContext.class, SessionContext.class, TPMUtil.class })
+@PrepareForTest({ ApplicationContext.class, SessionContext.class })
 public class RestClientAuthAdviceTest {
 
 	@Rule
@@ -50,8 +43,6 @@ public class RestClientAuthAdviceTest {
 	private ServiceDelegateUtil serviceDelegateUtil;
 	@Mock
 	private ProceedingJoinPoint proceedingJoinPoint;
-	@Mock
-	private MachineMappingDAO machineMappingDAO;
 	@InjectMocks
 	private RestClientAuthAdvice restClientAuthAdvice;
 
@@ -61,15 +52,13 @@ public class RestClientAuthAdviceTest {
 		PowerMockito.mockStatic(SessionContext.class);
 		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
 		authTokenDTO.setCookie("cookie");
+		PowerMockito.doReturn(authTokenDTO).when(ApplicationContext.class, "authTokenDTO");
+		PowerMockito.doReturn(authTokenDTO).when(SessionContext.class, "authTokenDTO");
+		PowerMockito.when(SessionContext.isSessionContextAvailable()).thenReturn(true);
 		Map<String, Object> value = new HashMap<>();
 		LoginUserDTO loginUserDTO = new LoginUserDTO();
 		loginUserDTO.setUserId("user");
 		value.put(RegistrationConstants.USER_DTO, loginUserDTO);
-		value.put(RegistrationConstants.TPM_AVAILABILITY, RegistrationConstants.DISABLE);
-
-		PowerMockito.doReturn(authTokenDTO).when(ApplicationContext.class, "authTokenDTO");
-		PowerMockito.doReturn(authTokenDTO).when(SessionContext.class, "authTokenDTO");
-		PowerMockito.when(SessionContext.isSessionContextAvailable()).thenReturn(true);
 		PowerMockito.when(ApplicationContext.map()).thenReturn(value);
 	}
 
@@ -207,6 +196,8 @@ public class RestClientAuthAdviceTest {
 		Assert.assertNotNull(restClientAuthAdvice.addAuthZToken(proceedingJoinPoint));
 	}
 
+<<<<<<< HEAD
+=======
 	@Test
 	public void addRequestSignatureTest() {
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -353,4 +344,5 @@ public class RestClientAuthAdviceTest {
 
 		restClientAuthAdvice.addAuthZToken(proceedingJoinPoint);
 	}
+>>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 }

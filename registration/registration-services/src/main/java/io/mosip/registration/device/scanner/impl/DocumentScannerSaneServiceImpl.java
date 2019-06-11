@@ -71,8 +71,8 @@ public class DocumentScannerSaneServiceImpl extends DocumentScannerService {
 				saneDevice.close();
 				session.close();
 			}
-		} catch (IOException | SaneException exception) {
-			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		} catch (IOException | SaneException e) {
+			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 		}
 		return bufferedImage;
 	}
@@ -111,8 +111,8 @@ public class DocumentScannerSaneServiceImpl extends DocumentScannerService {
 					TimeUnit.MILLISECONDS);
 			saneDevices = session.listDevices();
 			session.close();
-		} catch (IOException | SaneException exception) {
-			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, exception.getMessage());
+		} catch (IOException | SaneException e) {
+			LOGGER.error(LOG_REG_DOC_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 		}
 		return saneDevices;
 	}
