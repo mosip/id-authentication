@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 
@@ -113,18 +114,18 @@ public class ZipUtils {
 	public static void unZipFromInputStream(InputStream input, String desDir) throws IOException {
 		byte[] buffer = new byte[1024];
 		try (ZipInputStream zis = new ZipInputStream(input)) {
-			File folder = new File(desDir);
+			File folder = FileUtils.getFile(desDir);
 			if (!folder.exists()) {
 				folder.mkdir();
 			}
 			ZipEntry ze = zis.getNextEntry();
 			while (ze != null) {
 				if (ze.isDirectory()) {
-					new File(desDir + ze.getName()).mkdir();
+					FileUtils.getFile(desDir + ze.getName()).mkdir();
 				} else {
 					String fileName = ze.getName();
-					File newFile = new File(desDir + File.separator + fileName);
-					new File(newFile.getParent()).mkdirs();
+					File newFile = FileUtils.getFile(desDir + File.separator + fileName);
+					FileUtils.getFile(newFile.getParent()).mkdirs();
 					FileOutputStream fos = new FileOutputStream(newFile);
 					int len;
 					while ((len = zis.read(buffer)) > 0) {
