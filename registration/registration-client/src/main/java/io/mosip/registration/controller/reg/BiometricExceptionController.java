@@ -238,10 +238,10 @@ public class BiometricExceptionController extends BaseController implements Init
 		EventHandler<Event> mouseClick = event -> {
 			if (event.getSource() instanceof GridPane) {
 				GridPane sourcePane = (GridPane) event.getSource();
-				if(sourcePane.getStyleClass().contains("bioIris")) {
-					sourcePane.getStyleClass().remove("bioIris");
+				if(sourcePane.getStyleClass().contains(RegistrationConstants.BIO_IRIS_SELECTED)) {
+					sourcePane.getStyleClass().remove(RegistrationConstants.BIO_IRIS_SELECTED);
 				}else {
-					sourcePane.getStyleClass().add("bioIris");
+					sourcePane.getStyleClass().add(RegistrationConstants.BIO_IRIS_SELECTED);
 				}
 			}
 		};
@@ -262,6 +262,11 @@ public class BiometricExceptionController extends BaseController implements Init
 		fingerExceptionListener(leftThumb);
 	}
 
+	public void clearIrisException() {
+		rightEyePaneHolder.getStyleClass().clear();
+		leftEyePaneHolder.getStyleClass().clear();
+	}
+	
 	/**
 	 * This method is used to capture the finger click from the UI
 	 * 
