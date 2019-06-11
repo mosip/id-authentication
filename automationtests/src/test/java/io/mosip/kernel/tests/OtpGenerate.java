@@ -44,7 +44,7 @@ import io.restassured.response.Response;
  */
 public class OtpGenerate extends BaseTestCase implements ITest{
 	
-	OtpGenerate() {
+	public OtpGenerate() {
 		super();
 	}
 	// Declaration of all variables
@@ -115,13 +115,12 @@ public class OtpGenerate extends BaseTestCase implements ITest{
     		  HashMap<String, String> otp=new HashMap<>();
     		  otp.put("key", key);
     		  otp.put("otp", "123456");
-    		  for(int k=0;k<3;k++)
+    		  for(int k=0;k<=3;k++)
     		  {
     			// Calling the get method and making key as frozen
     			  applicationLibrary.getWithQueryParam(OTPValidation, otp,cookie);
     		  }
     		// Calling the post method 
-
     		   res=applicationLibrary.postWithJson(OTPGeneration, actualRequest, cookie);  
     	  }
     	  else
@@ -139,7 +138,6 @@ public class OtpGenerate extends BaseTestCase implements ITest{
     	  else
     		  finalStatus="Fail";
 
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -158,7 +156,6 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 		
 		@AfterMethod(alwaysRun = true)
 		public void setResultTestName(ITestResult result) {
-			
 	try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
@@ -166,10 +163,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-
 				f.set(baseTestMethod, OtpGenerate.testCaseName);
-
-				
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}
