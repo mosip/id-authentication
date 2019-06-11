@@ -36,20 +36,21 @@ export class AuthInterceptorService implements HttpInterceptor {
     const copiedReq = req.clone({
       withCredentials: true
     });
-    return next.handle(copiedReq).pipe(
-      retry(2),
-      catchError((error: HttpErrorResponse) => {
-        if (error[appConstants.ERROR][appConstants.NESTED_ERROR] !== 'KER-ATH-401') {
-          console.log('error interceptor', error);
-          // 401 handled in auth.interceptor
-          console.log('loc', this.locaiton);
-          this.router.navigateByUrl('/');
+    return next.handle(copiedReq);
+    // .pipe(
+    //   retry(2),
+    //   catchError((error: HttpErrorResponse) => {
+    //     if (error[appConstants.ERROR][appConstants.NESTED_ERROR] === 'KER-ATH-401') {
+    //       console.log('error interceptor', error);
+    //       // 401 handled in auth.interceptor
+    //       console.log('loc', this.locaiton);
+    //       this.router.navigateByUrl('/');
 
-          // this.autoLogout.onLogOut();
-          // this.locaiton.reload();
-        }
-        return throwError(error);
-      })
-    );
+    //       // this.autoLogout.onLogOut();
+    //       // this.locaiton.reload();
+    //     }
+    //     return throwError(error);
+    //   })
+    // );
   }
 }
