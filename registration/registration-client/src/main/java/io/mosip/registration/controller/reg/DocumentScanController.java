@@ -942,6 +942,7 @@ public class DocumentScanController extends BaseController {
 						toggleBiometricException = true;
 						updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, true);
 						biometricExceptionController.fingerException();
+						biometricExceptionController.clearIrisException();
 					} else {
 						bioExceptionToggleLabel1.setLayoutX(0);
 

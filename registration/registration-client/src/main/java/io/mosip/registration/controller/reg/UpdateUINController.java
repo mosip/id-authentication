@@ -248,8 +248,9 @@ public class UpdateUINController extends BaseController implements Initializable
 
 						getScene(createRoot).setRoot(createRoot);
 						if (!biometrics.isSelected()) {
-							getRegistrationDTOFromSession().setUpdateUINChild(true);
-						}
+							getRegistrationDTOFromSession().setUpdateUINNonBiometric(true);
+						}						
+						getRegistrationDTOFromSession().setUpdateUINChild(parentOrGuardianDetails.isSelected());
 						if (parentOrGuardianDetails.isSelected()) {
 							SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
 									RegistrationConstants.ENABLE);

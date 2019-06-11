@@ -95,7 +95,10 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectValidationFailedException e) {
-			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getCodes().contains(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorTexts().contains(String.format(MISSING_INPUT_PARAMETER.getMessage(), "identity/UIN")));
+			assertTrue(
+					e.getErrorTexts().contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/UIN1")));
 		}
 	}
 
@@ -107,8 +110,8 @@ public class IdObjectValidatorTest {
 			schemaValidator.validateIdObject(
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class), null);
 		} catch (IdObjectIOException e) {
-			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
-			assertTrue(e.getErrorText().equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), "operation")));
+			assertTrue(e.getCodes().contains(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorTexts().contains(String.format(MISSING_INPUT_PARAMETER.getMessage(), "operation")));
 		}
 	}
 
@@ -122,9 +125,9 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
-			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
-			assertTrue(e.getErrorText()
-					.equals(String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue())));
+			assertTrue(e.getCodes().contains(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorTexts()
+					.contains(String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue())));
 		}
 	}
 
@@ -141,8 +144,8 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectIOException e) {
-			assertTrue(e.getErrorCode().equals(MISSING_INPUT_PARAMETER.getErrorCode()));
-			assertTrue(e.getErrorText().equals(String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(),
+			assertTrue(e.getCodes().contains(MISSING_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorText().contains(String.format(MANDATORY_FIELDS_NOT_FOUND.getMessage(),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION.getOperation())));
 		}
 	}
@@ -156,7 +159,11 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectValidationFailedException e) {
-			assertTrue(e.getErrorCode().equals(INVALID_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getCodes().contains(INVALID_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorTexts()
+					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/gender/0/language")));
+			assertTrue(e.getErrorTexts()
+					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/addressLine3/0/language")));
 		}
 	}
 
@@ -169,7 +176,11 @@ public class IdObjectValidatorTest {
 					new ObjectMapper().readValue(identityString.getBytes(StandardCharsets.UTF_8), Object.class),
 					IdObjectValidatorSupportedOperations.NEW_REGISTRATION);
 		} catch (IdObjectValidationFailedException e) {
-			assertTrue(e.getErrorCode().equals(INVALID_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getCodes().contains(INVALID_INPUT_PARAMETER.getErrorCode()));
+			assertTrue(e.getErrorTexts()
+					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/dateOfBirth")));
+			assertTrue(e.getErrorTexts()
+					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/CNIENumber")));
 		}
 	}
 

@@ -560,7 +560,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		List<FingerprintDetailsDTO> capturedFingers;
 		List<IrisDetailsDTO> capturedIrises;
 
-		if (getRegistrationDTOFromSession().isUpdateUINChild()
+		if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
 				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			capturedFingers = registration.getBiometricDTO().getIntroducerBiometricDTO().getFingerprintDetailsDTO();
 			capturedIrises = registration.getBiometricDTO().getIntroducerBiometricDTO().getIrisDetailsDTO();
@@ -630,7 +630,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 	 */
 	private void markReasonForException(String biometricType, String missingBiometric) {
 		List<BiometricExceptionDTO> capturedExceptions;
-		if (getRegistrationDTOFromSession().isUpdateUINChild()
+		if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
 				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			capturedExceptions = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
@@ -659,7 +659,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 		capturedExceptions.add(biometricExceptionDTO);
 
-		if (getRegistrationDTOFromSession().isUpdateUINChild()
+		if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
 				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.setBiometricExceptionDTO(capturedExceptions);

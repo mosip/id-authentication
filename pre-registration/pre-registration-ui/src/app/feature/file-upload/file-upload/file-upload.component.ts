@@ -81,7 +81,7 @@ export class FileUploadComponent implements OnInit {
   firstFile: Boolean = true;
   noneApplicant = {
     demographicMetadata: {
-      fullName: [
+      fullname: [
         {
           language: '',
           value: 'None'
@@ -261,7 +261,7 @@ export class FileUploadComponent implements OnInit {
     allApplicants = applicants;
     for (let applicant of allApplicants) {
       for (let name of applicant.demographicMetadata) {
-        if (name['fullName'].language != localStorage.getItem('langCode') && name.proofOfAddress == null) {
+        if (name['fullname'].language != localStorage.getItem('langCode') && name.proofOfAddress == null) {
           allApplicants[i].demographicMetadata.fullname.splice(j, 1);
         } else {
         }
