@@ -45,11 +45,8 @@ public class AuditLog extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(AuditLog.class);
-	private final String jiraID = "MOS-8/441/829";
 	private final String moduleName = "kernel";
 	private final String apiName = "AuditLog";
-	private final String requestJsonName = "AuditLogRequest";
-	private final String outputJsonName = "AuditLogOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String auditLog_URI = props.get("auditLog_URI").toString();
 
@@ -88,7 +85,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

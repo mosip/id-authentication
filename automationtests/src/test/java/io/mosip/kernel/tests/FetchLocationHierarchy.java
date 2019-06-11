@@ -46,11 +46,8 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchLocationHierarchy.class);
-	private final String jiraID = "MOS-8234,MOS-8233";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchLocationHierarchy";
-	private final String requestJsonName = "fetchLocationHierarchyRequest";
-	private final String outputJsonName = "fetchLocationHierarchyOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchLocationHierarchy_URI_withlangCode = props.get("FetchLocationHierarchy_URI_withlangCode").toString();
 	private final String FetchLocationHierarchy_URI_locationcode = props.get("FetchLocationHierarchy_URI_locationcode").toString();
@@ -90,7 +87,7 @@ public class FetchLocationHierarchy extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {		
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

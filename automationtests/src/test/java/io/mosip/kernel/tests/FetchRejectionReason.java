@@ -41,11 +41,8 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchRejectionReason.class);
-	private final String jiraID = "MOS-8551";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchRejectionReason";
-	private final String requestJsonName = "fetchRejectionReasonRequest";
-	private final String outputJsonName = "fetchRejectionReasonOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRejectionReason_URI = props.get("FetchRejectionReason_URI").toString();
 
@@ -83,7 +80,7 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {		
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

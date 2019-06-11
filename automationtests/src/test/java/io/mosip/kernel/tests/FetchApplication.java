@@ -50,11 +50,8 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchApplication.class);
-	private final String jiraID = "MOS-8888";
 	private final String moduleName = "kernel";
 	private final String apiName = "FetchApplication";
-	private final String requestJsonName = "FetchApplicationRequest";
-	private final String outputJsonName = "FetchApplicationOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchApplication_URI = props.get("FetchApplication_URI").toString();
 	private final String FetchApplication_lang_URI = props.get("FetchApplication_lang_URI").toString();
@@ -94,7 +91,7 @@ public class FetchApplication extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

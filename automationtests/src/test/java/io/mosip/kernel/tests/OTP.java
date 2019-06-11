@@ -47,11 +47,8 @@ public class OTP extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(OTP.class);
-	private  final String jiraID = "MOS-33/34/35/36/423/5486/991";
 	private final String moduleName = "kernel";
 	private final String apiName = "OTP";
-	private final String requestJsonName = "OTPRequest";
-	private final String outputJsonName = "OTPOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String OTPGeneration = props.get("OTPGeneration").toString();
 	private final String OTPValidation = props.get("OTPValidation").toString();
@@ -91,7 +88,7 @@ public class OTP extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

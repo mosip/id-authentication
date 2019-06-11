@@ -53,11 +53,8 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchMachineHistory.class);
-	private final String jiraID = "MOS-8229";
 	private final String moduleName = "kernel";
 	private final String apiName = "FetchMachineHistory";
-	private final String requestJsonName = "FetchMachineHistoryRequest";
-	private final String outputJsonName = "FetchMachineHistoryOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchMachineHistory_URI = props.get("FetchMachineHistory_URI").toString();
 	protected String testCaseName = "";
@@ -94,7 +91,7 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws ParseException {	
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

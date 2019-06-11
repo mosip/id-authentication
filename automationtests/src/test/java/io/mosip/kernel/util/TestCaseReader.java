@@ -26,7 +26,7 @@ public class TestCaseReader extends BaseTestCase {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public Object[][] readTestCases(String folderName, String testType, String requestjsonName){
+	public Object[][] readTestCases(String folderName, String testType){
 
 		String configPath = "src/test/resources/" + folderName + "/";
 		File folder = new File(configPath);

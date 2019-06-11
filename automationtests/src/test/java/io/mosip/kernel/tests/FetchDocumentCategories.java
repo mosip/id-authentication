@@ -51,11 +51,8 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchDocumentCategories.class);
-	private final String jiraID = "MOS-8268";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchDocumentCategories";
-	private final String requestJsonName = "fetchDocumentCategoriesRequest";
-	private final String outputJsonName = "fetchDocumentCategoriesOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchDocumentCategories_URI = props.get("FetchDocumentCategories_URI").toString();
 	private final String FetchDocumentCategories_URI_withcodeAndLangCode = props.get("FetchDocumentCategories_URI_withcodeAndLangCode").toString();
@@ -95,7 +92,7 @@ public class FetchDocumentCategories extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

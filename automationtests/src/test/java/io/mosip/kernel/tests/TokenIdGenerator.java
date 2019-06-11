@@ -52,11 +52,8 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	}
 
 	private static Logger logger = Logger.getLogger(TokenIdGenerator.class);
-	private final String jiraID = "MOS-21930";
 	private final String moduleName = "kernel";
 	private final String apiName = "TokenIdGenerator";
-	private final String requestJsonName = "TokenIdGeneratorRequest";
-	private final String outputJsonName = "TokenIdGeneratorOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String tokenIdGenerator_URI = props.get("tokenIdGenerator_URI").toString();
 
@@ -94,7 +91,7 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)throws JsonParseException, JsonMappingException, IOException, ParseException { 
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 
 		/**

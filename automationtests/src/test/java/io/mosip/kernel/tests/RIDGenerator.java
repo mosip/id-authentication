@@ -45,11 +45,8 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	}
 
 	private static Logger logger = Logger.getLogger(RIDGenerator.class);
-	private final String jiraID = "MOS-18217";
 	private final String moduleName = "kernel";
 	private final String apiName = "RIDGenerator";
-	private final String requestJsonName = "RIDGeneratorRequest";
-	private final String outputJsonName = "RIDGeneratorOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String RIDGenerator_URI = props.get("RIDGenerator_URI").toString();
 	private final int ridGenerationCount = 5;
@@ -90,7 +87,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context){
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 
 		/**

@@ -42,11 +42,8 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(SyncMDataWithKeyIndex.class);
-	private final String jiraID = "MOS-8888";
 	private final String moduleName = "kernel";
 	private final String apiName = "SyncMDataWithKeyIndex";
-	private final String requestJsonName = "SyncMDataWithKeyIndexRequest";
-	private final String outputJsonName = "SyncMDataWithKeyIndexOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String syncMdatawithKeyIndex = props.get("syncMdatawithKeyIndex").toString();
 
@@ -85,7 +82,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 
 		/**

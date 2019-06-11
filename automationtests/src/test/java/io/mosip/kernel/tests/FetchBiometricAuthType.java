@@ -46,11 +46,8 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchBiometricAuthType.class);
-	private final String jiraID = "MOS-8245";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchBiometricAuthType";
-	private final String requestJsonName = "fetchBiometricAuthTypeRequest";
-	private final String outputJsonName = "fetchBiometricAuthTypeOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchBiometricAuthType_URI = props.get("FetchBiometricAuthType_URI").toString();
 
@@ -88,7 +85,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

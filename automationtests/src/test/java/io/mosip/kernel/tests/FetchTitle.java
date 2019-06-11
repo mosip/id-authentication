@@ -37,11 +37,8 @@ public class FetchTitle extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchTitle.class);
-	private final String jiraID = "MOS-8267";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchTitle";
-	private final String requestJsonName = "fetchTitleRequest";
-	private final String outputJsonName = "fetchTitleOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchTitle_URI = props.get("FetchTitle_URI").toString();
 	protected String testCaseName = "";
@@ -77,7 +74,7 @@ public class FetchTitle extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context){	
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

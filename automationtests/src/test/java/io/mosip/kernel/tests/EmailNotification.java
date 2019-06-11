@@ -45,11 +45,8 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(EmailNotification.class);
-	private final String jiraID = "MOS-973";
 	private final String moduleName = "kernel";
 	private final String apiName = "EmailNotification";
-	private final String requestJsonName = "EmailNotificationRequest";
-	private final String outputJsonName = "EmailNotificationOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String emailNotification_URI = props.get("EmailNotification_URI").toString();
 
@@ -86,7 +83,7 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException{
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

@@ -38,11 +38,8 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchIDlist.class);
-	private final String jiraID = "MOS-8247";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchIDlist";
-	private final String requestJsonName = "fetchIDlistRequest";
-	private final String outputJsonName = "fetchIDlistOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchIDlist_URI = props.get("FetchIDlist_URI").toString();
 	protected String testCaseName = "";
@@ -79,7 +76,7 @@ public class FetchIDlist extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

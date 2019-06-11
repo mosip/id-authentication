@@ -49,11 +49,8 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(EncrptionDecryption.class);
-	private final String jiraID = "MOS-9284";
 	private final String moduleName = "kernel";
-	private final String apiName = "EncrptionDecryption";
-	private final String requestJsonName = "encryptdecryptRequest";
-	private final String outputJsonName = "encryptdecryptOutput";
+	private final String apiName = "EncrptionDecryption";;
 
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 
@@ -94,7 +91,7 @@ public class EncrptionDecryption extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

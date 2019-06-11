@@ -46,11 +46,8 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchBiometricAttribute.class);
-	private final String jiraID = "MOS-8246";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchBiometricAttribute";
-	private final String requestJsonName = "fetchBiometricAttributeRequest";
-	private final String outputJsonName = "fetchBiometricAttributeOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchBiometricAttribute_URI = props.get("FetchBiometricAttribute_URI").toString();
 
@@ -88,7 +85,7 @@ public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context) {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

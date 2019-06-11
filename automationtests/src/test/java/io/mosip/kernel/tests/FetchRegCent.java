@@ -46,11 +46,8 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchRegCent.class);
-	private final String jiraID = "MOS-8220/8236/8244";
 	private final String moduleName = "kernel";
 	private final String apiName = "FetchRegCent";
-	private final String requestJsonName = "fetchRegCentRequest";
-	private final String outputJsonName = "fetchRegCentOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegCent_URI = props.get("FetchRegCent_URI").toString();
 	private final String FetchRegCent_id_lang_URI = props.get("FetchRegCent_id_lang_URI").toString();
@@ -90,7 +87,7 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context){
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

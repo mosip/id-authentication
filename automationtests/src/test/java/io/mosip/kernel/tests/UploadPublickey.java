@@ -45,11 +45,8 @@ public class UploadPublickey extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(UploadPublickey.class);
-	private final String jiraID = "MOS-23713";
 	private final String moduleName = "kernel";
 	private final String apiName = "UploadPublickey";
-	private final String requestJsonName = "UploadPublickeyRequest";
-	private final String outputJsonName = "UploadPublickeyOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String uploadpublickey = props.get("uploadpublickey").toString();
 
@@ -88,7 +85,7 @@ public class UploadPublickey extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 
 		/**

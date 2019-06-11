@@ -51,11 +51,8 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchDeviceSpec.class);
-	private final String jiraID = "MOS-8264";
 	private final String moduleName = "kernel";
 	private final String apiName = "FetchDeviceSpec";
-	private final String requestJsonName = "FetchDeviceSpecRequest";
-	private final String outputJsonName = "FetchDeviceSpecOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchDeviceSpec_lang_URI = props.get("FetchDeviceSpec_lang_URI").toString();
 	private final String FetchDeviceSpec_id_lang_URI = props.get("FetchDeviceSpec_id_lang_URI").toString();
@@ -94,7 +91,7 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

@@ -43,11 +43,8 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(SyncMDataWithKeyIndexRegCentId.class);
-	private final String jiraID = "MOS-8888";
 	private final String moduleName = "kernel";
 	private final String apiName = "SyncMDataWithKeyIndexRegCentId";
-	private final String requestJsonName = "SyncMDataWithKeyIndexRegCentIdRequest";
-	private final String outputJsonName = "SyncMDataWithKeyIndexRegCentIdOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String syncMdatawithRegCentIdKeyIndex = props.get("syncMdatawithRegCentIdKeyIndex").toString();
 
@@ -86,7 +83,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 	
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 
 		/**

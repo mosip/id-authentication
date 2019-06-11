@@ -51,11 +51,8 @@ public class FetchGenderType extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchGenderType.class);
-	private final String jiraID = "MOS-8266";
 	private final String moduleName = "kernel";
 	private final String apiName = "FetchGenderType";
-	private final String requestJsonName = "fetchGenderTypeRequest";
-	private final String outputJsonName = "fetchGenderTypeOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchGenderType_URI = props.get("FetchGenderType_URI").toString();
 	private final String FetchGenderType_id_lang_URI = props.get("FetchGenderType_id_lang_URI").toString();
@@ -94,7 +91,7 @@ public class FetchGenderType extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

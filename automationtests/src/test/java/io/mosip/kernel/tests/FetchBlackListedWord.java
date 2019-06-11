@@ -46,11 +46,8 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchBlackListedWord.class);
-	private final String jiraID = "MOS-8268";
 	private final String moduleName = "kernel";
 	private final String apiName = "fetchBlackListedWord";
-	private final String requestJsonName = "fetchBlackListedWordRequest";
-	private final String outputJsonName = "fetchBlackListedWordOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchBlackListedWord_URI = props.get("FetchBlackListedWord_URI").toString();
 	protected String testCaseName = "";
@@ -88,7 +85,7 @@ public class FetchBlackListedWord extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {		
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**

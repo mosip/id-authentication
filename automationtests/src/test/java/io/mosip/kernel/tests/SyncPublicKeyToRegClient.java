@@ -49,11 +49,8 @@ public class SyncPublicKeyToRegClient extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(SyncPublicKeyToRegClient.class);
-	private final String jiraID = "MOS-997";
 	private final String moduleName = "kernel";
 	private final String apiName = "SyncPublicKeyToRegClient";
-	private final String requestJsonName = "syncPublicKeyRequest";
-	private final String outputJsonName = "syncPublicKeyOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String SyncPublicKeyToRegClient_URI = props.get("SyncPublicKeyToRegClient_URI").toString();
 	protected String testCaseName = "";
@@ -92,7 +89,7 @@ public class SyncPublicKeyToRegClient extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**
