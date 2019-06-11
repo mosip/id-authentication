@@ -572,7 +572,7 @@ public class DemoAuthServiceTest {
 		try {
 			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
 		} catch (IdAuthenticationBusinessException ex) {
-			assertEquals(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(), ex.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED.getErrorCode(), ex.getErrorCode());
 		}
 	}
 

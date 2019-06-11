@@ -697,10 +697,11 @@ public class DemographicDetailController extends BaseController {
 
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
-				getRegistrationDTOFromSession().setUpdateUINChild(false);
+				getRegistrationDTOFromSession().setUpdateUINonBiometric(false);
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
 						RegistrationConstants.DISABLE);
 			}
+			postalCode.setDisable(true);
 			validation.setChild(false);
 			parentDetailPane.setManaged(false);
 			lostUIN = false;
@@ -1150,6 +1151,10 @@ public class DemographicDetailController extends BaseController {
 									isChild = true;
 									parentNameKeyboardImage.setDisable(!isChild);
 									validation.setChild(isChild);
+									
+									if(getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO()!=null) {
+										enableParentUIN();
+									}
 								}
 							} else {
 								updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
@@ -1341,6 +1346,8 @@ public class DemographicDetailController extends BaseController {
 		try {
 			region.getItems().clear();
 			regionLocalLanguage.getItems().clear();
+			postalCode.setText(RegistrationConstants.EMPTY);
+			postalCodeLocalLanguage.setText(RegistrationConstants.EMPTY);
 
 			region.getItems()
 					.addAll(masterSync.findLocationByHierarchyCode(
@@ -1369,6 +1376,8 @@ public class DemographicDetailController extends BaseController {
 			cityLocalLanguage.getItems().clear();
 			localAdminAuthority.getItems().clear();
 			localAdminAuthorityLocalLanguage.getItems().clear();
+			postalCode.setText(RegistrationConstants.EMPTY);
+			postalCodeLocalLanguage.setText(RegistrationConstants.EMPTY);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR PROVINCE SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1388,6 +1397,8 @@ public class DemographicDetailController extends BaseController {
 
 			localAdminAuthority.getItems().clear();
 			localAdminAuthorityLocalLanguage.getItems().clear();
+			postalCode.setText(RegistrationConstants.EMPTY);
+			postalCodeLocalLanguage.setText(RegistrationConstants.EMPTY);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR CITY SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1404,6 +1415,7 @@ public class DemographicDetailController extends BaseController {
 	private void addlocalAdminAuthority() {
 		try {
 			retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR LOCAL ADMIN AUTHORITY SELECTOIN LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1411,6 +1423,25 @@ public class DemographicDetailController extends BaseController {
 		}
 	}
 
+	@FXML
+	private void populatePincode() {
+		try {
+			LocationDto locationDTO = localAdminAuthority.getSelectionModel().getSelectedItem();
+
+			if (null != locationDTO) {
+				List<LocationDto> locationDtos = masterSync.findProvianceByHierarchyCode(locationDTO.getCode(),
+						locationDTO.getLangCode());
+
+				postalCode.setText(locationDtos.get(0).getName());
+				postalCodeLocalLanguage.setText(locationDtos.get(0).getName());
+			}
+
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - Populating of Pin Code Failed ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
+	}
 	/**
 	 * 
 	 * Saving the detail into concerned DTO'S
@@ -1693,23 +1724,28 @@ public class DemographicDetailController extends BaseController {
 				parentNameKeyboardImage.setDisable(!isChild);
 			}
 
-			if (isChild) {
+			enableParentUIN();
+		}
+	}
 
-				applicationUinIdPane.setDisable(false);
-				applicationRidPane.setDisable(true);
-				applicationRidPane.setVisible(false);
-				applicationRidPane.setManaged(false);
-				ridOrUinToggle.setVisible(false);
-				ridOrUinToggle.setManaged(false);
-				localRidPane.setDisable(true);
-				localRidPane.setVisible(false);
-				localRidPane.setManaged(false);
-				localRidOrUinToggle.setVisible(false);
-				localRidOrUinToggle.setManaged(false);
-				
-				parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
-				localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
-			}
+	private void enableParentUIN() {
+		if (isChild || (null != ageField.getText() && !ageField.getText().isEmpty()
+				&& Integer.parseInt(ageField.getText()) <= 5)) {
+
+			applicationUinIdPane.setDisable(false);
+			applicationRidPane.setDisable(true);
+			applicationRidPane.setVisible(false);
+			applicationRidPane.setManaged(false);
+			ridOrUinToggle.setVisible(false);
+			ridOrUinToggle.setManaged(false);
+			localRidPane.setDisable(true);
+			localRidPane.setVisible(false);
+			localRidPane.setManaged(false);
+			localRidOrUinToggle.setVisible(false);
+			localRidOrUinToggle.setManaged(false);
+			
+			parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
+			localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
 		}
 	}
 

@@ -70,6 +70,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
@@ -120,6 +121,9 @@ public class PacketUploadController extends BaseController implements Initializa
 
 	@FXML
 	private CheckBox selectAllCheckBox;
+	
+	@FXML
+	private ImageView exportCSVIcon;
 
 	private ObservableList<PacketStatusVO> list;
 
@@ -502,8 +506,9 @@ public class PacketUploadController extends BaseController implements Initializa
 	}
 
 	private void loadInitialPage() {
-
+		
 		List<PacketStatusDTO> synchedPackets = packetSynchService.fetchPacketsToBeSynched();
+		exportCSVIcon.setDisable(synchedPackets.isEmpty());
 		List<PacketStatusVO> packetsToBeExport = new ArrayList<>();
 		int count = 1;
 		for (PacketStatusDTO packet : synchedPackets) {
@@ -602,11 +607,11 @@ public class PacketUploadController extends BaseController implements Initializa
 			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)
 					.concat(RegistrationUIConstants.UPLOAD_COLUMN_HEADER_FILE).concat(RegistrationConstants.COMMA)
 					.concat(RegistrationUIConstants.EOD_REGISTRATIONDATE_LABEL).concat(RegistrationConstants.COMMA)
-					.concat(RegistrationUIConstants.UPLOAD_COLUMN_HEADER_STATUS).concat(RegistrationConstants.NEW_LINE);
+					.concat(RegistrationConstants.NEW_LINE);
 			fileData = headers + fileData;
 			filterField.setText(str);
 			try (Writer writer = new BufferedWriter(new FileWriter(destinationPath + "/"
-					+ RegistrationConstants.EXPORT_FILE_NAME.concat(RegistrationConstants.UNDER_SCORE)
+					+ RegistrationConstants.UPLOAD_FILE_NAME.concat(RegistrationConstants.UNDER_SCORE)
 							.concat(getcurrentTimeStamp()).concat(RegistrationConstants.EXPORT_FILE_TYPE)))) {
 				writer.write(fileData);
 

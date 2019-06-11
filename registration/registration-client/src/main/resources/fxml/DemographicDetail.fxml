@@ -761,7 +761,7 @@
 																										<VBox fx:id="applicationlocalAdminAuthority" spacing="5.0">
 																											<children>
 																												<Label fx:id="localAdminAuthorityLabel" prefWidth="${applicationCityHbox.width/2}" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="false" />
-																												<ComboBox fx:id="localAdminAuthority" prefWidth="${applicationCityHbox.width/2}" promptText="%localAdminAuthority" styleClass="demographicCombobox" />
+																												<ComboBox fx:id="localAdminAuthority" onAction="#populatePincode" prefWidth="${applicationCityHbox.width/2}" promptText="%localAdminAuthority" styleClass="demographicCombobox" />
 																												<Label fx:id="localAdminAuthorityMessage" prefWidth="${applicationCityHbox.width/2}" styleClass="demoGraphicFieldMessageLabel" text="localAdminAuthority message" visible="false" />
 																											</children>
 																										</VBox>

@@ -3,10 +3,7 @@ package io.mosip.authentication.common.service.impl.match;
 import java.util.Date;
 import java.util.Map;
 
-import org.springframework.core.env.Environment;
-
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
-import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DemoMatcherUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -17,10 +14,11 @@ import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant;
 
 /**
- * The Enum DOBMatchingStrategy - used to compare and
- * evaluate the DOB value received from the request and entity
+ * The Enum DOBMatchingStrategy - used to compare and evaluate the DOB value
+ * received from the request and entity
  *
  * @author Sanjay Murali
  */
@@ -30,11 +28,10 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo, Map<String, Object> props) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			try {
-				Environment env = (Environment) props.get("env");
-				String dateFormatReq = env.getProperty(IdAuthConfigKeyConstants.DOB_REQ_DATE_PATTERN);
-				String dateFormatEntity = env.getProperty(IdAuthConfigKeyConstants.DOB_ENTITY_DATE_PATTERN);
-				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo, dateFormatReq);
-				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo, dateFormatEntity);
+				Date reqInfoDate = DateUtils.parseToDate((String) reqInfo,
+						IdObjectValidatorConstant.DOB_FORMAT.getValue());
+				Date entityInfoDate = DateUtils.parseToDate((String) entityInfo,
+						IdObjectValidatorConstant.DOB_FORMAT.getValue());
 				return DemoMatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
 			} catch (ParseException e) {
 				logError(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
@@ -88,7 +85,6 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(DOBMatchingStrategy.class);
 
-
 	/** The Constant DOB Matching strategy. */
 	private static final String TYPE = "DOBMatchingStrategy";
 
@@ -98,8 +94,8 @@ public enum DOBMatchingStrategy implements TextMatchingStrategy {
 	 * @param errorConstants the error constants
 	 */
 	private static void logError(IdAuthenticationErrorConstants errorConstants) {
-		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE, "Inside DOB Mathing Strategy" + errorConstants.getErrorCode(),
-				errorConstants.getErrorMessage());
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, TYPE,
+				"Inside DOB Mathing Strategy" + errorConstants.getErrorCode(), errorConstants.getErrorMessage());
 	}
 
 }
