@@ -63,7 +63,7 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
 	public JSONArray arr = new JSONArray();
-	Response response = null;
+	public Response response = null;
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();

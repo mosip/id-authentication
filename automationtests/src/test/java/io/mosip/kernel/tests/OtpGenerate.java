@@ -115,7 +115,7 @@ public class OtpGenerate extends BaseTestCase implements ITest{
     		  HashMap<String, String> otp=new HashMap<>();
     		  otp.put("key", key);
     		  otp.put("otp", "123456");
-    		  for(int k=0;k<10;k++)
+    		  for(int k=0;k<3;k++)
     		  {
     			// Calling the get method and making key as frozen
     			  applicationLibrary.getWithQueryParam(OTPValidation, otp,cookie);
