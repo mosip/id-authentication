@@ -22,6 +22,7 @@ import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.AuthenticationTestException;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
@@ -153,10 +154,11 @@ public class DemographicAuthentication extends AuthTestsUtil implements ITest {
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
+	 * @throws Exception 
 	 */
 	@Test(dataProvider = "testcaselist")
 	public void demographicAuthenticationTest(TestParameters objTestParameters, String testScenario,
-			String testcaseName) {
+			String testcaseName) throws Exception {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -168,17 +170,19 @@ public class DemographicAuthentication extends AuthTestsUtil implements ITest {
 		Map<String, String> tempMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
 		logger.info("************* Modification of demo auth request ******************");
 		Reporter.log("<b><u>Modification of demo auth request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "demo-auth"), true);
+		if(!modifyRequest(testCaseName.listFiles(), tempMap, mapping, "demo-auth"))
+			throw new AuthenticationTestException("Failed at modifying the request file. Kindly check testdata.");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath()
 				+ extUrl + " *******");
-		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath() + extUrl, "request", "output-1-actual-res", 200),
-				true);
+		if(!postRequestAndGenerateOuputFile(testCaseName.listFiles(),
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath() + extUrl, "request", "output-1-actual-res", 200))
+				throw new AuthenticationTestException("Failed at HTTP-POST request");
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid), true);
+		if(!OutputValidationUtil.publishOutputResult(ouputValid))
+			throw new AuthenticationTestException("Failed at response output validation");
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");
@@ -186,7 +190,8 @@ public class DemographicAuthentication extends AuthTestsUtil implements ITest {
 			Map<String, List<OutputValidationDto>> auditTxnvalidation = AuditValidation
 					.verifyAuditTxn(testCaseName.listFiles(), "auth_transaction");
 			Reporter.log(ReportUtil.getOutputValiReport(auditTxnvalidation));
-			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditTxnvalidation), true);
+			if(!OutputValidationUtil.publishOutputResult(auditTxnvalidation)) 
+				throw new AuthenticationTestException("Failed at Authtransaction validation");
 		}
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
 			wait(5000);
@@ -195,11 +200,13 @@ public class DemographicAuthentication extends AuthTestsUtil implements ITest {
 			Map<String, List<OutputValidationDto>> auditLogValidation = AuditValidation
 					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
 			Reporter.log(ReportUtil.getOutputValiReport(auditLogValidation));
-			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditLogValidation), true);
+			if(!OutputValidationUtil.publishOutputResult(auditLogValidation))
+				throw new AuthenticationTestException("Failed at auditLog Validation");
 		}
 		if (testcaseName.contains("_Pos") || testcaseName.contains("_pos"))
-			Assert.assertEquals(verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
-					responseDigitalSignatureValue), true);
+			if(!verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
+					responseDigitalSignatureValue))
+				throw new AuthenticationTestException("Failed at digital signature verification");
 	}
 
 }

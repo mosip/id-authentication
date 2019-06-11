@@ -34,6 +34,24 @@ testdata:
       output.2.response.y.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.y.staticToken: $IGNORE$
       output.2.response.y.version: $version$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.otp-auth-request:AuthReq.individualId$
+      txnId: $input.otp-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_OTP_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_OTP_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.otp-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_otp_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
   
   Authentication_OTP_Invalid UIN_Neg_02:
     endpoint.url:
@@ -757,6 +775,23 @@ testdata:
       output.2.response.y.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.y.staticToken: $IGNORE$
       output.2.response.y.version: $version$
+    audit.auth_transaction:
+      refId: $input.otp-auth-request:AuthReq.individualId$
+      txnId: $input.otp-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_OTP_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_OTP_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.otp-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_otp_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
   
   Authentication_OTP_Invalid VID_Neg_20:
     endpoint.url:
@@ -1679,5 +1714,22 @@ testdata:
       output.2.response.n.err.errorCode: $errors:OTPExpired:errorCode$
       output.2.response.n.err.transactionID: $input.otp-auth-request:AuthReq.transactionID$
       output.2.response.n.err.version: $version$
+    audit.auth_transaction:
+      refId: $input.otp-auth-request:AuthReq.individualId$
+      txnId: $input.otp-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_OTP_authTypeCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_OTP_fail_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.otp-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_otp_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
       
       

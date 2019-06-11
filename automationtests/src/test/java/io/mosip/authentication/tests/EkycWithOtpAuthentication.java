@@ -25,6 +25,7 @@ import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.AuthenticationTestException;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
@@ -151,7 +152,7 @@ public class EkycWithOtpAuthentication extends AuthTestsUtil implements ITest{
 	} 
 
 	@Test(dataProvider = "testcaselist")
-	public void idaEkycWithOtpAuthenticationTest(TestParameters objTestParameters,String testScenario,String testcaseName) {
+	public void idaEkycWithOtpAuthenticationTest(TestParameters objTestParameters,String testScenario,String testcaseName) throws AuthenticationTestException {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -165,33 +166,39 @@ public class EkycWithOtpAuthentication extends AuthTestsUtil implements ITest{
 		displayContentInFile(testCaseName.listFiles(), "otp-generate");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath()
 				+ extUrl + " *******");
-		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
+		if(!postRequestAndGenerateOuputFile(testCaseName.listFiles(),
 				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath() + extUrl, "otp-generate", "output-1-actual-res",
-				200), true);
+				200))
+			throw new AuthenticationTestException("Failed at HTTP-POST otp-request");
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		Verify.verify(OutputValidationUtil.publishOutputResult(ouputValid));
+		if(!OutputValidationUtil.publishOutputResult(ouputValid))
+			throw new AuthenticationTestException("OTP Generate Valdiation failed");
 		Map<String, String> tempMap = new HashMap<String, String>();
 		tempMap.put("pinInfovalue", getOtpValue(
 				FileUtil.getFilePath(testCaseName, "identity-encrypt").getAbsolutePath(), mapping, "pinInfovalue"));
 		Reporter.log("<b><u>Modification of otp value in identity request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "identity-encrypt"), true);
+		if(!modifyRequest(testCaseName.listFiles(), tempMap, mapping, "identity-encrypt"))
+			throw new AuthenticationTestException("Failed at modifying the otp value in identity request file. Kindly check testdata.");
 		Map<String, String> tempEncryptMap = getEncryptKeyvalue(testCaseName.listFiles(), "identity-encrypt");
 		logger.info("*************Modification ekyc request ******************");
 		Reporter.log("<b><u>Modification of ekyc request</u></b>");
-		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempEncryptMap, mapping, "ekyc-request"), true);
+		if(!modifyRequest(testCaseName.listFiles(), tempEncryptMap, mapping, "ekyc-request"))
+			throw new AuthenticationTestException("Failed at modifying the kyc-request file. Kindly check testdata.");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath()
 				+ extUrl + " *******");
-		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
+		if(!postRequestAndGenerateOuputFile(testCaseName.listFiles(),
 				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getEkycPath() + extUrl, "ekyc-request",
-				"output-2-actual-res", 200), true);
+				"output-2-actual-res", 200))
+			throw new AuthenticationTestException("Failed at HTTP-POST kyc-request");
 		Map<String, List<OutputValidationDto>> ouputValid2 = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-2-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-2-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid2));
-		Verify.verify(OutputValidationUtil.publishOutputResult(ouputValid2));
+		if(!OutputValidationUtil.publishOutputResult(ouputValid2))
+			throw new AuthenticationTestException("Failed at response output validation");
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");
@@ -199,7 +206,8 @@ public class EkycWithOtpAuthentication extends AuthTestsUtil implements ITest{
 			Map<String, List<OutputValidationDto>> auditTxnvalidation = AuditValidation
 					.verifyAuditTxn(testCaseName.listFiles(), "auth_transaction");
 			Reporter.log(ReportUtil.getOutputValiReport(auditTxnvalidation));
-			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditTxnvalidation), true);
+			if(!OutputValidationUtil.publishOutputResult(auditTxnvalidation)) 
+				throw new AuthenticationTestException("Failed at Authtransaction validation");
 		}
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
 			wait(5000);
@@ -208,11 +216,13 @@ public class EkycWithOtpAuthentication extends AuthTestsUtil implements ITest{
 			Map<String, List<OutputValidationDto>> auditLogValidation = AuditValidation
 					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
 			Reporter.log(ReportUtil.getOutputValiReport(auditLogValidation));
-			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditLogValidation), true);
+			if(!OutputValidationUtil.publishOutputResult(auditLogValidation))
+				throw new AuthenticationTestException("Failed at auditLog Validation");
 		}
 		if (testcaseName.contains("_Pos") || testcaseName.contains("_pos"))
-			Assert.assertEquals(verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
-					responseDigitalSignatureValue), true);
+			if(!verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
+					responseDigitalSignatureValue))
+				throw new AuthenticationTestException("Failed at digital signature verification");
 	}
 
 }

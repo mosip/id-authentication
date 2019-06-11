@@ -22,6 +22,7 @@ import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.AuthenticationTestException;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
@@ -154,9 +155,10 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
+	 * @throws AuthenticationTestException 
 	 */
 	@Test(dataProvider = "testcaselist")
-	public void otpGenerationTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void otpGenerationTest(TestParameters objTestParameters, String testScenario, String testcaseName) throws AuthenticationTestException {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -170,14 +172,15 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 		displayContentInFile(testCaseName.listFiles(), "request");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath()
 				+ extUrl + " *******");
-		Assert.assertEquals(postRequestAndGenerateOuputFile(testCaseName.listFiles(),
-				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath() + extUrl, "request", "output-1-actual-res", 200),
-				true);
+		if(!postRequestAndGenerateOuputFile(testCaseName.listFiles(),
+				RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath() + extUrl, "request", "output-1-actual-res", 200))
+			throw new AuthenticationTestException("Failed at HTTP-POST otp-generate-request");
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid), true);
+		if(!OutputValidationUtil.publishOutputResult(ouputValid))
+			throw new AuthenticationTestException("Failed at otp-generate-response output validation");
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");
@@ -185,7 +188,8 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 			Map<String, List<OutputValidationDto>> auditTxnvalidation = AuditValidation
 					.verifyAuditTxn(testCaseName.listFiles(), "auth_transaction");
 			Reporter.log(ReportUtil.getOutputValiReport(auditTxnvalidation));
-			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditTxnvalidation), true);
+			if(!OutputValidationUtil.publishOutputResult(auditTxnvalidation)) 
+				throw new AuthenticationTestException("Failed at Authtransaction validation");
 		}
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "audit_log")) {
 			wait(5000);
@@ -194,7 +198,8 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 			Map<String, List<OutputValidationDto>> auditLogValidation = AuditValidation
 					.verifyAuditLog(testCaseName.listFiles(), "audit_log");
 			Reporter.log(ReportUtil.getOutputValiReport(auditLogValidation));
-			Assert.assertEquals(OutputValidationUtil.publishOutputResult(auditLogValidation), true);
+			if(!OutputValidationUtil.publishOutputResult(auditLogValidation))
+				throw new AuthenticationTestException("Failed at auditLog Validation");
 		}
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "emailNotification")) {
 			Map<String, String> templates = getPropertyAsMap(

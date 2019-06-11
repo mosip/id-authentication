@@ -19,6 +19,24 @@ testdata:
       output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
       output.1.y.res.id: $TestData:id_otp_valid$
       #output.1.y.res.ver: $version$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.otp-generate-request:otpReq.individualId$
+      txnId: $input.otp-generate-request:otpReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_OTPREQUEST_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_OTPREQUEST_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.otp-generate-request:otpReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_otprequest_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
     #email.emailNotification:
       #email.uin: $input.otp-generate-request:otpReq.individualId$
       #email.fullname: $idrepo~$input.otp-generate-request:otpReq.individualId$~valuefullName1$

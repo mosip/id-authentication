@@ -365,10 +365,22 @@ auth_transaction_FINGER_authTypeCode:
       - FINGERPRINT-AUTH
 auth_transaction_FACE_authTypeCode:
       - FACE-AUTH
+auth_transaction_OTP_authTypeCode:
+      - OTP-AUTH
+auth_transaction_OTPREQUEST_authTypeCode:
+      - OTP-REQUEST
 auth_transaction_success_statusCode:
       - Y
 auth_transaction_fail_statusCode:
       - N
+auth_transaction_OTPREQUEST_success_statusComment:
+      - $REGEXP:.*OTP.*Authentication.*Success.*$
+auth_transaction_OTPREQUEST_fail_statusComment:
+      - $REGEXP:.*OTP.*Authentication.*Failed.*$
+auth_transaction_OTP_success_statusComment:
+      - $REGEXP:.*OTP.*Authentication.*Success.*$
+auth_transaction_OTP_fail_statusComment:
+      - $REGEXP:.*OTP.*Authentication.*Failed.*$
 auth_transaction_IRIS_success_statusComment:
       - $REGEXP:.*Iris.*Authentication.*Success.*$
 auth_transaction_IRIS_fail_statusComment:
@@ -416,6 +428,10 @@ audit_log_finger_moduleName:
       - Fingerprint Authenticator
 audit_log_face_moduleName:
       - Face Authenticator
+audit_log_otp_moduleName:
+      - OTP Authenticator
+audit_log_otprequest_moduleName:
+      - Otp Requestor
 audit_log_UIN_refIdType:
       - UIN
 audit_log_demo_moduleName:
