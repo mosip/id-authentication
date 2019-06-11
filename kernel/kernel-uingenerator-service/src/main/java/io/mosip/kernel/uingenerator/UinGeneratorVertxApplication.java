@@ -20,8 +20,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
-import io.mosip.kernel.uingenerator.config.ConfigReader;
-import io.mosip.kernel.uingenerator.config.UinServiceConfiguration;
+import io.mosip.kernel.uingenerator.config.ConfigUrlsBuilder;
+import io.mosip.kernel.uingenerator.config.HibernateDaoConfig;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.verticle.HttpServerVerticle;
 import io.mosip.kernel.uingenerator.verticle.UinGeneratorVerticle;
@@ -104,7 +104,7 @@ public class UinGeneratorVertxApplication {
 		try {
 			Vertx vertx = Vertx.vertx();
 			List<ConfigStoreOptions> configStores = new ArrayList<>();
-			List<String> configUrls = ConfigReader.getURLs();
+			List<String> configUrls = ConfigUrlsBuilder.getURLs();
 			configUrls.forEach(url -> configStores
 					.add(new ConfigStoreOptions().setType(UinGeneratorConstant.CONFIG_STORE_OPTIONS_TYPE)
 							.setConfig(new JsonObject().put(UinGeneratorConstant.URL, url).put(
@@ -143,7 +143,7 @@ public class UinGeneratorVertxApplication {
 	 * This method sets the Application Context, deploys the verticles.
 	 */
 	private static void startApplication() {
-		ApplicationContext context = new AnnotationConfigApplicationContext(UinServiceConfiguration.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
 		VertxOptions options = new VertxOptions();
 		Vertx vertx = Vertx.vertx(options);
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new HttpServerVerticle(context) };
