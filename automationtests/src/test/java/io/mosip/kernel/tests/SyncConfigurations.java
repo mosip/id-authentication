@@ -62,6 +62,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
+	private String build;
 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -69,6 +70,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		cookie=auth.getAuthForRegistrationAdmin();
+		build=buildNumber.substring(2, 4);
 	} 
 	
 	// Data Providers to read the input json files from the folders
@@ -91,7 +93,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	public void syncConfigurations(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
 		// Getting configurations from the server
-		Response expectedobject=applicationLibrary.getConfigProperties("http://104.211.212.28:51000/registration/"+environment+"/0.12.0/");
+		Response expectedobject=applicationLibrary.getConfigProperties("http://104.211.212.28:51000/registration/"+environment+"/0."+build+".0/");
 		//Getting the registrationConfiguration
 		JSONObject regConfig=(JSONObject) ((JSONObject)((JSONArray)((JSONObject) new JSONParser().parse(expectedobject.asString())).get("propertySources")).get(0)).get("source");
 		//Getting the globalConfig
