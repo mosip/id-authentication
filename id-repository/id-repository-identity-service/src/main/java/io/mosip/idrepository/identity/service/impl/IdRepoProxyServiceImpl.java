@@ -209,8 +209,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinHash = modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
-		return uinHash;
+		return modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 	}
 
 	private IdResponseDTO retrieveIdentityByUinHash(String type, String uinHash) throws IdRepoAppException {
