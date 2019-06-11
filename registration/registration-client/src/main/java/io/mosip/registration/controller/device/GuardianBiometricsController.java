@@ -882,6 +882,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 					if (anyIrisException(RegistrationConstants.RIGHT)) {
 						modifyBiometricType(RegistrationUIConstants.RIGHT_IRIS);
 					}
+					List<String> bioList = new ArrayList<>();
+					biometricTypecombo.getItems().forEach(bio -> bioList.add(bio.getName()));
+					if(!bioList.contains(bioValue)) {
+						bioValue = RegistrationUIConstants.SELECT;
+						clearCapturedBioData();
+					}
 			}
 
 		}
