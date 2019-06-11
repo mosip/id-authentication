@@ -47,7 +47,7 @@
             <mat-form-field class="file-upload__or">
               <mat-select placeholder="Same as" (selectionChange)="sameAsChange($event)" [(value)]="sameAs">
                 <mat-option *ngFor="let applicant of allApplicants" value="{{ applicant.preRegistrationId }}">
-                  {{ applicant.demographicMetadata.fullName[0].value }}
+                  {{ applicant.demographicMetadata.fullname[0].value }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
