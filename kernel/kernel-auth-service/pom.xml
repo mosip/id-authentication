@@ -101,6 +101,18 @@
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-spring-boot-starter</artifactId>
 		</dependency>
+		<dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-server-spi-private</artifactId>
+            <version>6.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-server-spi</artifactId>
+             <version>6.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-undertow -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
