@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -1933,8 +1934,9 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * 
 	 */
 	public static String getCurrentDate() {
-		String timeStamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-				.format(Calendar.getInstance().getTime());
+		SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"));
+		String timeStamp=dateFormatGmt.format(Calendar.getInstance().getTime());
 		return timeStamp;
 	}
 

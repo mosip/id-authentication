@@ -85,13 +85,26 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 */
 	@Test
-	public void pagination_withoutPageIndexValue()
-	{
+		public void getAuditDataForDemographicFetchAllApplication() {
+			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+			JSONObject createRequest = lib.createRequest(testSuite);
+			Response createRequestResponse = lib.CreatePreReg(createRequest);
+			lib.fetchAllPreRegistrationCreatedByUser();
+			String userId = lib.userId;
+			JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicFetchAllApplication");
+			expectedRequest.put("session_user_id", userId);
+			List<String> objs = dao.getAuditData(userId);
+			JSONObject auditDatas = lib.getAuditData(objs, 2);
+			boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+			Assert.assertTrue(result, "object are not equal");
+		}
+
+		
 	
-	}
 	
 	@BeforeMethod(alwaysRun = true)
-	public void run() {	
+	public void run() {
+		authToken=lib.getToken();
 	}
 
 	@Override

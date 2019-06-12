@@ -97,7 +97,7 @@ public SoftAssert softAssert = new SoftAssert();
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
 		
-		switch ("smoke") {
+		switch (testLevel) {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
