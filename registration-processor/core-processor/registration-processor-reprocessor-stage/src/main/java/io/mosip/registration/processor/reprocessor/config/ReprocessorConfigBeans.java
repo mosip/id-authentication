@@ -15,7 +15,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
 
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.reprocessor.stage.ReprocessorStage;
+import io.mosip.registration.processor.rest.client.service.impl.RegistrationProcessorRestClientServiceImpl;
 
 /**
  * Config class to get configurations and beans for Reprocessor stage
@@ -31,5 +33,9 @@ public class ReprocessorConfigBeans {
 	@Bean
 	public ReprocessorStage getReprocessorStage() {
 		return new ReprocessorStage();
+	}
+	@Bean
+	public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
+		return new RegistrationProcessorRestClientServiceImpl();
 	}
 }
