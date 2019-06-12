@@ -18,6 +18,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import io.mosip.TestNgApplication;
+import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.service.BaseTestCase;
 
 /**
@@ -79,9 +80,10 @@ public class TestCaseReader extends BaseTestCase {
 	 */
 	public JSONObject readJsonData(String path) {
 
-		InputStream is = TestNgApplication.class.getResourceAsStream("/" + path);
+		
 		JSONObject jsonData = null;
 		try {
+			InputStream is = TestNgApplication.class.getResourceAsStream("/" + path);
 			jsonData = (JSONObject) new JSONParser().parse(new InputStreamReader(is, "UTF-8"));
 		} catch (IOException | ParseException e) {
 			logger.info(e.getMessage());
@@ -121,7 +123,7 @@ public class TestCaseReader extends BaseTestCase {
 		String configPath = folderRelativePath;
 		List<String> listFoldersFiles = new ArrayList<>();
 
-		final File jarFile = new File(
+		/*final File jarFile = new File(
 				TestNgApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
 		if (jarFile.isFile()) { // Run with JAR file
@@ -148,7 +150,7 @@ public class TestCaseReader extends BaseTestCase {
 				e.printStackTrace();
 			}
 			
-		} else { // Run with IDE
+		} else { */// Run with IDE
 			final URL url = TestCaseReader.class.getResource("/" + configPath);
 			if (url != null) {
 				try {
@@ -157,11 +159,11 @@ public class TestCaseReader extends BaseTestCase {
 						if (f.isDirectory()==isfolder)
 						listFoldersFiles.add(configPath + "/" + f.getName());
 					}
-				} catch (URISyntaxException e) {
+				} catch (URISyntaxException | NullPointerException e) {
 					logger.info(e.getMessage());
 				}
 			}
-		}
+		//}
 		return listFoldersFiles;
 	}
 	

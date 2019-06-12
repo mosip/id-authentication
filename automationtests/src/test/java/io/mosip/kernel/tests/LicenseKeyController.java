@@ -169,21 +169,19 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		 
 	    // adding the tspid and corresponding license key to the request and expected response od smok test case
 	    JSONObject request = (JSONObject) actualRequest_map.get("request");
-	    if(testCaseName.contains("Kernel_MapLicenseKeyPermission_smoke_MapLicenseKeyPermission"))
+	    if(testCaseName.contains("Kernel_MapLicenseKeyPermission_smoke"))
 	    {
 	    	request.put("tspId", tspId);
-	    	request.put("licenseKey", licenseKey);		 
+	    	request.put("licenseKey", licenseKey);	
+	    	logger.info("licKey---"+licenseKey);
 	    	actualRequest_map.putAll(request);
-		    Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		   // Calling the Post method 
-		    res_map = applicationLibrary.postWithJson(mapLicenseKey, actualRequest_map);
-	    }
-	    else
-	    {
+	    }    
 	    	Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+	    	
+	    	logger.info("actualRequest_map+++"+actualRequest_map.toJSONString());
 	    	// Calling the Post method 
 			 res_map = applicationLibrary.postWithJson(mapLicenseKey, actualRequest_map);
-	    }
+	    
 	  // Comparing expected and actual response
 	    assertKernel.assertKernel(res_map, Expectedresponse,listOfElementToRemove);
       if (status) {
@@ -236,7 +234,7 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		// Calling the get method 
 		Response response=applicationLibrary.getWithQueryParam(fetchmapLicenseKey, actualRequest, "");
-				
+			logger.info("resp---"+response.asString());	
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
       if (status) {	            
