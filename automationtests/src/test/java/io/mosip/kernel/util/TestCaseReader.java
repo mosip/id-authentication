@@ -45,7 +45,7 @@ public class TestCaseReader extends BaseTestCase {
 		
 		for (int j = 0; j < listOfFolders.size(); j++) {
 			String[] arr = listOfFolders.get(j).split("/");
-			switch ("smoke") {
+			switch (testType) {
 			case "smoke":
 				if (arr[arr.length - 1].toString().contains("smoke"))
 					testCaseNames.add(arr[arr.length - 1].toString());
@@ -138,7 +138,6 @@ public class TestCaseReader extends BaseTestCase {
 				if (je.isDirectory()==isfolder) {
 					final String name = je.getName();
 					if (name.startsWith(configPath + "/")) { // filter according to the path
-						System.out.println(name);
 						listFoldersFiles.add(name);
 					}
 				}
@@ -156,7 +155,6 @@ public class TestCaseReader extends BaseTestCase {
 					final File file = new File(url.toURI());
 					for (File f : file.listFiles()) {
 						if (f.isDirectory()==isfolder)
-							System.err.println(f);
 						listFoldersFiles.add(configPath + "/" + f.getName());
 					}
 				} catch (URISyntaxException e) {
