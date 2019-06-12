@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.h2.store.fs.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -153,7 +154,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
 			messageDTO.setRid(registrationId);
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+			try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithSync();
 				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
@@ -442,7 +443,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		messageDTO.setRid(registrationId);
 		regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 		messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
-		try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+		try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));
 			if (scanningFlag) {

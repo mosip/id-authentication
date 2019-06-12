@@ -137,11 +137,11 @@ public class PrintPostServiceImpl {
 
 	private void printConsumedFileFromQueue(File dirPathObj) throws IOException {
 
-		try (OutputStream out = new FileOutputStream(dirPathObj + seperator + printQueueDTO.getUin() + ".pdf");) {
+		try (OutputStream out = FileUtils.openOutputStream(FileUtils.getFile(dirPathObj + seperator + printQueueDTO.getUin() + ".pdf"));) {
 			out.write(printQueueDTO.getPdfBytes());
 		}
 
-		try (OutputStream out1 = new FileOutputStream(dirPathObj + seperator + printQueueDTO.getUin() + ".txt");) {
+		try (OutputStream out1 = FileUtils.openOutputStream(FileUtils.getFile(dirPathObj + seperator + printQueueDTO.getUin() + ".txt"));) {
 			out1.write(printQueueDTO.getTextBytes());
 		}
 
