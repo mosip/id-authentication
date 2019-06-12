@@ -225,7 +225,7 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
     const index = this.usersInfo.indexOf(name);
     if (!this.usersInfo[index].qrCodeBlob) {
       return new Promise((resolve, reject) => {
-        this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
+        this.dataStorageService.generateQRCode(name).subscribe(response => {
           this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
           resolve(true);
         });
