@@ -2,8 +2,10 @@ package io.mosip.registration.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -70,7 +72,8 @@ public class RegistrationConstants {
 	public static final String MDM_VERSION="0.1";
 	
 	public static final String IRIS_PANE = "irisPane";
-	public static final String IRIS_IMAGE_LOCAL="/images/scanned-iris.png";
+	public static final String IRIS_IMAGE_LOCAL="/images/leftEye.png";
+	public static final String IRIS_IMAGE_LOCAL_RIGHT="/images/rightEye.png";
 	public static final String IRIS_SINGLE = "IRIS_SINGLE";
 	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
@@ -94,6 +97,7 @@ public class RegistrationConstants {
 	public static final String LABEL_RED = "labelRed";
 	public static final String LABEL_GREEN = "labelGreen";
 	public static final String IRIS_PANES_SELECTED = "IrisPanesSelected";
+	public static final String BIO_IRIS_SELECTED = "bioIris";
 
 	// Page Flow
 	public static final String VISIBILITY = "visibility";
@@ -687,6 +691,7 @@ public class RegistrationConstants {
 	public static final String PACKET_UPLOAD_SNO = "slno";
 	public static final String PACKET_UPLOAD_DATE = "createdTime";
 	public static final String PACKET_UPLOAD_FILE = "fileName";
+	public static final String UPLOAD_FILE_NAME = "PacketUploadList";
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
 	public static final String ICS_CODE_ONE = "REG-ICS‌-001";
@@ -971,6 +976,7 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
+	public static final String BIOMETRIC_PANES_SELECTED = "biometricPaneSelected";
 	public static final Set<String> BIO_TYPE = new HashSet<>(
 			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
 	public static final String LEFTSLAPCOUNT = "leftSlapCount";
@@ -1090,7 +1096,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
-	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
+	public static final String NO_INTERNET = "NO_INTERNET";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
 	public static final String MASTER_CENTER_REMAP_SERVICE_NAME="center_remap_sync";
 	public static final String MASTER_CENTER_PARAM="regcenterId";
@@ -1262,6 +1268,7 @@ public class RegistrationConstants {
 			.concat("addressLine2.[*].value");
 	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
 			.concat("addressLine3.[*].value");
+	public static final String AGE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("age");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
 	public static String CNI_MANDATORY = String.valueOf(false);
@@ -1377,12 +1384,11 @@ public class RegistrationConstants {
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
 	
-	
-	public static final String IDA_REFERENCE_ID = "PARTNER";
+	public static final String IDA_REFERENCE_ID = "INTERNAL";
 	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
 	public static final String ON_BOARD_IDA_VALIDATION = "ida_auth";
 	public static final String ID = "id";
-	public static final String IDENTITY  = "mosip.identity.auth";
+	public static final String IDENTITY  = "mosip.identity.auth.internal";
 	public static final String VERSION  = "version";
 	public static final String REQUEST_TIME = "requestTime";
 	public static final String TRANSACTION_ID = "transactionID";
@@ -1409,5 +1415,39 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_IRIS_ID="IIR";
 	public static final String ON_BOARD_FINGER_ID="FMR";
 	public static final String ON_BOARD_COGENT="cogent";
+
+	public static final String STUB_FACE="Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA";
 	
+	// TPM Public Key Sync
+	public static final String RESPONSE = "response";
+	public static final String ERROR_CODE = "errorCode";
+	public static final String MESSAGE_CODE = "message";
+	public static final String TPM_PUBLIC_KEY_SYNC_SERVICE_NAME = "tpm_public_key";
+	public static final String TPM_AVAILABILITY = "is_tpm_available";
+	public static final String SERIAL_NUMBER = "serialnumber";
+	
+	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
+
+		{
+			put("leftIndex", "LEFT_INDEX");
+			put("leftLittle", "LEFT_LITTLE");
+			put("leftMiddle", "LEFT_MIDDLE");
+			put("leftRing", "LEFT_RING");
+			put("leftThumb", "LEFT_THUMB");
+			put("rightIndex", "RIGHT_INDEX");
+			put("rightLittle", "RIGHT_LITTLE");
+			put("rightMiddle", "RIGHT_MIDDLE");
+			put("rightRing", "RIGHT_RING");
+			put("rightThumb", "RIGHT_THUMB");
+			put("LeftEye.png", "LEFT");
+			put("RightEye.png", "RIGHT");
+		}
+
+	};
+	
+	public static final String RESPONSE_SIGNATURE="response-signature";
+	public static final String ON_BOARD_FACE="FACE";
+	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
+	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
+
 }

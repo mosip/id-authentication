@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -25,6 +24,8 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -39,6 +40,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
@@ -51,6 +53,8 @@ import io.mosip.registration.processor.packet.storage.entity.ManualVerificationP
 import io.mosip.registration.processor.packet.storage.entity.RegAbisRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetPKEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
@@ -113,6 +117,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<ManualVerificationEntity, String> manualVerficationRepository;
 
+	@Autowired
+	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetRepository;
+
 	/** The event id. */
 	private String eventId = "";
 
@@ -135,7 +142,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	/** The filesystem ceph adapter impl. */
 	@Autowired
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private PacketManager filesystemCephAdapterImpl;
 
 	/** The utility. */
 	@Autowired
@@ -213,8 +220,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param documentName
 	 *            the document name
 	 * @return the document as byte array
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
+	private byte[] getDocumentAsByteArray(String registrationId, String documentName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		try {
 
 			@Cleanup
@@ -910,6 +920,49 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public List<AbisResponseDetDto> getAbisResponseDetRecordsList(List<String> abisResponseDto) {
 		return packetInfoDao.getAbisResponseDetRecordsList(abisResponseDto);
+	}
+
+	@Override
+	public void saveRegLostUinDet(String regId, String latestRegId) {
+		boolean isTransactionSuccessful = false;
+		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+					"PacketInfoManagerImpl::saveRegLostUinDetData()::entry");
+			RegLostUinDetEntity regLostUinDetEntity = new RegLostUinDetEntity();
+			RegLostUinDetPKEntity regLostUinDetPKEntity = new RegLostUinDetPKEntity();
+			regLostUinDetPKEntity.setRegId(regId);
+
+			regLostUinDetEntity.setId(regLostUinDetPKEntity);
+			regLostUinDetEntity.setLatestRegId(latestRegId);
+			regLostUinDetEntity.setCrBy("SYSTEM");
+			regLostUinDetEntity.setIsDeleted(false);
+
+			regLostUinDetRepository.save(regLostUinDetEntity);
+			isTransactionSuccessful = true;
+			description = "Lost Uin detail data saved successfully";
+		} catch (DataAccessLayerException e) {
+			description = "DataAccessLayerException while saving Lost Uin detail data for rid" + regId + "::"
+					+ e.getMessage();
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
+
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
+
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
+				"PacketInfoManagerImpl::saveRegLostUinDetData()::exit");
+
 	}
 
 }

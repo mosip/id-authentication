@@ -653,6 +653,13 @@ public class DemographicDetailController extends BaseController {
 	private int minAge;
 	private int maxAge;
 
+	@FXML
+	private HBox parentDetailsHbox;
+	@FXML
+	private HBox localParentDetailsHbox;
+	@FXML
+	private AnchorPane ridOrUinToggle;
+
 	@Autowired
 	private MasterSyncService masterSyncService;
 	@FXML
@@ -690,10 +697,11 @@ public class DemographicDetailController extends BaseController {
 
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
-				getRegistrationDTOFromSession().setUpdateUINChild(false);
+				getRegistrationDTOFromSession().setUpdateUINNonBiometric(false);
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
 						RegistrationConstants.DISABLE);
 			}
+			postalCode.setDisable(true);
 			validation.setChild(false);
 			parentDetailPane.setManaged(false);
 			lostUIN = false;
@@ -1002,8 +1010,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when national button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void national(ActionEvent event) {
@@ -1027,8 +1034,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when mail button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void male(ActionEvent event) {
@@ -1057,8 +1063,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when foriegner button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void foreigner(ActionEvent event) {
@@ -1082,8 +1087,7 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when female button is pressed
 	 * 
-	 * @param ActionEvent
-	 *            the action event
+	 * @param ActionEvent the action event
 	 */
 	@FXML
 	private void female(ActionEvent event) {
@@ -1138,10 +1142,15 @@ public class DemographicDetailController extends BaseController {
 									parentDetailPane.setVisible(true);
 									parentDetailPane.setDisable(false);
 									parentName.clear();
+									parentNameLocalLanguage.clear();
 									parentRegId.clear();
 									isChild = true;
 									parentNameKeyboardImage.setDisable(!isChild);
 									validation.setChild(isChild);
+									
+									if(getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO()!=null) {
+										enableParentUIN();
+									}
 								}
 							} else {
 								updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
@@ -1156,6 +1165,7 @@ public class DemographicDetailController extends BaseController {
 								isChild = false;
 								validation.setChild(isChild);
 								parentName.clear();
+								parentNameLocalLanguage.clear();
 								parentRegId.clear();
 								parentRegIdLocalLanguage.clear();
 								parentRegId.clear();
@@ -1203,8 +1213,7 @@ public class DemographicDetailController extends BaseController {
 
 			fxUtils.validateOnFocusOut(parentFlowPane, mobileNo, validation, mobileNoLocalLanguage,
 					!hasToBeTransliterated);
-			fxUtils.validateOnType(parentFlowPane, ageField, validation, ageFieldLocalLanguage,
-					!hasToBeTransliterated);
+			fxUtils.validateOnType(parentFlowPane, ageField, validation, ageFieldLocalLanguage, !hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, postalCode, validation, postalCodeLocalLanguage,
 					!hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, emailId, validation, emailIdLocalLanguage,
@@ -1218,11 +1227,11 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.populateLocalComboBox(parentFlowPane, localAdminAuthority, localAdminAuthorityLocalLanguage);
 
 			dateValidation.validateDate(parentFlowPane, dd, mm, yyyy, validation, fxUtils, ddLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 			dateValidation.validateMonth(parentFlowPane, dd, mm, yyyy, validation, fxUtils, mmLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 			dateValidation.validateYear(parentFlowPane, dd, mm, yyyy, validation, fxUtils, yyyyLocalLanguage, ageField,
-					ageFieldLocalLanguage);
+					ageFieldLocalLanguage, dobMessage);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - Listner method failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1332,6 +1341,8 @@ public class DemographicDetailController extends BaseController {
 		try {
 			region.getItems().clear();
 			regionLocalLanguage.getItems().clear();
+			postalCode.setText(RegistrationConstants.EMPTY);
+			postalCodeLocalLanguage.setText(RegistrationConstants.EMPTY);
 
 			region.getItems()
 					.addAll(masterSync.findLocationByHierarchyCode(
@@ -1360,6 +1371,8 @@ public class DemographicDetailController extends BaseController {
 			cityLocalLanguage.getItems().clear();
 			localAdminAuthority.getItems().clear();
 			localAdminAuthorityLocalLanguage.getItems().clear();
+			postalCode.setText(RegistrationConstants.EMPTY);
+			postalCodeLocalLanguage.setText(RegistrationConstants.EMPTY);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR PROVINCE SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1379,6 +1392,8 @@ public class DemographicDetailController extends BaseController {
 
 			localAdminAuthority.getItems().clear();
 			localAdminAuthorityLocalLanguage.getItems().clear();
+			postalCode.setText(RegistrationConstants.EMPTY);
+			postalCodeLocalLanguage.setText(RegistrationConstants.EMPTY);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR CITY SELECTION LIST ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1388,15 +1403,35 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To load the localAdminAuthorities selection list based on the language
-	 * code
+	 * To load the localAdminAuthorities selection list based on the language code
 	 */
 	@FXML
 	private void addlocalAdminAuthority() {
 		try {
 			retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
+
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - LOADING FAILED FOR LOCAL ADMIN AUTHORITY SELECTOIN LIST ", APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
+	}
+
+	@FXML
+	private void populatePincode() {
+		try {
+			LocationDto locationDTO = localAdminAuthority.getSelectionModel().getSelectedItem();
+
+			if (null != locationDTO) {
+				List<LocationDto> locationDtos = masterSync.findProvianceByHierarchyCode(locationDTO.getCode(),
+						locationDTO.getLangCode());
+
+				postalCode.setText(locationDtos.get(0).getName());
+				postalCodeLocalLanguage.setText(locationDtos.get(0).getName());
+			}
+
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - Populating of Pin Code Failed ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
@@ -1434,7 +1469,6 @@ public class DemographicDetailController extends BaseController {
 
 			osiDataDTO.setOperatorID(SessionContext.userContext().getUserId());
 
-			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
 			registrationDTO.getDemographicDTO().setDemographicInfoDTO(demographicInfoDTO);
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
@@ -1507,7 +1541,7 @@ public class DemographicDetailController extends BaseController {
 												localAdminAuthority, localAdminAuthorityLocalLanguage,
 												isComboBoxValueNotRequired(localAdminAuthority))))
 								.with(identity -> identity.setPostalCode(
-										buildDemoTextValue(postalCode, isTextFieldNotRequired(postalCode))))
+										buildDemoTextValue(postalCode, postalCodeFieldValidation(postalCode))))
 								.with(identity -> identity
 										.setPhone(buildDemoTextValue(mobileNo, isTextFieldNotRequired(mobileNo))))
 								.with(identity -> identity
@@ -1536,11 +1570,16 @@ public class DemographicDetailController extends BaseController {
 								.with(identity -> identity
 										.setIndividualBiometrics(buildCBEFFDTO(isCBEFFNotAvailable(applicantBiometric),
 												RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME)))
-								.with(identity -> identity.setParentOrGuardianBiometrics(
-										buildCBEFFDTO(isCBEFFNotAvailable(introducerBiometric),
-												RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)))
+								.with(identity -> identity
+										.setParentOrGuardianBiometrics( buildCBEFFDTO(isParentORGuardian(registrationDTO, introducerBiometric),
+														RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)))
 								.get()))
 				.get();
+	}
+	
+	private boolean isParentORGuardian(RegistrationDTO registrationDTO,BiometricInfoDTO introducerBiometric) {
+		return !((registrationDTO.getSelectionListDTO() !=null && registrationDTO.isUpdateUINChild() && !isCBEFFNotAvailable(introducerBiometric)) 
+				|| (registrationDTO.getSelectionListDTO() == null && !isCBEFFNotAvailable(introducerBiometric)));
 	}
 
 	private List<ValuesDTO> buildDemoComboValues(String platformLanguageCode, String localLanguageCode,
@@ -1581,6 +1620,10 @@ public class DemographicDetailController extends BaseController {
 	private boolean isTextFieldNotRequired(TextField demoField) {
 		return demoField.isDisabled() || demoField.getText().isEmpty();
 	}
+	
+	private boolean postalCodeFieldValidation(TextField demoField) {
+		return demoField.getText().isEmpty();
+	}
 
 	private boolean isComboBoxValueNotRequired(ComboBox<?> demoComboBox) {
 		return demoComboBox.isDisable() || demoComboBox.getValue() == null;
@@ -1608,6 +1651,7 @@ public class DemographicDetailController extends BaseController {
 		return personBiometric.getFingerprintDetailsDTO().isEmpty() && personBiometric.getIrisDetailsDTO().isEmpty()
 				&& personBiometric.getFace().getFace() == null;
 	}
+	
 
 	/**
 	 * Method will be called for uin Update
@@ -1615,6 +1659,10 @@ public class DemographicDetailController extends BaseController {
 	 */
 	public void uinUpdate() {
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+
+			clearAllValues();
+			documentScanController.getBioExceptionToggleLabel1().setLayoutX(0);
+			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, false);
 
 			keyboardNode.setDisable(false);
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
@@ -1681,6 +1729,28 @@ public class DemographicDetailController extends BaseController {
 				parentNameKeyboardImage.setDisable(!isChild);
 			}
 
+			enableParentUIN();
+		}
+	}
+
+	private void enableParentUIN() {
+		if (isChild || (null != ageField.getText() && !ageField.getText().isEmpty()
+				&& Integer.parseInt(ageField.getText()) <= 5)) {
+
+			applicationUinIdPane.setDisable(false);
+			applicationRidPane.setDisable(true);
+			applicationRidPane.setVisible(false);
+			applicationRidPane.setManaged(false);
+			ridOrUinToggle.setVisible(false);
+			ridOrUinToggle.setManaged(false);
+			localRidPane.setDisable(true);
+			localRidPane.setVisible(false);
+			localRidPane.setManaged(false);
+			localRidOrUinToggle.setVisible(false);
+			localRidOrUinToggle.setManaged(false);
+			
+			parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
+			localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
 		}
 	}
 

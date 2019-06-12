@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
 
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
@@ -47,7 +48,7 @@ public class UserClientMachineMappingDAOTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	MachineMappingDAOImpl machineMappingDAOImpl;
+	private MachineMappingDAOImpl machineMappingDAOImpl;
 	@Mock
 	private CenterMachineRepository centerMachineRepository;
 	@Mock
@@ -163,6 +164,28 @@ public class UserClientMachineMappingDAOTest {
 		deviceList.add(deviceMaster);
 		Mockito.when(deviceMasterRepository.findByRegMachineSpecIdLangCode("eng")).thenReturn(deviceList);
 		Assert.assertNotNull((machineMappingDAOImpl.getDevicesMappedToRegCenter("eng")));
+	}
+
+	@Test
+	public void getKeyIndexByMacIdTest() {
+		MachineMaster machineMaster = PowerMockito.mock(MachineMaster.class);
+		machineMaster.setKeyIndex("keyIndex");
+
+		PowerMockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+				.thenReturn(machineMaster);
+
+		Assert.assertEquals(machineMaster.getKeyIndex(), machineMappingDAOImpl.getKeyIndexByMacId("name"));
+
+	}
+
+	@Test
+	public void getKeyIndexByMacIdNullTest() {
+
+		PowerMockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+				.thenReturn(null);
+
+		Assert.assertNull(machineMappingDAOImpl.getKeyIndexByMacId("name"));
+
 	}
 
 }

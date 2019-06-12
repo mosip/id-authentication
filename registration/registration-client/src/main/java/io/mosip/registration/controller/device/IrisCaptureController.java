@@ -32,7 +32,6 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
-import io.mosip.registration.service.bio.impl.BioServiceImpl;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -213,7 +212,7 @@ public class IrisCaptureController extends BaseController {
 				getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().stream()
 						.forEach(bio -> setExceptionIris(bio));
 			}
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
 					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO() != null
 					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
@@ -706,7 +705,7 @@ public class IrisCaptureController extends BaseController {
 	private List<IrisDetailsDTO> getIrises() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getIrisDetailsDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getIrisDetailsDTO();
 		} else {
 			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
@@ -736,7 +735,7 @@ public class IrisCaptureController extends BaseController {
 		clearProgressBar();
 
 		if (getRegistrationDTOFromSession() != null) {
-			if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+			if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 						.setIrisDetailsDTO(new ArrayList<>());
 			} else {

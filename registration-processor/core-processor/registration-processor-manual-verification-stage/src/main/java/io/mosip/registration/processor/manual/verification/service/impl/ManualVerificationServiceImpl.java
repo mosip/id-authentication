@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -31,13 +30,18 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCo
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTOWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
@@ -52,6 +56,7 @@ import io.mosip.registration.processor.manual.verification.exception.UserIDNotPr
 import io.mosip.registration.processor.manual.verification.service.ManualVerificationService;
 import io.mosip.registration.processor.manual.verification.stage.ManualVerificationStage;
 import io.mosip.registration.processor.manual.verification.util.StatusMessage;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ManualVerificationEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -84,7 +89,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	/** The filesystem ceph adapter impl. */
 	@Autowired
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private PacketManager filesystemCephAdapterImpl;
 
 	/** The base packet repository. */
 	@Autowired
@@ -96,6 +101,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
+
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -117,7 +125,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		List<ManualVerificationEntity> entities;
 		String matchType = dto.getMatchType();
 		checkUserIDExistsInMasterList(dto);
-		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),ManualVerificationStatus.ASSIGNED.name());
+		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
+				ManualVerificationStatus.ASSIGNED.name());
 
 		if (!(matchType.equals(DedupeSourceName.ALL.toString()) || matchType.equals(DedupeSourceName.DEMO.toString())
 				|| matchType.equals(DedupeSourceName.BIO.toString()))) {
@@ -139,7 +148,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
 			} else if (matchType.equals(DedupeSourceName.DEMO.toString())
 					|| matchType.equals(DedupeSourceName.BIO.toString())) {
-				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),matchType);
+				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),
+						matchType);
 			}
 			if (entities.isEmpty()) {
 				throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
@@ -176,7 +186,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * java.lang.String)
 	 */
 	@Override
-	public byte[] getApplicantFile(String regId, String fileName) {
+	public byte[] getApplicantFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		byte[] file = null;
 		InputStream fileInStream = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -208,8 +218,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @param fileName
 	 *            the file name
 	 * @return the applicant biometric file
+	 * @throws IOException 
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private InputStream getApplicantBiometricFile(String regId, String fileName) {
+	private InputStream getApplicantBiometricFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.BIOMETRIC + fileName);
 	}
 
@@ -221,8 +235,12 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @param fileName
 	 *            the file name
 	 * @return the applicant demographic file
+	 * @throws IOException 
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
-	private InputStream getApplicantDemographicFile(String regId, String fileName) {
+	private InputStream getApplicantDemographicFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
 	}
 
@@ -272,6 +290,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			registrationStatusDto.setRegistrationStageName(stageName);
 
 			if (manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
+				if (messageDTO.getReg_type().toString().equalsIgnoreCase(RegistrationType.LOST.toString()))
+					packetInfoManager.saveRegLostUinDet(registrationId, manualVerificationDTO.getMatchedRefId());
 				messageDTO.setIsValid(true);
 				manualVerificationStage.sendMessage(messageDTO);
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_APPROVED);
@@ -334,7 +354,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * ManualVerificationService#getApplicantPacketInfo(java.lang.String)
 	 */
 	@Override
-	public PacketMetaInfo getApplicantPacketInfo(String regId) {
+	public PacketMetaInfo getApplicantPacketInfo(String regId) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -356,8 +376,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::exit");
 		return packetMetaInfo;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	private void checkUserIDExistsInMasterList(UserDto dto) {
 		ResponseWrapper<UserResponseDTOWrapper> responseWrapper;
@@ -368,11 +387,11 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		Date date = Calendar.getInstance().getTime();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.000'Z'");
 		String effectiveDate = dateFormat.format(date);
-		//pathSegments.add("2019-05-16T06:12:52.994Z");
+		// pathSegments.add("2019-05-16T06:12:52.994Z");
 		pathSegments.add(effectiveDate);
 		try {
-			responseWrapper = (ResponseWrapper<UserResponseDTOWrapper>) restClientService.getApi(ApiName.MASTER, pathSegments,
-					"", "", ResponseWrapper.class);
+			responseWrapper = (ResponseWrapper<UserResponseDTOWrapper>) restClientService.getApi(ApiName.MASTER,
+					pathSegments, "", "", ResponseWrapper.class);
 
 			if (responseWrapper.getResponse() != null) {
 				userResponseDTOWrapper = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),

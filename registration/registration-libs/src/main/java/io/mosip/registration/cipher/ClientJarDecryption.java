@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -36,9 +37,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -143,134 +149,144 @@ public class ClientJarDecryption extends Application {
 
 		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
 		System.out.println("properties file path--->>");
-		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
-		Properties properties = new Properties();
-		properties.load(fileInputStream);
+		try (FileInputStream fileInputStream = new FileInputStream(propsFilePath)) {
+			Properties properties = new Properties();
+			properties.load(fileInputStream);
 
-		// Encrypt the Keys
-		boolean isTPMAvailable = isTPMAvailable(properties);
-		if (isTPMAvailable) {
-			encryptRequiredProperties(properties, propsFilePath);
-		}
-
-		try {
-			String dbpath = new File(System.getProperty("user.dir")) + SLASH + properties.getProperty("mosip.dbpath");
-			if (!new File(dbpath).exists()) {
-				System.out.println("coming alert");
-				Alert alert = new Alert(AlertType.INFORMATION);
-				alert.setHeaderText(null);
-				alert.setContentText("Please provide correct path for Database");
-				alert.setTitle("INFO");
-				alert.setGraphic(null);
-				alert.setResizable(true);
-				alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-				alert.showAndWait();
-				throw new RuntimeException();
+			// Encrypt the Keys
+			boolean isTPMAvailable = isTPMAvailable(properties);
+			if (isTPMAvailable) {
+				encryptRequiredProperties(properties, propsFilePath);
 			}
 
-			// TODO Check Internet Connectivity
-
-			showDialog();
-
-			System.out.println("Inside try statement");
-			Task<Boolean> task = new Task<Boolean>() {
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see javafx.concurrent.Task#call()
-				 */
-				@Override
-				protected Boolean call() throws IOException, InterruptedException {
-					try {
-						return checkForJars(true);
-					} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException | SAXException
-							| IOException exception) {
-						return false;
-					}
-
+			try {
+				String dbpath = new File(System.getProperty("user.dir")) + SLASH
+						+ properties.getProperty("mosip.dbpath");
+				if (!new File(dbpath).exists()) {
+					System.out.println("coming alert");
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setHeaderText(null);
+					alert.setContentText("Please provide correct path for Database");
+					alert.setTitle("INFO");
+					alert.setGraphic(null);
+					alert.setResizable(true);
+					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+					alert.showAndWait();
+					throw new RuntimeException();
 				}
-			};
-			activateProgressBar(task);
-			Thread t = new Thread(task);
-			t.start();
-			task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-				@Override
-				public void handle(WorkerStateEvent t) {
 
-					if (task.getValue()) {
-						System.out.println("  Inside Task thread--->>>>");
-						primaryStage.close();
-						System.out.println("Inside try statement1");
+				// TODO Check Internet Connectivity
 
-						File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
+				showDialog();
 
-						File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
-
-						tempPath = FileUtils.getTempDirectoryPath();
-						tempPath = tempPath + UUID.randomUUID();
-
-						System.out.println(tempPath);
-
-						System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
-						byte[] decryptedRegFileBytes;
+				System.out.println("Inside try statement");
+				Task<Boolean> task = new Task<Boolean>() {
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see javafx.concurrent.Task#call()
+					 */
+					@Override
+					protected Boolean call() throws IOException, InterruptedException {
 						try {
-							byte[] decryptedKey = getValue(MOSIP_REGISTRATION_APP_KEY, properties, isTPMAvailable);
+							return checkForJars(true);
+						} catch (io.mosip.kernel.core.exception.IOException | ParserConfigurationException
+								| SAXException | IOException exception) {
+							return false;
+						}
 
-							decryptedRegFileBytes = aesDecrypt
-									.decrypt(FileUtils.readFileToByteArray(encryptedClientJar), decryptedKey);
+					}
+				};
+				activateProgressBar(task);
+				Thread t = new Thread(task);
+				t.start();
+				task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+					@Override
+					public void handle(WorkerStateEvent t) {
 
-							String clientJar = tempPath + SLASH + UUID.randomUUID();
-							System.out.println("clientJar ---> " + clientJar);
-							FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
+						if (task.getValue()) {
+							System.out.println("  Inside Task thread--->>>>");
+							primaryStage.close();
 
-							System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
-							byte[] decryptedRegServiceBytes = aesDecrypt
-									.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar), decryptedKey);
+							File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
 
-							FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
-									decryptedRegServiceBytes);
+							File encryptedServicesJar = new File(binFolder + MOSIP_SERVICES);
 
-							String libPath = new File("lib").getAbsolutePath();
-							String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.env")
-									+ " -Dfile.encoding=UTF-8 -Dmosip.dbpath=" + properties.getProperty("mosip.dbpath")
-									+ " -D" + MOSIP_REGISTRATION_DB_KEY + "=" + propsFilePath + " -cp " + tempPath
-									+ "/*;" + libPath + "/* io.mosip.registration.controller.Initialization";
-							System.out.println("Command-->>" + cmd);
-							Process process = Runtime.getRuntime().exec(cmd);
-							System.out.println("the output stream is " + process.getOutputStream().getClass());
-							BufferedReader bufferedReader = new BufferedReader(
-									new InputStreamReader(process.getInputStream()));
-							String s;
-							while ((s = bufferedReader.readLine()) != null) {
-								System.out.println("The stream is : " + s);
+							tempPath = FileUtils.getTempDirectoryPath();
+							tempPath = tempPath + UUID.randomUUID();
+
+							System.out.println(tempPath);
+
+							System.out.println("Decrypt File Name====>" + encryptedClientJar.getName());
+							byte[] decryptedRegFileBytes;
+							try {
+								byte[] decryptedKey = getValue(MOSIP_REGISTRATION_APP_KEY, properties, isTPMAvailable);
+
+								decryptedRegFileBytes = aesDecrypt
+										.decrypt(FileUtils.readFileToByteArray(encryptedClientJar), decryptedKey);
+
+								String clientJar = tempPath + SLASH + UUID.randomUUID();
+								System.out.println("clientJar ---> " + clientJar);
+
+								// Decrypt Client Jar
+								FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
+
+								System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
+								byte[] decryptedRegServiceBytes = aesDecrypt
+										.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar), decryptedKey);
+
+								// Decrypt Services ka
+								FileUtils.writeByteArrayToFile(new File(tempPath + SLASH + UUID.randomUUID() + ".jar"),
+										decryptedRegServiceBytes);
+							} catch (RuntimeException | IOException runtimeException) {
+
+								try {
+									FileUtils.deleteDirectory(new File(tempPath));
+									FileUtils.forceDelete(new File("MANIFEST.MF"));
+									new SoftwareInstallationHandler();
+								} catch (IOException ioException) {
+									ioException.printStackTrace();
+								}
+
+								// EXIT
+								System.exit(0);
 							}
-							if (0 == process.waitFor()) {
-
-								process.destroyForcibly();
-
-								FileUtils.deleteDirectory(new File(tempPath));
-
-							}
-						} catch (IOException | InterruptedException | RuntimeException exception) {
-							// TODO Auto-generated catch block
-							exception.printStackTrace();
 
 							try {
-								FileUtils.forceDelete(new File("MANIFEST.MF"));
-								new SoftwareInstallationHandler();
-							} catch (IOException ioException) {
-								ioException.printStackTrace();
-							}
+								String libPath = new File("lib").getAbsolutePath();
+								String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.env")
+										+ " -Dfile.encoding=UTF-8 -Dmosip.dbpath="
+										+ properties.getProperty("mosip.dbpath") + " -D" + MOSIP_REGISTRATION_DB_KEY
+										+ "=" + propsFilePath + " -cp " + tempPath + "/*;" + libPath
+										+ "/* io.mosip.registration.controller.Initialization";
+								System.out.println("Command-->>" + cmd);
+								Process process = Runtime.getRuntime().exec(cmd);
+								System.out.println("the output stream is " + process.getOutputStream().getClass());
+								BufferedReader bufferedReader = new BufferedReader(
+										new InputStreamReader(process.getInputStream()));
+								String s;
+								while ((s = bufferedReader.readLine()) != null) {
+									System.out.println("The stream is : " + s);
+								}
+								if (0 == process.waitFor()) {
 
+									process.destroyForcibly();
+
+									FileUtils.forceDelete(new File(tempPath));
+
+								}
+							} catch (RuntimeException | InterruptedException | IOException runtimeException) {
+								runtimeException.printStackTrace();
+							}
+						} else {
+							System.out.println("Not Downloaded Fully");
+							primaryStage.close();
 						}
-					} else {
-						System.out.println("Not Downloaded Fully");
-						primaryStage.close();
 					}
-				}
-			});
-		} catch (RuntimeException runtimeException) {
-			runtimeException.printStackTrace();
+				});
+			} catch (RuntimeException runtimeException) {
+				runtimeException.printStackTrace();
+			}
 		}
 	}
 
@@ -286,9 +302,22 @@ public class ClientJarDecryption extends Application {
 	private void showDialog() {
 
 		StackPane stackPane = new StackPane();
-		stackPane.setAlignment(Pos.CENTER);
-		stackPane.getChildren().add(progressBar);
-		Scene scene = new Scene(stackPane, 200, 100);
+		VBox vBox = new VBox();
+		HBox hBox = new HBox();
+		InputStream ins = this.getClass().getResourceAsStream("/img/logo-final.png");
+		ImageView imageView = new ImageView(new Image(ins));
+		imageView.setFitHeight(150);
+		imageView.setFitWidth(150);
+		hBox.setMinSize(200, 400);
+		hBox.getChildren().add(imageView);
+		Label downloadLabel = new Label("Downloading..");
+		vBox.setAlignment(Pos.CENTER_LEFT);
+		vBox.getChildren().add(downloadLabel);
+		vBox.getChildren().add(progressBar);
+		hBox.getChildren().add(vBox);
+		hBox.setAlignment(Pos.CENTER_LEFT);
+		stackPane.getChildren().add(hBox);
+		Scene scene = new Scene(stackPane, 255, 150);
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setScene(scene);
 	}

@@ -30,9 +30,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
 import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -55,13 +55,13 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String CentetMachineUserMappingToMasterData_uri = props.get("CentetMachineUserMappingToMasterData_uri").toString();
 	private String folderPath = "kernel/CentetMachineUserMappingToMasterData";
 	private String outputFile = "CentetMachineUserMappingToMasterDataOutput.json";
 	private String requestKeyFile = "CentetMachineUserMappingToMasterDataInput.json";
 	private AssertKernel assertKernel = new AssertKernel();
-	private JSONObject Expectedresponse = null;
+	private JSONObject expectedresponse = null;
 	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie=null;
@@ -77,17 +77,8 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	 // Data Providers to read the input json files from the folders
 	@DataProvider(name = "CentetMachineUserMappingToMasterData")
 	public Object[][] readData(ITestContext context) throws JsonParseException, JsonMappingException, IOException, ParseException {
-		 switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"smoke");
-			
-		case "regression":	
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,"smokeAndRegression");
+				return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testLevel);
 		}
-		
-	}
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -101,17 +92,19 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	public void centetMachineUserMappingToMasterData(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
 	{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		//  Calling the put method 
-		  Response response = applicationLibrary.putRequest(actualRequest, CentetMachineUserMappingToMasterData_uri,cookie);
+		  Response response = applicationLibrary.putWithJson(CentetMachineUserMappingToMasterData_uri, actualRequest, cookie);
 		
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// Comparing expected and actual response
-		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
+		status = assertKernel.assertKernel(response, expectedresponse,listOfElementToRemove);
 	            
 	if(status)	{
 			finalStatus ="Pass";

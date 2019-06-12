@@ -159,16 +159,12 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			Actualresponse = applicationLibrary.getRequestWithoutParm(preRegURL);
 			logger.info(
 					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
-			if(testCaseName.contains("EmptyValue"))
-			{
-				outerKeys.add("timestamp");
-			}
-			else
-			{
+			
+			
 			outerKeys.add("responsetime");
 			innerKeys.add("docId");
 			innerKeys.add("multipartFile");
-			}
+			
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 		}

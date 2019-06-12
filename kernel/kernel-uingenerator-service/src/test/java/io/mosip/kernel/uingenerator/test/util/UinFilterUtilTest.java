@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import io.mosip.kernel.uingenerator.config.UinServiceConfiguration;
+import io.mosip.kernel.uingenerator.config.HibernateDaoConfig;
 import io.mosip.kernel.uingenerator.util.UinFilterUtil;
 
 /**
@@ -27,7 +27,7 @@ import io.mosip.kernel.uingenerator.util.UinFilterUtil;
  */
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = UinServiceConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = HibernateDaoConfig.class, loader = AnnotationConfigContextLoader.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinFilterUtilTest {
 

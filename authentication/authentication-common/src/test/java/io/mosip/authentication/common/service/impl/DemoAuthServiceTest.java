@@ -1,7 +1,6 @@
 package io.mosip.authentication.common.service.impl;
 
-
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -39,12 +38,11 @@ import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
-import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
-import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -545,7 +543,7 @@ public class DemoAuthServiceTest {
 		IdentityDTO demographics = new IdentityDTO();
 		demographics.setPhoneNumber("0000000000");
 		demographics.setEmailId("abc@test.com");
-		demographics.setDob("11/09/1898");
+		demographics.setDob("1898/09/11");
 		List<IdentityInfoDTO> dobType = new ArrayList<>();
 		IdentityInfoDTO reqIdentityInfodto = new IdentityInfoDTO();
 		reqIdentityInfodto.setValue(DOBType.VERIFIED.name());
@@ -571,9 +569,47 @@ public class DemoAuthServiceTest {
 		demoEntity.put("dateOfBirth", dobList);
 		Set<String> valueSet = new HashSet<>();
 		valueSet.add("fra");
-		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
-				"1234567890");
-		assertFalse(authenticate.isStatus());
+		try {
+			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.DEMO_DATA_MISMATCH.getErrorCode(), ex.getErrorCode());
+		}
+	}
+
+	@Test
+	public void TestInValidLangDemographicData() throws IdAuthenticationBusinessException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		String individualId = "274390482564";
+		authRequestDTO.setIndividualId(individualId);
+		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
+		AuthTypeDTO requestedAuth = new AuthTypeDTO();
+		requestedAuth.setDemo(true);
+		authRequestDTO.setRequestedAuth(requestedAuth);
+		authRequestDTO.setConsentObtained(true);
+		authRequestDTO.setTransactionID("1234567890");
+		authRequestDTO.setVersion("1.0");
+		RequestDTO request = new RequestDTO();
+		IdentityDTO demographics = new IdentityDTO();
+		List<IdentityInfoDTO> nameList = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+		identityInfoDTO.setLanguage("fre");
+		identityInfoDTO.setValue("Dinesh");
+		nameList.add(identityInfoDTO);
+		demographics.setName(nameList);
+		request.setDemographics(demographics);
+		authRequestDTO.setRequest(request);
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		List<IdentityInfoDTO> nameListEntity = new ArrayList<>();
+		IdentityInfoDTO identityInfoDTOEntity = new IdentityInfoDTO();
+		identityInfoDTOEntity.setLanguage("fra");
+		identityInfoDTOEntity.setValue("Dinesh1");
+		nameListEntity.add(identityInfoDTOEntity);
+		demoEntity.put("fullName", nameListEntity);
+		try {
+			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.UNSUPPORTED_LANGUAGE.getErrorCode(), ex.getErrorCode());
+		}
 	}
 
 	@Test
@@ -586,9 +622,11 @@ public class DemoAuthServiceTest {
 		identityInfoDTO.setValue("Dinesh1");
 		demoEntity.put("fullName", nameList);
 		String individualId = "274390482564";
-		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
-				"1234567890");
-		assertFalse(authenticate.isStatus());
+		try {
+			demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity, "1234567890");
+		} catch (IdAuthenticationBusinessException ex) {
+			assertEquals(IdAuthenticationErrorConstants.DEMO_MISSING.getErrorCode(), ex.getErrorCode());
+		}
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

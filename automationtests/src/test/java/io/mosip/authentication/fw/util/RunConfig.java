@@ -499,4 +499,13 @@ public abstract class RunConfig {
 	public abstract void setIdRepoCreateVIDRecordPath(String idRepoCreateVIDRecordPath);
 	public abstract String getIdRepoUpdateVIDStatusPath();
 	public abstract void setIdRepoUpdateVIDStatusPath(String IdRepoUpdateVIDStatusPath);
+	public abstract String getIdRepoVersion();
+	public abstract void setIdRepoVersion(String idRepoVersion);
+	public abstract String getDecryptPath();
+	public abstract void setDecryptPath(String decryptPath);
+	public abstract void setUinIdentityMapper(String uinIdentityMapper);
+	public abstract String getUinIdentityMapper();
+	public abstract String getInternalEncryptionPath();
+	public abstract void setInternalEncryptionPath(String internalEncryptionPath);
+
 }

@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
@@ -18,17 +17,16 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -36,6 +34,7 @@ import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.RequestWrapper;
@@ -47,6 +46,7 @@ import io.mosip.registration.processor.core.notification.template.generator.dto.
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -100,7 +100,7 @@ public class MessageNotificationServiceImpl
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The template generator. */
 	@Autowired
@@ -110,9 +110,6 @@ public class MessageNotificationServiceImpl
 	@Autowired
 	private Utilities utility;
 
-	@Autowired
-	private ABISHandlerUtil abisHandlerUtil;
-
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -120,8 +117,6 @@ public class MessageNotificationServiceImpl
 	/** The resclient. */
 	@Autowired
 	private RestApiClient resclient;
-
-
 
 	/** The email id. */
 	private String emailId;
@@ -144,7 +139,7 @@ public class MessageNotificationServiceImpl
 	 */
 	@Override
 	public SmsResponseDto sendSmsNotification(String templateTypeCode, String id, IdType idType,
-			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException {
+			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SmsResponseDto response = null;
 		SmsRequestDto smsDto = new SmsRequestDto();
 		RequestWrapper<SmsRequestDto> requestWrapper = new RequestWrapper<>();
@@ -222,7 +217,7 @@ public class MessageNotificationServiceImpl
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateGenerationFailedException(
 					PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.getCode(), e);
-		}catch(ApisResourceAccessException e) {
+		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
@@ -274,8 +269,8 @@ public class MessageNotificationServiceImpl
 
 		params.add("attachments", attachment);
 
-		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),MediaType.MULTIPART_FORM_DATA, params,
-				ResponseWrapper.class);
+		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),
+				MediaType.MULTIPART_FORM_DATA, params, ResponseWrapper.class);
 		responseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), ResponseDto.class);
 
 		return responseDto;
@@ -296,15 +291,17 @@ public class MessageNotificationServiceImpl
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ApisResourceAccessException
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 * @throws IdRepoAppException
 	 */
 	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
-			throws IOException, ApisResourceAccessException {
+			throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		InputStream demographicInfoStream = null;
 		Long uin = null;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
 			JSONObject jsonObject = utility.retrieveUIN(id);
-			uin=JsonUtil.getJSONValue(jsonObject, UIN);
+			uin = JsonUtil.getJSONValue(jsonObject, UIN);
 			attributes.put("RID", id);
 			attributes.put("UIN", uin);
 		} else {
@@ -321,7 +318,7 @@ public class MessageNotificationServiceImpl
 				|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
 				|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
 			setAttributesFromIdRepo(uin, attributes, regType);
-		} else{
+		} else {
 			setAttributes(demographicInfo, attributes, regType);
 		}
 
@@ -362,8 +359,9 @@ public class MessageNotificationServiceImpl
 			setAttributes(jsonString, attributes, regType);
 
 		} catch (ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),Long.toString(uin),
-					 PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name() + ExceptionUtils.getStackTrace(e));
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					Long.toString(uin),
+					PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name() + ExceptionUtils.getStackTrace(e));
 			throw new IDRepoResponseNull(PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.getCode());
 		}
 

@@ -15,7 +15,8 @@ public class MessageSenderApplication {
 	/**
 	 * Main method to instantiate the spring boot application.
 	 *
-	 * @param args the command line arguments
+	 * @param args
+	 *            the command line arguments
 	 */
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
@@ -27,6 +28,7 @@ public class MessageSenderApplication {
 				"io.mosip.registration.processor.packet.storage.config",
 				"io.mosip.registration.processor.stages.config",
 				"io.mosip.registration.processor.message.sender.config",
+				"io.mosip.registration.processor.packet.manager.config",
 				"io.mosip.registration.processor.core.kernel.beans");
 
 		ctx.refresh();

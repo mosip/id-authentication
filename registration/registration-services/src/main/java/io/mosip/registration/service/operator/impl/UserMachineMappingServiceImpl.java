@@ -1,11 +1,9 @@
 package io.mosip.registration.service.operator.impl;
 
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MASTER_SYNC;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.SocketTimeoutException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -32,7 +30,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.operator.UserMachineMappingService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
-import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
  * Implementation for {@link UserMachineMappingService}
@@ -65,7 +62,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 		List<UserMachineMapping> userMachineMappingList = null;
 		List<RegistrationCenterUserMachineMappingDto> list = new ArrayList<>();
 		ResponseDTO responseDTO = new ResponseDTO();
-		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE,
 					RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE);

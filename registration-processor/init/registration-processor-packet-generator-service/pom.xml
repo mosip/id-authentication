@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>init</artifactId>
-		<version>0.12.4</version>
+		<version>0.12.7</version>
 	</parent>
 
 	<artifactId>registration-processor-packet-generator-service</artifactId>
@@ -78,11 +78,6 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${kernel.dataaccess.hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-jsonvalidator</artifactId>
-			<version>${kernel.core.version}</version>
 		</dependency>
 
 		<dependency>

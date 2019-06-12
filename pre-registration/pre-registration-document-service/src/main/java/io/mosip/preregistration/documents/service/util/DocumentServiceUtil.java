@@ -50,6 +50,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
@@ -96,6 +97,9 @@ public class DocumentServiceUtil {
 	@Autowired
 	RestTemplate restTemplate;
 
+	@Autowired
+	ValidationUtil validationUtil;
+
 	/**
 	 * Reference for ${demographic.resource.url} from property file
 	 */
@@ -137,12 +141,10 @@ public class DocumentServiceUtil {
 				docDTOData.toString());
 		uploadReqDto.setId(documentData.get("id").toString());
 		uploadReqDto.setVersion(documentData.get("version").toString());
-		if(!(documentData.get("requesttime")==null ||documentData.get("requesttime").toString().isEmpty())) {
+		if (!(documentData.get("requesttime") == null || documentData.get("requesttime").toString().isEmpty())) {
 			uploadReqDto.setRequesttime(
 					new SimpleDateFormat(utcDateTimePattern).parse(documentData.get("requesttime").toString()));
-		}
-		else
-		{
+		} else {
 			uploadReqDto.setRequesttime(null);
 		}
 		uploadReqDto.setRequest(documentDto);
@@ -244,8 +246,9 @@ public class DocumentServiceUtil {
 		if (catCode.equals("POA")) {
 			return true;
 		} else {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOCUMENT_CATEGORY_CODE.getMessage(), null);
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_017.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
 		}
 	}
 
@@ -328,16 +331,6 @@ public class DocumentServiceUtil {
 		if (isNull(preRegistrationId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
 					ErrorMessages.INVALID_PRE_ID.getMessage(), null);
-		} else if (isNull(dto.getDocCatCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
-		} else if (isNull(dto.getDocTypCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage(), null);
-		} else if (isNull(dto.getLangCode())) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_DOC_018.toString(),
-					ErrorMessages.INVALID_LANG_CODE.getMessage(), null);
-
 		}
 		return true;
 	}
@@ -392,5 +385,6 @@ public class DocumentServiceUtil {
 		}
 		return true;
 	}
+
 
 }

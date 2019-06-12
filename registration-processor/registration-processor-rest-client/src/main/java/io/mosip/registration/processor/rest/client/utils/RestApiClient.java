@@ -7,6 +7,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
@@ -21,11 +25,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +38,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -246,14 +249,28 @@ public class RestApiClient {
 	 * @return
 	 * @throws IOException
 	 */
+	@SuppressWarnings("unchecked")
 	private HttpEntity<Object> setRequestHeader(Object requestType, MediaType mediaType) throws IOException {
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
 		headers.add("Cookie", getToken());
 		if (mediaType != null) {
 			headers.add("Content-Type", mediaType.toString());
 		}
-		if (requestType != null)
-			return new HttpEntity<Object>(requestType, headers);
+		if (requestType != null) {
+			try {
+				HttpEntity<Object> httpEntity = (HttpEntity<Object>)requestType;
+				HttpHeaders httpHeader = httpEntity.getHeaders();
+				Iterator<String> iterator = httpHeader.keySet().iterator();
+				while(iterator.hasNext()) {
+					String key = iterator.next();
+					if(!(headers.containsKey("Content-Type") && key == "Content-Type"))
+					headers.add(key, httpHeader.get(key).get(0));
+				}
+				return new HttpEntity<Object>(httpEntity.getBody(), headers);
+				}catch(ClassCastException e) {
+					return new HttpEntity<Object>(requestType, headers);
+				}
+		}
 		else
 			return new HttpEntity<Object>(headers);
 	}

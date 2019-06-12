@@ -53,14 +53,14 @@ import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.receiver.decrypter.Decryptor;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
-import io.mosip.registration.processor.packet.receiver.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
@@ -180,7 +180,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testPacketStorageSuccess()
-			throws IOException, URISyntaxException, PacketDecryptionFailureException, ApisResourceAccessException {
+			throws IOException, URISyntaxException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
@@ -195,7 +195,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testRetryIfNotNull()
-			throws IOException, URISyntaxException, PacketDecryptionFailureException, ApisResourceAccessException {
+			throws IOException, URISyntaxException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 
 		mockDto = new InternalRegistrationStatusDto();
 		mockDto.setRetryCount(3);
@@ -214,7 +214,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testRetryIfNull()
-			throws IOException, URISyntaxException, PacketDecryptionFailureException, ApisResourceAccessException {
+			throws IOException, URISyntaxException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 
 		mockDto = new InternalRegistrationStatusDto();
 		mockDto.setRetryCount(null);
@@ -314,7 +314,6 @@ public class PacketReceiverServiceTest {
 		root.addAppender(mockAppender);
 
 		Mockito.when(syncRegistrationService.isPresent(anyString())).thenReturn(false);
-
 		packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
@@ -349,7 +348,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testVirusScanFailed()
-			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
@@ -363,7 +362,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testVirusscannerException()
-			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
@@ -377,7 +376,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testApisResourceAccessException()
-			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenThrow(new ApisResourceAccessException());
@@ -407,7 +406,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testPacketDecryptionFailureException()
-			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any()))
@@ -422,7 +421,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testPacketStorageToLandingZone()
-			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
@@ -435,7 +434,7 @@ public class PacketReceiverServiceTest {
 	}
 
 	@Test
-	public void testIOException() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+	public void testIOException() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
@@ -451,7 +450,7 @@ public class PacketReceiverServiceTest {
 
 	@Test
 	public void testdataAccessException()
-			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);

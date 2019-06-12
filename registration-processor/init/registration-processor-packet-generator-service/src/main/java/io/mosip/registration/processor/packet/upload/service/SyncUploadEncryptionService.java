@@ -21,7 +21,7 @@ public interface SyncUploadEncryptionService {
 	 *            the creation time
 	 * @return the packer generator res dto
 	 */
-	PacketGeneratorResDto uploadUinPacket(String registrationId, String creationTime, String regType)
+	PacketGeneratorResDto uploadUinPacket(String registrationId, String creationTime, String regType,byte[] packetZipBytes)
 			throws RegBaseCheckedException;
 
 }

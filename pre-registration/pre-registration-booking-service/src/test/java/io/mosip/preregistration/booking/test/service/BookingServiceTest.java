@@ -1270,7 +1270,7 @@ public class BookingServiceTest {
 		bookingPK.setPreregistrationId("234567876567888");
 		bookingEntity.setBookingPK(bookingPK);
 		bookingEntity.setRegDate(LocalDate.now());
-		bookingEntity.setSlotFromTime(LocalTime.now());
+		bookingEntity.setSlotFromTime(LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute()));
 		regBookingEntityList.add(bookingEntity);
         List<LocalDate> insertedDate= new ArrayList<>();
         insertedDate.add(localDateTime1.toLocalDate());
@@ -1359,7 +1359,7 @@ public class BookingServiceTest {
 		bookingPK.setPreregistrationId("234567876567888");
 		bookingEntity.setBookingPK(bookingPK);
 		bookingEntity.setRegDate(LocalDate.now());
-		bookingEntity.setSlotFromTime(LocalTime.now());
+		bookingEntity.setSlotFromTime(LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute()));
 		regBookingEntityList.add(bookingEntity);
 		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
 		resp.setResponse(regCenDto);
@@ -1838,7 +1838,7 @@ public class BookingServiceTest {
 		List<String> preids = new ArrayList<>();
 		preids.add("");
 		String fromDateStr = "2019-01-01";
-		String toDateStr = "2019-03-31";
+		String toDateStr = "2019-03-29";
 
 		LocalDate fromDate = DateUtils.parseDateToLocalDateTime(DateUtils.parseToDate(fromDateStr.trim(), "yyyy-MM-dd"))
 				.toLocalDate();

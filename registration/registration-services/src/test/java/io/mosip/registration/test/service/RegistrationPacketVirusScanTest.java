@@ -16,11 +16,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.service.packet.impl.RegistrationPacketVirusScanServiceImpl;
 
@@ -64,5 +62,11 @@ public class RegistrationPacketVirusScanTest {
 	public void scanPacketVirusScannerException() throws IOException {
 		Mockito.when(virusScanner.scanDocument(Mockito.any(File.class))).thenThrow(new VirusScannerException());
 		assertNotNull(registrationPacketVirusScanServiceImpl.scanPacket().getSuccessResponseDTO());
+	}
+	
+	@Test
+	public void scanPacketIOException() throws IOException {
+		Mockito.when(virusScanner.scanDocument(Mockito.any(File.class))).thenThrow(new IOException());
+		assertNotNull(registrationPacketVirusScanServiceImpl.scanPacket().getErrorResponseDTOs());
 	}
 }

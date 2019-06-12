@@ -41,6 +41,7 @@ import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -49,6 +50,7 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.idobjectvalidator.impl.IdObjectPatternValidator;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
@@ -1210,7 +1212,7 @@ public class BaseAuthRequestValidatorTest {
 		idInfoList.add(idInfoDTO1);
 
 		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setDob("25/11/1990");
+		idDTO.setDob("1990/11/25");
 		idDTO.setAge("25");
 		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
 		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
@@ -1407,70 +1409,6 @@ public class BaseAuthRequestValidatorTest {
 		authRequestDTO.setRequestedAuth(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkAge", authRequestDTO, error);
-		assertTrue(error.hasErrors());
-	}
-
-	/**
-	 * Test validate DOB.
-	 */
-
-	@Test
-	public void testValidateDOB_valid() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
-		idInfoDTO.setValue("Mike");
-		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
-		idInfoList.add(idInfoDTO);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setDob("25/11/1990");
-		idDTO.setAge("25");
-		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
-		idInfoDTOs.setValue("V");
-		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
-		idInfoLists.add(idInfoDTOs);
-		idDTO.setDobType(idInfoLists);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDOB", authRequestDTO, error);
-		assertFalse(error.hasErrors());
-	}
-
-	/**
-	 * Test validate DOB.
-	 */
-
-	@Test
-	public void testValidateDOB_Invalid() {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
-		idInfoDTO.setLanguage(environment.getProperty("mosip.primary-language"));
-		idInfoDTO.setValue("Mike");
-		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
-		idInfoList.add(idInfoDTO);
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setDemo(true);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		IdentityDTO idDTO = new IdentityDTO();
-		idDTO.setDob("25-11-1990");
-		idDTO.setAge("25");
-		IdentityInfoDTO idInfoDTOs = new IdentityInfoDTO();
-		idInfoDTOs.setLanguage(environment.getProperty("mosip.secondary-language"));
-		idInfoDTOs.setValue("V");
-		List<IdentityInfoDTO> idInfoLists = new ArrayList<>();
-		idInfoLists.add(idInfoDTOs);
-		idDTO.setDobType(idInfoLists);
-		RequestDTO reqDTO = new RequestDTO();
-		reqDTO.setDemographics(idDTO);
-		authRequestDTO.setRequestedAuth(authTypeDTO);
-		authRequestDTO.setRequest(reqDTO);
-		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "checkDOB", authRequestDTO, error);
 		assertTrue(error.hasErrors());
 	}
 
@@ -1774,11 +1712,49 @@ public class BaseAuthRequestValidatorTest {
 		demographics.setPhoneNumber("phonenumber");
 		demographics.setEmailId("emailid");
 		demographics.setPostalCode("pincode");
+		demographics.setDob("dob");
 		request.setDemographics(demographics);
 		demoauthrequest.setRequest(request);
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePattern", demoauthrequest, error);
-		System.err.println(error);
 		assertTrue(error.hasErrors());
+	}
+
+	@Test
+	public void TestvalidateBioData() {
+		List<DataDTO> bioData = new ArrayList<>();
+		DataDTO dataDTO = new DataDTO();
+		dataDTO.setBioSubType("LEFT_INDEX");
+		dataDTO.setBioType("FMR");
+		dataDTO.setBioValue(null);
+		bioData.add(dataDTO);
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioData", bioData, error);
+		assertTrue(error.hasErrors());
+	}
+
+	@Test
+	public void TestvalidateBioType() {
+		Set<String> allowedType = new HashSet<>();
+		allowedType.add("FACE");
+		DataDTO bioInfo = new DataDTO();
+		bioInfo.setBioType("FINGER");
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioType", error, allowedType, bioInfo);
+		assertTrue(error.hasErrors());
+	}
+
+	@Test
+	public void TestInvalidPinException() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPin(true);
+		authRequestDTO.setRequestedAuth(authTypeDTO);
+		RequestDTO request = new RequestDTO();
+		request.setStaticPin("123456");
+		authRequestDTO.setRequest(request);
+		Mockito.when(pinValidator.validatePin(Mockito.anyString()))
+				.thenThrow(new InvalidPinException(IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode(),
+						IdAuthenticationErrorConstants.PIN_MISMATCH.getErrorCode()));
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateAdditionalFactorsDetails", authRequestDTO,
+				error);
 	}
 
 	private Map<String, List<String>> fetchGenderType() {

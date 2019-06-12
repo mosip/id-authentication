@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * General-purpose of {@code OTPValidateResponseDTO} class used to store Otp
+ * Validation response details
  * 
  * @author Dinesh Karuppiah
  */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

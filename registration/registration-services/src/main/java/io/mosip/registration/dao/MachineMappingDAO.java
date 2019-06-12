@@ -63,4 +63,13 @@ public interface MachineMappingDAO {
 	 */
 	boolean isExists(String userId);
 
+	/**
+	 * Get the key index of the Machine based on MAC Id
+	 * 
+	 * @param macId
+	 *            the MAC Id of the machine
+	 * @return the key index of the machine
+	 */
+	String getKeyIndexByMacId(String macId);
+
 }

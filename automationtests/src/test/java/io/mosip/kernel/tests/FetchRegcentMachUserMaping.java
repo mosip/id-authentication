@@ -1,13 +1,14 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -40,7 +42,7 @@ import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
+import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
 
 /**
@@ -59,13 +61,11 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 	private final String apiName = "FetchRegcentMachUserMaping";
 	private final String requestJsonName = "FetchRegcentMachUserMapingRequest";
 	private final String outputJsonName = "FetchRegcentMachUserMapingOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegcentMachUserMaping_URI = props.get("FetchRegcentMachUserMaping_URI").toString();
-
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
-	String finalStatus = "";
 	public JSONArray arr = new JSONArray();
 	Response response = null;
 	JSONObject responseObject = null;
@@ -86,7 +86,6 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationProcessor();
-
 	}
 
 	/**
@@ -97,17 +96,8 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {		
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
-		}
-
+			throws ParseException {		
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 	}
 
 	/**
@@ -117,54 +107,40 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void fetchRegcentMachUserMaping(String testcaseName, JSONObject object)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-
 		logger.info("Test Case Name:" + testcaseName);
-		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
+		if(testcaseName.contains("smoke")|testcaseName.contains("unexisting")|testcaseName.contains("userid_existing")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			objectData.put("effdtimes", time);
 		}
+		
+				response = applicationLibrary.getWithPathParam(FetchRegcentMachUserMaping_URI, objectData,cookie);
+		// DB Validation
 
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-
-				response = applicationLibrary.getRequestPathPara(FetchRegcentMachUserMaping_URI, objectData,cookie);
-
-			} else if (listofFiles[k].getName().toLowerCase().contains("response")
-					&& !testcaseName.toLowerCase().contains("smoke")) {
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
-			}
-		}
-
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
+			// fetching json object from response
+			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+			if (responseJson == null || !responseJson.containsKey("registrationCenters"))
+				Assert.assertTrue(false, "Response does not contain registrationCenters");
 			String query = "select count(*) from master.reg_center_user_machine_h where regcntr_id = '" 
 			+ objectData.get("registrationcenterid")+"' and usr_id = '"
 					+ objectData.get("userid")+"' and machine_id = '"
@@ -173,17 +149,15 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query,"masterdata");
 
-			// fetching json object from response
-			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
 			// fetching json array of objects from response
 			JSONArray responseArrayFromGet = (JSONArray) responseJson.get("registrationCenters");
 			logger.info("===Dbcount===" + obtainedObjectsCount + "===Get-count===" + responseArrayFromGet.size());
 
 			// validating number of objects obtained form db and from get request
-			if (responseArrayFromGet.size() == obtainedObjectsCount) {
+			if (responseArrayFromGet.size() <= obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("cntrId");
 				attributesToValidateExistance.add("machineId");
 				attributesToValidateExistance.add("usrId");
@@ -191,7 +165,7 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 
 				// key value of the attributes passed to fetch the data, should be same in all
 				// obtained objects
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 						passedAttributesToFetch.put("cntrId", objectData.get("registrationcenterid").toString());
 						passedAttributesToFetch.put("usrId", objectData.get("userid").toString());
 						passedAttributesToFetch.put("machineId", objectData.get("machineid").toString());
@@ -212,26 +186,17 @@ public class FetchRegcentMachUserMaping extends BaseTestCase implements ITest {
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

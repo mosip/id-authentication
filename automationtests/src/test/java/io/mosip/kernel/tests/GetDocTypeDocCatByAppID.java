@@ -57,40 +57,29 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getDocType_DocCatByAppID = props.get("getDocType_DocCatByAppID");
 	private String folderPath = "kernel/GetDocType_DocCatByAppID";
 	private String outputFile = "GetDocType_DocCatByAppIDOutput.json";
 	private String requestKeyFile = "GetDocType_DocCatByAppIDInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie;
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
 	
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-	
 		testCaseName = object.get("testCaseName").toString();
-		
 		 cookie=auth.getAuthForIndividual();
 	} 
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetDocType_DocCatByAppID")
 	public Object[][] readData1(ITestContext context) throws Exception {	 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -116,14 +105,15 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		pathPar.put("applicantId", applicantId);
 		
 		//Adding list of languages as quary parameters 
-		HashMap<String, List<String>> queryPar=new HashMap<>();
-		queryPar.put("languages",languages);
+		HashMap<String, List<String>> queryParam=new HashMap<>();
+		queryParam.put("languages",languages);
 				
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method
-		Response res=applicationLibrary.getRequestPathQueryPara(getDocType_DocCatByAppID, pathPar,queryPar,cookie);
-		
+		Response res=applicationLibrary.getWithPathParamQueryParamList(getDocType_DocCatByAppID, pathPar,queryParam,cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
@@ -132,16 +122,12 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-	            
 				finalStatus = "Pass";
 			}	
-		
 		else {
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

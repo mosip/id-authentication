@@ -46,7 +46,6 @@ import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 import io.mosip.registration.service.sync.PacketSynchService;
-import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -574,8 +573,8 @@ public class RegistrationApprovalController extends BaseController implements In
 			filterField.clear();
 			String fileData = table.getItems().stream()
 					.map(approvaldto -> approvaldto.getSlno().trim().concat(RegistrationConstants.COMMA).concat("'")
-							.concat(approvaldto.getId()).concat("'").concat(RegistrationConstants.COMMA)
-							.concat(approvaldto.getDate()).concat(RegistrationConstants.COMMA)
+							.concat(approvaldto.getId()).concat("'").concat(RegistrationConstants.COMMA).concat("'")
+							.concat(approvaldto.getDate()).concat("'").concat(RegistrationConstants.COMMA)
 							.concat(approvaldto.getStatusComment()))
 					.collect(Collectors.joining(RegistrationConstants.NEW_LINE));
 			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)

@@ -1,35 +1,40 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-16T13:04:03.849Z",
-  "metadata": null,
-  "response": {
-    "blacklistedwords": [
+  "id":null,
+  "version":null,
+  "responsetime":"2019-06-07T12:12:34.969Z",
+  "metadata":null,
+  "response":{
+    "blacklistedwords":[
       {
-        "word": "shit",
-        "langCode": "eng",
-        "description": "Blacklisted Word",
-        "isActive": true
+        "word":"shit",
+        "langCode":"eng",
+        "description":"Blacklisted Word",
+        "isActive":true
       },
       {
-        "word": "damn",
-        "langCode": "eng",
-        "description": "Blacklisted Word",
-        "isActive": true
+        "word":"damn",
+        "langCode":"eng",
+        "description":"Blacklisted Word",
+        "isActive":true
       },
       {
-        "word": "nigga",
-        "langCode": "eng",
-        "description": "Blacklisted Word",
-        "isActive": true
+        "word":"nigga",
+        "langCode":"eng",
+        "description":"Blacklisted Word",
+        "isActive":true
       },
       {
-        "word": "dammit",
-        "langCode": "eng",
-        "description": "Blacklisted Word",
-        "isActive": true
-      }
-    ]
+        "word":"dammit",
+        "langCode":"eng",
+        "description":"Blacklisted Word",
+        "isActive":true
+      },
+      {
+        "word":"faked",
+        "langCode":"eng",
+        "description":"Updated Word",
+        "isActive":true
+      }]
   },
-  "errors": null
+  "errors":null
 }

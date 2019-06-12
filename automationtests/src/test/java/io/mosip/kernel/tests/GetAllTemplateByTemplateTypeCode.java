@@ -27,11 +27,11 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -47,8 +47,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 		
 		super();
 	}
-	
-	
+
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetAllTemplateByTemplateTypeCode.class);
 	protected static String testCaseName = "";
@@ -56,7 +55,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchAllTemplate = props.get("fetchAllTemplate");
 	private String folderPath = "kernel/GetAllTemplateByTemplateTypeCode";
 	private String outputFile = "GetAllTemplateByTemplateTypeCodeOutput.json";
@@ -64,7 +63,6 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	private AssertKernel assertKernel = new AssertKernel();
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
@@ -80,17 +78,8 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 	 //Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetAllTemplateByTemplateTypeCode")
 	public Object[][] readData1(ITestContext context) throws Exception { 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -107,32 +96,29 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 	    // Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(fetchAllTemplate, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(fetchAllTemplate, actualRequest,cookie);
 		
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
-		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-    	  if(testCaseName.equalsIgnoreCase("smoke"))
+    	  if(testCaseName.equalsIgnoreCase("Kernel_GetAllTemplateByTemplateTypeCode_smoke"))
     	  {
+    		String id = actualRequest.get("code").toString();
+	        String queryStr = "SELECT count(*) FROM master.template WHERE template_typ_code='"+id+"'";
 
-    		/*String id = actualRequest.get("id").toString();
-	        String queryStr = "SELECT master.device_master_h.* FROM master.device_master_h WHERE id='"+id+"'";
-
-		    boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");     
-			if(valid)
-
-		        */
-			if(status)
-					{
+		     long count = kernelDB.validateDBCount(queryStr,"masterdata");     
+			if(count==3) {
 						finalStatus ="Pass";
 					}
 					else
 					{
 		 				finalStatus ="Fail";
+		 				logger.info("Template type is not equal to 3");
 					}
     	  }else
 				finalStatus = "Pass";
@@ -141,10 +127,7 @@ public class GetAllTemplateByTemplateTypeCode extends BaseTestCase implements IT
 		else {
 			finalStatus="Fail";
 			logger.error(res);
-			softAssert.assertTrue(false);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

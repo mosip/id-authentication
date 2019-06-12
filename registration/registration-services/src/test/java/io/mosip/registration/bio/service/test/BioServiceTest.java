@@ -53,7 +53,7 @@ import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.test.util.datastub.DataProvider;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class })
+@PrepareForTest({ ImageIO.class, IOUtils.class, FingerprintTemplate.class, SessionContext.class })
 public class BioServiceTest {
 
 	@InjectMocks
@@ -88,7 +88,8 @@ public class BioServiceTest {
 		map.put(RegistrationConstants.USER_ONBOARD_DATA, useronboardbiometricDTO);
 		map.put(RegistrationConstants.ONBOARD_USER, false);
 		map.put(RegistrationConstants.IS_Child, false);
-		SessionContext.getInstance().setMapObject(map);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.when(SessionContext.map()).thenReturn(map);
 
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.FINGER_PRINT_SCORE, 100);
@@ -203,7 +204,7 @@ public class BioServiceTest {
 		biometricExceptionDTOs.add(biometricExceptionDTO1);
 		biometricExceptionDTOs.add(biometricExceptionDTO2);
 
-		((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
+		((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
 				.getBiometricDTO().getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
 		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
@@ -240,8 +241,8 @@ public class BioServiceTest {
 		biometricExceptionDTO2.setMissingBiometric("rightMiddle");
 		biometricExceptionDTOs.add(biometricExceptionDTO1);
 		biometricExceptionDTOs.add(biometricExceptionDTO2);
-		SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_USER, true);
-		((BiometricDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.USER_ONBOARD_DATA))
+		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, true);
+		((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 				.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
 		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
@@ -280,7 +281,7 @@ public class BioServiceTest {
 		biometricExceptionDTOs.add(biometricExceptionDTO1);
 		biometricExceptionDTOs.add(biometricExceptionDTO2);
 
-		((RegistrationDTO) SessionContext.getInstance().getMapObject().get(RegistrationConstants.REGISTRATION_DATA))
+		((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
 				.getBiometricDTO().getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
 
 		bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
@@ -503,6 +504,18 @@ public class BioServiceTest {
 		Boolean res = bioService.validateFP(fingerprintDTO, userBiometrics);
 		assertTrue(res);
 	}
+	  
+	@Test
+	public void validateFaceTest1() {
+		bioService.validateFace("userId");
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void validateIrisTest1() throws RegBaseCheckedException, IOException {
+		bioService.validateIris("userId");
+	}
+		 
+
 
 
 }

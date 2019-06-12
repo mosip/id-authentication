@@ -1,10 +1,15 @@
 package io.mosip.authentication.fw.util;
 
-import java.io.File; 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 
 /**
@@ -23,8 +28,15 @@ public class AuditValidation {
 	 * @param listOfFiles
 	 * @param keywordToFind
 	 * @return Map, Output Validation report
+<<<<<<< HEAD
 	 */
-	public static Map<String, List<OutputValidationDto>> verifyAuditTxn(File[] listOfFiles, String keywordToFind) {
+	public static Map<String, List<OutputValidationDto>> verifyAuditTxn(File[] listOfFiles, String keywordToFind){
+		/*
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+	 */
+
 		auth_txn_file = FileUtil.getFileFromList(listOfFiles, keywordToFind);
 		Map<String, String> exp = AuthTestsUtil.getPropertyAsMap(auth_txn_file.getAbsolutePath());
 		Map<String, String> act = DbConnection.getDataForQuery(
@@ -41,6 +53,12 @@ public class AuditValidation {
 	 * @param listOfFiles
 	 * @param keywordToFind
 	 * @return Map, Output Validation report
+<<<<<<< HEAD
+=======
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
+>>>>>>> origin/0.12.0_AutomationTest_Authentication
 	 */
 	public static Map<String, List<OutputValidationDto>> verifyAuditLog(File[] listOfFiles, String keywordToFind) {
 		audit_log_file = FileUtil.getFileFromList(listOfFiles, keywordToFind);
@@ -119,4 +137,3 @@ public class AuditValidation {
 	}	
 
 }
-

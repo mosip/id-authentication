@@ -28,9 +28,9 @@ import org.testng.internal.TestResult;
 import com.google.common.base.Verify;
 
 import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -50,40 +50,29 @@ public class GetDocTypeDocCatByLangCode extends BaseTestCase implements ITest{
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
-	private final String getDocType_DocCatByAppID = props.get("getDocType_DocCatByAppID");
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
+	private final String getDocTypeDocCatByLangCode = props.get("getDocTypeDocCatByLangCode");
 	private String folderPath = "kernel/GetDocType_DocCatByLangCode";
 	private String outputFile = "GetDocType_DocCatByLangCodeOutput.json";
 	private String requestKeyFile = "GetDocType_DocCatByLangCodeInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie;
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie;
 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		
-		 cookie=auth.getAuthForIndividual();
+		 cookie=auth.getAuthForZonalApprover();
 	} 
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetDocType_DocCatByLangCode")
 	public Object[][] readData1(ITestContext context) throws Exception {		 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
-	}
-	
-	
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile,testLevel);
+		}	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -96,13 +85,13 @@ public class GetDocTypeDocCatByLangCode extends BaseTestCase implements ITest{
 	@Test(dataProvider="GetDocType_DocCatByLangCode")
 	public void getDocType_DocCatByLangCode(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
     {
-		
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);		
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(getDocType_DocCatByAppID, actualRequest, cookie);
-
+		Response res=applicationLibrary.getWithPathParam(getDocTypeDocCatByLangCode, actualRequest, cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("timestamp");
@@ -111,7 +100,6 @@ public class GetDocTypeDocCatByLangCode extends BaseTestCase implements ITest{
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
-	            
 				finalStatus = "Pass";
 			}	
 		
@@ -126,8 +114,8 @@ public class GetDocTypeDocCatByLangCode extends BaseTestCase implements ITest{
 			setFinalStatus=false;
 		else if(finalStatus.equals("Pass"))
 			setFinalStatus=true;
-		/*Verify.verify(setFinalStatus);
-		softAssert.assertAll();*/
+		Verify.verify(setFinalStatus);
+		softAssert.assertAll();
 
 }
 		@SuppressWarnings("static-access")

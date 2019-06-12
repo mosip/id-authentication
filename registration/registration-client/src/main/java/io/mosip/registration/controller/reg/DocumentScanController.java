@@ -174,6 +174,13 @@ public class DocumentScanController extends BaseController {
 	private Button backBtn;
 
 
+	/**
+	 * @return the bioExceptionToggleLabel1
+	 */
+	public Label getBioExceptionToggleLabel1() {
+		return bioExceptionToggleLabel1;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -902,7 +909,8 @@ public class DocumentScanController extends BaseController {
 
 				documentPane.setVisible(false);
 			}
-			if (!detailMap.get(RegistrationConstants.BIOMETRIC_EXCEPTION).get(RegistrationConstants.VISIBILITY)) {
+			if (!detailMap.get(RegistrationConstants.IRIS_CAPTURE).get(RegistrationConstants.VISIBILITY) && !detailMap
+					.get(RegistrationConstants.FINGERPRINT_CAPTURE).get(RegistrationConstants.VISIBILITY)) {
 				exceptionPane.setVisible(false);
 			}
 
@@ -933,6 +941,8 @@ public class DocumentScanController extends BaseController {
 						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;
 						updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, true);
+						biometricExceptionController.fingerException();
+						biometricExceptionController.clearIrisException();
 					} else {
 						bioExceptionToggleLabel1.setLayoutX(0);
 

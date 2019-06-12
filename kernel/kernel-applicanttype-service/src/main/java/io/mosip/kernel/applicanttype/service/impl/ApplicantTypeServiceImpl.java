@@ -46,7 +46,7 @@ public class ApplicantTypeServiceImpl implements ApplicantTypeService {
 			appDto.setApplicantTypeCode(applicantCodeService.getApplicantType(map));
 		} catch (InvalidApplicantArgumentException e) {
 			throw new RequestException(ApplicantTypeErrorCode.INVALID_REQUEST_EXCEPTION.getErrorCode(),
-					ApplicantTypeErrorCode.INVALID_REQUEST_EXCEPTION.getErrorMessage());
+					ApplicantTypeErrorCode.INVALID_REQUEST_EXCEPTION.getErrorMessage(), e);
 		}
 		if (appDto.getApplicantTypeCode() == null || appDto.getApplicantTypeCode().trim().length() == 0) {
 			throw new DataNotFoundException(ApplicantTypeErrorCode.NO_APPLICANT_FOUND_EXCEPTION.getErrorCode(),

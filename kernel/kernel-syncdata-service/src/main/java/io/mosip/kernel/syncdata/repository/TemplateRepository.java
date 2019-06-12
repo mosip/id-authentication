@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import io.mosip.kernel.syncdata.entity.Template;
 
 /**
@@ -16,7 +16,7 @@ import io.mosip.kernel.syncdata.entity.Template;
  * 
  */
 @Repository
-public interface TemplateRepository extends BaseRepository<Template, String> {
+public interface TemplateRepository extends JpaRepository<Template, String> {
 	/**
 	 * Method to find list of Template created , updated or deleted time is greater
 	 * than lastUpdated timeStamp.

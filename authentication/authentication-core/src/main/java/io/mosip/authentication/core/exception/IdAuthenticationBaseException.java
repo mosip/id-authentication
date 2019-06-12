@@ -4,6 +4,11 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
+/**
+ * The base exception for all checked exceptions used in ID Authentication
+ * @author Loganathan Sekar
+ *
+ */
 public class IdAuthenticationBaseException extends BaseCheckedException {
 	
 	/**

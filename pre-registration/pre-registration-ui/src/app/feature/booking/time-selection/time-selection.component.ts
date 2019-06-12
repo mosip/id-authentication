@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
@@ -20,7 +20,7 @@ import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
   templateUrl: './time-selection.component.html',
   styleUrls: ['./time-selection.component.css']
 })
-export class TimeSelectionComponent implements OnInit {
+export class TimeSelectionComponent implements OnInit, OnDestroy {
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
   registrationCenter: String;
@@ -32,7 +32,7 @@ export class TimeSelectionComponent implements OnInit {
   deletedNames = [];
   availabilityData = [];
   days: number;
-  enableBookButton = false;
+  disableAddButton = false;
   activeTab = 'morning';
   bookingDataList = [];
   temp: NameList[];
@@ -101,22 +101,35 @@ export class TimeSelectionComponent implements OnInit {
   dateSelected(index: number) {
     this.selectedTile = index;
     this.placeNamesInSlots();
-    this.enableBookButton = true;
+    this.cardSelected(0);
   }
 
   cardSelected(index: number): void {
     this.selectedCard = index;
+    this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]);
   }
 
   itemDelete(index: number): void {
     this.deletedNames.push(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names[index]);
     this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
-    this.enableBookButton = false;
+    this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]);
   }
 
   addItem(index: number): void {
-    this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(this.deletedNames[index]);
-    this.deletedNames.splice(index, 1);
+    if (this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard])) {
+      this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(this.deletedNames[index]);
+      this.deletedNames.splice(index, 1);
+    }
+  }
+
+  canAddApplicant(slot: any): boolean {
+    if (slot.availability > slot.names.length) {
+      this.disableAddButton = false;
+      return true;
+    } else {
+      this.disableAddButton = true;
+      return false;
+    }
   }
 
   formatJson(centerDetails: any) {
@@ -197,6 +210,17 @@ export class TimeSelectionComponent implements OnInit {
     }
   }
 
+  getNames(): string {
+
+    const x = [];
+
+    this.deletedNames.forEach(name => {
+      x.push(name.fullName);
+    });
+
+    return x.join(', ');
+  }
+
   makeBooking(): void {
     this.disableContinueButton = true;
     this.bookingDataList = [];
@@ -224,6 +248,36 @@ export class TimeSelectionComponent implements OnInit {
       bookingRequest: this.bookingDataList
     };
     const request = new RequestModel(appConstants.IDS.booking, obj);
+    if(this.deletedNames.length!==0){
+      const data = {
+        case: 'CONFIRMATION',
+        title:'',
+        message: this.secondaryLanguagelabels.deletedApplicant1[0] + ' ' + this.getNames() + ' ' + this.secondaryLanguagelabels.deletedApplicant1[1] + '?',
+        yesButtonText: this.secondaryLanguagelabels.yesButtonText,
+        noButtonText:  this.secondaryLanguagelabels.noButtonText
+      };
+      const dialogRef = this.dialog
+      .open(DialougComponent, {
+        width: '350px',
+        data: data,
+        disableClose: true
+      })
+       dialogRef.afterClosed().subscribe(selectedOption => {
+        if (selectedOption) {
+          this.bookingOperation(request);
+        } else {
+          this.disableContinueButton = false;
+          return;
+        }
+      });
+    }
+    else {
+      this.bookingOperation(request);
+    }
+
+  }
+
+  bookingOperation(request){
     this.dataService.makeBooking(request).subscribe(
       response => {
         if (!response['errors']) {
@@ -232,6 +286,25 @@ export class TimeSelectionComponent implements OnInit {
             title: this.secondaryLanguagelabels.title_success,
             message: this.secondaryLanguagelabels.msg_success
           };
+          const dialogRef = this.dialog
+            .open(DialougComponent, {
+              width: '350px',
+              data: data
+            })
+            .afterClosed()
+            .subscribe(() => {
+              this.temp.forEach(name => {
+                const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
+                if (booking[0]) {
+                  this.bookingService.addNameList(name);
+                  const appointmentDateTime = booking[0].appointment_date + ',' + booking[0].time_slot_from;
+                  this.bookingService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                }
+              });
+              this.bookingService.setSendNotification(true);
+              const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
+              this.router.navigateByUrl(url);
+            });
         } else {
           this.displayMessage('Error', this.errorlabels.error);
         }
@@ -242,18 +315,6 @@ export class TimeSelectionComponent implements OnInit {
     );
   }
 
-  // showError() {
-  //   this.disableContinueButton = false;
-  //   const data = {
-  //     case: 'MESSAGE',
-  //     title: this.secondaryLanguagelabels.title_failure,
-  //     message: this.secondaryLanguagelabels.msg_failure
-  //   };
-  //   const dialogRef = this.dialog.open(DialougComponent, {
-  //     width: '350px',
-  //     data: data
-  //   });
-  // }
   displayMessage(title: string, message: string) {
     this.disableContinueButton = false;
     const messageObj = {
@@ -275,12 +336,21 @@ export class TimeSelectionComponent implements OnInit {
     this.router.navigate(['dashboard']);
   }
 
-  navigateBack() {
+  reloadData() {
     this.bookingService.flushNameList();
     this.temp.forEach(name => {
       this.bookingService.addNameList(name);
     });
+  }
+
+  navigateBack() {
+    this.reloadData();
     const url = Utils.getURL(this.router.url, 'pick-center');
     this.router.navigateByUrl(url);
+  }
+
+  ngOnDestroy() {
+    if (!this.bookingService.getSendNotification())
+      this.reloadData();
   }
 }

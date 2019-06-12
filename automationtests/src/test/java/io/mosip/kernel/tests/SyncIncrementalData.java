@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -22,14 +21,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertResponses;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -48,20 +46,19 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(SyncIncrementalData.class);
 	protected static String testCaseName = "";
-	private SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchIncrementalData =props.get("fetchIncrementalData");
 	private String folderPath = "kernel/AdminSyncIncrementalData";
-	private String outputFile = "SNCMasterdataControllerOutput.json";
+	private String outputFile = "AdminSyncIncrementalDataOutput.json";
 	private String requestKeyFile = "AdminSyncIncrementalDataInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie=null;
+	private AssertKernel assertKernel = new AssertKernel();
 
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
@@ -74,16 +71,9 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "SyncIncrementalData")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+		
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	
 	/**
 	 * @throws FileNotFoundException
@@ -102,16 +92,17 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestAsQueryParam(fetchIncrementalData, actualRequest,cookie);
+		Response res=applicationLibrary.getWithQueryParam(fetchIncrementalData, actualRequest,cookie);
+		logger.info("resp---"+res.asString());
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		// Removing of unstable attributes from response
-		List<String> outerKeys = new ArrayList<String>();
-		List<String> innerKeys = new ArrayList<String>();
-		outerKeys.add("responsetime");
-		innerKeys.add("responsetime");
+		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
+		listOfElementToRemove.add("responsetime");
 		
 		// Comparing expected and actual response
-		status = AssertResponses.assertResponses(res, Expectedresponse, outerKeys, innerKeys);
+		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 	            
 				finalStatus = "Pass";
@@ -123,11 +114,6 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		}
 		object.put("status", finalStatus);
 		arr.add(object);
-		boolean setFinalStatus=false;
-		if(finalStatus.equals("Fail"))
-			setFinalStatus=false;
-		else if(finalStatus.equals("Pass"))
-			setFinalStatus=true;
 }
 		@SuppressWarnings("static-access")
 		@Override
@@ -153,7 +139,7 @@ public class SyncIncrementalData extends BaseTestCase implements ITest {
 		
 		@AfterClass
 		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/AdminSyncIncrementalData/AdminSyncIncrementalDatarOutput.json.json";
+			String configPath = "src/test/resources/kernel/AdminSyncIncrementalData/AdminSyncIncrementalDataOutput.json";
 			try (FileWriter file = new FileWriter(configPath)) {
 				file.write(arr.toString());
 				logger.info("Successfully updated Results to AdminSyncIncrementalDataOutput.json file.......................!!");

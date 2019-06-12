@@ -45,7 +45,6 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	public GetImmediateChildrenByLocCodeAndLangCode(){
 		super();
 	}
-	
 
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetImmediateChildrenByLocCodeAndLangCode.class);
@@ -55,7 +54,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchImmediateChildLocation = props.get("fetchImmediateChildLocation");
 	private String folderPath = "kernel/GetImmediateChildrenByLocCodeAndLangCode";
 	private String outputFile = "GetImmediateChildrenByLocCodeAndLCOutput.json";
@@ -77,16 +76,8 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetImmediateChildrenByLocCodeAndLangCode")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -103,8 +94,9 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(fetchImmediateChildLocation, actualRequest,cookie);
-		
+		Response res=applicationLibrary.getWithPathParam(fetchImmediateChildLocation, actualRequest,cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
@@ -113,26 +105,20 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
     	  
-    	  if(testCaseName.contains("smoke"))
+    	  if(testCaseName.contains("Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke"))
     	  {
-    		 /* String locationcode= (actualRequest.get("locationcode").toString());
+    		  String locationcode= (actualRequest.get("locationcode").toString());
     		  String langCode=actualRequest.get("langcode").toString();
 	        
-	             String queryStr = "SELECT master.location.* FROM master.location WHERE code='"+locationcode+"' and lang_code='"+langCode+"'";
-					boolean valid = kernelDB.validateDataInDb(queryStr,"masterdata");
-	            
-			
-
-	            */
-			if(status)
-
-					{
+	             String queryStr = "SELECT count(*) FROM master.location l WHERE l.code='"+locationcode+"' and l.lang_code='"+langCode+"'";
+					long count = kernelDB.validateDBCount(queryStr,"masterdata");
+	       
+			if(count==1){
 						finalStatus ="Pass";
 					}
-					else
-					{
+					else{
 		 				finalStatus ="Fail";
-						
+		 				logger.info("Location count is not equal to 1");
 					}
     	  }else
 				finalStatus = "Pass";

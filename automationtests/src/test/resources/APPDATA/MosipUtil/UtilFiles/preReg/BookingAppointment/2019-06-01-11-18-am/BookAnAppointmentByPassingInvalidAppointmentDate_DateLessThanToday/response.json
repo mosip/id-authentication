@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.booking.book",
+    "version": "1.0",
+    "responsetime": "2019-05-27T06:00:25.822Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_BOOK_RCI_031",
+            "message": "Invalid Booking Date Time found for preregistration id - 68930817593694"
+        }
+    ]
+}

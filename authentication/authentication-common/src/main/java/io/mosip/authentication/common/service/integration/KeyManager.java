@@ -46,8 +46,6 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class KeyManager {
-	
-	
 
 	/** The Constant ERROR_CODE. */
 	private static final String ERROR_CODE = "errorCode";
@@ -124,7 +122,7 @@ public class KeyManager {
 	}
 
 	/**
-	 * Kernel decrypt.
+	 * This method does the necessary decryption of the request
 	 *
 	 * @param encryptedRequest the encrypted request
 	 * @param encryptedSessionKey the encrypted session key
@@ -247,10 +245,10 @@ public class KeyManager {
 	}
 	
 	/**
-	 * Sign response.
+	 * This method is used to digitally sign the response
 	 *
-	 * @param responseAsString the response as string
-	 * @return the string
+	 * @param responseAsString the response got after authentication which to be signed
+	 * @return the signed response string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")

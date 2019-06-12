@@ -8,8 +8,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +23,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import javax.mail.Folder;
 
@@ -41,10 +47,14 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 	private static final Logger CustomTestNGReporterLog = Logger.getLogger(CustomTestNGReporter.class);
 	private static final String defaultTestNgEmailableReport="./target/surefire-reports/emailable-report.html";
 	private static final String extendtReport="./extent-report.html";
-	// This is the customize emailable report template file path.
 	private static final String emailableReportTemplateFile = new File(
 			"./src/test/resources/customize-emailable-report-template.html").getAbsolutePath();
-	private static String customReportTemplateStr;
+	private static StringBuffer customReportTemplateStr = new StringBuffer();
+
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
+
+	private static final String reportProfixFileName = "MOSIP_ModuleLevelAutoRun_TestNGReport";
+
 	// PieChart
 	private int passTestCount = 0;
 	private int skipTestCount = 0;
@@ -60,29 +70,21 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 			// Get content data in TestNG report template file.
 			customReportTemplateStr = this.readEmailabelReportTemplate();
 			// Create custom report title.
-			String customReportTitle = this.getCustomReportTitle("MOSIP API Test Report");
+			customReportTemplateStr.append(this.getCustomReportTitle("MOSIP API Test Report"));
+			customReportTemplateStr.append(afterTestReportTittleContent());
 			// Create test suite summary data.
-			String customSuiteSummary = this.getTestSuiteSummary(suites);
+			customReportTemplateStr.append(this.getTestSuiteSummary(suites));
+			customReportTemplateStr.append(afterTestCaseSummaryContent());
 			// Create test methods summary data.
-			String customTestMethodSummary = this.getTestMehodSummary(suites);
-			// Replace report title place holder with custom title.
-			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$TestNG_Custom_Report_Title\\$",
-					customReportTitle);
-			// Replace test suite place holder with custom test suite summary.
-			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$Test_Case_Summary\\$", customSuiteSummary);
-			// Replace test methods place holder with custom test method summary.
-			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$Test_Case_Detail\\$",
-					customTestMethodSummary);
-			customReportTemplateStr = updatePieChart(customReportTemplateStr);
+			customReportTemplateStr.append(this.getTestMethodSummary(suites));
+			customReportTemplateStr.append(afterTestMethodSummaryContent());
+			String finalcustomReport = updatePieChart(customReportTemplateStr.toString());
 
-			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$detailedReport\\$",
-					'"' + encodeDefaultTestngReportFile() + '"');
-			customReportTemplateStr = customReportTemplateStr.replaceAll("\\$extentReport\\$",
-					'"' + encodeExtentReportFile() + '"');			
-			// Write replaced test report content to custom-emailable-report.html.
-			File targetFile = new File(outputDirectory + "/custom-emailable-report.html");
+			removeOldCustomMosipReport(outputDirectory);
+
+			File targetFile = new File(outputDirectory + "/"+reportProfixFileName/*getCurrentDateForReport()*/+".html");
 			FileWriter fw = new FileWriter(targetFile);
-			fw.write(customReportTemplateStr);
+			fw.write(finalcustomReport);
 			fw.flush();
 			fw.close();
 
@@ -99,7 +101,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 	}
 
 	/* Read template content. */
-	private String readEmailabelReportTemplate() {
+	private StringBuffer readEmailabelReportTemplate() {
 		StringBuffer retBuf = new StringBuffer();
 
 		try {
@@ -117,7 +119,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		} finally {
-			return retBuf.toString();
+			return retBuf;
 		}
 	}
 
@@ -332,7 +334,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 	}
 
 	/* Get test method summary info. */
-	private String getTestMehodSummary(List<ISuite> suites) {
+	private String getTestMethodSummary(List<ISuite> suites) {
 		StringBuffer retBuf = new StringBuffer();
 
 		try {
@@ -404,7 +406,6 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 		// Sorting testClassName
 		SortedSet<String> sortedTestsName = new TreeSet<>();
 		for (ITestResult testResult : testResultSet) {
-
 			sortedTestsName.add(testResult.getTestClass().getName());
 		}
 		// Sorting testMethodName
@@ -452,7 +453,8 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 					String log="";
 
 					// Get testClassName
-					testClassName = object.getTestClassName().toString();
+					String testClass[]=object.getTestClassName().toString().split(Pattern.quote("."));
+					testClassName = testClass[testClass.length-1];
 
 					// Get testMethodName
 					testMethodName = testMethod.toString();
@@ -532,7 +534,6 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 		return retStrBuf.toString();
 	}
 	
-
 	private int getStringCount(String whatToFind, String content) {
 		int M = whatToFind.length();
 		int N = content.length();
@@ -584,6 +585,80 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 			CustomTestNGReporterLog.error("Exception occured while encoding: " + e.getMessage());
 			return "SomeThing went wrong with Extent Report";
 		}
+	}
+	
+
+/*	private String getCurrentTimestampForReport() {
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		return sdf.format(timestamp).toString();*/	
+
+	private String getCurrentDateForReport() {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("ddMMyyyy"); 
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		return dtf.format(currentDateTime).toString();
+
+	}
+	
+	private void removeOldCustomMosipReport(String outputDirectory) {
+		File folder = new File(outputDirectory);
+		for (int i = 0; i < folder.listFiles().length; i++) {
+			if (folder.listFiles()[i].getName().contains(reportProfixFileName)) {
+				if (folder.listFiles()[i].delete()) {
+					CustomTestNGReporterLog.info("Old Report has been removed from directory successfuly..!");
+				}
+			}
+		}
+	}
+	
+	private String afterTestReportTittleContent()
+	{
+		return "</b>\r\n" + 
+		"			<br>\r\n" + 
+		"			<thead>\r\n" + 
+		"				<tr>\r\n" + 
+		"					<th>Module Name</th>\r\n" + 
+		"					<th># Total Case</th>\r\n" + 
+		"					<th># Passed</th>\r\n" + 
+		"					<th># Skipped</th>\r\n" + 
+		"					<th># Failed</th>\r\n" + 
+		"					<th>Start Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
+		"					<th>End Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
+		"					<th>Execute Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
+		"					<th>Build Version</th>\r\n" + 
+		"				</tr>\r\n" + 
+		"			</thead>";
+	}
+	
+	private String afterTestCaseSummaryContent()
+	{
+        return "</table>\r\n" + 
+        "	</center>\r\n" + 
+        "	<br><br><br><br><br><br><br><br><br>\r\n" + 
+        "	<center>\r\n" + 
+        "		<table id=\"test-summary\">\r\n" + 
+        "			<thead>\r\n" + 
+        "				<tr>\r\n" + 
+        "					<th>API Name</th>\r\n" + 
+        "					<th>TestCase</th>\r\n" + 
+        "					<th>Start Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
+        "					<th>End Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
+        "					<th>Execution Time<i><legend>(HH:MM:SS:MilliSec)</legend></i></th>\r\n" + 
+        "					 <th>Exception Message</th>\r\n" + 
+        "				</tr>\r\n" + 
+        "			</thead>";
+	}
+	private String afterTestMethodSummaryContent()
+	{
+		return "</table>\r\n" + 
+		"	</center>\r\n" + 
+		"</body>\r\n" + 
+		"<br>\r\n" + 
+		"<center>\r\n" + 
+		"\r\n" + 
+		"</center>\r\n" + 
+		"</br>\r\n" + 
+		"\r\n" + 
+		"</html>";
 	}
 
 }

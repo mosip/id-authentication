@@ -79,14 +79,6 @@ public class IdAuthServiceImplTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "idRepoManager", idRepoManager);
-		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
-		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
-
-	}
-
-	@Test
-	public void testAuditData() {
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
 	}
 
 	@Test

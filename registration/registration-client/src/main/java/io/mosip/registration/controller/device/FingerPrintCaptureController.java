@@ -562,11 +562,27 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			continueBtn.setDisable(true);
 		}
 
+		long irisCountApplicant = 0;
+		long irisCountIntroducer = 0;
+
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null) {
+
+			irisCountApplicant = getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+			irisCountIntroducer = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+		}
+
 		if (!RegistrationConstants.DISABLE
 				.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))
 				&& getRegistrationDTOFromSession() != null
 				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
-				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
+				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics() && irisCountApplicant < 2
+				&& irisCountIntroducer < 2) {
 			continueBtn.setDisable(false);
 		}
 	}
@@ -589,7 +605,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			iterator = getBiometricDTOFromSession().getOperatorBiometricDTO().getFingerprintDetailsDTO().iterator();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			iterator = getRegistrationDTOFromSession() != null
 					? getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 							.getFingerprintDetailsDTO().iterator()
@@ -660,7 +676,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			biometricExceptionDTOs = getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
 		} else {
@@ -696,7 +712,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (null != getBiometricDTOFromSession()) {
 				loadImage(getBiometricDTOFromSession().getOperatorBiometricDTO().getFingerprintDetailsDTO());
 			}
-		} else if (null != getRegistrationDTOFromSession() && getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (null != getRegistrationDTOFromSession() && getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			loadImage(getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getFingerprintDetailsDTO());
 		} else {
@@ -881,7 +897,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			List<FingerprintDetailsDTO> fingerprintDetailsDTOs;
 
-			if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+			if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 				fingerprintDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 						.getFingerprintDetailsDTO();
 			} else {
@@ -891,7 +907,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			if (fingerprintDetailsDTOs == null || fingerprintDetailsDTOs.isEmpty()) {
 				fingerprintDetailsDTOs = new ArrayList<>(3);
-				if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+				if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 					getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 							.setFingerprintDetailsDTO(fingerprintDetailsDTOs);
 				} else {
@@ -1204,7 +1220,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				fingerprintDetailsDTOs = getBiometricDTOFromSession().getOperatorBiometricDTO()
 						.getFingerprintDetailsDTO();
-			} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+			} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 				fingerprintDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 						.getFingerprintDetailsDTO();
 			} else {
@@ -1381,7 +1397,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private Stream<FingerprintDetailsDTO> getFingerprintBySelectedPane() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getSelectedPane(getBiometricDTOFromSession().getOperatorBiometricDTO().getFingerprintDetailsDTO());
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			return getSelectedPane(getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getFingerprintDetailsDTO());
 		} else {
@@ -1447,7 +1463,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						.forEach(bio -> findExceptionFinger(leftSlapExceptionFingers, rightSlapExceptionFingers,
 								thumbSlapExceptionFingers, bio));
 			}
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
 					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO() != null
 					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()

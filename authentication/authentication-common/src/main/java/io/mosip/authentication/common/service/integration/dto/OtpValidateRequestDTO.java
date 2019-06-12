@@ -5,6 +5,8 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
+ * General-purpose of {@code OtpValidateRequestDTO} class used to store Otp
+ * Validation request
  * 
  * @author Dinesh Karuppiah.T
  */

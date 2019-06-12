@@ -1,1 +1,1 @@
-[]
+[{"Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned":"valid","Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned":"valid","jiraId":"MOS-1005","Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused":"valid","Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued":"valid","testType":"smoke","Kernel_UINStatusUpdate_UIN_Status_empty_status":"valid","testCaseName":"Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused","Kernel_UINStatusUpdate_UIN_Status_empty_uin":"valid","status":"Pass"}]

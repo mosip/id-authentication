@@ -38,6 +38,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.integration.KeyManager;
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 
@@ -78,6 +80,7 @@ public class KycFilterTest {
 	public void before() {
 		ReflectionTestUtils.setField(kycAuthFilter, "mapper", mapper);
 		ReflectionTestUtils.setField(kycAuthFilter, "env", env);
+		ReflectionTestUtils.setField(kycAuthFilter, "keyManager", keyManager);
 	}
 
 	@Test
@@ -407,6 +410,20 @@ public class KycFilterTest {
 			assertEquals("Partner is unauthorised for eKYC", error[1].trim());
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
+	}
+	
+	@Test
+	public void testEncipherResponse() {
+		Map<String,Object> resMap=new HashMap<>();
+		resMap.put(IdAuthCommonConstants.RESPONSE, new HashMap<>());
+		try {
+			Mockito.when(keyManager.encryptData(Mockito.any(), Mockito.any())).thenThrow(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
+			kycAuthFilter.encipherResponse(resMap);
+		} catch (IdAuthenticationAppException e) {
+			assertEquals(IdAuthenticationErrorConstants.INVALID_ENCRYPT_EKYC_RESPONSE.getErrorCode(), e.getErrorCode());
+			assertEquals(IdAuthenticationErrorConstants.INVALID_ENCRYPT_EKYC_RESPONSE.getErrorMessage(), e.getErrorText());
+		}
+		
 	}
 
 }

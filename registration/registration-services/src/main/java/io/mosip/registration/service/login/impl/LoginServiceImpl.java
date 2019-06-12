@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -27,7 +26,6 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AppAuthenticationDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.ScreenAuthorizationDAO;
@@ -48,7 +46,7 @@ import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.operator.UserSaltDetailsService;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PublicKeySync;
-import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+import io.mosip.registration.service.sync.TPMPublicKeySyncService;
 
 /**
  * Class for implementing login service
@@ -109,11 +107,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 	@Autowired
 	private UserOnboardService userOnboardService;
-	
+
 	@Autowired
 	private UserSaltDetailsService userSaltDetailsService;
-	
-	
+	@Autowired
+	private TPMPublicKeySyncService tpmPublicKeySyncService;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -131,7 +130,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 		return appAuthenticationDAO.getModesOfLogin(authType, roleList);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -147,7 +146,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 		auditFactory.audit(AuditEvent.FETCH_USR_DET, Components.USER_DETAIL, RegistrationConstants.APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-		
+
 		UserDetail userDetail = userDetailDAO.getUserDetail(userId);
 
 		return MAPPER_FACADE.map(userDetail, UserDTO.class);
@@ -160,7 +159,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	 * getRegistrationCenterDetails(java.lang.String)
 	 */
 	@Override
-	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId,String langCode) {
+	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId, String langCode) {
 		// Retrieving Registration Center details
 
 		LOGGER.info("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -169,7 +168,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, Components.CENTER_DETAIL, RegistrationConstants.APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
-		return registrationCenterDAO.getRegistrationCenterDetails(centerId,langCode);
+		return registrationCenterDAO.getRegistrationCenterDetails(centerId, langCode);
 	}
 
 	/*
@@ -190,7 +189,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 		return screenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -203,24 +202,47 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 				"Updating Login Params");
 
 		UserDetail userDetail = userDetailDAO.getUserDetail(userDTO.getId());
-		
+
 		userDetail.setLastLoginDtimes(userDTO.getLastLoginDtimes());
 		userDetail.setLastLoginMethod(userDTO.getLastLoginMethod());
 		userDetail.setUnsuccessfulLoginCount(userDTO.getUnsuccessfulLoginCount());
 		userDetail.setUserlockTillDtimes(userDTO.getUserlockTillDtimes());
-		
+
 		userDetailDAO.updateLoginParams(userDetail);
-		
+
 		LOGGER.info("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updated Login Params");
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.login.LoginService#initialSync()
+	 */
 	@Override
 	public List<String> initialSync() {
-		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"Started Initial sync");
+		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID, "Started Initial sync");
+
 		List<String> val = new LinkedList<>();
+
+		// Sync the TPM Public with Server, if it is initial set-up and TPM is available
+		String keyIndex = null;
+		final boolean isInitialSetUp = RegistrationConstants.ENABLE
+				.equalsIgnoreCase(getGlobalConfigValueOf(RegistrationConstants.INITIAL_SETUP));
+
+		if (isInitialSetUp && RegistrationConstants.ENABLE
+				.equals(getGlobalConfigValueOf(RegistrationConstants.TPM_AVAILABILITY))) {
+			try {
+				keyIndex = tpmPublicKeySyncService.syncTPMPublicKey();
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+						"Exception while sync'ing the TPM public key to server");
+				val.add(RegistrationConstants.FAILURE);
+				return val;
+			}
+		}
+
 		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
 				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		ResponseDTO responseDTO = globalParamService.synchConfigData(false);
@@ -228,54 +250,58 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
 			val.add(RegistrationConstants.RESTART);
 		}
-		ResponseDTO masterResponseDTO = masterSyncService.getMasterSync(
-				RegistrationConstants.OPT_TO_REG_MDS_J00001,
-				RegistrationConstants.JOB_TRIGGER_POINT_USER);
-		
-		if (RegistrationConstants.ENABLE
-				.equalsIgnoreCase(masterResponseDTO.getSuccessResponseDTO().getMessage())) {
+
+		ResponseDTO masterResponseDTO = null;
+		if (isInitialSetUp) {
+			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+					RegistrationConstants.JOB_TRIGGER_POINT_USER, keyIndex);
+		} else {
+			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		}
 
-		ResponseDTO userResponseDTO = userDetailService
-				.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		ResponseDTO userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
 		ResponseDTO userSaltResponse = userSaltDetailsService
 				.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-		if (((masterResponseDTO.getErrorResponseDTOs() != null
-				|| userResponseDTO.getErrorResponseDTOs() != null
-				|| userSaltResponse.getErrorResponseDTOs() != null)
-				|| responseDTO.getErrorResponseDTOs() != null
+		if (((masterResponseDTO.getErrorResponseDTOs() != null || userResponseDTO.getErrorResponseDTOs() != null
+				|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
 				|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
 			val.add(RegistrationConstants.FAILURE);
 		} else {
 			val.add(RegistrationConstants.SUCCESS);
 		}
-		
-		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"completed Initial sync");
-	
+
+		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID, "completed Initial sync");
+
 		return val;
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.LoginService#validateInvalidLogin(io.mosip.
+	 * @see
+	 * io.mosip.registration.service.LoginService#validateInvalidLogin(io.mosip.
 	 * registration.dto.UserDTO,java.lang.String,integer,integer)
 	 */
-	public String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime) {
-		
+	public String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount,
+			int invalidLoginTime) {
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "validating invalid login params");
 
-		int loginCount = userDTO.getUnsuccessfulLoginCount() != null
-				? userDTO.getUnsuccessfulLoginCount().intValue()
+		int loginCount = userDTO.getUnsuccessfulLoginCount() != null ? userDTO.getUnsuccessfulLoginCount().intValue()
 				: RegistrationConstants.PARAM_ZERO;
 
 		Timestamp loginTime = userDTO.getUserlockTillDtimes();
+		
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Comparing timestamps in case of invalid login attempts");
 
-		if (validateLoginTime(loginCount, invalidLoginCount, loginTime, invalidLoginTime)) {
+		if (loginCount >= invalidLoginCount
+				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
+						- loginTime.getTime()) > invalidLoginTime) {
 
 			loginCount = RegistrationConstants.PARAM_ZERO;
 			userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
@@ -311,7 +337,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 				updateLoginParams(userDTO);
 
-				if (loginCount >= invalidLoginCount) {					
+				if (loginCount >= invalidLoginCount) {
 					return RegistrationConstants.ERROR;
 				} else {
 					return errorMessage;
@@ -322,38 +348,14 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	}
 
 	/**
-	 * Validating login time and count
-	 * 
-	 * @param loginCount
-	 *            number of invalid attempts
-	 * @param invalidLoginCount
-	 *            count from global param
-	 * @param loginTime
-	 *            login time from table
-	 * @param invalidLoginTime
-	 *            login time from global param
-	 * @return boolean
-	 */
-	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
-			int invalidLoginTime) {
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Comparing timestamps in case of invalid login attempts");
-
-		return (loginCount >= invalidLoginCount
-				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
-						- loginTime.getTime()) > invalidLoginTime);
-	}
-	
-	/**
 	 * Validating user
 	 * 
 	 * @param userId
-	 * 			userid
+	 *            userid
 	 */
 	public ResponseDTO validateUser(String userId) {
 		ResponseDTO responseDTO = new ResponseDTO();
-		
+
 		UserDTO userDTO = getUserDetail(userId);
 		if (userDTO == null) {
 			setErrorResponse(responseDTO, RegistrationConstants.USER_MACHINE_VALIDATION_MSG, null);
@@ -380,25 +382,19 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 						}
 					});
 
-					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-							"Validating roles");
+					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Validating roles");
 					// Checking roles
 					if (roleList.isEmpty() || !(roleList.contains(RegistrationConstants.OFFICER)
 							|| roleList.contains(RegistrationConstants.SUPERVISOR)
-							|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {						
+							|| roleList.contains(RegistrationConstants.ADMIN_ROLE))) {
 						setErrorResponse(responseDTO, RegistrationConstants.ROLES_EMPTY_ERROR, null);
 					} else {
-						Map<String, Object> sessionContextMap = SessionContext.getInstance().getMapObject();
-
 						ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
 								centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
-						boolean status = getCenterMachineStatus(userDTO);
-						sessionContextMap.put(RegistrationConstants.ONBOARD_USER, !status);
-						sessionContextMap.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 						Map<String,Object> params = new LinkedHashMap<>();
+
 						params.put(RegistrationConstants.ROLES_LIST, roleList);
-						params.put(RegistrationConstants.UPLOAD_STATUS, status);
 						setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, params);
 					}
 				}
@@ -407,30 +403,5 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			}
 		}
 		return responseDTO;
-	}
-	
-	/**
-	 * Fetching and Validating machine and center id
-	 * 
-	 * @param userDetail
-	 *            the userDetail
-	 * @return boolean
-	 * @throws RegBaseCheckedException
-	 */
-	private boolean getCenterMachineStatus(UserDTO userDTO) {
-		List<String> machineList = new ArrayList<>();
-		List<String> centerList = new ArrayList<>();
-
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Validating User machine and center mapping");
-
-		userDTO.getUserMachineMapping().forEach(machineMapping -> {
-			if (machineMapping.isActive()) {
-				machineList.add(machineMapping.getMachineMaster().getMacAddress());
-				centerList.add(machineMapping.getCentreID());
-			}
-		});
-		return machineList.contains(RegistrationSystemPropertiesChecker.getMachineId())
-				&& centerList.contains(userDTO.getRegCenterUser().getRegcntrId());
 	}
 }

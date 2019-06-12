@@ -19,40 +19,42 @@ public enum IdAuthenticationErrorConstants {
 	OTP_GENERATION_FAILED("IDA-OTA-002", "Could not generate/send OTP"),
 	EXPIRED_OTP("IDA-OTA-003", "OTP has expired", "Please regenerate OTP and try again after sometime"),
 	INVALID_OTP("IDA-OTA-004", "OTP is invalid", "Please provide correct OTP value"),
-	INVALID_TXN_ID("IDA-OTA-005", "“Input transactionID does not match transactionID of OTP Request"),
+	INVALID_TXN_ID("IDA-OTA-005", "Input transactionID does not match transactionID of OTP Request"),
 	BLOCKED_OTP_GENERATE("IDA-OTA-006", "UIN is locked for OTP generation. Please try again later"),
 	BLOCKED_OTP_VALIDATE("IDA-OTA-007", "UIN is locked for OTP validation due to exceeding no of invalid OTP trials"),
-	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-010", "%s not configured for the country"),
+	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-008", "OTP Notification Channel not provided"),
+	OTP_CHANNEL_NOT_CONFIGURED("IDA-OTA-009", "%s not configured for the country"),
 	OTP_ID_MISMATCH("IDA-OTA-010", "Input transactionID does not match transactionID of OTP Request"),
-	OTP_CHANNEL_NOT_PROVIDED("IDA-OTA-011", "OTP Notification Channel not provided"),
+	
 
 	INVALID_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s minutes",
 			"Please send the request within %s minutes"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "Please retry with the correct UIN"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "Your UIN status is not active"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "Please retry with correct VID"),
-	EXPIRED_VID("IDA-MLC-005", "Expired VID", "Please regenerate VID and try again"),
+	EXPIRED_VID("IDA-MLC-005", "%s", "Please regenerate VID and try again"),
 	MISSING_INPUT_PARAMETER("IDA-MLC-006", "Missing Input Parameter - %s"),
 	UNABLE_TO_PROCESS("IDA-MLC-007", "Request could not be processed. Please try again"),
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008", "No authentication type selected"),
 	INVALID_INPUT_PARAMETER("IDA-MLC-009", "Invalid Input Parameter - %s"),
-	VID_GENERATION_FAILED("IDA-MLC-010", "Could not generate VID"),
-	VID_REGENERATION_FAILED("IDA-MLC-011", "VID regeneration not allowed. Use existing VID"),
-	VID_DEACTIVATED_UIN("IDA-MLC-012", "VID corresponding to a deactivated UIN"),
-	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-013", "Unsupported Authentication Type - %s",
+	VID_DEACTIVATED_UIN("IDA-MLC-010", "VID corresponding to a deactivated UIN"),
+	AUTH_TYPE_NOT_SUPPORTED("IDA-MLC-011", "Unsupported Authentication Type - %s",
 			"Please use other Authentication Types in the request"),
-	CONSENT_NOT_AVAILABLE("IDA-MLC-014", "Individual's Consent is not available"),
-	MISSING_AUTHTYPE("IDA-MLC-015", "Missing  %s auth attribute"),
-	PHONE_EMAIL_NOT_REGISTERED("IDA-MLC-016", "%s not registered. Individual has to register and try again",
+	CONSENT_NOT_AVAILABLE("IDA-MLC-012", "Individual's Consent is not available"),
+	MISSING_AUTHTYPE("IDA-MLC-013", "Missing %s auth attribute"),
+	PHONE_EMAIL_NOT_REGISTERED("IDA-MLC-014", "%s not registered. Individual has to register and try again",
 			"Please register your %s and try again"),
-	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-017", "Identity Type - %s not configured for the country"),
+	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-015", "Identity Type - %s not configured for the country"),
+	INVALID_TXNID_BIO("IDA-MLC-016", "Transaction ID parameters in the request does not match"),
+	INVALID_USERID( "IDA-MLC-017","Invalid UserID"),
+	ID_NOT_AVAILABLE("IDA-MLC-018", "%s not available in database"),
+	
+	
+	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
+				"Please re-enter your %s in %s"),
+		DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
 	UNSUPPORTED_LANGUAGE("IDA-DEA-002", "Unsupported Language Code - %s", "Please provide valid Language"),
-
-	DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
-			"Please re-enter your %s in %s"),
-	DEMO_DATA_MISMATCH("IDA-DEA-001", "Demographic data %s did not match", "Please re-enter your %s"),
-
-	DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
+    DEMO_MISSING("IDA-DEA-003", "Demographic data %s not available in database"),
 	DEMO_MISSING_LANG("IDA-DEA-003", "Demographic data %s in %s not available in database"),
 
 	BIO_MISMATCH("IDA-BIA-001", "Biometric data – %s did not match", "Please give your biometrics again"),
@@ -60,20 +62,19 @@ public enum IdAuthenticationErrorConstants {
 	FINGER_EXCEEDING("IDA-BIA-003", "Number of FMR should not exceed 2"),
 	INVALID_DEVICEID("IDA-BIA-004", "Device not registered with MOSIP"),
 	INVALID_PROVIDERID("IDA-BIA-005", "Device provider not registered with MOSIP"),
-	INVALID_MID("IDA-BIA-008", "Invalid mId"),
+	BIOMETRIC_MISSING("IDA-BIA-006", "Biometric data %s not available in database",
+			"Your Biometric data is not available in MOSIP"),
 	DUPLICATE_IRIS("IDA-BIA-007", "Duplicate Irises in request", "Please try again with distinct Irises"),
 	IRIS_EXCEEDING("IDA-BIA-008", "Number of IIR should not exceed 2"),
 	FACE_EXCEEDING("IDA-BIA-009", "Number of FID records should not exceed 1"),
-	MISSING_BIOMETRICDATA("IDA-BIA-010", "Missing biometric data"),
-	BIOMETRIC_MISSING("IDA-BIA-006", "Biometric data %s not available in database",
-			"Your Biometric data is not available in MOSIP"),
-	BIOTYPE_MISSING("IDA-BIA-012", "Missing or empty value for bioType"),
-	INVALID_BIOTYPE("IDA-BIA-013", "Invalid bioType - %s"),
+	FACE_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
+	INVALID_BIOMETRIC("IDA-BIA-011", "Invalid biometric data"),
 
-	INDIVIDUAL_DATA_MISSING("IDA-EKA-001", "Individuals data currently not available"),
+	
 
-	FID_INVALID("IDA-BIA-018", "Biometric data - FID did not match", "Please give your photo again"),
-	FID_EXCEEDS("IDA-BIA-019", "Number of FID records should not exceed 1"),
+	INVALID_ENCRYPT_EKYC_RESPONSE("IDA-EKA-001", "Unable to encrypt eKYC response"),
+	INVALID_REQ_PRINT_FORMAT("IDA-EKA-002", "Invalid value in print format request"),
+	
 
 	PIN_MISMATCH("IDA-SPA-001", "Pin value did not match", "Please re-enter your pin"),
 	PIN_NOT_STORED("IDA-SPA-002", "Could not store the static pin of the individual"),
@@ -105,7 +106,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occurred"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occurred"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
-	INVALID_USERID( "IDA-BIA-012","Invalid userid of the individual"),
+	
 	HMAC_VALIDATION_FAILED("IDA-MPA-016", "HMAC Validation failed")
 
 	;

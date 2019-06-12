@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,12 +17,14 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
+import io.mosip.registration.mdm.dto.CaptureResponsBioDataDto;
+import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -247,11 +250,36 @@ public class MosipBioDeviceManagerTest {
 
 	}
 
-	//@Test
+	@Test(expected = RegBaseCheckedException.class)
 	public void scan() throws RegBaseCheckedException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
 		mosipBioDeviceManager.scan("deviceType");
+	}
+
+	@Test
+	public void getSingleBioExtract() {
+		CaptureResponseDto captureResponseDto = new CaptureResponseDto();
+		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
+		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
+		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
+		mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
+	}
+
+	@Test
+	public void extractSingleBiometricIsoTemplate() {
+		CaptureResponseDto captureResponseDto = new CaptureResponseDto();
+		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
+		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
+		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
+		mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
+	}
+
+	@Test
+	public void doRegister() {
+		Map<String, BioDevice> deviceRegistry = new HashMap<>();
+		deviceRegistry.put("deviceType", new BioDevice());
+		mosipBioDeviceManager.deRegister("deviceType");
 	}
 
 }

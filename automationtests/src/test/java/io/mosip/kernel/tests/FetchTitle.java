@@ -1,8 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -13,8 +11,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -28,16 +24,14 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
 public class FetchTitle extends BaseTestCase implements ITest {
@@ -51,20 +45,18 @@ public class FetchTitle extends BaseTestCase implements ITest {
 	private final String apiName = "fetchTitle";
 	private final String requestJsonName = "fetchTitleRequest";
 	private final String outputJsonName = "fetchTitleOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchTitle_URI = props.get("FetchTitle_URI").toString();
-
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
 	boolean status = false;
-	String finalStatus = "";
 	public JSONArray arr = new JSONArray();
 	Response response = null;
 	JSONObject responseObject = null;
 	private AssertKernel assertions = new AssertKernel();
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	KernelAuthentication auth=new KernelAuthentication();
-	String cookie=null;
+	private KernelAuthentication auth=new KernelAuthentication();
+	private String cookie=null;
 
 	/**
 	 * method to set the test case name to the report
@@ -78,7 +70,6 @@ public class FetchTitle extends BaseTestCase implements ITest {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForIDA();
-
 	}
 
 	/**
@@ -88,18 +79,8 @@ public class FetchTitle extends BaseTestCase implements ITest {
 	 * @return test case name as object
 	 */
 	@DataProvider(name = "fetchData")
-	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {	
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
-		}
-
+	public Object[][] readData(ITestContext context){	
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 	}
 
 	/**
@@ -111,67 +92,36 @@ public class FetchTitle extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void fetchTitle(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		logger.info("Test Case Name:"+testcaseName);
-		object.put("Test case Name", testcaseName);
+	public void fetchTitle(String testcaseName, JSONObject object){
+		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
 
-		String configPath =  "src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		for (int k = 0; k < listofFiles.length; k++) {
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.getRequestPathPara(FetchTitle_URI,objectData,cookie);
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
+				response = applicationLibrary.getWithPathParam(FetchTitle_URI,objectData,cookie);
 
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-		}
 
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
-		listOfElementToRemove.add("timestamp");
 
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		if (status) {
-			int statusCode = response.statusCode();
-			logger.info("Status Code is : " + statusCode);
-
-			finalStatus = "Pass";
-		}
-
-		else {
-			finalStatus = "Fail";
-		}
-
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

@@ -3,7 +3,6 @@ package io.mosip.kernel.idobjectvalidator.impl;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_PARSING_FAILED;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER;
-import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.MANDATORY_FIELDS_NOT_FOUND;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.MISSING_INPUT_PARAMETER;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.SCHEMA_IO_EXCEPTION;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorPropertySourceConstant.APPLICATION_CONTEXT;
@@ -47,9 +46,6 @@ import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupporte
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.ConfigServerConnectionException;
-import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.core.jsonvalidator.exception.NullJsonNodeException;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**

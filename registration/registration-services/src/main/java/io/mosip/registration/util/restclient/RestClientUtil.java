@@ -7,7 +7,6 @@ import java.net.SocketTimeoutException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -85,24 +85,33 @@ public class RestClientUtil {
 			LOGGER.error("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
 					noSuchAlgorithmException.getMessage() + ExceptionUtils.getStackTrace(noSuchAlgorithmException));
 		}
-		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-				"Request URL======>" + requestHTTPDTO.getUri());
-		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-				"Request Method======>" + requestHTTPDTO.getHttpMethod());
-		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-				"Request Entity======>" + requestHTTPDTO.getHttpEntity());
-		LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-				"Request Class======>" + requestHTTPDTO.getClazz());
+		
+		if (!StringUtils.containsIgnoreCase(requestHTTPDTO.getUri().toString(),
+				RegistrationConstants.AUTH_SERVICE_URL)) {
+			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					"Request URL======>" + requestHTTPDTO.getUri());
+			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					"Request Method======>" + requestHTTPDTO.getHttpMethod());
+			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					"Request Entity======>" + requestHTTPDTO.getHttpEntity());
+			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+					"Request Class======>" + requestHTTPDTO.getClazz());
+		}
+
 		responseEntity = restTemplate.exchange(requestHTTPDTO.getUri(), requestHTTPDTO.getHttpMethod(),
 				requestHTTPDTO.getHttpEntity(), requestHTTPDTO.getClazz());
 		
 		if (responseEntity != null && responseEntity.hasBody()) {
 			responseMap = new LinkedHashMap<>();
-			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-					"Response Body======>" + responseEntity.getBody());
+			if (!StringUtils.containsIgnoreCase(requestHTTPDTO.getUri().toString(),
+					RegistrationConstants.AUTH_SERVICE_URL)) {
+				LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+						"Response Body======>" + responseEntity.getBody());
+				LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
+						"Response Header======>" + responseEntity.getHeaders());
+			}
+
 			responseMap.put(RegistrationConstants.REST_RESPONSE_BODY, responseEntity.getBody());
-			LOGGER.info("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME, APPLICATION_ID,
-					"Response Header======>" + responseEntity.getHeaders());
 			responseMap.put(RegistrationConstants.REST_RESPONSE_HEADERS, responseEntity.getHeaders());
 		}
 

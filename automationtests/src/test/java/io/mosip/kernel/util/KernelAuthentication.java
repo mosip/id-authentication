@@ -19,7 +19,7 @@ public class KernelAuthentication extends BaseTestCase{
 	// Declaration of all variables
 	String folder="kernel";
 	String cookie;
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private String individual_appid=props.get("individual_appid");
 	private String individual_password=props.get("individual_password");
 	private String individual_userName=props.get("individual_userName");
@@ -44,22 +44,29 @@ public class KernelAuthentication extends BaseTestCase{
 	private String registrationSupervisor_password=props.get("registrationSupervisor_password");
 	private String registrationSupervisor_userName=props.get("registrationSupervisor_userName");
 	
-	private String Authentication=props.get("Authentication");
+	private String zonalAdmin_appid=props.get("zonalAdmin_appid");
+	private String zonalAdmin_password=props.get("zonalAdmin_password");
+	private String zonalAdmin_userName=props.get("zonalAdmin_userName");
+	
+	private String zonalApprover_appid=props.get("zonalApprover_appid");
+	private String zonalApprover_password=props.get("zonalApprover_password");
+	private String zonalApprover_userName=props.get("zonalApprover_userName");
+	
+	private String authenticationEndpoint = props.get("authentication");
 	private String testsuite="/Authorization";	
 	private ApplicationLibrary appl=new ApplicationLibrary();
 
 	@SuppressWarnings("unchecked")
 	public String getAuthForIndividual() {	
-		KernelAuthentication auth=new KernelAuthentication();
-		JSONObject actualReq = auth.getRequest(testsuite);
+		JSONObject actualrequest = getRequestJson(testsuite);
 		
 		JSONObject req=new JSONObject();
 		req.put("appId", individual_appid);
 		req.put("password", individual_password);
 		req.put("userName", individual_userName);
-		actualReq.put("request", req);
+		actualrequest.put("request", req);
 		
-		Response reponse=appl.postRequest(actualReq, Authentication);
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
 		cookie=reponse.getCookie("Authorization");
 		return cookie;
 	}
@@ -67,8 +74,7 @@ public class KernelAuthentication extends BaseTestCase{
 	
 	@SuppressWarnings("unchecked")
 	public String getAuthForRegistrationProcessor() {
-		KernelAuthentication auth=new KernelAuthentication();
-		JSONObject actualrequest = auth.getRequest(testsuite);
+		JSONObject actualrequest = getRequestJson(testsuite);
 		
 		JSONObject request=new JSONObject();
 		request.put("appId", regProc_appid);
@@ -76,15 +82,14 @@ public class KernelAuthentication extends BaseTestCase{
 		request.put("userName", regProc_userName);
 		actualrequest.put("request", request); 
 		
-		Response reponse=appl.postRequest(actualrequest, Authentication);
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
 		cookie=reponse.getCookie("Authorization");
 		return cookie;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public String getAuthForIDA() {
-		KernelAuthentication auth=new KernelAuthentication();
-		JSONObject actualrequest = auth.getRequest(testsuite);
+		JSONObject actualrequest = getRequestJson(testsuite);
 		
 		JSONObject request=new JSONObject();
 		request.put("appId", ida_appid);
@@ -92,15 +97,14 @@ public class KernelAuthentication extends BaseTestCase{
 		request.put("userName", ida_userName);
 		actualrequest.put("request", request);
 		
-		Response reponse=appl.postRequest(actualrequest, Authentication);
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
 		cookie=reponse.getCookie("Authorization");
 		return cookie;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public String getAuthForRegistrationAdmin() {
-		KernelAuthentication auth=new KernelAuthentication();
-		JSONObject actualrequest = auth.getRequest(testsuite);
+		JSONObject actualrequest = getRequestJson(testsuite);
 
 		JSONObject request=new JSONObject();
 		request.put("appId", registrationAdmin_appid);
@@ -108,15 +112,14 @@ public class KernelAuthentication extends BaseTestCase{
 		request.put("userName", registrationAdmin_userName);
 		actualrequest.put("request", request);
 		
-		Response reponse=appl.postRequest(actualrequest, Authentication);
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
 		cookie=reponse.getCookie("Authorization");
 		return cookie;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public String getAuthForRegistrationOfficer() {
-		KernelAuthentication auth=new KernelAuthentication();
-		JSONObject actualrequest = auth.getRequest(testsuite);
+		JSONObject actualrequest = getRequestJson(testsuite);
 		
 		JSONObject request=new JSONObject();
 		request.put("appId", registrationOfficer_appid);
@@ -124,15 +127,14 @@ public class KernelAuthentication extends BaseTestCase{
 		request.put("userName", registrationOfficer_userName);
 		actualrequest.put("request", request);
 		
-		Response reponse=appl.postRequest(actualrequest, Authentication);
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
 		cookie=reponse.getCookie("Authorization");
 		return cookie;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public String getAuthForRegistrationSupervisor() {
-		KernelAuthentication auth=new KernelAuthentication();
-		JSONObject actualrequest = auth.getRequest(testsuite);
+		JSONObject actualrequest = getRequestJson(testsuite);
 		
 		JSONObject request=new JSONObject();
 		request.put("appId", registrationSupervisor_appid);
@@ -140,13 +142,42 @@ public class KernelAuthentication extends BaseTestCase{
 		request.put("userName", registrationSupervisor_userName);
 		actualrequest.put("request", request);
 	
-		Response reponse=appl.postRequest(actualrequest, Authentication);
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
 		cookie=reponse.getCookie("Authorization");
 		return cookie;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public String getAuthForZonalAdmin() {
+		JSONObject actualrequest = getRequestJson(testsuite);
+		
+		JSONObject request=new JSONObject();
+		request.put("appId", zonalAdmin_appid);
+		request.put("password", zonalAdmin_password);
+		request.put("userName", zonalAdmin_userName);
+		actualrequest.put("request", request);
+	
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
+		cookie=reponse.getCookie("Authorization");
+		return cookie;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String getAuthForZonalApprover() {
+		JSONObject actualrequest = getRequestJson(testsuite);
+		
+		JSONObject request=new JSONObject();
+		request.put("appId", zonalApprover_appid);
+		request.put("password", zonalApprover_password);
+		request.put("userName", zonalApprover_userName);
+		actualrequest.put("request", request);
+	
+		Response reponse=appl.postWithJson(authenticationEndpoint, actualrequest);
+		cookie=reponse.getCookie("Authorization");
+		return cookie;
+	}
 	//Reading the request file from folder
-	public JSONObject getRequest(String testSuite){
+	public JSONObject getRequestJson(String testSuite){
 		JSONObject Request=null;
 		String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
@@ -159,7 +190,6 @@ public class KernelAuthentication extends BaseTestCase{
 				} catch (Exception e) {
 					logger.error(e.getMessage());
 				}
-
 			}
 		}return Request;
 		

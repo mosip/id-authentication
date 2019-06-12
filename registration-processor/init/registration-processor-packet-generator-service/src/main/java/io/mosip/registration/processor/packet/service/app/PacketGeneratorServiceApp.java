@@ -8,6 +8,7 @@ import org.springframework.context.annotation.FilterType;
 
 import io.mosip.registration.processor.packet.storage.config.PacketStorageBeanConfig;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
+import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
 
 /**
  * The Class PacketGeneratorServiceApp.
@@ -16,8 +17,8 @@ import io.mosip.registration.processor.rest.client.config.RestConfigBean;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"io.mosip.registration.processor.packet.*,io.mosip.registration.processor.rest.client.*,io.mosip.kernel.jsonvalidator.*,io.mosip.registration.processor.core.*","io.mosip.kernel.auth.*"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				RestConfigBean.class,PacketStorageBeanConfig.class }))
+		"io.mosip.registration.processor.packet.*,io.mosip.registration.processor.rest.client.*,io.mosip.registration.processor.core.*","io.mosip.kernel.auth.*"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
+				RestConfigBean.class,PacketStorageBeanConfig.class,RegistrationStatusBeanConfig.class }))
 
 public class PacketGeneratorServiceApp {
 

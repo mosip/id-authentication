@@ -37,7 +37,6 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -297,7 +296,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 					.getFace();
 			if (cbeffInBytes != null) {
-				if (registrationDTO.isUpdateUINChild()
+				if (registrationDTO.isUpdateUINNonBiometric()
 						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
 								.equals(RegistrationConstants.ENABLE)) {
 					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
@@ -393,8 +392,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs, byte[] image,
 			int qualityScore, String imageType) {
 		if (image != null) {
-			BIR bir = buildBIR(image, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
-					Arrays.asList(SingleType.FACE), Arrays.asList());
+			// TODO: Replace the stub image with original image once Face SDK is implemented
+			BIR bir = buildBIR(RegistrationConstants.STUB_FACE.getBytes(), CbeffConstant.FORMAT_OWNER,
+					CbeffConstant.FORMAT_TYPE_FACE, qualityScore, Arrays.asList(SingleType.FACE), Arrays.asList());
 
 			birs.add(bir);
 			birUUIDs.put(personType.concat(imageType).toLowerCase(), bir.getBdbInfo().getIndex());
@@ -489,7 +489,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	private List<String> getFingerSubType(String fingerType) {
 		List<String> fingerSubTypes = new ArrayList<>();
-
+		fingerType=fingerType.toLowerCase();
 		if (fingerType.startsWith(RegistrationConstants.LEFT.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.LEFT.value());
 			fingerType = fingerType.replace(RegistrationConstants.LEFT.toLowerCase(), RegistrationConstants.EMPTY);
@@ -497,7 +497,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			fingerSubTypes.add(SingleAnySubtypeType.RIGHT.value());
 			fingerType = fingerType.replace(RegistrationConstants.RIGHT.toLowerCase(), RegistrationConstants.EMPTY);
 		}
-
+		fingerType=fingerType.trim();
 		if (fingerType.equalsIgnoreCase(RegistrationConstants.THUMB.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.THUMB.value());
 		} else {

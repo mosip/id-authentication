@@ -48,6 +48,7 @@ import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.TokenService;
+import io.mosip.kernel.auth.service.impl.AuthServiceImpl;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -208,8 +209,7 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			// AuthToken token = getAuthToken(authResponseDto);
-			// customTokenServices.StoreToken(token);
+			System.out.println("Token added in response "+authResponseDto.getToken());
 		}
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
@@ -244,6 +244,7 @@ public class AuthController {
 						AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
 			}
 			mosipUserDtoToken = authService.validateToken(authToken);
+			System.out.println("Token check after validate :::"+mosipUserDtoToken.getToken());
 			if (mosipUserDtoToken != null) {
 				mosipUserDtoToken.setMessage(AuthConstant.TOKEN_SUCCESS_MESSAGE);
 			}

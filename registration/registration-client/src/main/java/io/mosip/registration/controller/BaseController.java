@@ -129,7 +129,7 @@ public class BaseController {
 
 	@Autowired
 	private TemplateService templateService;
-	
+
 	@Autowired
 	private AuthenticationService authenticationService;
 
@@ -147,7 +147,7 @@ public class BaseController {
 
 	@Autowired
 	private PacketHandlerController packetHandlerController;
-	
+
 	@Autowired
 	private HeaderController headerController;
 
@@ -184,10 +184,8 @@ public class BaseController {
 	/**
 	 * Load screen.
 	 *
-	 * @param screen
-	 *            the screen
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param screen the screen
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(getClass().getResource(screen),
@@ -198,8 +196,7 @@ public class BaseController {
 	/**
 	 * Gets the scene.
 	 *
-	 * @param borderPane
-	 *            the border pane
+	 * @param borderPane the border pane
 	 * @return the scene
 	 */
 	protected Scene getScene(Parent borderPane) {
@@ -218,15 +215,12 @@ public class BaseController {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param url
-	 *            the url
+	 * @param     <T> the generic type
+	 * @param url the url
 	 * @return T
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static <T> T load(URL url) throws IOException {		
+	public static <T> T load(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.applicationLanguageBundle());
 		loader.setControllerFactory(Initialization.getApplicationContext()::getBean);
 		return loader.load();
@@ -235,15 +229,11 @@ public class BaseController {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param url
-	 *            the url
-	 * @param resource
-	 *            the resource
+	 * @param          <T> the generic type
+	 * @param url      the url
+	 * @param resource the resource
 	 * @return T
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static <T> T load(URL url, ResourceBundle resource) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, resource);
@@ -254,10 +244,8 @@ public class BaseController {
 	/**
 	 * /* Alert creation with specified title, header, and context.
 	 *
-	 * @param title
-	 *            alert title
-	 * @param context
-	 *            alert context
+	 * @param title   alert title
+	 * @param context alert context
 	 */
 	protected void generateAlert(String title, String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -277,10 +265,8 @@ public class BaseController {
 	/**
 	 * /* Alert creation with specified title, header, and context.
 	 *
-	 * @param title
-	 *            the title
-	 * @param context
-	 *            alert context
+	 * @param title   the title
+	 * @param context alert context
 	 */
 	protected void generateAlertLanguageSpecific(String title, String context) {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -300,12 +286,9 @@ public class BaseController {
 	/**
 	 * Alert creation with specified context.
 	 *
-	 * @param parentPane
-	 *            the parent pane
-	 * @param id
-	 *            the id
-	 * @param context
-	 *            alert context
+	 * @param parentPane the parent pane
+	 * @param id         the id
+	 * @param context    alert context
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context) {
 		if (id.contains(RegistrationConstants.ONTYPE)) {
@@ -317,7 +300,7 @@ public class BaseController {
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		if(!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
+		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
 			label.setText(context);
 		Tooltip tool = new Tooltip(context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
@@ -339,8 +322,7 @@ public class BaseController {
 	/**
 	 * Validating Id for Screen Authorization.
 	 *
-	 * @param screenId
-	 *            the screenId
+	 * @param screenId the screenId
 	 * @return boolean
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
@@ -351,10 +333,8 @@ public class BaseController {
 	/**
 	 * Regex validation with specified field and pattern.
 	 *
-	 * @param field
-	 *            concerned field
-	 * @param regexPattern
-	 *            pattern need to checked
+	 * @param field        concerned field
+	 * @param regexPattern pattern need to checked
 	 * @return true, if successful
 	 */
 	protected boolean validateRegex(Control field, String regexPattern) {
@@ -374,8 +354,7 @@ public class BaseController {
 	 * {@code autoCloseStage} is to close the stage automatically by itself for a
 	 * configured amount of time.
 	 *
-	 * @param stage
-	 *            the stage
+	 * @param stage the stage
 	 */
 	protected void autoCloseStage(Stage stage) {
 		PauseTransition delay = new PauseTransition(Duration.seconds(5));
@@ -389,7 +368,7 @@ public class BaseController {
 	 *
 	 */
 	protected void getGlobalParams() {
-		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
+		ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
 	}
 
 	/**
@@ -492,6 +471,14 @@ public class BaseController {
 
 		updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION,
 				(boolean) ApplicationContext.map().get(RegistrationConstants.BIOMETRIC_EXCEPTION_FLOW));
+
+		updatePageFlow(RegistrationConstants.FINGERPRINT_CAPTURE,
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+						.equalsIgnoreCase(RegistrationConstants.ENABLE));
+
+		updatePageFlow(RegistrationConstants.IRIS_CAPTURE,
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG))
+						.equalsIgnoreCase(RegistrationConstants.ENABLE));
 	}
 
 	/**
@@ -508,8 +495,7 @@ public class BaseController {
 	/**
 	 * Load child.
 	 *
-	 * @param url
-	 *            the url
+	 * @param url the url
 	 * @return the FXML loader
 	 */
 	public static FXMLLoader loadChild(URL url) {
@@ -529,8 +515,7 @@ public class BaseController {
 	/**
 	 * Scans documents.
 	 *
-	 * @param popupStage
-	 *            the stage
+	 * @param popupStage the stage
 	 */
 	public void scan(Stage popupStage) {
 
@@ -540,10 +525,8 @@ public class BaseController {
 	 * This method is for saving the Applicant Image and Exception Image which are
 	 * captured using webcam.
 	 *
-	 * @param capturedImage
-	 *            BufferedImage that is captured using webcam
-	 * @param imageType
-	 *            Type of image that is to be saved
+	 * @param capturedImage BufferedImage that is captured using webcam
+	 * @param imageType     Type of image that is to be saved
 	 */
 	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
 		// will be implemented in the derived class.
@@ -552,8 +535,7 @@ public class BaseController {
 	/**
 	 * This method used to clear the images that are captured using webcam.
 	 *
-	 * @param imageType
-	 *            Type of image that is to be cleared
+	 * @param imageType Type of image that is to be cleared
 	 */
 	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
@@ -562,12 +544,9 @@ public class BaseController {
 	/**
 	 * it will wait for the mentioned time to get the capture image from Bio Device.
 	 *
-	 * @param count
-	 *            the count
-	 * @param waitTimeInSec
-	 *            the wait time in sec
-	 * @param fingerprintFacade
-	 *            the fingerprint facade
+	 * @param count             the count
+	 * @param waitTimeInSec     the wait time in sec
+	 * @param fingerprintFacade the fingerprint facade
 	 */
 	protected void waitToCaptureBioImage(int count, int waitTimeInSec, FingerprintFacade fingerprintFacade) {
 		int counter = 0;
@@ -591,8 +570,7 @@ public class BaseController {
 	/**
 	 * Convert bytes to image.
 	 *
-	 * @param imageBytes
-	 *            the image bytes
+	 * @param imageBytes the image bytes
 	 * @return the image
 	 */
 	protected Image convertBytesToImage(byte[] imageBytes) {
@@ -637,24 +615,23 @@ public class BaseController {
 	/**
 	 * to validate the password in case of password based authentication.
 	 *
-	 * @param username
-	 *            the username
-	 * @param password
-	 *            the password
+	 * @param username the username
+	 * @param password the password
 	 * @return the string
 	 */
 	protected String validatePwd(String username, String password) {
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID, "Validating Password");
 
-			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
-			authenticationValidatorDTO.setUserId(username);
-			authenticationValidatorDTO.setPassword(password);
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+		authenticationValidatorDTO.setUserId(username);
+		authenticationValidatorDTO.setPassword(password);
 
-			if (authenticationService.validatePassword(authenticationValidatorDTO).equals(RegistrationConstants.PWD_MATCH)) {
-				return RegistrationConstants.SUCCESS;
-			}
-			return RegistrationConstants.FAILURE;
+		if (authenticationService.validatePassword(authenticationValidatorDTO)
+				.equals(RegistrationConstants.PWD_MATCH)) {
+			return RegistrationConstants.SUCCESS;
+		}
+		return RegistrationConstants.FAILURE;
 	}
 
 	/**
@@ -702,8 +679,7 @@ public class BaseController {
 	/**
 	 * Gets the notification template.
 	 *
-	 * @param templateCode
-	 *            the template code
+	 * @param templateCode the template code
 	 * @return the notification template
 	 */
 	protected Writer getNotificationTemplate(String templateCode) {
@@ -757,10 +733,8 @@ public class BaseController {
 	 * to return to the next page based on the current page and action for User
 	 * Onboarding.
 	 *
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * @return id of next Anchorpane
 	 */
 
@@ -778,10 +752,8 @@ public class BaseController {
 	 * to return to the next page based on the current page and action for New
 	 * Registration.
 	 *
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * @return id of next Anchorpane
 	 */
 	@SuppressWarnings("unchecked")
@@ -806,12 +778,9 @@ public class BaseController {
 	/**
 	 * to return to the next page based on the current page and action.
 	 *
-	 * @param pageList
-	 *            - List of Anchorpane Ids
-	 * @param currentPage
-	 *            - Id of current Anchorpane
-	 * @param action
-	 *            - action to be performed previous/next
+	 * @param pageList    - List of Anchorpane Ids
+	 * @param currentPage - Id of current Anchorpane
+	 * @param action      - action to be performed previous/next
 	 * @return id of next Anchorpane
 	 */
 	private String getReturnPage(List<String> pageList, String currentPage, String action) {
@@ -864,11 +833,10 @@ public class BaseController {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"User Onboard is success and clearing Onboard data");
-
-				popupStatge(RegistrationUIConstants.USER_ONBOARD_SUCCESS, RegistrationConstants.ONBOARD_IMG_PATH,
-						RegistrationConstants.ONBOARD_STYLE_CLASS);
+				
 				clearOnboardData();
 				goToHomePage();
+				onboardAlertMsg();
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"Redirecting to Home page after success onboarding");
@@ -877,7 +845,7 @@ public class BaseController {
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
-				"Returning the corresponding next page based on given action");
+				"Returning the corresponding next page based on given action" + returnPage);
 
 		pageDetails.clear();
 		return returnPage;
@@ -886,12 +854,9 @@ public class BaseController {
 	/**
 	 * to navigate to the next page based on the current page.
 	 *
-	 * @param pageId
-	 *            - Parent Anchorpane where other panes are included
-	 * @param notTosShow
-	 *            - Id of Anchorpane which has to be hidden
-	 * @param show
-	 *            - Id of Anchorpane which has to be shown
+	 * @param pageId     - Parent Anchorpane where other panes are included
+	 * @param notTosShow - Id of Anchorpane which has to be hidden
+	 * @param show       - Id of Anchorpane which has to be shown
 	 * 
 	 */
 	protected void getCurrentPage(Pane pageId, String notTosShow, String show) {
@@ -911,8 +876,7 @@ public class BaseController {
 	/**
 	 * to calculate the time for re-capture since last capture time.
 	 *
-	 * @param imageType
-	 *            the type of image that is selected to capture
+	 * @param imageType the type of image that is selected to capture
 	 */
 	public void calculateRecaptureTime(String imageType) {
 		// will be implemented in the derived class.
@@ -923,9 +887,9 @@ public class BaseController {
 	 * processing accordingly.
 	 *
 	 * @return true, if is machine remap process started
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public boolean isMachineRemapProcessStarted()  {
+	public boolean isMachineRemapProcessStarted() {
 
 		Boolean isRemapped = centerMachineReMapService.isMachineRemapped();
 		if (isRemapped) {
@@ -939,11 +903,10 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
-			 
-			
-			 disableHomePage(true);
-			
-				service.restart();
+
+			disableHomePage(true);
+
+			service.restart();
 
 			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override
@@ -951,7 +914,7 @@ public class BaseController {
 					service.reset();
 					disableHomePage(false);
 					packetHandlerController.getProgressIndicator().setVisible(false);
-					 
+
 					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
 								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
@@ -963,7 +926,7 @@ public class BaseController {
 
 				}
 			});
-			
+
 		}
 		return isRemapped;
 	}
@@ -974,12 +937,11 @@ public class BaseController {
 			HomePageRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 		} catch (IOException ioException) {
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,
-					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
 		}
 
 		HomePageRoot.setDisable(isDisabled);
-		
+
 	}
 
 	Service<String> service = new Service<String>() {
@@ -1016,65 +978,29 @@ public class BaseController {
 	/**
 	 * Popup statge.
 	 *
-	 * @param messgae
-	 *            the messgae
-	 * @param imageUrl
-	 *            the image url
-	 * @param styleClass
-	 *            the style class
+	 * @param messgae    the messgae
+	 * @param imageUrl   the image url
+	 * @param styleClass the style class
 	 */
-	public void popupStatge(String messgae, String imageUrl, String styleClass) {
-		Stage primaryStage = new Stage();
-		primaryStage.initStyle(StageStyle.UNDECORATED);
-		primaryStage.setX(540);
-		primaryStage.setY(85);
-		AnchorPane anchorPane = new AnchorPane();
-		anchorPane.getStyleClass().add(styleClass);
-		anchorPane.setPrefWidth(250);
-		anchorPane.setPrefHeight(40);
-		Label label = new Label();
-		label.setText(messgae);
-		label.setLayoutX(60);
-		label.setLayoutY(9);
-		label.getStyleClass().clear();
-		label.getStyleClass().addAll(styleClass, RegistrationConstants.LABEL_SMALL_CASE);
-		Image img = new Image(imageUrl);
-		ImageView imageView = new ImageView();
-		imageView.setImage(img);
-		imageView.setLayoutX(25);
-		imageView.setLayoutY(8);
-		imageView.setFitHeight(25);
-		imageView.setFitWidth(25);
+	public void onboardAlertMsg() {
+		packetHandlerController.getUserOnboardMessage().setVisible(true);
 		fXComponents.getStage().addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (primaryStage.isShowing()) {
-					primaryStage.close();
+				if (packetHandlerController.getUserOnboardMessage().isVisible()) {
+					packetHandlerController.getUserOnboardMessage().setVisible(false);
 				}
 			}
 		});
-		anchorPane.getChildren().add(imageView);
-		anchorPane.getChildren().add(label);
-		Scene scene = new Scene(anchorPane);
-		ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-		scene.getStylesheets().add(classLoader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		primaryStage.setScene(scene);
-		// primaryStage.initModality(Modality.WINDOW_MODAL);
-		// primaryStage.initOwner(fXComponents.getStage());
-		primaryStage.show();
 	}
 
 	/**
 	 * Create alert with given title, header and context.
 	 *
-	 * @param alertType
-	 *            type of alert
-	 * @param title
-	 *            alert's title
-	 * @param header
-	 *            alert's header
-	 * @param context
-	 *            alert's context
+	 * @param alertType type of alert
+	 * @param title     alert's title
+	 * @param header    alert's header
+	 * @param context   alert's context
 	 * @return alert
 	 */
 	protected Alert createAlert(AlertType alertType, String title, String header, String context,
@@ -1091,7 +1017,7 @@ public class BaseController {
 		Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
 		okButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(confirmButtonText));
 
-		if(alertType == Alert.AlertType.CONFIRMATION) {
+		if (alertType == Alert.AlertType.CONFIRMATION) {
 			Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
 			cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
 		}
@@ -1124,8 +1050,7 @@ public class BaseController {
 	/**
 	 * Update UIN next page.
 	 *
-	 * @param pageFlag
-	 *            the page flag
+	 * @param pageFlag the page flag
 	 * @return true, if successful
 	 */
 	protected boolean updateUINNextPage(String pageFlag) {
@@ -1146,8 +1071,7 @@ public class BaseController {
 	/**
 	 * Biomertic exception count.
 	 *
-	 * @param biometric
-	 *            the biometric
+	 * @param biometric the biometric
 	 * @return the long
 	 */
 	protected long biomerticExceptionCount(String biometric) {
@@ -1158,8 +1082,7 @@ public class BaseController {
 	/**
 	 * Gets the value from application context.
 	 *
-	 * @param key
-	 *            the key
+	 * @param key the key
 	 * @return the value from application context
 	 */
 	protected String getValueFromApplicationContext(String key) {
@@ -1173,8 +1096,7 @@ public class BaseController {
 	/**
 	 * Gets the quality score.
 	 *
-	 * @param qulaityScore
-	 *            the qulaity score
+	 * @param qulaityScore the qulaity score
 	 * @return the quality score
 	 */
 	protected String getQualityScore(Double qulaityScore) {
@@ -1188,10 +1110,8 @@ public class BaseController {
 	/**
 	 * Updates the Page Flow
 	 *
-	 * @param pageId
-	 *            id of the page
-	 * @param val
-	 *            value to be set
+	 * @param pageId id of the page
+	 * @param val    value to be set
 	 */
 	@SuppressWarnings("unchecked")
 	protected void updatePageFlow(String pageId, boolean val) {
@@ -1214,13 +1134,15 @@ public class BaseController {
 	/**
 	 * Exception fingers count.
 	 */
-	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount, int rightSlapCount, int thumbCount, int irisCount) {
-		
+	protected Map<String, Integer> exceptionFingersCount(int leftSlapCount, int rightSlapCount, int thumbCount,
+			int irisCount) {
+
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			biometricExceptionDTOs = getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
 		} else {
@@ -1253,18 +1175,21 @@ public class BaseController {
 		exceptionCountMap.put(RegistrationConstants.LEFTSLAPCOUNT, leftSlapCount);
 		exceptionCountMap.put(RegistrationConstants.RIGHTSLAPCOUNT, rightSlapCount);
 		exceptionCountMap.put(RegistrationConstants.THUMBCOUNT, thumbCount);
-		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT, leftSlapCount+rightSlapCount+thumbCount+irisCount);
+		exceptionCountMap.put(RegistrationConstants.EXCEPTIONCOUNT,
+				leftSlapCount + rightSlapCount + thumbCount + irisCount);
 
 		return exceptionCountMap;
 	}
-	
+
 	protected List<BiometricExceptionDTO> getIrisExceptions() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		}else if(getRegistrationDTOFromSession().isUpdateUINChild() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+						&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child))) {
 			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
-		}else {
+		} else {
 			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO()
 					.getBiometricExceptionDTO();
 		}
@@ -1280,7 +1205,7 @@ public class BaseController {
 		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
 				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
 	}
-	
+
 	/**
 	 * To get the current timestamp
 	 * 

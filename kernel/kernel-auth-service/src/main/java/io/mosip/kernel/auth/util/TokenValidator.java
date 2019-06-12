@@ -13,7 +13,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
-import io.mosip.kernel.auth.constant.AuthErrorConstant;
 import io.mosip.kernel.auth.dto.MosipUser;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserTokenDto;
@@ -64,6 +63,7 @@ public class TokenValidator {
 		} catch (JwtException e) {
 			if( e instanceof ExpiredJwtException)
 			{
+				System.out.println("Token expired message "+ e.getMessage() + " Token "+token);
 				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(), AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
 			}
 			else

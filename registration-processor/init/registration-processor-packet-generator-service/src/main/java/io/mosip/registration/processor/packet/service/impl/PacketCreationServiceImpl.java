@@ -19,11 +19,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.processor.core.constant.JsonConstant;
@@ -59,9 +54,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private ZipCreationService zipCreationService;
 
 	@Autowired
-	private JsonValidator jsonValidator;
-
-	@Autowired
 	private Environment environment;
 
 	private String creationTime = null;
@@ -91,7 +83,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
-			jsonValidator.validateJson(idJsonAsString);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
@@ -173,15 +164,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 							+ ExceptionUtils.getStackTrace(mosipJsonProcessingException));
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION,
 					mosipJsonProcessingException);
-
-		} catch (JsonValidationProcessingException | JsonIOException | JsonSchemaIOException
-				| FileIOException jsonValidationException) {
-
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					rid, PlatformErrorMessages.RPR_PGS_JSON_VALIDATOR_ERROR_CODE.getMessage()
-							+ ExceptionUtils.getStackTrace(jsonValidationException));
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION,
-					jsonValidationException);
 
 		} catch (RuntimeException runtimeException) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

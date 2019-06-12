@@ -13,7 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
@@ -22,6 +21,7 @@ import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -73,12 +73,8 @@ public class UMCValidator {
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
-	/** The adapter. */
-	@Autowired
-	private FileSystemAdapter adapter;
-
 	/** The primary languagecode. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
 	/** The identity iterator util. */
@@ -335,9 +331,10 @@ public class UMCValidator {
 	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
+	 * @throws PacketDecryptionFailureException 
 	 */
 	public boolean isValidUMC(String registrationId) throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
+			JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException, PacketDecryptionFailureException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "UMCValidator::isValidUMC()::entry");
 		RegistrationCenterMachineDto rcmDto = getCenterMachineDto(registrationId);
@@ -399,9 +396,11 @@ public class UMCValidator {
 	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
+	 * @throws ApisResourceAccessException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private RegistrationCenterMachineDto getCenterMachineDto(String registrationId)
-			throws JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException {
+			throws JsonParseException, JsonMappingException, io.mosip.kernel.core.exception.IOException, IOException, PacketDecryptionFailureException, ApisResourceAccessException {
 
 		identity = osiUtils.getIdentity(registrationId);
 

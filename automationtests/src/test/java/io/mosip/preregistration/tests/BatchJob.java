@@ -117,8 +117,6 @@ public class BatchJob extends BaseTestCase implements ITest {
 		authToken=lib.getToken();
 		testCaseName="preReg_BatchJob_" + method.getName();
 	}
-
-
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {
 		try {

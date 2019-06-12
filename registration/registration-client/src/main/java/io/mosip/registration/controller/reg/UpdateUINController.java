@@ -115,7 +115,7 @@ public class UpdateUINController extends BaseController implements Initializable
 			fxUtils.validateOnType(uinUpdateRoot, uinId, validation);
 			updateUINFieldsConfiguration();
 
-			if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+			if (getRegistrationDTOFromSession()!= null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				SelectionListDTO selectionListDTO = getRegistrationDTOFromSession().getSelectionListDTO();
 
 				uinId.setText(selectionListDTO.getUinId());
@@ -248,8 +248,9 @@ public class UpdateUINController extends BaseController implements Initializable
 
 						getScene(createRoot).setRoot(createRoot);
 						if (!biometrics.isSelected()) {
-							getRegistrationDTOFromSession().setUpdateUINChild(true);
-						}
+							getRegistrationDTOFromSession().setUpdateUINNonBiometric(true);
+						}						
+						getRegistrationDTOFromSession().setUpdateUINChild(parentOrGuardianDetails.isSelected());
 						if (parentOrGuardianDetails.isSelected()) {
 							SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
 									RegistrationConstants.ENABLE);

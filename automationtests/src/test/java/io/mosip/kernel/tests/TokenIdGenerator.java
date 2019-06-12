@@ -1,8 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -38,11 +36,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
 import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.service.AssertKernel;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
 
@@ -61,7 +59,7 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	private final String apiName = "TokenIdGenerator";
 	private final String requestJsonName = "TokenIdGeneratorRequest";
 	private final String outputJsonName = "TokenIdGeneratorOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String tokenIdGenerator_URI = props.get("tokenIdGenerator_URI").toString();
 
 	protected String testCaseName = "";
@@ -97,70 +95,33 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 	 * @return test case name as object
 	 */
 	@DataProvider(name = "fetchData")
-	public Object[][] readData(ITestContext context)
-			throws JsonParseException, JsonMappingException, IOException, ParseException { 
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+	public Object[][] readData(ITestContext context)throws JsonParseException, JsonMappingException, IOException, ParseException { 
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 		}
 
-	}
+		/**
+		 * This fetch the value of the data provider and run for each test case
+		 * 
+		 * @param fileName
+		 * @param object
+		 * @throws ParseException 
+		 * 
+		 */
+		@SuppressWarnings("unchecked")
+		@Test(dataProvider = "fetchData", alwaysRun = true)
+		public void tokenIdGenerator(String testcaseName, JSONObject object) throws ParseException{
+			logger.info("Test Case Name:" + testcaseName);
+			object.put("Jira ID", jiraID);
 
-	/**
-	 * This fetch the value of the data provider and run for each test case
-	 * 
-	 * @param fileName
-	 * @param object
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void generateRID(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
+			// getting request and expected response jsondata from json files.
+			JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		logger.info("Test Case Name:" + testcaseName);
-		object.put("Test case Name", testcaseName);
-		object.put("Jira ID", jiraID);
+			JSONObject objectData = objectDataArray[0];
+			responseObject = objectDataArray[1];
+					response = applicationLibrary.getWithPathParam(tokenIdGenerator_URI, objectData,cookie);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
-
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
-
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + testcaseName;
-
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Json Request Is : " + objectData.toJSONString());
-
-					response = applicationLibrary.getRequestPathPara(tokenIdGenerator_URI, objectData,cookie);
-
-			} else if (listofFiles[k].getName().toLowerCase().contains("response")) {
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-				logger.info("Expected Response:" + responseObject.toJSONString());
-			}
-		}
-
-		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
 			// generating the tokenId with the generation logic
 			String tokenId = ((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("tokenID").toString();
@@ -186,18 +147,15 @@ public class TokenIdGenerator extends BaseTestCase implements ITest{
 			listOfElementToRemove.add("responsetime");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		}
-		finalStatus = status ? "Pass" : "Fail";
-		object.put("status", finalStatus);
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
 	@Override

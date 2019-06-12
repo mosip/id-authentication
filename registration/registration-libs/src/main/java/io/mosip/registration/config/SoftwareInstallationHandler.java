@@ -48,6 +48,9 @@ public class SoftwareInstallationHandler {
 		serverRegClientURL = properties.getProperty("mosip.client.url");
 		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
 
+		latestVersion = properties.getProperty("mosip.version");
+
+		
 		getLocalManifest();
 
 		deleteUnNecessaryJars();
@@ -76,31 +79,34 @@ public class SoftwareInstallationHandler {
 
 	private String versionTag = "version";
 
+
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
 
-		try {
-			// Get latest version using meta-inf.xml
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
+		if (latestVersion == null) {
+			try {
+				// Get latest version using meta-inf.xml
+				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
 
-			/*
-			 * URL url = new URL(getInputStreamOf(serverMosipXmlFileUrl)); URLConnection con
-			 * = url.openConnection(); con.setConnectTimeout(10000);
-			 */
-			org.w3c.dom.Document metaInfXmlDocument = db.parse(getInputStreamOf(serverMosipXmlFileUrl));
+				/*
+				 * URL url = new URL(getInputStreamOf(serverMosipXmlFileUrl)); URLConnection con
+				 * = url.openConnection(); con.setConnectTimeout(10000);
+				 */
+				org.w3c.dom.Document metaInfXmlDocument = db.parse(getInputStreamOf(serverMosipXmlFileUrl));
 
-			NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
-			if (list != null && list.getLength() > 0) {
-				NodeList subList = list.item(0).getChildNodes();
+				NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
+				if (list != null && list.getLength() > 0) {
+					NodeList subList = list.item(0).getChildNodes();
 
-				if (subList != null && subList.getLength() > 0) {
-					// Latest Version
-					setLatestVersion(subList.item(0).getNodeValue());
+					if (subList != null && subList.getLength() > 0) {
+						// Latest Version
+						setLatestVersion(subList.item(0).getNodeValue());
+					}
 				}
+			} catch (NoRouteToHostException noRouteToHostException) {
+				System.out.println("Error in connection");
+				throw noRouteToHostException;
 			}
-		} catch (NoRouteToHostException noRouteToHostException) {
-			System.out.println("Error in connection");
-			throw noRouteToHostException;
 		}
 
 		return latestVersion;
@@ -382,6 +388,7 @@ public class SoftwareInstallationHandler {
 		List<File> deletableJars = new LinkedList<>();
 
 		if (bin.listFiles().length != 0) {
+
 			addDeletableJars(bin.listFiles(), deletableJars, localManifestAttributes, binFolder);
 		}
 		if (lib.listFiles().length != 0) {
@@ -409,11 +416,14 @@ public class SoftwareInstallationHandler {
 			Map<String, Attributes> localManifestAttributes, String folder) {
 		for (File jar : jarFiles) {
 
-			if ((jar.getName().contains(mosip) && folder.equals(libFolder))
-					|| (!jar.getName().contains(mosip) && folder.equals(binFolder)) || localManifestAttributes == null
-					|| !localManifestAttributes.containsKey(jar.getName())) {
+			if (!(jar.getName().contains("run") && folder.equals(binFolder))
+					&& ((jar.getName().contains(mosip) && folder.equals(libFolder))
+							|| (!jar.getName().contains(mosip)) && folder.equals(binFolder)
+							|| localManifestAttributes == null
+							|| !localManifestAttributes.containsKey(jar.getName()))) {
 
 				deletableJars.add(jar);
+
 			}
 		}
 	}

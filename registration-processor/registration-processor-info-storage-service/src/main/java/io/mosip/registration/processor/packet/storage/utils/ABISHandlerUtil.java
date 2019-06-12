@@ -6,25 +6,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
-
-import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
-import io.mosip.registration.processor.core.http.ResponseWrapper;
-import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -55,6 +50,9 @@ public class ABISHandlerUtil {
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
+	@Autowired
+	private IdRepoService idRepoService;
+
 	/**
 	 * Gets the unique reg ids.
 	 *
@@ -67,9 +65,11 @@ public class ABISHandlerUtil {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	public List<String> getUniqueRegIds(String registrationId, String registrationType)
-			throws ApisResourceAccessException, IOException {
+			throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		String latestTransactionId = utilities.getLatestTransactionId(registrationId);
 
@@ -152,16 +152,19 @@ public class ABISHandlerUtil {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private List<String> getUniqueRegIds(List<String> matchedRegistrationIds, String registrationId,
-			String registrationType) throws ApisResourceAccessException, IOException {
+			String registrationType) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		Map<String, String> filteredRegMap = new LinkedHashMap<>();
 		List<String> filteredRIds = new ArrayList<>();
 
 		for (String machedRegId : matchedRegistrationIds) {
 
-			Number matchedUin = getUinFromIDRepo(machedRegId);
+			Number matchedUin = idRepoService.getUinByRid(machedRegId,
+					utilities.getGetRegProcessorDemographicIdentity());
 
 			if (registrationType.equalsIgnoreCase(SyncTypeDto.UPDATE.toString())) {
 				Number packetUin = utilities.getUIn(registrationId);
@@ -173,6 +176,9 @@ public class ABISHandlerUtil {
 				filteredRegMap.put(matchedUin.toString(), machedRegId);
 			}
 
+			if (registrationType.equalsIgnoreCase(SyncTypeDto.LOST.toString()) && matchedUin != null) {
+				filteredRegMap.put(matchedUin.toString(), machedRegId);
+			}
 			if (!filteredRegMap.isEmpty()) {
 				filteredRIds = new ArrayList<>(filteredRegMap.values());
 			}
@@ -183,38 +189,4 @@ public class ABISHandlerUtil {
 
 	}
 
-	/**
-	 * Gets the uin from ID repo.
-	 *
-	 * @param machedRegId
-	 *            the mached reg id
-	 * @return the uin from ID repo
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 */
-	@SuppressWarnings("unchecked")
-	public Number getUinFromIDRepo(String machedRegId) throws IOException, ApisResourceAccessException {
-		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add("rid");
-		pathSegments.add(machedRegId);
-		Number uin = null;
-
-		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response;
-
-		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments,
-				"", "", ResponseWrapper.class);
-
-		if (response.getResponse() != null) {
-			Gson gsonObj = new Gson();
-			String jsonString = gsonObj.toJson(response.getResponse());
-			JSONObject identityJson = JsonUtil.objectMapperReadValue(jsonString, JSONObject.class);
-			JSONObject demographicIdentity = JsonUtil.getJSONObject(identityJson,
-					utilities.getGetRegProcessorDemographicIdentity());
-			uin = JsonUtil.getJSONValue(demographicIdentity, AbisConstant.UIN);
-		}
-		return uin;
-	}
 }

@@ -27,16 +27,15 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
-import com.google.common.base.Verify;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.base.Verify;
 
-import io.mosip.dbaccess.KernelMasterDataR;
-import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
@@ -56,7 +55,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	private final String apiName = "SmsNotification";
 	private final String requestJsonName = "SmsNotificationRequest";
 	private final String outputJsonName = "SmsNotificationOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String SmsNotification_URI = props.get("SmsNotification_URI").toString();
 
 	protected String testCaseName = "";
@@ -82,7 +81,7 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = "Kernel_"+"SmsNotification_"+object.toString();
-		cookie=auth.getAuthForIndividual();
+		cookie=auth.getAuthForRegistrationProcessor();
 	}
 
 	/**
@@ -94,17 +93,8 @@ public class SmsNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "FetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
+			return TestCaseReader.readTestCases(moduleName + "/" + apiName, testLevel);
 		}
-
-	}
 
 	/**
 	 * This fetch the value of the data provider and run for each test case
@@ -142,14 +132,15 @@ public class SmsNotification extends BaseTestCase implements ITest {
 			if (listofFiles[k].getName().toLowerCase().contains("request")) {
 				JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				logger.info("Json Request Is : " + objectData.toJSONString());
-				response = applicationLibrary.postRequest(objectData.toJSONString(), SmsNotification_URI,cookie);
+				response = applicationLibrary.postWithJson(SmsNotification_URI, objectData.toJSONString(), cookie);
 
 			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
 				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 		}
 
 		logger.info("Expected Response:" + responseObject.toJSONString());
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
@@ -158,31 +149,13 @@ public class SmsNotification extends BaseTestCase implements ITest {
 		if (status) {
 			int statusCode = response.statusCode();
 			logger.info("Status Code is : " + statusCode);
-
-			if (statusCode == 201) {
-				// varible part
-				String id = (response.jsonPath().get("id")).toString();
-				logger.info("id is : " + id);
-				String queryStr = "SELECT * FROM master.machine_spec WHERE id='" + id + "'";
-
-				boolean valid = new KernelDataBaseAccess().validateDataInDb(queryStr,"masterdata");
-
-				if (valid) {
-					finalStatus = "Pass";
-				} else {
-					finalStatus = "Fail";
-				}
-
-			}
 			finalStatus = "Pass";
 		}
-
 		else {
 			finalStatus = "Fail";
 		}
 
 		object.put("status", finalStatus);
-
 		arr.add(object);
 		boolean setFinalStatus = false;
 		if (finalStatus.equals("Fail")) {

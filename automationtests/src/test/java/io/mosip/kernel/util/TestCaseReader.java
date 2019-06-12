@@ -12,97 +12,116 @@ import org.json.simple.parser.ParseException;
 import io.mosip.service.BaseTestCase;
 
 /**
- * @author Arjun chandramohan
+ *
+ * @author Ravikant
  *
  */
 public class TestCaseReader extends BaseTestCase {
+	
 	/**
-	 * this method return test case name
-	 * 
 	 * @param folderName
-	 * @param jsonFileName
-	 * @param fieldFile
 	 * @param testType
-	 * @return return the folder(test case name)
+	 * @param requestjsonName
+	 * @return this method works as data provider and reads the test case folders and returns the respective output object.
+	 * @throws IOException
+	 * @throws ParseException
 	 */
-	public static Object[][] readTestCases(String folderName, String testType) throws IOException, ParseException {
+	public Object[][] readTestCases(String folderName, String testType, String requestjsonName){
 
-		String configPath1 = "src/test/resources/" + folderName + "/";
-		File folder1 = new File(configPath1);
-		File[] listOfFolders = folder1.listFiles();
-
-		ArrayList<String> testCaseName = new ArrayList<>();
+		String configPath = "src/test/resources/" + folderName + "/";
+		File folder = new File(configPath);
+		File[] listOfFolders = folder.listFiles();
+		ArrayList<String> testCaseNames = new ArrayList<>();
 		for (int j = 0; j < listOfFolders.length; j++) {
 			if (listOfFolders[j].isDirectory()) {
 				String[] arr = listOfFolders[j].toString().split(BaseTestCase.SEPRATOR);
 				switch (testType) {
 				case "smoke":
 					if (arr[arr.length - 1].toString().contains("smoke"))
-						testCaseName.add(arr[arr.length - 1].toString());
+						testCaseNames.add(arr[arr.length - 1].toString());
 					break;
 				case "regression":
 					if (arr[arr.length - 1].toString().contains("invalid"))
-						testCaseName.add(arr[arr.length - 1].toString());
+						testCaseNames.add(arr[arr.length - 1].toString());
 					break;
 
 				default:
-					testCaseName.add(arr[arr.length - 1].toString());
+					testCaseNames.add(arr[arr.length - 1].toString());
 					break;
 				}
 
 			}
 		}
 
-		Object[][] testParam = new Object[testCaseName.size()][];
+		Object[][] testParam = new Object[testCaseNames.size()][];
 		int k = 0;
-		for (String input : testCaseName) {
-			testParam[k] = new Object[] { input, new JSONObject() };
+		for (String testcaseName : testCaseNames) {
+			String fieldName = testcaseName.split("_")[1];
+			String path =  configPath + requestjsonName + ".json";
+			JSONObject outputObject = readJsonData(path);
+			for (Object key : outputObject.keySet()) {
+				if (fieldName.equals(key.toString()))
+					outputObject.put(key.toString(), "invalid");
+				else
+					outputObject.put(key.toString(), "valid");
+			}
+			outputObject.put("testCaseName", testcaseName);
+			testParam[k] = new Object[] {testcaseName, outputObject};
 			k++;
 		}
 		return testParam;
 
 	}
 
+	
 	/**
-	 * this method accepts the request json name and return the json as JSONObject
-	 * 
-	 * @param modulename
-	 * @param apiname
-	 * @param requestjsonname
-	 * @return
+	 * @param path
+	 * @return this method is for reading the jsonData object from the given path.
 	 */
-	public JSONObject readRequestJson(String modulename, String apiname, String requestjsonname) {
+	public JSONObject readJsonData(String path) {
 
-		String configPath = "src/test/resources/" + modulename + "/" + apiname + "/" + requestjsonname + ".json";
-		File requestJson = new File(configPath);
-		JSONObject inputRequest = null;
+		File requestfile = new File(path);
+		JSONObject jsonData = null;
+		FileReader fileReader = null;
 		try {
-			inputRequest = (JSONObject) new JSONParser().parse(new FileReader(requestJson));
+			fileReader = new FileReader(requestfile);
+			jsonData = (JSONObject) new JSONParser().parse(fileReader);
 		} catch (IOException | ParseException e) {
+		  
 		}
-		return inputRequest;
+		finally {
+			try {
+				fileReader.close();
+			} catch (IOException e) {
+				logger.info(e.getMessage());
+			}
+		}
+		return jsonData;
 	}
 
 	/**
-	 * this method return the testcase condition for the test data generation
-	 * 
 	 * @param modulename
 	 * @param apiname
 	 * @param testcaseName
-	 * @param requestjsonname
-	 * @return
+	 * @return this method is for reading request and response object form the given testcase folder and returns in array.
 	 */
-	public JSONObject readRequestJsonCondition(String modulename, String apiname, String testcaseName,
-			String requestjsonname) {
-		String configPath = "src/test/resources/" + modulename + "/" + apiname + "/" + testcaseName + "/"
-				+ requestjsonname + ".json";
+	public JSONObject[] readRequestResponseJson(String modulename, String apiname, String testcaseName){
+		String configPath = "src/test/resources/" + modulename + "/" + apiname + "/" + testcaseName;
 
-		File requestJson = new File(configPath);
-		JSONObject inputRequest = null;
-		try {
-			inputRequest = (JSONObject) new JSONParser().parse(new FileReader(requestJson));
-		} catch (IOException | ParseException e) {
+		File folder = new File(configPath);
+		File[] listofFiles = folder.listFiles();
+		JSONObject[] objectData = new JSONObject[2];
+		for (int k = 0; k < listofFiles.length; k++) {
+
+				if (listofFiles[k].getName().toLowerCase().contains("request")) 
+					objectData[0] = readJsonData(configPath+"/"+listofFiles[k].getName());
+					
+				 else if (listofFiles[k].getName().toLowerCase().contains("response")) 
+					objectData[1] = readJsonData(configPath+"/"+listofFiles[k].getName());
+		 
+			
 		}
-		return inputRequest;
+		return objectData;
 	}
+	
 }

@@ -8,8 +8,6 @@ import java.util.Optional;
 import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
@@ -89,22 +87,6 @@ public interface IdInfoFetcher {
 	 * @return
 	 */
 	public MasterDataFetcher getTitleFetcher();
-
-	/**
-	 * Get UIN/VID from the request
-	 * 
-	 * @param authRequestDTO
-	 * @return
-	 */
-	public Optional<String> getUinOrVid(AuthRequestDTO authRequestDTO);
-
-	/**
-	 * Get ID type from the request
-	 * 
-	 * @param authRequestDTO
-	 * @return
-	 */
-	public IdType getUinOrVidType(AuthRequestDTO authRequestDTO);
 
 	/**
 	 * Gets the matching threshold.

@@ -27,10 +27,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -55,14 +55,13 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getApplicantType = props.get("getApplicantType");
 	private String folderPath = "kernel/GetApplicantType";
 	private String outputFile = "GetApplicantTypeOutput.json";
 	private String requestKeyFile = "GetApplicantTypeInput.json";
 	private JSONObject Expectedresponse = null;
 	private String finalStatus = "";
-	private String testParam="";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 
@@ -70,7 +69,6 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
-		// testName.set(object.get("testCaseName").toString());
 		testCaseName = object.get("testCaseName").toString();
 		 cookie = auth.getAuthForIndividual();
 	} 
@@ -78,17 +76,8 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders 
 	@DataProvider(name = "GetApplicantType")
 	public Object[][] readData1(ITestContext context) throws Exception {		 
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 		}
-	}
-	
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -105,7 +94,9 @@ public class GetApplicantType extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method 
-		Response res=applicationLibrary.postRequest(actualRequest, getApplicantType,cookie);
+		Response res=applicationLibrary.postWithJson(getApplicantType, actualRequest, cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();

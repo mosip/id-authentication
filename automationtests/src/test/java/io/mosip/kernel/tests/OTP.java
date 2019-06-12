@@ -1,7 +1,5 @@
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -9,12 +7,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -33,14 +31,12 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
-import io.mosip.kernel.util.CommonLibrary;
-
-import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
-
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TestCaseReader;
 import io.restassured.response.Response;
 
 /**
@@ -58,7 +54,7 @@ public class OTP extends BaseTestCase implements ITest {
 	private final String apiName = "OTP";
 	private final String requestJsonName = "OTPRequest";
 	private final String outputJsonName = "OTPOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String OTPGeneration = props.get("OTPGeneration").toString();
 	private final String OTPValidation = props.get("OTPValidation").toString();
 
@@ -85,7 +81,7 @@ public class OTP extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
-		cookie=auth.getAuthForIndividual();
+		cookie=auth.getAuthForRegistrationAdmin();
 	}
 
 	/**
@@ -94,19 +90,10 @@ public class OTP extends BaseTestCase implements ITest {
 	 * @param context
 	 * @return test case name as object
 	 */
-	@DataProvider(name = "FetchData")
+	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
-		case "smoke":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smoke");
-
-		case "regression":
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "regression");
-		default:
-			return TestCaseReader.readTestCases(moduleName + "/" + apiName, "smokeAndRegression");
-		}
-
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
 	}
 
 	/**
@@ -117,57 +104,41 @@ public class OTP extends BaseTestCase implements ITest {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	@Test(dataProvider = "FetchData", alwaysRun = true)
-	public void otp(String testcaseName, JSONObject object)
-			throws JsonParseException, JsonMappingException, IOException, ParseException {
+	@Test(dataProvider = "fetchData", alwaysRun = true)
+	public void otp(String testcaseName, JSONObject object){
 		logger.info("Test Case Name:" + testcaseName);
-
-		object.put("Test case Name", testcaseName);
 		object.put("Jira ID", jiraID);
 
-		String fieldNameArray[] = testcaseName.split("_");
-		String fieldName = fieldNameArray[1];
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
-		JSONObject requestJson = new TestCaseReader().readRequestJson(moduleName, apiName, requestJsonName);
-
-		for (Object key : requestJson.keySet()) {
-			if (fieldName.equals(key.toString()))
-				object.put(key.toString(), "invalid");
-			else
-				object.put(key.toString(), "valid");
-		}
-
-		String configPath ="src/test/resources/" + moduleName + "/" + apiName
-				+ "/" + testcaseName;
-		File folder = new File(configPath);
-		File[] listofFiles = folder.listFiles();
-		JSONObject objectData = null;
+		JSONObject objectData = objectDataArray[0];
+		responseObject = objectDataArray[1];
 		String otpCase = null;
-		for (int k = 0; k < listofFiles.length; k++) {
-
-			if (listofFiles[k].getName().toLowerCase().contains("request")) {
-				objectData = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
 				if(objectData.containsKey("case"))
 				{
 					otpCase = objectData.get("case").toString();
 					objectData.remove("case");
+					if(otpCase.equals("blockUser")||otpCase.equals("blocked"))
+						 {
+							JSONObject reqJson = (JSONObject) objectData.get("request");
+							//generating a random key of 5 digit
+						    String key = String.valueOf(10000 + new Random().nextInt(90000));
+						    reqJson.put("key", key);
+						    objectData.put("reqJson", reqJson);
+						 }
 				}
 				logger.info("Json Request Is : " + objectData.toJSONString());
 
-				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
+				response = applicationLibrary.postWithJson(OTPGeneration, objectData.toJSONString(), cookie);
 
-				
-			} else if (listofFiles[k].getName().toLowerCase().contains("response"))
-				responseObject = (JSONObject) new JSONParser().parse(new FileReader(listofFiles[k].getPath()));
-		}
-
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
-		listOfElementToRemove.add("timestamp");
 
 		int statusCode = response.statusCode();
-		logger.info("Status Code is : " + statusCode);
 
 		if (otpCase!=null && !otpCase.equals("blocked")) {
 			if (statusCode == 200) {
@@ -184,7 +155,7 @@ public class OTP extends BaseTestCase implements ITest {
 					int attempt = Integer.parseInt(props.get("attempt").toString());
 					for(int i=0;i<attempt;i++)
 					{
-						response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+						response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
 
 					}
 					break;
@@ -219,9 +190,9 @@ public class OTP extends BaseTestCase implements ITest {
 					reqJson.put("otp", otp);
 				}
 				
-				response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
-
-
+				response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
+				//This method is for checking the authentication is pass or fail in rest services
+				new CommonLibrary().responseAuthValidation(response);
 				logger.info("Obtained Response: " + response);
 				logger.info("Expected Response:" + responseObject.toJSONString());
 				status = assertions.assertKernel( response, responseObject, listOfElementToRemove);
@@ -237,10 +208,10 @@ public class OTP extends BaseTestCase implements ITest {
 				int attempt = Integer.parseInt(props.get("attempt").toString());
 				for(int i=0;i<=attempt;i++)
 				{
-					response = applicationLibrary.getRequestAsQueryParam(OTPValidation, reqJson,cookie);
+					response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
 				}
 				reqJson.remove("otp");
-				response = applicationLibrary.postRequest(objectData.toJSONString(), OTPGeneration,cookie);
+				response = applicationLibrary.postWithJson(OTPGeneration, objectData.toJSONString(),cookie);
 			}
 			listOfElementToRemove.add("otp");
 			logger.info("Obtained Response: " + response);
@@ -249,22 +220,15 @@ public class OTP extends BaseTestCase implements ITest {
 
 		}
 
-		if (status) {
-			finalStatus = "Pass";
-		} else {
-			finalStatus = "Fail";
-		}
-		object.put("status", finalStatus);
-
-		arr.add(object);
-		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail")) {
-			setFinalStatus = false;
+		if (!status) {
 			logger.debug(response);
-		} else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
-		Verify.verify(setFinalStatus);
+			object.put("status", "Fail");
+		} else if (status) {
+			object.put("status", "Pass");
+		}
+		Verify.verify(status);
 		softAssert.assertAll();
+		arr.add(object);
 	}
 
 	@Override

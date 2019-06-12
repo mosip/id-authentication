@@ -468,10 +468,6 @@ public class LdapDataStore implements DataStore {
 				ridDto = new RIdDto();
 				ridDto.setRId(data.getRId());
 			}
-		}catch(Exception e)
-		{
-			throw new AuthManagerException(LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorCode(),
-					LDAPErrorCode.LDAP_CONNECTION_ERROR.getErrorMessage(),e);
 		}finally
 		{
 			ldapConnection.close();

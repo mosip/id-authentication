@@ -11,22 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.mosip.kernel.auth.adapter.exception.AuthNException;
-import io.mosip.kernel.auth.adapter.exception.AuthZException;
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.syncdata.constant.MasterDataErrorCode;
 import io.mosip.kernel.syncdata.dto.AppAuthenticationMethodDto;
 import io.mosip.kernel.syncdata.dto.AppDetailDto;
@@ -293,7 +278,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (!machineDetailList.isEmpty()) {
 			
@@ -346,7 +331,7 @@ public class SyncMasterDataServiceHelper {
 
 		DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (machineTypes != null && !machineTypes.isEmpty())
 
@@ -384,7 +369,7 @@ public class SyncMasterDataServiceHelper {
 			}
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (machineSpecification != null && !machineSpecification.isEmpty())
@@ -419,7 +404,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (list != null && !list.isEmpty()) {
 			registrationCenterList = MapperUtils.mapAll(list, RegistrationCenterDto.class);
@@ -453,7 +438,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (registrationCenterType != null && !registrationCenterType.isEmpty())
@@ -484,7 +469,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (!(applicationList.isEmpty())) {
 			applications = MapperUtils.mapAll(applicationList, ApplicationDto.class);
@@ -515,7 +500,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (templateList != null && !templateList.isEmpty()) {
 			templates = MapperUtils.mapAll(templateList, TemplateDto.class);
@@ -546,7 +531,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		templateFormats = MapperUtils.mapAll(templateTypes, TemplateFileFormatDto.class);
 		return CompletableFuture.completedFuture(templateFormats);
@@ -574,7 +559,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (reasons != null && !reasons.isEmpty()) {
 			reasonCategories = MapperUtils.mapAll(reasons, PostReasonCategoryDto.class);
@@ -604,7 +589,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REASON_LIST_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (reasons != null && !reasons.isEmpty())
@@ -638,7 +623,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (holidays != null && !holidays.isEmpty())
@@ -670,7 +655,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (words != null && !words.isEmpty()) {
 			blacklistedWords = MapperUtils.mapAll(words, BlacklistedWordsDto.class);
@@ -702,7 +687,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (!(biometricTypesList.isEmpty())) {
 			biometricTypeDtoList = MapperUtils.mapAll(biometricTypesList, BiometricTypeDto.class);
@@ -734,7 +719,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.BIOMETRIC_ATTR_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (biometricAttrs != null && !biometricAttrs.isEmpty()) {
 			biometricAttrList = MapperUtils.mapAll(biometricAttrs, BiometricAttributeDto.class);
@@ -763,7 +748,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (titles != null && !titles.isEmpty()) {
 
@@ -795,7 +780,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (languages != null && !languages.isEmpty()) {
 			languageList = MapperUtils.mapAll(languages, LanguageDto.class);
@@ -825,7 +810,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.GENDER_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (!(genderType.isEmpty())) {
 			genderDto = MapperUtils.mapAll(genderType, GenderDto.class);
@@ -857,7 +842,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICES_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (devices != null && !devices.isEmpty())
@@ -888,7 +873,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (documentCategories != null && !documentCategories.isEmpty())
@@ -919,7 +904,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (documentTypes != null && !documentTypes.isEmpty())
@@ -949,7 +934,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (idTypes != null && !idTypes.isEmpty())
 			idTypeList = MapperUtils.mapAll(idTypes, IdTypeDto.class);
@@ -980,7 +965,7 @@ public class SyncMasterDataServiceHelper {
 					lastUpdated, currentTimeStamp);
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_SPECIFICATION_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (deviceSpecificationList != null && !deviceSpecificationList.isEmpty())
 			deviceSpecificationDtoList = MapperUtils.mapAll(deviceSpecificationList, DeviceSpecificationDto.class);
@@ -1011,7 +996,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (!locations.isEmpty()) {
 			responseList = MapperUtils.mapAll(locations, LocationDto.class);
@@ -1041,7 +1026,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.TEMPLATE_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (templateTypes != null && !templateTypes.isEmpty())
@@ -1075,7 +1060,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (deviceTypes != null && !deviceTypes.isEmpty()) {
@@ -1106,7 +1091,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.DEVICE_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 
 		if (validDocuments != null && !validDocuments.isEmpty()) {
@@ -1139,7 +1124,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_MACHINE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (registrationCenterMachines != null && !registrationCenterMachines.isEmpty()) {
 			registrationCenterMachineDtos = MapperUtils.mapAll(registrationCenterMachines,
@@ -1172,7 +1157,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (registrationCenterDevices != null && !registrationCenterDevices.isEmpty()) {
 			registrationCenterDeviceDtos = MapperUtils.mapAll(registrationCenterDevices,
@@ -1206,7 +1191,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
-					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage(), e);
 		}
 		if (registrationCenterMachineDevices != null && !registrationCenterMachineDevices.isEmpty()) {
 			registrationCenterMachineDeviceDtos = MapperUtils.mapAll(registrationCenterMachineDevices,
@@ -1240,7 +1225,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(
-					MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage());
+					MasterDataErrorCode.REG_CENTER_USER_MACHINE_DEVICE_FETCH_EXCEPTION.getErrorCode(), e.getMessage(), e);
 		}
 		if (registrationCenterUserMachines != null && !registrationCenterUserMachines.isEmpty()) {
 			registrationCenterUserMachineMappingDtos = MapperUtils.mapAll(registrationCenterUserMachines,
@@ -1274,7 +1259,7 @@ public class SyncMasterDataServiceHelper {
 
 		} catch (DataAccessException e) {
 			throw new SyncDataServiceException(MasterDataErrorCode.REG_CENTER_USER_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					e.getMessage(), e);
 		}
 		if (registrationCenterUsers != null && !registrationCenterUsers.isEmpty()) {
 			registrationCenterUserDtos = MapperUtils.mapAll(registrationCenterUsers, RegistrationCenterUserDto.class);
@@ -1310,7 +1295,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_USER_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
-							+ e.getMessage());
+							+ e.getMessage(), e);
 		}
 		if (registrationCenterUserHistoryList != null && !registrationCenterUserHistoryList.isEmpty()) {
 			registrationCenterUserHistoryDtos = MapperUtils.mapAll(registrationCenterUserHistoryList,
@@ -1347,7 +1332,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_MACHINE_USER_HISTORY_FETCH_EXCEPTION.getErrorCode() + " "
-							+ e.getMessage());
+							+ e.getMessage(), e);
 		}
 		if (registrationCenterUserMachineHistoryList != null && !registrationCenterUserMachineHistoryList.isEmpty()) {
 			registrationCenterUserMachineMappingHistoryDtos = MapperUtils.mapAll(
@@ -1384,7 +1369,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_MACHINE_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
-							+ e.getMessage());
+							+ e.getMessage(), e);
 		}
 		if (registrationCenterMachineDeviceHistoryList != null
 				&& !registrationCenterMachineDeviceHistoryList.isEmpty()) {
@@ -1422,7 +1407,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_DEVICE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
-							+ e.getMessage());
+							+ e.getMessage(), e);
 		}
 		if (registrationCenterDeviceHistoryList != null && !registrationCenterDeviceHistoryList.isEmpty()) {
 			registrationCenterDeviceHistoryDtos = MapperUtils.mapAll(registrationCenterDeviceHistoryList,
@@ -1459,7 +1444,7 @@ public class SyncMasterDataServiceHelper {
 			throw new SyncDataServiceException(
 					MasterDataErrorCode.REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MasterDataErrorCode.REG_CENTER_MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage() + " "
-							+ e.getMessage());
+							+ e.getMessage(), e);
 		}
 		if (registrationCenterMachineHistoryList != null && !registrationCenterMachineHistoryList.isEmpty()) {
 			registrationCenterMachineHistoryDtos = MapperUtils.mapAll(registrationCenterMachineHistoryList,

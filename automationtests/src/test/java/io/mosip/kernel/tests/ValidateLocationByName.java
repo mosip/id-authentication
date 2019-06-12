@@ -28,10 +28,10 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
@@ -54,7 +54,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	private boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String validateLocationByName = props.get("validateLocationByName");
 	private String folderPath = "kernel/ValidateLocationByName";
 	private String outputFile = "ValidateLocationByNameOutput.json";
@@ -75,14 +75,7 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "ValidateLocationByName")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch (testLevel) {
-		case "smoke":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
-		}
+			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
 	}
 	
 	
@@ -101,11 +94,11 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
-		
-		
 		 // Calling GET method with path parameters
-		 
-		Response res=applicationLibrary.getRequestPathPara(validateLocationByName, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(validateLocationByName, actualRequest,cookie);
+		
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		
 		 // Removing the unstable attributes from response	
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
@@ -115,18 +108,17 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 		 // Getting the response time in milliseconds	
 		long response_time = res.getTimeIn(TimeUnit.MILLISECONDS);
 	
-		
 		 // Comparing expected and actual response	
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
       if (status) {
 	            
-			/*	if(response_time<=300)
+				if(response_time<=500)
 					finalStatus = "Pass";
 
 				else {
 					finalStatus = "Fail";
-					logger.info("ValidateLocationByName service response time is more than 300ms");
-				}*/
+					logger.info("ValidateLocationByName service response time is more than 500ms");
+				}
     	  finalStatus = "Pass";
 			}	
 		
@@ -134,7 +126,6 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;
@@ -144,7 +135,6 @@ public class ValidateLocationByName extends BaseTestCase implements ITest{
 			setFinalStatus=true;
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-
 }
 		@SuppressWarnings("static-access")
 		@Override

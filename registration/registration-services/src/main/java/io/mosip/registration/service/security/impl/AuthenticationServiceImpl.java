@@ -14,12 +14,13 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.UserDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.login.LoginService;
 import io.mosip.registration.service.security.AuthenticationService;
 import io.mosip.registration.validator.AuthenticationBaseValidator;
+import io.mosip.registration.validator.OTPValidatorImpl;
 
 /**
  * Service class for Authentication
@@ -36,13 +37,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+	private OTPValidatorImpl otpValidatorImpl;
 
 	private List<AuthenticationBaseValidator> authenticationBaseValidators;
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.security.AuthenticationServiceImpl#authValidator(java.lang.String, io.mosip.registration.dto.AuthenticationValidatorDTO)
 	 */
-	@Override
 	public Boolean authValidator(String validatorType, AuthenticationValidatorDTO authenticationValidatorDTO) {
 	
 		for (AuthenticationBaseValidator validator : authenticationBaseValidators) {
@@ -51,6 +54,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			}
 		}
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.security.AuthenticationServiceImpl#authValidator(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public AuthTokenDTO authValidator(String validatorType, String userId, String otp) {		
+		return otpValidatorImpl.validate(userId, otp);
 	}
 
 	/* (non-Javadoc)

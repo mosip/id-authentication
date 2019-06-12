@@ -28,7 +28,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,8 +60,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		try {
 			String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
-			
-			
+
 			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
@@ -175,7 +173,6 @@ public class SoftwareUpdateHandler extends BaseService {
 	 * Get Current version of setup
 	 * 
 	 * @return current version
-	 * @throws IOException
 	 */
 	public String getCurrentVersion() {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
@@ -201,6 +198,7 @@ public class SoftwareUpdateHandler extends BaseService {
 	 * update the binaries
 	 * 
 	 * @throws Exception
+	 *             - IOException
 	 */
 	public void update() throws Exception {
 
@@ -317,6 +315,7 @@ public class SoftwareUpdateHandler extends BaseService {
 		}
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Backup of current version completed");
+
 		return backUpFolder.toPath();
 
 	}
@@ -431,7 +430,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 					"Checking of checksum completed for jar :" + jarFile.getName());
-			return manifestCheckSum.equals(checkSum);
+			return checkSum.equals(manifestCheckSum);
 
 		} catch (IOException ioException) {
 			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
@@ -528,11 +527,10 @@ public class SoftwareUpdateHandler extends BaseService {
 						runSqlFile(rollBackFile);
 					}
 				} catch (RuntimeException | IOException exception) {
-					
+
 					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
-					
 				}
 				// Prepare Error Response
 				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
@@ -597,17 +595,29 @@ public class SoftwareUpdateHandler extends BaseService {
 	private void rollBackSetup(File backUpFolder) throws io.mosip.kernel.core.exception.IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Replacing Backup of current version started");
-		FileUtils.copyDirectory(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(binFolder)),
-				FileUtils.getFile(FilenameUtils.getName(binFolder)));
-		FileUtils.copyDirectory(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(libFolder)),
-				FileUtils.getFile(FilenameUtils.getName(libFolder)));
-		FileUtils.copyFile(FileUtils.getFile(backUpFolder.getAbsolutePath(), FilenameUtils.getName(manifestFile)),
-				FileUtils.getFile(FilenameUtils.getName(manifestFile)));
+		// TODO Working in Ecllipse but not in zip
+		/*
+		 * FileUtils.copyDirectory( FileUtils.getFile(backUpFolder.getAbsolutePath() +
+		 * SLASH + FilenameUtils.getName(binFolder)),
+		 * FileUtils.getFile(FilenameUtils.getName(binFolder)));
+		 * FileUtils.copyDirectory( FileUtils.getFile(backUpFolder.getAbsolutePath() +
+		 * SLASH + FilenameUtils.getName(libFolder)),
+		 * FileUtils.getFile(FilenameUtils.getName(libFolder)));
+		 * FileUtils.copyFile(FileUtils.getFile(backUpFolder.getAbsolutePath()+SLASH+
+		 * FilenameUtils.getName(manifestFile)),
+		 * FileUtils.getFile(FilenameUtils.getName(manifestFile)));
+		 */
+
+		FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + SLASH + binFolder), new File(binFolder));
+		FileUtils.copyDirectory(new File(backUpFolder.getAbsolutePath() + SLASH + libFolder), new File(libFolder));
+
+		FileUtils.copyFile(new File(backUpFolder.getAbsolutePath() + SLASH + manifestFile), new File(manifestFile));
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Replacing Backup of current version completed");
 	}
 
 	private void rollback(ResponseDTO responseDTO, String previousVersion) {
+
 		File file = FileUtils.getFile(backUpPath);
 
 		boolean isBackUpCompleted = false;
@@ -623,7 +633,6 @@ public class SoftwareUpdateHandler extends BaseService {
 					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
-				
 					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
 				}
 				break;
@@ -643,7 +652,7 @@ public class SoftwareUpdateHandler extends BaseService {
 	 *            jarName
 	 * @param manifest
 	 *            localManifestFile
-	 * @return
+	 * @return String - the checksum
 	 */
 	public String getCheckSum(String jarName, Manifest manifest) {
 
@@ -657,14 +666,15 @@ public class SoftwareUpdateHandler extends BaseService {
 			try {
 				manifest = getLocalManifest();
 
-				if (manifest != null) {
-					checksum = (String) manifest.getEntries().get(jarName).get(Attributes.Name.CONTENT_TYPE);
-				}
 			} catch (IOException exception) {
 				LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			}
+		}
+
+		if (manifest != null) {
+			checksum = (String) manifest.getEntries().get(jarName).get(Attributes.Name.CONTENT_TYPE);
 		}
 
 		// checksum (content-type)

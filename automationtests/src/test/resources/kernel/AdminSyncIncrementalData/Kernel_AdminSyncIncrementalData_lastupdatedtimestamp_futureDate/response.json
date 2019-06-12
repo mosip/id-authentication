@@ -1,8 +1,13 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-04-09T09:33:33.285Z",
+  "responsetime": "2019-06-06T08:00:25.309Z",
   "metadata": null,
   "response": null,
-  "errors": null
+  "errors": [
+    {
+      "errorCode": "KER-ADM-102",
+      "message": "Timestamp cannot be future date"
+    }
+  ]
 }

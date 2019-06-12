@@ -19,6 +19,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import io.mosip.kernel.bioapi.impl.BioApiImpl;
+import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.bioapi.exception.BiometricException;
+import io.mosip.kernel.core.bioapi.model.KeyValuePair;
+import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
@@ -33,11 +38,14 @@ import io.mosip.registration.processor.core.util.exception.BiometricTagMatchExce
  * The Class CbeffToBiometricUtil.
  * 
  * @author M1048358 Alok
+ * @author M1030448 Jyoti
  */
 public class CbeffToBiometricUtil {
 
 	/** The cbeffutil. */
-	private CbeffUtil cbeffutil;
+	private CbeffUtil cbeffutil=new CbeffImpl();
+	/**the bioApi */
+	private IBioApi bioAPi =  new  BioApiImpl();
 
 	/**
 	 * Instantiates a new cbeff to biometric util.
@@ -47,6 +55,14 @@ public class CbeffToBiometricUtil {
 	 */
 	public CbeffToBiometricUtil(CbeffUtil cbeffutil) {
 		this.cbeffutil = cbeffutil;
+	}
+	
+	/**
+	 * Instantiates  biometric util
+	 * 
+	 */
+	public CbeffToBiometricUtil() {
+		
 	}
 
 	/**
@@ -290,6 +306,27 @@ public class CbeffToBiometricUtil {
 	 */
 	public List<BIRType> getBIRTypeList(String cbeffFileString) throws Exception {
 		return cbeffutil.getBIRDataFromXML(CryptoUtil.decodeBase64(cbeffFileString));
+	}
+	/**
+	 * Gets the BIR type list.
+	 * @param xmlBytes byte array of XML data
+	 * @return the BIR type list
+	 * @throws Exception
+	 *             the exception
+	 */
+	public List<BIRType> getBIRDataFromXML(byte[] xmlBytes) throws Exception {
+		return cbeffutil.getBIRDataFromXML(xmlBytes);
+	}
+
+	/**
+	 * Gets the BIR template
+	 * @param sample the sample
+	 * @param flags the flags
+	 * @return the biometric record
+	 * @throws BiometricException 
+	 */
+	public BIR extractTemplate(BIR sample, KeyValuePair[] flags) throws BiometricException {
+		return bioAPi.extractTemplate(sample, flags);
 	}
 
 }

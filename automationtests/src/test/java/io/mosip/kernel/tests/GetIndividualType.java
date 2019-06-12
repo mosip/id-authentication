@@ -53,7 +53,7 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getIndividualType = props.get("getIndividualType");
 	private String folderPath = "kernel/GetIndividualType";
 	private String outputFile = "GetIndividualTypeOutput.json";
@@ -68,22 +68,14 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		cookie=auth.getAuthForIndividual();
+		cookie=auth.getAuthForZonalApprover();
 	} 
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetIndividualType")
 	public Object[][] readData1(ITestContext context) throws Exception {
-		switch ("smoke") {
-		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
-		case "regression":
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "regression");
-		default:
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 		}
-	}
-	
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -99,8 +91,9 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		
 		// Calling the get method with path parameters
-		Response res=applicationLibrary.getRequestNoParameter(getIndividualType,cookie);
-		
+		Response res=applicationLibrary.getWithoutParams(getIndividualType,cookie);
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response
 		ArrayList<String> listOfElementToRemove=new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
@@ -116,8 +109,6 @@ public class GetIndividualType extends BaseTestCase implements ITest{
 			finalStatus="Fail";
 			logger.error(res);
 		}
-		
-		softAssert.assertAll();
 		object.put("status", finalStatus);
 		arr.add(object);
 		boolean setFinalStatus=false;

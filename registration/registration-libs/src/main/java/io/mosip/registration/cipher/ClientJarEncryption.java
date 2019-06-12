@@ -1,6 +1,7 @@
 package io.mosip.registration.cipher;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -35,21 +37,14 @@ public class ClientJarEncryption {
 	private static final String AES_ALGORITHM = "AES";
 	private static final String REGISTRATION = "registration";
 	private static final String MOSIP_APPLICATION_PROPERTIES_PATH = "props/mosip-application.properties";
-	private static final String MOSIP_EXE_JAR = "run.jar";
+	private static final String MOSIP_EXE_JAR = "bin/run.jar";
+	private static final String MDM_EXE_JAR = "mdm.jar";
+	private static final String MDM_FOLDER = "mdm";
 	private static final String MOSIP_LIB = "lib";
 	private static final String MOSIP_DB = "db";
 	private static final String MOSIP_ZIP = ".zip";
 	private static final String MOSIP_JAR = ".jar";
-	private static final String MOSIP_LOG_PARAM = "mosip.logpath= ";
-	private static final String MOSIP_DB_PARAM = "mosip.dbpath= ";
-	private static final String MOSIP_ENV_PARAM = "mosip.env= ";
-	private static final String MOSIP_CLIENT_URL = "mosip.client.url=";
-	private static final String MOSIP_XML_FILE_URL = "mosip.xml.file.url=";
-	private static final String MOSIP_PACKET_STORE_PARAM = "mosip.packetstorepath= ";
-	private static final String MOSIP_PACKET_STORE_PATH = "../PacketStore";
-	private static final String MOSIP_LOG_PATH = "../logs";
-	private static final String MOSIP_DB_PATH = "db/reg";
-	private static final String MOSIP_ENV_VAL = "qa";
+
 	private static final String MOSIP_REG_LIBS = "registration-libs-";
 	private static final String MANIFEST_FILE_NAME = "MANIFEST";
 	private static final String MANIFEST_FILE_FORMAT = ".MF";
@@ -57,23 +52,12 @@ public class ClientJarEncryption {
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static final String MOSIP_CLIENT = "mosip-client.jar";
 	private static final String MOSIP_CER = "cer";
-	private static final String MOSIP_CER_PARAM = "mosip.cerpath= ";
-	private static final String MOSIP_CER_PATH = "/cer/";
-	private static final String MOSIP_CLIENT_URL_VAL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/";
-	private static final String MOSIP_XML_FILE_URL_VAL = "http://13.71.87.138:8040/artifactory/libs-release/io/mosip/registration/registration-client/maven-metadata.xml";
-
-	// For TPM
-	private static final String MOSIP_CLIENT_DB_KEY = "mosip.registration.db.key = ";
-	private static final String MOSIP_CLIENT_APP_KEY = "mosip.registration.app.key = ";
-	private static final String MOSIP_CLIENT_DB_BOOT = "bW9zaXAxMjM0NQ==";
-	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration = N";
-
-	private static final String MOSIP_ROLLBACK_PATH_PARAM = "mosip.rollback.path= ";
-	private static final String MOSIP_ROLLBACK_PATH = "D://mosip/AutoBackUp";
 
 	private static final String MOSIP_JRE = "jre";
 
 	private static final String MOSIP_RUN_BAT = "run.bat";
+	private static final String MOSIP_MDM_STSRT_BAT = "mdm_start.bat";
+	private static final String MOSIP_MDM_STOP_BAT = "mdm_stop.bat";
 
 	/**
 	 * Encrypt the bytes
@@ -123,6 +107,7 @@ public class ClientJarEncryption {
 
 					byte[] runExecutbale = FileUtils
 							.readFileToByteArray(new File(args[3] + MOSIP_REG_LIBS + args[2] + MOSIP_JAR));
+					byte[] mdmExecutbale = FileUtils.readFileToByteArray(new File(args[11]));
 					File listOfJars = new File(file.getParent() + SLASH + MOSIP_LIB).getAbsoluteFile();
 
 					// Add files to be archived into zip file
@@ -132,12 +117,15 @@ public class ClientJarEncryption {
 					fileNameByBytes.put(MOSIP_LIB + SLASH, new byte[] {});
 					fileNameByBytes.put(MOSIP_BIN + SLASH, new byte[] {});
 
-					//Executable jar run.jar
+					// Executable jar run.jar
 					fileNameByBytes.put(MOSIP_EXE_JAR, runExecutbale);
 
-					//Bat file run.bat
-					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9]).listFiles()[0]));
+					fileNameByBytes.put(MDM_FOLDER + SLASH + MDM_EXE_JAR, mdmExecutbale);
 
+					// Bat file run.bat
+					fileNameByBytes.put(MOSIP_RUN_BAT, FileUtils.readFileToByteArray(new File(args[9])));
+					fileNameByBytes.put(MOSIP_MDM_STSRT_BAT, FileUtils.readFileToByteArray(new File(args[12])));
+					fileNameByBytes.put(MOSIP_MDM_STOP_BAT, FileUtils.readFileToByteArray(new File(args[13])));
 					readDirectoryToByteArray(MOSIP_JRE, new File(args[8]), fileNameByBytes);
 
 					// Certificate file
@@ -148,33 +136,13 @@ public class ClientJarEncryption {
 								FileUtils.readFileToByteArray(mosipCertificateFile));
 					}
 
-					byte[] propertiesBytes = (MOSIP_LOG_PARAM + MOSIP_LOG_PATH + "\n" + MOSIP_DB_PARAM + MOSIP_DB_PATH
-							+ "\n" + MOSIP_ENV_PARAM + MOSIP_ENV_VAL + "\n" + MOSIP_CLIENT_URL + MOSIP_CLIENT_URL_VAL
-							+ "\n" + MOSIP_ROLLBACK_PATH_PARAM + MOSIP_ROLLBACK_PATH + "\n" + MOSIP_XML_FILE_URL
-							+ MOSIP_XML_FILE_URL_VAL + "\n" + MOSIP_PACKET_STORE_PARAM + MOSIP_PACKET_STORE_PATH + "\n"
-							+ MOSIP_CER_PARAM + MOSIP_CER_PATH + SLASH + mosipCertificateFile.getName() + "\n"
-							+ MOSIP_CLIENT_APP_KEY.concat(args[1]).concat("\n").concat(MOSIP_CLIENT_DB_KEY)
-									.concat(MOSIP_CLIENT_DB_BOOT)
-							+ "\n" + MOSIP_CLIENT_TPM_AVAILABILITY).getBytes();
-
-					fileNameByBytes.put(propertiesFile, propertiesBytes);
+					// Add mosip-Version to mosip-application.properties file
+					addProperties(new File(args[10]), args[2]);
+					fileNameByBytes.put(propertiesFile, FileUtils.readFileToByteArray(new File(args[10])));
 
 					// DB file
 					File regFolder = new File(args[5]);
 					readDirectoryToByteArray(MOSIP_DB, regFolder, fileNameByBytes);
-
-					/*
-					 * // TODO temporary zip file System.out.println("Shaded Zip Started"); String
-					 * shadedzipFilename = file.getParent() + SLASH + "mosip-sw-shaded-" + args[3] +
-					 * MOSIP_ZIP; Map<String, byte[]> shadedZipFileBytes = new HashMap<>();
-					 * readDirectoryToByteArray(null, regFolder, shadedZipFileBytes); File shadedJar
-					 * = args[1] != null && new File(args[1]).exists() ? new File(args[1]) : new
-					 * File(args[7]); shadedZipFileBytes.put(shadedJar.getName(),
-					 * FileUtils.readFileToByteArray(shadedJar));
-					 * aes.writeFileToZip(shadedZipFileBytes, shadedzipFilename);
-					 * 
-					 * System.out.println("Shaded Zip Created");
-					 */
 
 					String path = new File(args[3]).getPath();
 
@@ -254,6 +222,19 @@ public class ClientJarEncryption {
 					System.out.println("Zip Creation ended with path :::" + zipFilename);
 				}
 			}
+		}
+	}
+
+	private static void addProperties(File file, String version) throws FileNotFoundException, IOException {
+		Properties properties = new Properties();
+		properties.load(new FileInputStream(file));
+
+		properties.setProperty("mosip.version", version);
+
+		// Add mosip-Version to mosip-application.properties file
+		try (FileOutputStream outputStream = new FileOutputStream(file)) {
+
+			properties.store(outputStream, version);
 		}
 	}
 

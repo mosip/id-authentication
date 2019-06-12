@@ -138,8 +138,18 @@ public class QRCode extends BaseTestCase implements ITest {
 			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
 
 		} else {
-			
-			Response qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
+			Response qrCodeResponse = null;
+			if(testCaseName.contains("requesttime"))
+			{
+			 qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
+			}
+			else
+			{
+				
+				actualRequest.put("requesttime", preRegLib.getCurrentDate());
+				
+				qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
+			}
 			logger.info("QR Code Invalid TC::" + qrCodeResponse.asString()+"preRegURI:::"+preReg_URI);
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(qrCodeResponse, Expectedresponse, outerKeys, innerKeys);
