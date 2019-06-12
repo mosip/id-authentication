@@ -162,7 +162,7 @@ public class TokenServicesImpl implements TokenService {
 	@Override
 	public AuthToken getTokenBasedOnName(String userName)
 	{
-		return jdbcTemplate.query(selectTokenFromName, new MapSqlParameterSource().addValue("userName", userName),
+		return jdbcTemplate.query(selectTokenFromName, new MapSqlParameterSource().addValue("userName", userName.trim()),
 				new ResultSetExtractor<AuthToken>() {
 
 			@Override

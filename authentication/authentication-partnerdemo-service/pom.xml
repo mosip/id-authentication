@@ -135,11 +135,6 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>${spring-cloud-config.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-jsonvalidator</artifactId>
-			<version>${kernel.version}</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

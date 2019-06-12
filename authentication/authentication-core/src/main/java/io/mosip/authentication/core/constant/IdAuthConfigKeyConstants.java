@@ -31,7 +31,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String STATIC_TOKEN_ENABLE = "static.token.enable";
 	public static final String MOSIP_PRIMARY_LANGUAGE = "mosip.primary-language";
 	public static final String MOSIP_SECONDARY_LANGUAGE = "mosip.secondary-language";
-	public static final String DOB_REQ_DATE_PATTERN = "dob.req.date.pattern";
 	public static final String MOSIP_KERNEL_OTP_DEFAULT_LENGTH = "mosip.kernel.otp.default-length";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_EMAIL = "mosip.id.validation.identity.email";
 	public static final String MOSIP_ID_VALIDATION_IDENTITY_PHONE = "mosip.id.validation.identity.phone";
@@ -59,7 +58,6 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_SUPPORTED_LANGUAGES = "mosip.supported-languages";
 	public static final String DEFAULT_MATCH_VALUE = "demo.threshold";
 	public static final String MOSIP_PHONETIC_LANG = "mosip.phonetic.lang.";
-	public static final String DOB_ENTITY_DATE_PATTERN = "dob.entity.date.pattern";
 	public static final String EKYC_ALLOWED_AUTH_TYPE = "ekyc.auth.types.allowed";
 	public static final String MOSIP_NOTIFICATION_LANGUAGE_TYPE = "mosip.notification.language-type";
 	public static final String CRYPTO_PARTNER_ID = "cryptomanager.partner.id";

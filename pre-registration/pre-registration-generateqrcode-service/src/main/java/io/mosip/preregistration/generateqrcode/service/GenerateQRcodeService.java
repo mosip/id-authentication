@@ -17,6 +17,9 @@ import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.errorcodes.ErrorMessages;
+import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.generateqrcode.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.generateqrcode.exception.util.QRcodeExceptionCatcher;
@@ -86,10 +89,16 @@ public class GenerateQRcodeService {
 			qrcodedto.setId(qrCodeReqData.get("id").toString());
 			qrcodedto.setVersion(qrCodeReqData.get("version").toString());
 			qrcodedto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(qrCodeReqData.get("requesttime").toString()) );
-			String qrCodeData =   qrCodeReqData.get("request").toString();
-			qrcodedto.setRequest(qrCodeData);
 			response.setId(qrcodedto.getId());
 			response.setVersion(qrcodedto.getVersion());
+			JSONObject requestvalue=(JSONObject) qrCodeReqData.get("request");
+			if(requestvalue.length()==0) {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
+						ErrorMessages.INVALID_REQUEST_BODY.getMessage(), null);
+			}
+			String qrCodeData =   qrCodeReqData.get("request").toString();
+			qrcodedto.setRequest(qrCodeData);
+			
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(qrcodedto),requiredRequestMap)) {
 			qrCode = qrCodeGenerator.generateQrCode(qrCodeData,QrVersion.valueOf(qrversion));
 			}

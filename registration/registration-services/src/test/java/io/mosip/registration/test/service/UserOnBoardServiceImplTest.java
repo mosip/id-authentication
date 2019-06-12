@@ -90,6 +90,7 @@ public class UserOnBoardServiceImplTest {
 		appMap.put("mosip.registration.fingerprint_disable_flag", "Y");
 		appMap.put("mosip.registration.iris_disable_flag", "Y");
 		appMap.put("mosip.registration.face_disable_flag", "Y");
+		appMap.put("mosip.registration.onboarduser_ida_auth", "Y");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
 		
 		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);

@@ -30,7 +30,7 @@ public class IndividualDemographicDedupeEntity extends BasePacketEntity<Individu
 	@Column(name = "dob")
 	private String dob;
 
-	@Column(name = "gender", nullable = false)
+	@Column(name = "gender")
 	private String gender;
 
 	@Column(name = "is_active")

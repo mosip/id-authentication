@@ -97,6 +97,10 @@ public class SessionContext {
 	 * making sessionContext as singleton
 	 * 
 	 * @param userDTO - UserInfo to create session
+	 * @param loginMethod - mode of login
+	 * @param isInitialSetUp - boolean variable to know if it is initial setup or not
+	 * @param isUserNewToMachine - is user first time accessing machine
+	 * @param authenticationValidatorDTO - Authentication validator
 	 * 
 	 * @return sessionContext
 	 */

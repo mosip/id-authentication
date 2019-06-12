@@ -39,7 +39,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
@@ -54,11 +53,13 @@ import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.packet.dto.ApplicantDocument;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -102,7 +103,7 @@ public class UinGeneratorStageTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The input stream. */
 	@Mock
@@ -630,7 +631,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void deactivateTestSuccess() throws ApisResourceAccessException {
+	public void deactivateTestSuccess() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type(RegistrationType.valueOf("DEACTIVATED"));
@@ -660,7 +661,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void checkIsUinDeactivatedSuccess() throws ApisResourceAccessException {
+	public void checkIsUinDeactivatedSuccess() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type(RegistrationType.valueOf("DEACTIVATED"));
@@ -684,7 +685,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void deactivateTestForExistingUinTestSuccess() throws ApisResourceAccessException {
+	public void deactivateTestForExistingUinTestSuccess() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type(RegistrationType.valueOf("DEACTIVATED"));
@@ -722,7 +723,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void deactivateTestFailure() throws ApisResourceAccessException {
+	public void deactivateTestFailure() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 
 		ApisResourceAccessException exp = new ApisResourceAccessException(
 				HibernateErrorCode.ERR_DATABASE.getErrorCode());
@@ -763,7 +764,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void apisResourceAccessExceptionTest() throws ApisResourceAccessException {
+	public void apisResourceAccessExceptionTest() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		HttpServerErrorException httpServerErrorException = new HttpServerErrorException(
@@ -786,7 +787,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void clientErrorExceptionTest() throws ApisResourceAccessException {
+	public void clientErrorExceptionTest() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		HttpClientErrorException httpErrorErrorException = new HttpClientErrorException(
@@ -809,7 +810,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void getApiExceptionTest() throws ApisResourceAccessException {
+	public void getApiExceptionTest() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 
@@ -829,7 +830,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void testFSAdapterException() throws FileNotFoundException, ApisResourceAccessException {
+	public void testFSAdapterException() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		FSAdapterException fsAdapterException = new FSAdapterException("RPR-1001", "Unable to connect to HDFS");
 		Mockito.when(adapter.getFile("27847657360002520181210094052",
 				PacketFiles.DEMOGRAPHIC.name() + "\\" + PacketFiles.ID.name())).thenThrow(fsAdapterException);
@@ -846,7 +847,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void testJsonProcessingException() throws ApisResourceAccessException {
+	public void testJsonProcessingException() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type(RegistrationType.valueOf("DEACTIVATED"));
@@ -876,7 +877,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void testApisResourceAccessExceptionPostApi() throws ApisResourceAccessException, FileNotFoundException {
+	public void testApisResourceAccessExceptionPostApi() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		ApisResourceAccessException exc = new ApisResourceAccessException();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("27847657360002520181210094052");
@@ -915,7 +916,7 @@ public class UinGeneratorStageTest {
 	}
 
 	@Test
-	public void testUindeactivate() throws ApisResourceAccessException {
+	public void testUindeactivate() throws ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException, IOException {
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setRid("10031100110005020190313110030");
 		messageDTO.setReg_type(RegistrationType.valueOf("DEACTIVATED"));

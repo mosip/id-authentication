@@ -308,4 +308,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		packetSync(packetsToBeSynched);
 
 	}
+	
+	public Boolean fetchSynchedPacket(String rId) {
+		Registration reg = syncRegistrationDAO.getRegistrationById(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), rId);
+		return reg != null && !reg.getId().isEmpty();
+	}
 }

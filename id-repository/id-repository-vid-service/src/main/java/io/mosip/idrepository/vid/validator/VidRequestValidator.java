@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -86,7 +87,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void validate(Object target, Errors errors) {
+	public void validate(@NonNull Object target, Errors errors) {
 		RequestWrapper<VidRequestDTO> request = (RequestWrapper<VidRequestDTO>) target;
 		validateReqTime(request.getRequesttime(), errors);
 		validateVersion(request.getVersion(), errors);
@@ -172,7 +173,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 * @param vid
 	 * @throws IdRepoAppException
 	 */
-	public void validateVid(String vid) throws IdRepoAppException {
+	public void validateVid(String vid) {
 		vidValidator.validateId(vid);
 	}
 

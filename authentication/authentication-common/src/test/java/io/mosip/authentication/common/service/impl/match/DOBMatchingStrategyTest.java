@@ -86,7 +86,7 @@ public class DOBMatchingStrategyTest {
 		int value = -1;
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put("env", environment);
-		value = matchFunction.match("07/02/1993", "1993/02/07", matchProperties);
+		value = matchFunction.match("1993/02/07", "1993/02/07", matchProperties);
 
 		assertEquals(100, value);
 	}
@@ -102,7 +102,7 @@ public class DOBMatchingStrategyTest {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
         Map<String,Object> dobMap =new HashMap<>();
         dobMap.put("env", environment);
-		int value = matchFunction.match("27/02/1993", "1993/02/07", dobMap);
+		int value = matchFunction.match("1993/02/27", "1993/02/07", dobMap);
 		assertEquals(0, value);
 
 		int value1 = matchFunction.match(2, "1993/02/07", dobMap);

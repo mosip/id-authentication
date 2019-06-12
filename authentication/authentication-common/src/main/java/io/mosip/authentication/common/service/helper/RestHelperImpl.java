@@ -315,6 +315,8 @@ public class RestHelperImpl implements RestHelper {
 					&& !errorList.get(0).getErrorCode().startsWith("KER-ATH-401")) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						THROWING_REST_SERVICE_EXCEPTION + "- CLIENT_ERROR");
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+						THROWING_REST_SERVICE_EXCEPTION + "- CLIENT_ERROR\n" + responseBodyAsString);
 				throw new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, responseBodyAsString,
 						mapper.readValue(responseBodyAsString.getBytes(), responseType));
 			} else if (Objects.nonNull(errorList)
@@ -323,6 +325,8 @@ public class RestHelperImpl implements RestHelper {
 				retry++;
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
 						"errorCode -> KER-ATH-401" + " - retry++");
+				mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",
+						"errorCode -> KER-ATH-401" + " - retry++" + responseBodyAsString);
 			}
 		} catch (IOException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, CLASS_REST_HELPER, "checkErrorResponse",

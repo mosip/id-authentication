@@ -140,6 +140,9 @@ public class DemographicService {
 	@Autowired
 	AuditLogUtil auditLogUtil;
 
+	@Autowired
+	ValidationUtil validationUtil;
+
 	/**
 	 * Reference for ${document.resource.url} from property file
 	 */
@@ -270,7 +273,7 @@ public class DemographicService {
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request), requiredRequestMap)) {
 				DemographicRequestDTO demographicRequest = request.getRequest();
-				ValidationUtil.langvalidation(demographicRequest.getLangCode());
+				validationUtil.langvalidation(demographicRequest.getLangCode());
 				log.info("sessionId", "idType", "id",
 						"JSON validator start time : " + DateUtils.getUTCCurrentDateTimeString());
 				jsonValidator.validateIdObject(demographicRequest.getDemographicDetails(),
@@ -337,7 +340,7 @@ public class DemographicService {
 		boolean isSuccess = false;
 		try {
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(request), requiredRequestMap)) {
-				ValidationUtil.langvalidation(request.getRequest().getLangCode());
+				validationUtil.langvalidation(request.getRequest().getLangCode());
 				Map<String, String> requestParamMap = new HashMap<>();
 				requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegistrationId);
 				if (ValidationUtil.requstParamValidator(requestParamMap)) {
@@ -474,7 +477,8 @@ public class DemographicService {
 	}
 
 	private void prepareDemographicResponse(DemographicMetadataDTO demographicMetadataDTO,
-			List<DemographicEntity> demographicEntities) throws ParseException, EncryptionFailedException, IOException, JsonProcessingException {
+			List<DemographicEntity> demographicEntities)
+			throws ParseException, EncryptionFailedException, IOException, JsonProcessingException {
 		List<DemographicViewDTO> viewList = new ArrayList<>();
 		for (DemographicEntity demographicEntity : demographicEntities) {
 			byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(),

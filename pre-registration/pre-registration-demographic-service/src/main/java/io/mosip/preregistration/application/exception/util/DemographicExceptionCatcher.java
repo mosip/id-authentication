@@ -11,15 +11,12 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
-import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
+import io.mosip.preregistration.application.exception.IdValidationException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
 import io.mosip.preregistration.application.exception.MissingRequestParameterException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
@@ -60,22 +57,10 @@ public class DemographicExceptionCatcher {
 	 *            pass the exception
 	 */
 	public void handle(Exception ex, MainResponseDTO<?> mainResponsedto) {
-		if (ex instanceof HttpRequestException) {
-			throw new JsonValidationException(((HttpRequestException) ex).getErrorCode(),
-					((HttpRequestException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof DataAccessLayerException) {
+	 if (ex instanceof DataAccessLayerException) {
 			throw new TableNotAccessibleException(((DataAccessLayerException) ex).getErrorCode(),
 					((DataAccessLayerException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof JsonValidationProcessingException) {
-			throw new JsonValidationException(((JsonValidationProcessingException) ex).getErrorCode(),
-					((JsonValidationProcessingException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof JsonIOException) {
-			throw new JsonValidationException(((JsonIOException) ex).getErrorCode(),
-					((JsonIOException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof JsonSchemaIOException) {
-			throw new JsonValidationException(((JsonSchemaIOException) ex).getErrorCode(),
-					((JsonSchemaIOException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof ParseException) {
+		}  else if (ex instanceof ParseException) {
 			throw new JsonParseException(((ParseException) ex).getErrorCode(), ((ParseException) ex).getErrorText(),
 					mainResponsedto);
 		} else if (ex instanceof RecordNotFoundException) {
@@ -142,8 +127,8 @@ public class DemographicExceptionCatcher {
 			throw new SchemaValidationException(((IdObjectIOException) ex).getErrorCode(),
 					((IdObjectIOException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof IdObjectValidationFailedException) {
-			throw new SchemaValidationException(((IdObjectValidationFailedException) ex).getErrorCode(),
-					((IdObjectValidationFailedException) ex).getErrorText(), mainResponsedto);
+			throw new IdValidationException(((IdObjectValidationFailedException) ex).getErrorCode(),
+					((IdObjectValidationFailedException) ex).getErrorTexts(), mainResponsedto);
 		} else if (ex instanceof PreIdInvalidForUserIdException) {
 			throw new PreIdInvalidForUserIdException(((PreIdInvalidForUserIdException) ex).getErrorCode(),
 					((PreIdInvalidForUserIdException) ex).getErrorText(), mainResponsedto);

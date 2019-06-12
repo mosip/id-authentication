@@ -268,7 +268,7 @@ public class RegistrationController extends BaseController {
 						BiometricInfoDTO biometricDTO = getFaceDetailsDTO();
 						FaceDetailsDTO faceDetailsDTO = biometricDTO.getFace();
 						FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
-						if (getRegistrationDTOFromSession().isUpdateUINChild()
+						if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
 								&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
 										.equals(RegistrationConstants.ENABLE)) {
 							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
@@ -284,7 +284,7 @@ public class RegistrationController extends BaseController {
 									outputStream);
 							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
 							if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-									|| (getRegistrationDTOFromSession().isUpdateUINChild() && !SessionContext.map()
+									|| (getRegistrationDTOFromSession().isUpdateUINNonBiometric() && !SessionContext.map()
 											.get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
 											.equals(RegistrationConstants.ENABLE))) {
 								getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()

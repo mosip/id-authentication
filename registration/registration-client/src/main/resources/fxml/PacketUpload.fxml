@@ -80,6 +80,11 @@
                         <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                            <children>
                               <TextField fx:id="filterField" prefHeight="30.0" prefWidth="354.0" promptText="%searchPacketID" styleClass="searchBoxTextStyle" />
+                              <ImageView fx:id="exportCSVIcon" fitHeight="33.0" fitWidth="38.0" onMouseClicked="#exportData" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/export-icon.jpg" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </HBox>
                      </children>

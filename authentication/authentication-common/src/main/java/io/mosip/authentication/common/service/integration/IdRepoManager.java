@@ -56,7 +56,7 @@ public class IdRepoManager {
 	private static final String ERRORS = "errors";
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
-
+	
 	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
 			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
 
@@ -175,7 +175,8 @@ public class IdRepoManager {
 									&& USER_ID_NOTEXIST_ERRORCODE.equalsIgnoreCase((String) map.get(ERROR_CODE)))) {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorCode(),
 			                    String.format(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE.getErrorMessage(),IdType.USER_ID.getType()));
-					} else {
+					}
+					else {
 						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
 								e);
 					}

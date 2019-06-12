@@ -373,6 +373,7 @@
     "subheading_information": "Personal Information",
     "label_name": "Full Name",
     "label_age": "Age",
+    "label_DOB":"DOB",
     "text_years": "Years",
     "text_gender": "Gender",
     "text_resident_status": "Resident Status",
@@ -412,7 +413,8 @@
       "msg6": "Wrong file type, please upload again",
       "msg7": "The file could not be uploaded, please try again.",
       "msg8": "Could not copy document",
-      "msg9": "Documents are missing"
+      "msg9": "Documents are missing",
+      "none": "None"
     },
     "appointmentCentreSearch": {
       "msg1": "No result found",
@@ -485,11 +487,11 @@
       "msg_success": "Appointment Booking Successfully Completed",
       "title_failure": "Failure",
       "msg_failure": "Appointment Booking Failed",
-      "deletedApplicant1":[
+      "deletedApplicant1": [
         "The Following User has not been selected any time slot",
         "Do you want to continue Booking"
       ],
-      "yesButtonText":"Yes",
+      "yesButtonText": "Yes",
       "noButtonText": "No"
     }
   },

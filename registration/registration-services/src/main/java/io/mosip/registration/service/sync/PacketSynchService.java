@@ -91,4 +91,6 @@ public interface PacketSynchService {
 	 * 				the reg base checked exception
 	 */
 	void syncAllPackets() throws RegBaseCheckedException;
+	
+	Boolean fetchSynchedPacket(String rId);
 }
