@@ -4,7 +4,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpInterceptor
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 
 import * as appConstants from '../app.constants';
 
@@ -40,8 +40,9 @@ export class AuthInterceptorService implements HttpInterceptor {
     return next.handle(copiedReq).pipe(
       retry(2),
       catchError((error: HttpErrorResponse) => {
-        if (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired) {
-          console.log('error interceptor', error);
+        if (
+          error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+        ) {
           this.router.navigateByUrl('/');
         }
         return throwError(error);

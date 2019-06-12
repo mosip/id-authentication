@@ -501,7 +501,7 @@ export class DemographicComponent implements OnInit {
     } else {
       let index = 0;
       let secondaryIndex = 1;
-      console.log('user', this.user);
+      this.loggerService.info('user', this.user);
 
       if (this.user.request.demographicDetails.identity.fullName[0].language !== this.primaryLang) {
         index = 1;

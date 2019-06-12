@@ -64,8 +64,8 @@ export class LoginComponent implements OnInit {
     this.showSpinner = true;
     this.loadConfigs();
     if (this.authService.isAuthenticated()) {
-      console.log("loggging out in login component");
-      this.authService.onLogout()};
+      this.authService.onLogout();
+    }
   }
 
   loadValidationMessages() {

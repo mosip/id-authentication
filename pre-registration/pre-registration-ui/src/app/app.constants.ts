@@ -106,8 +106,6 @@ export const CONFIG_KEYS = {
 
 export const DASHBOARD_RESPONSE_KEYS = {
   bookingRegistrationDTO: {
-  //  dto: 'bookingRegistrationDTO',
-    // new dashboard api
     dto: 'bookingMetadata',
     regDate: 'appointment_date',
     time_slot_from: 'time_slot_from',
