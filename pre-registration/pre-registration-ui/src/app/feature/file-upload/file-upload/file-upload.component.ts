@@ -658,7 +658,7 @@ export class FileUploadComponent implements OnInit {
       docCatCode: '',
       docTypeCode: ''
     };
-
+    //
     // this.documentCategory = this.docCatSelect['_placeholder'];
     // this.documentType = this.docCatSelect['_value'];
     // console.log('document type select change', this.documentType);
