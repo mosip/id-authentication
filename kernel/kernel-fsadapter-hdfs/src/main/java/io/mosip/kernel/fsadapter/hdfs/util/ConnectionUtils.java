@@ -62,6 +62,14 @@ public class ConnectionUtils {
 	 */
 	@Value("${mosip.kernel.fsadapter.hdfs.keytab-file:NOTSET}")
 	private String keytabPath;
+	
+	@Value("${mosip.kernel.fsadapter.hdfs.connect.timeout:6000}")
+	private String connectTimeout;
+	
+	@Value("${mosip.kernel.fsadapter.hdfs.connect.max.retries.on.timeouts:10}")
+	private String maxRetries;
+	
+
 
 	/**
 	 * Field for hadoop FileSystem
@@ -169,6 +177,8 @@ public class ConnectionUtils {
 			configuration.set("fs.defaultFS", nameNodeUrl);
 			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
+			configuration.set("ipc.client.connect.timeout", connectTimeout);
+			configuration.set("ipc.client.connect.max.retries.on.timeouts", maxRetries);
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
 			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			if (SystemUtils.IS_OS_WINDOWS) {
