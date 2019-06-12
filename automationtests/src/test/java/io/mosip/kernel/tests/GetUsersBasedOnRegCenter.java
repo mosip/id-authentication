@@ -61,7 +61,7 @@ public class GetUsersBasedOnRegCenter extends BaseTestCase implements ITest {
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-		JSONObject object = (JSONObject) testdata[2];
+		String object = (String) testdata[0];
 		testCaseName = object.toString();
 		 cookie=auth.getAuthForRegistrationOfficer();
 	} 
