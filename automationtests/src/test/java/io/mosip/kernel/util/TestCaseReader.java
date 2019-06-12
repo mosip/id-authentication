@@ -26,10 +26,12 @@ public class TestCaseReader extends BaseTestCase {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public Object[][] readTestCases(String folderName, String testType, String requestjsonName){
+	
+	public ClassLoader classLoader = getClass().getClassLoader();
+	public Object[][] readTestCases(String folderName, String testType){
 
-		String configPath = "src/test/resources/" + folderName + "/";
-		File folder = new File(configPath);
+		String configPath = folderName + "/";
+		File folder = new File(classLoader.getResource(configPath).getFile());
 		File[] listOfFolders = folder.listFiles();
 		ArrayList<String> testCaseNames = new ArrayList<>();
 		for (int j = 0; j < listOfFolders.length; j++) {
@@ -56,17 +58,8 @@ public class TestCaseReader extends BaseTestCase {
 		Object[][] testParam = new Object[testCaseNames.size()][];
 		int k = 0;
 		for (String testcaseName : testCaseNames) {
-			String fieldName = testcaseName.split("_")[1];
-			String path =  configPath + requestjsonName + ".json";
-			JSONObject outputObject = readJsonData(path);
-			for (Object key : outputObject.keySet()) {
-				if (fieldName.equals(key.toString()))
-					outputObject.put(key.toString(), "invalid");
-				else
-					outputObject.put(key.toString(), "valid");
-			}
-			outputObject.put("testCaseName", testcaseName);
-			testParam[k] = new Object[] {testcaseName, outputObject};
+			
+			testParam[k] = new Object[] {testcaseName};
 			k++;
 		}
 		return testParam;
@@ -80,7 +73,7 @@ public class TestCaseReader extends BaseTestCase {
 	 */
 	public JSONObject readJsonData(String path) {
 
-		File requestfile = new File(path);
+		File requestfile = new File(classLoader.getResource(path).getFile());
 		JSONObject jsonData = null;
 		FileReader fileReader = null;
 		try {
@@ -106,18 +99,17 @@ public class TestCaseReader extends BaseTestCase {
 	 * @return this method is for reading request and response object form the given testcase folder and returns in array.
 	 */
 	public JSONObject[] readRequestResponseJson(String modulename, String apiname, String testcaseName){
-		String configPath = "src/test/resources/" + modulename + "/" + apiname + "/" + testcaseName;
-
-		File folder = new File(configPath);
+		String configPath = modulename + "/" + apiname + "/" + testcaseName+ "/";
+		File folder = new File(classLoader.getResource(configPath).getFile());
 		File[] listofFiles = folder.listFiles();
 		JSONObject[] objectData = new JSONObject[2];
 		for (int k = 0; k < listofFiles.length; k++) {
 
 				if (listofFiles[k].getName().toLowerCase().contains("request")) 
-					objectData[0] = readJsonData(configPath+"/"+listofFiles[k].getName());
+					objectData[0] = readJsonData(configPath+listofFiles[k].getName());
 					
 				 else if (listofFiles[k].getName().toLowerCase().contains("response")) 
-					objectData[1] = readJsonData(configPath+"/"+listofFiles[k].getName());
+					objectData[1] = readJsonData(configPath+listofFiles[k].getName());
 		 
 			
 		}

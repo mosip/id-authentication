@@ -28,12 +28,6 @@
         "langCode":"eng",
         "description":"Blacklisted Word",
         "isActive":true
-      },
-      {
-        "word":"faked",
-        "langCode":"eng",
-        "description":"Updated Word",
-        "isActive":true
       }]
   },
   "errors":null
