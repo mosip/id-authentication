@@ -85,6 +85,12 @@
 			<artifactId>kernel-crypto-jce</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idobjectvalidator</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
