@@ -25,7 +25,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.constant.PacketFiles;import io.mosip.registration.processor.core.constant.RegistrationType;
+import io.mosip.registration.processor.core.constant.PacketFiles;
+import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -131,7 +132,7 @@ public class ManualVerificationServiceTest {
 		manualVerificationDTO.setMvUsrId("test");
 		registrationStatusDto.setStatusCode(ManualVerificationStatus.PENDING.name());
 		registrationStatusDto.setStatusComment("test");
-		registrationStatusDto.setRegistrationType(RegistrationType.LOST.toString());
+		registrationStatusDto.setRegistrationType("LOST");
 		manualVerificationDTO.setMatchedRefType("Type");
 		manualVerificationDTO.setStatusCode("PENDING");
 		entities.add(manualVerificationEntity);
@@ -291,6 +292,7 @@ public class ManualVerificationServiceTest {
 		manualVerificationDTO.setStatusCode("REJECTED");
 		Mockito.when(basePacketRepository.getSingleAssignedRecord(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(entitiesTemp);
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		manualAdjudicationService.updatePacketStatus(manualVerificationDTO, stageName);
 
 	}
