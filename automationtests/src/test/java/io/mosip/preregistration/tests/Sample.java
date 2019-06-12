@@ -69,12 +69,13 @@ public class Sample extends BaseTestCase implements ITest {
 	PreregistrationDAO dao = new PreregistrationDAO();
 
 	SoftAssert soft = new SoftAssert();
-
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		authToken = lib.getToken();
+		
 	}
+	
+
 
 	/**
 	 * Batch job service for expired application
@@ -83,17 +84,14 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 * 
 	 */
-
-		@Test(groups = { "IntegrationScenarios" })
-		public void fetchCanceledAppointmentCreatedByUser() {
-			authToken = lib.getToken();
-			authToken = lib.getToken();
-		}
-
+	@Test
+	public void pagination_withoutPageIndexValue()
+	{
+	
+	}
+	
 	@BeforeMethod(alwaysRun = true)
-	public void run() {
-		//authToken = lib.getToken();
-		
+	public void run() {	
 	}
 
 	@Override
@@ -104,6 +102,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		//lib.logOut();
+		
 	}
 }

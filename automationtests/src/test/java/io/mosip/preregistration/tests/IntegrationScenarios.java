@@ -410,9 +410,8 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 				fetchResponse.jsonPath().get("response.preRegistrationId").toString()
 						.contains((preRegResponse1.jsonPath().get("response.preRegistrationId")).toString());
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage());
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false,"Exception while fetching application created by user");
 		}
 	}
 
@@ -430,7 +429,11 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
-		lib.compareValues(preID, fetchResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString());
+		try {
+			lib.compareValues(preID, fetchResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString());
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while getting Pre Registartion id from response");
+		}
 		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		lib.compareValues(fetchResponse.jsonPath().get("response.basicDetails[0].bookingRegistrationDTO").toString(),
 				fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
@@ -450,15 +453,20 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(preID);
-		Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
-				"Appointment for the selected application has been successfully cancelled");
-		Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
-		Assert.assertEquals(fetchAllPreRegistrationCreatedByUserResponse.jsonPath()
-				.get("response.basicDetails[0].preRegistrationId").toString(), preID);
-		Assert.assertNull(fetchAllPreRegistrationCreatedByUserResponse.jsonPath()
-				.get("response.basicDetails[0].bookingRegistrationDTO"));
+		try {
+			Response FetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+			Response cancelBookingAppointmentResponse = lib.CancelBookingAppointment(preID);
+			Assert.assertEquals(cancelBookingAppointmentResponse.jsonPath().get("response.message").toString(),
+					"Appointment for the selected application has been successfully cancelled");
+			Response fetchAllPreRegistrationCreatedByUserResponse = lib.fetchAllPreRegistrationCreatedByUser();
+			Assert.assertEquals(fetchAllPreRegistrationCreatedByUserResponse.jsonPath()
+					.get("response.basicDetails[0].preRegistrationId").toString(), preID);
+			Assert.assertNull(fetchAllPreRegistrationCreatedByUserResponse.jsonPath()
+					.get("response.basicDetails[0].bookingRegistrationDTO"));
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Excetion occured while fetching appointment details");
+		}
+		
 
 	}
 

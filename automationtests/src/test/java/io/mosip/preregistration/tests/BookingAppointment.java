@@ -148,8 +148,6 @@ public class BookingAppointment extends BaseTestCase implements ITest {
 
 		/* Book An Appointment for the available data */
 		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
-		logger.info("bookAppointmentResponse::"+bookAppointmentResponse.asString());
-		
 		switch (val) {
 
 		case "BookingAppointment_smoke":

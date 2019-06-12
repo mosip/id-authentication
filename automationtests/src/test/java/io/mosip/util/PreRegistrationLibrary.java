@@ -283,6 +283,13 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		response = applnLib.postRequest(request, otpSend_URI);
 		return response;
 	}
+	public Response pagination(String index)
+	{
+		HashMap<String, String> query=new HashMap<>();
+		query.put("pageIndex", index);
+		Response paginationResponse = applnLib.getRequestAsQueryParam(preReg_CreateApplnURI, query);
+		return paginationResponse;
+	}
 
 	public String getToken() {
 		testSuite = "generateOTP/generateOTP_smoke";
@@ -807,6 +814,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		parm.put("preRegistrationId", PreRegistrationId);
 		request.put("requesttime", getCurrentDate());
+		logger.info("document upload request ::::"+request.toString());
 		response = applnLib.putFileAndJsonWithParm(preReg_DocumentUploadURI, request, file, parm);
 		return response;
 	}

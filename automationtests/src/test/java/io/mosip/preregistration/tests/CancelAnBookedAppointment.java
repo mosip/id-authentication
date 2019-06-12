@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -124,7 +125,12 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 
 			fetchCenter = preRegLib.FetchCentre();
 			/* Book An Appointment for the available data */
-			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+			try {
+				Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+			} catch (NullPointerException e) {
+				Assert.assertTrue(false, "Exception while booking appointment"+e.getCause());
+			}
+			
 
 			if (testCaseName.contains("smoke")) {
 			

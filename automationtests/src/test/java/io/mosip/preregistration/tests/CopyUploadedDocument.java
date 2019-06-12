@@ -14,6 +14,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITest;
@@ -120,6 +121,8 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
+		String srcPreID=null;
+		String docCatCode=null;
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -141,14 +144,16 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		preId = preRegLib.getPreId(createApplicationResponse);
 		// Document Upload for created application
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
-		logger.info("Doc Upload response:"+docUploadResponse.asString());
 		// PreId of Uploaded document
-		String srcPreID = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
-		String docCatCode = docUploadResponse.jsonPath().get("response.docCatCode").toString();
+		try {
+			 srcPreID = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+			 docCatCode = docUploadResponse.jsonPath().get("response.docCatCode").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while fetching document cat code from response");
+		}
 		// Creating the Pre-Registration Application for Destination PreId
 		Response createApplicationRes = preRegLib.CreatePreReg();
-		String destPreId = createApplicationRes.jsonPath().get("response.preRegistrationId").toString();
-
+		String destPreId = preRegLib.getPreId(createApplicationRes);
 		switch (val) {
 		case "CopyUploadedDocument_smoke":
 

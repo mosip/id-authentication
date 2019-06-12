@@ -104,7 +104,7 @@ public class Audit extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createRequest = lib.createRequest(testSuite);
 		Response createRequestResponse = lib.CreatePreReg(createRequest);
-		String pre_registration_id = createRequestResponse.jsonPath().get("response.preRegistrationId").toString();
+		String pre_registration_id = lib.getPreId(createRequestResponse);
 		JSONObject updateRequest = lib.getRequest("UpdateDemographicData/UpdateDemographicData_smoke");
 		updateRequest.put("requesttime", lib.getCurrentDate());
 		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
@@ -150,9 +150,14 @@ public class Audit extends BaseTestCase implements ITest {
 
 	@Test
 	public void getAuditDataForGetAvailbleSlot() {
+		String regCenterId = null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		Response fetchCenterResponse = lib.FetchCentre();
-		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		try {
+			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while getting registartion center id from response");
+		}
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditFetchAvailibilityCenter");
 		expectedRequest.put("session_user_id", userId);
@@ -166,13 +171,18 @@ public class Audit extends BaseTestCase implements ITest {
 	@Test
 	public void getAuditDataForCancelBooking() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		String regCenterId = null;
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		String preID = lib.getPreId(createResponse);
 		Response fetchCenterResponse = lib.FetchCentre();
 		lib.BookAppointment(fetchCenterResponse, preID);
 		lib.CancelBookingAppointment(preID);
-		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		try {
+			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while getting registartion center id from response");
+		}
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditForCancelAppointment");
 		expectedRequest.put("session_user_id", userId);
@@ -184,17 +194,21 @@ public class Audit extends BaseTestCase implements ITest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAuditDataForReBooking() {
+		String regCenterId = null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		String preID = lib.getPreId(createResponse);
 		Response fetchCenterResponse = lib.FetchCentre();
 		lib.BookAppointment(fetchCenterResponse, preID);
 		fetchCenterResponse = lib.FetchCentre();
 		lib.BookAppointment(fetchCenterResponse, preID);
-		String regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		try {
+			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while getting registartion center id from response");
+		}
 		String userId = lib.userId;
-
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditForReBooking");
 		expectedRequest.put("session_user_id", userId);
 		expectedRequest.put("ref_id", regCenterId);
