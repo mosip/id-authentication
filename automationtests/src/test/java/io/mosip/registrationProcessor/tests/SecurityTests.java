@@ -66,7 +66,7 @@ public class SecurityTests extends BaseTestCase implements ITest{
 	public void getValidPacketPath() {
 		validToken=getToken("syncTokenGenerationFilePath");
 		adminAuthToken=getToken("getStatusTokenGenerationFilePath");
-		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorApi.properties";
 		FileReader apiReader=null;
 		Properties folderPath = new Properties();
 		try {

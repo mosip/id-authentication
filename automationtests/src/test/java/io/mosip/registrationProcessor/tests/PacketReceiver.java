@@ -94,7 +94,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "PacketReceiver")
 	public Object[][] readData(ITestContext context){
-		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorApi.properties";
 		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		testLevel=System.getProperty("env.testLevel");
 		Object[][] readFolder = null;
