@@ -259,13 +259,13 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	 * @throws Exception
 	 */
 	private void loginWithKeyTab(String user, String keytabPath) throws Exception {
-		Path keyPath = null;
+		File keyPath = null;
 		Resource resource = resourceLoader.getResource(keytabPath);
 		File dataPath = FileUtils.getFile(hadoopLibPath.toString(), "data");
 		dataPath.mkdir();
 		if (resource.exists()) {
-			keyPath = Paths.get(dataPath.toString(), resource.getFilename());
-			Files.copy(resource.getInputStream(), keyPath, StandardCopyOption.REPLACE_EXISTING);
+			keyPath = FileUtils.getFile(dataPath.toString(), resource.getFilename());
+			FileUtils.copyInputStreamToFile(resource.getInputStream(), keyPath);
 		} else {
 			throw new Exception("KEYTAB_FILE_NOT_FOUND_EXCEPTION: " + keytabPath);
 		}
