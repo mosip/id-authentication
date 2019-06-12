@@ -326,7 +326,7 @@ export class FileUploadComponent implements OnInit {
         this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
         this.setApplicantType(response);
       } else {
-        this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
+        this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
       }
     });
   }
@@ -351,7 +351,7 @@ export class FileUploadComponent implements OnInit {
         this.LOD = res['response'].documentCategories;
         this.registration.setDocumentCategories(res['response'].documentCategories);
       } else {
-        this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
+        this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
       }
     });
   }
@@ -367,11 +367,11 @@ export class FileUploadComponent implements OnInit {
         if (response['errors'] == null) {
           this.bookingService.addApplicants(response['response']['basicDetails']);
         } else {
-          this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
+          this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
         }
       },
       err => {
-        this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
+        this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
       },
       () => {
         this.setApplicants();
@@ -480,7 +480,7 @@ export class FileUploadComponent implements OnInit {
         if (!res['errors']) {
           this.setByteArray(res['response'].document);
         } else {
-          this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
+          this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
           this.start = false;
         }
       },
@@ -538,11 +538,13 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
+    const extensionRegex = new RegExp('(?:pdf|jpg|png)');
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
     for (let file of this.allowedFiles) {
-      if (event.target.files[0].type === file) {
+      // if (event.target.files[0].type === file) {
+      if (extensionRegex.test(this.fileExtension)) {
         allowedFileUploaded = true;
         if (
           event.target.files[0].name.length <
@@ -570,14 +572,14 @@ export class FileUploadComponent implements OnInit {
             this.sendFile(event);
           } else {
             this.displayMessage(
-              this.fileUploadLanguagelabels.discard.title_error,
+              this.fileUploadLanguagelabels.uploadDocuments.error,
               this.fileUploadLanguagelabels.uploadDocuments.msg1
             );
             this.disableNavigation = false;
           }
         } else {
           this.displayMessage(
-            this.fileUploadLanguagelabels.discard.title_error,
+            this.fileUploadLanguagelabels.uploadDocuments.error,
             this.fileUploadLanguagelabels.uploadDocuments.msg5
           );
           this.disableNavigation = false;
@@ -586,7 +588,7 @@ export class FileUploadComponent implements OnInit {
     }
     if (!allowedFileUploaded) {
       this.displayMessage(
-        this.fileUploadLanguagelabels.discard.title_error,
+        this.fileUploadLanguagelabels.uploadDocuments.error,
         this.fileUploadLanguagelabels.uploadDocuments.msg3
       );
       this.disableNavigation = false;
@@ -703,12 +705,12 @@ export class FileUploadComponent implements OnInit {
         if (response['errors'] == null) {
           this.updateUsers(response);
         } else {
-          this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
+          this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
         }
       },
       error => {
         this.displayMessage(
-          this.fileUploadLanguagelabels.discard.title_error,
+          this.fileUploadLanguagelabels.uploadDocuments.error,
           this.fileUploadLanguagelabels.uploadDocuments.msg7
         );
       },
@@ -779,14 +781,14 @@ export class FileUploadComponent implements OnInit {
             this.sameAs = this.registration.getSameAs();
             this.sameAsselected = false;
             this.displayMessage(
-              this.fileUploadLanguagelabels.discard.title_error,
+              this.fileUploadLanguagelabels.uploadDocuments.error,
               this.fileUploadLanguagelabels.uploadDocuments.msg9
             );
           }
         },
         err => {
           this.displayMessage(
-            this.fileUploadLanguagelabels.discard.title_error,
+            this.fileUploadLanguagelabels.uploadDocuments.error,
             this.fileUploadLanguagelabels.uploadDocuments.msg8
           );
         }
