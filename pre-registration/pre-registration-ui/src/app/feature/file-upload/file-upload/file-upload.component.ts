@@ -122,7 +122,8 @@ export class FileUploadComponent implements OnInit {
     this.sameAs = this.registration.getSameAs();
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       if (response['message']) this.fileUploadLanguagelabels = response['message'];
-      if (response['error']) this.errorlabels = response['error'];
+      if (response[this.fileUploadLanguagelabels.discard.title_error])
+        this.errorlabels = response[this.fileUploadLanguagelabels.discard.title_error];
     });
 
     if (this.registration.getUsers().length > 1) {
@@ -346,7 +347,7 @@ export class FileUploadComponent implements OnInit {
         this.setApplicantType(response);
       } else {
         // alert('Servers unavailable,please try again after some time');
-        this.displayMessage('Error', this.errorlabels.error);
+        this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
       }
     });
   }
@@ -372,7 +373,7 @@ export class FileUploadComponent implements OnInit {
         this.registration.setDocumentCategories(res['response'].documentCategories);
         console.log('LOD', this.LOD);
       } else {
-        this.displayMessage('Error', this.errorlabels.error);
+        this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
       }
     });
   }
@@ -388,11 +389,11 @@ export class FileUploadComponent implements OnInit {
         if (response['errors'] == null) {
           this.bookingService.addApplicants(response['response']['basicDetails']);
         } else {
-          this.displayMessage('Error', this.errorlabels.error);
+          this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
         }
       },
       err => {
-        this.displayMessage('Error', this.errorlabels.error);
+        this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
       },
       () => {
         this.setApplicants();
@@ -503,7 +504,7 @@ export class FileUploadComponent implements OnInit {
         if (!res['errors']) {
           this.setByteArray(res['response'].document);
         } else {
-          this.displayMessage('Error', this.errorlabels.error);
+          this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
           this.start = false;
         }
       },
@@ -594,17 +595,26 @@ export class FileUploadComponent implements OnInit {
             this.setJsonString(event);
             this.sendFile(event);
           } else {
-            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg1);
+            this.displayMessage(
+              this.fileUploadLanguagelabels.discard.title_error,
+              this.fileUploadLanguagelabels.uploadDocuments.msg1
+            );
             this.disableNavigation = false;
           }
         } else {
-          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg5);
+          this.displayMessage(
+            this.fileUploadLanguagelabels.discard.title_error,
+            this.fileUploadLanguagelabels.uploadDocuments.msg5
+          );
           this.disableNavigation = false;
         }
       }
     }
     if (!allowedFileUploaded) {
-      this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg3);
+      this.displayMessage(
+        this.fileUploadLanguagelabels.discard.title_error,
+        this.fileUploadLanguagelabels.uploadDocuments.msg3
+      );
       this.disableNavigation = false;
     }
   }
@@ -730,11 +740,14 @@ export class FileUploadComponent implements OnInit {
         if (response['errors'] == null) {
           this.updateUsers(response);
         } else {
-          this.displayMessage('Error', this.errorlabels.error);
+          this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
         }
       },
       error => {
-        this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg7);
+        this.displayMessage(
+          this.fileUploadLanguagelabels.discard.title_error,
+          this.fileUploadLanguagelabels.uploadDocuments.msg7
+        );
       },
       () => {
         this.fileInputVariable.nativeElement.value = '';
@@ -802,11 +815,17 @@ export class FileUploadComponent implements OnInit {
           } else {
             this.sameAs = this.registration.getSameAs();
             this.sameAsselected = false;
-            this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg9);
+            this.displayMessage(
+              this.fileUploadLanguagelabels.discard.title_error,
+              this.fileUploadLanguagelabels.uploadDocuments.msg9
+            );
           }
         },
         err => {
-          this.displayMessage('Error', this.fileUploadLanguagelabels.uploadDocuments.msg8);
+          this.displayMessage(
+            this.fileUploadLanguagelabels.discard.title_error,
+            this.fileUploadLanguagelabels.uploadDocuments.msg8
+          );
         }
       );
       this.sameAsselected = true;
