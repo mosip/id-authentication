@@ -116,12 +116,7 @@ public class TokenValidator {
 				if (role.contains(assignedRole))
 					return true;
 			}
-		} else if (url.contains("uin-card")) {
-			for (String assignedRole : APIAuthorityList.PRINTUINCARD.getList()) {
-				if (role.contains(assignedRole))
-					return true;
-			}
-		}else if (url.contains("abis")) {
+		} else if (url.contains("abis")) {
 			for (String assignedRole : APIAuthorityList.ABIS.getList()) {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;

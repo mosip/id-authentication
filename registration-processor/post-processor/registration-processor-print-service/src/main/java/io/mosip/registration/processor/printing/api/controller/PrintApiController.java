@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +24,6 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
-import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.print.service.exception.RegPrintAppException;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
 import io.mosip.registration.processor.printing.api.dto.RequestDTO;
@@ -48,10 +47,6 @@ public class PrintApiController {
 	/** The printservice. */
 	@Autowired
 	private PrintService<Map<String, byte[]>> printservice;
-
-	/** Token validator class */
-	@Autowired
-	TokenValidator tokenValidator;
 
 	private static final String ID_VALUE = "idValue";
 
@@ -78,20 +73,20 @@ public class PrintApiController {
 	 * @return the file
 	 * @throws RegPrintAppException
 	 */
-
-	@PostMapping(path = "/uincard", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN')")
+	@PostMapping(path = "/uincard", produces = "application/json")
 	@ApiOperation(value = "Service to get Pdf of UIN Card", response = Object.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "UIN card is successfully fetched") })
-	public ResponseEntity<Object> getFile(@Valid @RequestBody(required = true) PrintRequest printRequest,
-			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
+	public ResponseEntity<Object> getFile(@Valid @RequestBody PrintRequest printRequest, @ApiIgnore Errors errors)
 			throws RegPrintAppException {
 
-		tokenValidator.validate("Authorization=" + token, "uin-card");
 		validateRequest(printRequest.getRequest(), errors);
 		PrintServiceValidationUtil.validate(errors);
+
 		byte[] pdfbytes = printservice
 				.getDocuments(printRequest.getRequest().getIdtype(), printRequest.getRequest().getIdValue())
 				.get("uinPdf");
+
 		InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(pdfbytes));
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
 				.header("Content-Disposition",

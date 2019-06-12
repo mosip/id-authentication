@@ -24,8 +24,6 @@ public enum APIAuthorityList {
 
 	ABIS(new String[] { "REGISTRATION_PROCESSOR" }),
 
-	PRINTUINCARD(new String[] { "REGISTRATION_ADMIN" }),
-
 	PACKETGENERATOR(new String[] { "REGISTRATION_ ADMIN", "REGISTRATION_PROCESSOR" });
 
 	private final String[] list;
