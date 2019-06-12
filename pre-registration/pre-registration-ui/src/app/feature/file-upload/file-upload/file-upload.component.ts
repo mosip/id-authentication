@@ -59,11 +59,9 @@ export class FileUploadComponent implements OnInit {
   fileExtension: string = '';
   sameAs: string;
   disableNavigation: boolean = false;
-  // JsonString = appConstants.DOCUMENT_UPLOAD_REQUEST_DTO;
   start: boolean = false;
   browseDisabled: boolean = true;
 
-  // disabled = true;
   documentUploadRequestBody: DocumentUploadRequestDTO = {
     docCatCode: '',
     docTypCode: '',
@@ -116,22 +114,14 @@ export class FileUploadComponent implements OnInit {
       .split(',');
     this.getAllowedFileTypes(this.allowedFiles);
     this.loginId = this.registration.getLoginId();
-    // this.getAllApplicants(); //for same as in POA
     this.setApplicants();
-    // this.allApplicants = [];
     this.sameAs = this.registration.getSameAs();
     this.dataStroage.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
       if (response['message']) this.fileUploadLanguagelabels = response['message'];
-      if (response[this.fileUploadLanguagelabels.discard.title_error])
-        this.errorlabels = response[this.fileUploadLanguagelabels.discard.title_error];
+      if (response['error']) this.errorlabels = response['error'];
     });
 
-    if (this.registration.getUsers().length > 1) {
-      this.multipleApplicants = true;
-    }
     this.getApplicantTypeID();
-    let i = 0;
-    let fileModel: FileModel = new FileModel('', '', '', '', '', '', '');
     if (!this.users[0].files) {
       this.users[0].files = this.userFiles;
     } else {
@@ -233,7 +223,7 @@ export class FileUploadComponent implements OnInit {
     return true;
   }
   /**
-   *@description method to sorf the files in the users array according to the doccument categories in LOD
+   *@description method to sorf the files in the users array according to the doccument categories in LOD. Will be used in future for sorting files.
    *
    * @memberof FileUploadComponent
    */
@@ -284,7 +274,6 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   async getApplicantTypeID() {
-    // let DOCUMENT_CATEGORY_DTO = appConstants.DOCUMENT_CATEGORY_DTO;
     let requestDTO: DocumentCategoryDTO = {
       attribute: '',
       value: ''
@@ -335,10 +324,6 @@ export class FileUploadComponent implements OnInit {
 
     requestArray.attributes.push(biometricDTO);
 
-    // DOCUMENT_CATEGORY_DTO.request.attributes[2].value =
-    // DOB = DOB + 'T11:46:12.640Z';
-    // DOB.replace('1', '-');
-
     DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
     await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
@@ -346,7 +331,6 @@ export class FileUploadComponent implements OnInit {
         this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
         this.setApplicantType(response);
       } else {
-        // alert('Servers unavailable,please try again after some time');
         this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
       }
     });
