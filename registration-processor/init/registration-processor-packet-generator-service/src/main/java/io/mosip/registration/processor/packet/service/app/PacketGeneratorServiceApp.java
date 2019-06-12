@@ -17,7 +17,7 @@ import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfi
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {
-		"io.mosip.registration.processor.status.*,io.mosip.registration.processor.packet.*,io.mosip.registration.processor.rest.client.*,io.mosip.kernel.jsonvalidator.*,io.mosip.registration.processor.core.*","io.mosip.kernel.auth.*"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
+		"io.mosip.registration.processor.packet.*,io.mosip.registration.processor.rest.client.*,io.mosip.registration.processor.core.*","io.mosip.kernel.auth.*"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
 				RestConfigBean.class,PacketStorageBeanConfig.class,RegistrationStatusBeanConfig.class }))
 
 public class PacketGeneratorServiceApp {

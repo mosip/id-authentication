@@ -29,7 +29,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
 import io.mosip.registration.processor.bio.dedupe.exception.UnableToServeRequestABISException;
@@ -45,6 +44,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDt
 import io.mosip.registration.processor.core.packet.dto.abis.CandidateListDto;
 import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -87,7 +87,7 @@ public class BioDedupeServiceImplTest {
 
 	/** The adapter. */
 	@Mock
-	FileSystemAdapter adapter;
+	PacketManager adapter;
 
 	private PacketMetaInfo packetMetaInfo;
 

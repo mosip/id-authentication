@@ -18,32 +18,47 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
- * @author Manoj SP
+ * The Class SaltReader - Creates entities based on chunk size.
+ * Start and end sequence for entity Id is provide via configuration.
+ * Implements {@code ItemReader}.
+ * Salt is provided by {@code HMACUtils.generateSalt()}
  *
+ * @author Manoj SP
  */
 @Component
 public class SaltReader implements ItemReader<SaltEntity> {
 	
+	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(SaltReader.class);
 
+	/** The start seq. */
 	private Long startSeq;
 
+	/** The end seq. */
 	private Long endSeq;
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/**
+	 * Initialize.
+	 */
 	@PostConstruct
 	public void initialize() {
 		startSeq = env.getProperty(START_SEQ.getValue(), Long.class);
 		endSeq = env.getProperty(END_SEQ.getValue(), Long.class);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.springframework.batch.item.ItemReader#read()
+	 */
 	@Override
 	public SaltEntity read() {
 		if (startSeq <= endSeq) {
+			Long id = startSeq++;
 			SaltEntity entity = new SaltEntity();
-			entity.setId(startSeq++);
+			entity.setId(id);
 			entity.setSalt(CryptoUtil.encodeBase64String(HMACUtils.generateSalt()));
 			entity.setCreatedBy("IdRepoSaltGenerator");
 			entity.setCreateDtimes(DateUtils.getUTCCurrentDateTime());

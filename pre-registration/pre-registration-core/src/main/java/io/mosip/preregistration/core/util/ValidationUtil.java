@@ -5,12 +5,22 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
+import org.apache.commons.collections4.SetValuedMap;
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.core.code.RequestCodes;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -33,6 +43,10 @@ public class ValidationUtil {
 	private static String phoneRegex;
 
 	private static String langCodes;
+
+	private static String documentTypeUri;
+
+	private static String documentCategoryUri;
 
 	private static Logger log = LoggerConfiguration.logConfig(ValidationUtil.class);
 
@@ -78,6 +92,35 @@ public class ValidationUtil {
 		}
 		return false;
 	}
+
+	@Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
+	public void setDocType(String value) {
+		ValidationUtil.documentTypeUri = value;
+	}
+
+	@Value("${mosip.kernel.idobjectvalidator.masterdata.documentcategories.lang.rest.uri}")
+	public void setDocCatCode(String value) {
+		ValidationUtil.documentCategoryUri = value;
+	}
+
+	/** The doc cat map. */
+	private SetValuedMap<String, String> docCatMap;
+
+	/** The doc type map. */
+	private SetValuedMap<String, String> docTypeMap;
+
+	@Autowired
+	RestTemplate restTemplate;
+
+	private static final String DOCUMENTS = "documents";
+
+	private static final String DOCUMENTCATEGORIES = "documentcategories";
+
+	private static final String IS_ACTIVE = "isActive";
+
+	private static final String CODE = "code";
+
+	private static final String NAME = "name";
 
 	public static boolean requestValidator(MainRequestDTO<?> mainRequest) {
 		log.info("sessionId", "idType", "id",
@@ -137,19 +180,21 @@ public class ValidationUtil {
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) == null) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_003.getCode(),
 						ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), null);
-//			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
-//				try {
-//					LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
-//					LocalDate serverDate=new Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
-//					if (localDate.isBefore(serverDate) || localDate.isAfter(serverDate)) {
-//						throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
-//								ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
-//					}
-//
-//				} catch (Exception ex) {
-//					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
-//							ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
-//				}
+
+			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
+				try {
+					LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
+					LocalDate serverDate=new Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+					if (localDate.isBefore(serverDate) || localDate.isAfter(serverDate)) {
+						throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
+								ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
+					}
+
+				} catch (Exception ex) {
+					throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
+							ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
+				}
+
 			} else if (key.equals(RequestCodes.REQUEST) && (requestMap.get(RequestCodes.REQUEST) == null
 					|| requestMap.get(RequestCodes.REQUEST).equals(""))) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
@@ -228,7 +273,7 @@ public class ValidationUtil {
 
 	}
 
-	public static boolean langvalidation(String langCode) {
+	public boolean langvalidation(String langCode) {
 		List<String> reqParams = new ArrayList<>();
 		String[] langList = langCodes.split(",");
 		for (int i = 0; i < langList.length; i++) {
@@ -241,6 +286,72 @@ public class ValidationUtil {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_014.getCode(),
 					ErrorMessages.INVALID_LANG_CODE.getMessage(), null);
 		}
+	}
+
+	public void getAllDocCategories(String langcode) {
+		String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentCategoryUri).buildAndExpand(langcode)
+				.toUriString();
+		@SuppressWarnings("unchecked")
+		ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
+				.getForObject(uri, ResponseWrapper.class);
+		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
+			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTCATEGORIES);
+			docCatMap = new HashSetValuedHashMap<>(response.size());
+			IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE)).forEach(
+					index -> docCatMap.put(String.valueOf(langcode), String.valueOf(response.get(index).get(CODE))));
+		}
+	}
+
+	public void getAllDocumentTypes(String langCode, String catCode) {
+		docTypeMap = new HashSetValuedHashMap<>();
+		if (Objects.nonNull(docCatMap) && !docCatMap.isEmpty()) {
+			String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentTypeUri)
+					.buildAndExpand(catCode, langCode).toUriString();
+			@SuppressWarnings("unchecked")
+			ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
+					.getForObject(uri, ResponseWrapper.class);
+			if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
+				ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
+				IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
+						.forEach(index -> {
+							docTypeMap.put(catCode, String.valueOf(response.get(index).get(CODE)));
+						});
+			}
+		}
+	}
+
+	public boolean validateDocuments(String langCode, String catCode, String typeCode) {
+		getAllDocCategories(langCode);
+		if (docCatMap.get(langCode).contains(catCode)) {
+			getAllDocumentTypes(langCode, catCode);
+			if (docTypeMap.get(catCode).contains(typeCode)) {
+				return true;
+			} else {
+				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_017.toString(),
+						ErrorMessages.INVALID_DOC_TYPE_CODE.getMessage(), null);
+			}
+		} else {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_018.toString(),
+					ErrorMessages.INVALID_DOC_CAT_CODE.getMessage(), null);
+		}
+	}
+
+	public Map<String, String> getDocumentTypeNameByTypeCode(String langCode, String catCode) {
+		Map<String, String> documentTypeMap = new HashMap<>();
+		String uri = UriComponentsBuilder.fromUriString(ValidationUtil.documentTypeUri)
+				.buildAndExpand(catCode, langCode).toUriString();
+		@SuppressWarnings("unchecked")
+		ResponseWrapper<LinkedHashMap<String, ArrayList<LinkedHashMap<String, Object>>>> responseBody = restTemplate
+				.getForObject(uri, ResponseWrapper.class);
+		if (Objects.isNull(responseBody.getErrors()) || responseBody.getErrors().isEmpty()) {
+			ArrayList<LinkedHashMap<String, Object>> response = responseBody.getResponse().get(DOCUMENTS);
+			IntStream.range(0, response.size()).filter(index -> (Boolean) response.get(index).get(IS_ACTIVE))
+					.forEach(index -> {
+						documentTypeMap.put(String.valueOf(response.get(index).get(CODE)),
+								String.valueOf(response.get(index).get(NAME)));
+					});
+		}
+		return documentTypeMap;
 	}
 
 }

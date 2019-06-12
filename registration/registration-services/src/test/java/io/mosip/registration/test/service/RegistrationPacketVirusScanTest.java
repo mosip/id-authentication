@@ -63,4 +63,10 @@ public class RegistrationPacketVirusScanTest {
 		Mockito.when(virusScanner.scanDocument(Mockito.any(File.class))).thenThrow(new VirusScannerException());
 		assertNotNull(registrationPacketVirusScanServiceImpl.scanPacket().getSuccessResponseDTO());
 	}
+	
+	@Test
+	public void scanPacketIOException() throws IOException {
+		Mockito.when(virusScanner.scanDocument(Mockito.any(File.class))).thenThrow(new IOException());
+		assertNotNull(registrationPacketVirusScanServiceImpl.scanPacket().getErrorResponseDTOs());
+	}
 }

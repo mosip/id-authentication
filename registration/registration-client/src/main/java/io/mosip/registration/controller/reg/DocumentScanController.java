@@ -174,6 +174,13 @@ public class DocumentScanController extends BaseController {
 	private Button backBtn;
 
 
+	/**
+	 * @return the bioExceptionToggleLabel1
+	 */
+	public Label getBioExceptionToggleLabel1() {
+		return bioExceptionToggleLabel1;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -934,6 +941,8 @@ public class DocumentScanController extends BaseController {
 						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;
 						updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, true);
+						biometricExceptionController.fingerException();
+						biometricExceptionController.clearIrisException();
 					} else {
 						bioExceptionToggleLabel1.setLayoutX(0);
 

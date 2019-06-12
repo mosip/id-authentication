@@ -22,7 +22,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
-import io.mosip.kernel.uingenerator.config.UinServiceConfiguration;
+import io.mosip.kernel.uingenerator.config.HibernateDaoConfig;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.verticle.HttpServerVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -56,7 +56,7 @@ public class UinGeneratorExceptionTest {
 		port = socket.getLocalPort();
 		socket.close();
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
-		context = new AnnotationConfigApplicationContext(UinServiceConfiguration.class);
+		context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
 		vertx = Vertx.vertx();
 		// Without UinGeneratorVerticle deployed
 		Verticle[] verticles = { new HttpServerVerticle(context) };

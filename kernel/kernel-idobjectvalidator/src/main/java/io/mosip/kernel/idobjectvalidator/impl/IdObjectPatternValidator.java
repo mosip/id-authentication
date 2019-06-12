@@ -5,7 +5,12 @@ import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorE
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.CNIE_NUMBER_REGEX;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_CNIE_NUMBER_PATH;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_DOB_PATH;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.DOB_FORMAT;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +33,7 @@ import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupporte
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
+import io.mosip.kernel.core.util.DateUtils;
 import net.minidev.json.JSONArray;
 
 /**
@@ -66,6 +72,7 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 			List<ServiceError> errorList = new ArrayList<>();
 			validateAttributes(identityString, errorList);
 			validateCNIENumber(identityString, errorList);
+			validateDateOfBirth(identityString, errorList);
 			if (errorList.isEmpty()) {
 				return true;
 			} else {
@@ -126,9 +133,39 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 		CharSequence data = jsonPath.read(identity,
 				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
 		if (Objects.nonNull(data) && !pattern.matcher(data).matches()) {
-			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(INVALID_INPUT_PARAMETER.getMessage(),
-							convertToPath(String.valueOf(pathList.get(0))))));
+			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), String
+					.format(INVALID_INPUT_PARAMETER.getMessage(), convertToPath(String.valueOf(pathList.get(0))))));
+		}
+	}
+	
+	/**
+	 * Validate date of birth.
+	 *
+	 * @param identity the identity
+	 * @param errorList the error list
+	 */
+	private void validateDateOfBirth(String identity, List<ServiceError> errorList) {
+		JsonPath jsonPath = JsonPath.compile(IDENTITY_DOB_PATH.getValue());
+		JSONArray pathList = jsonPath.read(identity, 
+				Configuration.defaultConfiguration()
+				.addOptions(
+						Option.SUPPRESS_EXCEPTIONS, 
+						Option.AS_PATH_LIST));
+		String data = jsonPath.read(identity,
+				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
+		try {
+			if (Objects.nonNull(data) && LocalDate.parse(data, DateTimeFormatter.ofPattern(DOB_FORMAT.getValue()))
+					.isAfter(DateUtils.getUTCCurrentDateTime().toLocalDate())) {
+				String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
+						convertToPath(String.valueOf(pathList.get(0))));
+				errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));
+				errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), errorMessage));
+			}
+		} catch (DateTimeParseException e) {
+			String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
+					convertToPath(String.valueOf(pathList.get(0))));
+			errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));
+			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), errorMessage));
 		}
 	}
 	

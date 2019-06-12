@@ -263,8 +263,14 @@ public class CommonLibrary extends BaseTestCase {
 	 		JSONArray errors = null;
 	 		String errorCode = null;
 			String errorMessage = null;
+			int statusCode = response.getStatusCode();
+			String numberString = Integer.toString(statusCode);
+			char firstLetterChar = numberString.charAt(0);
 	 	// fetching json array of objects from response
 		try {
+			if(firstLetterChar=='5')
+				Assert.assertTrue(false, "Service is Unavailable and the statsCode="+statusCode);
+			
 			errors = (JSONArray) ((JSONObject) new JSONParser().parse(response.asString())).get("errors");
 		} catch (ParseException pe) {
 			Assert.assertTrue(false, "Response from the service is not able to parse and exception is"+pe.getClass());

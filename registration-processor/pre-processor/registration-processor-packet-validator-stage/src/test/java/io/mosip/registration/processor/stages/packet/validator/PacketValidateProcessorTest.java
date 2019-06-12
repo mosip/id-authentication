@@ -45,12 +45,6 @@ import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
-import io.mosip.kernel.core.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonSchemaIOException;
-import io.mosip.kernel.core.jsonvalidator.exception.JsonValidationProcessingException;
-import io.mosip.kernel.core.jsonvalidator.model.ValidationReport;
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -71,6 +65,7 @@ import io.mosip.registration.processor.core.packet.dto.masterdata.StatusResponse
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ExceptionJSONInfoDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.MainResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.packetvalidator.ReverseDatasyncReponseDTO;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -105,7 +100,7 @@ public class PacketValidateProcessorTest {
 
 	/** The filesystem ceph adapter impl. */
 	@Mock
-	private FileSystemAdapter filesystemCephAdapterImpl;
+	private PacketManager filesystemCephAdapterImpl;
 
 	/** The registration status service. */
 	@Mock
@@ -165,7 +160,7 @@ public class PacketValidateProcessorTest {
 
 	@Mock
 	IdObjectValidator idObjectValidator;
-	
+
 	@Mock
 	IdObjectsSchemaValidationOperationMapper idObjectsSchemaValidationOperationMapper;
 
@@ -182,9 +177,6 @@ public class PacketValidateProcessorTest {
 	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
 
 	StatusResponseDto statusResponseDto;
-
-	ValidationReport validationReport;
-
 	private static final String CONFIG_SERVER_URL = "url";
 	private String identityMappingjsonString;
 
@@ -339,9 +331,6 @@ public class PacketValidateProcessorTest {
 		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
-
-		validationReport = new ValidationReport();
-		validationReport.setValid(true);
 
 		when(env.getProperty(anyString())).thenReturn("gender");
 		when(env.getProperty(PRIMARY_LANGUAGE)).thenReturn("eng");

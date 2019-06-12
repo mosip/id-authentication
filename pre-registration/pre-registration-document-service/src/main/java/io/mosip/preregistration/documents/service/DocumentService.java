@@ -22,14 +22,12 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
-//import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -158,6 +156,9 @@ public class DocumentService {
 	@Autowired
 	private CryptoUtil cryptoUtil;
 
+	@Autowired
+	ValidationUtil validationUtil;
+
 	/**
 	 * Logger configuration for document service
 	 */
@@ -169,7 +170,6 @@ public class DocumentService {
 	 */
 	@PostConstruct
 	public void setup() {
-		// requiredRequestMap.put("id", uploadId);
 		requiredRequestMap.put("version", ver);
 	}
 
@@ -204,6 +204,9 @@ public class DocumentService {
 				if (serviceUtil.isVirusScanSuccess(file) && serviceUtil.fileSizeCheck(file.getSize())
 						&& serviceUtil.fileExtensionCheck(file)) {
 					serviceUtil.isValidRequest(docReqDto.getRequest(), preRegistrationId);
+					validationUtil.langvalidation(docReqDto.getRequest().getLangCode());
+					validationUtil.validateDocuments(docReqDto.getRequest().getLangCode(),
+							docReqDto.getRequest().getDocCatCode(), docReqDto.getRequest().getDocTypCode());
 					DocumentResponseDTO docResponseDtos = createDoc(docReqDto.getRequest(), file, preRegistrationId);
 					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 					responseDto.setResponse(docResponseDtos);
@@ -248,12 +251,12 @@ public class DocumentService {
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
 	public DocumentResponseDTO createDoc(DocumentRequestDTO document, MultipartFile file, String preRegistrationId)
-			throws IOException,EncryptionFailedException {
+			throws IOException, EncryptionFailedException {
 		log.info("sessionId", "idType", "id", "In createDoc method of document service");
 		DocumentResponseDTO docResponseDto = new DocumentResponseDTO();
 		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
-			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, "test@gmail.com",
+			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
 					preRegistrationId);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
@@ -513,6 +516,7 @@ public class DocumentService {
 			allDocDto.setDocName(doc.getDocName());
 			allDocDto.setDocumentId(doc.getDocumentId());
 			allDocDto.setDocTypCode(doc.getDocTypeCode());
+			allDocDto.setLangCode(doc.getLangCode());
 			allDocRes.add(allDocDto);
 		}
 		documentsMetaData.setDocumentsMetaData(allDocRes);

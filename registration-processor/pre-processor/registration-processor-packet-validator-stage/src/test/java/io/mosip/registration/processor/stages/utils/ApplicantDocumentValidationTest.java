@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantTypeDocument;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -79,9 +80,11 @@ public class ApplicantDocumentValidationTest {
 	 *             the apis resource access exception
 	 * @throws ParseException
 	 *             the parse exception
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Before
-	public void setUp() throws IOException, ApisResourceAccessException, ParseException {
+	public void setUp() throws IOException, ApisResourceAccessException, ParseException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		dto.setRid("2018701130000410092018110735");
 
@@ -126,10 +129,12 @@ public class ApplicantDocumentValidationTest {
 	 *             the parse exception
 	 * @throws JSONException
 	 *             the JSON exception
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void testApplicantDocumentValidationAdultSuccess() throws ApisResourceAccessException, NoSuchFieldException,
-			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
+			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		boolean isApplicantDocumentValidated = applicantDocumentValidation.validateDocument("1234", jsonStringID);
 		assertTrue("Test for successful Applicant Document Validation success for adult", isApplicantDocumentValidated);
 	}
@@ -151,10 +156,12 @@ public class ApplicantDocumentValidationTest {
 	 *             the parse exception
 	 * @throws JSONException
 	 *             the JSON exception
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void testApplicantDocumentValidationChildSuccess() throws ApisResourceAccessException, NoSuchFieldException,
-			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
+			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		Mockito.when(utility.getApplicantAge(any())).thenReturn(4);
 		boolean isApplicantDocumentValidated = applicantDocumentValidation.validateDocument("1234", jsonStringID);
 		assertTrue("Test for successful Applicant Document Validation for child", isApplicantDocumentValidated);
@@ -177,10 +184,12 @@ public class ApplicantDocumentValidationTest {
 	 *             the parse exception
 	 * @throws JSONException
 	 *             the JSON exception
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test(expected = IdentityNotFoundException.class)
 	public void testApplicantDocumentValidationIDJSONNull() throws ApisResourceAccessException, NoSuchFieldException,
-			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
+			IllegalAccessException, IOException, ParseException, org.json.simple.parser.ParseException, JSONException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		boolean isApplicantDocumentValidated = applicantDocumentValidation.validateDocument("1234", "{}");
 
@@ -203,10 +212,12 @@ public class ApplicantDocumentValidationTest {
 	 *             the parse exception
 	 * @throws JSONException
 	 *             the JSON exception
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test
 	public void testInvalidType() throws ApisResourceAccessException, NoSuchFieldException, IllegalAccessException,
-			IOException, ParseException, org.json.simple.parser.ParseException, JSONException {
+			IOException, ParseException, org.json.simple.parser.ParseException, JSONException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		InputStream inputStream = new FileInputStream("src/test/resources/ID2.json");
 		byte[] bytes = IOUtils.toByteArray(inputStream);

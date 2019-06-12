@@ -34,7 +34,7 @@ public class UserOnboardParentController extends BaseController{
 	public void showCurrentPage(String notTosShow, String show) {
 		
 		LOGGER.debug(LoggerConstants.LOG_REG_PARENT_USER_ONBOARD, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Navigating to next page based on the current page");
+				RegistrationConstants.APPLICATION_ID, "Navigating to next page based on the current page" + notTosShow + " ::: Show " + show);
 		
 		getCurrentPage(userOnboardId, notTosShow, show);
 		

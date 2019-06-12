@@ -121,9 +121,9 @@ public class DocumentUploadServiceTest {
 	private MockMultipartFile mockMultipartFileExtnCheck;
 	private MockMultipartFile mockMultipartSaveCheck;
 	String preRegistrationId = "48690172097498";
-	String docId="af91b0f0-61bb-11e9-b68f-c19fa9cb12b4";
-	DocumentRequestDTO documentDto = new DocumentRequestDTO("address", "POA", "ENG");
-	DocumentRequestDTO dummyDto = new DocumentRequestDTO("address", "POI", "ENG");
+	String docId = "af91b0f0-61bb-11e9-b68f-c19fa9cb12b4";
+	DocumentRequestDTO documentDto = new DocumentRequestDTO("RNC", "POA", "eng");
+	DocumentRequestDTO dummyDto = new DocumentRequestDTO("CIN", "POI", "eng");
 	private DocumentEntity entity;
 	private DocumentEntity copyEntity;
 	String documentId = "1";
@@ -144,16 +144,16 @@ public class DocumentUploadServiceTest {
 	@Before
 	public void setUp() throws URISyntaxException, IOException {
 		Date date = new Date();
-		SimpleDateFormat dateformat= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-	    String presentDate=dateformat.format(date);
-		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\","
-				+ "\"requesttime\" : \""+presentDate+"\",\"request\" :" + "{\"docCatCode\" "
-				+ ": \"POA\",\"docTypCode\" : \"address\",\"langCode\":\"ENG\"}}";
+		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		String presentDate = dateformat.format(date);
+		docJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\"," + "\"requesttime\" : \""
+				+ presentDate + "\",\"request\" :" + "{\"docCatCode\" "
+				+ ": \"POA\",\"docTypCode\" : \"RNC\",\"langCode\":\"eng\"}}";
 
 		errJson = "{\"id\": \"mosip.pre-registration.document.upload\",\"version\" : \"1.0\","
 				+ "\"requesttime\" : \"2020-12-28T05:23:08.019Z\",\"request\" :"
 				+ "{\"pre_registartion_id\" : \"86710482195706\",\"doc_cat_code\" "
-				+ ": \"\",\"doc_typ_code\" : \"address\",\"lang_code\":\"ENG\"}}";
+				+ ": \"\",\"doc_typ_code\" : \"RNC\",\"lang_code\":\"eng\"}}";
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
@@ -183,15 +183,14 @@ public class DocumentUploadServiceTest {
 		InputStream sourceFile = new FileInputStream(file);
 		byte[] cephBytes = IOUtils.toByteArray(sourceFile);
 
-		entity = new DocumentEntity("1", "48690172097498", "Doc.pdf", "POA", "address", "PDF", "Pending_Appointment",
-				"ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
+		entity = new DocumentEntity("1", "48690172097498", "Doc.pdf", "POA", "RNC", "PDF", "Pending_Appointment", "eng",
+				"Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
 				DateUtils.parseDateToLocalDateTime(new Date()), DateUtils.parseDateToLocalDateTime(new Date()), "",
 				new String(HashUtill.hashUtill(cephBytes)));
 
-		copyEntity = new DocumentEntity("2", "48690172097499", "Doc.pdf", "POA", "address", "PDF",
-				"Pending_Appointment", "ENG", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()),
-				"Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()),
-				DateUtils.parseDateToLocalDateTime(new Date()), "", "");
+		copyEntity = new DocumentEntity("2", "48690172097499", "Doc.pdf", "POA", "RNC", "PDF", "Pending_Appointment",
+				"eng", "Jagadishwari", DateUtils.parseDateToLocalDateTime(new Date()), "Jagadishwari",
+				DateUtils.parseDateToLocalDateTime(new Date()), DateUtils.parseDateToLocalDateTime(new Date()), "", "");
 
 		map.put("DocumentId", "1");
 		map.put("Status", "Pending_Appointment");
@@ -222,7 +221,12 @@ public class DocumentUploadServiceTest {
 	@Test
 	public void uploadDocumentSuccessTest() throws IOException {
 		MainResponseDTO<DemographicResponseDTO> restRes = new MainResponseDTO<DemographicResponseDTO>();
+		documentDto.setDocCatCode("POA");
+		documentDto.setDocTypCode("RNC");
+		documentDto.setLangCode("eng");
+
 		docResp.setDocCatCode("POA");
+		docResp.setDocTypCode("RNC");
 		responseUpload.setResponse(docResp);
 		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
 				HttpStatus.OK);
@@ -236,9 +240,12 @@ public class DocumentUploadServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
 		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
 				docJson, preRegistrationId);
-		assertEquals(responseDto.getResponse().getDocCatCode(), responseUpload.getResponse().getDocCatCode());
+		assertEquals(responseUpload.getResponse().getDocCatCode(), responseDto.getResponse().getDocCatCode());
 	}
 
 	@Test(expected = DemographicGetDetailsException.class)
@@ -267,6 +274,9 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
 		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.uploadDocument(mockMultipartFile,
 				docJson, preRegistrationId);
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
 		assertEquals(responseDto.getResponse().getDocCatCode(), responseUpload.getResponse().getDocCatCode());
 	}
 
@@ -335,6 +345,10 @@ public class DocumentUploadServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(null);
+
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
 		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
 	}
 
@@ -370,6 +384,10 @@ public class DocumentUploadServiceTest {
 		Mockito.when(cryptoUtil.encrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(mockMultipartFileSizeCheck.toString().getBytes());
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
+
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
 		documentUploadService.uploadDocument(mockMultipartFile, docJson, preRegistrationId);
 	}
 
@@ -392,6 +410,10 @@ public class DocumentUploadServiceTest {
 		Mockito.doReturn(true).when(fs).copyFile(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
+
+		Mockito.when(validationutil.langvalidation(Mockito.anyString())).thenReturn(true);
+		Mockito.when(validationutil.validateDocuments(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(true);
 		MainResponseDTO<DocumentResponseDTO> responseDto = documentUploadService.copyDocument("POA", "48690172097498",
 				"48690172097499");
 		assertEquals(responseDto.getResponse().getDocCatCode().toString(),
@@ -501,17 +523,15 @@ public class DocumentUploadServiceTest {
 		assertEquals(serviceResponseDto.getResponse().getDocumentsMetaData().get(0).getDocumentId(),
 				responseDto.getResponse().getDocumentsMetaData().get(0).getDocumentId());
 	}
-	
-	
+
 	@Test
 	public void getAllDocumentForDocIdSuccessTest() throws Exception {
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenReturn(entity);
 		InputStream sourceFile = new FileInputStream(file);
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
-		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any()))
-		.thenReturn(file.toString().getBytes());
-		MainResponseDTO<DocumentDTO> serviceResponseDto = documentUploadService
-				.getDocumentForDocId(docId,"48690172097498");
+		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(file.toString().getBytes());
+		MainResponseDTO<DocumentDTO> serviceResponseDto = documentUploadService.getDocumentForDocId(docId,
+				"48690172097498");
 		assertNotNull(serviceResponseDto.getResponse().getDocument());
 	}
 
@@ -519,7 +539,7 @@ public class DocumentUploadServiceTest {
 	public void getAllDocumentForDocIdCEPHExceptionTest() throws Exception {
 		Mockito.when(documentRepository.findBydocumentId(docId)).thenReturn(entity);
 		Mockito.when(fs.getFile(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-		documentUploadService.getDocumentForDocId(docId,preRegistrationId);
+		documentUploadService.getDocumentForDocId(docId, preRegistrationId);
 
 	}
 

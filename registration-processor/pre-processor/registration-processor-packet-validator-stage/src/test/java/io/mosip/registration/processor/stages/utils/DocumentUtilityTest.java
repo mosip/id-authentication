@@ -22,12 +22,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
-
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.IdentityJsonValues;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.idjson.Document;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 
 /**
@@ -47,7 +46,7 @@ public class DocumentUtilityTest {
 
 	/** The filesystem adapter impl. */
 	@Mock
-	private FileSystemAdapter filesystemAdapterImpl;
+	private PacketManager filesystemAdapterImpl;
 
 	/** The utility. */
 	@Mock

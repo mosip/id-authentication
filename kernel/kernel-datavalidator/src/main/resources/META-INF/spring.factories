@@ -1,4 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.datavalidator.phone.impl.PhoneValidatorImpl,\
-io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl
-
