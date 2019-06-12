@@ -136,7 +136,7 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = apiRequests.regProcPostRequest(prop.getProperty("assignmentApi"),actualRequest,MediaType.APPLICATION_JSON,validToken);
+			actualResponse = apiRequests.regProcPostRequest(prop.getProperty("applicantDemograhicApi"),actualRequest,MediaType.APPLICATION_JSON,validToken);
 			// outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
 			outerKeys.add("responsetime");

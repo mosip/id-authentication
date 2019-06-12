@@ -60,7 +60,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
 		String token=generateToken.getToken(tokenEntity);
 		return token;
-		}
+	}
 
 	/**
 	 * 
@@ -353,7 +353,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 		}
 
 	}
-	
+
 	private void generateUpdatePacket(String testCaseName, String property, String validPacketPath,
 			String invalidPacketPath) {
 		JSONObject metaInfo = null;
@@ -386,18 +386,38 @@ public class TweakRegProcPackets extends BaseTestCase {
 									metaInfo = (JSONObject) new JSONParser().parse(metaFileReader);
 									metaFileReader.close();
 									identity = (JSONObject) metaInfo.get("identity");
-									
+
 									//identity.put("fullName", property);
-									JSONArray updatedProperty = updateProperty(identity,testCaseName,property);
-									Long updtedUin = updateUIN(f.getName().substring(0, f.getName().lastIndexOf(".")));
-									double idSchema = updateIdSchema(identity);
-									JSONObject poi = updatePOI(identity);
-									identity.clear();
-									logger.info("identity..........: " +identity);
-									identity.put(testCaseName, updatedProperty);
-									identity.put("UIN", updtedUin);
-									identity.put("IDSchemaVersion", idSchema);
-									identity.put("proofOfIdentity", poi);
+									JSONArray updatedProperty = null;
+									if(testCaseName.matches("fullName")||testCaseName.matches("dateOfBirth")
+										||testCaseName.matches("phone")||testCaseName.matches("email")){
+										
+										Long updtedUin = updateUIN(f.getName().substring(0, f.getName().lastIndexOf(".")));
+										double idSchema = updateIdSchema(identity);
+										JSONObject poi = updatePOI(identity);
+										identity.clear();
+										logger.info("identity..........: " +identity);
+										if(property.matches("fullName")) {
+											updatedProperty = updateProperty(identity,testCaseName,property);
+											identity.put(testCaseName, updatedProperty);
+										}else
+											identity.put(testCaseName, property);
+											 
+										identity.put("UIN", updtedUin);
+										identity.put("IDSchemaVersion", idSchema);
+										identity.put("proofOfIdentity", poi);
+										
+									}else if(testCaseName.matches("addressLine1")) {
+										Long updtedUin = updateUIN(f.getName().substring(0, f.getName().lastIndexOf(".")));
+										double idSchema = updateIdSchema(identity);
+										JSONObject poa = updatePOA(identity);
+										updatedProperty = updateProperty(identity,testCaseName,property);
+										identity.put(testCaseName, updatedProperty);
+										identity.put("UIN", updtedUin);
+										identity.put("IDSchemaVersion", idSchema);
+										identity.put("proofOfAddress", poa);
+									}
+									
 									//logger.info("Identity is :: " + identity.get("fullName"));
 									try (FileWriter updatedFile = new FileWriter(metaFile.getAbsolutePath())) {
 										try {
@@ -427,7 +447,13 @@ public class TweakRegProcPackets extends BaseTestCase {
 							JSONArray metaData = (JSONArray) identityObject.get("metaData");
 							JSONArray updatedData = updateRegId(metaData, regId);
 							JSONArray updateType = updateRegType(metaData, "Update");
-							JSONArray authentication = updateAuth(metaData,"authentication_bio_CBEFF");
+							JSONArray authentication = null;
+							if(testCaseName.matches("fullName")||testCaseName.matches("dateOfBirth")||testCaseName.matches("addressLine1")
+									||testCaseName.matches("phone")||testCaseName.matches("email")) {
+								 authentication = updateAuth(metaData,"authentication_bio_CBEFF");
+								
+							}
+							
 							logger.info("updatedData : " + updatedData);
 							metaInfoBio.put("identity", identityObject);
 							logger.info("metaInfoBio : " + metaInfoBio);
@@ -467,9 +493,10 @@ public class TweakRegProcPackets extends BaseTestCase {
 				}
 			}
 		}
-		
+
 	}
-	
+
+
 
 	/**
 	 * @param metaData
@@ -588,7 +615,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 			logger.info("Could not find any decrypted packet at :: " + filesToBeDestroyed);
 		}
 	}
-	
+
 	public void updatePacketPropertyFileReader(String propertyFiles, String validPacketPath, String invalidPacketPath) {
 		Properties prop = new Properties();
 		TweakRegProcPackets e = new TweakRegProcPackets();
@@ -622,7 +649,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 		} catch (IOException e1) {
 			logger.info("Could not find any decrypted packet at :: " + filesToBeDestroyed);
 		}*/
-		
+
 	}
 
 
@@ -679,7 +706,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 		timeStamp.replaceAll(".", "");
 		int n = 10000 + new Random().nextInt(90000);
 		String randomNumber = String.valueOf(n);
-		
+
 		regID = centerId + machineId + randomNumber + timeStamp;
 		return regID;
 	}
@@ -690,9 +717,9 @@ public class TweakRegProcPackets extends BaseTestCase {
 		String timeStamp = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(getTime(regId));
 		int n = 10000 + new Random().nextInt(90000);
 		String randomNumber = String.valueOf(n);
-		
-		
-		
+
+
+
 		regID = centerId + machineId + randomNumber + timeStamp;
 		return regID;
 	}
@@ -702,7 +729,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 		String packetCreatedDateTime = regId.substring(regId.length() - 14);
 		int n = 100 + new Random().nextInt(900);
 		String milliseconds = String.valueOf(n);
-		
+
 		Date date = null;
 		try {
 			date = formatter.parse(packetCreatedDateTime.substring(0, 8) + "T"
@@ -712,7 +739,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 			e.printStackTrace();
 		}
 		LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-		
+
 		return ldt;
 	}
 
@@ -734,7 +761,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 		return metaData;
 	}
-	
+
 	private JSONArray updateRegType(JSONArray metaData, String update) {
 		for (int i = 0; i < metaData.size(); i++) {
 			JSONObject labels = (JSONObject) metaData.get(i);
@@ -746,7 +773,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 		return metaData;
 	}
 
-	
+
 	private long updateUIN(String regId) {
 		validToken = getToken("syncTokenGenerationFilePath");
 		UpdatePacket updatePacket  = new UpdatePacket();
@@ -754,27 +781,27 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 		return uin;
 	}
-	
+
 
 
 	private JSONArray updateProperty(JSONObject identity, String testcaseName, String property) {
 		JSONArray propertyfield = (JSONArray) identity.get(testcaseName);
-		
+
 		for (int i = 0; i < propertyfield.size(); i++) {
 			JSONObject labels = (JSONObject) propertyfield.get(i);
 			if (labels.get("language").equals("fra")) {
 				labels.put("value", property);
 			}
 		}
-		
+
 		return propertyfield;
-		
+
 	}
 
 	private double updateIdSchema(JSONObject identity) {
 		double idSchema = (double) identity.get("IDSchemaVersion");
 		return idSchema;	
-		
+
 	}
 
 	private JSONObject updatePOI(JSONObject identity) {
@@ -783,6 +810,11 @@ public class TweakRegProcPackets extends BaseTestCase {
 	}
 
 
+
+	private JSONObject updatePOA(JSONObject identity) {
+		JSONObject poa  = (JSONObject) identity.get("proofOfAddress");
+		return poa;
+	}
 	private JSONArray updateAuth(JSONArray metaData, String bioAuthFile) {
 		for (int i = 0; i < metaData.size(); i++) {
 			JSONObject labels = (JSONObject) metaData.get(i);
@@ -793,6 +825,5 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 		return metaData;
 	}
-
 
 }
