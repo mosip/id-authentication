@@ -116,11 +116,9 @@ public class CommonLibrary extends BaseTestCase {
 		String errorCode = null;
 		String errorMessage = null;
 		int statusCode = response.getStatusCode();
-		String numberString = Integer.toString(statusCode);
-		char firstLetterChar = numberString.charAt(0);
 		// fetching json array of objects from response
 		try {
-			if (firstLetterChar == '5')
+			if (statusCode > 500)
 				Assert.assertTrue(false, "Service is Unavailable and the statusCode=" + statusCode);
 
 			errors = (JSONArray) ((JSONObject) new JSONParser().parse(response.asString())).get("errors");

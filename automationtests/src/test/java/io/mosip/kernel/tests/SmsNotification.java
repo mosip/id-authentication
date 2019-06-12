@@ -166,7 +166,6 @@ public class SmsNotification extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
