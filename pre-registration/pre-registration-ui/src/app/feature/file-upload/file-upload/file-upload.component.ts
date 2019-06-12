@@ -106,8 +106,6 @@ export class FileUploadComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('users', this.users);
-
     this.getFileSize();
     this.allowedFiles = this.config
       .getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_files)
@@ -140,7 +138,6 @@ export class FileUploadComponent implements OnInit {
     if (this.registration.getUsers().length > 0) {
       this.users[0] = JSON.parse(JSON.stringify(this.registration.getUser(this.registration.getUsers().length - 1)));
       this.activeUsers = JSON.parse(JSON.stringify(this.registration.getUsers()));
-      console.log('active users', this.activeUsers);
     }
   }
 
@@ -251,7 +248,6 @@ export class FileUploadComponent implements OnInit {
     let i = 0;
     let j = 0;
     let allApplicants: any[] = [];
-    console.log('applicants', applicants);
 
     allApplicants = JSON.parse(JSON.stringify(applicants));
     for (let applicant of allApplicants) {
@@ -264,7 +260,6 @@ export class FileUploadComponent implements OnInit {
       }
       i++;
     }
-    console.log('allApplicants local', allApplicants);
 
     return allApplicants;
   }
@@ -355,7 +350,6 @@ export class FileUploadComponent implements OnInit {
       if (res['errors'] == null) {
         this.LOD = res['response'].documentCategories;
         this.registration.setDocumentCategories(res['response'].documentCategories);
-        console.log('LOD', this.LOD);
       } else {
         this.displayMessage(this.fileUploadLanguagelabels.discard.title_error, this.errorlabels.error);
       }
@@ -391,12 +385,11 @@ export class FileUploadComponent implements OnInit {
    */
   setApplicants() {
     this.applicants = JSON.parse(JSON.stringify(this.bookingService.getAllApplicants()));
-    console.log('applicants before calling get applicants name', this.applicants);
+
     this.removeApplicantsWithoutPOA();
 
     this.updateApplicants();
     this.allApplicants = this.getApplicantsName(this.applicants);
-    console.log('all applicants', this.allApplicants);
 
     this.setNoneApplicant();
   }
@@ -411,7 +404,6 @@ export class FileUploadComponent implements OnInit {
       i++;
     }
     this.applicants = JSON.parse(JSON.stringify(tempApplicants));
-    console.log('applicants without poa removed', this.applicants);
   }
 
   updateApplicants() {
@@ -546,8 +538,6 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
-    console.log('event file input', event);
-
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
@@ -627,7 +617,6 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   selectChange(event, index: number) {
-    console.log('select change', event);
     let found = false;
     let i = -1;
     this.documentCategory = event.source.placeholder;
@@ -647,16 +636,11 @@ export class FileUploadComponent implements OnInit {
     if (!found) {
       this.selectedDocuments.push(this.selectedDocument);
     }
-    console.log('selected documents', this.selectedDocuments);
+
     this.selectedDocument = {
       docCatCode: '',
       docTypeCode: ''
     };
-    //
-    // this.documentCategory = this.docCatSelect['_placeholder'];
-    // this.documentType = this.docCatSelect['_value'];
-    // console.log('document type select change', this.documentType);
-    // console.log('document category select change', this.documentCategory);
 
     this.documentIndex = index;
   }
@@ -678,10 +662,6 @@ export class FileUploadComponent implements OnInit {
         }
       }
     }
-    // this.documentCategory = event.source.placeholder;
-    // this.documentType = event.source.value;
-    console.log('docType open change', this.documentType);
-    console.log('document category open change', this.documentCategory);
   }
 
   onFilesChange(fileList: FileList) {}
@@ -717,7 +697,6 @@ export class FileUploadComponent implements OnInit {
   sendFile(event) {
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DTO_KEY, JSON.stringify(this.documentRequest));
     this.formData.append(appConstants.DOCUMENT_UPLOAD_REQUEST_DOCUMENT_KEY, event.target.files.item(0));
-    console.log('formdata', this.formData);
 
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
