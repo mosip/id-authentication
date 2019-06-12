@@ -321,14 +321,18 @@ export class FileUploadComponent implements OnInit {
 
     DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
-    await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
+  await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
       if (response['errors'] == null) {
         this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
         this.setApplicantType(response);
       } else {
         this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
       }
+    },
+    (error) =>{
+      this.displayMessage('Error',this.errorlabels.error , error);
     });
+
   }
   /**
    *@description method to set applicant type.
@@ -353,6 +357,9 @@ export class FileUploadComponent implements OnInit {
       } else {
         this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
       }
+    },
+    (error)=>{
+        this.displayMessage('Error', this.errorlabels.error , error);
     });
   }
 
@@ -371,7 +378,7 @@ export class FileUploadComponent implements OnInit {
         }
       },
       err => {
-        this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
+        this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error, err);
       },
       () => {
         this.setApplicants();
@@ -484,7 +491,9 @@ export class FileUploadComponent implements OnInit {
           this.start = false;
         }
       },
-      error => {},
+      error => {
+        this.displayMessage('Error', this.errorlabels.error,error);
+      },
       () => {
         this.fileName = fileMeta.docName;
         let i = 0;
@@ -711,7 +720,8 @@ export class FileUploadComponent implements OnInit {
       error => {
         this.displayMessage(
           this.fileUploadLanguagelabels.uploadDocuments.error,
-          this.fileUploadLanguagelabels.uploadDocuments.msg7
+          this.fileUploadLanguagelabels.uploadDocuments.msg7,
+          error
         );
       },
       () => {
@@ -789,7 +799,8 @@ export class FileUploadComponent implements OnInit {
         err => {
           this.displayMessage(
             this.fileUploadLanguagelabels.uploadDocuments.error,
-            this.fileUploadLanguagelabels.uploadDocuments.msg8
+            this.fileUploadLanguagelabels.uploadDocuments.msg8,
+            err
           );
         }
       );
@@ -883,7 +894,13 @@ export class FileUploadComponent implements OnInit {
    * @param {string} message
    * @memberof FileUploadComponent
    */
-  displayMessage(title: string, message: string) {
+  displayMessage(title: string, message: string , error?:any) {
+    if(error && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
+    {
+        message = this.errorlabels.tokenExpiredLogout;
+        title = '';
+
+    }
     const messageObj = {
       case: 'MESSAGE',
       title: title,

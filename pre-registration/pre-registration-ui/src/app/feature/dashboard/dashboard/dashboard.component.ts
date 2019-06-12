@@ -462,9 +462,11 @@ export class DashBoardComponent implements OnInit {
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => this.setUserFiles(response),
-      () => {
+      (error) => {
+        console.log("dashboard error", error);
+
         this.disableModifyDataButton = false;
-        this.onError();
+        this.onError(error);
       },
       () => {
         this.addtoNameList(user);
@@ -472,8 +474,8 @@ export class DashBoardComponent implements OnInit {
           response => {
             this.onModification(response, preId);
           },
-          () => {
-            this.onError();
+          (error) => {
+            this.onError(error);
           }
         );
       }
@@ -626,13 +628,19 @@ export class DashBoardComponent implements OnInit {
    * @private
    * @memberof DashBoardComponent
    */
-  private async onError() {
+  private async onError(error?: any) {
+    // if invalid token hten message = "invlaid something" else message = "regular message"
     await this.getErrorLabels();
+    let message = this.errorLanguagelabels.error
+    if(error &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired){
+        message = this.errorLanguagelabels.tokenExpiredLogout;
+      }
     if (this.errorLanguagelabels) {
       const body = {
         case: 'ERROR',
         title: 'ERROR',
-        message: this.errorLanguagelabels.error,
+        message: message,
         yesButtonText: this.errorLanguagelabels.button_ok
       };
       this.dialog.open(DialougComponent, {

@@ -192,11 +192,11 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
         if (response['response']) {
           this.formatJson(response['response'].centerDetails);
         } else if (response[appConstants.NESTED_ERROR]) {
-          this.displayMessage('Error', this.errorlabels.error);
+          this.displayMessage('Error', this.errorlabels.error , '');
         }
       },
-      () => {
-        this.displayMessage('Error', this.errorlabels.error);
+      (error) => {
+        this.displayMessage('Error', this.errorlabels.error , error);
       }
     );
   }
@@ -306,17 +306,22 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
               this.router.navigateByUrl(url);
             });
         } else {
-          this.displayMessage('Error', this.errorlabels.error);
+          this.displayMessage('Error', this.errorlabels.error , '');
         }
       },
-      () => {
-        this.displayMessage('Error', this.errorlabels.error);
+      (error) => {
+        this.displayMessage('Error', this.errorlabels.error , error);
       }
     );
   }
 
-  displayMessage(title: string, message: string) {
+  displayMessage(title: string, message: string , error: any) {
     this.disableContinueButton = false;
+    if(error && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
+    {
+        message = this.errorlabels.tokenExpiredLogout;
+        title = '';
+    }
     const messageObj = {
       case: 'MESSAGE',
       title: title,
