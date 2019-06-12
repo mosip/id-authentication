@@ -19,6 +19,9 @@
 .header--logo {
   vertical-align: middle;
   cursor: pointer;
+  /* UX enhancement */
+  padding-left: 4%;
+  /* UX enhancement end */
 }
 
 .spacer {
