@@ -1,10 +1,6 @@
 package io.mosip.preregistration.datasync.service.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +16,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.collections4.SetValuedMap;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -42,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
@@ -150,9 +144,9 @@ public class DataSyncServiceUtil {
 	 */
 	@Value("${booking.resource.url}")
 	private String bookingResourceUrl;
-//
-//	@Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
-//	private String documentTypeUri;
+	//
+	// @Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
+	// private String documentTypeUri;
 
 	@Autowired
 	ValidationUtil validationUtil;
@@ -474,7 +468,7 @@ public class DataSyncServiceUtil {
 			log.info("sessionId", "idType", "id",
 					"In archivingFiles method of datasync service util, Json file content - "
 							+ new JSONObject(finalMap).toJSONString());
-			inputFile.put("ID.json", new JSONObject(finalMap).toJSONString().getBytes());
+			inputFile.put("ID.json", new ObjectMapper().writeValueAsBytes(finalMap));
 			preRegArchiveDTO.setZipBytes(getCompressed(inputFile));
 			preRegArchiveDTO.setFileName(preRegistrationDTO.getPreRegistrationId());
 
@@ -780,23 +774,25 @@ public class DataSyncServiceUtil {
 	 * Call this method in archiving method
 	 */
 
-//	public static void parsejson()
-//			throws IOException, JSONException, io.mosip.kernel.core.exception.IOException, java.io.IOException {
-//		try (BufferedReader bufferedReader = new BufferedReader(
-//				new FileReader(new File("C:/Users/M1046129/Desktop/idjson.json")))) {
-//			StringBuilder jsonBuilder = new StringBuilder();
-//			String value;
-//			while ((value = bufferedReader.readLine()) != null) {
-//				jsonBuilder.append(value);
-//			}
-//			ObjectMapper mapper = new ObjectMapper();
-//			PreRegArchiveDTO archiveDTO = mapper.readValue(
-//					new org.json.JSONObject(jsonBuilder.toString()).getString("response"), PreRegArchiveDTO.class); // change
-//			FileUtils.copyToFile(new ByteArrayInputStream(archiveDTO.getZipBytes()),
-//					new File("C:/Users/M1046129/Desktop/preZipNew.zip"));
-//			System.out.println("zip file saved");
-//		}
-//
-//	}
+	// public static void parsejson()
+	// throws IOException, JSONException,
+	// io.mosip.kernel.core.exception.IOException, java.io.IOException {
+	// try (BufferedReader bufferedReader = new BufferedReader(
+	// new FileReader(new File("C:/Users/M1046129/Desktop/idjson.json")))) {
+	// StringBuilder jsonBuilder = new StringBuilder();
+	// String value;
+	// while ((value = bufferedReader.readLine()) != null) {
+	// jsonBuilder.append(value);
+	// }
+	// ObjectMapper mapper = new ObjectMapper();
+	// PreRegArchiveDTO archiveDTO = mapper.readValue(
+	// new org.json.JSONObject(jsonBuilder.toString()).getString("response"),
+	// PreRegArchiveDTO.class); // change
+	// FileUtils.copyToFile(new ByteArrayInputStream(archiveDTO.getZipBytes()),
+	// new File("C:/Users/M1046129/Desktop/preZipNew.zip"));
+	// System.out.println("zip file saved");
+	// }
+	//
+	// }
 
 }

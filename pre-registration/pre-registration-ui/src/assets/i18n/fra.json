@@ -376,6 +376,7 @@
     "subheading_information": "Informations personnelles",
     "label_name": "Nom complet",
     "label_age": "Âge",
+    "label_DOB": "DOB",
     "text_years": "Années",
     "text_gender": "Le sexe",
     "text_resident_status": "Statut de résident",
@@ -407,6 +408,7 @@
       "msg1": "Black listed word entered"
     },
     "uploadDocuments": {
+      "error": "Erreur",
       "msg1": "Document dépassant la taille autorisée",
       "msg2": "Echec de l'analyse antivirus",
       "msg3": "Type de fichier non supporté",
@@ -572,7 +574,8 @@
   "error": {
     "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
     "button_ok": "OK",
-    "invalidPin": "Le code PIN entré est invalide"
+    "invalidPin": "Le code PIN entré est invalide",
+    "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité."
   },
   "residentTypesMapping": {
     "NFR": "Nationale",

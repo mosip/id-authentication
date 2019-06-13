@@ -126,9 +126,10 @@ export class CenterSelectionComponent implements OnInit {
               this.selectedCentre = null;
             }
           },
-          error => {
+          (error) => {
             this.showMessage = true;
-            this.displayMessageError('Error', this.errorlabels.error);
+            console.log(error);
+            this.displayMessageError('Error', this.errorlabels.error, error);
           }
         );
     }
@@ -161,9 +162,10 @@ export class CenterSelectionComponent implements OnInit {
               this.showMessage = true;
             }
           },
-          error => {
+          (error) => {
             this.showMessage = true;
-            this.displayMessageError('Error', this.errorlabels.error);
+            console.log(error);
+            this.displayMessageError('Error', this.errorlabels.error , error);
           }
         );
       });
@@ -229,7 +231,13 @@ export class CenterSelectionComponent implements OnInit {
       this.dispatchCenterCoordinatesList();
     }
   }
-  displayMessageError(title: string, message: string) {
+  displayMessageError(title: string, message: string , error: any) {
+    if(error && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
+    {
+        message = this.errorlabels.tokenExpiredLogout;
+        title = '';
+
+    }
     const messageObj = {
       case: 'MESSAGE',
       title: title,

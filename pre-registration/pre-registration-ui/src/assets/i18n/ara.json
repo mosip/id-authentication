@@ -375,6 +375,7 @@
     "subheading_information": "معلومات شخصية",
     "label_name": "الاسم الكامل",
     "label_age": "عمر",
+    "label_DOB":"تاريخ الميلاد",
     "text_years": "سنوات",
     "text_gender": "جنس",
     "text_resident_status": "مركز المقيم",
@@ -568,7 +569,8 @@
   "error": {
     "error": "حدث خطأ فني ولا يمكن إتمام العملية. لا يجوز حفظ أي بيانات مقدمة",
     "button_ok": "حسنا",
-    "invalidPin": "رقم التعريف الشخصي المدخل غير صالح"
+    "invalidPin": "رقم التعريف الشخصي المدخل غير صالح",
+    "tokenExpiredLogout": "لقد تم تسجيل الخروج بسبب عدم النشاط."
   },
   "residentTypesMapping": {
     "NFR": "الوطني",
