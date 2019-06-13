@@ -138,7 +138,6 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 		Verify.verify(status);
 		softAssert.assertAll();
 }
-		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;

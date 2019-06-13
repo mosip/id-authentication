@@ -95,7 +95,7 @@ public class UploadPublickey extends BaseTestCase implements ITest {
 		 * @param object
 		 * 
 		 */
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings("rawtypes")
 		@Test(dataProvider = "fetchData", alwaysRun = true)
 		public void uploadPublickey(String testcaseName){
 			logger.info("Test Case Name:" + testcaseName);

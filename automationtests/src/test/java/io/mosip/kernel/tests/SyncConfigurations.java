@@ -1,11 +1,11 @@
 package io.mosip.kernel.tests;
 
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -17,7 +17,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -27,13 +26,12 @@ import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
-
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.ReadFolder;
 import io.restassured.response.Response;
 
 /**
@@ -48,7 +46,9 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	}
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(SyncConfigurations.class);
-	protected static String testCaseName = "";
+	protected String testCaseName = "";
+	private final String moduleName = "kernel";
+	private final String apiName = "SyncConfigurations";
 	private SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	private boolean status = false;
@@ -56,10 +56,6 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	private AssertKernel assertKernel = new AssertKernel();
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String syncConf = props.get("syncConf");
-	private String folderPath = "kernel/SyncConfigurations";
-	private String outputFile = "SyncConfigurationsOutput.json";
-	private String requestKeyFile = "SyncConfigurationsInput.json";
-	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 	private String build;
@@ -67,8 +63,8 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		String object = (String) testdata[0];
+		testCaseName = object.toString();
 		cookie=auth.getAuthForRegistrationAdmin();
 		build=buildNumber.substring(2, 4);
 	} 
@@ -76,7 +72,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "SyncConfigurations")
 	public Object[][] readData1(ITestContext context) throws Exception {
-				return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
+				return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 	
 	/**
@@ -90,7 +86,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 	
 	@SuppressWarnings({ "unchecked" })
 	@Test(dataProvider="SyncConfigurations")
-	public void syncConfigurations(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	public void syncConfigurations(String testcaseName) throws FileNotFoundException, IOException, ParseException
     {
 		// Getting configurations from the server
 		Response expectedobject=applicationLibrary.getConfigProperties("http://104.211.212.28:51000/registration/"+environment+"/0."+build+".0/");
@@ -98,6 +94,18 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		JSONObject regConfig=(JSONObject) ((JSONObject)((JSONArray)((JSONObject) new JSONParser().parse(expectedobject.asString())).get("propertySources")).get(0)).get("source");
 		//Getting the globalConfig
 		JSONObject globalConfig=(JSONObject) ((JSONObject)((JSONArray)((JSONObject) new JSONParser().parse(expectedobject.asString())).get("propertySources")).get(1)).get("source");
+		for(Iterator<String>  iterator = globalConfig.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			String value=(String) globalConfig.get(key);
+			if(value.contains("${mosip.base.url}")) {
+				String unwantedString = value.substring(0, 16);
+				String wantedString=value.substring(17);
+				unwantedString=unwantedString.replace(unwantedString, ApplnURI);
+				value=unwantedString+wantedString;
+				globalConfig.put(key, value);
+				logger.info("value---"+value);
+			}
+		}
 		//Creating a JSONObject and adding both registrationConfiguration and globalConfig
 		JSONObject configDetail= new JSONObject();
 		configDetail.put("registrationConfiguration", regConfig);
@@ -122,29 +130,15 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 
 		// Comparing expected and actual response
 		status = assertKernel.assertKernelWithJsonObject(actualresponse, configDetail,listOfElementToRemove);
-      if (status) {
-	            
-				finalStatus = "Pass";
-			}	
-		
-		else {
-			finalStatus="Fail";
-			logger.error(res);
+ 
+      if (!status) {
+			logger.debug(res);
 		}
 		
-		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		boolean setFinalStatus=false;
-		if(finalStatus.equals("Fail"))
-			setFinalStatus=false;
-		else if(finalStatus.equals("Pass"))
-			setFinalStatus=true;
-		Verify.verify(setFinalStatus);
+		Verify.verify(status);
 		softAssert.assertAll();
 
 }
-		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
@@ -159,18 +153,9 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-				f.set(baseTestMethod, SyncConfigurations.testCaseName);	
+				f.set(baseTestMethod, testCaseName);	
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}
 		}  
-		
-		@AfterClass
-		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/SyncConfigurations/SyncConfigurationsOutput.json";
-			try (FileWriter file = new FileWriter(configPath)) {
-				file.write(arr.toString());
-				logger.info("Successfully updated Results to SyncConfigurationsOutput.json file.......................!!");
-			}
-		}
 }

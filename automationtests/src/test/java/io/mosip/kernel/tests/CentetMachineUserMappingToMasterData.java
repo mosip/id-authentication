@@ -87,7 +87,6 @@ public class CentetMachineUserMappingToMasterData extends BaseTestCase implement
 	{
 		// getting request and expected response jsondata from json files.
 		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
-
 		JSONObject actualRequest = objectDataArray[0];
 		expectedresponse = objectDataArray[1];
 		

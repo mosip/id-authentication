@@ -93,7 +93,6 @@ public class EmailNotification extends BaseTestCase implements ITest {
 	 * @param object
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
 	public void eamilNotification(String testcaseName){
 		logger.info("Test Case Name:" + testcaseName);

@@ -147,7 +147,7 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 			if (deviceSpecFromGet.size() == obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("id");
 				attributesToValidateExistance.add("name");
 				attributesToValidateExistance.add("brand");
@@ -157,7 +157,7 @@ public class FetchDeviceSpec extends BaseTestCase implements ITest {
 
 				// key value of the attributes passed to fetch the data (should be same in all
 				// obtained objects)
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 				if (objectData != null) {
 					if (objectData.containsKey("devicetypecode")) {
 						attributesToValidateExistance.add("deviceTypeCode");

@@ -169,7 +169,6 @@ public class FetchRegCentHolidays extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

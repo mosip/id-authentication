@@ -134,7 +134,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 			if (dataFromGet.size() == obtainedObjectsCount) {
 
 				// list to validate existance of attributes in response objects
-				List<String> attributesToValidateExistance = new ArrayList();
+				List<String> attributesToValidateExistance = new ArrayList<String>();
 				attributesToValidateExistance.add("code");
 				attributesToValidateExistance.add("name");
 				attributesToValidateExistance.add("description");
@@ -142,7 +142,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 
 				// key value of the attributes passed to fetch the data (should be same in all
 				// obtained objects)
-				HashMap<String, String> passedAttributesToFetch = new HashMap();
+				HashMap<String, String> passedAttributesToFetch = new HashMap<String, String>();
 				if (objectData != null) {
 					passedAttributesToFetch.put("langCode", objectData.get("langcode").toString());
 				}
@@ -170,7 +170,6 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 		softAssert.assertAll();
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

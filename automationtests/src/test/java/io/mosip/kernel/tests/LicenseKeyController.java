@@ -173,12 +173,10 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	    {
 	    	request.put("tspId", tspId);
 	    	request.put("licenseKey", licenseKey);	
-	    	logger.info("licKey---"+licenseKey);
 	    	actualRequest_map.putAll(request);
 	    }    
 	    	Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 	    	
-	    	logger.info("actualRequest_map+++"+actualRequest_map.toJSONString());
 	    	// Calling the Post method 
 			 res_map = applicationLibrary.postWithJson(mapLicenseKey, actualRequest_map);
 	    
