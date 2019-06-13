@@ -36,7 +36,6 @@ import io.mosip.kernel.core.util.StringUtils;
 /**
  * The Class IdAuthFilter - the implementation for deciphering and validation of
  * the authenticating partner done for request as AUTH and KYC
- * {@link AuthController}
  *
  * @author Manoj SP
  * @author Sanjay Murali

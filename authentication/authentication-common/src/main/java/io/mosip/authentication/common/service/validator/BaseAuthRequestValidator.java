@@ -40,7 +40,6 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -146,10 +145,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * validates the Static Pin Details
-	 * 
-	 * @param authRequestDTO
-	 * @param errors
+	 * validates the Static Pin Details.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	protected void validateAdditionalFactorsDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getRequestedAuth();
@@ -206,6 +205,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 *
 	 * @param authRequestDTO the auth request DTO
 	 * @param errors         the errors
+	 * @param allowedAuthType the allowed auth type
 	 */
 	protected void validateBioMetadataDetails(AuthRequestDTO authRequestDTO, Errors errors,
 			Set<String> allowedAuthType) {
@@ -845,10 +845,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validates the AuthType
-	 * 
-	 * @param authType
-	 * @param errors
+	 * Validates the AuthType.
+	 *
+	 * @param authType the auth type
+	 * @param errors the errors
 	 */
 	protected void validateAuthType(AuthTypeDTO authType, Errors errors) {
 		if (!(authType.isDemo() || authType.isBio() || authType.isOtp() || authType.isPin())) {
@@ -859,10 +859,11 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Method to validate auth type
-	 * 
-	 * @param requestDTO
-	 * @param errors
+	 * Method to validate auth type.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param errors the errors
+	 * @param configKey the config key
 	 */
 	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors, String configKey) {
 		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
@@ -946,6 +947,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Extract auth info.
 	 *
+	 * @param configKey the config key
 	 * @return the sets the
 	 */
 	protected Set<String> getAllowedAuthTypes(String configKey) {
@@ -955,9 +957,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validateSecondayLangCode method used to validate secondaryLangCode for KYC
-	 * request
+	 * request.
 	 *
-	 * @param string the {@link KycAuthRequestDTO}
+	 * @param langCode the lang code
 	 * @param errors the errors
 	 * @param field  the field
 	 */

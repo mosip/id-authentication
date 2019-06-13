@@ -14,9 +14,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 public interface VIDService {
 	
 	/**
-	 * this method generates the VID based on the UIN and performs UIN and VID validations,prior to the generation
+	 * this method generates the VID based on the UIN and performs UIN and VID validations,prior to the generation.
 	 *
-	 * @param UIN the uin
+	 * @param uin the uin
 	 * @return the VID response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */

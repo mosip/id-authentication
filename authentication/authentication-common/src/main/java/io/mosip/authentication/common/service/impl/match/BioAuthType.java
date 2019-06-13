@@ -318,9 +318,9 @@ public enum BioAuthType implements AuthType {
 	/**
 	 * This method accepts the bioType and it will return Optional of BioAuthType
 	 * only when the count is single.
-	 * 
-	 * @param type
-	 * @return
+	 *
+	 * @param type the type
+	 * @return the single bio auth type for type
 	 */
 	public static Optional<BioAuthType> getSingleBioAuthTypeForType(String type) {
 		BioAuthType[] values = BioAuthType.values();
@@ -330,10 +330,18 @@ public enum BioAuthType implements AuthType {
 		}).findAny();
 	}
 
+	/**
+	 * Gets the count predicate.
+	 *
+	 * @return the count predicate
+	 */
 	public IntPredicate getCountPredicate() {
 		return countPredicate;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.AuthType#getAuthTypeImpl()
+	 */
 	@Override
 	public AuthType getAuthTypeImpl() {
 		return authTypeImpl;

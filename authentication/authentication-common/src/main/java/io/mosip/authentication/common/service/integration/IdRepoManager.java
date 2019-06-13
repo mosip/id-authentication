@@ -57,8 +57,6 @@ public class IdRepoManager {
 
 	private static final String USER_ID_NOTEXIST_ERRORCODE = "KER-ATH-003";
 	
-	private static final String LDAP_ERRORCODE = "KER-ATH-101";
-
 	private static final List<String> ID_REPO_ERRORS_INVALID_VID = Arrays.asList("VID is EXPIRED", "VID is USED",
 			"VID is REVOKED", "VID is DEACTIVATED", "VID is INVALIDATED");
 
@@ -86,12 +84,12 @@ public class IdRepoManager {
 	private static Logger logger = IdaLogger.getLogger(IdRepoManager.class);
 
 	/**
-	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN
-	 * 
-	 * @param uin
-	 * @param isBio
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Fetch data from Id Repo based on Individual's UIN / VID value and all UIN.
+	 *
+	 * @param uin the uin
+	 * @param isBio the is bio
+	 * @return the idenity
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdenity(String uin, boolean isBio) throws IdAuthenticationBusinessException {
@@ -151,6 +149,13 @@ public class IdRepoManager {
 		return response;
 	}
 
+	/**
+	 * Gets the RID by UID.
+	 *
+	 * @param idvId the idv id
+	 * @return the RID by UID
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@SuppressWarnings("unchecked")
 	public String getRIDByUID(String idvId) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
@@ -195,6 +200,14 @@ public class IdRepoManager {
 		return rid;
 	}
 
+	/**
+	 * Gets the id by RID.
+	 *
+	 * @param regID the reg ID
+	 * @param isBio the is bio
+	 * @return the id by RID
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getIdByRID(String regID, boolean isBio) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest = null;
@@ -242,6 +255,13 @@ public class IdRepoManager {
 		return uinMap;
 	}
 
+	/**
+	 * Gets the UIN by VID.
+	 *
+	 * @param vid the vid
+	 * @return the UIN by VID
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@SuppressWarnings("unchecked")
 	public long getUINByVID(String vid) throws IdAuthenticationBusinessException {
 		RestRequestDTO buildRequest;
@@ -302,6 +322,12 @@ public class IdRepoManager {
 		return uin;
 	}
 
+	/**
+	 * Update VI dstatus.
+	 *
+	 * @param vid the vid
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	public void updateVIDstatus(String vid) throws IdAuthenticationBusinessException {
 		RestRequestDTO restRequest;
 		RequestWrapper<VidRequestDTO> request = new RequestWrapper<>();
