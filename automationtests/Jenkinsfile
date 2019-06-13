@@ -26,8 +26,9 @@ node {
 
 stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
+	print ${params.Environment}
   {
-	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://dev.mosip.io -Denv.testLevel=smokeAndRegression'
+	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://${params.Environment}.mosip.io -Denv.testLevel=smokeAndRegression'
 			  
   }
   
