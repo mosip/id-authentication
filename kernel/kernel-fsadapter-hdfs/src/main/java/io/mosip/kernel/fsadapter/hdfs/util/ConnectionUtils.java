@@ -1,7 +1,6 @@
 package io.mosip.kernel.fsadapter.hdfs.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -141,11 +140,10 @@ public class ConnectionUtils {
 	private Configuration initSecurityConfiguration(Configuration configuration) throws IOException {
 		configuration.set("dfs.data.transfer.protection", "authentication");
 		configuration.set("hadoop.security.authentication", "kerberos");
-		Resource confFile = resourceLoader.getResource(kerberosConfigFile);
-		if (confFile.exists()) {
-			InputStream krbStream = confFile.getInputStream();
+		Resource configFile = resourceLoader.getResource(kerberosConfigFile);
+		if (configFile.exists()) {
 			Path krbPath = Paths.get(hadoopLibPath.toString(), "krb5.conf");
-			Files.copy(krbStream, krbPath);
+			Files.copy(configFile.getInputStream(), krbPath);
 			System.setProperty("java.security.krb5.conf", krbPath.toString());
 		}
 		UserGroupInformation.setConfiguration(configuration);
