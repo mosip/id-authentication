@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,7 +32,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  */
 @Component
-public class IdRepoFilter extends BaseIdRepoFilter {
+public final class IdRepoFilter extends BaseIdRepoFilter {
 
 	/** The Constant GET. */
 	private static final String GET = "GET";
@@ -53,9 +52,6 @@ public class IdRepoFilter extends BaseIdRepoFilter {
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoFilter.class);
 
-	/** The path matcher. */
-	AntPathMatcher pathMatcher = new AntPathMatcher();
-
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
@@ -68,12 +64,8 @@ public class IdRepoFilter extends BaseIdRepoFilter {
 	@Resource
 	private Map<String, String> id;
 
-	String uin;
-	
-
-
 	@Override
-	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	protected final void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
 		if (request.getMethod().equals(GET) && (request.getParameterMap().size() > 1
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE)))) {
@@ -98,7 +90,7 @@ public class IdRepoFilter extends BaseIdRepoFilter {
 			response.setErrors(Collections.singletonList(errors));
 			return mapper.writeValueAsString(response);
 		} catch (IOException e) {
-			mosipLogger.error(uin, ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UNKNOWN_ERROR);
 		}
 	}

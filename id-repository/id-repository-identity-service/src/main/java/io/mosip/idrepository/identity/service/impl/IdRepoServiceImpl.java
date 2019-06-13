@@ -196,7 +196,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 */
 	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
 	public Uin addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
-		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
+		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId())
+				&& !uinHistoryRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 			String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime())
 					.toString();
 			byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
@@ -859,7 +860,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 */
 	@Override
 	public Uin retrieveIdentityByRid(String rid, String filter) throws IdRepoAppException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

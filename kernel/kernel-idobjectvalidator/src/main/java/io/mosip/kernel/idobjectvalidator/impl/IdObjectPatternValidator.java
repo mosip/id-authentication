@@ -153,15 +153,17 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 						Option.AS_PATH_LIST));
 		String data = jsonPath.read(identity,
 				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
-		String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
-				convertToPath(String.valueOf(pathList.get(0))));
 		try {
 			if (Objects.nonNull(data) && LocalDate.parse(data, DateTimeFormatter.ofPattern(DOB_FORMAT.getValue()))
 					.isAfter(DateUtils.getUTCCurrentDateTime().toLocalDate())) {
+				String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
+						convertToPath(String.valueOf(pathList.get(0))));
 				errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));
 				errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), errorMessage));
 			}
 		} catch (DateTimeParseException e) {
+			String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
+					convertToPath(String.valueOf(pathList.get(0))));
 			errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));
 			errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), errorMessage));
 		}

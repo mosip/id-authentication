@@ -27,7 +27,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.uingenerator.config.UinServiceConfiguration;
+import io.mosip.kernel.uingenerator.config.HibernateDaoConfig;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 import io.mosip.kernel.uingenerator.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.uingenerator.dto.UinResponseDto;
@@ -66,7 +66,7 @@ public class IntegrationTest {
 		port = socket.getLocalPort();
 		socket.close();
 		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
-		context = new AnnotationConfigApplicationContext(UinServiceConfiguration.class);
+		context = new AnnotationConfigApplicationContext(HibernateDaoConfig.class);
 		vertx = Vertx.vertx();
 		Verticle[] verticles = { new UinGeneratorVerticle(context), new HttpServerVerticle(context) };
 		Stream.of(verticles)

@@ -1141,7 +1141,7 @@ public class BaseController {
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			biometricExceptionDTOs = getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
 				|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 			biometricExceptionDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
@@ -1184,7 +1184,7 @@ public class BaseController {
 	protected List<BiometricExceptionDTO> getIrisExceptions() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
 				|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
 						&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child))) {
 			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()

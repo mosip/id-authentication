@@ -1,13 +1,3 @@
--- NOTE: the code below contains the SQL for the selected object
--- as well for its dependencies and children (if applicable).
--- 
--- This feature is only a convinience in order to permit you to test
--- the whole object's SQL definition at once.
--- 
--- When exporting or generating the SQL for the whole database model
--- all objects will be placed at their original positions.
-
-
 -- object: idrepo.uin_h | type: TABLE --
 -- DROP TABLE IF EXISTS idrepo.uin_h CASCADE;
 CREATE TABLE idrepo.uin_h(
@@ -28,7 +18,8 @@ CREATE TABLE idrepo.uin_h(
 	is_deleted boolean,
 	del_dtimes timestamp,
 	CONSTRAINT pk_uinh PRIMARY KEY (uin_ref_id,eff_dtimes),
-	CONSTRAINT uk_uinh UNIQUE (uin,eff_dtimes)
+	CONSTRAINT uk_uinh UNIQUE (uin,eff_dtimes),
+	CONSTRAINT uk_uinh_regid UNIQUE (reg_id)
 
 );
 -- ddl-end --
@@ -67,14 +58,5 @@ COMMENT ON COLUMN idrepo.uin_h.is_deleted IS 'IS_Deleted : Flag to mark whether 
 COMMENT ON COLUMN idrepo.uin_h.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
 ALTER TABLE idrepo.uin_h OWNER TO sysadmin;
--- ddl-end --
-
--- object: idx_uinh_regid | type: INDEX --
--- DROP INDEX IF EXISTS idrepo.idx_uinh_regid CASCADE;
-CREATE INDEX idx_uinh_regid ON idrepo.uin_h
-	USING btree
-	(
-	  reg_id
-	);
 -- ddl-end --
 

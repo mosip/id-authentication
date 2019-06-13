@@ -42,7 +42,7 @@ import io.mosip.kernel.uingenerator.constant.UinGeneratorConstant;
 @EnableJpaRepositories(basePackages = { "io.mosip.kernel.uingenerator.repository" })
 @ComponentScan(basePackages = { "io.mosip.kernel.uingenerator", "io.mosip.kernel.auth.adapter.*",
 		"io.mosip.kernel.cryptosignature.*" })
-public class UinServiceConfiguration implements EnvironmentAware {
+public class HibernateDaoConfig implements EnvironmentAware {
 
 	/**
 	 * Field for {@link #env}

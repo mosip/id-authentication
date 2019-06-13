@@ -638,33 +638,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validatePattern(AuthRequestDTO authRequest, Errors errors) {
 
 		try {
-			Map<String, Map<String, String>> identityMap = new HashMap<>();
-			Map<String, String> valueMap = new HashMap<>();
-			IdentityDTO demographics = authRequest.getRequest().getDemographics();
-			String dob = demographics.getDob();
-			String phoneNumber = demographics.getPhoneNumber();
-			String emailId = demographics.getEmailId();
-			String pinCode = demographics.getPostalCode();
-			if (dob != null && !dob.isEmpty()) {
-				List<String> dobkey = getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB);
-				valueMap.put(dobkey.get(0), dob);
-			}
-
-			if (phoneNumber != null && !phoneNumber.isEmpty()) {
-				List<String> phonekey = getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE);
-				valueMap.put(phonekey.get(0), phoneNumber);
-			}
-
-			if (emailId != null && !emailId.isEmpty()) {
-				List<String> emailkey = getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL);
-				valueMap.put(emailkey.get(0), emailId);
-			}
-
-			if (pinCode != null && !pinCode.isEmpty()) {
-				List<String> pincodekey = getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE);
-				valueMap.put(pincodekey.get(0), pinCode);
-			}
-			identityMap.put(IDENTITY, valueMap);
+			Map<String, Map<String, String>> identityMap = getOtherValues(authRequest);
 			idObjectValidator.validateIdObject(identityMap, null);
 		} catch (IdObjectValidationFailedException | IdObjectIOException | IdAuthenticationBusinessException e) {
 			if (e instanceof IdObjectValidationFailedException) {
@@ -678,6 +652,38 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
+	}
+
+	private Map<String, Map<String, String>> getOtherValues(AuthRequestDTO authRequest)
+			throws IdAuthenticationBusinessException {
+		Map<String, Map<String, String>> identityMap = new HashMap<>();
+		Map<String, String> valueMap = new HashMap<>();
+		IdentityDTO demographics = authRequest.getRequest().getDemographics();
+		String dob = demographics.getDob();
+		String phoneNumber = demographics.getPhoneNumber();
+		String emailId = demographics.getEmailId();
+		String pinCode = demographics.getPostalCode();
+		if (dob != null && !dob.isEmpty()) {
+			List<String> dobkey = getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB);
+			valueMap.put(dobkey.get(0), dob);
+		}
+
+		if (phoneNumber != null && !phoneNumber.isEmpty()) {
+			List<String> phonekey = getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE);
+			valueMap.put(phonekey.get(0), phoneNumber);
+		}
+
+		if (emailId != null && !emailId.isEmpty()) {
+			List<String> emailkey = getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL);
+			valueMap.put(emailkey.get(0), emailId);
+		}
+
+		if (pinCode != null && !pinCode.isEmpty()) {
+			List<String> pincodekey = getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE);
+			valueMap.put(pincodekey.get(0), pinCode);
+		}
+		identityMap.put(IDENTITY, valueMap);
+		return identityMap;
 	}
 
 	private List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)

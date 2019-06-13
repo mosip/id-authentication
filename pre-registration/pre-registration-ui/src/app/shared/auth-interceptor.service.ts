@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Location } from '@angular/common';
+import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpInterceptor } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
+
+import * as appConstants from '../app.constants';
 
 /**
  * @description This is the interceptor service, which intercept all the http request.
@@ -12,12 +17,12 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthInterceptorService {
+export class AuthInterceptorService implements HttpInterceptor {
   /**
    * @description Creates an instance of AuthInterceptorService.
    * @memberof AuthInterceptorService
    */
-  constructor() {}
+  constructor(private router: Router, private locaiton: Location) {}
 
   /**
    * @description This is the interceptor, which intercept all the http request
@@ -31,6 +36,20 @@ export class AuthInterceptorService {
     const copiedReq = req.clone({
       withCredentials: true
     });
-    return next.handle(copiedReq);
+    return next.handle(copiedReq).pipe(
+      retry(2),
+      catchError((error: HttpErrorResponse) => {
+        if (error[appConstants.ERROR][appConstants.NESTED_ERROR] !== 'KER-ATH-401') {
+          console.log('error interceptor', error);
+          // 401 handled in auth.interceptor
+          console.log('loc', this.locaiton);
+          this.router.navigateByUrl('/');
+
+          // this.autoLogout.onLogOut();
+          // this.locaiton.reload();
+        }
+        return throwError(error);
+      })
+    );
   }
 }

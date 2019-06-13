@@ -97,6 +97,7 @@ public class RegistrationConstants {
 	public static final String LABEL_RED = "labelRed";
 	public static final String LABEL_GREEN = "labelGreen";
 	public static final String IRIS_PANES_SELECTED = "IrisPanesSelected";
+	public static final String BIO_IRIS_SELECTED = "bioIris";
 
 	// Page Flow
 	public static final String VISIBILITY = "visibility";
@@ -690,6 +691,7 @@ public class RegistrationConstants {
 	public static final String PACKET_UPLOAD_SNO = "slno";
 	public static final String PACKET_UPLOAD_DATE = "createdTime";
 	public static final String PACKET_UPLOAD_FILE = "fileName";
+	public static final String UPLOAD_FILE_NAME = "PacketUploadList";
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
 	public static final String ICS_CODE_ONE = "REG-ICS‌-001";
@@ -974,6 +976,7 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
+	public static final String BIOMETRIC_PANES_SELECTED = "biometricPaneSelected";
 	public static final Set<String> BIO_TYPE = new HashSet<>(
 			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
 	public static final String LEFTSLAPCOUNT = "leftSlapCount";

@@ -152,7 +152,7 @@
                                              <children>
                                                 <GridPane GridPane.rowIndex="1">
                                                    <children>
-                                                      <GridPane fx:id="biometricPane">
+                                                      <GridPane fx:id="biometricPane" styleClass="biometricPaneSelected">
                                                          <children>
                                                             <ImageView fx:id="biometricImage" fitHeight="${biometricPane.height-10}" fitWidth="${biometricPane.width-10}" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.valignment="TOP" />
                                                          </children>
@@ -224,7 +224,7 @@
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                           </GridPane>
-                                          <Label fx:id="photoAlert" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Label fx:id="photoAlert" styleClass="photoAlert" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />

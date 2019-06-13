@@ -18,12 +18,12 @@ import io.mosip.kernel.uingenerator.exception.UinGeneratorServiceException;
  * @since 1.0.0
  *
  */
-public class ConfigReader {
+public class ConfigUrlsBuilder {
 
 	/**
 	 * Private constructor to prevent instantiation.
 	 */
-	private ConfigReader() {
+	private ConfigUrlsBuilder() {
 
 	}
 
@@ -39,9 +39,9 @@ public class ConfigReader {
 	 */
 	public static List<String> getURLs() {
 		List<String> urlS = new ArrayList<>();
-		getAppNames().forEach(appName -> {
+		getCongigNames().forEach(config -> {
 			String url = getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_URI);
-			url = url + UinGeneratorConstant.FORWARD_SLASH + appName + UinGeneratorConstant.FORWARD_SLASH
+			url = url + UinGeneratorConstant.FORWARD_SLASH + config + UinGeneratorConstant.FORWARD_SLASH
 					+ getProperty(UinGeneratorConstant.SPRING_PROFILES_ACTIVE) + UinGeneratorConstant.FORWARD_SLASH
 					+ getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_LABEL);
 			urlS.add(url);
@@ -67,7 +67,7 @@ public class ConfigReader {
 				return value;
 		}
 		Properties prop = new Properties();
-		try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream(propertyFileName)) {
+		try (InputStream input = ConfigUrlsBuilder.class.getClassLoader().getResourceAsStream(propertyFileName)) {
 			if (input == null) {
 				throw new UinGeneratorServiceException("", "File Not Available : " + propertyFileName);
 			}
@@ -84,7 +84,7 @@ public class ConfigReader {
 	 * 
 	 * @return the app names.
 	 */
-	public static List<String> getAppNames() {
+	public static List<String> getCongigNames() {
 		String names = System.getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_NAME);
 		if (names == null) {
 			names = getProperty(UinGeneratorConstant.SPRING_CLOUD_CONFIG_NAME);

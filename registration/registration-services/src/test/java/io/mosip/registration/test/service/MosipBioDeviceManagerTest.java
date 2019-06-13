@@ -263,7 +263,7 @@ public class MosipBioDeviceManagerTest {
 		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
 		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
 		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
-		mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
+		mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
 	}
 
 	@Test
@@ -272,7 +272,7 @@ public class MosipBioDeviceManagerTest {
 		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
 		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
 		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
-		mosipBioDeviceManager.extractSingleBiometricIsoTemplate(captureResponseDto);
+		mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
 	}
 
 	@Test

@@ -110,8 +110,7 @@ public class MosipBioDeviceIntegratorTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test
+	@Test(expected=IOException.class)
 	public void captureFailure() throws RegBaseCheckedException, JsonParseException, JsonMappingException, IOException {
 		Mockito.when(serviceDelegateUtil.invokeRestService(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
 				Mockito.any())).thenThrow(IOException.class);

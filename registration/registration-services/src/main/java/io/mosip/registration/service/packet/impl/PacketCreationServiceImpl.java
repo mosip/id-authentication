@@ -296,7 +296,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 					.getFace();
 			if (cbeffInBytes != null) {
-				if (registrationDTO.isUpdateUINChild()
+				if (registrationDTO.isUpdateUINNonBiometric()
 						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
 								.equals(RegistrationConstants.ENABLE)) {
 					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
@@ -392,8 +392,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs, byte[] image,
 			int qualityScore, String imageType) {
 		if (image != null) {
-			BIR bir = buildBIR(image, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
-					Arrays.asList(SingleType.FACE), Arrays.asList());
+			// TODO: Replace the stub image with original image once Face SDK is implemented
+			BIR bir = buildBIR(RegistrationConstants.STUB_FACE.getBytes(), CbeffConstant.FORMAT_OWNER,
+					CbeffConstant.FORMAT_TYPE_FACE, qualityScore, Arrays.asList(SingleType.FACE), Arrays.asList());
 
 			birs.add(bir);
 			birUUIDs.put(personType.concat(imageType).toLowerCase(), bir.getBdbInfo().getIndex());
