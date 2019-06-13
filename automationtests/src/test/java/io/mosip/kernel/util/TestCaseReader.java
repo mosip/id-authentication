@@ -83,7 +83,7 @@ public class TestCaseReader extends BaseTestCase {
 		
 		JSONObject jsonData = null;
 		try {
-			InputStream is = TestNgApplication.class.getResourceAsStream("/" + path);
+			InputStream is = TestCaseReader.class.getResourceAsStream("/" + path);
 			jsonData = (JSONObject) new JSONParser().parse(new InputStreamReader(is, "UTF-8"));
 		} catch (IOException | ParseException e) {
 			logger.info(e.getMessage());

@@ -179,7 +179,10 @@ public class KernelAuthentication extends BaseTestCase{
 	//Reading the request file from folder
 	public JSONObject getRequestJson(String testSuite){
 		JSONObject Request=null;
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
+		String configPath = folder + "/" + testSuite+"/request.json";
+		return new TestCaseReader().readJsonData(configPath);
+		
+		/*String configPath = "src/test/resources/" + folder + "/" + testSuite;
 		File folder = new File(configPath);
 		File[] listOfFiles = folder.listFiles();
 		for (File f : listOfFiles) {
@@ -191,7 +194,7 @@ public class KernelAuthentication extends BaseTestCase{
 					logger.error(e.getMessage());
 				}
 			}
-		}return Request;
+		}return Request;*/
 		
 	}
 }
