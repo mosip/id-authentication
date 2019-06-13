@@ -224,26 +224,27 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { Category.BIO.getType() },
 						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
-
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
-
 				validateBioType(bioData, errors, allowedAuthType);
-
 				validateBioData(bioData, errors);
-				if (!errors.hasErrors()) {
-					if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
-						validateFinger(authRequestDTO, bioData, errors);
-					}
-					if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
-						validateIris(authRequestDTO, bioData, errors);
-					}
-					if (isMatchtypeEnabled(BioMatchType.FACE)) {
-						validateFace(authRequestDTO, bioData, errors);
-					}
-				}
+				validateCount(authRequestDTO, errors, bioData);
 			}
 		}
 
+	}
+
+	private void validateCount(AuthRequestDTO authRequestDTO, Errors errors, List<DataDTO> bioData) {
+		if (!errors.hasErrors()) {
+			if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
+				validateFinger(authRequestDTO, bioData, errors);
+			}
+			if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
+				validateIris(authRequestDTO, bioData, errors);
+			}
+			if (isMatchtypeEnabled(BioMatchType.FACE)) {
+				validateFace(authRequestDTO, bioData, errors);
+			}
+		}
 	}
 
 	private void validateBioData(List<DataDTO> bioData, Errors errors) {
@@ -267,19 +268,21 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 */
 	private void validateBioType(List<DataDTO> bioInfos, Errors errors, Set<String> allowedAuthTypesFromConfig) {
-		AuthType[] authTypes = BioAuthType.values();
+		BioAuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
-		for (AuthType authType : authTypes) {
-			availableAuthTypeInfos.add(authType.getType());
+		for (BioAuthType authType : authTypes) {
+			availableAuthTypeInfos.add(authType.getConfigKey().toLowerCase());
 		}
 		Set<String> allowedAvailableAuthTypes = allowedAuthTypesFromConfig.stream().filter(authTypeFromConfig -> {
-			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig);
+			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig.toLowerCase());
 			if (!contains) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "Invalid bio type config: " + authTypeFromConfig);
 			}
 			return contains;
-		}).collect(Collectors.toSet());
+		}).map(BioAuthType::getTypeForConfigKey).filter(Optional::isPresent).map(Optional::get)
+				.collect(Collectors.toSet());
+
 		for (DataDTO bioInfo : bioInfos) {
 			String bioType = bioInfo.getBioType();
 			if (StringUtils.isEmpty(bioType)) {
@@ -293,7 +296,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { MatchType.Category.BIO.getType() + "-" + bioType },
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 			} else {
-				validateBioType(errors, allowedAuthTypesFromConfig, bioInfo);
+				validateBioType(errors, allowedAvailableAuthTypes, bioInfo);
 			}
 		}
 
@@ -898,15 +901,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		checkAllowedAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
 
 		if (authTypeDTO.isBio()) {
-			if (allowedAuthType.contains(MatchType.Category.BIO.getType())) {
-				validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
-			} else {
-				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
-						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
-						new Object[] { MatchType.Category.BIO.getType() },
-						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
-			}
-
+			validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
 		}
 	}
 
