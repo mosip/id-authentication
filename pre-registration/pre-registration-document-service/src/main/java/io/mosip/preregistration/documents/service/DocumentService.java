@@ -556,6 +556,8 @@ public class DocumentService {
 		MainResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainResponseDTO<>();
 		delResponseDto.setId(deleteSpecificId);
 		delResponseDto.setVersion(ver);
+		boolean isRetrieveSuccess = false;
+		boolean isDocNotFound=false;
 		try {
 			DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
 			if (!documentEntity.getPreregId().equals(preRegistrationId)) {
@@ -573,12 +575,34 @@ public class DocumentService {
 				deleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 				delResponseDto.setResponse(deleteDTO);
 			}
+			
 			delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
+			isRetrieveSuccess=true;
 
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
+			if(ex instanceof DocumentNotFoundException)
+				isDocNotFound=true;
 			new DocumentExceptionCatcher().handle(ex, delResponseDto);
 		}
+		 finally {
+				if (isRetrieveSuccess) {
+					setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
+							"Document successfully deleted from the document table", AuditLogVariables.MULTIPLE_ID.toString(),
+							authUserDetails().getUserId(), authUserDetails().getUsername());
+				} else {
+					if(isDocNotFound) {
+						setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+								"No documents found for the application", AuditLogVariables.NO_ID.toString(),
+								authUserDetails().getUserId(), authUserDetails().getUsername());
+					}
+					else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+							"Document deletion failed", AuditLogVariables.NO_ID.toString(),
+							authUserDetails().getUserId(), authUserDetails().getUsername());
+					}
+				}
+		 }
 		return delResponseDto;
 	}
 
