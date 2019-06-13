@@ -53,7 +53,7 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 
                 private static final SimpleDateFormat sdf = new SimpleDateFormat("HHmm");
 
-                private static final String reportProfixFileName = "MOSIP_ModuleLevelAutoRun_TestNGReport";
+                private static final String reportProfixFileName = "MOSIP_RegProcAutoRun_TestNGReport";
 
                 // PieChart
                 private int passTestCount = 0;
