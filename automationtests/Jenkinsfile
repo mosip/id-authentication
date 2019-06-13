@@ -3,7 +3,7 @@ node {
  def branch = '0.13.0_Ashish'
  def projectToBuild = 'automationtests'
  stage('------- Checkout --------') {
-  print ${params.Environment}
+  print "${params.Environment}"
   // Checkout only automation tests Module
   dir(branch) {
    checkout([$class: 'GitSCM',
@@ -28,7 +28,7 @@ node {
 stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
   {
-	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://${params.Environment}.mosip.io -Denv.testLevel=smokeAndRegression'
+	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://"${params.Environment}".mosip.io -Denv.testLevel=smokeAndRegression'
 			  
   }
   
