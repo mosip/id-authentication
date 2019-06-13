@@ -174,19 +174,18 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
 		String regId = dataSyncRequest.getRegistrationCenterId();
 		String fromDate = dataSyncRequest.getFromDate();
-		String format = "dd-MM-yyyy";
+		String format = "yyyy-MM-dd";
 
 		if (isNull(regId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
 					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.getMessage(), mainResponseDTO);
-		}
-
-		if (isNull(fromDate) || !parseDate(fromDate, format)) {
-
+		} else if (isNull(fromDate) || !parseDate(fromDate, format)) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
+					ErrorMessages.INVALID_REQUESTED_DATE.getMessage(), mainResponseDTO);
+		} else if (!isNull(dataSyncRequest.getToDate()) && !parseDate(dataSyncRequest.getToDate(), format)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.getMessage(), mainResponseDTO);
 		}
-
 		return true;
 	}
 
@@ -592,7 +591,9 @@ public class DataSyncServiceUtil {
 	public boolean parseDate(String reqDate, String format) {
 		log.info("sessionId", "idType", "id", "In parseDate method of datasync service util");
 		try {
-			new SimpleDateFormat(format).parse(reqDate);
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			sdf.setLenient(false);
+			sdf.parse(reqDate);
 		} catch (Exception e) {
 			log.error("sessionId", "idType", "id", "In parseDate method of datasync service util - " + e.getMessage());
 			return false;

@@ -492,7 +492,7 @@ public class BookingServiceUtil {
 			} else if (isNull(bookingRequestDTO.getRegDate())) {
 				throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.getCode(),
 						ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.getMessage());
-			} else if (isNull(bookingRequestDTO.getSlotFromTime()) && isNull(bookingRequestDTO.getSlotToTime())) {
+			} else if (isNull(bookingRequestDTO.getSlotFromTime()) || isNull(bookingRequestDTO.getSlotToTime())) {
 				throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.getCode(),
 						ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.getMessage());
 			}
@@ -716,22 +716,22 @@ public class BookingServiceUtil {
 		HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
 		try {
-		request.setRequest(notificationDTO);
-		request.setId("mosip.pre-registration.notification.notify");
-		request.setVersion("1.0");
-		request.setRequesttime(new Date());
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-		emailMap.add("NotificationRequestDTO", request);
-		emailMap.add("langCode", langCode);
-		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
-		log.info("sessionId", "idType", "id",
-				"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
-		resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
-		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
-		if (!validationErrorList.isEmpty()) {
-			throw new NotificationException(validationErrorList,null);
-		} 
+			request.setRequest(notificationDTO);
+			request.setId("mosip.pre-registration.notification.notify");
+			request.setVersion("1.0");
+			request.setRequesttime(new Date());
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
+			emailMap.add("NotificationRequestDTO", request);
+			emailMap.add("langCode", langCode);
+			HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
+			log.info("sessionId", "idType", "id",
+					"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
+			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
+			List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
+			if (!validationErrorList.isEmpty()) {
+				throw new NotificationException(validationErrorList, null);
+			}
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In emailNotification method of Booking Service Util for HttpClientErrorException- "
@@ -754,23 +754,32 @@ public class BookingServiceUtil {
 		try {
 			if (requestMap.get(RequestCodes.REG_DATE.getCode()) != null
 					&& !requestMap.get(RequestCodes.REG_DATE.getCode()).isEmpty()) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sdf.setLenient(false);
+				sdf.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				if (localDate.isBefore(LocalDate.now())) {
-					throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-							ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+					throw new InvalidRequestParameterException(
+							ErrorCodes.PRG_BOOK_RCI_031.getCode(), ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()
+									+ " found for - " + requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
+							null);
 				} else if (localDate.isEqual(LocalDate.now())
 						&& (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
 								&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
 					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
 					if (localTime.isBefore(LocalTime.now())) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for - "
+										+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
+								null);
 					}
 				}
 			}
 		} catch (Exception ex) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for preregistration id - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for preregistration id - "
+							+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
+					null);
 		}
 		return true;
 	}
