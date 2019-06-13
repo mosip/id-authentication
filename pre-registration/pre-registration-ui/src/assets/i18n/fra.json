@@ -258,7 +258,8 @@
     "link_faq": "FAQ",
     "link_contact": "CONTACT",
     "link_applications": "Vos Applications",
-    "link_logout": "Connectez - Out"
+    "link_logout": "Connectez - Out",
+    "link_login": "S'IDENTIFIER"
   },
   "login": {
     "text": "Étapes rapides et faciles",

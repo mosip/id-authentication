@@ -4,6 +4,7 @@
       <a mat-list-item routerLink="/about-us" (click)="sidenav.toggle()"> {{ 'header.link_about' | translate }}</a>
       <a mat-list-item routerLink="/faq" (click)="sidenav.toggle()">{{ 'header.link_faq' | translate }}</a>
       <a mat-list-item routerLink="/contact" (click)="sidenav.toggle()">{{ 'header.link_contact' | translate }}</a>
+      <a href="./" mat-list-item> {{ 'header.link_login' | translate }}</a>
       <a mat-list-item *ngIf="authService.isAuthenticated()" (click)="onHome(); sidenav.toggle()">{{
         'header.link_applications' | translate
       }}</a>
@@ -25,6 +26,9 @@
         <a mat-list-item routerLink="/contact">{{ 'header.link_contact' | translate }}</a>
       </mat-nav-list>
       <span class="spacer"></span>
+      <mat-nav-list *ngIf="!authService.isAuthenticated()" class="list-item">
+        <a href="./" mat-list-item class="header__actions"> {{ 'header.link_login' | translate }}</a>
+      </mat-nav-list>
       <mat-nav-list *ngIf="authService.isAuthenticated()" class="list-item">
         <a mat-list-item class="header__actions" (click)="onHome()">
           <mat-icon class="icon">folder_open</mat-icon>&nbsp;{{ 'header.link_applications' | translate }}</a
