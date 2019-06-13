@@ -17,9 +17,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -74,10 +76,17 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	String token="";
 	Properties prop =  new Properties();
 	RegProcApiRequests apiRequests=new RegProcApiRequests();
+	
 	TokenGeneration generateToken=new TokenGeneration();
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	StageValidationMethods apiRequest=new StageValidationMethods();
 	String validToken="";
+	
+	
+	/**
+	 * This method is used for generating token
+	 * @param tokenType
+	 * @return token
+	 */
 	public String getToken(String tokenType) {
 		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
 		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
@@ -95,7 +104,6 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	@DataProvider(name = "PacketReceiver")
 	public Object[][] readData(ITestContext context){
 		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		testLevel=System.getProperty("env.testLevel");
 		Object[][] readFolder = null;
 		try {
@@ -111,8 +119,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
 		}catch (IOException | ParseException|IllegalArgumentException|NullPointerException e) {
-			logger.error("Exception occurred in Packet Receiver class in readData method"+e);
-		}
+			Assert.assertTrue(false, "not able to read the folder in PacketReceiver class in readData method: "+ e.getCause());		}
 		return readFolder;
 	}
 @BeforeClass
@@ -126,7 +133,7 @@ public void getToken() {
 	 * @param i
 	 * @param object
 	 */
-	@Test(dataProvider="PacketReceiver")
+	@Test(dataProvider="packetReceiver")
 	public void packetReceiver(String testSuite, Integer i, JSONObject object){
 		
 		File file = null;
@@ -169,6 +176,8 @@ public void getToken() {
 
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+			Assert.assertTrue(status, "object are not equal");
+			
 			if (status) {
 				boolean isError = expectedResponse.containsKey("errors");
 				logger.info("isError ========= : "+isError);
@@ -228,7 +237,7 @@ public void getToken() {
 	        softAssert.assertAll();
 
 		} catch (IOException | ParseException e) {
-			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
+			Assert.assertTrue(false, "not able to execute packetInfo method : "+ e.getCause());
 		}
 	}
 
@@ -265,6 +274,7 @@ String apiName="packetReceiver";
 			f.set(baseTestMethod, PacketReceiver.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
+			Reporter.log("Exception : " + e.getMessage());
 		}
 		
 		

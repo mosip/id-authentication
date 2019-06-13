@@ -6,25 +6,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.json.JSONString;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -38,35 +30,24 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
-import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
-import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.registrationProcessor.util.EncryptData;
-import io.mosip.registrationProcessor.util.HashSequenceUtil;
 import io.mosip.registrationProcessor.util.RegProcApiRequests;
-import io.mosip.registrationProcessor.util.StageValidationMethods;
-import io.mosip.registrationProcessor.util.TweakRegProcPackets;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
-import io.mosip.util.EncrypterDecrypter;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 
 /**
- * This class is used for testing the Sync API
+ * This class is used for testing the Update Packet 
  * 
  * @author Sayeri Mishra
  *

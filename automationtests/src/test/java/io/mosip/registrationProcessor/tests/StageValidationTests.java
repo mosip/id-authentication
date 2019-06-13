@@ -81,9 +81,9 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}
 		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);*/
-		for(int i=0;i<5;i++) {
+		/*for(int i=0;i<5;i++) {
 			e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,invalidPacketFolderPath);
-		}
+		}*/
 		
 		try {
 			reader.close();

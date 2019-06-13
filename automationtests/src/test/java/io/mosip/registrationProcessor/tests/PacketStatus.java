@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -85,11 +86,19 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	Properties prop =  new Properties();
 	static String moduleName="RegProc";
 	static String apiName="packetStatus";
+	
 	RegProcApiRequests apiRequests=new RegProcApiRequests();
 	TokenGeneration generateToken=new TokenGeneration();
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
 	StageValidationMethods apiRequest=new StageValidationMethods();
 	String validToken="";
+	
+	
+	/**This method is used for generating token
+	 * 
+	 * @param tokenType
+	 * @return token
+	 */
 	public String getToken(String tokenType) {
 		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
 		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
@@ -103,7 +112,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	 */
 	@DataProvider(name = "packetStatus")
 	public Object[][] readDataForPacketStatus(ITestContext context) {
-		String testParam = context.getCurrentXmlTest().getParameter("testType");
+		
 		Object[][] readFolder= null;
 		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
 
@@ -121,7 +130,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
 		} catch (IOException | ParseException e) {
-			logger.error("Exception occurred in PacketStatus class in readDataForPacketStatus method" +e);
+			Assert.assertTrue(false, "not able to read the folder in PacketStatus class in readData method: "+ e.getCause());		
 		}
 		return readFolder;
 	}
@@ -155,7 +164,8 @@ public class PacketStatus extends BaseTestCase implements ITest {
 
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-
+			Assert.assertTrue(status, "object are not equal");
+			
 			if (status) {
 				boolean isError = expectedResponse.containsKey("errors");
 				logger.info("isError ========= : "+isError);
@@ -241,8 +251,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 	        Verify.verify(setFinalStatus);
 	        softAssert.assertAll();
 		} catch (IOException | ParseException e) {
-			logger.error("Exception occurred in Packet Status class in packetStatus method "+e);
-		}
+			Assert.assertTrue(false, "not able to execute packetStatus method : "+ e.getCause());		}
 	}
 
 	/**
@@ -277,6 +286,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			f.set(baseTestMethod, PacketStatus.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in PacketStatus class in setResultTestName "+e);
+			Reporter.log("Exception : " + e.getMessage());
 		}
 		
 	}

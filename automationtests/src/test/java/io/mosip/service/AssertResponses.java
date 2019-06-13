@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,18 +38,16 @@ public class AssertResponses {
 		Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
 		Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
 		logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
-		if (obj1.hashCode() == obj2.hashCode()) {
+		try {
+			Assert.assertTrue(obj1.equals(obj2));
 			logger.info("both object are equal");
-			softAssert.assertTrue(obj1.equals(obj2));
-			logger.info("both object are equal");
-			softAssert.assertAll();
-			return true;
-
-		} else { 
-			logger.info("both object are not equal");
+		} catch (AssertionError e) {
+			Assert.assertTrue(false, "Response Data Mismatch Failure  : "+com.google.common.collect.Maps.difference(firstMap, secondMap));
 			return false;
 		}
-
+		softAssert.assertAll();
+		return true;
+		
 	}
 
 	@SuppressWarnings("serial")
