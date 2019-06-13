@@ -26,6 +26,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -35,6 +37,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
@@ -52,6 +56,7 @@ import io.mosip.preregistration.application.dto.DemographicViewDTO;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
+import io.mosip.preregistration.application.exception.DemographicServiceException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.PreIdInvalidForUserIdException;
 import io.mosip.preregistration.application.exception.RecordFailedToDeleteException;
@@ -296,7 +301,13 @@ public class DemographicService {
 			isSuccess = true;
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
-		} catch (Exception ex) {
+		}catch(HttpServerErrorException | HttpClientErrorException e) {
+			log.error("sessionId", "idType", "id",
+					"In pre-registration service of addPreRegistration- " + e.getResponseBodyAsString());
+			List<ServiceError> errorList=ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
+			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO); 
+		}
+		catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -375,7 +386,13 @@ public class DemographicService {
 			isSuccess = true;
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
-		} catch (Exception ex) {
+		}catch(HttpServerErrorException | HttpClientErrorException e) {
+			log.error("sessionId", "idType", "id",
+					"In pre-registration service of addPreRegistration- " + e.getResponseBodyAsString());
+			List<ServiceError> errorList=ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
+			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO); 
+		} 
+		catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of updatePreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);

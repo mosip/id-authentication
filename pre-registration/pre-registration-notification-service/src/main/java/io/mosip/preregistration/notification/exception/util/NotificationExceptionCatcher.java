@@ -38,20 +38,20 @@ public class NotificationExceptionCatcher {
 	 */
 	public void handle(Exception ex,MainResponseDTO<?> mainResponseDto) {
 		if (ex instanceof MandatoryFieldException) {
-			throw new MandatoryFieldException(ErrorCodes.PRG_ACK_001.getCode(),
+			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_001.getCode(),
 					ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode(),mainResponseDto);
 		}else if (ex instanceof IOException||ex instanceof java.io.IOException) {
-			throw new IOException(ErrorCodes.PRG_ACK_005.getCode(), 
+			throw new IOException(ErrorCodes.PRG_PAM_ACK_005.getCode(), 
 					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode(),mainResponseDto);
 		}else if (ex instanceof NullPointerException) {
-			throw new IllegalParamException(ErrorCodes.PRG_ACK_002.getCode(),
+			throw new IllegalParamException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
 					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause(),mainResponseDto);
 		}
 		else if (ex instanceof HttpServerErrorException) {
 			throw new NotificationSeriveException();
 		}
 		else if (ex instanceof JsonParseException) {
-			throw new JsonValidationException(ErrorCodes.PRG_ACK_004.getCode(), ErrorMessages.JSON_PARSING_FAILED.getCode(),
+			throw new JsonValidationException(ErrorCodes.PRG_PAM_ACK_004.getCode(), ErrorMessages.JSON_PARSING_FAILED.getCode(),
 					ex.getCause(),mainResponseDto);
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
