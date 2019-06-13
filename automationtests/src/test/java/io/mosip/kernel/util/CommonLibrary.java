@@ -3,7 +3,6 @@ package io.mosip.kernel.util;
 import static io.restassured.RestAssured.given;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -94,7 +93,8 @@ public class CommonLibrary extends BaseTestCase {
 	public Map<String, String> readProperty(String propertyFileName) {
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream("src/config/" + propertyFileName + ".properties"));
+			prop.load(CommonLibrary.class.getResourceAsStream("/mosip-api-resources/config/"+ propertyFileName + ".properties"));
+			
 		} catch (IOException e) {
 
 			logger.info(e.getMessage());

@@ -3,12 +3,11 @@ package io.mosip;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.testng.TestNG;
 
 
 public class TestNgApplication {
        public static void main(String[] args) {
-              // Create object of TestNG Class
+          /*    // Create object of TestNG Class
               TestNG runner = new TestNG();
               // Create a list of String
               List<String> suitefiles = new ArrayList<String>();
@@ -18,7 +17,7 @@ public class TestNgApplication {
               runner.setTestSuites(suitefiles);
               // finally execute the runner using run method
               runner.setOutputDirectory("testng-report");
-              runner.run();
+              runner.run();*/
        }
 }
 
