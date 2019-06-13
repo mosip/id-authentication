@@ -201,6 +201,9 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 			if(!OutputValidationUtil.publishOutputResult(auditLogValidation))
 				throw new AuthenticationTestException("Failed at auditLog Validation");
 		}
+		if(!verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
+				responseDigitalSignatureValue))
+			throw new AuthenticationTestException("Failed at digital signature verification");
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "emailNotification")) {
 			Map<String, String> templates = getPropertyAsMap(
 					new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/TestData/RunConfig/emailNotification.properties")

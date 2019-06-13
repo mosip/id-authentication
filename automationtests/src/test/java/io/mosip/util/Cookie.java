@@ -1,6 +1,6 @@
 package io.mosip.util;
 
-import java.io.FileReader;
+import java.io.FileReader; 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +9,6 @@ import java.util.Date;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -78,4 +77,5 @@ public class Cookie {
 		LocalDateTime currentDateTime = LocalDateTime.now();
 		return dtf.format(currentDateTime).toString();
 	}
+
 }

@@ -24,6 +24,7 @@ import org.testng.internal.TestResult;
 
 import io.mosip.authentication.fw.util.AuditValidation;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.AuthenticationTestException;
 import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
@@ -117,9 +118,10 @@ public class UpdateVID extends AuthTestsUtil implements ITest {
 	 * Data provider class provides test case list
 	 * 
 	 * @return object of data provider
+	 * @throws AuthenticationTestException 
 	 */
 	@Test
-	public void updateVidStatus() {
+	public void updateVidStatus() throws AuthenticationTestException {
 		invocationCount++;
 		setTestDataPathsAndFileNames(invocationCount);
 		setConfigurations(this.testType);
@@ -166,9 +168,10 @@ public class UpdateVID extends AuthTestsUtil implements ITest {
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
+	 * @throws AuthenticationTestException 
 	 */
 	public void updateVidStatusRecord(TestParameters objTestParameters, String testScenario,
-			String testcaseName) {
+			String testcaseName) throws AuthenticationTestException {
 		cookieValue=getAuthorizationCookie(getCookieRequestFilePath(),RunConfigUtil.objRunConfig.getIdRepoEndPointUrl()+RunConfigUtil.objRunConfig.getClientidsecretkey(),AUTHORIZATHION_COOKIENAME);
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
@@ -192,8 +195,9 @@ public class UpdateVID extends AuthTestsUtil implements ITest {
 			//Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
 		//}
 		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getUpdateVidStatusPath(vidNumber) + " *******");
-		postRequestAndGenerateOuputFileForUINUpdate(testCaseName.listFiles(), IdRepoUtil.getUpdateVidStatusPath(vidNumber),
-				"create", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue,0);
+		if(!postRequestAndGenerateOuputFileForUINUpdate(testCaseName.listFiles(), IdRepoUtil.getUpdateVidStatusPath(vidNumber),
+				"create", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue,0))
+			throw new AuthenticationTestException("Failed at HTTP-POST request");
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
@@ -209,12 +213,14 @@ public class UpdateVID extends AuthTestsUtil implements ITest {
 				if(entry.getValue().contains(vidNumber))
 					uin=entry.getKey();
 			}
+			if(vidStatus.equals("INVALIDATED"))
+				vidStatus="INACTIVE";
 			tempMap.put(uin, vidNumber+"."+vidType+"."+vidStatus);
 			updateMappingDic(RunConfigUtil.objRunConfig.getUserDirectory()+RunConfigUtil.objRunConfig.getSrcPath()+"ida/TestData/RunConfig/vid.properties", tempMap);
 			updateMappingDic(RunConfigUtil.objRunConfig.getUserDirectory()+RunConfigUtil.objRunConfig.getSrcPath()+"idRepository/TestData/RunConfig/vid.properties", tempMap);
 		}
-		/*else
-			Assert.assertEquals(false, true);*/
+		else
+			throw new AuthenticationTestException("Failed at output response validation");
 	}
 
 }

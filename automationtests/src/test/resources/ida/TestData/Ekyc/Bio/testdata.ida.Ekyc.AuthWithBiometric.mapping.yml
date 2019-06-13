@@ -1676,7 +1676,7 @@ testdata:
     audit.audit_log:
       refId:  $input.ekyc-request:AuthReq.individualId$
       eventId: $TestData:audit_log_eventId$
-      eventName: $TestData:audit_log_auth_eventName$
+      eventName: $TestData:audit_log_ekyc_eventName$
       appId: $TestData:audit_log_ida_appId$
       appName: $TestData:audit_log_ida_appName$
       moduleName: $TestData:audit_log_ekyc_moduleName$
@@ -1729,7 +1729,6 @@ testdata:
       output.1.response.transactionID: $input.ekyc-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:RevokedVID:errorCode$
       output.1.response.error.errorMessage: $errors:RevokedVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:RevokedVID:actionMessage$  
       
   Authentication_EKYC_Biometric_With_Inactive_VID_Neg:
     endpoint.url:

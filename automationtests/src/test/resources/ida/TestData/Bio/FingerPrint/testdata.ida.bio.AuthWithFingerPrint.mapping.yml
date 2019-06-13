@@ -965,7 +965,7 @@ testdata:
       identityReq.deviceCode1: $TestData:bio_face_deviceCode$
       identityReq.deviceProviderID1: $TestData:bio_face_deviceProviderID$
       identityReq.bioValue1: $idrepo~$input.bio-auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Finger'][Subtype='Right IndexFinger']//following::BDB$
-      identityReq.bioSubType2: $TestData:bio_finger_RightLittle_subType$
+      identityReq.bioSubType2: $TestData:bio_finger_RightLittleOnly_subType$
       identityReq.bioType2: $TestData:bio_finger_type$
       identityReq.deviceCode2: $TestData:bio_face_deviceCode$
       identityReq.deviceProviderID2: $TestData:bio_face_deviceProviderID$
@@ -2108,7 +2108,7 @@ testdata:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $VID:WHERE:UIN:WITH:EVEN$
+      AuthReq.individualId: $VID$
       AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -2167,7 +2167,6 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:ExpiredVID:errorCode$
       output.1.response.error.errorMessage: $errors:ExpiredVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:ExpiredVID:actionMessage$ 
       
   Authentication_Biometric_Finger_With_Revoke_VID_Neg:
     endpoint.url:
@@ -2192,7 +2191,6 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:RevokedVID:errorCode$
       output.1.response.error.errorMessage: $errors:RevokedVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:RevokedVID:actionMessage$  
       
   Authentication_Biometric_Finger_With_Inactive_VID_Neg:
     endpoint.url:
@@ -2215,6 +2213,6 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$      
+      output.1.response.error.errorCode: $errors:InactiveVID:errorCode$
+      output.1.response.error.errorMessage: $errors:InactiveVID:errorMessage$      
   

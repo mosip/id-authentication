@@ -1382,7 +1382,7 @@ testdata:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $VID:WHERE:UIN:WITH:EVEN$
+      AuthReq.individualId: $VID$
       AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1465,7 +1465,6 @@ testdata:
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
       output.1.response.error.errorCode: $errors:RevokedVID:errorCode$
       output.1.response.error.errorMessage: $errors:RevokedVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:RevokedVID:actionMessage$  
       
   Authentication_Biometric_Face_With_Inactive_VID_Neg:
     endpoint.url:
@@ -1488,5 +1487,5 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$       
+      output.1.response.error.errorCode: $errors:InactiveVID:errorCode$
+      output.1.response.error.errorMessage: $errors:InactiveVID:errorMessage$       

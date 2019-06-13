@@ -24,16 +24,15 @@ testdata:
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$
       output.1.res.id: $TestData:id_UpdateVid_valid$ 
-
       
   Authentication_UpdateVIDStatus_INACTIVE_For Vid Type_Perpetual:
     input.create-request:
       version: $idrepoVersion$
       requesttime: $TIMESTAMPZ$
-      vidStatus: INACTIVE
+      vidStatus: INVALIDATED
       id: $TestData:id_UpdateVid_valid$
     output.output-1-expected-y-res:
-      output.1.res.status: INACTIVE
+      output.1.res.status: INVALIDATED
       output.1.res.responsetime: $IGNORE$
       output.1.res.version: $IGNORE$
       output.1.res.VID: $IGNORE$

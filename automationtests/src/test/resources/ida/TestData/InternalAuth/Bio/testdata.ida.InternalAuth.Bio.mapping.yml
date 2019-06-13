@@ -365,9 +365,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:InvalidVID:actionMessage$
+      output.1.response.error.errorCode: $errors:InternalBioVIDNotAllowed:errorCode$
+      output.1.response.error.errorMessage: $errors:InternalBioVIDNotAllowed:errorMessage$
       
   InternalAuthentication_Biometric_Without_Version_In_Request_Neg:
     #endpoint.url:
@@ -746,8 +745,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:OtherAuthTypeForInternal:errorCode$
-      output.1.response.error.errorMessage: $errors:OtherAuthTypeForInternal:errorMessage$
+      output.1.response.error.errorCode: $errors:UnSupportAuthType:errorCode$
+      output.1.response.error.errorMessage: $errors:UnSupportAuthType:errorMessage$
       
   InternalAuthentication_Biometric_With_Invalid_bioValue_In_Bio_Identity_Neg:
     #endpoint.url:
@@ -900,8 +899,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
+      output.1.response.error.errorCode: $errors:InternalBioVIDNotAllowed:errorCode$
+      output.1.response.error.errorMessage: $errors:InternalBioVIDNotAllowed:errorMessage$
   
   InternalAuthentication_Biometric_With_Invalid_individualId_DeactivedUIN_Neg:
     #endpoint.url:
@@ -1468,8 +1467,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidUserId:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidUserId:errorMessage$
+      output.1.response.error.errorCode: $errors:UserIDNotInDB:errorCode$
+      output.1.response.error.errorMessage: $errors:UserIDNotInDB:errorMessage$
       
   InternalAuthentication_Biometric_Face_With_VID_Neg:
     input.bio-auth-request:
@@ -1490,5 +1489,5 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidUserId:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidUserId:errorMessage$
+      output.1.response.error.errorCode: $errors:InternalBioVIDNotAllowed:errorCode$
+      output.1.response.error.errorMessage: $errors:InternalBioVIDNotAllowed:errorMessage$

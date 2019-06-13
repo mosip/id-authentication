@@ -203,8 +203,7 @@ public class DemographicAuthentication extends AuthTestsUtil implements ITest {
 			if(!OutputValidationUtil.publishOutputResult(auditLogValidation))
 				throw new AuthenticationTestException("Failed at auditLog Validation");
 		}
-		if (testcaseName.contains("_Pos") || testcaseName.contains("_pos"))
-			if(!verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
+		if(!verifyResponseUsingDigitalSignature(responseJsonToVerifyDigtalSignature,
 					responseDigitalSignatureValue))
 				throw new AuthenticationTestException("Failed at digital signature verification");
 	}
