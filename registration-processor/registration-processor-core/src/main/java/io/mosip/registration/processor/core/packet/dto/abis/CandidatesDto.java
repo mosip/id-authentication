@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.core.packet.dto.abis;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import lombok.Data;
 
@@ -18,14 +19,27 @@ public class CandidatesDto implements Serializable {
 
 	/** The reference id. */
 	private String referenceId;
-	
+
 	/** The scaled score. */
 	private String scaledScore;
 	
 	private String internalScore;
 	
 	private Analytics[] analytics;
+	public Analytics[] getAnalytics() {
+		return Arrays.copyOf(analytics, analytics.length);
+	}
+
+	public void setAnalytics(Analytics[] analytics) {
+		this.analytics = analytics!=null?analytics:null;
+	}
 	
 	private AbisScores[] scores;
-	
+	public AbisScores[] getScores() {
+		return Arrays.copyOf(scores, scores.length);
+	}
+
+	public void setAbisScores(AbisScores[] scores) {
+		this.scores = scores!=null?scores:null;
+	}
 }
