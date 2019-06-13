@@ -68,7 +68,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	  */
 	 @DataProvider(name = "ActivateUin")
 	 public Object[][] readData(ITestContext context){
-	 	 String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorApi.properties";
+	 	 String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
 	 	 String testParam = context.getCurrentXmlTest().getParameter("testType");
 	 	 Object[][] readFolder = null;
 	 	 try {

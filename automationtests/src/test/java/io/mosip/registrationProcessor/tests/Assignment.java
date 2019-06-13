@@ -96,7 +96,7 @@ public class Assignment extends BaseTestCase implements ITest {
 
 		Object[][] readFolder = null;
 		String propertyFilePath = System.getProperty("user.dir") + "/"
-				+ "src/config/registrationProcessorApi.properties";
+				+ "src/config/registrationProcessorAPI.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
