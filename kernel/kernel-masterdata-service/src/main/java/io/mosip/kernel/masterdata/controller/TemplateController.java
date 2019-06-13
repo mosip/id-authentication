@@ -166,6 +166,7 @@ public class TemplateController {
 	 * @return All {@link TemplateDto}
 	 */
 	@GetMapping("/templatetypecodes/{code}")
+	@ResponseFilter
 	public ResponseWrapper<TemplateResponseDto> getAllTemplateByTemplateTypeCode(
 			@PathVariable("code") String templateTypeCode) {
 

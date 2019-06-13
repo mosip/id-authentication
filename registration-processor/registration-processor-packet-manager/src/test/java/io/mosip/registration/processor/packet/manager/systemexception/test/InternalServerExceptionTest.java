@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -43,10 +44,10 @@ public class InternalServerExceptionTest {
 		String fileName = "sample";
 		InternalServerException ex = new InternalServerException(
 				PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+		doThrow(ex).when(fileManager).put(Mockito.any(), Mockito.any(), Mockito.any());
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+			fileManager.put(fileName, file, DirectoryPathDto.ARCHIVE_LOCATION);
 			fail();
 		} catch (InternalServerException e) {
 			assertThat("Should throw Server error with correct error codes",

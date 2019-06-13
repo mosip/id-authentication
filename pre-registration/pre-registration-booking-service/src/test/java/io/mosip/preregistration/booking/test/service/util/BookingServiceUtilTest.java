@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -226,7 +228,7 @@ public class BookingServiceUtilTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, String> dateMap = new HashMap<>();
 		dateMap.put(RequestCodes.REG_DATE.getCode(), sdf.format(cal.getTime()));
-		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), "09:30");
+		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), LocalTime.now().toString());
 		boolean isValid = serviceUtil.validateAppointmentDate(dateMap);
 		assertEquals(Boolean.TRUE, isValid);
 	}
@@ -238,18 +240,18 @@ public class BookingServiceUtilTest {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, String> dateMap = new HashMap<>();
 		dateMap.put(RequestCodes.REG_DATE.getCode(), sdf.format(cal.getTime()));
-		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), "09:30");
+		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), LocalTime.now().toString());
 		boolean isValid = serviceUtil.validateAppointmentDate(dateMap);
 		assertEquals(Boolean.FALSE, isValid);
 	}
 
-	//@Test(expected = InvalidRequestParameterException.class)
+	@Test(expected = InvalidRequestParameterException.class)
 	public void validateAppointmentTimeExceptionTest() {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Map<String, String> dateMap = new HashMap<>();
 		dateMap.put(RequestCodes.REG_DATE.getCode(), sdf.format(cal.getTime()));
-		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(), "09:30");
+		dateMap.put(RequestCodes.FROM_SLOT_TIME.getCode(),LocalTime.now().minusMinutes(120).toString());
 		boolean isValid = serviceUtil.validateAppointmentDate(dateMap);
 		assertEquals(Boolean.FALSE, isValid);
 	}
