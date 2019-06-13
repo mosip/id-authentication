@@ -1465,7 +1465,7 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * Exception fingers count.
+	 * To count the number of exceptions for face/iris/fingerprint
 	 */
 	private Map<String, Integer> exceptionFingersCount(RegistrationDTO registration, int leftSlapCount,
 			int rightSlapCount, int thumbCount, int irisCount) {
