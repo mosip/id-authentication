@@ -492,7 +492,7 @@ public class BookingServiceUtil {
 			} else if (isNull(bookingRequestDTO.getRegDate())) {
 				throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.getCode(),
 						ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.getMessage());
-			} else if (isNull(bookingRequestDTO.getSlotFromTime()) && isNull(bookingRequestDTO.getSlotToTime())) {
+			} else if (isNull(bookingRequestDTO.getSlotFromTime()) || isNull(bookingRequestDTO.getSlotToTime())) {
 				throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.getCode(),
 						ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.getMessage());
 			}
