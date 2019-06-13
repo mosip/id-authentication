@@ -86,7 +86,7 @@ public class SecurityTests extends BaseTestCase implements ITest{
 			if(f.getName().contains(".zip")) {
 				packet=f;
 				try {
-					registrationPacketSyncDto=encryptData.createSyncRequest(f);
+					registrationPacketSyncDto=encryptData.createSyncRequest(f,"NEW");
 					regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 					centre_machine_refId=regId.substring(0,5)+"_"+regId.substring(5, 10);
 				} catch (ParseException e) {

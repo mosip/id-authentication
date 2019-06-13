@@ -51,7 +51,7 @@ public class StageValidationMethods extends BaseTestCase {
 		validToken=getToken("syncTokenGenerationFilePath");
 		RegistrationPacketSyncDTO registrationPacketSyncDto=null;;
 		try {
-			registrationPacketSyncDto = encryptData.createSyncRequest(packet);
+			registrationPacketSyncDto = encryptData.createSyncRequest(packet,"NEW");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

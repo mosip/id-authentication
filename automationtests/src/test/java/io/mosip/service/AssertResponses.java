@@ -149,5 +149,30 @@ public class AssertResponses {
 			}
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	public static boolean assertResponses(Response response1, Response response2, List<String> outerKeys, List<String> innerKeys)
+			throws JsonProcessingException, IOException, ParseException {
+		JSONObject obj1 = AssertResponses.getComparableBody(response1.asString(), outerKeys, innerKeys);
+		JSONObject obj2 = AssertResponses.getComparableBody(response2.toString(), outerKeys, innerKeys);
+		Gson g = new Gson(); 
+		Type mapType = new TypeToken<Map<String, Object>>() {
+		}.getType();
+		Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
+		Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
+		logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
+		if (obj1.hashCode() == obj2.hashCode()) {
+			logger.info("both object are equal");
+			softAssert.assertTrue(obj1.equals(obj2));
+			logger.info("both object are equal");
+			softAssert.assertAll();
+			return true;
+
+		} else { 
+			logger.info("both object are not equal");
+			return false;
+		}
+
+	}
 
 }
