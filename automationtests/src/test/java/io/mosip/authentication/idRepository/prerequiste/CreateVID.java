@@ -86,10 +86,11 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 		String cookieValue = getAuthorizationCookie(getCookieRequestFilePathForUinGenerator(),
 				RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getClientidsecretkey(),
 				AUTHORIZATHION_COOKIENAME);
-		Properties prop = getPropertyFromFilePath(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
+		Properties prop = getPropertyFromFilePath(new File(RunConfigUtil.getResourcePath() + "/ida/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/uin.properties").getAbsolutePath());
 		Map<String, String> uinMap = new HashMap<String, String>();
 		Map<String, String> vidMap = new HashMap<String, String>();
+		boolean status=true;
 		for (String str : prop.stringPropertyNames()) {
 			uinMap.put(str, prop.getProperty(str));
 		}
@@ -115,23 +116,23 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 
 				String resVIDJson = postRequestAndGetResponseForVIDGeneration(reqVidJson, url,
 						AUTHORIZATHION_COOKIENAME, cookieValue);
-				if (resVIDJson.contains("VID")) {
+				if (resVIDJson.contains("\"VID\":")) {
 					String vid = JsonPrecondtion.getValueFromJson(resVIDJson, "response.VID");
-					if(!vid.contains("[0-9]+"))
-						throw new AuthenticationTestException("VID not generated properly. This may lead to fail some authentication test case");
 					String vidType = JsonPrecondtion.getValueFromJson(reqVidJson, "request.vidType");
 					vidMap.put(entry.getKey(), vid + "." + vidType + ".ACTIVE");
 				}
 				else
-					throw new AuthenticationTestException("VID not generated properly. This may lead to fail some authentication test case");
+					status=false;
 			}
 		}
-		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
+		generateMappingDic(new File(RunConfigUtil.getResourcePath() + "ida/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
 				vidMap);
-		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "idRepository/"
+		generateMappingDic(new File(RunConfigUtil.getResourcePath() + "idRepository/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
 				vidMap);
+		if(!status)
+			throw new AuthenticationTestException("Create VID failed. This may lead to failure for some authentication test execution");
 	}
 
 	/**
