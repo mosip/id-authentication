@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doThrow;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,10 +31,10 @@ public class FilePathNotAccessibleExceptionTest {
 		String fileName = "sample.zip";
 		FilePathNotAccessibleException ex = new FilePathNotAccessibleException(
 				PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
-		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC,
-				fileName);
+		doThrow(ex).when(fileManager).cleanUpFile(Mockito.any(), Mockito.any(),
+				Mockito.any());
 		try {
-			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileName);
+			fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileName);
 			fail();
 		} catch (FilePathNotAccessibleException e) {
 			assertThat("Should throw File PathNot Accessible Exception with correct error codes", e.getErrorCode()
