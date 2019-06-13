@@ -19,6 +19,7 @@ import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
+import io.mosip.preregistration.application.exception.DemographicServiceException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.IdValidationException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
@@ -158,6 +159,9 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof SystemFileIOException) {
 			throw new SystemFileIOException(((SystemFileIOException) ex).getErrorCode(),
 					((SystemFileIOException) ex).getErrorText(), mainResponsedto);
+		}
+		else if(ex instanceof DemographicServiceException) {
+			throw new DemographicServiceException(((DemographicServiceException) ex).getValidationErrorList(), mainResponsedto);
 		}
 	}
 
