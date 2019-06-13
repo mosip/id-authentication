@@ -86,7 +86,7 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 		String cookieValue = getAuthorizationCookie(getCookieRequestFilePathForUinGenerator(),
 				RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getClientidsecretkey(),
 				AUTHORIZATHION_COOKIENAME);
-		Properties prop = getPropertyFromFilePath(new File(RunConfigUtil.getResourcePath() + "/ida/"
+		Properties prop = getPropertyFromFilePath(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/uin.properties").getAbsolutePath());
 		Map<String, String> uinMap = new HashMap<String, String>();
 		Map<String, String> vidMap = new HashMap<String, String>();
@@ -125,10 +125,10 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 					status=false;
 			}
 		}
-		generateMappingDic(new File(RunConfigUtil.getResourcePath() + "ida/"
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
 				vidMap);
-		generateMappingDic(new File(RunConfigUtil.getResourcePath() + "idRepository/"
+		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "idRepository/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
 				vidMap);
 		if(!status)
