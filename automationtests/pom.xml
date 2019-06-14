@@ -7,14 +7,14 @@
 
 	<packaging>jar</packaging>
 
-	<name>automationtests</name>
+	<name>automationtests-vignesh</name>
 	<url>http://maven.apache.org</url>
 
 
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.7</version>
+		<version>0.12.8</version>
 	</parent>
 
 	<dependencies>

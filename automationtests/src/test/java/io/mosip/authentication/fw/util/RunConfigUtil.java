@@ -326,15 +326,15 @@ public class RunConfigUtil {
 		while (count > 0) {
 			Object[] randomKeys = VidDto.getVid().values().toArray();
 			Object key = randomKeys[new Random().nextInt(randomKeys.length)];
-			if (testCaseName.contains("Temporary") && key.toString().contains("Temporary")) {
+			if (testCaseName.contains("Temporary") && key.toString().contains("Temporary") && key.toString().contains(".ACTIVE")) {
 				count++;
 				return key.toString();
-			} else if (testCaseName.contains("Perpetual") && key.toString().contains("Perpetual")) {
+			} else if (testCaseName.contains("Perpetual") && key.toString().contains("Perpetual") && key.toString().contains(".ACTIVE")) {
 				count++;
 				getUinPropertyValue(getUinPropertyPath());
 				if(UinDto.getUinData().get(getUinForVid(key.toString().split(Pattern.quote("."))[0])).contains("valid"))
 					return key.toString();
-			}else if (testCaseName.contains("Deactivated") && (key.toString().contains("Temporary") || key.toString().contains("Perpetual"))) {
+			}else if (testCaseName.contains("Deactivated") && key.toString().contains("Perpetual") && key.toString().contains(".ACTIVE")) {
 				count++;
 				return key.toString();
 			}

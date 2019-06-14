@@ -21,7 +21,7 @@ testdata:
       output.1.response.y.staticToken: $IGNORE$
       output.1.response.y.response.kycStatus: BOOLEAN:true
      
-  EkycPartner_Invalid_UIN_Neg_02:
+  Authentication_EkycPartner_Invalid_UIN_Neg_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -39,7 +39,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
      
-  EkycPartner_Invalid_reqTime_For UIN_Neg_03:
+  Authentication_EkycPartner_Invalid_reqTime_For UIN_Neg_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -56,7 +56,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       
-  EkycPartner_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
+  Authentication_EkycPartner_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -73,7 +73,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
    
-  EkycPartner_Invalid_individualIdType_For UIN_Neg_05:
+  Authentication_EkycPartner_Invalid_individualIdType_For UIN_Neg_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -92,7 +92,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  EkycPartner_Invalid_version_For UIN_Neg_06:
+  Authentication_EkycPartner_Invalid_version_For UIN_Neg_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -111,7 +111,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  EkycPartner_Invalid_txnID_For UIN_Neg_07:
+  Authentication_EkycPartner_Invalid_txnID_For UIN_Neg_07:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -128,7 +128,7 @@ testdata:
       output.1.response.n.err.errorMessage: $IGNORE$ 
       output.1.response.n.err.errorCode:  $IGNORE$
       
-  EkycPartner_Missing_UIN_For UIN_Neg_08:
+  Authentication_EkycPartner_Missing_UIN_For UIN_Neg_08:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -146,7 +146,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       
-  EkycPartner_Missing_txnID_For UIN_Neg_09:
+  Authentication_EkycPartner_Missing_txnID_For UIN_Neg_09:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -163,7 +163,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
   
-  EkycPartner_Missing_reqTime_For UIN_Neg_10:
+  Authentication_EkycPartner_Missing_reqTime_For UIN_Neg_10:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -180,7 +180,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
   
-  EkycPartner_Missing_version_For UIN_Neg_11_BUG_MOS-20195:
+  Authentication_EkycPartner_Missing_version_For UIN_Neg_11_BUG_MOS-20195:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -198,7 +198,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       
-  EkycPartner_Missing_individualIdType_For UIN_Neg_12:
+  Authentication_EkycPartner_Missing_individualIdType_For UIN_Neg_12:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -217,7 +217,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
   
-  EkycPartner_Invalid_UIN which is not as per data definition_Neg_13:
+  Authentication_EkycPartner_Invalid_UIN which is not as per data definition_Neg_13:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -235,7 +235,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
      
-  EkycPartner_Invalid_reqTime which is not as per definition_For UIN_Neg_14:
+  Authentication_EkycPartner_Invalid_reqTime which is not as per definition_For UIN_Neg_14:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -252,7 +252,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       
-  EkycPartner_Invalid_individualIdType which is not as per defenition_For UIN_Neg_15:
+  Authentication_EkycPartner_Invalid_individualIdType which is not as per defenition_For UIN_Neg_15:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -271,7 +271,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  EkycPartner_Invalid_version which is not as per defenition_For UIN_Neg_16:
+  Authentication_EkycPartner_Invalid_version which is not as per defenition_For UIN_Neg_16:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -289,7 +289,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  EkycPartner_Invalid_txnID which is not as per defenition_For UIN_Neg_17:
+  Authentication_EkycPartner_Invalid_txnID which is not as per defenition_For UIN_Neg_17:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -329,7 +329,7 @@ testdata:
       output.1.response.y.staticToken: $IGNORE$
       output.1.response.y.response.kycStatus: BOOLEAN:true
     
-  EkycPartner_Invalid_VID_Neg_19:
+  Authentication_EkycPartner_Invalid_VID_Neg_19:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -348,7 +348,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
      
-  EkycPartner_Invalid_reqTime_For VID_Neg_20:
+  Authentication_EkycPartner_Invalid_reqTime_For VID_Neg_20:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -366,7 +366,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       
-  EkycPartner_Invalid_reqTime_greaterthan24hrs_For VID_Neg_21:
+  Authentication_EkycPartner_Invalid_reqTime_greaterthan24hrs_For VID_Neg_21:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -384,7 +384,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
    
-  EkycPartner_Invalid_individualIdType_For VID_Neg_22:
+  Authentication_EkycPartner_Invalid_individualIdType_For VID_Neg_22:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -404,7 +404,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  EkycPartner_Invalid_version_For VID_Neg_23:
+  Authentication_EkycPartner_Invalid_version_For VID_Neg_23:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -423,7 +423,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  EkycPartner_Invalid_txnID_For VID_Neg_24:
+  Authentication_EkycPartner_Invalid_txnID_For VID_Neg_24:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -441,7 +441,7 @@ testdata:
       output.1.response.n.err.errorMessage: $IGNORE$ 
       output.1.response.n.err.errorCode:  $IGNORE$
       
-  EkycPartner_Missing_VID_For VID_Neg_25:
+  Authentication_EkycPartner_Missing_VID_For VID_Neg_25:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -460,7 +460,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       
-  EkycPartner_Missing_txnID_For VID_Neg_26:
+  Authentication_EkycPartner_Missing_txnID_For VID_Neg_26:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -478,7 +478,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
   
-  EkycPartner_Missing_reqTime_For VID_Neg_27:
+  Authentication_EkycPartner_Missing_reqTime_For VID_Neg_27:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -496,7 +496,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
   
-  EkycPartner_Missing_version_For VID_Neg_28_BUG_MOS-20195:
+  Authentication_EkycPartner_Missing_version_For VID_Neg_28_BUG_MOS-20195:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -515,7 +515,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       
-  EkycPartner_Missing_individualIdType_For VID_Neg_29:
+  Authentication_EkycPartner_Missing_individualIdType_For VID_Neg_29:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -534,7 +534,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
   
-  EkycPartner_Invalid_VID which is not as per data definition_Neg_30:
+  Authentication_EkycPartner_Invalid_VID which is not as per data definition_Neg_30:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -553,7 +553,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
      
-  EkycPartner_Invalid_reqTime which is not as per definition_For VID_Neg_31:
+  Authentication_EkycPartner_Invalid_reqTime which is not as per definition_For VID_Neg_31:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -571,7 +571,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       
-  EkycPartner_Invalid_individualIdType which is not as per defenition_For VID_Neg_32:
+  Authentication_EkycPartner_Invalid_individualIdType which is not as per defenition_For VID_Neg_32:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -591,7 +591,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  EkycPartner_Invalid_version which is not as per defenition_For VID_Neg_33:
+  Authentication_EkycPartner_Invalid_version which is not as per defenition_For VID_Neg_33:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -610,7 +610,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  EkycPartner_Invalid_txnID which is not as per defenition_For VID_Neg_34:
+  Authentication_EkycPartner_Invalid_txnID which is not as per defenition_For VID_Neg_34:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -846,7 +846,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidSecLang:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidSecLang:errorCode$
     
-  EkycPartner_Invalid_PartnerID_For UIN_Neg_44:
+  Authentication_EkycPartner_Invalid_PartnerID_For UIN_Neg_44:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:PIDNotRegistered$
     input.auth-request:
@@ -863,7 +863,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:PartnerIDNotRegistered:errorMessage$
       output.1.response.n.err.errorCode: $errors:PartnerIDNotRegistered:errorCode$
       
-  EkycPartner_Invalid_PartnerID_For VID_Neg_45:
+  Authentication_EkycPartner_Invalid_PartnerID_For VID_Neg_45:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:PIDNotRegistered$
     input.auth-request:
@@ -880,7 +880,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:PartnerIDNotRegistered:errorMessage$
       output.1.response.n.err.errorCode: $errors:PartnerIDNotRegistered:errorCode$
       
-  EkycPartner_Invalid_PartnerID not as per defintion_For UIN_Neg_46:
+  Authentication_EkycPartner_Invalid_PartnerID not as per defintion_For UIN_Neg_46:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:PIDNotRegistered$
     input.auth-request:
@@ -897,7 +897,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:PartnerIDNotRegistered:errorMessage$
       output.1.response.n.err.errorCode: $errors:PartnerIDNotRegistered:errorCode$
       
-  EkycPartner_Invalid_PartnerID not as per defintion_For VID_Neg_47:
+  Authentication_EkycPartner_Invalid_PartnerID not as per defintion_For VID_Neg_47:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:PIDNotRegistered$
     input.auth-request:
@@ -913,7 +913,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:PartnerIDNotRegistered:errorMessage$
       output.1.response.n.err.errorCode: $errors:PartnerIDNotRegistered:errorCode$
    
-  EkycPartner_Missing_PartnerID_For VID_Neg_49:
+  Authentication_EkycPartner_Missing_PartnerID_For VID_Neg_49:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:MissingPID$
     input.auth-request:
@@ -931,7 +931,7 @@ testdata:
       output.code.res.message: No message available
       output.code.res.path: $IGNORE$
       
-  EkycPartner_Missing_MISP LK_For UIN_Neg_50:
+  Authentication_EkycPartner_Missing_MISP LK_For UIN_Neg_50:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:MissingMLK$
     input.auth-request:

@@ -182,7 +182,8 @@ public class EkycWithBiometricAuthentication extends AuthTestsUtil implements IT
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid), true);
+		if(!OutputValidationUtil.publishOutputResult(ouputValid))
+			throw new AuthenticationTestException("Failed at response output validation");
 		if (FileUtil.verifyFilePresent(testCaseName.listFiles(), "auth_transaction")) {
 			wait(5000);
 			logger.info("************* Auth Transaction Validation ******************");
