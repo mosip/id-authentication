@@ -5,7 +5,7 @@
   width: 180px;
 }
 .mat-toolbar {
-  /* position: sticky; */
+  position: sticky;
   top: 0;
   z-index: 1;
   background-color: #0b6a82;
