@@ -80,6 +80,7 @@ import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
 import io.mosip.preregistration.application.exception.RestCallException;
 import io.mosip.preregistration.application.exception.system.JsonValidationException;
+import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.DemographicService;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
@@ -91,6 +92,8 @@ import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
+import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -627,16 +630,31 @@ public class DemographicServiceTest {
 		bookingResponse.setRegistrationCenterId("1");
 		bookingResponse.setSlotFromTime("9:00:00");
 		bookingResponse.setSlotToTime("10:00:00");
+		MainResponseDTO<DocumentsMetaData> documentResultDto = new MainResponseDTO<>();
+		DocumentMultipartResponseDTO documentMultipartResponseDTO = new DocumentMultipartResponseDTO();
+		documentMultipartResponseDTO.setDocCatCode("POA");
+		documentMultipartResponseDTO.setDocName("abc.pdf");
+		documentMultipartResponseDTO.setDocTypCode("RNC");
+		documentMultipartResponseDTO.setLangCode("fra");
+		documentMultipartResponseDTO.setDocumentId("a1-a2");
+		List<DocumentMultipartResponseDTO> docList = new ArrayList<>();
+		docList.add(documentMultipartResponseDTO);
+		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
+		documentsMetaData.setDocumentsMetaData(docList);
+		documentResultDto.setResponse(documentsMetaData);
 		bookingResultDto.setResponse(bookingResponse);
 		Page<DemographicEntity> page = new PageImpl<>(userEntityDetails);
-		ResponseEntity<MainResponseDTO> res = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO> resBook = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO> resDoc = new ResponseEntity<>(documentResultDto, HttpStatus.OK);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
 		Mockito.when(demographicRepository.findByCreatedBy(userId, "Consumed")).thenReturn(userEntityDetails);
 		Mockito.when(demographicRepository.findByCreatedByOrderByCreateDateTime(userId, StatusCodes.CONSUMED.getCode(),
 				PageRequest.of(Integer.parseInt("1"), Integer.parseInt(pageSize)))).thenReturn(page);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(MainResponseDTO.class))).thenReturn(res);
+				Mockito.eq(MainResponseDTO.class))).thenReturn(resDoc);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(MainResponseDTO.class))).thenReturn(resBook);
 		MainResponseDTO<DemographicMetadataDTO> actualRes = preRegistrationService.getAllApplicationDetails(userId,
 				"1");
 		assertEquals(actualRes.getVersion(), response.getVersion());
@@ -735,8 +753,18 @@ public class DemographicServiceTest {
 	@Test(expected = RecordNotFoundException.class)
 	public void getApplicationDetailsFailureTest() {
 		String userId = "12345";
-		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(userEntityDetails);
 		preRegistrationService.getAllApplicationDetails(userId, "0");
+
+	}
+
+	@Test(expected = SystemIllegalArgumentException.class)
+	public void getApplicationDetailsIndexTest() {
+		String userId = "12345";
+		Mockito.when(demographicRepository.findByCreatedBy(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(userEntityDetails);
+		preRegistrationService.getAllApplicationDetails(userId, "abc");
 
 	}
 

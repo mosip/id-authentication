@@ -12,8 +12,6 @@ import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.preregistration.application.errorcodes.ErrorCodes;
-import io.mosip.preregistration.application.errorcodes.ErrorMessages;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
 import io.mosip.preregistration.application.exception.DemographicServiceException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
@@ -58,10 +56,10 @@ public class DemographicExceptionCatcher {
 	 *            pass the exception
 	 */
 	public void handle(Exception ex, MainResponseDTO<?> mainResponsedto) {
-	 if (ex instanceof DataAccessLayerException) {
+		if (ex instanceof DataAccessLayerException) {
 			throw new TableNotAccessibleException(((DataAccessLayerException) ex).getErrorCode(),
 					((DataAccessLayerException) ex).getErrorText(), mainResponsedto);
-		}  else if (ex instanceof ParseException) {
+		} else if (ex instanceof ParseException) {
 			throw new JsonParseException(((ParseException) ex).getErrorCode(), ((ParseException) ex).getErrorText(),
 					mainResponsedto);
 		} else if (ex instanceof RecordNotFoundException) {
@@ -79,12 +77,9 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof DocumentFailedToDeleteException) {
 			throw new DocumentFailedToDeleteException(((DocumentFailedToDeleteException) ex).getErrorCode(),
 					((DocumentFailedToDeleteException) ex).getErrorText(), mainResponsedto);
-		} else if (ex instanceof IllegalArgumentException) {
-			// throw new
-			// SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_007.getCode(),
-			// ErrorMessages.UNSUPPORTED_DATE_FORMAT.getMessage(),mainResponsedto);
-			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_015.getCode(),
-					ErrorMessages.PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO.getMessage(), mainResponsedto);
+		} else if (ex instanceof SystemIllegalArgumentException) {
+			throw new SystemIllegalArgumentException(((SystemIllegalArgumentException) ex).getErrorCode(),
+					((SystemIllegalArgumentException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof SystemUnsupportedEncodingException) {
 			throw new SystemUnsupportedEncodingException(((SystemUnsupportedEncodingException) ex).getErrorCode(),
 					((SystemUnsupportedEncodingException) ex).getErrorText(), mainResponsedto);
@@ -143,9 +138,9 @@ public class DemographicExceptionCatcher {
 		} else if (ex instanceof SystemFileIOException) {
 			throw new SystemFileIOException(((SystemFileIOException) ex).getErrorCode(),
 					((SystemFileIOException) ex).getErrorText(), mainResponsedto);
-		}
-		else if(ex instanceof DemographicServiceException) {
-			throw new DemographicServiceException(((DemographicServiceException) ex).getValidationErrorList(), mainResponsedto);
+		} else if (ex instanceof DemographicServiceException) {
+			throw new DemographicServiceException(((DemographicServiceException) ex).getValidationErrorList(),
+					mainResponsedto);
 		}
 	}
 
