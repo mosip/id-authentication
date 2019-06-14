@@ -56,7 +56,7 @@ public class PreregistrationDAO
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, -1); 
+		c.add(Calendar.DATE, -2); 
 		String date = sdf.format(c.getTime());
 		String queryString="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
 		try {

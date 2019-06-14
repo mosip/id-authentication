@@ -72,11 +72,8 @@ public class Sample extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		
+
 	}
-	
-
-
 	/**
 	 * Batch job service for expired application
 	 * 
@@ -84,37 +81,27 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 * 
 	 */
-	@Test
-		public void getAuditDataForDemographicFetchAllApplication() {
-			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-			JSONObject createRequest = lib.createRequest(testSuite);
-			Response createRequestResponse = lib.CreatePreReg(createRequest);
-			lib.fetchAllPreRegistrationCreatedByUser();
-			String userId = lib.userId;
-			JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicFetchAllApplication");
-			expectedRequest.put("session_user_id", userId);
-			List<String> objs = dao.getAuditData(userId);
-			JSONObject auditDatas = lib.getAuditData(objs, 2);
-			boolean result = lib.jsonComparison(expectedRequest, auditDatas);
-			Assert.assertTrue(result, "object are not equal");
-		}
+	@Test(groups = { "IntegrationScenarios" })
+	public void fetchBookedAppointmentCreatedByUser() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
 
-		
-	
-	
-	@BeforeMethod(alwaysRun = true)
-	public void run() {
-		authToken=lib.getToken();
 	}
 
+	@BeforeMethod(alwaysRun = true)
+	public void run() {
+		authToken = lib.getToken();
+	}
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
-
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		
+
 	}
 }
