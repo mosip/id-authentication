@@ -256,7 +256,7 @@ public class BookingService {
 				.format(DateTimeFormatter.ofPattern("hh:mm a"));
 		notification.setAppointmentTime(time);
 		notification.setAdditionalRecipient(false);
-		notification.setBatch(true);
+		notification.setIsBatch(true);
 		serviceUtil.emailNotification(notification, primaryLang);
 	}
 

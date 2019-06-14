@@ -24,7 +24,7 @@ import { FilesModel } from 'src/app/shared/models/demographic-model/files.model'
 export class FileUploadComponent implements OnInit {
   @ViewChild('fileUpload')
   fileInputVariable: ElementRef;
-
+  fileDocCatCode = '';
   viewFileTrue = false;
   sortedUserFiles: any[] = [];
   applicantType: string;
@@ -148,16 +148,16 @@ export class FileUploadComponent implements OnInit {
    */
   private setNoneApplicant() {
     let i: number = 0;
-    this.allApplicants.push(this.noneApplicant);
+    const temp = JSON.parse(JSON.stringify(this.allApplicants.push(this.noneApplicant)));
+
     let noneCount: Boolean = this.isNoneAvailable();
     for (let applicant of this.allApplicants) {
       if (applicant.preRegistrationId == this.users[0].preRegId) {
         this.allApplicants.splice(i, 1);
         this.allApplicants.push(this.noneApplicant);
         this.removeExtraNone();
-      } else {
-        i++;
       }
+      i++;
     }
   }
   /**
@@ -250,18 +250,18 @@ export class FileUploadComponent implements OnInit {
     let allApplicants: any[] = [];
 
     allApplicants = JSON.parse(JSON.stringify(applicants));
+
     for (let applicant of allApplicants) {
-      for (let name of applicant.demographicMetadata) {
-        if (name['fullName'].language != localStorage.getItem('langCode') && name.proofOfAddress == null) {
+      for (let name of applicant) {
+        if (name['demographicMetadata'].fullName[j].language != localStorage.getItem('langCode')) {
           allApplicants[i].demographicMetadata.fullName.splice(j, 1);
-        } else {
         }
         j++;
       }
       i++;
     }
 
-    return allApplicants;
+    return JSON.parse(JSON.stringify(allApplicants));
   }
   /**
    *
@@ -321,18 +321,19 @@ export class FileUploadComponent implements OnInit {
 
     DOCUMENT_CATEGORY_DTO = new RequestModel(appConstants.IDS.applicantTypeId, requestArray, {});
 
-  await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(response => {
-      if (response['errors'] == null) {
-        this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
-        this.setApplicantType(response);
-      } else {
-        this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
+    await this.dataStroage.getApplicantType(DOCUMENT_CATEGORY_DTO).subscribe(
+      response => {
+        if (response['errors'] == null) {
+          this.getDocumentCategories(response['response'].applicantType.applicantTypeCode);
+          this.setApplicantType(response);
+        } else {
+          this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
+        }
+      },
+      error => {
+        this.displayMessage('Error', this.errorlabels.error, error);
       }
-    },
-    (error) =>{
-      this.displayMessage('Error',this.errorlabels.error , error);
-    });
-
+    );
   }
   /**
    *@description method to set applicant type.
@@ -350,17 +351,19 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   async getDocumentCategories(applicantcode) {
-    await this.dataStroage.getDocumentCategories(applicantcode).subscribe(res => {
-      if (res['errors'] == null) {
-        this.LOD = res['response'].documentCategories;
-        this.registration.setDocumentCategories(res['response'].documentCategories);
-      } else {
-        this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
+    await this.dataStroage.getDocumentCategories(applicantcode).subscribe(
+      res => {
+        if (res['errors'] == null) {
+          this.LOD = res['response'].documentCategories;
+          this.registration.setDocumentCategories(res['response'].documentCategories);
+        } else {
+          this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
+        }
+      },
+      error => {
+        this.displayMessage('Error', this.errorlabels.error, error);
       }
-    },
-    (error)=>{
-        this.displayMessage('Error', this.errorlabels.error , error);
-    });
+    );
   }
 
   /**
@@ -397,6 +400,7 @@ export class FileUploadComponent implements OnInit {
 
     this.updateApplicants();
     this.allApplicants = this.getApplicantsName(this.applicants);
+    const temp = JSON.parse(JSON.stringify(this.allApplicants));
 
     this.setNoneApplicant();
   }
@@ -410,6 +414,16 @@ export class FileUploadComponent implements OnInit {
       }
       i++;
     }
+    // for (let applicant of this.activeUsers) {
+    //   if (applicant.files) {
+    //     for (let file of applicant.files.documentsMetaData) {
+    //       if (file.docCatCode === 'POA') {
+    //         tempApplicants.push(this.applicants[i]);
+    //       }
+    //     }
+    //   }
+    //   i++;
+    // }
     this.applicants = JSON.parse(JSON.stringify(tempApplicants));
   }
 
@@ -440,10 +454,27 @@ export class FileUploadComponent implements OnInit {
     };
     let activeUsers: any[] = [];
     for (let i of this.activeUsers) {
-      user.preRegistrationId = i.preRegId;
-      user.demographicMetadata.fullName = i.request.demographicDetails.identity.fullName;
-      activeUsers.push(user);
+      fullName = {
+        language: '',
+        value: ''
+      };
+      user = {
+        preRegistrationId: '',
+        demographicMetadata: {
+          fullName: [fullName]
+        }
+      };
+      if (i.files) {
+        for (let file of i.files.documentsMetaData) {
+          if (file.docCatCode === 'POA') {
+            user.preRegistrationId = i.preRegId;
+            user.demographicMetadata.fullName = i.request.demographicDetails.identity.fullName;
+            activeUsers.push(JSON.parse(JSON.stringify(user)));
+          }
+        }
+      }
     }
+
     for (let i of activeUsers) {
       this.applicants.push(i);
     }
@@ -490,12 +521,8 @@ export class FileUploadComponent implements OnInit {
           this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);
           this.start = false;
         }
-      },
-      error => {
-        this.displayMessage('Error', this.errorlabels.error,error);
-      },
-      () => {
         this.fileName = fileMeta.docName;
+        this.fileDocCatCode = fileMeta.docCatCode;
         let i = 0;
         for (let x of this.users[0].files.documentsMetaData) {
           if (this.fileName === x.docName) {
@@ -526,7 +553,11 @@ export class FileUploadComponent implements OnInit {
           }
         }
         this.disableNavigation = false;
-      }
+      },
+      error => {
+        this.displayMessage('Error', this.errorlabels.error, error);
+      },
+      () => {}
     );
   }
 
@@ -684,6 +715,7 @@ export class FileUploadComponent implements OnInit {
   removeFilePreview() {
     this.fileName = '';
     this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl('');
+    this.fileIndex = -1;
   }
 
   /**
@@ -749,7 +781,9 @@ export class FileUploadComponent implements OnInit {
     this.userFile[0].docTypCode = fileResponse.response.docTypCode;
     this.userFile[0].multipartFile = this.fileByteArray;
     this.userFile[0].prereg_id = this.users[0].preRegId;
-
+    if (this.fileDocCatCode == fileResponse.response.docCatCode) {
+      this.removeFilePreview();
+    }
     for (let file of this.users[0].files.documentsMetaData) {
       if (file.docCatCode == this.userFile[0].docCatCode || file.docCatCode == null || file.docCatCode == '') {
         this.users[this.step].files.documentsMetaData[i] = this.userFile[0];
@@ -894,12 +928,13 @@ export class FileUploadComponent implements OnInit {
    * @param {string} message
    * @memberof FileUploadComponent
    */
-  displayMessage(title: string, message: string , error?:any) {
-    if(error && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
-    {
-        message = this.errorlabels.tokenExpiredLogout;
-        title = '';
-
+  displayMessage(title: string, message: string, error?: any) {
+    if (
+      error &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+    ) {
+      message = this.errorlabels.tokenExpiredLogout;
+      title = '';
     }
     const messageObj = {
       case: 'MESSAGE',

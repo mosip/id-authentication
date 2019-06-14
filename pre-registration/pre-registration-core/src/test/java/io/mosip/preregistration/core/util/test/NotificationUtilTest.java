@@ -78,6 +78,7 @@ public class NotificationUtilTest {
 		notificationDTO.setEmailID("sanober,noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
+		notificationDTO.setIsBatch(false);
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
 		//responseDTO.setStatus(Boolean.TRUE);

@@ -5,9 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -38,6 +44,7 @@ import io.mosip.preregistration.batchjobservices.test.BatchJobApplicationTest;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 
 @SpringBootTest(classes = { BatchJobApplicationTest.class })
 @RunWith(SpringRunner.class)
@@ -51,6 +58,8 @@ public class ConsumedStatusServiceTest {
 
 	@Autowired
 	private ConsumedStatusService service;
+	@MockBean
+	AuditLogUtil auditLogUtil;
 
 	/**
 	 * MockBean reference for {@link #demographicRepository}
@@ -119,6 +128,19 @@ public class ConsumedStatusServiceTest {
 	RegistrationBookingEntityConsumed bookingEntityConsumed=new RegistrationBookingEntityConsumed();
 	RegistrationBookingPKConsumed bookingPKConsumed=new RegistrationBookingPKConsumed();
 	ProcessedPreRegEntity processedEntity = new ProcessedPreRegEntity();
+	
+	
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+
+		AuthUserDetails applicationUser = Mockito.mock(AuthUserDetails.class);
+		Authentication authentication = Mockito.mock(Authentication.class);
+		SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		Mockito.when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(applicationUser);
+	}
 
 	@Test
 	public void consumedAppointmentTest() {
@@ -155,6 +177,60 @@ public class ConsumedStatusServiceTest {
 		//BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
 		demographicEntityConsumed.setPreRegistrationId(preregId);
 		demographicEntityConsumed.setApplicantDetailJson(encryptedDemographicDetails);
+		demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
+		Mockito.when(demographicConsumedRepository.save(demographicEntityConsumed)).thenReturn(demographicEntityConsumed);
+		Mockito.when(documentRespository.findBypreregId(preregId))
+		.thenReturn(documentEntityList);
+		//BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+		documentEntityConsumed.setPreregId(preregId);
+		Mockito.when(documentConsumedRepository.save(documentEntityConsumed)).thenReturn(documentEntityConsumed);
+		Mockito.when(regAppointmentRepository.getPreRegId(preregId)).thenReturn(bookingEntity);
+		//BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
+		RegistrationBookingPKConsumed bkc=new RegistrationBookingPKConsumed();
+		bkc.setPreregistrationId(preregId);
+		bookingEntityConsumed.setBookingPK(bkc);
+		Mockito.when(appointmentConsumedRepository.save(bookingEntityConsumed)).thenReturn(bookingEntityConsumed);
+
+		response = service.demographicConsumedStatus();
+		assertEquals("Demographic status to consumed updated successfully", response.getResponse());
+
+	}
+	
+	@Test
+	public void consumedAppointmentFailureTest() {
+		MainResponseDTO<String> response = new MainResponseDTO<>();
+
+		//byte[] encryptedDemographicDetails = { 1, 0, 1, 0, 1, 0 };
+		String preregId="12345678909876";
+		demographicEntity.setPreRegistrationId(preregId);
+		//demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		DocumentEntity documentEntity=new DocumentEntity();
+		documentEntity.setPreregId(preregId);
+		documentEntityList.add(documentEntity);
+		documentEntityConsumed.setPreregId(preregId);
+
+		bookingPK.setPreregistrationId(preregId);
+		bookingEntity.setBookingPK(bookingPK);
+		
+		bookingPKConsumed.setPreregistrationId(preregId);
+		bookingEntityConsumed.setBookingPK(bookingPKConsumed);
+		
+		
+		processedEntity.setPreRegistrationId(preregId);
+		processedEntity.setStatusCode("Consumed");
+		processedEntity.setStatusComments(STATUS_COMMENTS);
+
+		preRegList.add(processedEntity);
+
+		logger.info("demographicEntity " + demographicEntity);
+		logger.info("bookingEntity " + bookingEntity);
+		Mockito.when(preIdRepository.findBystatusComments(STATUS_COMMENTS))
+	    		.thenReturn(preRegList); 
+		Mockito.when(demographicRepository.findBypreRegistrationId(demographicEntity.getPreRegistrationId()))
+				.thenReturn(demographicEntity);
+		//BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+		demographicEntityConsumed.setPreRegistrationId(preregId);
+		//demographicEntityConsumed.setApplicantDetailJson(encryptedDemographicDetails);
 		demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 		Mockito.when(demographicConsumedRepository.save(demographicEntityConsumed)).thenReturn(demographicEntityConsumed);
 		Mockito.when(documentRespository.findBypreregId(preregId))

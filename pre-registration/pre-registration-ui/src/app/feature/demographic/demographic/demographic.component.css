@@ -13,7 +13,7 @@
   background-color: #f4f4f4;
   z-index: -1;
   overflow-x: hidden;
-  padding: 25px;
+  margin: 0px 2vw;
   padding-top: 0;
   padding-bottom: 0;
   color: #000000;
@@ -216,6 +216,7 @@ mat-icon {
   margin-top: 0.2rem;
   background-color: white;
   border-top: 5px solid #f4f4f4;
+  padding: 0 2vw;
 }
 
 .user__btn {
@@ -228,7 +229,7 @@ mat-icon {
   display: inline-block;
   font-size: 0.8rem;
   margin: 4px 2px;
-  margin-right: 61px;
+  margin-right: 2rem;
   cursor: pointer;
   border-radius: 2px;
 }
@@ -237,7 +238,7 @@ mat-icon {
   border: 1px solid #ff4081;
   background-color: white;
   color: #ff4081;
-  margin-left: 61px;
+  margin-left: 2rem;
 }
 
 .user__btn--continue {
