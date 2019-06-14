@@ -1,1 +1,0 @@
-[{"jiraId":"MOS-1010","testType":"regression","testCaseName":"CancelBookingAppointmentByPassingInvalidPreRegistrationId_SpecialCharacters","CancelBookingAppointmentByPassingInvalidPreRegistrationId_SpecialCharacters":"invalid","status":"Pass"}]

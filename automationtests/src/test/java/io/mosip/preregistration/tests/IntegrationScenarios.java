@@ -401,20 +401,23 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response preRegResponse1 = lib.CreatePreReg(createPregRequest);
 		Response preRegResponse2 = lib.CreatePreReg(createPregRequest);
 		Response fetchResponse = lib.fetchAllPreRegistrationCreatedByUser();
+
 		try {
-			if (fetchResponse.jsonPath().get("status").toString().equalsIgnoreCase("true")) {
-				int no = fetchResponse.jsonPath().getList("response.preRegistrationId").size();
-				Assert.assertEquals(no, 2);
-				fetchResponse.jsonPath().get("response.preRegistrationId").toString()
+			String no = fetchResponse.jsonPath().get("response.totalRecords").toString();
+			if (no.equals("2")) {
+				fetchResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString()
 						.contains((preRegResponse1.jsonPath().get("response.preRegistrationId")).toString());
-				fetchResponse.jsonPath().get("response.preRegistrationId").toString()
+				fetchResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString()
 						.contains((preRegResponse1.jsonPath().get("response.preRegistrationId")).toString());
 			}
+
 		} catch (NullPointerException e) {
-			Assert.assertTrue(false,"Exception while fetching application created by user");
+			Assert.assertTrue(false, "Exception while fetching multiple application created by user");
 		}
+
 	}
 
+	
 	/**
 	 * @author Ashish Fetch booked appointment created by user(done)
 	 * 
@@ -435,7 +438,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 			Assert.assertTrue(false, "Exception while getting Pre Registartion id from response");
 		}
 		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		lib.compareValues(fetchResponse.jsonPath().get("response.basicDetails[0].bookingRegistrationDTO").toString(),
+		lib.compareValues(fetchResponse.jsonPath().get("response.basicDetails[0].bookingMetadata").toString(),
 				fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
 
 	}
@@ -1180,7 +1183,6 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		}
 
 	}
-
 	/**
 	 * @author Ashish Consumed multiple pre registration ids with some invalid PRID
 	 */
