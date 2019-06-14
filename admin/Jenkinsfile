@@ -15,7 +15,7 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
- k8DevContext = 'admin-cluster'
+ k8DevContext = 'MOSIP-Admin-Kubernetes'
 
  stage('------- Checkout --------') {
   // Checkout only pre-registration Module
