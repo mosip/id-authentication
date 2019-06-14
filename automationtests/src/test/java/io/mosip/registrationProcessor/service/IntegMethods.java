@@ -63,7 +63,7 @@ public class IntegMethods extends BaseTestCase {
 	public boolean syncList(File packet) throws FileNotFoundException, IOException, ParseException {
 		RegistrationPacketSyncDTO registrationPacketSyncDto=null;;
 		try {
-			registrationPacketSyncDto = encryptData.createSyncRequest(packet);
+			registrationPacketSyncDto = encryptData.createSyncRequest(packet,"NEW");
 		} catch (java.text.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

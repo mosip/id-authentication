@@ -1090,7 +1090,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
-	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
+	public static final String NO_INTERNET = "NO_INTERNET";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
 	public static final String MASTER_CENTER_REMAP_SERVICE_NAME="center_remap_sync";
 	public static final String MASTER_CENTER_PARAM="regcenterId";

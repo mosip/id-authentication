@@ -80,8 +80,12 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}
+
 		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
 		e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,invalidPacketFolderPath);
+
+		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
+
 		try {
 			reader.close();
 		} catch (IOException e1) {
@@ -300,7 +304,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		stageString.append(prop.getProperty("StageBits").toString());
 		userList = codeList.getStatusCodesList(stageString);
 */		String syncStatus="";
-		for (File invalidPacket : listOfInvpackets) {
+		/*for (File invalidPacket : listOfInvpackets) {
 			if (invalidPacket.isDirectory()) {
 				for (File packet : invalidPacket.listFiles()) {
 					syncStatus=scenario.syncPacket(packet);
@@ -310,7 +314,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 					break;
 				}
 			}
-		}
+		}*/
 		/*dbList=scenario.getStatusCodeListFromDb(statusCodes);
 		logger.info("User list :: "+ userList);
 		logger.info("Db list :: "+ dbList);

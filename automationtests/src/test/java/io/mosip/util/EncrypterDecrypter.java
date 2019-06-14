@@ -165,6 +165,35 @@ public class EncrypterDecrypter extends BaseTestCase {
 		  
 	}
 	
+	public void encryptFile(File f,String sourcePath,String destinationPath,String fileName, String token) throws ZipException, FileNotFoundException, IOException {
+		sourcePath=sourcePath+"//TemporaryValidPackets";
+		File folder = new File(destinationPath);
+		folder.mkdirs();
+		 org.zeroturnaround.zip.ZipUtil.pack(new File(sourcePath+"/"+f.getName()),new File(destinationPath+"/"+fileName+".zip"));
+		  File file1=new File(destinationPath+"/"+fileName+".zip");
+		  JSONObject decryptedFileBody=new JSONObject();
+		  decryptedFileBody=generateCryptographicDataEncryption(file1);
+		  logger.info("encrypt request packet  : "+decryptedFileBody);
+		  Response response=apiRequests.postRequestToDecrypt(encrypterURL, decryptedFileBody, MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,token);
+		  try {
+			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
+			  JSONObject responseObject=(JSONObject) data.get("response");
+			//  String encryptedPacketString= CryptoUtil.encodeBase64(data.get("data").toString().getBytes());
+			byte[] encryptedPacket = responseObject.get("data").toString().getBytes();
+			outstream = new ByteArrayInputStream(encryptedPacket); 
+			logger.info("Outstream is "+ outstream);
+			FileOutputStream fos= new FileOutputStream(destinationPath+"/"+fileName+".zip");
+			fos.write(encryptedPacket);
+			fos.close();
+			outstream.close();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  
+		  
+	}
+	
 	public void destroyFiles(String filePath) throws IOException {
 		logger.info("Destroying Files");
 		filePath=filePath+"//TemporaryValidPackets";
@@ -282,7 +311,8 @@ public class EncrypterDecrypter extends BaseTestCase {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
 		InputStream encryptedPacket=null;
 		DecrypterDto decrypterDto=new DecrypterDto();
-		String centerId=file.getName().substring(0,5);
+		//String centerId=file.getName().substring(0,5);
+		String refId = file.getName().substring(0, 5)+"_"+file.getName().substring(5, 10);
 		try {
 			encryptedPacket=new FileInputStream(file);
 			byte [] fileInBytes=FileUtils.readFileToByteArray(file);
@@ -300,7 +330,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			Date currentDate=new Date();
 			LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
 			decrypterDto.setApplicationId(applicationId);
-			decrypterDto.setReferenceId(centerId);
+			decrypterDto.setReferenceId(refId);
 			decrypterDto.setData(encryptedPacketString);
 			decrypterDto.setTimeStamp(ldt);
 			request.setRequesttime(requestTime);
@@ -309,7 +339,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			cryptographicRequest.put("applicationId", applicationId);
 			cryptographicRequest.put("data", encryptedPacketString);
 			System.out.println("encrypter request data : "+encryptedPacketString);
-			cryptographicRequest.put("referenceId", centerId);
+			cryptographicRequest.put("referenceId", refId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
 			encryptRequest.put("id","");
 			encryptRequest.put("metadata","");

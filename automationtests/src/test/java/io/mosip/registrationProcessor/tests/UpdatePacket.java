@@ -6,25 +6,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.json.JSONString;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -38,34 +30,24 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
-import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
-import io.mosip.dbdto.SyncRegistrationDto;
 import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.registrationProcessor.util.EncryptData;
-import io.mosip.registrationProcessor.util.HashSequenceUtil;
 import io.mosip.registrationProcessor.util.RegProcApiRequests;
-import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
-import io.mosip.util.EncrypterDecrypter;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 
 /**
- * This class is used for testing the Sync API
+ * This class is used for testing the Update Packet 
  * 
  * @author Sayeri Mishra
  *
@@ -116,7 +98,7 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 	@DataProvider(name = "updatePacketPacket")
 	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
-		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 			String testParam = context.getCurrentXmlTest().getParameter("testType");
@@ -156,17 +138,21 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 		EncryptData encryptData=new EncryptData();
 		String regId = null;
 		JSONObject requestToEncrypt = null;
-		File file=ResponseRequestMapper.getPacket(testSuite, object);
+		//File file=ResponseRequestMapper.getPacket(testSuite, object);
+		
+		//New Packet
+		File file = new File ("src//test//resources//regProc//Packets//ValidPackets//packteForInvalidPackets//10002100320001820190607070015.zip");
+		
+		//Syncing new packet
 		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
 		try{
 			if(file!=null){
-				registrationPacketSyncDto=encryptData.createSyncRequest(file);
+				registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
 
 				regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 
 				requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
-			}
-			else {
+			}else {
 				actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 				JSONArray request = (JSONArray) actualRequest.get("request");
 				for(int j = 0; j<request.size() ; j++){
@@ -194,6 +180,8 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 				status=res.get("status").toString();
 				logger.info("status is : " +status);
 			}
+			
+			//Uploading new packet
 			Response uploadPacketResponse  = null;
 			String uploadStatus = null;
 			if(status.equalsIgnoreCase("SUCCESS")) {
@@ -201,9 +189,10 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 				boolean isError = uploadPacketResponse.asString().contains("errors");
 				logger.info("isError : "+isError);
 				if(!isError) {
-					List<Map<String,String>> uploadResponse = uploadPacketResponse.jsonPath().get("response"); 
-					for(Map<String,String> res : uploadResponse){
-						uploadStatus=res.get("status").toString();
+					Map<String,String> uploadResponse = uploadPacketResponse.jsonPath().get("response"); 
+					for(Map.Entry<String,String> res: uploadResponse.entrySet()){
+						if(res.getKey().equals("status"))
+							uploadStatus =  res.getValue().toString();
 						if (uploadStatus.matches("\"Packet is in PACKET_RECEIVED status\"")){
 							logger.info("Packet Uploaded ...........");
 						} 
@@ -219,10 +208,87 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 						}
 					}
 				}
-				Long uin = getUINByRegId(regId);
+				Long uin = getUINByRegId(regId, validToken);
+				
+				/*TweakRegProcPackets e = new TweakRegProcPackets();
+				String validPacketPath = prop.getProperty("newPacketForUpdatePacket");
+				String updatedPacketFolderPath = prop.getProperty("updatedPacketFolderPath");
+				e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,updatedPacketFolderPath);
+*/
+				//Update packet
+				File updateFile=ResponseRequestMapper.getPacket(testSuite, object);
+				
+				//refactor
+				String updateRegId = null;
+				RegistrationPacketSyncDTO updateRegistrationPacketSyncDto = null;
+				JSONObject updateRequestToEncrypt =null;
+				if(updateFile!=null){
+					 updateRegistrationPacketSyncDto = encryptData.createSyncRequest(updateFile,"UPDATE");
+
+					 updateRegId = updateRegistrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+
+					updateRequestToEncrypt = encryptData.encryptData(updateRegistrationPacketSyncDto);
+				}else {
+					actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+					JSONArray request = (JSONArray) actualRequest.get("request");
+					for(int j = 0; j<request.size() ; j++){
+						JSONObject obj  = (JSONObject) request.get(j);
+						updateRegId = obj.get("registrationId").toString();
+						updateRegistrationPacketSyncDto = encryptData.createSyncRequest(actualRequest);
+						updateRequestToEncrypt = encryptData.encryptData(updateRegistrationPacketSyncDto);
+					}
+				}
+				Response updateSyncResponse = null;
+				String updateCenter_machine_refID=updateRegId.substring(0,5)+"_"+updateRegId.substring(5, 10);
+				Response updateResp=apiRequests.postRequestToDecrypt(encrypterURL,updateRequestToEncrypt,MediaType.APPLICATION_JSON,
+						MediaType.APPLICATION_JSON,validToken);
+				String updateEncryptedData = updateResp.jsonPath().get("response.data").toString();
+				LocalDateTime updateTimeStamp = encryptData.getTime(updateRegId);
+
+				// Actual response generation
+				logger.info("sync API url : "+prop.getProperty("syncListApi"));
+				updateSyncResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),updateEncryptedData,updateCenter_machine_refID,
+						updateTimeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
+
+				String updateStatus = null;
+				List<Map<String,String>> updateResponse = updateSyncResponse.jsonPath().get("response"); 
+				for(Map<String,String> res : updateResponse){
+					updateStatus=res.get("status").toString();
+					logger.info("updateStatus is : " +updateStatus);
+				}
+				
+				//Uploading update packet
+				Response uploadUpdatePacketResponse  = null;
+				String uploadUpdateStatus = null;
+				if(updateStatus.equalsIgnoreCase("SUCCESS")) {
+					uploadUpdatePacketResponse = apiRequests.regProcPacketUpload(updateFile, prop.getProperty("packetReceiverApi"), validToken);
+					boolean isUpdateError = uploadUpdatePacketResponse.asString().contains("errors");
+					logger.info("isUpdateError : "+isUpdateError);
+					if(!isUpdateError) {
+						Map<String,String> uploadResponse = uploadUpdatePacketResponse.jsonPath().get("response"); 
+						for(Map.Entry<String,String> res: uploadResponse.entrySet()){
+							if(res.getKey().equals("status"))
+								uploadUpdateStatus =  res.getValue().toString();
+							if (uploadUpdateStatus.matches("\"Packet is in PACKET_RECEIVED status\"")){
+								logger.info("Packet Uploaded ...........");
+							} 
+						}
+					}else {
+						List<Map<String,String>> error = uploadUpdatePacketResponse.jsonPath().get("errors"); 
+						logger.info("error : "+error);
+						for(Map<String,String> err : error){
+							String errorCode = err.get("errorCode").toString();
+							logger.info("errorCode : "+errorCode);
+							if(errorCode.matches("RPR-PKR-005")) {
+								logger.info("Packet Already Uploaded ...........");
+							}
+						}
+					}
+					
+					logger.info(comapreIDResponse(regId, updateRegId));
 			}
 			
-			
+			}	
 
 		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
 			logger.error("Exception occurred in UpdatePacket class in updatePacket method "+e);
@@ -230,8 +296,8 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 		}
 	}
 
-	public Long getUINByRegId(String regId) {
-		Response idRepoResponse = getIDRepoResponse(regId);
+	public Long getUINByRegId(String regId, String validToken) {
+		Response idRepoResponse = getIDRepoResponse(regId, validToken);
 		Long uin = null;
 		Map<String, Object> identity = null ;
 		Map<String,Map<String,Object>> idRepoResponseBody = idRepoResponse.jsonPath().get("response"); 
@@ -249,30 +315,27 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 		return uin;
 	}
 
-	private Response getIDRepoResponse(String regId) {
-		String idRepoUrl = prop.getProperty("idRepoByRid") + regId + "?type=all" ;
+	private Response getIDRepoResponse(String regId, String validToken) {
+		String idRepoUrl = "/idrepository/v1/identity/rid/" + regId + "?type=all" ;
 		Response idRepoResponse = apiRequests.regProcGetIdRepo(idRepoUrl, validToken);
 		return idRepoResponse;
 	}  
 	
-	public boolean comapreIDResponse(String regId) {
-		Response idRepoResponse = getIDRepoResponse(regId);
-		Long uin = null;
+	public boolean comapreIDResponse(String newRegId, String oldRegId) {
+		Response idRepoOldResponse = getIDRepoResponse(oldRegId, validToken);
+		Response idRepoNewResponse = getIDRepoResponse(newRegId, validToken);
 		Map<String, Object> identity = null ;
-		Map<String,Map<String,Object>> idRepoOldResponseBody = idRepoResponse.jsonPath().get("response"); 
-		/*for(Map.Entry<String,Map<String,Object>> entry : idRepoResponseBody.entrySet()){
-			if(entry.getKey().matches("identity")) {
-				identity = entry.getValue();
-				for(Map.Entry<String, Object> idObj : identity.entrySet()) {
-					if(idObj.getKey().matches("UIN")) {
-						uin = (Long) idObj.getValue();
-						logger.info("UIN : "+uin);
-					}
-				}
-			}
+		Map<String,Map<String,Object>> idRepoOldResponseBody = idRepoOldResponse.jsonPath().get("response"); 
+		Map<String,Map<String,Object>> idRepoNewResponseBody = idRepoNewResponse.jsonPath().get("response"); 
+		boolean result = false;
+		try {
+			 result = new AssertResponses().assertResponses(idRepoOldResponse, idRepoNewResponse, null, null);
+			 logger.info("Result : "+result);
+		} catch (IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return uin;*/
-		return status;
+		return result;
 	}
 
 
