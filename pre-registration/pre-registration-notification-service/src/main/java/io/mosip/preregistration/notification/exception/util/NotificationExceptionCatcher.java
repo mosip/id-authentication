@@ -12,12 +12,15 @@ import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
+import io.mosip.preregistration.notification.exception.BookingDetailsNotFoundException;
+import io.mosip.preregistration.notification.exception.DemographicDetailsNotFoundException;
 import io.mosip.preregistration.notification.exception.IOException;
 import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.JsonValidationException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.MissingRequestParameterException;
 import io.mosip.preregistration.notification.exception.NotificationSeriveException;
+import io.mosip.preregistration.notification.exception.RestCallException;
 
 
 /**
@@ -63,6 +66,18 @@ public class NotificationExceptionCatcher {
 		
 		else if (ex instanceof NotificationSeriveException) {
 			throw new NotificationSeriveException(((NotificationSeriveException) ex).getValidationErrorList(),((NotificationSeriveException) ex).getMainResposneDTO());
+		
+		}
+		else if (ex instanceof RestCallException) {
+			throw new RestCallException(((RestCallException) ex).getErrorCode(),((RestCallException) ex).getErrorText(),((RestCallException) ex).getMainresponseDTO());
+		
+		}
+		else if (ex instanceof BookingDetailsNotFoundException) {
+			throw new BookingDetailsNotFoundException(((BookingDetailsNotFoundException) ex).getErrorList(),((BookingDetailsNotFoundException) ex).getMainResponseDTO());
+		
+		}
+		else if (ex instanceof DemographicDetailsNotFoundException) {
+			throw new DemographicDetailsNotFoundException(((DemographicDetailsNotFoundException) ex).getErrorList(),((DemographicDetailsNotFoundException) ex).getMainResponseDTO());
 		
 		}
 	}

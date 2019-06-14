@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -49,8 +51,11 @@ import io.mosip.preregistration.notification.code.RequestCodes;
 import io.mosip.preregistration.notification.dto.ResponseDTO;
 import io.mosip.preregistration.notification.error.ErrorCodes;
 import io.mosip.preregistration.notification.error.ErrorMessages;
+import io.mosip.preregistration.notification.exception.BookingDetailsNotFoundException;
+import io.mosip.preregistration.notification.exception.DemographicDetailsNotFoundException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.NotificationSeriveException;
+import io.mosip.preregistration.notification.exception.RestCallException;
 import io.mosip.preregistration.notification.exception.util.NotificationExceptionCatcher;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 
@@ -165,18 +170,17 @@ public class NotificationService {
 			response.setId(notificationReqDTO.getId());
 			response.setVersion(notificationReqDTO.getVersion());
 			NotificationDTO notificationDto = notificationReqDTO.getRequest();
-			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO), requiredRequestMap))
+			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO), requiredRequestMap)) {
 				notificationDtoValidation(notificationDto);
-			{
 				if (notificationDto.isAdditionalRecipient()) {
-					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()) {
+					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()&& ValidationUtil.phoneValidator(notificationDto.getMobNum())) {
 						notificationUtil.notify(RequestCodes.SMS.getCode(), notificationDto, langCode, file);
 					}
-					if (notificationDto.getEmailID() != null && !notificationDto.getEmailID().isEmpty()) {
+					if (notificationDto.getEmailID() != null && !notificationDto.getEmailID().isEmpty() && ValidationUtil.emailValidator(notificationDto.getEmailID())) {
 						notificationUtil.notify(RequestCodes.EMAIL.getCode(), notificationDto, langCode, file);
 					}
-					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty())
-							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty())) {
+					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty()||ValidationUtil.emailValidator(notificationDto.getEmailID()))
+							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty()||ValidationUtil.phoneValidator(notificationDto.getMobNum()))) {
 						throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_001.getCode(),
 								ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode(), response);
 					}
@@ -286,11 +290,11 @@ public class NotificationService {
 		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 
-	public void notificationDtoValidation(NotificationDTO dto) throws IOException, ParseException {
+	public void notificationDtoValidation(NotificationDTO dto) throws IOException, ParseException  {
 		getDemographicDetails(dto);
 		BookingRegistrationDTO bookingDTO = getAppointmentDetailsRestService(dto.getPreRegistrationId());
-		if (bookingDTO.getRegDate().equalsIgnoreCase(dto.getAppointmentDate())) {
-			if (!bookingDTO.getSlotFromTime().equalsIgnoreCase(dto.getAppointmentTime())) {
+		if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
+			if (!bookingDTO.getSlotFromTime().equals(dto.getAppointmentTime())) {
 				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_010.getCode(),
 						ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getCode(), response);
 			}
@@ -301,84 +305,81 @@ public class NotificationService {
 	}
 
 	/**
-	 * This method is calling demographic getApplication service to get the user
-	 * emailId and mobile number
+	 * This method is calling demographic getApplication service to validate the demographic details
 	 * 
 	 * @param notificationDto
-	 * @param langCode
-	 * @param file
-	 * @return
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	private boolean getDemographicDetails(NotificationDTO notificationDto) throws IOException, ParseException {
-		String url = demographicResourceUrl + "/" + "applications" + "/" + notificationDto.getPreRegistrationId();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		ObjectMapper mapper = new ObjectMapper();
-		HttpEntity<MainResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
-		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> responseEntity = restTemplate.exchange(url,
-				HttpMethod.GET, httpEntity, new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
-				});
-		JsonNode responseNode = mapper
-				.readTree(responseEntity.getBody().getResponse().getDemographicDetails().toJSONString());
-		responseNode = responseNode.get(identity);
-		if (notificationDto.getName().equalsIgnoreCase(responseNode.get(fullName).get(0).get("value").asText())) {
-			if (ValidationUtil.emailValidator(responseNode.get(email).asText())) {
-				if (ValidationUtil.phoneValidator(responseNode.get(phone).asText())) {
-					return true;
-				} else {
-					throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_007.getCode(),
-							ErrorMessages.PHONE_VALIDATION_EXCEPTION.getCode(), response);
-				}
-			} else {
-				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_006.getCode(),
-						ErrorMessages.EMAIL_VALIDATION_EXCEPTION.getCode(), response);
+	public void getDemographicDetails(NotificationDTO notificationDto) throws IOException, ParseException {
+		try {
+			String url = demographicResourceUrl + "/" + "applications" + "/" + notificationDto.getPreRegistrationId();
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+			ObjectMapper mapper = new ObjectMapper();
+			HttpEntity<MainResponseDTO<DemographicResponseDTO>> httpEntity = new HttpEntity<>(headers);
+			ResponseEntity<MainResponseDTO<DemographicResponseDTO>> responseEntity = restTemplate.exchange(url,
+					HttpMethod.GET, httpEntity,
+					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+					});
+			if (responseEntity.getBody().getErrors() != null) {
+				throw new DemographicDetailsNotFoundException(responseEntity.getBody().getErrors(), null);
 			}
-		}
-		else {
-			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_008.getCode(),
-					ErrorMessages.FULL_NAME_VALIDATION_EXCEPTION.getCode(), response);
+			JsonNode responseNode = mapper
+					.readTree(responseEntity.getBody().getResponse().getDemographicDetails().toJSONString());
+			responseNode = responseNode.get(identity);
+			if(!notificationDto.isAdditionalRecipient()) {
+				if(notificationDto.getMobNum()!=null|| notificationDto.getEmailID()!=null) {
+					log.error("sessionId", "idType", "id",
+					"Not considering the requested mobilenumber/email since additional recipient is false ");
+				}
+			}
+			if (!notificationDto.getName().equals(responseNode.get(fullName).get(0).get("value").asText())) {
+				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_008.getCode(),
+						ErrorMessages.FULL_NAME_VALIDATION_EXCEPTION.getCode(), response);
+			}
+		} catch (RestClientException  ex) {
+
+			log.error("sessionId", "idType", "id",
+					"In getDemographicDetails method of notification service - " + ex.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_PAM_ACK_011.getCode(),
+					ErrorMessages.DEMOGRAPHIC_CALL_FAILED.getCode());
 		}
 	}
 
 	/**
-	 * This private Method is used to retrieve booking data by date
+	 * This  Method is used to retrieve booking data
 	 * 
 	 * @param preId
 	 * @return BookingRegistrationDTO
-	 * @throws IOException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
 	 * 
 	 */
-	private BookingRegistrationDTO getAppointmentDetailsRestService(String preId) {
-		log.info("sessionId", "idType", "id",
-				"In getAppointmentDetailsRestService method of pre-registration service ");
+	public BookingRegistrationDTO getAppointmentDetailsRestService(String preId) {
+		log.info("sessionId", "idType", "id", "In getAppointmentDetailsRestService method of notification service ");
 
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
 			Map<String, Object> params = new HashMap<>();
 			params.put("preRegistrationId", preId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl + "/appointment/");
+			String url = appointmentResourseUrl + "/appointment/";
 			HttpHeaders headers = new HttpHeaders();
 			HttpEntity<MainResponseDTO<BookingRegistrationDTO>> httpEntity = new HttpEntity<>(headers);
-			String uriBuilder = builder.build().encode().toUriString();
-			uriBuilder += "{preRegistrationId}";
-			log.info("sessionId", "idType", "id", "In getAppointmentDetailsRestService method URL- " + uriBuilder);
+			url += "{preRegistrationId}";
+			log.info("sessionId", "idType", "id", "In getAppointmentDetailsRestService method URL- " + url);
 
-			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(uriBuilder,
+			ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> respEntity = restTemplate.exchange(url,
 					HttpMethod.GET, httpEntity,
 					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
 					}, params);
-			if (respEntity.getBody().getErrors() != null && !respEntity.getBody().getErrors().isEmpty()) {
-				//throw new 
+			if (respEntity.getBody().getErrors() != null) {
+				throw new BookingDetailsNotFoundException(respEntity.getBody().getErrors(), null);
 			}
 			bookingRegistrationDTO = respEntity.getBody().getResponse();
-		} catch (Exception ex) {
+		} catch (RestClientException ex) {
 			log.error("sessionId", "idType", "id",
-					"In getAppointmentDetailsRestService method of pre-registration service - " + ex.getMessage());
-			// throw new
+					"In getAppointmentDetailsRestService method of notification service - " + ex.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_PAM_ACK_012.getCode(),
+					ErrorMessages.BOOKING_CALL_FAILED.getCode());
 		}
 		return bookingRegistrationDTO;
 	}

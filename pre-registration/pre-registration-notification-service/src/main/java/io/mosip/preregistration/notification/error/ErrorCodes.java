@@ -47,8 +47,18 @@ public enum ErrorCodes {
 	/**
 	 * APPOINTMENT_TIME_NOT_CORRECT
 	 */
-	PRG_PAM_ACK_010("PRG_PAM_ACK_010");
-
+	PRG_PAM_ACK_010("PRG_PAM_ACK_010"),
+	/**
+	 * DEMOGRAPHIC_CALL_FAILED
+	 * 
+	 */
+	PRG_PAM_ACK_011("PRG_PAM_ACK_011"),
+	
+	/**
+	 * BOOKING_CALL_FAILED
+	 * 
+	 */
+	PRG_PAM_ACK_012("PRG_PAM_ACK_012");
 	/**
 	 * @param code
 	 */
