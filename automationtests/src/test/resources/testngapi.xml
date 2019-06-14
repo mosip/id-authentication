@@ -76,7 +76,8 @@
 
 		  <test name="PreReg Tests">
 		<classes>
-			<class name="io.mosip.preregistration.tests.BatchJob" />
+						<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
+		<!--	<class name="io.mosip.preregistration.tests.BatchJob" />
 		   <class name="io.mosip.preregistration.tests.Audit" />
 			<class name="io.mosip.preregistration.tests.BookingAppointment" />
 			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
@@ -110,7 +111,7 @@
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
  
-		<!-- 	<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  -->
+		 	<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  -->
 
 		</classes>
 	</test> 
