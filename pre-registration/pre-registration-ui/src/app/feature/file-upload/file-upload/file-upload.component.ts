@@ -138,7 +138,7 @@ export class FileUploadComponent implements OnInit {
     if (this.registration.getUsers().length > 0) {
       this.users[0] = JSON.parse(JSON.stringify(this.registration.getUser(this.registration.getUsers().length - 1)));
       this.activeUsers = JSON.parse(JSON.stringify(this.registration.getUsers()));
-      console.log('active users', this.activeUsers);
+      console.log('active users', JSON.parse(JSON.stringify(this.activeUsers)));
     }
 
     console.log('users', this.users);
@@ -423,6 +423,19 @@ export class FileUploadComponent implements OnInit {
       }
       i++;
     }
+    console.log('temp after poa from applicants', JSON.parse(JSON.stringify(tempApplicants)));
+    console.log('active users', JSON.parse(JSON.stringify(this.activeUsers)));
+    // for (let applicant of this.activeUsers) {
+    //   if (applicant.files) {
+    //     for (let file of applicant.files.documentsMetaData) {
+    //       if (file.docCatCode === 'POA') {
+    //         tempApplicants.push(this.applicants[i]);
+    //       }
+    //     }
+    //   }
+    //   i++;
+    // }
+    console.log('temp after poa from active users', JSON.parse(JSON.stringify(tempApplicants)));
     this.applicants = JSON.parse(JSON.stringify(tempApplicants));
   }
 
@@ -465,9 +478,15 @@ export class FileUploadComponent implements OnInit {
           fullName: [fullName]
         }
       };
-      user.preRegistrationId = i.preRegId;
-      user.demographicMetadata.fullName = i.request.demographicDetails.identity.fullName;
-      activeUsers.push(JSON.parse(JSON.stringify(user)));
+      if (i.files) {
+        for (let file of i.files.documentsMetaData) {
+          if (file.docCatCode === 'POA') {
+            user.preRegistrationId = i.preRegId;
+            user.demographicMetadata.fullName = i.request.demographicDetails.identity.fullName;
+            activeUsers.push(JSON.parse(JSON.stringify(user)));
+          }
+        }
+      }
     }
     console.log('local active users', activeUsers);
 
