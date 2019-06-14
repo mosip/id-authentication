@@ -2,8 +2,11 @@ package io.mosip.admin.masterdata.service.impl;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.admin.configvalidator.constant.ConfigValidatorErrorCode;
 import io.mosip.admin.configvalidator.exception.ConfigValidationException;
 import io.mosip.admin.configvalidator.exception.PropertyNotFoundException;
 import io.mosip.admin.masterdata.constant.MasterDataColumnErrorCode;
@@ -21,6 +23,11 @@ import io.mosip.admin.masterdata.service.MasterDataColumnService;
 import io.mosip.kernel.core.http.ResponseWrapper;
 
 
+/**
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @Service
 public class MasterDataColumnServiceImpl implements MasterDataColumnService {
 
@@ -34,10 +41,11 @@ public class MasterDataColumnServiceImpl implements MasterDataColumnService {
 	@Override
 	public ResponseWrapper<MasterDataColumnDto> getMasterDataColumns(String resource) {
 		String propertiesFile = null;
-		List<String> columns = null;
+		//Map<String,String> columns = null;
 		List<String> buttons = null;
 		List<String> actions = null;
 		List<String> page = null;
+		List<Map<Object, Object>> propList=new ArrayList<>();
 		MasterDataColumnDto masterdataColumn = new MasterDataColumnDto();
 		try {
 			propertiesFile = restTemplate.getForObject(masterColumns, String.class);
@@ -54,22 +62,29 @@ public class MasterDataColumnServiceImpl implements MasterDataColumnService {
 					MasterDataColumnErrorCode.CONFIG_FILE_NOT_FOUND.errorMessage());
 		}
 		
-		String tableFields = prop.getProperty("mosip.admin.resource."+resource);
-		columns = Arrays.asList(tableFields.split("\\s*,\\s*"));
+		List<String> tableFields = Arrays.asList(prop.getProperty("mosip.admin.resource.table."+resource).split("\\s*,\\s*"));
+		List<String> jsonName = Arrays.asList(prop.getProperty("mosip.admin.resource."+resource).split("\\s*,\\s*"));
+		
 		String buttonsArray = prop.getProperty("mosip.admin.resource.buttons");
 		buttons = Arrays.asList(buttonsArray.split("\\s*,\\s*"));
 		String actionValues = prop.getProperty("mosip.admin.resource.actions");
 		actions = Arrays.asList(actionValues.split("\\s*,\\s*"));
 		String pagination = prop.getProperty("mosip.admin.resource.pages");
 		page = Arrays.asList(pagination.split("\\s*,\\s*"));
-		masterdataColumn.setTableFields(columns);
+		
+		for(int i=0;i<tableFields.size();i++) {
+			Map<Object,Object> tablefields = new HashMap<>();
+			tablefields.put(tableFields.get(i), jsonName.get(i));
+			propList.add(tablefields);
+		}
+		
+		masterdataColumn.setTableFields(propList);
 		masterdataColumn.setActionValues(actions);
 		masterdataColumn.setButtons(buttons);
 		masterdataColumn.setPageOptions(page);
 		
 		ResponseWrapper<MasterDataColumnDto> responseObject = new ResponseWrapper<>();
 		responseObject.setResponse(masterdataColumn);
-		System.out.println(buttonsArray+" "+tableFields);
 		return responseObject;
 	}
 

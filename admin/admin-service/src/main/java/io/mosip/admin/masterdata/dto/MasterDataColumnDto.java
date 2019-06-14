@@ -1,6 +1,7 @@
 package io.mosip.admin.masterdata.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class MasterDataColumnDto {
 	
 	List<String> buttons;
-	List<String> tableFields;
+	List<Map<Object,Object>> tableFields;
 	List<String> pageOptions;
 	List<String> actionValues;
 
