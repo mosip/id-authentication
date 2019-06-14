@@ -205,7 +205,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			user.setUpdBy(SessionContext.userContext().getUserId());
 			user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			user.setIsActive(true);
-			user.setLangCode("eng");
+			user.setLangCode(ApplicationContext.applicationLanguage());
 
 			machineMappingRepository.save(user);
 
