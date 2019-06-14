@@ -210,6 +210,15 @@ public class DataSyncServiceUtilTest {
 		serviceUtil.validateDataSyncRequest(dataSyncRequestDTO, null);
 
 	}
+	
+	@Test(expected = InvalidRequestParameterException.class)
+	public void invalidToDateTest() {
+		dataSyncRequestDTO.setRegistrationCenterId("1005");
+		dataSyncRequestDTO.setFromDate("2019-02-10");
+		dataSyncRequestDTO.setToDate("2019-00-1");
+		serviceUtil.validateDataSyncRequest(dataSyncRequestDTO, null);
+
+	}
 
 	@Test
 	public void validateReverseDataSyncRequestTest() {

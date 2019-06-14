@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.validator.routines.IntegerValidator;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.qos.logback.core.util.SystemInfo;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -43,6 +45,7 @@ import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.qrcodegenerator.exception.InvalidInputException;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -64,6 +67,7 @@ import io.mosip.preregistration.application.exception.RecordFailedToUpdateExcept
 import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.RecordNotFoundForPreIdsException;
 import io.mosip.preregistration.application.exception.RestCallException;
+import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.application.exception.util.DemographicExceptionCatcher;
 import io.mosip.preregistration.application.repository.DemographicRepository;
 import io.mosip.preregistration.application.service.util.DemographicServiceUtil;
@@ -301,13 +305,12 @@ public class DemographicService {
 			isSuccess = true;
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
-		}catch(HttpServerErrorException | HttpClientErrorException e) {
+		} catch (HttpServerErrorException | HttpClientErrorException e) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + e.getResponseBodyAsString());
-			List<ServiceError> errorList=ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
-			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO); 
-		}
-		catch (Exception ex) {
+			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
+			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO);
+		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -386,13 +389,12 @@ public class DemographicService {
 			isSuccess = true;
 			log.info("sessionId", "idType", "id",
 					"Pre Registration end time : " + DateUtils.getUTCCurrentDateTimeString());
-		}catch(HttpServerErrorException | HttpClientErrorException e) {
+		} catch (HttpServerErrorException | HttpClientErrorException e) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of addPreRegistration- " + e.getResponseBodyAsString());
-			List<ServiceError> errorList=ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
-			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO); 
-		} 
-		catch (Exception ex) {
+			List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
+			new DemographicExceptionCatcher().handle(new DemographicServiceException(errorList, null), mainResponseDTO);
+		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In pre-registration service of updatePreRegistration- " + ex.getMessage());
 			new DemographicExceptionCatcher().handle(ex, mainResponseDTO);
@@ -452,7 +454,7 @@ public class DemographicService {
 						 */
 						Page<DemographicEntity> demographicEntityPage = demographicRepository
 								.findByCreatedByOrderByCreateDateTime(userId, StatusCodes.CONSUMED.getCode(),
-										PageRequest.of(Integer.parseInt(pageIdx), Integer.parseInt(pageSize)));
+										PageRequest.of(parsePageIndex(pageIdx), parsePageSize(pageSize)));
 						if (!serviceUtil.isNull(demographicEntityPage)
 								&& !serviceUtil.isNull(demographicEntityPage.getContent())) {
 							prepareDemographicResponse(demographicMetadataDTO, demographicEntityPage.getContent());
@@ -491,6 +493,24 @@ public class DemographicService {
 			}
 		}
 		return response;
+	}
+
+	public static Integer parsePageIndex(String text) {
+		try {
+			return Integer.parseInt(text);
+		} catch (NumberFormatException e) {
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_019.getCode(),
+					ErrorMessages.INVALID_PAGE_INDEX_VALUE.getMessage());
+		}
+	}
+
+	public static Integer parsePageSize(String text) {
+		try {
+			return Integer.parseInt(text);
+		} catch (IllegalArgumentException e) {
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_015.getCode(),
+					ErrorMessages.PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO.getMessage());
+		}
 	}
 
 	private void prepareDemographicResponse(DemographicMetadataDTO demographicMetadataDTO,

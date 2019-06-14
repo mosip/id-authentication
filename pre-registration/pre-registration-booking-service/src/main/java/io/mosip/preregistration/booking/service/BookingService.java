@@ -21,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -40,7 +39,6 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
-import io.mosip.preregistration.booking.exception.BookingDataNotFoundException;
 import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.util.BookingLock;
@@ -253,10 +251,12 @@ public class BookingService {
 		NotificationDTO notification = new NotificationDTO();
 		notification.setAppointmentDate(registrationBookingEntity.getRegDate().toString());
 		notification.setPreRegistrationId(registrationBookingEntity.getBookingPK().getPreregistrationId());
-		String time= LocalTime.parse(registrationBookingEntity.getSlotFromTime().toString(),DateTimeFormatter.ofPattern("HH:mm")).format(DateTimeFormatter.ofPattern("hh:mm a"));
+		String time = LocalTime
+				.parse(registrationBookingEntity.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
+				.format(DateTimeFormatter.ofPattern("hh:mm a"));
 		notification.setAppointmentTime(time);
 		notification.setAdditionalRecipient(false);
-		notification.setBatch(true);
+		notification.setIsBatch(true);
 		serviceUtil.emailNotification(notification, primaryLang);
 	}
 
@@ -711,7 +711,8 @@ public class BookingService {
 					bookingDAO.updateAvailibityEntity(availableEntity);
 
 					cancelBookingResponseDTO.setTransactionId(UUIDGeneratorUtil.generateId());
-					cancelBookingResponseDTO.setMessage("Appointment for the selected application has been successfully cancelled");
+					cancelBookingResponseDTO
+							.setMessage("Appointment for the selected application has been successfully cancelled");
 
 				}
 			}
@@ -897,16 +898,13 @@ public class BookingService {
 			if (toDateStr == null || toDateStr.isEmpty()) {
 				toDateStr = fromDateStr;
 			}
-			parseDate(fromDateStr);
-			parseDate(toDateStr);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			sdf.setLenient(false);
+			sdf.parse(fromDateStr);
+			sdf.parse(toDateStr);
 			DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			
-			
 			LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
 			LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);
-
-			// LocalDateTime fromLocaldate = fromDate.atStartOfDay();
-			// LocalDateTime toLocaldate = toDate.atTime(23, 59, 59);
 
 			List<String> details = bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, regCenterId);
 			PreRegIdsByRegCenterIdResponseDTO responseDTO = new PreRegIdsByRegCenterIdResponseDTO();
@@ -948,20 +946,5 @@ public class BookingService {
 		inputValidation.put(RequestCodes.request.getCode(), requestDTO.getRequest().toString());
 		return inputValidation;
 	}
-	
-	public void parseDate(String reqDate) {
-		log.info("sessionId", "idType", "id", "In parseDate method of booking service util");
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		sdf.setLenient(false);
-		try {
-			sdf.parse(reqDate);
-		} catch (Exception e) {
-			
-			log.error("sessionId", "idType", "id", "In parseDate method of booking service util - " + e.getMessage());
-			throw new BookingDataNotFoundException(ErrorCodes.PRG_BOOK_RCI_032.getCode(),
-					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.getMessage());
-			
-		}
-	}
+
 }

@@ -14,42 +14,40 @@ public class NotificationSeriveException extends BaseUncheckedException {
 	 * 
 	 */
 	private static final long serialVersionUID = 8039562312343751179L;
-	
 
-	
-private List<ServiceError> validationErrorList;
-       private MainResponseDTO<?> mainResponseDTO;
+	private List<ServiceError> validationErrorList;
+	private MainResponseDTO<?> mainResponseDTO;
 
 	public List<ServiceError> getValidationErrorList() {
 		return validationErrorList;
 	}
 
-	public NotificationSeriveException(List<ServiceError> validationErrorList,MainResponseDTO<?> response) {
+	public NotificationSeriveException(List<ServiceError> validationErrorList, MainResponseDTO<?> response) {
 		this.validationErrorList = validationErrorList;
-		this.mainResponseDTO=response;
+		this.mainResponseDTO = response;
 	}
 
 	public MainResponseDTO<?> getMainResposneDTO() {
 		return mainResponseDTO;
-	}	
+	}
+
 	public NotificationSeriveException() {
 		super();
 	}
 
-	public NotificationSeriveException(String arg0, String arg1, Throwable arg2,MainResponseDTO<?> response) {
+	public NotificationSeriveException(String arg0, String arg1, Throwable arg2, MainResponseDTO<?> response) {
 		super(arg0, arg1, arg2);
-		this.mainResponseDTO=response;
+		this.mainResponseDTO = response;
 	}
 
-	public NotificationSeriveException(String errorCode, String errorMessage,MainResponseDTO<?> response) {
+	public NotificationSeriveException(String errorCode, String errorMessage, MainResponseDTO<?> response) {
 		super(errorCode, errorMessage);
-		this.mainResponseDTO=response;
+		this.mainResponseDTO = response;
 	}
 
-	public NotificationSeriveException(String errorMessage,MainResponseDTO<?> response) {
+	public NotificationSeriveException(String errorMessage, MainResponseDTO<?> response) {
 		super(errorMessage);
-		this.mainResponseDTO=response;
+		this.mainResponseDTO = response;
 	}
-	
 
 }

@@ -249,7 +249,7 @@ export class DemographicComponent implements OnInit {
       this.dataStorageService.getGuidelineTemplate('consent').subscribe(
         response => {
           if (!response[appConstants.NESTED_ERROR]) this.consentMessage = response['response']['templates'][0].fileText;
-          else this.onError(this.errorlabels.error ,'');
+          else this.onError(this.errorlabels.error, '');
           resolve(true);
         },
         error => {
@@ -556,9 +556,9 @@ export class DemographicComponent implements OnInit {
             resolve(true);
           }
         },
-        (error) => {
+        error => {
           this.loggerService.error('Unable to fetch gender');
-          this.onError(this.errorlabels.error , error);
+          this.onError(this.errorlabels.error, error);
         }
       );
     });
@@ -583,7 +583,7 @@ export class DemographicComponent implements OnInit {
             resolve(true);
           }
         },
-        (error) => {
+        error => {
           this.loggerService.error('Unable to fetch Resident types');
           this.onError(this.errorlabels.error, error);
         }
@@ -715,7 +715,7 @@ export class DemographicComponent implements OnInit {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
           if (response[appConstants.NESTED_ERROR]) {
-            this.onError(this.errorlabels.error,'');
+            this.onError(this.errorlabels.error, '');
           } else {
             response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
               let codeValueModal: CodeValueModal = {
@@ -731,7 +731,7 @@ export class DemographicComponent implements OnInit {
             return resolve(true);
           }
         },
-        (error) => {
+        error => {
           this.onError(this.errorlabels.error, error);
           this.loggerService.error('Unable to fetch Below Hierearchy');
         }
@@ -898,7 +898,7 @@ export class DemographicComponent implements OnInit {
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else {
-            this.onError(this.errorlabels.error ,'');
+            this.onError(this.errorlabels.error, '');
           }
         },
         error => {
@@ -955,7 +955,7 @@ export class DemographicComponent implements OnInit {
                   incorrect: true
                 });
               } else message = this.errorlabels.error;
-              this.onError(message , '');
+              this.onError(message, '');
               return;
             } else {
               this.onModification(responseJSON);
@@ -974,6 +974,7 @@ export class DemographicComponent implements OnInit {
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
             ) {
+              this.loggerService.error(JSON.stringify(response));
               let message = '';
               if (
                 response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.invalidPin
@@ -983,7 +984,7 @@ export class DemographicComponent implements OnInit {
                   incorrect: true
                 });
               } else message = this.errorlabels.error;
-              this.onError(message , '');
+              this.onError(message, '');
               return;
             } else {
               this.onAddition(response, responseJSON);
@@ -1182,12 +1183,14 @@ export class DemographicComponent implements OnInit {
    * @private
    * @memberof DemographicComponent
    */
-  private onError(message: string , error : any) {
+  private onError(message: string, error: any) {
     this.dataUploadComplete = true;
     this.hasError = true;
-    if(error && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
-    {
-        message = this.errorlabels.tokenExpiredLogout;
+    if (
+      error &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+    ) {
+      message = this.errorlabels.tokenExpiredLogout;
     }
     const body = {
       case: 'ERROR',

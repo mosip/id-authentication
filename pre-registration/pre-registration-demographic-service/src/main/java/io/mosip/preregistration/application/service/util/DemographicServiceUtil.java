@@ -415,6 +415,25 @@ public class DemographicServiceUtil {
 	public DemographicIdentityRequestDTO getPreregistrationIdentityJson() {
 
 		String getIdentityJsonString = getJson(preregistrationIdJson);
+		// ClassLoader classLoader = getClass().getClassLoader();
+		// URI uri;
+		// JSONParser parser = new JSONParser();
+		// JSONObject jsonObject = null;
+		// try {
+		// uri = new
+		// URI(classLoader.getResource("PreRegistrationIdentitiyMapping.json").getFile().trim()
+		// .replaceAll("\\u0020", "%20"));
+		// File fileCr = new File(uri.getPath());
+		// try {
+		// jsonObject = (JSONObject) parser.parse(new FileReader(fileCr));
+		// } catch (IOException e) {
+		// }
+		// } catch (ParseException e) {
+		// e.printStackTrace();
+		// } catch (URISyntaxException e1) {
+		// e1.printStackTrace();
+		// }
+		// String getIdentityJsonString = jsonObject.toJSONString();
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 		try {
 			return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, DemographicIdentityRequestDTO.class);

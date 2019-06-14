@@ -128,7 +128,6 @@ export class CenterSelectionComponent implements OnInit {
           },
           (error) => {
             this.showMessage = true;
-            console.log(error);
             this.displayMessageError('Error', this.errorlabels.error, error);
           }
         );
@@ -164,7 +163,6 @@ export class CenterSelectionComponent implements OnInit {
           },
           (error) => {
             this.showMessage = true;
-            console.log(error);
             this.displayMessageError('Error', this.errorlabels.error , error);
           }
         );
