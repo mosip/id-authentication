@@ -6,11 +6,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -35,7 +38,9 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.dbdto.RegistrationPacketSyncDTO;
 import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.registrationProcessor.util.EncryptData;
 import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.registrationProcessor.util.RegProcTokenGenerate;
 import io.mosip.registrationProcessor.util.StageValidationMethods;
@@ -76,12 +81,12 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	String token="";
 	Properties prop =  new Properties();
 	RegProcApiRequests apiRequests=new RegProcApiRequests();
-	
+
 	TokenGeneration generateToken=new TokenGeneration();
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
 	String validToken="";
-	
-	
+
+
 	/**
 	 * This method is used for generating token
 	 * @param tokenType
@@ -92,7 +97,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
 		String token=generateToken.getToken(tokenEntity);
 		return token;
-		}
+	}
 
 	/**
 	 * This method is used for reading the test data based on the test case name passed
@@ -101,7 +106,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 * @return object[][]
 	 * @throws Exception
 	 */
-	@DataProvider(name = "PacketReceiver")
+	@DataProvider(name = "packetReceiver")
 	public Object[][] readData(ITestContext context){
 		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
 		testLevel=System.getProperty("env.testLevel");
@@ -122,10 +127,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			Assert.assertTrue(false, "not able to read the folder in PacketReceiver class in readData method: "+ e.getCause());		}
 		return readFolder;
 	}
-@BeforeClass
-public void getToken() {
-	token=tokenGenearte.getRegProcAuthToken();
-}
+
 	/**
 	 * This method is used for generating actual response and comparing it with expected response
 	 * along with db check and audit log check
@@ -135,7 +137,7 @@ public void getToken() {
 	 */
 	@Test(dataProvider="packetReceiver")
 	public void packetReceiver(String testSuite, Integer i, JSONObject object){
-		
+
 		File file = null;
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
@@ -177,7 +179,7 @@ public void getToken() {
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 			Assert.assertTrue(status, "object are not equal");
-			
+
 			if (status) {
 				boolean isError = expectedResponse.containsKey("errors");
 				logger.info("isError ========= : "+isError);
@@ -187,10 +189,10 @@ public void getToken() {
 					String expectedStatus = null;
 					Map<String,String> response = actualResponse.jsonPath().get("response"); 
 					JSONObject expected = (JSONObject) expectedResponse.get("response");
-					
+
 					//extracting status from the expected response
-						expectedStatus = expected.get("status").toString().trim();
-					
+					expectedStatus = expected.get("status").toString().trim();
+
 
 
 					for(Map.Entry<String,String> res: response.entrySet()){
@@ -206,9 +208,11 @@ public void getToken() {
 					}
 
 				}else{
+
 					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
 					String expectedErrorCode = null;
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
+					EncryptData encryptData=new EncryptData();
 					for(Map<String,String> err : error){
 						String errorCode = err.get("errorCode").toString();
 						Iterator<Object> iterator1 = expectedError.iterator();
@@ -222,6 +226,64 @@ public void getToken() {
 							softAssert.assertAll();
 							object.put("status", finalStatus);
 							arr.add(object);
+						}else if(errorCode.matches("Registration packet is not in Sync with Sync table")) {
+							RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
+
+							JSONObject requestToEncrypt = null;
+							try {
+								registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
+
+
+								//rId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+
+								requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
+								String center_machine_refID=rId.substring(0,5)+"_"+rId.substring(5, 10);
+								String encrypterURL =  "/v1/cryptomanager/encrypt";
+								Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
+										MediaType.APPLICATION_JSON,validToken);
+								String encryptedData = resp.jsonPath().get("response.data").toString();
+								LocalDateTime timeStamp = encryptData.getTime(rId);
+
+								// Actual response generation
+								logger.info("sync API url : "+prop.getProperty("syncListApi"));
+								actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
+										timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
+								
+								String status = null;
+								List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
+								for(Map<String,String> res : response){
+									status=res.get("status").toString();
+									logger.info("status is : " +status);
+								}
+								if (status.matches("SUCCESS")) {
+									logger.info("SYNC IS DONE ....");
+									actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
+									Map<String,String> reUploadresponse = actualResponse.jsonPath().get("response"); 
+									for(Map.Entry<String,String> res: reUploadresponse.entrySet()){
+										String reuploadStatus = null;
+										if(res.getKey().equals("status")) {
+											 reuploadStatus = res.getValue().toString();
+										}
+											
+										if (reuploadStatus.matches("SUCCESS")){
+											logger.info("STATUS MATCHED....REUPLOADED.... ");
+											
+											finalStatus = "Pass";
+											softAssert.assertAll();
+											object.put("status", finalStatus);
+											arr.add(object);
+										} 
+									}	
+									finalStatus = "Pass";
+									softAssert.assertAll();
+									object.put("status", finalStatus);
+									arr.add(object);
+								}
+								
+							} catch (java.text.ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -229,12 +291,12 @@ public void getToken() {
 				finalStatus="Fail";
 			}
 			boolean setFinalStatus=false;
-	        if(finalStatus.equals("Fail"))
-	              setFinalStatus=false;
-	        else if(finalStatus.equals("Pass"))
-	              setFinalStatus=true;
-	        Verify.verify(setFinalStatus);
-	        softAssert.assertAll();
+			if(finalStatus.equals("Fail"))
+				setFinalStatus=false;
+			else if(finalStatus.equals("Pass"))
+				setFinalStatus=true;
+			Verify.verify(setFinalStatus);
+			softAssert.assertAll();
 
 		} catch (IOException | ParseException e) {
 			Assert.assertTrue(false, "not able to execute packetInfo method : "+ e.getCause());
@@ -251,7 +313,7 @@ public void getToken() {
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		validToken=getToken("syncTokenGenerationFilePath");
 		JSONObject object = (JSONObject) testdata[2];
-String apiName="packetReceiver";
+		String apiName="packetReceiver";
 		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}
 
@@ -276,8 +338,8 @@ String apiName="packetReceiver";
 			logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		
-		
+
+
 	}
 
 	/**

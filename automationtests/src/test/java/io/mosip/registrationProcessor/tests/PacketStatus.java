@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.ws.rs.core.MediaType;
+
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -155,7 +157,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 			//generation of actual response
-			actualResponse = apiRequests.regProcGetRequest(prop.getProperty("packetStatusApi"),actualRequest,validToken);
+			actualResponse = apiRequests.regProcPostRequest(prop.getProperty("packetStatusApi"),actualRequest,MediaType.APPLICATION_JSON,validToken);
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
 			outerKeys.add("responsetime");
@@ -222,13 +224,13 @@ public class PacketStatus extends BaseTestCase implements ITest {
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
 					logger.info("error : "+error );
 					for(Map<String,String> err : error){
-						String errorCode = err.get("errorcode").toString();
+						String errorCode = err.get("errorCode").toString();
 						logger.info("errorCode : "+errorCode);
 						Iterator<Object> iterator1 = expectedError.iterator();
 
 						while(iterator1.hasNext()){
 							JSONObject jsonObject = (JSONObject) iterator1.next();
-							expectedErrorCode = jsonObject.get("errorcode").toString().trim();
+							expectedErrorCode = jsonObject.get("errorCode").toString().trim();
 							logger.info("expectedErrorCode: "+expectedErrorCode);
 						}
 						if(expectedErrorCode.matches(errorCode)){
