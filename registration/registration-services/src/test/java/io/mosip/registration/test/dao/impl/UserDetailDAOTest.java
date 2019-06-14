@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.UserDetailDAOImpl;
 import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
@@ -51,6 +53,13 @@ public class UserDetailDAOTest {
 	/** The userDetail repository. */
 	@Mock
 	private UserRoleRepository userRoleRepository;
+
+	@BeforeClass
+	public static void init() {
+
+		SessionContext.getInstance().userContext().setUserId("mosip");
+
+	}
 
 	@Test
 	public void getUserDetailSuccessTest() {
@@ -134,15 +143,6 @@ public class UserDetailDAOTest {
 		Mockito.when(userPwdRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		Mockito.when(userRoleRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		userDetailDAOImpl.save(userDetailsResponse);
-	}
-	
-	@Test
-	public void getUserSpecificBioDetailTest() {
-		
-		UserBiometric userBiometric = new UserBiometric();
-	
-		Mockito.when(userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeAndUserBiometricIdBioAttributeCodeIgnoreCase("mosip","bio","sub")).thenReturn(userBiometric);
-		assertEquals(userBiometric, userDetailDAOImpl.getUserSpecificBioDetail("mosip","bio","sub"));
 	}
 
 }

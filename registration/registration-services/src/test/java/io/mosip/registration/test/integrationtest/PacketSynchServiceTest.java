@@ -52,7 +52,7 @@ import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
@@ -99,7 +99,7 @@ public class PacketSynchServiceTest extends BaseIntegrationTest {
 	public static void getdbdata() {
 		System.out.println("------- Before Class ----");
 		DBUtil.createConnection();
-	//	a = DBUtil.get_selectQuery(prop.getProperty("GET_SYNC_PACKETIDs"));
+		a = DBUtil.get_selectQuery(prop.getProperty("GET_SYNC_PACKETIDs"));
 		//b=DBUtil.get_selectQuery(prop.getProperty("GET_PACKETIDs"));
 	}
 
@@ -416,8 +416,8 @@ String actualmsg=null;
 
 		RegistrationDTO obj = mapper.readValue(
 				new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
-		MoroccoIdentity identity = mapper.readValue(
-				new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), MoroccoIdentity.class);
+		IndividualIdentity identity = mapper.readValue(
+				new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), IndividualIdentity.class);
 
 		byte[] data = IOUtils.toByteArray(
 				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));

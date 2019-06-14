@@ -19,6 +19,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.impl.RegistrationApprovalServiceImpl;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -38,25 +39,21 @@ public class RegistrationApprovalServiceTest {
 
 	@Autowired
 	private RegistrationApprovalServiceImpl registrationApprovalServiceImpl;
-	IntegrationTestConstants integConstant = new IntegrationTestConstants();
-
-	private void commonUtil() {
-		List<String> roles = new ArrayList<>();
-		roles.add("SUPERADMIN");
-		roles.add("SUPERVISOR");
-		SessionContext.getInstance().getUserContext().setUserId(IntegrationTestConstants.USERIDVAL);
-		SessionContext.getInstance().getUserContext().setRoles(roles);
-	}
 
 	/**
 	 * To test whether getEnrollmentByStatus method fetches registration objects
 	 * according to the input status
 	 *
 	 */
+
 	@Test
 	public void getEnrollmentByStatusIDTest() {
 
-		commonUtil();
+		List<String> roles = new ArrayList<>();
+		roles.add("SUPERADMIN");
+		roles.add("SUPERVISOR");
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setRoles(roles);
 
 		String[] arguments;
 		File jsonInputFile = new File(System.getProperty("user.dir")
@@ -97,12 +94,11 @@ public class RegistrationApprovalServiceTest {
 	 */
 	@Test
 	public void getEnrollmentByStatusIDEmptyInputTest() {
-//		List<String> roles = new ArrayList<>();
-//		roles.add("SUPERADMIN");
-//		roles.add("SUPERVISOR");
-//		SessionContext.getInstance().getUserContext().setUserId(integConstant.USERIDVAL);
-//		SessionContext.getInstance().getUserContext().setRoles(roles);
-		commonUtil();
+		List<String> roles = new ArrayList<>();
+		roles.add("SUPERADMIN");
+		roles.add("SUPERVISOR");
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setRoles(roles);
 
 		String status = "";
 		List<RegistrationApprovalDTO> list = new ArrayList<>();
@@ -119,13 +115,11 @@ public class RegistrationApprovalServiceTest {
 	@Test
 	public void getEnrollmentByStatusCommentTest() {
 
-//		List<String> roles = new ArrayList<>();
-//		roles.add("SUPERADMIN");
-//		roles.add("SUPERVISOR");
-//		SessionContext.getInstance().getUserContext().setUserId(integConstant.USERIDVAL);
-//		SessionContext.getInstance().getUserContext().setRoles(roles);
-
-		commonUtil();
+		List<String> roles = new ArrayList<>();
+		roles.add("SUPERADMIN");
+		roles.add("SUPERVISOR");
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setRoles(roles);
 
 		List<RegistrationApprovalDTO> list = new ArrayList<>();
 		list = registrationApprovalServiceImpl.getEnrollmentByStatus("REJECTED");
@@ -140,20 +134,21 @@ public class RegistrationApprovalServiceTest {
 	 * 
 	 * 
 	 */
-	/*
-	 * @Test public void getEnrollmentByStatusAckEmptyInputTest() {
-	 * 
-	 * List<String> roles = new ArrayList<>(); roles.add("SUPERADMIN");
-	 * roles.add("SUPERVISOR");
-	 * SessionContext.getInstance().getUserContext().setUserId(integConstant.
-	 * USERIDVAL); SessionContext.getInstance().getUserContext().setRoles(roles);
-	 * 
-	 * String status = ""; List<RegistrationApprovalDTO> list = new ArrayList<>();
-	 * list = registrationApprovalServiceImpl.getEnrollmentByStatus(status);
-	 * assertFalse(list.size() > 0);
-	 * 
-	 * }
-	 */
+	/*@Test
+	public void getEnrollmentByStatusAckEmptyInputTest() {
+
+		List<String> roles = new ArrayList<>();
+		roles.add("SUPERADMIN");
+		roles.add("SUPERVISOR");
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setRoles(roles);
+
+		String status = "";
+		List<RegistrationApprovalDTO> list = new ArrayList<>();
+		list = registrationApprovalServiceImpl.getEnrollmentByStatus(status);
+		assertFalse(list.size() > 0);
+
+	}*/
 
 	/**
 	 * 
@@ -163,13 +158,11 @@ public class RegistrationApprovalServiceTest {
 	@Test
 	public void getEnrollmentByStatusAckTest() {
 
-//		List<String> roles = new ArrayList<>();
-//		roles.add("SUPERADMIN");
-//		roles.add("SUPERVISOR");
-//		SessionContext.getInstance().getUserContext().setUserId(integConstant.USERIDVAL);
-//		SessionContext.getInstance().getUserContext().setRoles(roles);
-
-		commonUtil();
+		List<String> roles = new ArrayList<>();
+		roles.add("SUPERADMIN");
+		roles.add("SUPERVISOR");
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setRoles(roles);
 
 		String[] arguments;
 		File jsonInputFile = new File(System.getProperty("user.dir")
@@ -210,13 +203,11 @@ public class RegistrationApprovalServiceTest {
 	 */
 	@Test
 	public void updateRegistrationTest() {
-//		List<String> roles = new ArrayList<>();
-//		roles.add("SUPERADMIN");
-//		roles.add("SUPERVISOR");
-//		SessionContext.getInstance().getUserContext().setUserId(integConstant.USERIDVAL);
-//		SessionContext.getInstance().getUserContext().setRoles(roles);
-
-		commonUtil();
+		List<String> roles = new ArrayList<>();
+		roles.add("SUPERADMIN");
+		roles.add("SUPERVISOR");
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setRoles(roles);
 
 		RegistrationApprovalDTO obj = registrationApprovalServiceImpl.getEnrollmentByStatus("REGISTERED").get(0);
 		String registrationID = obj.getId();
@@ -246,6 +237,8 @@ public class RegistrationApprovalServiceTest {
 
 	/**
 	 * Exception test
+	 * 
+	 * 
 	 */
 	@Test(expected = NullPointerException.class)
 	public void updateRegistrationExceptionTest() {

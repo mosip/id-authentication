@@ -1,7 +1,6 @@
 package io.mosip.registration.test.authentication;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.device.iris.IrisFacade;
 import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
+import io.mosip.registration.service.bio.BioService;
 import io.mosip.registration.validator.IrisValidatorImpl;
 
 public class IrisValidatorTest {
@@ -31,7 +31,7 @@ public class IrisValidatorTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
 	@Mock
-	private IrisFacade irisFacade;
+	private BioService bioService;
 	
 	@Mock
 	private UserDetailDAO userDetailDAO;
@@ -60,10 +60,5 @@ public class IrisValidatorTest {
 	@Test
 	public void validateTest() {
 		assertThat(irsiValidatorImpl.validate(authenticationValidatorDTO), is(false));
-	}
-	
-	@Test
-	public void validateAuthTest() {
-		assertNull(irsiValidatorImpl.validate("mosip","123"));
 	}
 }

@@ -12,11 +12,7 @@ import javax.imageio.ImageIO;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-//import org.junit.Assert;
-//import org.junit.BeforeClass;
-//import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,9 +25,9 @@ import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
 import io.mosip.registration.device.scanner.impl.DocumentScannerSaneServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
-public class DocumentScannerServiceTest extends BaseIntegrationTest {
-
+@ContextConfiguration(classes=AppConfig.class)
+public class DocumentScannerServiceTest {
+	
 	@Autowired
 	private DocumentScannerSaneServiceImpl documentScannerServiceImpl;
 
@@ -50,96 +46,86 @@ public class DocumentScannerServiceTest extends BaseIntegrationTest {
 
 	@Test
 	public void isScannerConnectedTest() {
-		// intializeValues();
-		boolean isConnected = documentScannerServiceImpl.isConnected();
-		Assert.assertNotNull(isConnected);
+	intializeValues();
+	boolean isConnected = documentScannerServiceImpl.isConnected();
+	Assert.assertNotNull(isConnected);
 	}
-
+	
 	@Test
-	@Ignore
 	public void scanDocumentTest() {
-		// intializeValues();
+		intializeValues();
 		bufferedImage = documentScannerServiceImpl.scan();
-		System.out.println(bufferedImage);
-		System.out.println(bufferedImage.toString());
-		// Assert.assertNotNull(bufferedImage);
+		Assert.assertNotNull(bufferedImage);
 	}
-
+	
 	@Test
 	public void getSinglePDFInBytesTest() {
-		// intializeValues();
+		intializeValues();
 		byte[] data = documentScannerServiceImpl.asPDF(bufferedImages);
 		assertNotNull(data);
 
 	}
-
+	
 	@Test
 	public void getSingleImageFromListTest() throws java.io.IOException {
-		// intializeValues();
+		intializeValues();
 		byte[] data = documentScannerServiceImpl.asImage(bufferedImages);
 		assertNotNull(data);
 
 	}
-
+	
 	@Test
 	public void getSingleImageAlternateFlowTest() throws java.io.IOException {
-		// intializeValues();
-		if (bufferedImage != null)
-			bufferedImages.add(bufferedImage);
+		intializeValues();
+		bufferedImages.add(bufferedImage);
 		byte[] data = documentScannerServiceImpl.asImage(bufferedImages);
 		assertNotNull(data);
 
 	}
-
+	
 	@Test
 	public void pdfToImagesTest() throws java.io.IOException {
-		// intializeValues();
+		intializeValues();
 		byte[] data = documentScannerServiceImpl.asPDF(bufferedImages);
 		documentScannerServiceImpl.pdfToImages(data);
 		assertNotNull(data);
 
 	}
-
+	
 	@Test
 	public void getImageBytesFromBufferedImageTest() throws java.io.IOException {
-		try {
-			// intializeValues();
-			byte[] data = documentScannerServiceImpl.getImageBytesFromBufferedImage(bufferedImage);
-			assertNotNull(data);
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-		}
+		intializeValues();
+		byte[] data = documentScannerServiceImpl.getImageBytesFromBufferedImage(bufferedImage);
+		assertNotNull(data);
 	}
-
+	
 	@Test(expected = IllegalArgumentException.class)
 	public void getImageBytesFromBufferedImageTestNull() throws java.io.IOException {
-		// intializeValues();
+		intializeValues();
 		byte[] data = documentScannerServiceImpl.getImageBytesFromBufferedImage(null);
 	}
-
+	
 	@Test(expected = NullPointerException.class)
 	public void pdfToImagesTestNull() throws java.io.IOException {
-		// intializeValues();
+		intializeValues();
 		byte[] data = documentScannerServiceImpl.asPDF(bufferedImages);
 		documentScannerServiceImpl.pdfToImages(null);
 
 	}
-
+	
 	@Test
 	public void getSingleImageFromListTestNull() throws java.io.IOException {
-		// intializeValues();
+		intializeValues();
 		byte[] data = documentScannerServiceImpl.asImage(null);
 		assertNull(data);
 	}
-
+	
 	@Test(expected = NullPointerException.class)
 	public void getSinglePDFInBytesTestNull() {
-		// intializeValues();
+		intializeValues();
 		byte[] data = documentScannerServiceImpl.asPDF(null);
 
 	}
-
 	private void intializeValues() {
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerDpi", 300);
 		ReflectionTestUtils.setField(documentScannerServiceImpl, "scannerhost", "192.168.43.253");

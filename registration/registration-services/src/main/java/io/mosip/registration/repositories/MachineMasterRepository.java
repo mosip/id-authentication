@@ -18,9 +18,6 @@ public interface MachineMasterRepository extends BaseRepository<MachineMaster, R
 	 * @return the machine master
 	 */
 	MachineMaster findByIsActiveTrueAndMacAddress(String macAddress);
-<<<<<<< HEAD
 
-=======
->>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	
 }

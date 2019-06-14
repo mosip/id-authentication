@@ -71,9 +71,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Validates FingerPrint after getting the scanned data
 	 * 
-	 * @param userId - the user ID
+	 * @param userId
 	 * @return boolean
-	 * @throws IOException - Exception that may occur while reading the resource
+	 * @throws IOException
 	 */
 	@Override
 	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException {
@@ -114,9 +114,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Validates Iris after getting the scanned data
 	 * 
-	 * @param userId - the user ID
+	 * @param userId
 	 * @return boolean
-	 * @throws IOException - Exception that may occur in reading the resource
+	 * @throws IOException
 	 */
 	@Override
 	public boolean validateIris(String userId) throws RegBaseCheckedException, IOException {
@@ -139,9 +139,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Gets the finger print image as DTO with MDM
 	 *
-	 * @param fpDetailsDTO the fp details DTO
-	 * @param fingerType   the finger type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fpDetailsDTO
+	 *            the fp details DTO
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
@@ -197,9 +200,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Gets the finger print image as DTO without MDM.
 	 *
-	 * @param fpDetailsDTO the fp details DTO
-	 * @param fingerType   the finger type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fpDetailsDTO
+	 *            the fp details DTO
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void getFingerPrintImageAsDTONonMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
@@ -238,12 +244,14 @@ public class BioServiceImpl extends BaseService implements BioService {
 	}
 
 	/**
-	 * Stub method to get the finger print scanned image from local hard disk. Once
-	 * SDK and device avilable then we can remove it.
+	 * Stub method to get the finger print scanned image from local hard disk.
+	 * Once SDK and device avilable then we can remove it.
 	 *
-	 * @param path the path
+	 * @param path
+	 *            the path
 	 * @return the finger print scanned image
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private Map<String, Object> getFingerPrintScannedImageWithStub(String path) throws RegBaseCheckedException {
 		try {
@@ -295,9 +303,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Gets the finger print image as DTO.
 	 *
-	 * @param fpDetailsDTO the fp details DTO
-	 * @param fingerType   the finger type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fpDetailsDTO
+	 *            the fp details DTO
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
@@ -316,9 +327,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Segment finger print image.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param filePath              the file path
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param filePath
+	 *            the file path
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath,
 			String fingerType) throws RegBaseCheckedException {
@@ -330,9 +344,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * {@code readFingerPrints} is to read the scanned fingerprints.
 	 *
-	 * @param fingerprintDetailsDTO the fingerprint details DTO
-	 * @param path                  the path
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param path
+	 *            the path
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void readSegmentedFingerPrintsSTUB(FingerprintDetailsDTO fingerprintDetailsDTO, String[] path,
 			String fingerType) throws RegBaseCheckedException {
@@ -386,10 +403,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Preparing segmentation detail of Biometric from MDM
 	 * 
-	 * @param fingerprintDetailsDTO - the fingerprints which have to be segmented
-	 * @param fingerType            - type of finger, whether right or left
-	 * @throws RegBaseCheckedException - generalized exception with errorCode and
-	 *                                 errorMessage
+	 * @param fingerprintDetailsDTO
+	 * @param fingerType
+	 * @throws RegBaseCheckedException
 	 */
 	protected void prepareSegmentedBiometricsFromMdm(FingerprintDetailsDTO fingerprintDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
@@ -498,7 +514,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Validates Face after getting the scanned data
 	 * 
-	 * @param userId - the userID
+	 * @param userId
 	 * @return boolean
 	 */
 	@Override
@@ -519,9 +535,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Gets the iris stub image as DTO.
 	 *
-	 * @param irisDetailsDTO the iris details DTO
-	 * @param irisType       the iris type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param irisDetailsDTO
+	 *            the iris details DTO
+	 * @param irisType
+	 *            the iris type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException {
 
@@ -572,9 +591,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Gets the iris stub image as DTO without MDM
 	 *
-	 * @param irisDetailsDTO the iris details DTO
-	 * @param irisType       the iris type
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @param irisDetailsDTO
+	 *            the iris details DTO
+	 * @param irisType
+	 *            the iris type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void getIrisImageAsDTONonMdm(IrisDetailsDTO irisDetailsDTO, String irisType)
 			throws RegBaseCheckedException {
@@ -618,22 +640,20 @@ public class BioServiceImpl extends BaseService implements BioService {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
 					"Scanning of iris details for user registration");
 
-			double qualityScore;
-			BufferedImage bufferedImage;
-			if (irisType.equalsIgnoreCase(RegistrationConstants.TEMPLATE_LEFT_EYE)) {
-				bufferedImage = ImageIO
-						.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
-				qualityScore = 90.5;
-			} else {
-				bufferedImage = ImageIO
-						.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL_RIGHT));
-				qualityScore = 50.0;
-			}
+			BufferedImage bufferedImage = ImageIO
+					.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
 
 			byte[] scannedIrisBytes = byteArrayOutputStream.toByteArray();
+
+			double qualityScore;
+			if (irisType.equalsIgnoreCase(RegistrationConstants.TEMPLATE_LEFT_EYE)) {
+				qualityScore = 90.5;
+			} else {
+				qualityScore = 50.0;
+			}
 
 			// Add image format, image and quality score in bytes array to map
 			Map<String, Object> scannedIris = new WeakHashMap<>();
@@ -680,10 +700,13 @@ public class BioServiceImpl extends BaseService implements BioService {
 	}
 
 	/**
-	 * Validate the Input Finger with the finger that is fetched from the Database.
+	 * Validate the Input Finger with the finger that is fetched from the
+	 * Database.
 	 *
-	 * @param fingerprintDetailsDTO  the fingerprint details DTO
-	 * @param userFingerprintDetails the user fingerprint details
+	 * @param fingerprintDetailsDTO
+	 *            the fingerprint details DTO
+	 * @param userFingerprintDetails
+	 *            the user fingerprint details
 	 * @return true, if successful
 	 */
 	public boolean validateFP(FingerprintDetailsDTO fingerprintDetailsDTO, List<UserBiometric> userFingerprintDetails) {
@@ -705,9 +728,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Validate Iris
 	 * 
-	 * @param irisDetailsDTO  the {@link IrisDetailsDTO} to be validated
-	 * @param userIrisDetails the list of {@link IrisDetailsDTO} available in
-	 *                        database
+	 * @param irisDetailsDTO
+	 *            the {@link IrisDetailsDTO} to be validated
+	 * @param userIrisDetails
+	 *            the list of {@link IrisDetailsDTO} available in database
 	 * 
 	 * @return the validation result. <code>true</code> if match is found, else
 	 *         <code>false</code>
@@ -726,8 +750,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	/**
 	 * Validate Face
 	 * 
-	 * @param faceDetail      details of the captured face
-	 * @param userFaceDetails details of the user face from db
+	 * @param faceDetail
+	 *            details of the captured face
+	 * @param userFaceDetails
+	 *            details of the user face from db
 	 * 
 	 * @return boolean of captured Face
 	 */

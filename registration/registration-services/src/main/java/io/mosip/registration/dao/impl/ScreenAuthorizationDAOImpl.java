@@ -50,8 +50,9 @@ public class ScreenAuthorizationDAOImpl implements ScreenAuthorizationDAO {
 		Set<ScreenAuthorizationDetails> authorizationList = screenAuthorizationRepository
 				.findByScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue(roleCode);
 
-		authorizationDTO.setAuthorizationScreenId(authorizationList.stream()
-				.map(auth -> auth.getScreenAuthorizationId().getScreenId()).collect(Collectors.toSet()));
+		authorizationDTO.setAuthorizationScreenId(
+				authorizationList.stream().map(auth -> auth.getScreenAuthorizationId().getScreenId())
+						.collect(Collectors.toSet()));
 		authorizationDTO.setAuthorizationRoleCode(roleCode);
 		authorizationDTO.setAuthorizationIsPermitted(true);
 

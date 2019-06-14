@@ -17,6 +17,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.ReRegistrationService;
 
 /**
@@ -26,7 +27,7 @@ import io.mosip.registration.service.packet.ReRegistrationService;
  *
  */
 @Service
-public class ReRegistrationServiceImpl implements ReRegistrationService {
+public class ReRegistrationServiceImpl extends BaseService implements ReRegistrationService {
 	
 	/**
 	 * Instance of {@link MosipLogger}
@@ -47,12 +48,12 @@ public class ReRegistrationServiceImpl implements ReRegistrationService {
 		String[] packetStatus = { RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode(),
 				RegistrationConstants.RE_REGISTRATION_STATUS };
 		List<Registration> reRegisterPackets = registrationDAO.getAllReRegistrationPackets(packetStatus);
-
 		List<PacketStatusDTO> uiPacketDto = new ArrayList<>();
 		for (Registration reRegisterPacket : reRegisterPackets) {
 			PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
 			packetStatusDTO.setFileName(reRegisterPacket.getId());
 			packetStatusDTO.setPacketPath(reRegisterPacket.getAckFilename());
+			packetStatusDTO.setCreatedTime(regDateConversion(reRegisterPacket.getCrDtime()));
 			uiPacketDto.add(packetStatusDTO);
 		}
 		LOGGER.info("RE_REGISTRATION_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,

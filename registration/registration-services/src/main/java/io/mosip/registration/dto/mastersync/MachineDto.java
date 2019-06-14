@@ -51,6 +51,15 @@ public class MachineDto extends MasterSyncBaseDto{
 	 */
 	private LocalDateTime validityDateTime;
 	/**
+	 * Field for is key index
+	 */
+	private String keyIndex;
+	/**
+	 * Field for is public Key
+	 */
+	private String publicKey;
+	
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -158,22 +167,32 @@ public class MachineDto extends MasterSyncBaseDto{
 	public void setValidityDateTime(LocalDateTime validityDateTime) {
 		this.validityDateTime = validityDateTime;
 	}
+	/**
+	 * @return the keyIndex
+	 */
+	public String getKeyIndex() {
+		return keyIndex;
+	}
+	/**
+	 * @param keyIndex the keyIndex to set
+	 */
+	public void setKeyIndex(String keyIndex) {
+		this.keyIndex = keyIndex;
+	}
+	/**
+	 * @return the publicKey
+	 */
+	public String getPublicKey() {
+		return publicKey;
+	}
+	/**
+	 * @param publicKey the publicKey to set
+	 */
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
 	
 	
-private String keyIndex;
-private String publicKey;
-public String getPublicKey() {
-	return publicKey;
-}
-public void setPublicKey(String publicKey) {
-	this.publicKey = publicKey;
-}
-public String getKeyIndex() {
-	return keyIndex;
-}
-public void setKeyIndex(String keyIndex) {
-	this.keyIndex = keyIndex;
-}
-
+	
 
 }

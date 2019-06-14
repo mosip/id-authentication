@@ -25,7 +25,6 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 
 	@Autowired
 	private MasterSyncService mastersyncservice;
-	
 
 	TestDataParseJSON testdataparsejson = new TestDataParseJSON(
 			"src/test/resources/testData/MasterSyncServiceData/testData.json");
@@ -385,8 +384,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<String> list1 = new ArrayList<>();
 		list1.addAll(Arrays.asList("Age-Photo Mismatch", "Gender-Photo Mismatch", "Invalid Address",
 				"Duplicate Registration", "Others", "All the Details are matching",
-				"All the Demographic Details are Matching", "Only the Photograph is Matching",
-				"Some of the Demographic Details are Matching"));
+				"All the Demographic Details are Matching", "Only the Photograph is Matching", "Some of the Demographic Details are Matching"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -474,8 +472,8 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 				.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("Blacklisted Word", "Blacklisted Word", "Blacklisted Word", "Blacklisted Word",
-				"Word is bloacklisted", "Word is bloacklisted", "string", "fuk word", "string", "string"));
+		list1.addAll(
+				Arrays.asList("Blacklisted Word", "Blacklisted Word", "Blacklisted Word", "Blacklisted Word", "fuk word", "Word is bloacklisted", "Word is bloacklisted", "BloackListed"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -495,7 +493,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 				.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng"));
+		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng", "eng", "eng"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -515,8 +513,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 				.getAllBlackListedWords(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("shit", "damn", "nigga", "dammit", "elephantytft", "xxxcheckwordxxx", "bad word",
-				"fuk", "xxx", "badzzz"));
+		list1.addAll(Arrays.asList("shit", "damn", "nigga", "dammit", "fuk", "elephantytft", "xxxcheckwordxxx", "bad word"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -890,7 +887,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("MLE", "FLE", "OTH", "ABC", "GC008", "GC009"));
+		list1.addAll(Arrays.asList("MLE", "OTH", "FLE", "ABC"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -909,7 +906,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("Male", "Female", "Others", "Male", "XXX", "YYY"));
+		list1.addAll(Arrays.asList("Male", "Others", "Female", "Male"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -929,7 +926,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("true", "true", "true", "true", "true", "true"));
+		list1.addAll(Arrays.asList("true", "true", "true", "true"));
 
 		List<String> list2 = new ArrayList<>();
 
@@ -948,7 +945,7 @@ public class MasterSyncServiceTest extends BaseIntegrationTest {
 		List<GenderDto> result = mastersyncservice.getGenderDtls(testdataparsejson.getDataFromJsonViaKey("langCode"));
 
 		List<String> list1 = new ArrayList<>();
-		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng", "eng", "eng"));
+		list1.addAll(Arrays.asList("eng", "eng", "eng", "eng"));
 
 		List<String> list2 = new ArrayList<>();
 

@@ -7,13 +7,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,7 +46,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.config.GlobalParamService;
@@ -85,31 +82,15 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 	RegistrationDAO regDAO;
 	@Autowired
 	PacketUploadService PUploadservice;
-	@Autowired
-	CommonUtil commonUtil;
 
-	IntegrationTestConstants integConstant = new IntegrationTestConstants();
-	/**
-	 * Declaring CenterID,StationID global
-	 */
-	private String centerID = null;
-	private String stationID = null;
-	
 	private static Properties prop = DBUtil.loadPropertiesFile();
-	static Set<String> dbData = new HashSet<String>(100);
-	
+	static List<String> a = new ArrayList<String>(100);
+
 	@BeforeClass
 	public static void getdbdata() {
 		System.out.println("------- Before Class ----");
 		DBUtil.createConnection();
-		dbData = DBUtil.get_selectQuery(prop.getProperty("GET_SYNC_PACKETIDs"));
-		try {
-			DBUtil.updateQuery(prop.getProperty("UPDATE_CR_BY"));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		a = DBUtil.get_selectQuery(prop.getProperty("GET_SYNC_PACKETIDs"));
 	}
 
 	@Before
@@ -120,16 +101,14 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 		applicationContext.setLocalLanguageProperty();
 		applicationContext.setLocalMessagesBundle();
 		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
-		centerID = userOBservice.getMachineCenterId().get(integConstant.CENTERIDLBL);
-		stationID = userOBservice.getMachineCenterId().get(integConstant.STATIONIDLBL);
-				
+		// SessionContext.getInstance().getUserContext().setUserId("110011");
 	}
 
 	@Test
 	public void validate_getSynchedPackets_1() {
 
 		System.out.println("Test case 1");
-		Set<String> actualres = dbData;
+		List<String> actualres = a;
 		List<String> expectedres = new ArrayList<String>(100);
 		// Fetching Data from database through JAVA API
 		List<Registration> details = PUploadservice.getSynchedPackets();
@@ -153,10 +132,7 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 		String expectedmsg = "Success";
 		String RID = "";
 		try {
-			RID = commonUtil.packetCreation(RegistrationClientStatusCode.APPROVED.getCode(),
-					integConstant.REGDETAILSJSON, integConstant.IDENTITYJSON, integConstant.POAPOBPORPOIJPG, 
-					integConstant.USERIDVAL, centerID,
-					stationID);
+			RID = testHandelPacket(RegistrationClientStatusCode.APPROVED.getCode());
 			PsyncService.packetSync(RID);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -222,10 +198,7 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 	public void validate_uploadPacket_4() {
 		String RID = "";
 		try {
-			RID = commonUtil.packetCreation(RegistrationClientStatusCode.APPROVED.getCode(),
-					integConstant.REGDETAILSJSON, integConstant.IDENTITYJSON, integConstant.POAPOBPORPOIJPG, 
-					integConstant.USERIDVAL, centerID,
-					stationID);
+			RID = testHandelPacket(RegistrationClientStatusCode.APPROVED.getCode());
 			PsyncService.packetSync(RID);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -234,7 +207,7 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		PUploadservice.uploadPacket(RID);
 
 	}
@@ -247,27 +220,26 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 		String RID = "";
 		for (int i = 0; i < 3; i++) {
 			try {
-				RID =commonUtil.packetCreation(RegistrationClientStatusCode.APPROVED.getCode(),
-						integConstant.REGDETAILSJSON, integConstant.IDENTITYJSON, integConstant.POAPOBPORPOIJPG, 
-						integConstant.USERIDVAL, centerID,
-						stationID);
-				PsyncService.packetSync(RID);
-				regIdsData.add(RID);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (RegBaseCheckedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			RID = testHandelPacket(RegistrationClientStatusCode.APPROVED.getCode());
+			PsyncService.packetSync(RID);
+			regIdsData.add(RID);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (RegBaseCheckedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		// Static data for the method
-		/*
-		 * try { regIdsData = PacketUploadServiceTest.testData(
-		 * "src/test/resources/testData/PacketUploadServiceData/PacketUploadService_syncEODPackets_regIds.json"
-		 * ); } catch (IOException | ParseException e) { // TODO Auto-generated catch
-		 * block e.printStackTrace(); }
-		 */
+		}
+		//Static data for the method
+/*		try {
+			regIdsData = PacketUploadServiceTest.testData(
+					"src/test/resources/testData/PacketUploadServiceData/PacketUploadService_syncEODPackets_regIds.json");
+		} catch (IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+*/
 		PUploadservice.uploadEODPackets(regIdsData);
 
 	}
@@ -288,6 +260,106 @@ public class PacketUploadServiceTest extends BaseIntegrationTest {
 					mapper.getTypeFactory().constructCollectionType(List.class, String.class));
 			return regIds_data;
 		}
+	}
+
+	public String testHandelPacket(String Status_code) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JSR310Module());
+		mapper.addMixInAnnotations(DemographicInfoDTO.class, DemographicInfoDTOMix.class);
+
+		RegistrationDTO obj = mapper.readValue(
+				new File("src/test/resources/testData/PacketHandlerServiceData/user.json"), RegistrationDTO.class);
+		IndividualIdentity identity = mapper.readValue(
+				new File("src/test/resources/testData/PacketHandlerServiceData/identity.json"), IndividualIdentity.class);
+
+		byte[] data = IOUtils.toByteArray(
+				new FileInputStream(new File("src/test/resources/testData/PacketHandlerServiceData/PANStubbed.jpg")));
+		DocumentDetailsDTO documentDetailsDTOIdentity = new DocumentDetailsDTO();
+		documentDetailsDTOIdentity.setType("POI");
+		documentDetailsDTOIdentity.setFormat("format");
+		documentDetailsDTOIdentity.setOwner("owner");
+		documentDetailsDTOIdentity.setValue("ProofOfIdentity");
+
+		DocumentDetailsDTO documentDetailsDTOAddress = new DocumentDetailsDTO();
+		documentDetailsDTOAddress.setType("POA");
+		documentDetailsDTOAddress.setFormat("format");
+		documentDetailsDTOAddress.setOwner("owner");
+		documentDetailsDTOAddress.setValue("ProofOfAddress");
+		
+		DocumentDetailsDTO documentDetailsDTORelationship = new DocumentDetailsDTO();
+		documentDetailsDTORelationship.setType("POR");
+		documentDetailsDTORelationship.setFormat("format");
+		documentDetailsDTORelationship.setOwner("owner");
+		documentDetailsDTORelationship.setValue("ProofOfRelationship");
+		
+		DocumentDetailsDTO documentDetailsDTODOB = new DocumentDetailsDTO();
+		documentDetailsDTODOB.setType("POB");
+		documentDetailsDTODOB.setFormat("format");
+		documentDetailsDTODOB.setOwner("owner");
+		documentDetailsDTODOB.setValue("DateOfBirthProof");
+
+		identity.setProofOfIdentity(documentDetailsDTOIdentity);
+		identity.setProofOfAddress(documentDetailsDTOAddress);
+		identity.setProofOfRelationship(documentDetailsDTORelationship);
+		identity.setProofOfDateOfBirth(documentDetailsDTODOB);
+
+		DocumentDetailsDTO documentDetailsDTO = identity.getProofOfIdentity();
+		documentDetailsDTO.setDocument(data);
+		documentDetailsDTO = identity.getProofOfAddress();
+
+		documentDetailsDTO.setDocument(data);
+		documentDetailsDTO = identity.getProofOfRelationship();
+		documentDetailsDTO.setDocument(data);
+		documentDetailsDTO = identity.getProofOfDateOfBirth();
+		documentDetailsDTO.setDocument(data);
+		obj.getDemographicDTO().getDemographicInfoDTO().setIdentity(identity);
+		RegistrationCenterDetailDTO registrationCenter = new RegistrationCenterDetailDTO();
+		registrationCenter.setRegistrationCenterId("20916");
+		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(registrationCenter);
+		SessionContext.getInstance().getUserContext().setUserId("110011");
+		SessionContext.getInstance().setMapObject(new HashMap<String, Object>());
+		String expectedCenterID = null;
+		String expectedStatinID = null;
+		Map<String, String> getres = userOBservice.getMachineCenterId();
+		Set<Entry<String, String>> hashSet = getres.entrySet();
+		for (Entry entry : hashSet) {
+
+			if (entry.getKey().equals(IntegrationTestConstants.centerID)) {
+				expectedCenterID = entry.getValue().toString();
+			} else {
+				expectedStatinID = entry.getValue().toString();
+			}
+
+		}
+		String RandomID = ridGeneratorImpl.generateId(expectedCenterID, expectedStatinID);
+		System.out.println(RandomID);
+		obj.setRegistrationId(RandomID);
+		ResponseDTO response = packetHandlerService.handle(obj);
+		String jsonInString = mapper.writeValueAsString(response);
+		System.out.println(jsonInString);
+		Assert.assertEquals(response.getSuccessResponseDTO().getCode().toString(), "0000");
+		Assert.assertEquals(response.getSuccessResponseDTO().getMessage().toString(), "Success");
+		String response_msg = response.getSuccessResponseDTO().getMessage().toString();
+		if (response_msg.contains("Success")) {
+			Registration regi = regDAO.getRegistrationById(RegistrationClientStatusCode.CREATED.getCode(), RandomID);
+			System.out.println("beFORE=== " + regi.getClientStatusCode());
+
+			regi.setClientStatusCode(Status_code);
+
+			PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
+
+			/*
+			 * private String sourcePath; private String fileName; private String
+			 * packetClientStatus; private String packetServerStatus; private
+			 * BooleanProperty status; private String packetPath;
+			 */
+
+			packetStatusDTO.setFileName(regi.getId());
+			packetStatusDTO.setPacketClientStatus(Status_code);
+			regDAO.updatePacketSyncStatus(packetStatusDTO);
+			System.out.println("aFTER=== " + regi.getClientStatusCode());
+		}
+		return RandomID;
 	}
 
 	/**

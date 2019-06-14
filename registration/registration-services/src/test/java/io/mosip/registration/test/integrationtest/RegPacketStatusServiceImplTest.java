@@ -108,7 +108,7 @@ public class RegPacketStatusServiceImplTest {
 		responseDTO = regPacketStatusServiceImpl.deleteRegistrationPackets();
 		ObjectMapper mapper = new ObjectMapper();
 		System.out.println(mapper.writer().writeValueAsString(responseDTO));
-		assertEquals("REGISTRATION_DELETION_BATCH_JOBS_SUCCESS",responseDTO.getSuccessResponseDTO().getMessage());
+		assertEquals(responseDTO.getSuccessResponseDTO().getMessage(),"Registartion Packets Deletion Successful ");
 		
 		registrationRepository.saveAll(listRegistration);
 		auditLogControlRepository.deleteAll();
@@ -156,7 +156,7 @@ public class RegPacketStatusServiceImplTest {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
-			con = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.dir") + "/reg;bootPassword=mosip12345");
+			con = DriverManager.getConnection("jdbc:derby:D:/Mosip_QA_080_build/mosip/registration/registration-services/reg;bootPassword=mosip12345", "", "");
 			pre = con.prepareStatement(query);
 			count = pre.executeUpdate();
 

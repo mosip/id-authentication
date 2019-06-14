@@ -40,11 +40,7 @@ import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
 @RunWith(PowerMockRunner.class)
-<<<<<<< HEAD
 @PrepareForTest({ InetAddress.class, ApplicationContext.class, SessionContext.class })
-=======
-@PrepareForTest({ InetAddress.class, SessionContext.class, ApplicationContext.class })
->>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 public class AuditFactoryTest {
 
 	@Rule
@@ -71,7 +67,6 @@ public class AuditFactoryTest {
 	@Mock
 	io.mosip.registration.context.ApplicationContext context;
 
-<<<<<<< HEAD
 	@Before
 	public void initialize() throws Exception {
 		Map<String,Object> appMap = new HashMap<>();
@@ -84,8 +79,6 @@ public class AuditFactoryTest {
 		PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
 	}
 
-=======
->>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	@Test
 	public void auditTest() throws Exception {
 		PowerMockito.mockStatic(InetAddress.class, SessionContext.class);
@@ -110,7 +103,6 @@ public class AuditFactoryTest {
 
 	@Before
 	public void intiate() {
-<<<<<<< HEAD
 		PowerMockito.mockStatic(ApplicationContext.class);
 		when(ApplicationContext.map()).thenReturn(applicationMap);
 		Mockito.when(applicationMap.get(Mockito.anyString())).thenReturn("45");
@@ -121,17 +113,6 @@ public class AuditFactoryTest {
 		Mockito.when(globalParamService.getGlobalParams()).thenReturn(map);
 		
 		auditFactory.setBaseGlobalMap(applicationMap);
-=======
-		Map<String, Object> map = new HashMap<>();
-		map.put(RegistrationConstants.AUDIT_LOG_DELETION_CONFIGURED_DAYS, "5");
-		map.put(RegistrationConstants.DEFAULT_HOST_IP, "127.0.0.0");
-		map.put(RegistrationConstants.DEFAULT_HOST_NAME, "LOCALHOST");
-		map.put(RegistrationConstants.APP_NAME, "REGISTRATION");
-		map.put(RegistrationConstants.APP_ID, "REG");
-		
-		PowerMockito.mockStatic(ApplicationContext.class);
-		when(ApplicationContext.map()).thenReturn(map);
->>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 
 	}
 
@@ -151,13 +132,8 @@ public class AuditFactoryTest {
 		
 		
 		Mockito.when(auditLogControlDAO.get(new Timestamp(Mockito.anyLong()))).thenReturn(list);
-<<<<<<< HEAD
 		Mockito.when(registrationDAO.get(Mockito.anyList())).thenReturn(registrations);
 		
-=======
-		Mockito.when(registrationDAO.get(Mockito.anyListOf(String.class))).thenReturn(registrations);
-
->>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 		Mockito.doNothing().when(regPacketStatusService).deleteRegistrations(registrations);
 		
 		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_SUCESS_MSG, auditFactory.deleteAuditLogs().getSuccessResponseDTO().getMessage());
@@ -175,12 +151,7 @@ public class AuditFactoryTest {
 		assertSame(RegistrationConstants.AUDIT_LOGS_DELETION_FLR_MSG, auditFactory.deleteAuditLogs().getErrorResponseDTOs().get(0).getMessage());
 		
 	}
-<<<<<<< HEAD
 	
-=======
-
-	@SuppressWarnings("unchecked")
->>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 	@Test
 	public void auditLogsDeletionExceptionTest() {
 		Mockito.when(auditLogControlDAO.get(new Timestamp(Mockito.anyLong()))).thenThrow(RuntimeException.class);

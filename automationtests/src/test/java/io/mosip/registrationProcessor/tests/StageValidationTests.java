@@ -76,11 +76,11 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}
 		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-		/*e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
 		for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
 		}
-		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);*/
+		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
 		e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,invalidPacketFolderPath);
 		try {
 			reader.close();
@@ -162,7 +162,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	}
 	
 	
-	/*@Test(dataProvider = "packetValidatorStage")
+	@Test(dataProvider = "packetValidatorStage")
 	public void packetValidatorStage(File[] listOfInvpackets) {
 
 		List<String> statusCodes = new ArrayList<String>();
@@ -282,7 +282,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	cleanUp.prepareQueryList(regID);
 		softAssert.assertAll();
 		regID="";
-	}*/
+	}
 	@Test(dataProvider = "updatePacket")
 	public void updatePacket(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();

@@ -7,6 +7,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.File;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.config.AppConfig;
@@ -32,7 +34,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -131,7 +132,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 							String ackFileName = registration.getPacketPath();
 							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
 							String packetPath = ackFileName.substring(0, lastIndex);
-							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+							File packet = FileUtils.getFile(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 							if (packet.exists() && packet.delete()) {
 								registration.setPacketClientStatus(RegistrationClientStatusCode.DELETED.getCode());
 							}
@@ -178,6 +179,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			packetStatusDTO.setPacketStatus(reg.getStatusCode());
 			packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
 			packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
+			packetStatusDTO.setCreatedTime(new SimpleDateFormat("dd-MM-yyyy").format(reg.getCrDtime()));
 			idsToBeSynched.add(packetStatusDTO);
 		});
 		return idsToBeSynched;
@@ -212,11 +214,6 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				successResponseDTO.setOtherAttributes(statusMap);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			} else if(response.get("errors") != null) {
-				List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
-				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-				errorResponseDTO.setMessage(response.get("errors").toString());
-				errorResponseDTOs.add(errorResponseDTO);
-				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 						response.get("errors").toString());
 			}

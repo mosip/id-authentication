@@ -1,14 +1,10 @@
 package io.mosip.registration.test.util.common;
 
-<<<<<<< HEAD
-=======
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
->>>>>>> 4483d04c7d451fda25350bad5c0d157b05369082
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,19 +31,14 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
-import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
+import io.mosip.registration.dto.OtpValidatorResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.security.AuthenticationService;
+import io.mosip.registration.service.security.impl.AuthenticationServiceImpl;
 import io.mosip.registration.util.common.OTPManager;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import io.mosip.registration.validator.OTPValidatorImpl;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAppHealthCheckUtil.class })
@@ -66,7 +57,7 @@ public class OTPManagerTest {
 	OTPValidatorImpl otpValidator;
 
 	@Mock
-	AuthenticationService authenticationService;
+	AuthenticationServiceImpl authenticationService;
 
 	@BeforeClass
 	public static void initialize() {
@@ -112,30 +103,37 @@ public class OTPManagerTest {
 		assertNotNull(otpManager.getOTP(otpGeneratorRequestDTO.getKey()).getErrorResponseDTOs());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void validateOTPSuccessTest()
 			throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 
-		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-		authTokenDTO.setToken("12345");
+		OtpValidatorResponseDTO otpValidatorResponseDTO = new OtpValidatorResponseDTO();
+
+		otpValidatorResponseDTO.setstatus("Success");
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class))).thenReturn(authTokenDTO);
+		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
+				Mockito.anyString())).thenReturn(otpValidatorResponseDTO);
 
-		assertNotNull(otpManager.validateOTP("mosip", "12345"));
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getSuccessResponseDTO());
 	}
 
 	@Test
 	public void validateOTPFailureTest()
 			throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 
+		OtpValidatorResponseDTO otpValidatorResponseDTO = new OtpValidatorResponseDTO();
+
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
+
+		otpValidatorResponseDTO.setstatus("failure");
 		Mockito.doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(serviceDelegateUtil)
 				.getAuthToken(Mockito.any(LoginMode.class));
 
-		assertNull(otpManager.validateOTP("mosip", "12345"));
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getErrorResponseDTOs());
 	}
 
 	@Test
@@ -147,7 +145,7 @@ public class OTPManagerTest {
 
 		Mockito.doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(serviceDelegateUtil)
 				.getAuthToken(Mockito.any(LoginMode.class));
-		assertNull(otpManager.validateOTP("mosip", "12345"));
+		assertNotNull(otpManager.validateOTP("mosip", "12345").getErrorResponseDTOs());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -200,7 +198,8 @@ public class OTPManagerTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 
-		assertNotNull(otpManager.validateOTP("Key", "123456"));
+		assertEquals(otpManager.validateOTP("Key", "123456").getErrorResponseDTOs().get(0).getMessage(),
+				RegistrationConstants.CONNECTION_ERROR);
 
 	}
 

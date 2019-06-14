@@ -20,17 +20,9 @@ public class SyncStatusValidatorServiceTest extends BaseIntegrationTest
 	private GlobalParamService globalParamService;
 	
 	
-	
-	
 	@Test
 	public void test1() {
 		ApplicationContext applicationContext = ApplicationContext.getInstance();
-		applicationContext.setApplicationLanguageBundle();
-		applicationContext.setApplicationMessagesBundle();
-		applicationContext.setLocalLanguageProperty();
-		applicationContext.setLocalMessagesBundle();
-		applicationContext.setApplicationMap(globalParamService.getGlobalParams());
-
 		
 		applicationContext.getApplicationMap().putAll(globalParamService.getGlobalParams());
 				

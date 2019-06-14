@@ -21,6 +21,7 @@ import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 
 /**
@@ -30,7 +31,7 @@ import io.mosip.registration.service.packet.RegistrationApprovalService;
  * @author Mahesh Kumar
  */
 @Service
-public class RegistrationApprovalServiceImpl implements RegistrationApprovalService {
+public class RegistrationApprovalServiceImpl extends BaseService implements RegistrationApprovalService {
 
 	/**
 	 * Object for Registration DAO
@@ -69,9 +70,8 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 					"Packet  list has been fetched");
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(), detail.getAckFilename(),
-					RegistrationConstants.EMPTY)));
+			details.forEach(detail -> list.add(new RegistrationApprovalDTO(detail.getId(),
+					regDateConversion(detail.getCrDtime()), detail.getAckFilename(), RegistrationConstants.EMPTY)));
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());

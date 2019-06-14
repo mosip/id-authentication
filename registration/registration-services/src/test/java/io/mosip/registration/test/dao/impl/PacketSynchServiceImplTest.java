@@ -7,6 +7,8 @@ import static org.mockito.Mockito.doNothing;
 
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,7 +39,6 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
@@ -51,7 +52,7 @@ import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ HMACUtils.class, SessionContext.class })
+@PrepareForTest({ HMACUtils.class })
 public class PacketSynchServiceImplTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -73,17 +74,13 @@ public class PacketSynchServiceImplTest {
 	private PacketSynchServiceImpl packetSynchServiceImpl;
 
 	@Before
-	public void initialize() throws Exception{
+	public void initialize() {
 		
 		PowerMockito.mockStatic(HMACUtils.class);
-		PowerMockito.mockStatic(SessionContext.class);
 				
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
-		
-		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);		
-		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
-		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip1214");
+		SessionContext.getInstance().getUserContext().setUserId("mosip1214");
 		
 		Map<String, Object> maplastTime = new HashMap<>();
 		maplastTime.put("PRIMARY_LANGUAGE", "ENG");
@@ -95,7 +92,9 @@ public class PacketSynchServiceImplTest {
 	public void testFetchPacketsToBeSynched() {
 		List<Registration> syncList = new ArrayList<>();
 		Registration reg = new Registration();
+		reg.setCrDtime(Timestamp.from(Instant.now()));
 		reg.setId("12345");
+		reg.setCrDtime(Timestamp.from(Instant.now()));
 		syncList.add(reg);
 		List<PacketStatusDTO> packetsList = new ArrayList<>();
 		PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
