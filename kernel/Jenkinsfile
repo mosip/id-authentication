@@ -293,7 +293,7 @@ stage('---------- SonarQube Analysis --------------') {
       }
       echo "Getting list of all services" 
       sh "kubectl get pods"
-      sh "kubectl set env deployment -e active_profile_env=dev-admin --all"
+      sh "kubectl set env deployment -e active_profile_env=dev-admin $updatedService"
       sh "kubectl set env pods --all --list"
     }
  }
