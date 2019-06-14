@@ -577,7 +577,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public Response reverseDataSync(List<String> preRegistrationIds) {
 		JSONObject reverseDataSyncRequest = null;
-		testSuite = "ReverseDataSync\\ReverseDataSync_smoke";
+		testSuite = "ReverseDataSync//ReverseDataSync_smoke";
 		/**
 		 * Reading request body from configpath
 		 */
