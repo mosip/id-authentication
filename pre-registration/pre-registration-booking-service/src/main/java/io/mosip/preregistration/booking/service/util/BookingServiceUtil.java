@@ -736,8 +736,8 @@ public class BookingServiceUtil {
 			log.error("sessionId", "idType", "id",
 					"In emailNotification method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
-			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_025.getCode(),
-					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_033.getCode(),
+					ErrorMessages.NOTIFICATION_CALL_FAILED.getMessage());
 
 		}
 	}

@@ -55,6 +55,7 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
@@ -193,9 +194,11 @@ public class BookingService {
 									.findAllPreIds(regDto.getId(), sDate);
 							if (!regBookingEntityList.isEmpty()) {
 								for (int i = 0; i < regBookingEntityList.size(); i++) {
+								if(bookingDAO.getDemographicStatus(regBookingEntityList.get(i).getBookingPK().getPreregistrationId()).equals(StatusCodes.BOOKED.getCode())) {
 									cancelBooking(regBookingEntityList.get(i).getBookingPK().getPreregistrationId(),
 											true);
 									sendNotification(regBookingEntityList.get(i));
+								}
 								}
 							}
 							bookingDAO.deleteSlots(regDto.getId(), sDate);
@@ -213,8 +216,10 @@ public class BookingService {
 							LocalDate.now());
 					if (!entityList.isEmpty()) {
 						for (int j = 0; j < entityList.size(); j++) {
+							if(bookingDAO.getDemographicStatus(entityList.get(j).getBookingPK().getPreregistrationId()).equals(StatusCodes.BOOKED.getCode())) {	
 							cancelBooking(entityList.get(j).getBookingPK().getPreregistrationId(), true);
 							sendNotification(entityList.get(j));
+							}
 						}
 					}
 
@@ -248,6 +253,7 @@ public class BookingService {
 	 * @param registrationBookingEntity
 	 */
 	public void sendNotification(RegistrationBookingEntity registrationBookingEntity) {
+		log.info("sessionId", "idType", "id", "In sendNotification method of Booking Service");
 		NotificationDTO notification = new NotificationDTO();
 		notification.setAppointmentDate(registrationBookingEntity.getRegDate().toString());
 		notification.setPreRegistrationId(registrationBookingEntity.getBookingPK().getPreregistrationId());
