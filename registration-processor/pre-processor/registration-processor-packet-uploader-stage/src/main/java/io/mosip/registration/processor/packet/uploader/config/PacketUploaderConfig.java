@@ -9,7 +9,6 @@ import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.kernel.virusscanner.clamav.impl.VirusScannerImpl;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.packet.uploader.service.impl.PacketUploaderServiceImpl;
 import io.mosip.registration.processor.packet.uploader.stage.PacketUploaderStage;
@@ -56,13 +55,5 @@ public class PacketUploaderConfig {
 		return new VirusScannerImpl();
 	}
 
-	/**
-	 * Decryptor.
-	 *
-	 * @return the decryptor
-	 */
-	@Bean
-	public Decryptor packetUploaderDecryptor() {
-		return new Decryptor();
-	}
+
 }

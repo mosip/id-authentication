@@ -9,6 +9,8 @@ import io.mosip.authentication.core.spi.indauth.match.TextMatchingStrategy;
 
 /**
  * 
+ * Matching Strategy for Full Address entity
+ * 
  * @author Dinesh Karuppiah.T
  */
 

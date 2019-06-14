@@ -137,11 +137,11 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> addIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
-			DataValidationUtil.validate(errors);
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
-			validator.validateId(request.getId(),CREATE);
-			validator.validateUin(uin,CREATE);
+			validator.validateId(request.getId(), CREATE);
+			DataValidationUtil.validate(errors);
+			validator.validateUin(uin, CREATE);
 			return new ResponseEntity<>(idRepoService.addIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_CONTROLLER, ADD_IDENTITY, e.getMessage());
@@ -218,11 +218,11 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> updateIdentity(@Validated @RequestBody IdRequestDTO request,
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
-			DataValidationUtil.validate(errors);
 			String uin = getUin(request.getRequest());
 			IdRepoLogger.setUin(uin);
-			validator.validateId(request.getId(),UPDATE);
-			validator.validateUin(uin,UPDATE);
+			validator.validateId(request.getId(), UPDATE);
+			DataValidationUtil.validate(errors);
+			validator.validateUin(uin, UPDATE);
 			return new ResponseEntity<>(idRepoService.updateIdentity(request, uin), HttpStatus.OK);
 		} catch (IdRepoDataValidationException e) {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_CONTROLLER, UPDATE_IDENTITY, e.getMessage());

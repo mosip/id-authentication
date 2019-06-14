@@ -34,7 +34,6 @@ import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.GetHeader;
 import io.mosip.kernel.util.TestCaseReader;
 import io.restassured.response.Response;
 
@@ -54,7 +53,7 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 	private final String apiName = "FetchRegCent";
 	private final String requestJsonName = "fetchRegCentRequest";
 	private final String outputJsonName = "fetchRegCentOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRegCent_URI = props.get("FetchRegCent_URI").toString();
 	private final String FetchRegCent_id_lang_URI = props.get("FetchRegCent_id_lang_URI").toString();
 	private final String FetchRegCent_loc_lang_URI = props.get("FetchRegCent_loc_lang_URI").toString();
@@ -117,16 +116,16 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 		responseObject = objectDataArray[1];
 		if (objectData != null) {
 			if (objectData.containsKey("locationcode"))
-				response = applicationLibrary.getRequestPathPara(FetchRegCent_loc_lang_URI, objectData, cookie);
+				response = applicationLibrary.getWithPathParam(FetchRegCent_loc_lang_URI, objectData, cookie);
 
 			else if (objectData.containsKey("id"))
-				response = applicationLibrary.getRequestPathPara(FetchRegCent_id_lang_URI, objectData, cookie);
+				response = applicationLibrary.getWithPathParam(FetchRegCent_id_lang_URI, objectData, cookie);
 
 			else if (objectData.containsKey("hierarchylevel") && objectData.containsKey("name"))
-				response = applicationLibrary.getRequestPathPara(FetchRegCent_hir_name_lang_URI, objectData, cookie);
+				response = applicationLibrary.getWithPathParam(FetchRegCent_hir_name_lang_URI, objectData, cookie);
 
 			else if (objectData.containsKey("proximitydistance"))
-				response = applicationLibrary.getRequestPathPara(FetchRegCent_prox_lang_URI, objectData, cookie);
+				response = applicationLibrary.getWithPathParam(FetchRegCent_prox_lang_URI, objectData, cookie);
 
 			else {
 				String URI = FetchRegCent_URI + "/" + objectData.get("langcode") + "/"
@@ -135,19 +134,18 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 				objectData.remove("hierarchylevel");
 				Object str = objectData.get("names");
 				objectData = (JSONObject) str;
-				response = applicationLibrary.getRequest(URI, GetHeader.getHeader(objectData), cookie);
+				response = applicationLibrary.getWithQueryParam(URI, objectData, cookie);
 			}
 		}
 
-		//This method is for checking the authentication is pass or fail in rest services
-		new CommonLibrary().responseAuthValidation(response);
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
 		if (response == null) {
-			objectData = new JSONObject();
-			response = applicationLibrary.getRequestPathPara(FetchRegCent_URI, objectData, cookie);
+			response = applicationLibrary.getWithoutParams(FetchRegCent_URI, cookie);
 		}
+		//This method is for checking the authentication is pass or fail in rest services
+		new CommonLibrary().responseAuthValidation(response);
 		status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
 		if (!status) {
 			logger.debug(response);

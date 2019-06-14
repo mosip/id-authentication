@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>0.12.7</version>
+		<version>0.12.8</version>
 	</parent>
 
 	<artifactId>authentication-service</artifactId>
@@ -124,13 +124,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring.boot.version}</version>
-		</dependency>
-
-		<!-- External Fingerprint -->
-		<dependency>
-			<groupId>Mantra</groupId>
-			<artifactId>MFS100</artifactId>
-			<version>1.0</version>
 		</dependency>
 
 		<!-- Commons Lang -->

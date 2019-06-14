@@ -4,8 +4,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
+ *  The Enum MatchStrategyType consolidates the various matching strategies.
  * @author Arun Bose
- * The Enum MatchStrategyType.
+ *  
  */
 public enum MatchingStrategyType {
 

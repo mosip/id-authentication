@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisRequestDto;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisResponseDetDto;
@@ -64,9 +65,11 @@ public class ABISHandlerUtil {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	public List<String> getUniqueRegIds(String registrationId, String registrationType)
-			throws ApisResourceAccessException, IOException {
+			throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		String latestTransactionId = utilities.getLatestTransactionId(registrationId);
 
@@ -149,9 +152,11 @@ public class ABISHandlerUtil {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	private List<String> getUniqueRegIds(List<String> matchedRegistrationIds, String registrationId,
-			String registrationType) throws ApisResourceAccessException, IOException {
+			String registrationType) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		Map<String, String> filteredRegMap = new LinkedHashMap<>();
 		List<String> filteredRIds = new ArrayList<>();

@@ -45,6 +45,13 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 @Service
 public class GlobalParamServiceImpl extends BaseService implements GlobalParamService {
 
+<<<<<<< HEAD
+=======
+	private static final Set<String> NON_REMOVABLE_PARAMS = new HashSet<>(
+			Arrays.asList("mosip.registration.machinecenterchanged", "mosip.registration.initial_setup",
+					"mosip.reg.db.current.version", "mosip.reg.services.version",
+					RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE));
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 	/**
 	 * Instance of LOGGER
 	 */
@@ -76,8 +83,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		String triggerPoint = (isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
-				: RegistrationConstants.JOB_TRIGGER_POINT_USER);
+		if (isJob && RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"NO Internet Connection So calling off global param sync");
+
+			return setErrorResponse(responseDTO, RegistrationConstants.NO_INTERNET, null);
+		}
+		String triggerPoint = isJob ? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
+				: RegistrationConstants.JOB_TRIGGER_POINT_USER;
 
 		saveGlobalParams(responseDTO, triggerPoint);
 
@@ -299,7 +312,11 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	private void updateApplicationMap(String code, String val) {
 		ApplicationContext.setGlobalConfigValueOf(code, val);
+<<<<<<< HEAD
 		getBaseGlobalMap().put(code, val);
+=======
+		// getBaseGlobalMap().put(code, val);
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 
 	}
 }

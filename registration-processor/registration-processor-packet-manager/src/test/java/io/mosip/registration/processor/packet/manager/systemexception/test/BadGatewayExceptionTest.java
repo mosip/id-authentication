@@ -12,6 +12,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -44,10 +45,10 @@ public class BadGatewayExceptionTest {
 		String fileName = "sample";
 		BadGatewayException ex = new BadGatewayException(PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getMessage());
 
-		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+		doThrow(ex).when(fileManager).put(Mockito.any(), Mockito.any(), Mockito.any());
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+			fileManager.put(fileName, file, DirectoryPathDto.ARCHIVE_LOCATION);
 			fail();
 		} catch (BadGatewayException e) {
 			assertThat("Should throw Bad Gateway exception with correct error codes",

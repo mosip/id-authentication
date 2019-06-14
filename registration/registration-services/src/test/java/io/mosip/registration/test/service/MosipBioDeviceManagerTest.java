@@ -254,4 +254,32 @@ public class MosipBioDeviceManagerTest {
 		mosipBioDeviceManager.scan("deviceType");
 	}
 
+<<<<<<< HEAD
+=======
+	@Test
+	public void getSingleBioExtract() {
+		CaptureResponseDto captureResponseDto = new CaptureResponseDto();
+		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
+		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
+		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
+		mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
+	}
+
+	@Test
+	public void extractSingleBiometricIsoTemplate() {
+		CaptureResponseDto captureResponseDto = new CaptureResponseDto();
+		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
+		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
+		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
+		mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
+	}
+
+	@Test
+	public void doRegister() {
+		Map<String, BioDevice> deviceRegistry = new HashMap<>();
+		deviceRegistry.put("deviceType", new BioDevice());
+		mosipBioDeviceManager.deRegister("deviceType");
+	}
+
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 }

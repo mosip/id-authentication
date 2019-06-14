@@ -1,8 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -13,8 +11,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -30,12 +26,12 @@ import org.testng.internal.TestResult;
 
 import com.google.common.base.Verify;
 
-import io.mosip.kernel.util.CommonLibrary;
-import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
-import io.mosip.service.BaseTestCase;
+import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.TestCaseReader;
+import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 
 public class FetchTitle extends BaseTestCase implements ITest {
@@ -49,7 +45,7 @@ public class FetchTitle extends BaseTestCase implements ITest {
 	private final String apiName = "fetchTitle";
 	private final String requestJsonName = "fetchTitleRequest";
 	private final String outputJsonName = "fetchTitleOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchTitle_URI = props.get("FetchTitle_URI").toString();
 	protected String testCaseName = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -105,7 +101,7 @@ public class FetchTitle extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-				response = applicationLibrary.getRequestPathPara(FetchTitle_URI,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchTitle_URI,objectData,cookie);
 
 
 		//This method is for checking the authentication is pass or fail in rest services

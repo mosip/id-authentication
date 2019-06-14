@@ -37,6 +37,7 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -177,6 +178,12 @@ public class PacketSynchServiceImplTest {
 			HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
 		
 		List<PacketStatusDTO> synchedPackets = new ArrayList<>();
+		HashMap<String, Object> obj = new LinkedHashMap<>();
+		List<LinkedHashMap<String, Object>> resplist= new ArrayList<>();
+		LinkedHashMap<String, Object> obj1 = new LinkedHashMap<>();
+		obj1.put("Success", "Success");
+		resplist.add(obj1);
+		obj.put("response", resplist);
 		Registration reg = new Registration();
 		reg.setId("123456789");
 		reg.setClientStatusCode("SYNCED");
@@ -187,7 +194,7 @@ public class PacketSynchServiceImplTest {
 
 		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(new LinkedHashMap<>());
+				.thenReturn(obj);
 		Mockito.when(registrationDAO.updatePacketSyncStatus(packetStatusDTO)).thenReturn(reg);
 				
 		Mockito.when(HMACUtils.generateHash(Mockito.anyString().getBytes())).thenReturn("asa".getBytes());		
@@ -256,5 +263,32 @@ public class PacketSynchServiceImplTest {
 		Mockito.when(HMACUtils.generateHash(Mockito.anyString().getBytes())).thenReturn("asa".getBytes());
 		packetSynchServiceImpl.syncEODPackets(idlist);
 		assertEquals("SYNCED", reg.getClientStatusCode());
+	}
+	
+	@Test
+	public void testSyncPacketsToServer_1() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException,
+			HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
+		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+		LinkedHashMap<String, Object> respObj = new LinkedHashMap<>();
+		LinkedHashMap<String, Object> msg = new LinkedHashMap<>();
+		msg.put("registrationId", "123456789");
+		msg.put("errors", "errors");
+		List<LinkedHashMap<String, Object>> mapList = new ArrayList<>();
+		mapList.add(msg);
+		respObj.put("errors", mapList);
+		RegistrationPacketSyncDTO registrationPacketSyncDTO = new RegistrationPacketSyncDTO();
+		syncDtoList.add(new SyncRegistrationDTO());
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(respObj);
+		Mockito.when(aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())).thenReturn("aes".getBytes());
+		assertTrue(packetSynchServiceImpl.syncPacketsToServer("123456789", "System").getErrorResponseDTOs()!=null);
+	}
+	
+	@Test
+	public void testfetchSynchedPacket() {
+		Registration reg=new Registration();
+		reg.setId("123456789");
+		Mockito.when(registrationDAO.getRegistrationById(Mockito.anyString(), Mockito.anyString())).thenReturn(reg);
+		assertTrue(packetSynchServiceImpl.fetchSynchedPacket("123456789"));
 	}
 }

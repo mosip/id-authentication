@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -53,7 +56,7 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
 	boolean status = false;
 	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private AssertKernel assertKernel = new AssertKernel();
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchRegistrationCenterDeviceHistory = props.get("fetchRegistrationCenterDeviceHistory");
 	private String folderPath = "kernel/GetRegistrationCenterDeviceHistory";
 	private String outputFile = "GetRegistrationCenterDeviceHistoryOutput.json";
@@ -91,9 +94,17 @@ public class GetRegistrationCenterDeviceHistory extends BaseTestCase implements 
     {				
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		
+		if(testCaseName.contains("smoke") | testCaseName.contains("response_time")) {
+			// getting current timestamp and changing it to yyyy-MM-ddTHH:mm:ss.sssZ format.
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.sss");
+			Calendar calender = Calendar.getInstance();
+			calender.setTime(new Date());
+			String time = sdf.format(calender.getTime());
+			time = time.replace(' ', 'T')+"Z";
+			actualRequest.put("effdatetimes", time);
+		}
 		// Calling the get method 
-		Response res=applicationLibrary.getRequestPathPara(fetchRegistrationCenterDeviceHistory, actualRequest,cookie);
+		Response res=applicationLibrary.getWithPathParam(fetchRegistrationCenterDeviceHistory, actualRequest,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(res);
 		// Removing of unstable attributes from response

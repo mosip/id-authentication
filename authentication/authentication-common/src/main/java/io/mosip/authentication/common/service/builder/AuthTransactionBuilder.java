@@ -1,9 +1,7 @@
 package io.mosip.authentication.common.service.builder;
 
-import java.nio.charset.Charset;
 import java.util.Date;
 
-import org.jose4j.lang.HashUtil;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
 
@@ -17,7 +15,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
-import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -140,16 +137,16 @@ public class AuthTransactionBuilder {
 	 * @return the instance of {@code AutnTxn}
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	public AutnTxn build(IdInfoFetcher idInfoFetcher, Environment env) throws IdAuthenticationBusinessException {
+	public AutnTxn build(Environment env) throws IdAuthenticationBusinessException {
 		try {
 			String idvId;
 			String reqTime;
 			String idvIdType;
 			String txnID;
 			if(authRequestDTO != null) {
-				idvId = idInfoFetcher.getUinOrVid(authRequestDTO).get();
+				idvId = authRequestDTO.getIndividualId();
 				reqTime = authRequestDTO.getRequestTime();
-				idvIdType = idInfoFetcher.getUinOrVidType(authRequestDTO).getType();
+				idvIdType = authRequestDTO.getIndividualIdType();
 				txnID = authRequestDTO.getTransactionID();
 			} else if(otpRequestDTO != null) {
 				idvId = otpRequestDTO.getIndividualId();
@@ -170,19 +167,19 @@ public class AuthTransactionBuilder {
 				autnTxn.setRefId(HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvId.getBytes())));
 				autnTxn.setRefIdType(idvIdType);
 				String id = createId(uin, env);
-				autnTxn.setId(id); // FIXME
+				autnTxn.setId(id);
 				autnTxn.setCrBy(env.getProperty(IdAuthConfigKeyConstants.APPLICATION_ID));
 				autnTxn.setStaticTknId(staticTokenId);
 				autnTxn.setCrDTimes(DateUtils.getUTCCurrentDateTime());
 				String strUTCDate = DateUtils.getUTCTimeFromDate(
 						DateUtils.parseToDate(reqTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 				autnTxn.setRequestDTtimes(DateUtils.parseToLocalDateTime(strUTCDate));
-				autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime()); // TODO check this
+				autnTxn.setResponseDTimes(DateUtils.getUTCCurrentDateTime());
 				autnTxn.setAuthTypeCode(requestType.getRequestType());
 				autnTxn.setRequestTrnId(txnID);
 				autnTxn.setStatusCode(status);
 				autnTxn.setStatusComment(comment);
-				// FIXME
+				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
 				return autnTxn;
 			} else {

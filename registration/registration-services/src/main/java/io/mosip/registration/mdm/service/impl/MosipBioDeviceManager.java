@@ -116,7 +116,7 @@ public class MosipBioDeviceManager {
 
 						}
 
-						if (StringUtils.isNotEmpty(deviceInfoResponse.getType())) {
+						if (null != deviceInfoResponse && StringUtils.isNotEmpty(deviceInfoResponse.getType())) {
 
 							/*
 							 * Creating new bio device object for each device from service
@@ -135,6 +135,7 @@ public class MosipBioDeviceManager {
 								if (StringUtils.isNotEmpty(deviceInfoResponse.getSubType())) {
 									deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + deviceSubType,
 											bioDevice);
+<<<<<<< HEAD
 									
 //									if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
 //										deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
@@ -153,6 +154,8 @@ public class MosipBioDeviceManager {
 //												+ MosipBioDeviceConstants.VALUE_TOUCHLESS, bioDevice);
 //									}
 
+=======
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 								}
 
 								break;
@@ -211,7 +214,8 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * Triggers the capture based on the device type and returns the biometric value
+	 * Triggers the biometric capture based on the device type and returns the
+	 * biometric value from MDM
 	 * 
 	 * @param deviceType
 	 *            - The type of the device
@@ -242,7 +246,14 @@ public class MosipBioDeviceManager {
 
 	}
 
-	public byte[] getSingleBioExtract(CaptureResponseDto captureResponseDto) {
+	/**
+	 * Used to get the bio raw image value from the response
+	 * 
+	 * @param captureResponseDto
+	 *            - Response object which contains the capture biometrics from MDM
+	 * @return byte[] - captured bio image
+	 */
+	public byte[] getSingleBioValue(CaptureResponseDto captureResponseDto) {
 		byte[] capturedByte = null;
 		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
 				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
@@ -254,8 +265,20 @@ public class MosipBioDeviceManager {
 		}
 		return capturedByte;
 	}
+<<<<<<< HEAD
 	
 	public byte[] extractSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto) {
+=======
+
+	/**
+	 * Used to get the bio extract value from the response
+	 * 
+	 * @param captureResponseDto
+	 *            - Response object which contains the capture biometrics from MDM
+	 * @return byte[] - captured bio extract
+	 */
+	public byte[] getSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto) {
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 		byte[] capturedByte = null;
 		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
 				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
@@ -309,6 +332,12 @@ public class MosipBioDeviceManager {
 
 	}
 
+	/**
+	 * Used to remove a specific device from device registry
+	 * 
+	 * @param type
+	 *            - device type
+	 */
 	public void deRegister(String type) {
 		deviceRegistry.remove(type);
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,

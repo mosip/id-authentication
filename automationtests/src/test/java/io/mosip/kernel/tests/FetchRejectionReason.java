@@ -49,7 +49,7 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 	private final String apiName = "fetchRejectionReason";
 	private final String requestJsonName = "fetchRejectionReasonRequest";
 	private final String outputJsonName = "fetchRejectionReasonOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchRejectionReason_URI = props.get("FetchRejectionReason_URI").toString();
 
 	protected String testCaseName = "";
@@ -107,7 +107,7 @@ public class FetchRejectionReason extends BaseTestCase implements ITest {
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
-				response = applicationLibrary.getRequestPathPara(FetchRejectionReason_URI,objectData,cookie);
+				response = applicationLibrary.getWithPathParam(FetchRejectionReason_URI,objectData,cookie);
 
 
 		//This method is for checking the authentication is pass or fail in rest services

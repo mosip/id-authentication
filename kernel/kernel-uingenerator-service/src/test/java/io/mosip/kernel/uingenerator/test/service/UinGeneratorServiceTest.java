@@ -13,7 +13,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import io.mosip.kernel.uingenerator.config.UinServiceConfiguration;
+import io.mosip.kernel.uingenerator.config.HibernateDaoConfig;
 import io.mosip.kernel.uingenerator.entity.UinEntity;
 import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import io.mosip.kernel.uingenerator.exception.UinNotIssuedException;
@@ -30,7 +30,7 @@ import io.mosip.kernel.uingenerator.service.UinService;
 @SpringBootTest
 @TestPropertySource({ "classpath:application-test.properties", "classpath:bootstrap.properties" })
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = UinServiceConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = HibernateDaoConfig.class, loader = AnnotationConfigContextLoader.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class UinGeneratorServiceTest {
 

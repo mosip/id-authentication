@@ -7,6 +7,8 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 
 /**
  * 
+ * Fetch Entity values based on request
+ *
  * @author Dinesh Karuppiah.T
  */
 public interface EntityValueFetcher {
@@ -19,6 +21,7 @@ public interface EntityValueFetcher {
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public Map<String, String> fetch(String uin, AuthRequestDTO authReq,String partnerID) throws IdAuthenticationBusinessException;
+	public Map<String, String> fetch(String uin, AuthRequestDTO authReq, String partnerID)
+			throws IdAuthenticationBusinessException;
 
 }

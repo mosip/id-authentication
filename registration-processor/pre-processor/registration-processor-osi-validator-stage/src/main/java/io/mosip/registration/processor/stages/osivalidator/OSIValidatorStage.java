@@ -173,7 +173,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code + " -- " + registrationId, description);
 		} catch (FSAdapterException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto
 					.setStatusComment(PlatformErrorMessages.OSI_VALIDATION_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
@@ -185,7 +185,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} catch (ApisResourceAccessException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(
 					PlatformErrorMessages.OSI_VALIDATION_PACKE_API_RESOUCE_ACCESS_FAILED.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -197,7 +197,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 		} catch (DataAccessException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_DATA_ACCESS_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
@@ -220,7 +220,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			object.setIsValid(Boolean.FALSE);
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
+			registrationStatusDto.setStatusComment(ex.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			code = PlatformErrorMessages.OSI_VALIDATION_FAILED.getCode();

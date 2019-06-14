@@ -53,7 +53,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 	private final String apiName = "fetchBiometricAuthType";
 	private final String requestJsonName = "fetchBiometricAuthTypeRequest";
 	private final String outputJsonName = "fetchBiometricAuthTypeOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchBiometricAuthType_URI = props.get("FetchBiometricAuthType_URI").toString();
 
 	protected String testCaseName = "";
@@ -113,7 +113,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		// sending get request
-		response = applicationLibrary.getRequestPathPara(FetchBiometricAuthType_URI, objectData, cookie);
+		response = applicationLibrary.getWithPathParam(FetchBiometricAuthType_URI, objectData, cookie);
 		// DB validation
 
 		// This method is for checking the authentication is pass or fail in rest
@@ -128,7 +128,7 @@ public class FetchBiometricAuthType extends BaseTestCase implements ITest {
 				Assert.assertTrue(false, "Response does not contain biometrictypes");
 
 			String query = "select count(*) from master.biometric_type where lang_code = '" + objectData.get("langcode")
-					+ "'";
+					+ "' and is_active = true";
 
 			long obtainedObjectsCount = new KernelDataBaseAccess().validateDBCount(query, "masterdata");
 

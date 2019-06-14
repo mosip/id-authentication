@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Primary;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidator;
 import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 import io.mosip.registration.processor.stages.osivalidator.UMCValidator;
-import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 
 @Configuration
@@ -26,7 +26,7 @@ public class OSIConfigBean{
 	public OSIValidator getOSIValidator() {
 		return new OSIValidator();
 	}
-	
+		
 	@Bean
 	public UMCValidator getUMCValidator() {
 		return new UMCValidator();

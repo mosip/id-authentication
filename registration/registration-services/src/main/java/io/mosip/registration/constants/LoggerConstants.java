@@ -39,6 +39,7 @@ public class LoggerConstants {
 	private static final String SERVICE_DELEGATE_UTIL = APP_NAME + "SERVICE_DELEGATE_UTIL - ";
 	private static final String UI_VALIDATIONS = APP_NAME + "VALIDATION - ";
 	private static final String REG_ID_MASTER_DATA_VALIDATOR = APP_NAME + "MASTER_DATA_VALIDATION - ";
+	private static final String PKT_UPLOAD= APP_NAME + "PACKET_UPLOAD - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -169,5 +170,7 @@ public class LoggerConstants {
 
 	public static final String ID_OBJECT_SCHEMA_VALIDATOR = UI_VALIDATIONS + "ID_OBJECT_SCHEMA_VALIDATOR";
 	public static final String ID_OBJECT_PATTERN_VALIDATOR = UI_VALIDATIONS + "ID_OBJECT_PATTERN_VALIDATOR";
+	
+	public static final String LOG_PACKET_UPLOAD = PKT_UPLOAD + "UPLOAD_CONTROLLER";
 
 }

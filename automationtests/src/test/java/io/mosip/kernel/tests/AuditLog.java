@@ -52,7 +52,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	private final String apiName = "AuditLog";
 	private final String requestJsonName = "AuditLogRequest";
 	private final String outputJsonName = "AuditLogOutput";
-	private final Map<String, String> props = new CommonLibrary().kernenReadProperty();
+	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String auditLog_URI = props.get("auditLog_URI").toString();
 
 	protected String testCaseName = "";
@@ -78,6 +78,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 		String object = (String) testdata[0];
 		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
 		cookie = auth.getAuthForIDA();
+		
 	}
 
 	/**
@@ -104,14 +105,14 @@ public class AuditLog extends BaseTestCase implements ITest {
 	public void auditLog(String testcaseName, JSONObject object) {
 		logger.info("Test Case Name:" + testcaseName);
 		object.put("Jira ID", jiraID);
-
+		
 		// getting request and expected response jsondata from json files.
 		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
 
 		JSONObject objectData = objectDataArray[0];
 		responseObject = objectDataArray[1];
 		// sending post request
-		response = applicationLibrary.postRequest(objectData.toJSONString(), auditLog_URI, cookie);
+		response = applicationLibrary.postWithJson(auditLog_URI, objectData.toJSONString(), cookie);
 
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();

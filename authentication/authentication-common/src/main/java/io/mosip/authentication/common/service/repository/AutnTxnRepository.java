@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.repository;
 
-import java.lang.annotation.Native;
 import java.time.LocalDateTime;
 import java.util.List;
 

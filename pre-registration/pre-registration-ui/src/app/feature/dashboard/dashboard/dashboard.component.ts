@@ -360,13 +360,17 @@ export class DashBoardComponent implements OnInit {
       response => {
         if (!response['errors']) {
           this.removeApplicant(element.applicationID);
-          this.displayMessage(
-            this.secondaryLanguagelabels.title_success,
-            this.secondaryLanguagelabels.deletePreregistration.msg_deleted
-          );
           const index = this.users.indexOf(element);
           this.users.splice(index, 1);
-          if (this.users.length == 0) localStorage.setItem('newApplicant', 'true');
+          if (this.users.length == 0) {
+            this.onNewApplication();
+            localStorage.setItem('newApplicant', 'true');
+          } else {
+            this.displayMessage(
+              this.secondaryLanguagelabels.title_success,
+              this.secondaryLanguagelabels.deletePreregistration.msg_deleted
+            );
+          }
         } else {
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,

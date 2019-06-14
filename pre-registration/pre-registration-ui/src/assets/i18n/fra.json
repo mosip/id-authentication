@@ -376,6 +376,7 @@
     "subheading_information": "Informations personnelles",
     "label_name": "Nom complet",
     "label_age": "Âge",
+    "label_DOB":"DOB",
     "text_years": "Années",
     "text_gender": "Le sexe",
     "text_resident_status": "Statut de résident",
@@ -415,7 +416,8 @@
       "msg6": "Mauvais type de fichier, veuillez télécharger à nouveau",
       "msg7": "Le fichier n'a pas pu être téléchargé. Veuillez réessayer.",
       "msg8": "Impossible de copier le document",
-      "msg9": "Les documents sont manquants"
+      "msg9": "Les documents sont manquants",
+      "none": "aucun"
     },
     "appointmentCentreSearch": {
       "msg1": "No result found",
@@ -488,11 +490,11 @@
       "msg_success": "Réservation de rendez-vous terminée avec succès",
       "title_failure": "Échec",
       "msg_failure": "Rendez-vous de réservation a échoué",
-      "deletedApplicant1":[
+      "deletedApplicant1": [
         "L'utilisateur suivant n'a été sélectionné dans aucune plage horaire",
         "Voulez-vous continuer la réservation"
       ],
-      "yesButtonText":"Oui",
+      "yesButtonText": "Oui",
       "noButtonText": "Non"
     }
   },
@@ -542,7 +544,7 @@
     "action_back": "Retour",
     "action_book_later": "Réservez plus tard",
     "action_continue": "CONTINUER",
-    "noResult_found" : "Aucun résultat trouvé"
+    "noResult_found": "Aucun résultat trouvé"
   },
   "autologout": {
     "preview": "Vous serez expiré dans 60 secondes en raison de votre inactivité. Veuillez cliquer n'importe où pour réactiver votre session",

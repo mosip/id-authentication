@@ -147,7 +147,7 @@ public class BaseService {
 	 *
 	 * @return user id
 	 */
-	protected String getUserIdFromSession() {
+	public String getUserIdFromSession() {
 		String userId = null;
 		if (SessionContext.isSessionContextAvailable()) {
 			userId = SessionContext.userId();

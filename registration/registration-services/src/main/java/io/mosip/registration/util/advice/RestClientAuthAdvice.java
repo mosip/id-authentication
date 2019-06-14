@@ -81,13 +81,32 @@ public class RestClientAuthAdvice {
 					.setHttpEntity(new HttpEntity<>(requestHTTPDTO.getRequestBody(), requestHTTPDTO.getHttpHeaders()));
 			Object response = joinPoint.proceed(joinPoint.getArgs());
 
+<<<<<<< HEAD
+=======
+			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+					"Adding authZ token to web service request header if required completed ---> "+ response);
+			
+			if (handleInvalidTokenFromResponse(response, joinPoint)) {
+				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+						"Adding new authZ token to web service request header if present token is invalid");
+				return joinPoint.proceed(joinPoint.getArgs());
+			}
+
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 					"Adding authZ token to web service request header if required completed");
 
 			return response;
 			
 		} catch (HttpClientErrorException httpClientErrorException) {
+<<<<<<< HEAD
 			if (401 == httpClientErrorException.getRawStatusCode()) {
+=======
+			String errorResponseBody = httpClientErrorException.getResponseBodyAsString();
+
+			if (errorResponseBody != null && StringUtils.containsIgnoreCase(errorResponseBody, INVALID_TOKEN_STRING)
+					|| 401 == httpClientErrorException.getRawStatusCode()) {
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 				try {
 					RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 					getNewAuthZToken(requestHTTPDTO);
@@ -227,4 +246,20 @@ public class RestClientAuthAdvice {
 				"Completed adding request signature to request header completed");
 	}
 
+<<<<<<< HEAD
+=======
+	private boolean handleInvalidTokenFromResponse(Object response, ProceedingJoinPoint joinPoint)
+			throws RegBaseCheckedException {
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"Entering into the invlalid token check" + response);
+		if (response != null && StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING)) {
+			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
+			getNewAuthZToken(requestHTTPDTO);
+			return true;
+		}
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"leaving to this invlalid token check" + response);
+		return false;
+	}
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 }

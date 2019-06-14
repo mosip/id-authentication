@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: registartion-processor-abis-middleware-stage
+  name: registration-processor-abis-middleware-stage
 spec:
   replicas: 1
   minReadySeconds: 10
@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        app: registartion-processor-abis-middleware-stage
+        app: registration-processor-abis-middleware-stage
         component: service-hazelcast-server
     spec:
       initContainers:
@@ -30,8 +30,8 @@ spec:
         - name: spring_config_url_env
           value: http://kernel-config-server:51000/config
       containers:
-      - name: registartion-processor-abis-middleware-stage
-        image: docker-registry.mosip.io:5000/registartion-processor-abis-middleware-stage
+      - name: registration-processor-abis-middleware-stage
+        image: docker-registry.mosip.io:5000/registration-processor-abis-middleware-stage
         ports:
           - name: eventbus-port
             containerPort: 5888

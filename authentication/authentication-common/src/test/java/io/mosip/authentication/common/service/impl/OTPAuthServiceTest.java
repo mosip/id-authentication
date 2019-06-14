@@ -187,7 +187,7 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autTxn);
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456", "", "2019-02-18T18:17:48.923+05:30"));
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("1234567890", "123456"));
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(repository.findByUinorVid(Mockito.anyString(), Mockito.any(), Mockito.any()))
 				.thenReturn(autntxnList);
-		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("232323", "123456", "UIN", "2019-02-18T18:17:48.923+05:30"));
+		assertTrue(otpauthserviceimpl.validateTxnAndIdvid("232323", "123456"));
 	}
 
 	@Test(expected = IDDataValidationException.class)

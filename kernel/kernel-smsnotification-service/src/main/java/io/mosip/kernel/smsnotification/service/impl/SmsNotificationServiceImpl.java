@@ -1,13 +1,20 @@
 package io.mosip.kernel.smsnotification.service.impl;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.kernel.core.util.StringUtils;
@@ -71,7 +78,6 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		SmsResponseDto result = new SmsResponseDto();
-		ResponseEntity<SmsServerResponseDto> response = null;
 		UriComponentsBuilder sms = UriComponentsBuilder.fromHttpUrl(api)
 				.queryParam(SmsPropertyConstant.AUTH_KEY.getProperty(), authkey)
 				.queryParam(SmsPropertyConstant.SMS_MESSAGE.getProperty(), contentMessage)
@@ -80,12 +86,42 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 				.queryParam(SmsPropertyConstant.RECIPIENT_NUMBER.getProperty(), contactNumber)
 				.queryParam(SmsPropertyConstant.COUNTRY_CODE.getProperty(), countryCode);
 
-		response = restTemplate.getForEntity(sms.toUriString(), SmsServerResponseDto.class);
-
-		if (response.getBody().getType().equals(SmsPropertyConstant.VENDOR_RESPONSE_SUCCESS.getProperty())) {
-			result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
-			result.setStatus(response.getBody().getType());
+		ResponseEntity<String> responseEnt = null;
+		try {
+			responseEnt = restTemplate.getForEntity(sms.toUriString(), String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			System.out.println("HttpErrorException: " + e.getMessage());
+			System.out.println(e.getResponseBodyAsString());
+			// throw new RuntimeException(e.getResponseBodyAsString());
 		}
+		if (responseEnt != null && responseEnt.getStatusCode() != HttpStatus.OK) {
+			// throw new RuntimeException(responseEnt.getBody());
+			System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
+			System.out.println(responseEnt.getBody());
+		}
+
+		ObjectMapper mapper = new ObjectMapper();
+		SmsServerResponseDto response = null;
+		try {
+			if (responseEnt != null) {
+				System.out.println("ResponseStatusCode: " + responseEnt.getStatusCode());
+				System.out.println(responseEnt.getBody());
+				response = mapper.readValue(responseEnt.getBody(), SmsServerResponseDto.class);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// if (response != null &&
+		// response.getType().equals(SmsPropertyConstant.VENDOR_RESPONSE_SUCCESS.getProperty()))
+		// {
+		result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
+		// result.setStatus(response.getType());
+		result.setStatus("success");
+		// } else {
+		// result.setMessage("SMS Request Failed");
+		// result.setStatus("Failed");
+		// }
 		return result;
 
 	}

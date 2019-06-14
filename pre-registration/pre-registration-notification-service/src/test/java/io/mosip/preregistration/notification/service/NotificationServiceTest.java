@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -125,11 +126,7 @@ public class NotificationServiceTest {
 		notificationDTO.setBatch(false);
 		mainReqDto.setId("mosip.pre-registration.notification.notify");
 		mainReqDto.setVersion("1.0");
-		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		//mapper.setDateFormat(df);
-//2019-04-8T07:22:57.186Z
-//		mainReqDto.setRequesttime(df.parse("2019-04-5T07:22:57.186Z"));
-		
+		mapper.setTimeZone(TimeZone.getDefault());
 		mainReqDto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
@@ -172,7 +169,8 @@ public class NotificationServiceTest {
      @Test
 	public void sendNotificationSuccessTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
-		String stringjson = mapper.writeValueAsString(mainReqDto);
+		
+    	 String stringjson = mapper.writeValueAsString(mainReqDto);
 		String langCode = "eng";
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
