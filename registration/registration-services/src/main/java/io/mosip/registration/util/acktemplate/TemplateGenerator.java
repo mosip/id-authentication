@@ -401,6 +401,18 @@ public class TemplateGenerator extends BaseService {
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 		}
 
+		if (parentPhotoCaptured) {
+			templateValues.put(RegistrationConstants.PARENT_PHOTO_NOT_CAPTURED,
+					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			templateValues.put(RegistrationConstants.PARENT_PHOTO_PRIMARY_LANG,
+					applicationLanguageProperties.getString("parentPhoto"));
+			templateValues.put(RegistrationConstants.PARENT_PHOTO_LOCAL_LANG, localProperties.getString("parentPhoto"));
+			byte[] parentImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace();
+			String parentImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(parentImageBytes, false));
+			templateValues.put(RegistrationConstants.PARENT_IMAGE_SOURCE,
+					RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + parentImageEncodedBytes);
+		}
+
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(fingerPrintDisableFlag)
 				&& ((registration.getSelectionListDTO() != null && registration.getSelectionListDTO().isBiometrics())
 						|| (registration.getSelectionListDTO() == null && !isChild)
@@ -420,18 +432,6 @@ public class TemplateGenerator extends BaseService {
 					localProperties.getString("thumbs"));
 			if (isChild || registration.isUpdateUINNonBiometric()) {
 				if (parentPhotoCaptured) {
-					templateValues.put(RegistrationConstants.PARENT_PHOTO_NOT_CAPTURED,
-							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-					templateValues.put(RegistrationConstants.PARENT_PHOTO_PRIMARY_LANG,
-							applicationLanguageProperties.getString("parentPhoto"));
-					templateValues.put(RegistrationConstants.PARENT_PHOTO_LOCAL_LANG,
-							localProperties.getString("parentPhoto"));
-					byte[] parentImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace()
-							.getFace();
-					String parentImageEncodedBytes = StringUtils
-							.newStringUtf8(Base64.encodeBase64(parentImageBytes, false));
-					templateValues.put(RegistrationConstants.PARENT_IMAGE_SOURCE,
-							RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + parentImageEncodedBytes);
 					setUpParentFingerprints(registration, templateValues);
 				} else {
 					templateValues.put(RegistrationConstants.PARENT_PHOTO_CAPTURED,
@@ -1465,14 +1465,16 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
-	 * Exception fingers count.
+	 * To count the number of exceptions for face/iris/fingerprint
 	 */
 	private Map<String, Integer> exceptionFingersCount(RegistrationDTO registration, int leftSlapCount,
 			int rightSlapCount, int thumbCount, int irisCount) {
 
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
-		if (registration.isUpdateUINNonBiometric() || (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
+		if ((registration.getSelectionListDTO() == null && (boolean) SessionContext.map().get(RegistrationConstants.IS_Child))
+				|| (registration.getSelectionListDTO() != null
+						&& registration.getSelectionListDTO().isParentOrGuardianDetails())) {
 			biometricExceptionDTOs = registration.getBiometricDTO().getIntroducerBiometricDTO()
 					.getBiometricExceptionDTO();
 			for (BiometricExceptionDTO biometricExceptionDTO : biometricExceptionDTOs) {

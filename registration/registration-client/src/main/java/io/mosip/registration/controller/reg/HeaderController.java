@@ -259,7 +259,7 @@ public class HeaderController extends BaseController {
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		} else {
-			generateAlert(RegistrationUIConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
 	}
 
