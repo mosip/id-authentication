@@ -83,8 +83,29 @@ public class Sample extends BaseTestCase implements ITest {
 	 */
 	@Test(groups = { "IntegrationScenarios" })
 	public void fetchBookedAppointmentCreatedByUser() {
-		dao.makeregistartionCenterActive("10001");
+		dao.makeregistartionCenterActive("10009");
 		lib.syncAvailability();
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre("10009");
+		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),"Appointment booked successfully");
+		dao.makeregistartionCenterDeActive("10009");
+		Response syncAvailabilityResponse = lib.syncAvailability();
+		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
+		Response fetchCenterResponse = lib.FetchCentre("10009");
+		lib.compareValues(fetchCenterResponse.jsonPath().get("errors[0].message").toString(), "No available slots found for specified registration center");
+		Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		lib.compareValues(appointmentDetailsResponse.jsonPath().get("errors[0].message").toString(), "Booking data not found");
+		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
+		lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString(), "Pending_Appointment");
+		dao.makeregistartionCenterActive("10009");
+		syncAvailabilityResponse = lib.syncAvailability();
+		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
+		lib.FetchCentre("10009");
 
 	}
 

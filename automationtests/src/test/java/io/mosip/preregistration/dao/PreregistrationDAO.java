@@ -129,7 +129,7 @@ public class PreregistrationDAO
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, 4); 
+		c.add(Calendar.DATE, 1); 
 		String date = sdf.format(c.getTime());
 		try {
 			 date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);

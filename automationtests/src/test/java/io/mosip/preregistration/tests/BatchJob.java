@@ -65,7 +65,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 	/**
 	 * Batch job service for expired application
 	 */
-	/*@Test
+	@Test
 	public void batchJobForExpiredApplication() {
 		String statusCode=null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
@@ -88,7 +88,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 		lib.compareValues(statusCode, "Expired");
 
 	
-	}*/
+	}
 
 	/**
 	 * Batch Job service Consumed Application
