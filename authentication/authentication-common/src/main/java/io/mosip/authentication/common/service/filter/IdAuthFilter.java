@@ -366,7 +366,9 @@ public class IdAuthFilter extends BaseAuthFilter {
 	 */
 	private void checkAllowedAuthTypeForBio(List<AuthPolicy> authPolicies, List<String> bioTypeList)
 			throws IdAuthenticationAppException {
+		String bioAuthType;
 		for (String bioType : bioTypeList) {
+			bioAuthType=bioType;
 			if (bioType.equalsIgnoreCase(BioAuthType.FGR_IMG.getType())
 					|| bioType.equalsIgnoreCase(BioAuthType.FGR_MIN.getType())) {
 				bioType = SingleType.FINGER.value();
@@ -376,13 +378,13 @@ public class IdAuthFilter extends BaseAuthFilter {
 				bioType = SingleType.IRIS.value();
 			}
 			if (!isAllowedAuthType(MatchType.Category.BIO.getType(), bioType, authPolicies)) {
-				if (!BioAuthType.getSingleBioAuthTypeForType(bioType).isPresent()) {
+				if (!BioAuthType.getSingleBioAuthTypeForType(bioAuthType).isPresent()) {
 					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(),
-									bioType));
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+									BIO_TYPE));
 				}
-				String bioSubtype = MatchType.Category.BIO.name() + "-" + bioType;
+				String bioSubtype = MatchType.Category.BIO.name() + "-" + bioAuthType;
 				throw new IdAuthenticationAppException(
 						IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorCode(), String.format(
 								IdAuthenticationErrorConstants.AUTHTYPE_NOT_ALLOWED.getErrorMessage(), bioSubtype));
