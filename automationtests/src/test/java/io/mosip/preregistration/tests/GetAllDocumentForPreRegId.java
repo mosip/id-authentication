@@ -147,7 +147,12 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 					"POA");
 			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docTypCode").toString(),
 					"address");
-
+			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].langCode").toString(),
+					"fra");
+			logger.info(
+					"Test Case name:" + testCaseName + "getAllDocResDoc smoke Actualresponse::" + Actualresponse.asString());
+			
+			
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		} else {
 

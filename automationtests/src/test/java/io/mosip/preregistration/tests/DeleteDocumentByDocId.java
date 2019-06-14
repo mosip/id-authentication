@@ -152,7 +152,9 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			
 		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId")) {
 			try {
-				docId = docUploadResponse.jsonPath().get("response.docId").toString();
+				
+				docId = actualRequest.get("documentId").toString();
+				//docId = docUploadResponse.jsonPath().get("response.docId").toString();
 			} catch (NullPointerException e) {
 				Assert.assertTrue(false, "Document id is not present in document upload response");
 			}
