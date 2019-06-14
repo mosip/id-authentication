@@ -181,8 +181,8 @@ public class NotificationService {
 					if (notificationDto.getEmailID() != null && !notificationDto.getEmailID().isEmpty() && ValidationUtil.emailValidator(notificationDto.getEmailID())) {
 						notificationUtil.notify(RequestCodes.EMAIL.getCode(), notificationDto, langCode, file);
 					}
-					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty()||ValidationUtil.emailValidator(notificationDto.getEmailID()))
-							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty()||ValidationUtil.phoneValidator(notificationDto.getMobNum()))) {
+					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty()||!ValidationUtil.emailValidator(notificationDto.getEmailID()))
+							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty()||!ValidationUtil.phoneValidator(notificationDto.getMobNum()))) {
 						throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_001.getCode(),
 								ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getMessage(), response);
 					}

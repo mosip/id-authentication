@@ -10,9 +10,12 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.http.HttpException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -36,6 +39,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,7 +67,9 @@ import io.mosip.preregistration.core.util.NotificationUtil;
 import io.mosip.preregistration.notification.NotificationApplicationTest;
 import io.mosip.preregistration.notification.dto.QRCodeResponseDTO;
 import io.mosip.preregistration.notification.dto.ResponseDTO;
+import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
+import io.mosip.preregistration.notification.exception.RestCallException;
 import io.mosip.preregistration.notification.service.util.NotificationServiceUtil;
 import io.vertx.core.json.JsonObject;
 
@@ -129,8 +136,8 @@ public class NotificationServiceTest {
 		notificationDTO.setPreRegistrationId("20180396713560");
 		notificationDTO.setMobNum("1234567890");
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
-		notificationDTO.setAppointmentDate("2019-01-22");
-		notificationDTO.setAppointmentTime("22:57");
+		notificationDTO.setAppointmentDate("12/01/2018");
+		notificationDTO.setAppointmentTime("9:00:00");
 		notificationDTO.setAdditionalRecipient(true);
 		notificationDTO.setIsBatch(false);
 		mainReqDto.setId("mosip.pre-registration.notification.notify");
@@ -206,7 +213,7 @@ public class NotificationServiceTest {
 				}))).thenReturn(demores);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-				}))).thenReturn(bookingres);
+				}),Mockito.anyMap())).thenReturn(bookingres);
 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
 		templateResponseListDTO.setTemplates(tepmlateList);
 		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
@@ -236,6 +243,14 @@ public class NotificationServiceTest {
 		String stringjson = mapper.writeValueAsString(mainReqDto);
 		String langCode = "eng";
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
 		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
 		templateResponseListDTO.setTemplates(tepmlateList);
 		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
@@ -256,10 +271,9 @@ public class NotificationServiceTest {
 		assertEquals(responseDTO.getResponse(), response.getResponse());
 	}
 
-	@Test
-	public void callGetDemographicDetailsWithPreIdrestcallTest()
+	@Test(expected=RestCallException.class)
+	public void getDemographicDetailsWithPreIdrestcallTest()
 			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
-		ResponseEntity<String> respEntity = new ResponseEntity<String>(jsonObject.toString(), HttpStatus.OK);
 		notificationDTO.setAdditionalRecipient(false);
 
 		notificationDTO.setIsBatch(false);
@@ -267,24 +281,33 @@ public class NotificationServiceTest {
 		String stringjson = mapper.writeValueAsString(mainReqDto);
 		String langCode = "eng";
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
-		TemplateResponseListDTO templateResponseListDTO = new TemplateResponseListDTO();
-		templateResponseListDTO.setTemplates(tepmlateList);
-		Mockito.when(NotificationUtil.notify("sms", notificationDTO, langCode, file)).thenReturn(responselist);
-		ResponseEntity<TemplateResponseListDTO> res = new ResponseEntity<TemplateResponseListDTO>(
-				templateResponseListDTO, HttpStatus.OK);
-		Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.eq(TemplateResponseListDTO.class)))
-				.thenReturn(res);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		ResponseEntity<NotificationResponseDTO> resp = new ResponseEntity<NotificationResponseDTO>(
-				notificationResponseDTO, HttpStatus.OK);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.POST), Mockito.any(),
-				Mockito.eq(NotificationResponseDTO.class))).thenReturn(resp);
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(String.class))).thenReturn(respEntity);
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenThrow(RestClientException.class);
 		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
-		assertEquals(responseDTO.getResponse(), response.getResponse());
+		assertEquals("Demographic rest call failed", response.getResponse());
+	}
+	
+	@Test(expected=RestCallException.class)
+	public void getBookingDetailsExceptionTest()
+			throws JsonParseException, JsonMappingException, IOException, java.io.IOException {
+		notificationDTO.setAdditionalRecipient(false);
+
+		notificationDTO.setIsBatch(false);
+		mainReqDto.setRequest(notificationDTO);
+		String stringjson = mapper.writeValueAsString(mainReqDto);
+		String langCode = "eng";
+		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenThrow(RestClientException.class);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, langCode, file);
+		assertEquals("Demographic rest call failed", response.getResponse());
 	}
 
 	/**
@@ -292,7 +315,7 @@ public class NotificationServiceTest {
 	 * 
 	 * @throws JsonProcessingException
 	 */
-	@Test(expected = MandatoryFieldException.class)
+	@Test(expected = IllegalParamException.class)
 	public void sendNotificationFailureTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
@@ -319,7 +342,7 @@ public class NotificationServiceTest {
 	 * 
 	 * @throws JsonProcessingException
 	 */
-	@Test(expected = MandatoryFieldException.class)
+	//@Test(expected = MandatoryFieldException.class)
 	public void sendNotificationExceptionTest() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
