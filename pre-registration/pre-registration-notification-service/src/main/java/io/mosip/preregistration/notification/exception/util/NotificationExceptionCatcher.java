@@ -4,6 +4,9 @@
  */
 package io.mosip.preregistration.notification.exception.util;
 
+
+import java.text.ParseException;
+
 import org.springframework.web.client.HttpServerErrorException;
 
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
@@ -42,19 +45,19 @@ public class NotificationExceptionCatcher {
 	public void handle(Exception ex,MainResponseDTO<?> mainResponseDto) {
 		if (ex instanceof MandatoryFieldException) {
 			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_001.getCode(),
-					ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode(),mainResponseDto);
+					ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getMessage(),mainResponseDto);
 		}else if (ex instanceof IOException||ex instanceof java.io.IOException) {
 			throw new IOException(ErrorCodes.PRG_PAM_ACK_005.getCode(), 
-					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getCode(),mainResponseDto);
+					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getMessage(),mainResponseDto);
 		}else if (ex instanceof NullPointerException) {
 			throw new IllegalParamException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
-					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getCode(), ex.getCause(),mainResponseDto);
+					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getMessage(), ex.getCause(),mainResponseDto);
 		}
 		else if (ex instanceof HttpServerErrorException) {
 			throw new NotificationSeriveException();
 		}
 		else if (ex instanceof JsonParseException) {
-			throw new JsonValidationException(ErrorCodes.PRG_PAM_ACK_004.getCode(), ErrorMessages.JSON_PARSING_FAILED.getCode(),
+			throw new JsonValidationException(ErrorCodes.PRG_PAM_ACK_004.getCode(), ErrorMessages.JSON_PARSING_FAILED.getMessage(),
 					ex.getCause(),mainResponseDto);
 		} else if (ex instanceof InvalidRequestParameterException) {
 			throw new InvalidRequestParameterException(((InvalidRequestParameterException) ex).getErrorCode(),
@@ -68,6 +71,7 @@ public class NotificationExceptionCatcher {
 			throw new NotificationSeriveException(((NotificationSeriveException) ex).getValidationErrorList(),((NotificationSeriveException) ex).getMainResposneDTO());
 		
 		}
+
 		else if (ex instanceof RestCallException) {
 			throw new RestCallException(((RestCallException) ex).getErrorCode(),((RestCallException) ex).getErrorText(),((RestCallException) ex).getMainresponseDTO());
 		
@@ -79,6 +83,10 @@ public class NotificationExceptionCatcher {
 		else if (ex instanceof DemographicDetailsNotFoundException) {
 			throw new DemographicDetailsNotFoundException(((DemographicDetailsNotFoundException) ex).getErrorList(),((DemographicDetailsNotFoundException) ex).getMainResponseDTO());
 		
+		}
+		else if (ex instanceof ParseException) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_ACK_013.getCode(), ErrorMessages.INVALID_REQUESTTIME_FORMAT.getMessage(), mainResponseDto);
+
 		}
 	}
 

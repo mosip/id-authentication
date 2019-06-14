@@ -163,6 +163,8 @@ public class NotificationService {
 		ResponseDTO notificationResponse = new ResponseDTO();
 		log.info("sessionId", "idType", "id", "In notification service of sendNotification ");
 		requiredRequestMap.put("id", Id);
+		response.setId(Id);
+		response.setVersion(version);
 		String resp = null;
 		boolean isSuccess = false;
 		try {
@@ -182,7 +184,7 @@ public class NotificationService {
 					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty()||ValidationUtil.emailValidator(notificationDto.getEmailID()))
 							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty()||ValidationUtil.phoneValidator(notificationDto.getMobNum()))) {
 						throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_001.getCode(),
-								ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getCode(), response);
+								ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getMessage(), response);
 					}
 					notificationResponse.setMessage(RequestCodes.MESSAGE.getCode());
 				} else {
@@ -296,11 +298,11 @@ public class NotificationService {
 		if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
 			if (!bookingDTO.getSlotFromTime().equals(dto.getAppointmentTime())) {
 				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_010.getCode(),
-						ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getCode(), response);
+						ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getMessage(), response);
 			}
 		} else {
 			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_009.getCode(),
-					ErrorMessages.APPOINTMENT_DATE_NOT_CORRECT.getCode(), response);
+					ErrorMessages.APPOINTMENT_DATE_NOT_CORRECT.getMessage(), response);
 		}
 	}
 
@@ -311,6 +313,7 @@ public class NotificationService {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
+
 	public void getDemographicDetails(NotificationDTO notificationDto) throws IOException, ParseException {
 		try {
 			String url = demographicResourceUrl + "/" + "applications" + "/" + notificationDto.getPreRegistrationId();
@@ -336,14 +339,15 @@ public class NotificationService {
 			}
 			if (!notificationDto.getName().equals(responseNode.get(fullName).get(0).get("value").asText())) {
 				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_008.getCode(),
-						ErrorMessages.FULL_NAME_VALIDATION_EXCEPTION.getCode(), response);
+						ErrorMessages.FULL_NAME_VALIDATION_EXCEPTION.getMessage(), response);
 			}
 		} catch (RestClientException  ex) {
 
 			log.error("sessionId", "idType", "id",
 					"In getDemographicDetails method of notification service - " + ex.getMessage());
 			throw new RestCallException(ErrorCodes.PRG_PAM_ACK_011.getCode(),
-					ErrorMessages.DEMOGRAPHIC_CALL_FAILED.getCode());
+					ErrorMessages.DEMOGRAPHIC_CALL_FAILED.getMessage());
+
 		}
 	}
 
@@ -379,7 +383,7 @@ public class NotificationService {
 			log.error("sessionId", "idType", "id",
 					"In getAppointmentDetailsRestService method of notification service - " + ex.getMessage());
 			throw new RestCallException(ErrorCodes.PRG_PAM_ACK_012.getCode(),
-					ErrorMessages.BOOKING_CALL_FAILED.getCode());
+					ErrorMessages.BOOKING_CALL_FAILED.getMessage());
 		}
 		return bookingRegistrationDTO;
 	}

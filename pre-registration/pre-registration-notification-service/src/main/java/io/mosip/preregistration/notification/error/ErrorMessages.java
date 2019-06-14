@@ -53,6 +53,7 @@ public enum ErrorMessages {
 	 * ErrorMessage for PRG_PAM_ACK_010
 	 */
 	APPOINTMENT_TIME_NOT_CORRECT("Appointment time is not valid"),
+
 	
 	/**
 	 * ErrorMessage for PRG_PAM_ACK_011
@@ -63,18 +64,26 @@ public enum ErrorMessages {
 	 * ErrorMessage for PRG_PAM_ACK_012
 	 * 
 	 */
-	BOOKING_CALL_FAILED("Booking rest call failed");
+	BOOKING_CALL_FAILED("Booking rest call failed"),
 	
-	private ErrorMessages(String code) {
-		this.code = code;
+	
+	/**
+	 * ErrorMessage for PRG_PAM_ACK_011
+	 * @param code
+	 */
+	INVALID_REQUESTTIME_FORMAT("Invalid requesttime format");
+
+	private ErrorMessages(String message) {
+		this.message = message;
+
 	}
 
-	private final String code;
+	private final String message;
 
 	/**
 	 * @return the code
 	 */
-	public String getCode() {
-		return code;
+	public String getMessage() {
+		return message;
 	}
 }

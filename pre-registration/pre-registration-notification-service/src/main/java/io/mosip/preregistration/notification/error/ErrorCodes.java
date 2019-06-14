@@ -58,7 +58,12 @@ public enum ErrorCodes {
 	 * BOOKING_CALL_FAILED
 	 * 
 	 */
-	PRG_PAM_ACK_012("PRG_PAM_ACK_012");
+	PRG_PAM_ACK_012("PRG_PAM_ACK_012"),
+/**
+	 * REQUESTTIME PARSING FAILED
+	 */
+	PRG_PAM_ACK_013("PRG_PAM_ACK_013");
+
 	/**
 	 * @param code
 	 */
