@@ -413,7 +413,7 @@ public class BookingService {
 			} finally {
 				if (isSaveSuccess) {
 					setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(),
-							EventType.BUSINESS.toString(), " Appointment booked successfully",
+							EventType.BUSINESS.toString(), "Appointment booked successfully",
 							AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
 							authUserDetails().getUsername(), bookingRequestDTOs.getRequest().getRegistrationCenterId());
 				} else {

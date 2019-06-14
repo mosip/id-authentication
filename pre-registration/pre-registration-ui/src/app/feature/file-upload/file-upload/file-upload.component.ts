@@ -138,10 +138,7 @@ export class FileUploadComponent implements OnInit {
     if (this.registration.getUsers().length > 0) {
       this.users[0] = JSON.parse(JSON.stringify(this.registration.getUser(this.registration.getUsers().length - 1)));
       this.activeUsers = JSON.parse(JSON.stringify(this.registration.getUsers()));
-      console.log('active users', this.activeUsers);
     }
-
-    console.log('users', this.users);
   }
 
   /**
@@ -152,7 +149,6 @@ export class FileUploadComponent implements OnInit {
   private setNoneApplicant() {
     let i: number = 0;
     const temp = JSON.parse(JSON.stringify(this.allApplicants.push(this.noneApplicant)));
-    console.log('temp applicants in setNone', temp);
 
     let noneCount: Boolean = this.isNoneAvailable();
     for (let applicant of this.allApplicants) {
@@ -254,7 +250,6 @@ export class FileUploadComponent implements OnInit {
     let allApplicants: any[] = [];
 
     allApplicants = JSON.parse(JSON.stringify(applicants));
-    console.log('allApplicants', allApplicants);
 
     for (let applicant of allApplicants) {
       for (let name of applicant) {
@@ -265,8 +260,6 @@ export class FileUploadComponent implements OnInit {
       }
       i++;
     }
-
-    console.log('allapplicants from local getapplicants name', allApplicants);
 
     return JSON.parse(JSON.stringify(allApplicants));
   }
@@ -402,16 +395,14 @@ export class FileUploadComponent implements OnInit {
    */
   setApplicants() {
     this.applicants = JSON.parse(JSON.stringify(this.bookingService.getAllApplicants()));
-    console.log('applicants from booking service', this.applicants);
 
     this.removeApplicantsWithoutPOA();
 
     this.updateApplicants();
     this.allApplicants = this.getApplicantsName(this.applicants);
     const temp = JSON.parse(JSON.stringify(this.allApplicants));
-    console.log('applicants before settign none', temp);
+
     this.setNoneApplicant();
-    console.log('applicants after settign none', this.allApplicants);
   }
 
   removeApplicantsWithoutPOA() {
@@ -423,6 +414,16 @@ export class FileUploadComponent implements OnInit {
       }
       i++;
     }
+    // for (let applicant of this.activeUsers) {
+    //   if (applicant.files) {
+    //     for (let file of applicant.files.documentsMetaData) {
+    //       if (file.docCatCode === 'POA') {
+    //         tempApplicants.push(this.applicants[i]);
+    //       }
+    //     }
+    //   }
+    //   i++;
+    // }
     this.applicants = JSON.parse(JSON.stringify(tempApplicants));
   }
 
@@ -438,7 +439,6 @@ export class FileUploadComponent implements OnInit {
       }
       if (flag) {
         this.activeUsers.splice(x, 1);
-        console.log('active users from update applicants', JSON.parse(JSON.stringify(this.activeUsers)));
       }
       x++;
     }
@@ -452,7 +452,6 @@ export class FileUploadComponent implements OnInit {
         fullName: [fullName]
       }
     };
-    console.log('active users before adding to local', JSON.parse(JSON.stringify(this.activeUsers)));
     let activeUsers: any[] = [];
     for (let i of this.activeUsers) {
       fullName = {
@@ -465,16 +464,20 @@ export class FileUploadComponent implements OnInit {
           fullName: [fullName]
         }
       };
-      user.preRegistrationId = i.preRegId;
-      user.demographicMetadata.fullName = i.request.demographicDetails.identity.fullName;
-      activeUsers.push(JSON.parse(JSON.stringify(user)));
+      if (i.files) {
+        for (let file of i.files.documentsMetaData) {
+          if (file.docCatCode === 'POA') {
+            user.preRegistrationId = i.preRegId;
+            user.demographicMetadata.fullName = i.request.demographicDetails.identity.fullName;
+            activeUsers.push(JSON.parse(JSON.stringify(user)));
+          }
+        }
+      }
     }
-    console.log('local active users', activeUsers);
 
     for (let i of activeUsers) {
       this.applicants.push(i);
     }
-    console.log('applicants from update applicants', this.allApplicants);
   }
 
   /**
