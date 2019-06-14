@@ -16,7 +16,6 @@ import * as appConstants from '../../app.constants';
 })
 export class LoginComponent implements OnInit {
   languages: string[] = [];
-
   inputPlaceholderContact = 'Email ID or Phone Number';
   inputPlaceholderOTP = 'Enter OTP';
   disableBtn = false;
