@@ -120,10 +120,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	@Resource
 	private List<String> allowedBioAttributes;
 
-	// /** The shard resolver. */
-	// @Autowired
-	// private ShardResolver shardResolver;
-
 	/** The uin repo. */
 	@Autowired
 	private UinRepo uinRepo;
@@ -209,8 +205,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinHash = modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
-		return uinHash;
+		return modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 	}
 
 	private IdResponseDTO retrieveIdentityByUinHash(String type, String uinHash) throws IdRepoAppException {
@@ -253,14 +248,28 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	@Override
 	public IdResponseDTO retrieveIdentityByRid(String rid, String type) throws IdRepoAppException {
-		String uinHash = uinRepo.getUinHashByRid(rid);
-		if (Objects.isNull(uinHash)) {
-			uinHash = uinHistoryRepo.getUinHashByRid(rid);
-		}
-		if (Objects.nonNull(uinHash)) {
-			return retrieveIdentityByUinHash(type, uinHash);
-		} else {
-			throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
+		try {
+			String uinHash = uinRepo.getUinHashByRid(rid);
+			if (Objects.isNull(uinHash)) {
+				uinHash = uinHistoryRepo.getUinHashByRid(rid);
+			}
+			if (Objects.nonNull(uinHash)) {
+				return retrieveIdentityByUinHash(type, uinHash);
+			} else {
+				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
+			}
+		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
+		} catch (IdRepoAppException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} catch (IdRepoAppUncheckedException e) {
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
+		} finally {
+			auditHelper.audit(AuditModules.RETRIEVE_IDENTITY, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE, rid,
+					"Retrieve Identity requested");
 		}
 	}
 
@@ -390,7 +399,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		try {
 			String uinHash = retrieveUinHash(uin);
 			if (uinRepo.existsByUinHash(uinHash)) {
-				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())) {
+				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())
+						|| uinHistoryRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);

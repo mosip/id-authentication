@@ -168,18 +168,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		continueBtn.setDisable(true);
 
 		setExceptionImage();
-		fingerExceptionListener(rightLittle);
-		fingerExceptionListener(rightRing);
-		fingerExceptionListener(rightMiddle);
-		fingerExceptionListener(rightIndex);
-		fingerExceptionListener(rightThumb);
-		fingerExceptionListener(leftLittle);
-		fingerExceptionListener(leftRing);
-		fingerExceptionListener(leftMiddle);
-		fingerExceptionListener(leftIndex);
-		fingerExceptionListener(leftThumb);
-		irisExceptionListener(leftEye);
-		irisExceptionListener(rightEye);
+		fingerException();
+		irisException();
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			employeeName.setText(SessionContext.userContext().getName());
 			regCenterID
@@ -247,10 +237,10 @@ public class BiometricExceptionController extends BaseController implements Init
 		EventHandler<Event> mouseClick = event -> {
 			if (event.getSource() instanceof GridPane) {
 				GridPane sourcePane = (GridPane) event.getSource();
-				if(sourcePane.getStyleClass().contains("bioIris")) {
-					sourcePane.getStyleClass().remove("bioIris");
+				if(sourcePane.getStyleClass().contains(RegistrationConstants.BIO_IRIS_SELECTED)) {
+					sourcePane.getStyleClass().remove(RegistrationConstants.BIO_IRIS_SELECTED);
 				}else {
-					sourcePane.getStyleClass().add("bioIris");
+					sourcePane.getStyleClass().add(RegistrationConstants.BIO_IRIS_SELECTED);
 				}
 			}
 		};
@@ -258,6 +248,30 @@ public class BiometricExceptionController extends BaseController implements Init
 		leftEyePaneHolder.setOnMouseClicked(mouseClick);
 	}
 
+	private void irisException() {
+		irisExceptionListener(leftEye);
+		irisExceptionListener(rightEye);
+	}
+
+	public void fingerException() {
+		fingerExceptionListener(rightLittle);
+		fingerExceptionListener(rightRing);
+		fingerExceptionListener(rightMiddle);
+		fingerExceptionListener(rightIndex);
+		fingerExceptionListener(rightThumb);
+		fingerExceptionListener(leftLittle);
+		fingerExceptionListener(leftRing);
+		fingerExceptionListener(leftMiddle);
+		fingerExceptionListener(leftIndex);
+		fingerExceptionListener(leftThumb);
+	}
+
+	public void clearIrisException() {
+		irisException();
+		rightEyePaneHolder.getStyleClass().clear();
+		leftEyePaneHolder.getStyleClass().clear();
+	}
+	
 	/**
 	 * This method is used to capture the finger click from the UI
 	 * 
@@ -425,7 +439,7 @@ public class BiometricExceptionController extends BaseController implements Init
 					|| (boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {
 				((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
 						.getOperatorBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);
-			} else if (getRegistrationDTOFromSession().isUpdateUINChild()
+			} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
 					|| (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)) {
 				((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA)).getBiometricDTO()
 						.getIntroducerBiometricDTO().setBiometricExceptionDTO(biometricExceptionList);

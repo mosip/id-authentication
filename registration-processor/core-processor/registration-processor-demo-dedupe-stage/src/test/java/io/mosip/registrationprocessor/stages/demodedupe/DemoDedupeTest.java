@@ -21,11 +21,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.core.env.Environment;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
@@ -57,7 +57,7 @@ public class DemoDedupeTest {
 
 	/** The filesystem adapter impl. */
 	@Mock
-	FileSystemAdapter filesystemAdapterImpl;
+	PacketManager filesystemAdapterImpl;
 
 	/** The registration status service. */
 	@Mock
@@ -104,8 +104,8 @@ public class DemoDedupeTest {
 		iris.add("LEFTEYE");
 		iris.add("RIGHTEYE");
 		Mockito.when(env.getProperty("fingerType")).thenReturn("LeftThumb");
-		//Mockito.when(packetInfoManager.getApplicantFingerPrintImageNameById(anyString())).thenReturn(fingers);
-		//Mockito.when(packetInfoManager.getApplicantIrisImageNameById(anyString())).thenReturn(iris);
+		// Mockito.when(packetInfoManager.getApplicantFingerPrintImageNameById(anyString())).thenReturn(fingers);
+		// Mockito.when(packetInfoManager.getApplicantIrisImageNameById(anyString())).thenReturn(iris);
 
 		Mockito.when(filesystemAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 		Mockito.when(filesystemAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
@@ -115,9 +115,9 @@ public class DemoDedupeTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
-		//authResponseDTO.setStatus("y");
+		// authResponseDTO.setStatus("y");
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
-		.thenReturn(authResponseDTO);
+				.thenReturn(authResponseDTO);
 	}
 
 	/**
@@ -135,8 +135,7 @@ public class DemoDedupeTest {
 
 		Mockito.when(packetInfoDao.findDemoById(regId)).thenReturn(Dtos);
 
-		Mockito.when(packetInfoDao.getAllDemographicInfoDtos(any(),any(),any(),any())).thenReturn(Dtos);
-
+		Mockito.when(packetInfoDao.getAllDemographicInfoDtos(any(), any(), any(), any())).thenReturn(Dtos);
 
 		List<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals("Test for Dedupe Duplicate found", false, duplicates.isEmpty());
@@ -156,6 +155,5 @@ public class DemoDedupeTest {
 		List<DemographicInfoDto> duplicates = demoDedupe.performDedupe(regId);
 		assertEquals("Test for Demo Dedupe Empty", true, duplicates.isEmpty());
 	}
-
 
 }

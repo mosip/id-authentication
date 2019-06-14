@@ -35,17 +35,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -76,7 +77,7 @@ public class MessageNotificationServiceImplTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The template generator. */
 	@Mock
@@ -245,10 +246,12 @@ public class MessageNotificationServiceImplTest {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testSendSmsNotificationSuccess() throws ApisResourceAccessException, IOException {
+	public void testSendSmsNotificationSuccess() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		ResponseWrapper<SmsResponseDto> wrapper = new ResponseWrapper<>();
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
@@ -267,7 +270,7 @@ public class MessageNotificationServiceImplTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testUINTypeMessage() throws ApisResourceAccessException, IOException {
+	public void testUINTypeMessage() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		ResponseWrapper<SmsResponseDto> wrapper = new ResponseWrapper<>();
 		smsResponseDto = new SmsResponseDto();
 		smsResponseDto.setMessage("Success");
@@ -320,9 +323,11 @@ public class MessageNotificationServiceImplTest {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test(expected = PhoneNumberNotFoundException.class)
-	public void testPhoneNumberNotFoundException() throws ApisResourceAccessException, IOException {
+	public void testPhoneNumberNotFoundException() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File demographicJsonFile = new File(classLoader.getResource("ID2.json").getFile());
 		InputStream inputStream = new FileInputStream(demographicJsonFile);
@@ -357,9 +362,11 @@ public class MessageNotificationServiceImplTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 */
 	@Test(expected = TemplateGenerationFailedException.class)
-	public void testTemplateGenerationFailedException() throws IOException, ApisResourceAccessException {
+	public void testTemplateGenerationFailedException() throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		Mockito.when(templateGenerator.getTemplate("RPR_UIN_GEN_SMS", attributes, "eng"))
 				.thenThrow(new TemplateNotFoundException());
 

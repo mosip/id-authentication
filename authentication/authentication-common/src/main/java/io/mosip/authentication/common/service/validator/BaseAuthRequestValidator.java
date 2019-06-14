@@ -48,13 +48,11 @@ import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchType.Category;
-import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
@@ -223,7 +221,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthCommonConstants.VALIDATE, "missing biometric request");
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
 						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorCode(),
-						new Object[] {Category.BIO.getType()},
+						new Object[] { Category.BIO.getType() },
 						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
 
@@ -291,7 +289,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
 			} else if (!allowedAvailableAuthTypes.contains(bioType)) {
 				errors.rejectValue(IdAuthCommonConstants.REQUEST,
-						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(), new Object[] {MatchType.Category.BIO.getType() +"-"+bioType },
+						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
+						new Object[] { MatchType.Category.BIO.getType() + "-" + bioType },
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 			} else {
 				validateBioType(errors, allowedAuthTypesFromConfig, bioInfo);
@@ -397,8 +396,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	private boolean hasDuplicate(Map<String, Long> countsMap, int maxCount) {
-		return countsMap.entrySet().stream().anyMatch(
-				entry -> (entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO) && entry.getValue() > maxCount)
+		return countsMap.entrySet().stream()
+				.anyMatch(entry -> (entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO)
+						&& entry.getValue() > maxCount)
 						|| (!entry.getKey().equalsIgnoreCase(IdAuthCommonConstants.UNKNOWN_BIO)
 								&& entry.getValue() > 1));
 	}
@@ -615,10 +615,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 */
 	private void checkOtherValues(AuthRequestDTO authRequest, Errors errors, Set<String> availableAuthTypeInfos) {
 
-		if (isMatchtypeEnabled(DemoMatchType.DOB)) {
-			checkDOB(authRequest, errors);
-		}
-
 		if (isMatchtypeEnabled(DemoMatchType.DOBTYPE)) {
 			checkDOBType(authRequest, errors);
 		}
@@ -642,27 +638,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validatePattern(AuthRequestDTO authRequest, Errors errors) {
 
 		try {
-			Map<String, Map<String, String>> identityMap = new HashMap<>();
-			Map<String, String> valueMap = new HashMap<>();
-			IdentityDTO demographics = authRequest.getRequest().getDemographics();
-			String phoneNumber = demographics.getPhoneNumber();
-			String emailId = demographics.getEmailId();
-			String pinCode = demographics.getPostalCode();
-			if (phoneNumber != null && !phoneNumber.isEmpty()) {
-				List<String> phonekey = getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE);
-				valueMap.put(phonekey.get(0), phoneNumber);
-			}
-
-			if (emailId != null && !emailId.isEmpty()) {
-				List<String> emailkey = getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL);
-				valueMap.put(emailkey.get(0), emailId);
-			}
-
-			if (pinCode != null && !pinCode.isEmpty()) {
-				List<String> pincodekey = getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE);
-				valueMap.put(pincodekey.get(0), pinCode);
-			}
-			identityMap.put(IDENTITY, valueMap);
+			Map<String, Map<String, String>> identityMap = getOtherValues(authRequest);
 			idObjectValidator.validateIdObject(identityMap, null);
 		} catch (IdObjectValidationFailedException | IdObjectIOException | IdAuthenticationBusinessException e) {
 			if (e instanceof IdObjectValidationFailedException) {
@@ -676,6 +652,38 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			}
 		}
 
+	}
+
+	private Map<String, Map<String, String>> getOtherValues(AuthRequestDTO authRequest)
+			throws IdAuthenticationBusinessException {
+		Map<String, Map<String, String>> identityMap = new HashMap<>();
+		Map<String, String> valueMap = new HashMap<>();
+		IdentityDTO demographics = authRequest.getRequest().getDemographics();
+		String dob = demographics.getDob();
+		String phoneNumber = demographics.getPhoneNumber();
+		String emailId = demographics.getEmailId();
+		String pinCode = demographics.getPostalCode();
+		if (dob != null && !dob.isEmpty()) {
+			List<String> dobkey = getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB);
+			valueMap.put(dobkey.get(0), dob);
+		}
+
+		if (phoneNumber != null && !phoneNumber.isEmpty()) {
+			List<String> phonekey = getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE);
+			valueMap.put(phonekey.get(0), phoneNumber);
+		}
+
+		if (emailId != null && !emailId.isEmpty()) {
+			List<String> emailkey = getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL);
+			valueMap.put(emailkey.get(0), emailId);
+		}
+
+		if (pinCode != null && !pinCode.isEmpty()) {
+			List<String> pincodekey = getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE);
+			valueMap.put(pincodekey.get(0), pinCode);
+		}
+		identityMap.put(IDENTITY, valueMap);
+		return identityMap;
 	}
 
 	private List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
@@ -802,34 +810,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Check DOB.
-	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
-	 */
-	private void checkDOB(AuthRequestDTO authRequest, Errors errors) {
-		List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoList(authRequest.getRequest());
-		if (dobList != null) {
-			for (IdentityInfoDTO identityInfoDTO : dobList) {
-				try {
-					DateUtils.parseToDate(identityInfoDTO.getValue(),
-							env.getProperty(IdAuthConfigKeyConstants.DOB_REQ_DATE_PATTERN));
-				} catch (ParseException e) {
-					// FIXME change to DOB - Invalid -DOB - Please enter DOB in specified date
-					// format or Age in the acceptable range
-
-					mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
-							IdAuthCommonConstants.VALIDATE, "Demographic data – DOB(pi) did not match");
-					errors.rejectValue(IdAuthCommonConstants.REQUEST,
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							new Object[] { "dob" },
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-				}
-			}
-		}
-	}
-
-	/**
 	 * Check langauge details.
 	 *
 	 * @param demoMatchType the demo match type
@@ -918,7 +898,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 		if (authTypeDTO.isBio()) {
 			if (allowedAuthType.contains(MatchType.Category.BIO.getType())) {
-				  validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
+				validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
 			} else {
 				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
@@ -1008,7 +988,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		}
 
 	}
-	
+
 	protected int getMaxIrisCount() {
 		return IRIS_COUNT;
 	}

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doThrow;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -26,10 +27,10 @@ public class FileNotFoundInSourceExceptionTest {
 		String fileName = "sample.zip";
 		FileNotFoundInSourceException ex = new FileNotFoundInSourceException(
 				PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getMessage());
-		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC,
-				fileName);
+		doThrow(ex).when(fileManager).cleanUpFile(Mockito.any(), Mockito.any(),
+				Mockito.any());
 		try {
-			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileName);
+			fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileName);
 			fail();
 		} catch (FileNotFoundInSourceException e) {
 			assertThat("Should throw File Not Found In Source Exception with correct error codes", e.getErrorCode()

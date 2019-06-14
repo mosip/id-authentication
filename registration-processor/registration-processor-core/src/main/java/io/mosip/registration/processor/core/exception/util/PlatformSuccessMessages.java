@@ -6,16 +6,17 @@ package io.mosip.registration.processor.core.exception.util;
  * 
  */
 public enum PlatformSuccessMessages {
-	
-	//Packet Receiver Success messages.
-	
+
+	// Packet Receiver Success messages.
+
 	/** The rpr pkr packet receiver. */
-	RPR_PKR_PACKET_RECEIVER(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "000", "Packet received and uploaded to landing zone"),
+	RPR_PKR_PACKET_RECEIVER(PlatformConstants.RPR_PACKET_RECEIVER_MODULE + "000",
+			"Packet received and uploaded to landing zone"),
 
 	// Packet Validator Success messages
 	/** The rpr pkr packet validate. */
 	RPR_PKR_PACKET_VALIDATE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "000", "Packet Validation Success"),
-	
+
 	// OSI validator Success messages
 	/** The rpr pkr osi validate. */
 	RPR_PKR_OSI_VALIDATE(PlatformConstants.RPR_OSI_VALIDATOR_MODULE + "000", "OSI Validation Success"),
@@ -26,7 +27,7 @@ public enum PlatformSuccessMessages {
 
 	RPR_PKR_DEMO_DE_DUP_POTENTIAL_DUPLICATION_FOUND(PlatformConstants.RPR_DEMO_DEDUPE_MODULE + "000",
 			"Potential duplicate packet found for registration id : "),
-	
+
 	// Biometric Authentication Success Messages
 	RPR_PKR_BIOMETRIC_AUTHENTICATION(PlatformConstants.RPR_BIOMETRIC_AUTHENTICATION_MODULE + "000",
 			"Biometric Authentication Success"),
@@ -40,6 +41,8 @@ public enum PlatformSuccessMessages {
 			"Potential match found while processing bio dedupe"),
 
 	RPR_RE_PROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "000", "Reprocessor Success"),
+
+	RPR_RE_PROCESS_FAILED(PlatformConstants.RPR_REPROCESSOR_STAGE + "002", "Reprocessor FAILED"),
 
 	RPR_SENT_TO_REPROCESS_SUCCESS(PlatformConstants.RPR_REPROCESSOR_STAGE + "001", "sent to reprocess Success"),
 

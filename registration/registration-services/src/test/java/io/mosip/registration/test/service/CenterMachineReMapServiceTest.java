@@ -186,5 +186,10 @@ public class CenterMachineReMapServiceTest {
 		centerMachineReMapServiceImpl.handleReMapProcess(3);
 
 	}
+	@Test
+	public void startRemapProcessTest()
+	{
+		centerMachineReMapServiceImpl.startRemapProcess();
+	}
 
 }

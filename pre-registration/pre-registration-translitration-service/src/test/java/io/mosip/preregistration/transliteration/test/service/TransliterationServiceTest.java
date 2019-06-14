@@ -26,7 +26,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.jsonvalidator.spi.JsonValidator;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -58,9 +57,6 @@ public class TransliterationServiceTest {
 	
 	@Autowired
 	private TransliterationService transliterationServiceImpl;
-	
-	@MockBean
-	private JsonValidator jsonValidatorImpl;
 	
 	private LanguageIdEntity idEntity;
 	

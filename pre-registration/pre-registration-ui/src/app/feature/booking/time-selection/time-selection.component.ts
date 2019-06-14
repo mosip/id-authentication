@@ -32,7 +32,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   deletedNames = [];
   availabilityData = [];
   days: number;
-  enableBookButton = false;
+  disableAddButton = false;
   activeTab = 'morning';
   bookingDataList = [];
   temp: NameList[];
@@ -101,22 +101,35 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   dateSelected(index: number) {
     this.selectedTile = index;
     this.placeNamesInSlots();
-    this.enableBookButton = true;
+    this.cardSelected(0);
   }
 
   cardSelected(index: number): void {
     this.selectedCard = index;
+    this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]);
   }
 
   itemDelete(index: number): void {
     this.deletedNames.push(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names[index]);
     this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
-    this.enableBookButton = false;
+    this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]);
   }
 
   addItem(index: number): void {
-    this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(this.deletedNames[index]);
-    this.deletedNames.splice(index, 1);
+    if (this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard])) {
+      this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(this.deletedNames[index]);
+      this.deletedNames.splice(index, 1);
+    }
+  }
+
+  canAddApplicant(slot: any): boolean {
+    if (slot.availability > slot.names.length) {
+      this.disableAddButton = false;
+      return true;
+    } else {
+      this.disableAddButton = true;
+      return false;
+    }
   }
 
   formatJson(centerDetails: any) {
