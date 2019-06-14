@@ -44,8 +44,7 @@ public class NotificationExceptionCatcher {
 	 */
 	public void handle(Exception ex,MainResponseDTO<?> mainResponseDto) {
 		if (ex instanceof MandatoryFieldException) {
-			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_001.getCode(),
-					ErrorMessages.MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED.getMessage(),mainResponseDto);
+			throw new MandatoryFieldException(((MandatoryFieldException) ex).getErrorCode(),((MandatoryFieldException) ex).getErrorText(),mainResponseDto);
 		}else if (ex instanceof IOException||ex instanceof java.io.IOException) {
 			throw new IOException(ErrorCodes.PRG_PAM_ACK_005.getCode(), 
 					ErrorMessages.INPUT_OUTPUT_EXCEPTION.getMessage(),mainResponseDto);

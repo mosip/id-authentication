@@ -326,7 +326,7 @@ public class NotificationService {
 					new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
 					});
 			if (responseEntity.getBody().getErrors() != null) {
-				throw new DemographicDetailsNotFoundException(responseEntity.getBody().getErrors(), null);
+				throw new DemographicDetailsNotFoundException(responseEntity.getBody().getErrors(), response);
 			}
 			JsonNode responseNode = mapper
 					.readTree(responseEntity.getBody().getResponse().getDemographicDetails().toJSONString());
@@ -376,7 +376,7 @@ public class NotificationService {
 					new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
 					}, params);
 			if (respEntity.getBody().getErrors() != null) {
-				throw new BookingDetailsNotFoundException(respEntity.getBody().getErrors(), null);
+				throw new BookingDetailsNotFoundException(respEntity.getBody().getErrors(), response);
 			}
 			bookingRegistrationDTO = respEntity.getBody().getResponse();
 		} catch (RestClientException ex) {
