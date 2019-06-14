@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.reprocessor.stage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
@@ -64,21 +65,21 @@ public class ReprocessorStageTest {
 
 	@Before
 	public void setup() throws Exception {
-		 ReflectionTestUtils.setField(reprocessorStage, "fetchSize", 2);
-         ReflectionTestUtils.setField(reprocessorStage, "elapseTime", 21600);
-         ReflectionTestUtils.setField(reprocessorStage, "reprocessCount", 3);
-         Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
-         auditLog.setAccessible(true);
-         @SuppressWarnings("unchecked")
-         RegistrationProcessorRestClientService<Object> mockObj = Mockito
-                                     .mock(RegistrationProcessorRestClientService.class);
-         auditLog.set(auditLogRequestBuilder, mockObj);
-         AuditResponseDto auditResponseDto = new AuditResponseDto();
-         ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
-         responseWrapper.setResponse(auditResponseDto);
-         Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
-                                      "test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-                                      EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
+		ReflectionTestUtils.setField(reprocessorStage, "fetchSize", 2);
+		ReflectionTestUtils.setField(reprocessorStage, "elapseTime", 21600);
+		ReflectionTestUtils.setField(reprocessorStage, "reprocessCount", 3);
+		Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
+		auditLog.setAccessible(true);
+		@SuppressWarnings("unchecked")
+		RegistrationProcessorRestClientService<Object> mockObj = Mockito
+				.mock(RegistrationProcessorRestClientService.class);
+		auditLog.set(auditLogRequestBuilder, mockObj);
+		AuditResponseDto auditResponseDto = new AuditResponseDto();
+		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(auditResponseDto);
+		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
+				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
+				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class ReprocessorStageTest {
 
 		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
 		registrationStatusDto.setRegistrationStageName("PacketValidatorStage");
-	
+
 		registrationStatusDto.setRegistrationType("NEW");
 		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 		dtolist.add(registrationStatusDto);
@@ -107,6 +108,34 @@ public class ReprocessorStageTest {
 				.thenReturn(dtolist);
 		dto = reprocessorStage.process(dto);
 		assertTrue(dto.getIsValid());
+	}
+
+	@Test
+	public void testProcessFailure() {
+
+		List<InternalRegistrationStatusDto> dtolist = new ArrayList<>();
+		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+
+		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
+		registrationStatusDto.setRegistrationStageName("PacketValidatorStage");
+
+		registrationStatusDto.setRegistrationType("NEW");
+		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+		dtolist.add(registrationStatusDto);
+		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
+
+		registrationStatusDto1.setRegistrationId("2018701130000410092018110734");
+		registrationStatusDto1.setRegistrationStageName("PacketValidatorStage");
+		registrationStatusDto1.setReProcessRetryCount(3);
+		registrationStatusDto1.setRegistrationType("NEW");
+		registrationStatusDto1.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+		dtolist.add(registrationStatusDto1);
+		Mockito.when(registrationStatusService.getUnProcessedPacketsCount(anyLong(), anyInt(), anyList()))
+				.thenReturn(1);
+		Mockito.when(registrationStatusService.getUnProcessedPackets(anyInt(), anyLong(), anyInt(), anyList()))
+				.thenReturn(dtolist);
+		dto = reprocessorStage.process(dto);
+		assertFalse(dto.getIsValid());
 	}
 
 	/**

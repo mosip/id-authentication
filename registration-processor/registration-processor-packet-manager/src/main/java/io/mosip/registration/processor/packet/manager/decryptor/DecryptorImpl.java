@@ -140,7 +140,6 @@ public class DecryptorImpl implements Decryptor {
 				throw new PacketDecryptionFailureException(error.getErrorCode(), error.getMessage());
 			}
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(response.getResponse().getData());
-			FileUtils.writeByteArrayToFile( FileUtils.getFile("D://" + registrationId + ".zip"), decryptedPacket);
 			outstream = new ByteArrayInputStream(decryptedPacket);
 			isTransactionSuccessful = true;
 			description = DECRYPTION_SUCCESS + registrationId;

@@ -175,7 +175,7 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 			try {
 				validateRid(registrationId);
 			} catch (InvalidIDException e) {
-				mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateRegId",
+				mosipLogger.error(IdRepoLogger.getUin(), ID_REQUEST_VALIDATOR, "validateRegId",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				errors.rejectValue(REQUEST, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));

@@ -50,7 +50,7 @@ public class FileNotFoundInDestinationExceptionTest {
 				PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
 
 		try {
-			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileName);
+			fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileName);
 			fail();
 		} catch (FileNotFoundInDestinationException e) {
 			assertThat("Should throw File Not Found In Destination Exception with correct error codes", e.getErrorCode()

@@ -12,7 +12,6 @@
       <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
         <mat-form-field class="file-upload__input">
           <mat-select
-            #docCatSelect
             placeholder="{{ document.code }}"
             (selectionChange)="selectChange($event, i)"
             (openedChange)="openedChange($event, i)"

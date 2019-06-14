@@ -46,7 +46,7 @@ public class TimeoutExceptionTest {
 		Mockito.when(env.getProperty(any())).thenThrow(ex);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+			fileManager.put(fileName, file, DirectoryPathDto.ARCHIVE_LOCATION);
 			fail();
 		} catch (TimeoutException e) {
 			assertThat("Should throw  Timeout Exception with correct error codes",

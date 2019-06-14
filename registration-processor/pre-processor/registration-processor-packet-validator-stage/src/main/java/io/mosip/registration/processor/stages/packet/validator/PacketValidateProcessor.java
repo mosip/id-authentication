@@ -473,7 +473,7 @@ public class PacketValidateProcessor {
 
 	private boolean ifUinIDRepo(String uin) throws ApisResourceAccessException, IOException {
 		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) == null;
-			
+
 	}
 
 	private boolean validateRegIdAndTypeFromSyncTable(List<FieldValue> metadataList) {

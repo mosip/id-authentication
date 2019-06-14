@@ -25,9 +25,7 @@ export class FileUploadComponent implements OnInit {
   @ViewChild('fileUpload')
   fileInputVariable: ElementRef;
 
-  @ViewChild('docCatSelect')
   viewFileTrue = false;
-  docCatSelect: ElementRef;
   sortedUserFiles: any[] = [];
   applicantType: string;
   allowedFilesHtml: string = '';
@@ -49,6 +47,11 @@ export class FileUploadComponent implements OnInit {
   documentType: string;
   loginId: string;
   documentIndex: number;
+  selectedDocument: SelectedDocuments = {
+    docCatCode: '',
+    docTypeCode: ''
+  };
+  selectedDocuments: SelectedDocuments[] = [];
   LOD: DocumentCategory[];
   fileIndex: number = -1;
   fileUploadLanguagelabels: any;
@@ -144,8 +147,9 @@ export class FileUploadComponent implements OnInit {
     this.translate.use(localStorage.getItem('langCode'));
     this.isModify = localStorage.getItem('modifyDocument');
     if (this.registration.getUsers().length > 0) {
-      this.users[0] = this.registration.getUser(this.registration.getUsers().length - 1);
-      this.activeUsers = this.registration.getUsers();
+      this.users[0] = JSON.parse(JSON.stringify(this.registration.getUser(this.registration.getUsers().length - 1)));
+      this.activeUsers = JSON.parse(JSON.stringify(this.registration.getUsers()));
+      console.log('active users', this.activeUsers);
     }
   }
 
@@ -258,11 +262,11 @@ export class FileUploadComponent implements OnInit {
     let allApplicants: any[] = [];
     console.log('applicants', applicants);
 
-    allApplicants = applicants;
+    allApplicants = JSON.parse(JSON.stringify(applicants));
     for (let applicant of allApplicants) {
       for (let name of applicant.demographicMetadata) {
         if (name['fullName'].language != localStorage.getItem('langCode') && name.proofOfAddress == null) {
-          allApplicants[i].demographicMetadata.fullname.splice(j, 1);
+          allApplicants[i].demographicMetadata.fullName.splice(j, 1);
         } else {
         }
         j++;
@@ -401,12 +405,28 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   setApplicants() {
-    this.applicants = this.bookingService.getAllApplicants();
+    this.applicants = JSON.parse(JSON.stringify(this.bookingService.getAllApplicants()));
+    console.log('applicants before calling get applicants name', this.applicants);
+    this.removeApplicantsWithoutPOA();
+
     this.updateApplicants();
     this.allApplicants = this.getApplicantsName(this.applicants);
     console.log('all applicants', this.allApplicants);
 
     this.setNoneApplicant();
+  }
+
+  removeApplicantsWithoutPOA() {
+    let i = 0;
+    let tempApplicants = [];
+    for (let applicant of this.applicants) {
+      if (applicant.demographicMetadata['proofOfAddress'] != null) {
+        tempApplicants.push(this.applicants[i]);
+      }
+      i++;
+    }
+    this.applicants = JSON.parse(JSON.stringify(tempApplicants));
+    console.log('applicants without poa removed', this.applicants);
   }
 
   updateApplicants() {
@@ -431,13 +451,13 @@ export class FileUploadComponent implements OnInit {
     let user: Applicants = {
       preRegistrationId: '',
       demographicMetadata: {
-        fullname: [fullName]
+        fullName: [fullName]
       }
     };
     let activeUsers: any[] = [];
     for (let i of this.activeUsers) {
       user.preRegistrationId = i.preRegId;
-      user.demographicMetadata.fullname = i.request.demographicDetails.identity.fullName;
+      user.demographicMetadata.fullName = i.request.demographicDetails.identity.fullName;
       activeUsers.push(user);
     }
     for (let i of activeUsers) {
@@ -613,9 +633,36 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   selectChange(event, index: number) {
+    console.log('select change', event);
+    let found = false;
+    let i = -1;
     this.documentCategory = event.source.placeholder;
     this.documentType = event.source.value;
-    console.log('document type', this.documentType);
+    this.selectedDocument.docCatCode = JSON.parse(JSON.stringify(this.documentCategory));
+    this.selectedDocument.docTypeCode = JSON.parse(JSON.stringify(this.documentType));
+    if (this.selectedDocuments.length > 0) {
+      for (let document of this.selectedDocuments) {
+        i++;
+        if (document.docCatCode == this.documentCategory) {
+          found = true;
+          this.selectedDocuments[i] = this.selectedDocument;
+          break;
+        }
+      }
+    }
+    if (!found) {
+      this.selectedDocuments.push(this.selectedDocument);
+    }
+    console.log('selected documents', this.selectedDocuments);
+    this.selectedDocument = {
+      docCatCode: '',
+      docTypeCode: ''
+    };
+    //
+    // this.documentCategory = this.docCatSelect['_placeholder'];
+    // this.documentType = this.docCatSelect['_value'];
+    // console.log('document type select change', this.documentType);
+    // console.log('document category select change', this.documentCategory);
 
     this.documentIndex = index;
   }
@@ -630,6 +677,17 @@ export class FileUploadComponent implements OnInit {
   openedChange(event, index: number) {
     this.documentCategory = this.LOD[index].code;
     this.documentIndex = index;
+    if (this.selectedDocuments.length > 0) {
+      for (let document of this.selectedDocuments) {
+        if (document.docCatCode == this.documentCategory) {
+          this.documentType = document.docTypeCode;
+        }
+      }
+    }
+    // this.documentCategory = event.source.placeholder;
+    // this.documentType = event.source.value;
+    console.log('docType open change', this.documentType);
+    console.log('document category open change', this.documentCategory);
   }
 
   onFilesChange(fileList: FileList) {}
@@ -883,13 +941,7 @@ export interface DocumentCategory {
   isActive: string;
   langCode: string;
   name: string;
-  documentTypes: {
-    code: string;
-    description: string;
-    isActive: string;
-    langCode: string;
-    name: string;
-  };
+  documentTypes?: DocumentCategory[];
 }
 
 export interface Applicants {
@@ -911,7 +963,12 @@ export interface ProofOfAddress {
 }
 
 export interface DemographicMetaData {
-  fullname?: FullName[];
+  fullName?: FullName[];
   postalCode?: string;
   proofOfAddress?: ProofOfAddress;
+}
+
+export interface SelectedDocuments {
+  docCatCode: string;
+  docTypeCode: string;
 }

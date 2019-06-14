@@ -26,6 +26,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessag
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.util.MessageBusUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -116,18 +117,17 @@ public class ReprocessorStage extends MosipVerticleManager {
 	 *            the vertx
 	 */
 	private void deployScheduler(Vertx vertx) {
-		vertx.deployVerticle("ceylon:herd.schedule.chime/0.2.0",this::schedulerResult);
+		vertx.deployVerticle("ceylon:herd.schedule.chime/0.2.0", this::schedulerResult);
 	}
-	
+
 	public void schedulerResult(AsyncResult<String> res) {
 		if (res.succeeded()) {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(), "", "ReprocessorStage::schedular()::deployed");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "ReprocessorStage::schedular()::deployed");
 			cronScheduling(vertx);
 		} else {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-					LoggerFileConstant.REGISTRATIONID.toString(), "",
-					"ReprocessorStage::schedular()::deploymemnt failure");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "ReprocessorStage::schedular()::deploymemnt failure");
 		}
 	}
 
@@ -210,31 +210,43 @@ public class ReprocessorStage extends MosipVerticleManager {
 				if (!(dtolist.isEmpty())) {
 					dtolist.forEach(dto -> {
 						this.registrationId = dto.getRegistrationId();
-						object.setRid(registrationId);
-						object.setIsValid(true);
-						object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
-						description = "";
-						isTransactionSuccessful = true;
-						String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
-						if (RegistrationTransactionStatusCode.REPROCESS.name()
-								.equalsIgnoreCase(dto.getLatestTransactionStatusCode())) {
-							stageName = stageName.concat(BUS_IN);
+						if (reprocessCount.equals(dto.getReProcessRetryCount())) {
+							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+							dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_REPROCESS.toString());
+							dto.setStatusComment("Reprocess count has exceeded the configured attempts");
+							dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+							object.setRid(registrationId);
+							object.setIsValid(false);
+							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
+							description = PlatformSuccessMessages.RPR_RE_PROCESS_FAILED.getMessage();
 						} else {
-							stageName = stageName.concat(BUS_OUT);
-						}
-						MessageBusAddress address = new MessageBusAddress(stageName);
-						sendMessage(object, address);
-						dto.setUpdatedBy(USER);
-						Integer reprocessRetryCount = dto.getReProcessRetryCount() != null
-								? dto.getReProcessRetryCount() + 1
-								: 1;
-						dto.setReProcessRetryCount(reprocessRetryCount);
-						dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-						dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.REPROCESS.toString());
-						dto.setStatusComment("Reprocess Completed");
-						registrationStatusService.updateRegistrationStatus(dto);
+							object.setRid(registrationId);
+							object.setIsValid(true);
+							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
+							description = "";
+							isTransactionSuccessful = true;
+							String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
+							if (RegistrationTransactionStatusCode.REPROCESS.name()
+									.equalsIgnoreCase(dto.getLatestTransactionStatusCode())) {
+								stageName = stageName.concat(BUS_IN);
+							} else {
+								stageName = stageName.concat(BUS_OUT);
+							}
+							MessageBusAddress address = new MessageBusAddress(stageName);
+							sendMessage(object, address);
+							dto.setUpdatedBy(USER);
+							Integer reprocessRetryCount = dto.getReProcessRetryCount() != null
+									? dto.getReProcessRetryCount() + 1
+									: 1;
+							dto.setReProcessRetryCount(reprocessRetryCount);
+							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+							dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_REPROCESS.toString());
+							dto.setStatusComment("Reprocess Completed");
+							registrationStatusService.updateRegistrationStatus(dto);
 
-						description = PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage();
+							description = PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage();
+
+						}
 						String eventId = EventId.RPR_402.toString();
 						String eventName = EventName.UPDATE.toString();
 						String eventType = EventType.BUSINESS.toString();
@@ -245,8 +257,10 @@ public class ReprocessorStage extends MosipVerticleManager {
 						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 								moduleId, moduleName, registrationId);
 					});
+
 					totalUnprocessesPackets = totalUnprocessesPackets - fetchSize;
 				}
+
 			}
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					code, "PacketValidatorStage::process()::exit");

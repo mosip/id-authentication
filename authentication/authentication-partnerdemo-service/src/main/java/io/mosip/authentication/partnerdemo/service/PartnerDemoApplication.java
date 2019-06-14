@@ -6,8 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.partnerdemo.service.config.SwaggerConfig;
-import io.mosip.kernel.jsonvalidator.impl.JsonSchemaLoader;
-import io.mosip.kernel.jsonvalidator.impl.JsonValidatorImpl;
 import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 
 /**
@@ -16,8 +14,8 @@ import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication
-@Import(value = { JsonValidatorImpl.class, TemplateManagerImpl.class, VelocityEngine.class, SwaggerConfig.class,
-		JsonSchemaLoader.class })
+@Import(value = {  TemplateManagerImpl.class, VelocityEngine.class, SwaggerConfig.class,
+		 })
 public class PartnerDemoApplication {
 
 	/**

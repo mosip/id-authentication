@@ -150,7 +150,7 @@ public class OTPServiceImpl implements OTPService {
 			}
 		}
 
-		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE, otpRequestDto.getId(),
+		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
 				IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), AuditModules.OTP_REQUEST.getDesc());
 
 		return otpResponseDTO;

@@ -17,10 +17,10 @@ import io.mosip.idrepository.core.httpfilter.BaseIdRepoFilter;
  * @author Manoj SP
  */
 @Component
-public class IdRepoFilter extends BaseIdRepoFilter {
+public final class IdRepoFilter extends BaseIdRepoFilter {
 
 	@Override
-	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	protected final void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
 		filterChain.doFilter(request, response);
 	}

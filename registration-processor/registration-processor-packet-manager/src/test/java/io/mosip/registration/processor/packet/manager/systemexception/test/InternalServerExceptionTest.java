@@ -47,7 +47,7 @@ public class InternalServerExceptionTest {
 		Mockito.when(env.getProperty(any())).thenThrow(ex);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+			fileManager.put(fileName, file, DirectoryPathDto.ARCHIVE_LOCATION);
 			fail();
 		} catch (InternalServerException e) {
 			assertThat("Should throw Server error with correct error codes",

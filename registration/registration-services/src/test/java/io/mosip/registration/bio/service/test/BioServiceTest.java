@@ -504,6 +504,18 @@ public class BioServiceTest {
 		Boolean res = bioService.validateFP(fingerprintDTO, userBiometrics);
 		assertTrue(res);
 	}
+	  
+	@Test
+	public void validateFaceTest1() {
+		bioService.validateFace("userId");
+	}
+
+	@Test(expected=NullPointerException.class)
+	public void validateIrisTest1() throws RegBaseCheckedException, IOException {
+		bioService.validateIris("userId");
+	}
+		 
+
 
 
 }

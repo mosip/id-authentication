@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
@@ -28,7 +29,7 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileManagerIm
  *
  */
 @RefreshScope
-@RunWith(PowerMockRunner.class)
+@RunWith(SpringRunner.class)
 public class UnexceptedExceptionTest {
 
 	@Mock
@@ -47,7 +48,7 @@ public class UnexceptedExceptionTest {
 		Mockito.when(env.getProperty(any())).thenThrow(ex);
 
 		try {
-			fileManager.put(fileName, file, DirectoryPathDto.VIRUS_SCAN_ENC);
+			fileManager.put(fileName, file, DirectoryPathDto.ARCHIVE_LOCATION);
 			fail();
 		} catch (UnexpectedException e) {
 			assertThat("Should throw  Unexpected Exception  with correct error codes",

@@ -48,7 +48,7 @@ public class BadGatewayExceptionTest {
 		Mockito.when(env.getProperty(any())).thenThrow(ex);
 
 		try {
-			fileManager.put(fileName, inputStream, DirectoryPathDto.VIRUS_SCAN_ENC);
+			fileManager.put(fileName, inputStream, DirectoryPathDto.ARCHIVE_LOCATION);
 			fail();
 		} catch (BadGatewayException e) {
 			assertThat("Should throw Bad Gateway exception with correct error codes",
