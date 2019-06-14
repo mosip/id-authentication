@@ -3,6 +3,7 @@ node {
  def branch = '0.13.0_Ashish'
  def projectToBuild = 'automationtests'
  stage('------- Checkout --------') {
+  print "${params.Environment}"
   // Checkout only automation tests Module
   dir(branch) {
    checkout([$class: 'GitSCM',
@@ -27,7 +28,7 @@ node {
 stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
   {
-	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://dev.mosip.io -Denv.testLevel=smokeAndRegression'
+	sh "/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=${params.Environment} -Denv.endpoint=https://${params.Environment}.mosip.io -Denv.testLevel=smokeAndRegression"
 			  
   }
   
@@ -37,14 +38,14 @@ stage ('---------- mvn-clean-test ---------------') {
    alwaysLinkToLastBuild: false, 
    keepAll: true, 
    reportDir: branch+"/"+projectToBuild+"/target/surefire-reports", 
-   reportFiles: 'MOSIP_ModuleLevelAutoRun_TestNGReport.html', 
+   reportFiles: 'MOSIP_PreRegistrationAutoRun_TestNGReport.html', 
    reportName: 'HTML Report'
 ])
 }
-          recipients = "$env.AUTOMATION_TEST_RECIPIENT_LIST"
+          recipients = "$env.AUTO_TEST_PREREG_LIST"
 emailext ( 
-	    attachmentsPattern:'**/surefire-reports/MOSIP_ModuleLevelAutoRun_TestNGReport.html',
-	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER'",
+	    attachmentsPattern:'**/surefire-reports/MOSIP_PreRegistrationAutoRun_TestNGReport.html',
+	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER' ${params.Environment}",
 	    body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
 	    to: "$recipients",
 	    from: '"Jenkins" <info@mosip.io>'
