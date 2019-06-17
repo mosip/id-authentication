@@ -125,3 +125,25 @@ NOTE: Swagger UI sends cookies automatically through browser.
     ```
 
 After hitting validateOtp() api with proper request having otp and userid you will get the token in the header with the name Cookie.
+
+### 1.7 Defects list :
+Defect JIRA ID|Status|Availabilty in the branch
+---------------|-------------|------------------
+MOS-25746|DONE|Yes
+MOS-25723|DONE|Yes
+MOS-25718|DONE|Yes
+MOS-25716|DONE|Yes
+MOS-25715|DONE|Yes
+MOS-25701|DONE|Yes
+MOS-25700|DONE|Yes
+MOS-25698|DONE|Yes
+MOS-25690|DONE|Yes
+MOS-25687|DONE|Yes
+MOS-25684|DONE|Yes
+MOS-25683|DONE|Yes
+MOS-25649|DONE|Yes
+MOS-25645|DONE|Yes
+MOS-25632|DONE|Yes
+MOS-25631|DONE|Yes
+MOS-25570|DONE|Yes
+MOS-24652|DONE|Yes
