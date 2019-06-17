@@ -1,23 +1,9 @@
 package io.mosip.kernel.util;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.service.BaseTestCase;
 
 /**
