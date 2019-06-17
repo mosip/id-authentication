@@ -127,10 +127,11 @@ stage('---------- SonarQube Analysis --------------') {
      /*
      Getting path of the module to be built
      */
-	 if(!(moduleName == 'kernel-keymanager-service')){
      modulePath = locationOfDockerFiles[i].substring(2);
+	 	 if(!(moduleName == 'kernel-keymanager-service')){
      updatedServices.add(moduleName)
      updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+	 }
      /*
      Updating containersToRun List
      */
@@ -157,7 +158,7 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $registryName/$moduleName"
     }
    } 
-   }
+   
    else {
     /*
      If build paramerter is passed as Build Changes (Only changed submodules have to be built)
@@ -176,10 +177,12 @@ stage('---------- SonarQube Analysis --------------') {
      /*
      Getting path of the module to be built
      */
-	  if(!(moduleName == 'kernel-keymanager-service')){
      modulePath = changedModulesLocation[i].substring(2);
+	 	  if(!(moduleName == 'kernel-keymanager-service')){
+
      updatedServices.add(moduleName)
      updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+	 }
      /*
      Updating containersToRun List
      */
@@ -204,7 +207,7 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
-    }
+    
 	}
    }
 
