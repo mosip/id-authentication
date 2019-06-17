@@ -14,7 +14,7 @@ public class InvalidTokenResponseDTO {
 	Errors[] errors;
 	
 	public Errors[] getErrors() {
-		return Arrays.copyOf(errors, errors.length);
+		return errors;
 	}
 
 	public void setErrors(Errors[] errors) {

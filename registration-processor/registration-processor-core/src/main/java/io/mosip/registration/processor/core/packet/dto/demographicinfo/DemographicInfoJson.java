@@ -23,7 +23,7 @@ private String statusCode;
 private String langCode;
 
 public byte[] getDemographicDetails() {
-	return Arrays.copyOf(demographicDetails, demographicDetails.length);
+	return demographicDetails;
 }
 
 public void setDemographicDetails(byte[] demographicDetails) {

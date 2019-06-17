@@ -27,7 +27,7 @@ public class CandidatesDto implements Serializable {
 	
 	private Analytics[] analytics;
 	public Analytics[] getAnalytics() {
-		return Arrays.copyOf(analytics, analytics.length);
+		return analytics;
 	}
 
 	public void setAnalytics(Analytics[] analytics) {
@@ -36,7 +36,7 @@ public class CandidatesDto implements Serializable {
 	
 	private AbisScores[] scores;
 	public AbisScores[] getScores() {
-		return Arrays.copyOf(scores, scores.length);
+		return scores;
 	}
 
 	public void setAbisScores(AbisScores[] scores) {
