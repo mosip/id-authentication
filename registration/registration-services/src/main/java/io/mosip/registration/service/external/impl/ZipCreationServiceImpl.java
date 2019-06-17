@@ -28,7 +28,8 @@ import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EX
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
 /**
- * API Class to generate the in-memory zip file for Registration Packet.
+ * Implementation class of {@link ZipCreationService} to generate the in-memory
+ * zip file for Registration Packet.
  *
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -150,8 +151,8 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 						zipOutputStream);
 			}
 
-						LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-								"Registration Exception photo has been added");
+			LOGGER.info(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
+					"Registration Exception photo has been added");
 
 			zipOutputStream.flush();
 			byteArrayOutputStream.flush();
@@ -169,18 +170,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 		}
 	}
 
-	/**
-	 * Adds the demogrpahic data.
-	 *
-	 * @param demographicDTO
-	 *            the applicant document DTO
-	 * @param folderName
-	 *            the folder name
-	 * @param zipOutputStream
-	 *            the zip output stream
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 */
 	private static void addDemogrpahicData(final DemographicDTO demographicDTO, final String folderName,
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		// Add Proofs
@@ -197,18 +186,6 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 		}
 	}
 
-	/**
-	 * Adds the to zip.
-	 *
-	 * @param content
-	 *            the content
-	 * @param fileNameWithPath
-	 *            the file name with path
-	 * @param zipOutputStream
-	 *            the zip output stream
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 */
 	private static void addToZip(final byte[] content, final String fileNameWithPath,
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		if (checkNotNull(content)) {
@@ -216,29 +193,10 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 		}
 	}
 
-	/**
-	 * Check not null.
-	 *
-	 * @param object
-	 *            the object
-	 * @return true, if successful
-	 */
 	private static boolean checkNotNull(Object object) {
 		return object != null;
 	}
 
-	/**
-	 * Write file to zip.
-	 *
-	 * @param fileName
-	 *            the file name
-	 * @param file
-	 *            the file
-	 * @param zipOutputStream
-	 *            the zip output stream
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
-	 */
 	private static void writeFileToZip(String fileName, byte[] file, ZipOutputStream zipOutputStream)
 			throws RegBaseCheckedException {
 		try {
