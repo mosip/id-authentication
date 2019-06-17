@@ -34,8 +34,9 @@
 			   <version>${spring-cloud-config.version}</version>
 		  </dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-rest-client</artifactId>
+			<version>${registration.processor.rest.client.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertx</groupId>

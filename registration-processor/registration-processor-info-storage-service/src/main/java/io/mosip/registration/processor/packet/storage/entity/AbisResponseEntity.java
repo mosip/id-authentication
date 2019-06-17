@@ -1,17 +1,11 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -120,13 +114,13 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 	}
 
 	public byte[] getRespText() {
-		return this.respText;
+		return Arrays.copyOf(respText, respText.length);
 	}
 
 	public void setRespText(byte[] respText) {
-		this.respText = respText;
+		this.respText = respText!=null?respText:null;
 	}
-
+	
 	public String getStatusCode() {
 		return this.statusCode;
 	}

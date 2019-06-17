@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.manager.decryptor;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 
 import java.io.File;
@@ -15,10 +15,14 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
@@ -33,28 +37,36 @@ import io.mosip.registration.processor.packet.manager.dto.CryptomanagerResponseD
 import io.mosip.registration.processor.packet.manager.dto.DecryptResponseDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
 @SpringBootTest(classes = PacketManagerBootApplication.class)
 public class DecryptorTest {
 
-	@Autowired
-	private Decryptor decryptor;
-
-	@MockBean
-	private RegistrationProcessorRestClientService<Object> restClientService;
-	@MockBean
+	
+	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
+
+	@Mock
+	private Environment env;
+	
+	@Mock
+	private RegistrationProcessorRestClientService<Object> restClientService;
+	
+	@Mock
 	private CryptomanagerResponseDto cryptomanagerResponseDto;
 	private String data;
 	private File encrypted;
 	private InputStream inputStream;
 
+	@InjectMocks
+	private DecryptorImpl decryptor;
 	@Before
 	public void setup() throws FileNotFoundException {
 		data = "bW9zaXA";
 		cryptomanagerResponseDto = new CryptomanagerResponseDto();
 		cryptomanagerResponseDto.setResponse(new DecryptResponseDto(data));
 
+		Mockito.when(env.getProperty(any())).thenReturn("mosip.cryptomanager.decrypt").thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		
 		ClassLoader classLoader = getClass().getClassLoader();
 		encrypted = new File(classLoader.getResource("84071493960000320190110145452.zip").getFile());
 		inputStream = new FileInputStream(encrypted);

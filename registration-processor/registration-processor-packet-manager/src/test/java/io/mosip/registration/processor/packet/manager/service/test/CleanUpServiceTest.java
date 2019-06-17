@@ -17,8 +17,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -34,6 +36,7 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileManagerIm
  * @author M1022006
  *
  */
+@RefreshScope
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = PacketManagerConfigTest.class)
@@ -60,7 +63,7 @@ public class CleanUpServiceTest {
 
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
-	
+
 	@Mock
 	private Environment env;
 

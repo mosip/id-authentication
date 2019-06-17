@@ -71,8 +71,6 @@ public class RegistrationStatusController {
 	@Autowired
 	private Environment env;
 
-	Gson gson = new GsonBuilder().create();
-
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;
 

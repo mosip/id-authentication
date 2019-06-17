@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.status.decryptor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -85,7 +84,6 @@ public class Decryptor {
 	public String decrypt(Object encryptedSyncMetaInfo, String referenceId, String timeStamp)
 			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		String decryptedData = null;
-		InputStream outstream = null;
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
@@ -96,11 +94,11 @@ public class Decryptor {
 			String encryptedPacketString = encryptedSyncMetaInfo.toString();
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			RequestWrapper<CryptomanagerRequestDto> request = new RequestWrapper<>();
-			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+			ResponseWrapper<CryptomanagerResponseDto> response;
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
 			cryptomanagerRequestDto.setReferenceId(referenceId);
-			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
+			CryptomanagerResponseDto cryptomanagerResponseDto;
 
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
 			LocalDateTime time = LocalDateTime.parse(timeStamp, format);
