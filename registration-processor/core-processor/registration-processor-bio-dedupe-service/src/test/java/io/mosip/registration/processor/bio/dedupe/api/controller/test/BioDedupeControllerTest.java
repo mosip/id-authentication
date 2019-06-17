@@ -3,14 +3,15 @@
  */
 package io.mosip.registration.processor.bio.dedupe.api.controller.test;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import javax.servlet.http.Cookie;
 
+import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ import io.mosip.registration.processor.core.token.validation.TokenValidator;
 public class BioDedupeControllerTest {
 
 	@InjectMocks
-	private BioDedupeController bioDedupeController = new BioDedupeController();
+	private BioDedupeController bioDedupeController;
 
 	@MockBean
 	private BioDedupeService bioDedupeService;
@@ -56,6 +57,9 @@ public class BioDedupeControllerTest {
 	@MockBean
 	private TokenValidator tokenValidator;
 
+	@MockBean
+	private DigitalSignatureUtility digitalSignatureUtility;
+
 	String regId;
 
 	byte[] file;
@@ -65,15 +69,15 @@ public class BioDedupeControllerTest {
 		regId = "1234";
 		file = regId.getBytes();
 		Mockito.when(bioDedupeService.getFile(anyString())).thenReturn(file);
-		Mockito.doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
+		Mockito.doNothing().when(tokenValidator).validate(any(), any());
 	}
 
 	@Test
 	public void getFileSuccessTest() throws Exception {
-
+		Mockito.when(digitalSignatureUtility.getDigitalSignature(any())).thenReturn("abc");
 		this.mockMvc
-				.perform(MockMvcRequestBuilders.get("/biometricfile/1234")
-						.cookie(new Cookie("Authorization", "token")).param("regId", regId).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
+				.perform(MockMvcRequestBuilders.get("/biometricfile/1234").cookie(new Cookie("Authorization", "token"))
+						.param("regId", regId).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
