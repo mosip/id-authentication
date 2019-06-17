@@ -456,7 +456,7 @@ public class PacketValidateProcessor {
 				||RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
 				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
 
-			if (!ifUinIDRepo(String.valueOf(uin))) {
+			if (!uinPresentInIdRepo(String.valueOf(uin))) {
 				return false;
 			}
 		}
@@ -471,8 +471,8 @@ public class PacketValidateProcessor {
 		return validateRegIdAndTypeFromSyncTable(metadataList);
 	}
 
-	private boolean ifUinIDRepo(String uin) throws ApisResourceAccessException, IOException {
-		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) == null;
+	private boolean uinPresentInIdRepo(String uin) throws ApisResourceAccessException, IOException {
+		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) != null;
 
 	}
 
