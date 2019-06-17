@@ -37,9 +37,9 @@ stage('------- Checkout --------') {
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 def label_env=env.NEXT_BRANCH_NAME
 sh """ssh  madmin@13.71.86.138 /bin/bash << EOF
-docker login -u "${USERNAME}" -p "${PASSWORD}"  docker-registry.mosip.io:5000 
-docker ps -aq | xargs docker stop | xargs docker rm
-docker images -q | xargs docker rmi
+sudo docker login -u "${USERNAME}" -p "${PASSWORD}"  docker-registry.mosip.io:5000 
+sudo docker ps -aq | xargs sudo docker stop | xargs sudo docker rm
+sudo docker images -q | xargs sudo docker rmi
 echo "Echoing label_env"
 echo "${label_env}"
 sudo docker run -tid --ulimit memlock=-1 -p 8088:8088 -v softhsm:/softhsm -e spring_config_url_env=http://kernel-config-server:51000/config -e spring_config_label_env=”${label_env}" -e active_profile_env=dev --name keymanager docker-registry.mosip.io:5000/kernel-keymanager-service
