@@ -30,7 +30,7 @@ stage('------- Checkout --------') {
         sh "basename $currentModule > moduleName"
      moduleName = readFile('moduleName').trim()
      sh "rm -f moduleName"
-     if(!moduleName === kernel-keymanager-service){
+     if(moduleName !== kernel-keymanager-service){
           echo moduleName
      }
     // modulePath = locationOfDockerFiles[i].substring(2);
