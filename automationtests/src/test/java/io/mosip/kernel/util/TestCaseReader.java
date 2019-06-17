@@ -17,7 +17,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import io.mosip.TestNgApplication;
 import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.service.BaseTestCase;
 
@@ -37,10 +36,10 @@ public class TestCaseReader extends BaseTestCase {
 	 * @throws ParseException
 	 */
 	
-	public ClassLoader classLoader = getClass().getClassLoader();
+	CommonLibrary commonLib = new CommonLibrary();
 	public Object[][] readTestCases(String folderName, String testType){
 
-		List<String> listOfFolders = getFoldersFilesNameList(folderName, true);
+		List<String> listOfFolders = commonLib.getFoldersFilesNameList(folderName, true);
 		
 		ArrayList<String> testCaseNames = new ArrayList<>();
 		
@@ -74,22 +73,22 @@ public class TestCaseReader extends BaseTestCase {
 	}
 
 	
-	/**
+/*	*//**
 	 * @param path
 	 * @return this method is for reading the jsonData object from the given path.
-	 */
+	 *//*
 	public JSONObject readJsonData(String path) {
 
 		
 		JSONObject jsonData = null;
 		try {
-			InputStream is = TestNgApplication.class.getResourceAsStream("/" + path);
+			InputStream is = TestCaseReader.class.getResourceAsStream("/" + path);
 			jsonData = (JSONObject) new JSONParser().parse(new InputStreamReader(is, "UTF-8"));
 		} catch (IOException | ParseException e) {
 			logger.info(e.getMessage());
 		}
 		return jsonData;
-	}
+	}*/
 
 	/**
 	 * @param modulename
@@ -99,31 +98,31 @@ public class TestCaseReader extends BaseTestCase {
 	 */
 	public JSONObject[] readRequestResponseJson(String modulename, String apiname, String testcaseName){
 		String configPath = modulename + "/" + apiname + "/" + testcaseName;
-		List<String> listofFiles = getFoldersFilesNameList(configPath, false);
+		List<String> listofFiles =  commonLib.getFoldersFilesNameList(configPath, false);
 		JSONObject[] objectData = new JSONObject[2];
 		for (int k = 0; k < listofFiles.size(); k++) {
 			String[] arr = listofFiles.get(k).split("/");
 				if (arr[arr.length - 1].toLowerCase().contains("request")) 
-					objectData[0] = readJsonData(configPath+"/"+arr[arr.length - 1]);
+					objectData[0] =  commonLib.readJsonData(configPath+"/"+arr[arr.length - 1]);
 					
 				 else if (arr[arr.length - 1].toLowerCase().contains("response")) 
-					objectData[1] = readJsonData(configPath+"/"+arr[arr.length - 1]);
+					objectData[1] =  commonLib.readJsonData(configPath+"/"+arr[arr.length - 1]);
 		 
 			
 		}
 		return objectData;
 	}
 	
-	/**
+/*	*//**
 	 * @param folderRelativePath
 	 * @param isfolder(it should be true if u want to get list of folders and false for list of files)
 	 * @return this method is for returning the list of relative path of each folder or files in a given path
-	 */
+	 *//*
 	public List<String> getFoldersFilesNameList(String folderRelativePath, boolean isfolder){
 		String configPath = folderRelativePath;
 		List<String> listFoldersFiles = new ArrayList<>();
 
-		/*final File jarFile = new File(
+		final File jarFile = new File(
 				TestNgApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 
 		if (jarFile.isFile()) { // Run with JAR file
@@ -150,7 +149,7 @@ public class TestCaseReader extends BaseTestCase {
 				e.printStackTrace();
 			}
 			
-		} else { */// Run with IDE
+		} else { // Run with IDE
 			final URL url = TestCaseReader.class.getResource("/" + configPath);
 			if (url != null) {
 				try {
@@ -165,6 +164,6 @@ public class TestCaseReader extends BaseTestCase {
 			}
 		//}
 		return listFoldersFiles;
-	}
+	}*/
 	
 }

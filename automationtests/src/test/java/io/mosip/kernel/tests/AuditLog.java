@@ -72,8 +72,9 @@ public class AuditLog extends BaseTestCase implements ITest {
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
 		testCaseName = moduleName + "_" + apiName + "_" + object.toString();
+		System.err.println("===1====");
 		cookie = auth.getAuthForIDA();
-		
+		System.err.println("===2====");
 	}
 
 	/**
@@ -85,6 +86,7 @@ public class AuditLog extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
+		System.err.println("===2====");
 		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
