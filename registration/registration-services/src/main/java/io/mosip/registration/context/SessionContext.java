@@ -339,7 +339,6 @@ public class SessionContext {
 	 */
 	private static boolean validateFace(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
-		try {
 			if(bioService.validateFace(authenticationValidatorDTO.getUserId())) {
 				createSessionContext();
 				validAuthModes.add(loginMethod);
@@ -350,9 +349,6 @@ public class SessionContext {
 				sessionContext = null;
 				return false;
 			}
-		} catch (RegBaseCheckedException exception) {
-			return false;
-		}
 	}
 
 	/**

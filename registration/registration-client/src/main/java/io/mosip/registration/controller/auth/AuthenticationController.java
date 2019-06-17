@@ -792,14 +792,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	 * @return true/false after validating face
 	 */
 	private boolean captureAndValidateFace(String userId) {
-		try {
-			return bioService.validateFace(userId);
-		} catch (RegBaseCheckedException exception) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FACE_SCANNING_ERROR);
-			LOGGER.error(LoggerConstants.LOG_REG_AUTH, APPLICATION_NAME, APPLICATION_ID,
-					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-			return false;
-		}
+		return bioService.validateFace(userId);		
 	}
 
 	/**
