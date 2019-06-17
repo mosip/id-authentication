@@ -1,7 +1,7 @@
 package io.mosip.registration.service.remap;
 
 /**
- * Service class for Center Machine Remapping
+ * Service class {@code CenterMachineReMapService} for Center Machine Remapping
  * 
  * @author balamurugan ramamoorthy
  * @since 1.0.0
@@ -11,7 +11,7 @@ public interface CenterMachineReMapService {
 
 	/**
 	 * Checks and handles all the operations to be done when the machine is re
-	 * mapped to another center
+	 * mapped to another center based on the given step number
 	 * 
 	 * @param step
 	 *            - step number for a particular remap operation
@@ -41,5 +41,8 @@ public interface CenterMachineReMapService {
 	 */
 	Boolean isMachineRemapped();
 
+	/**
+	 * starts the remap process if the remap flag is enabled
+	 */
 	void startRemapProcess();
 }
