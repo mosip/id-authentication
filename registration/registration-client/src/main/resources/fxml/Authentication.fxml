@@ -409,7 +409,7 @@
 					</rowConstraints>
 				</GridPane>
 
-				<GridPane fx:id="irisBasedLogin" visible="false">
+				<GridPane fx:id="irisBasedLogin">
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
@@ -493,7 +493,7 @@
                                        <children>
                                           <GridPane GridPane.rowIndex="2">
                                              <children>
-                                                <ImageView fitHeight="128.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                <ImageView fx:id="irisImageView" fitHeight="128.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                                    <image>
                                                       <Image url="@../images/Eye.png" />
                                                    </image>
