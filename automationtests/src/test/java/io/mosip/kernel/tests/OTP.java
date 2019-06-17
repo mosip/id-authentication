@@ -171,6 +171,7 @@ public class OTP extends BaseTestCase implements ITest {
 					try {
 						// reading validation timeout from property
 						TimeUnit.SECONDS.sleep(Integer.parseInt(props.get("OTPTimeOut").toString()));
+						cookie=auth.getAuthForRegistrationAdmin();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -185,7 +186,6 @@ public class OTP extends BaseTestCase implements ITest {
 				}
 				
 				response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
-				System.err.println(response.asString());
 				//This method is for checking the authentication is pass or fail in rest services
 				new CommonLibrary().responseAuthValidation(response);
 				logger.info("Obtained Response: " + response);
