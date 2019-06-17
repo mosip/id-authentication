@@ -85,6 +85,7 @@ import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
  * The Class IdRepoServiceImpl.
  */
 @Component
+@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
 public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 	/** The Constant GET_FILES. */
@@ -194,60 +195,50 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
+	@Override
 	public Uin addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
-		if (!uinRepo.existsByRegId(request.getRequest().getRegistrationId())
-				&& !uinHistoryRepo.existsByRegId(request.getRequest().getRegistrationId())) {
-			String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime())
-					.toString();
-			byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
+		String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime())
+				.toString();
+		byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
+		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
+		int modResult = (int) (Long.parseLong(uin) % moduloValue);
+		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
+		String uinHash = modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
+		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
+		String uinToEncrypt = modResult + "_" + uin + "_" + encryptSalt;
 
-			Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
-			int modResult = (int) (Long.parseLong(uin) % moduloValue);
-			String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
-			String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-			String uinToEncrypt = modResult + "_" + uin + "_" + encryptSalt;
-			String uinHash = modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
-
-			List<UinDocument> docList = new ArrayList<>();
-			List<UinBiometric> bioList = new ArrayList<>();
-			Uin uinEntity;
-			if (Objects.nonNull(request.getRequest().getDocuments())
-					&& !request.getRequest().getDocuments().isEmpty()) {
-				addDocuments(uinHash, identityInfo, request.getRequest().getDocuments(), uinRefId, docList, bioList);
-				// UIN to be encrypted with salt -> cryptomanager
-				// UIN = Modulo_UIN_Salt 444_UIN444_salt
-				uinEntity = new Uin(uinRefId, uinToEncrypt, uinHash, identityInfo, securityManager.hash(identityInfo),
-						request.getRequest().getRegistrationId(), request.getRequest().getBiometricReferenceId(),
-						env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
-						env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
-						UPDATED_BY, now(), false, now(), bioList, docList);
-				uinRepo.save(uinEntity);
-				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-						"Record successfully saved in db with documents");
-			} else {
-				uinEntity = new Uin(uinRefId, uinToEncrypt, uinHash, identityInfo, securityManager.hash(identityInfo),
-						request.getRequest().getRegistrationId(), request.getRequest().getBiometricReferenceId(),
-						env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
-						env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
-						UPDATED_BY, now(), false, now(), null, null);
-				uinRepo.save(uinEntity);
-				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-						"Record successfully saved in db without documents");
-			}
-
-			uinHistoryRepo.save(new UinHistory(uinRefId, now(), uinToEncrypt, uinHash, identityInfo,
-					securityManager.hash(identityInfo), request.getRequest().getRegistrationId(),
-					request.getRequest().getBiometricReferenceId(),
+		List<UinDocument> docList = new ArrayList<>();
+		List<UinBiometric> bioList = new ArrayList<>();
+		Uin uinEntity;
+		if (Objects.nonNull(request.getRequest().getDocuments())
+				&& !request.getRequest().getDocuments().isEmpty()) {
+			addDocuments(uinHash, identityInfo, request.getRequest().getDocuments(), uinRefId, docList, bioList);
+			uinEntity = new Uin(uinRefId, uinToEncrypt, uinHash, identityInfo, securityManager.hash(identityInfo),
+					request.getRequest().getRegistrationId(), request.getRequest().getBiometricReferenceId(),
 					env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
-			return retrieveIdentityByUin(uinHash, null);
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
+					UPDATED_BY, now(), false, now(), bioList, docList);
+			uinRepo.save(uinEntity);
+			mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+					"Record successfully saved in db with documents");
 		} else {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
-					IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
-			throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
+			uinEntity = new Uin(uinRefId, uinToEncrypt, uinHash, identityInfo, securityManager.hash(identityInfo),
+					request.getRequest().getRegistrationId(), request.getRequest().getBiometricReferenceId(),
+					env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
+					UPDATED_BY, now(), false, now(), null, null);
+			uinRepo.save(uinEntity);
+			mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+					"Record successfully saved in db without documents");
 		}
+
+		uinHistoryRepo.save(new UinHistory(uinRefId, now(), uinToEncrypt, uinHash, identityInfo,
+				securityManager.hash(identityInfo), request.getRequest().getRegistrationId(),
+				request.getRequest().getBiometricReferenceId(),
+				env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
+				now(), false, now()));
+		return retrieveIdentityByUin(uinHash, null);
 	}
 
 	/**
@@ -422,9 +413,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
+	@Override
 	public Uin retrieveIdentityByUin(String uinHash, String type) throws IdRepoAppException {
-		return uinRepo.getUinHash(uinHash);
+		return uinRepo.findByUinHash(uinHash);
 	}
 
 	/*
@@ -433,9 +424,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 * @see io.mosip.kernel.core.idrepo.spi.IdRepoService#updateIdentity(java.lang.
 	 * Object, java.lang.String)
 	 */
-	@Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })
+	@Override
 	public Uin updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
-
 		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);

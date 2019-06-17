@@ -348,15 +348,15 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 			uinValidator.validateId(uin);
 		} catch (InvalidIDException e) {
 			if(!idType.equals(READ)) {
-			mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateUin",
+			mosipLogger.error(IdRepoLogger.getUin(), ID_REQUEST_VALIDATOR, "validateUin",
 					"\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							"/" + env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue()))
-							.replace(".", "/"));
+				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue()))
+								.replace(".", "/"));
 			}
 			else {
-				mosipLogger.error(IdRepoLogger.getUin(), "IdRequestValidator", "validateUin",
+				mosipLogger.error(IdRepoLogger.getUin(), ID_REQUEST_VALIDATOR, "validateUin",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN), e);
