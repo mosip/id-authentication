@@ -19,6 +19,27 @@ stage('------- Checkout --------') {
    ])
    }
   }
+  stage('Demo'){
+    dir(branch){
+      sh "dirname `find . -name 'Dockerfile'`> directoryDockerFiles"
+   locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
+   sh "rm -f directoryDockerFiles"
+   for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+       def currentModule = locationOfDockerFiles[i]
+       
+        sh "basename $currentModule > moduleName"
+     moduleName = readFile('moduleName').trim()
+     sh "rm -f moduleName"
+     modulePath = locationOfDockerFiles[i].substring(2);
+     
+     sh "dirname $currentModule > parentDirectory"
+     def parentDirectory = readFile('parentDirectory').trim()
+     parentDirectory = parentDirectory.substring(2);
+     
+     echo parentDirectory 
+     }
+    }
+   }
  }
  
  
