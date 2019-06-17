@@ -1063,8 +1063,7 @@ public class BaseController {
 	 * @return true, if successful
 	 */
 	protected boolean isChild() {
-		return RegistrationConstants.ENABLE.equalsIgnoreCase(
-				(String) (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)));
+		return getRegistrationDTOFromSession().isUpdateUINChild();
 	}
 
 	/**

@@ -698,8 +698,7 @@ public class DemographicDetailController extends BaseController {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
 				getRegistrationDTOFromSession().setUpdateUINNonBiometric(false);
-				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
-						RegistrationConstants.DISABLE);
+				getRegistrationDTOFromSession().setUpdateUINChild(false);
 			}
 			postalCode.setDisable(true);
 			validation.setChild(false);

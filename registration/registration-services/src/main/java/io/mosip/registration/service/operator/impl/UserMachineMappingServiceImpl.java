@@ -142,6 +142,12 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 		return response;
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.operator.UserMachineMappingService#isUserNewToMachine()
+	 * 
+	 */
 	@Override
 	public ResponseDTO isUserNewToMachine(String userId) {
 		LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
