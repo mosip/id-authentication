@@ -40,6 +40,9 @@ stage('------- Checkout --------') {
      //parentDirectory = parentDirectory.substring(2);
      
      //echo parentDirectory 
+     sh """ssh  madmin@13.71.86.138 /bin/bash << EOF
+     echo "hello"
+     EOF"""
      }
     }
    }
