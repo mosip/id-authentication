@@ -239,7 +239,7 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
       const notificationDto = new NotificationDtoModel(
         user.fullName,
         user.preRegId,
-        user.bookingDataPrimary,
+        user.bookingData ? user.bookingData.split(',')[0] : user.regDto.appointment_date,
         user.bookingTimePrimary,
         applicantNumber[1] === undefined ? null : applicantNumber[1],
         applicantNumber[0] === undefined ? null : applicantNumber[0],

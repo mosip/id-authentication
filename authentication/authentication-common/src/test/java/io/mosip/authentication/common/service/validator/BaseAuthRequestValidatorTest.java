@@ -310,9 +310,9 @@ public class BaseAuthRequestValidatorTest {
 		requestDTO.setBiometrics(fingerIdentityInfoDtoList);
 		authRequestDTO.setRequest(requestDTO);
 		Set<String> allowedAuthtype = new HashSet<>();
-		allowedAuthtype.add("FID");
-		allowedAuthtype.add("FIR");
-		allowedAuthtype.add("IIR");
+		allowedAuthtype.add("bio-FID");
+		allowedAuthtype.add("bio-FIR");
+		allowedAuthtype.add("bio-IIR");
 		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateBioMetadataDetails", authRequestDTO, error,
 				allowedAuthtype);
 		assertFalse(error.hasErrors());

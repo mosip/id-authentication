@@ -100,15 +100,11 @@ public class OTPManager {
 
 	/**
 	 * Generate OTP with information of {@link MediaType } and OTP generation
-	 * time-out
-	 * 
-	 * @param namePri
-	 * @param nameSec
-	 * @param priLang
-	 * @param secLang
-	 * @param idInfo
+	 * time-out.
 	 *
-	 * @param otpKey  the otp key
+	 * @param otpRequestDTO the otp request DTO
+	 * @param uin the uin
+	 * @param valueMap the value map
 	 * @return String(otp)
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception

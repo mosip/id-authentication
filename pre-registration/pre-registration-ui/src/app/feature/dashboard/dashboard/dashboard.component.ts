@@ -54,6 +54,7 @@ export class DashBoardComponent implements OnInit {
   allApplicants: any[];
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
+  titleOnError = 'ERROR';
 
   /**
    * @description Creates an instance of DashBoardComponent.
@@ -229,8 +230,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
-    console.log('applicants', applicants);
-
     const applicantResponse =
       applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
     const demographicMetadata = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.demographicMetadata];
@@ -462,9 +461,11 @@ export class DashBoardComponent implements OnInit {
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => this.setUserFiles(response),
-      () => {
+      (error) => {
+        console.log("dashboard error", error);
+
         this.disableModifyDataButton = false;
-        this.onError();
+        this.onError(error);
       },
       () => {
         this.addtoNameList(user);
@@ -472,8 +473,8 @@ export class DashBoardComponent implements OnInit {
           response => {
             this.onModification(response, preId);
           },
-          () => {
-            this.onError();
+          (error) => {
+            this.onError(error);
           }
         );
       }
@@ -626,13 +627,20 @@ export class DashBoardComponent implements OnInit {
    * @private
    * @memberof DashBoardComponent
    */
-  private async onError() {
+  private async onError(error?: any) {
+    // if invalid token hten message = "invlaid something" else message = "regular message"
     await this.getErrorLabels();
+    let message = this.errorLanguagelabels.error
+    if(error &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired){
+        message = this.errorLanguagelabels.tokenExpiredLogout;
+        this.titleOnError = '';
+      }
     if (this.errorLanguagelabels) {
       const body = {
         case: 'ERROR',
-        title: 'ERROR',
-        message: this.errorLanguagelabels.error,
+        title: this.titleOnError,
+        message: message,
         yesButtonText: this.errorLanguagelabels.button_ok
       };
       this.dialog.open(DialougComponent, {

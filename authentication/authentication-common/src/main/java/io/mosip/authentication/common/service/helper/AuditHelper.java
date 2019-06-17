@@ -44,7 +44,7 @@ public class AuditHelper {
 	 * @param id     UIN/VID
 	 * @param idType {@link IdType}
 	 * @param desc   the desc
-	 * @throws {@link IDDataValidationException} the ID data validation exception
+	 * @throws IDDataValidationException the ID data validation exception
 	 */
 	public void audit(AuditModules module, AuditEvents event, String id, IdType idType, String desc)
 			throws IDDataValidationException {

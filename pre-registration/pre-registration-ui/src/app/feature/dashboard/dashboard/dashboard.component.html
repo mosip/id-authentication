@@ -9,18 +9,21 @@
       <span
         matTooltip="{{ 'helpText.book/modify_appointment' | translate }}"
         [matTooltipDisabled]="!disableModifyAppointmentButton"
-        ><button
-          mat-button
+      >
+        <!-- class="modify-app-btn" -->
+        <!-- mat-button -->
+        <button
           [disabled]="disableModifyAppointmentButton"
-          class="modify-app-btn"
+          class="btn_axn-sec page_btn mar_right-30"
           (click)="onModifyMultipleAppointment()"
         >
           <img src="assets\Book_Modify Appointment.png" class="modify-app-img" />
           {{ 'dashboard.action_modify_appointment' | translate }}
         </button></span
       >
-      <span
-        ><button mat-button class="create-app-btn" (click)="onNewApplication()">
+      <span>
+        <!-- class="create-app-btn" -->
+        <button class="btn_axn-pri page_btn" (click)="onNewApplication()">
           <img src="assets\Create new application.png" class="create-app-img" />
           {{ 'dashboard.action_cre_application' | translate }}
         </button></span
@@ -59,7 +62,11 @@
               <table>
                 <tr>
                   <td>{{ 'dashboard.card.text_name' | translate }}</td>
-                  <td [ngClass]="user.name.length > 30 ? 'application-value user__name--wordwrap' : 'application-value'">{{ user.name }}</td>
+                  <td
+                    [ngClass]="user.name.length > 30 ? 'application-value user__name--wordwrap' : 'application-value'"
+                  >
+                    {{ user.name }}
+                  </td>
                 </tr>
                 <tr>
                   <td>{{ 'dashboard.card.text_appoinment_date' | translate }}</td>

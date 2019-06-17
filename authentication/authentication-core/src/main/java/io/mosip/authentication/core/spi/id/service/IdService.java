@@ -18,6 +18,7 @@ public interface IdService<T> {
 	 * validates the UIN.
 	 *
 	 * @param uin the uin
+	 * @param isBio the is bio
 	 * @return the id repo by uin number
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -28,6 +29,7 @@ public interface IdService<T> {
 	 * validates the VID.
 	 *
 	 * @param vid the vid
+	 * @param isBio the is bio
 	 * @return the id repo by vid number
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -40,6 +42,7 @@ public interface IdService<T> {
 	 *
 	 * @param idvIdType idType
 	 * @param idvId     id-number
+	 * @param isBio the is bio
 	 * @return map
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -50,13 +53,7 @@ public interface IdService<T> {
 	/**
 	 * Store entry in Auth_txn table for all authentications.
 	 *
-	 * @param idvId       idvId
-	 * @param idvIdType   idvIdType(D/V)
-	 * @param reqTime     reqTime
-	 * @param txnId       txnId
-	 * @param status      status('Y'/'N')
-	 * @param comment     comment
-	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @param t the t
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */

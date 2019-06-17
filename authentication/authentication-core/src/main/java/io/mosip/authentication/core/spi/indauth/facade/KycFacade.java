@@ -19,6 +19,7 @@ public interface KycFacade {
 	 *
 	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
 	 * @param authResponseDTO   the auth response DTO
+	 * @param partnerId the partner id
 	 * @return the kyc auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception

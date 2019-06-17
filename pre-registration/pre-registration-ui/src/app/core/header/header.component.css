@@ -5,8 +5,8 @@
   width: 180px;
 }
 .mat-toolbar {
-  /* position: sticky; */
   top: 0;
+  position: sticky;
   z-index: 1;
   background-color: #0b6a82;
   border-color: #707070;
@@ -14,11 +14,15 @@
   overflow-x: hidden;
   width: 100%;
   height: 68px;
+  padding: 0px 2vw;
 }
 
 .header--logo {
   vertical-align: middle;
   cursor: pointer;
+  /* UX enhancement */
+  padding-left: 4%;
+  /* UX enhancement end */
 }
 
 .spacer {

@@ -44,15 +44,9 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class IdInfoHelper.
+ * Helper class to build Authentication request.
  *
  * @author Dinesh Karuppiah.T
- */
-
-/**
- * 
- * Helper class to build Authentication request
- *
  */
 
 @Component
@@ -69,6 +63,7 @@ public class IdInfoHelper {
 	@Autowired
 	private Environment environment;
 
+	/** The id info fetcher. */
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
 
@@ -76,11 +71,11 @@ public class IdInfoHelper {
 	private static Logger mosipLogger = IdaLogger.getLogger(IdInfoHelper.class);
 
 	/**
-	 * Get Authrequest Info
-	 * 
-	 * @param matchType
-	 * @param authRequestDTO
-	 * @return
+	 * Get Authrequest Info.
+	 *
+	 * @param matchType the match type
+	 * @param authRequestDTO the auth request DTO
+	 * @return the auth reqest info
 	 */
 	public Map<String, String> getAuthReqestInfo(MatchType matchType, AuthRequestDTO authRequestDTO) {
 		return matchType.getReqestInfoFunction().apply(authRequestDTO);
@@ -92,7 +87,7 @@ public class IdInfoHelper {
 	 * @param name                 the name
 	 * @param languageForMatchType the language for match type
 	 * @param identityInfo         the demo info
-	 * @param matchType
+	 * @param matchType the match type
 	 * @return the identity value
 	 */
 	private Stream<String> getIdentityValueFromMap(String name, String languageForMatchType,
@@ -111,9 +106,9 @@ public class IdInfoHelper {
 	 * Gets the id mapping value.
 	 *
 	 * @param idMapping the id mapping
-	 * @param matchType
+	 * @param matchType the match type
 	 * @return the id mapping value
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public List<String> getIdMappingValue(IdMapping idMapping, MatchType matchType)
 			throws IdAuthenticationBusinessException {
@@ -148,11 +143,10 @@ public class IdInfoHelper {
 	}
 
 	/**
-	 * To check Whether Match type is Enabled
-	 * 
-	 * @param idMapping
-	 * @param matchType
-	 * @return
+	 * To check Whether Match type is Enabled.
+	 *
+	 * @param matchType the match type
+	 * @return true, if is matchtype enabled
 	 */
 	public boolean isMatchtypeEnabled(MatchType matchType) {
 		List<String> mappings = matchType.getIdMapping().getMappingFunction().apply(idMappingConfig, matchType);
@@ -165,8 +159,7 @@ public class IdInfoHelper {
 	 * @param matchType  the match type
 	 * @param demoEntity the demo entity
 	 * @return the entity info as string
-	 * @throws IdAuthenticationBusinessException
-	 * @throws Exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String getEntityInfoAsString(MatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity)
 			throws IdAuthenticationBusinessException {
@@ -178,9 +171,10 @@ public class IdInfoHelper {
 	 * Gets the entity info as string.
 	 *
 	 * @param matchType  the match type
+	 * @param langCode the lang code
 	 * @param demoEntity the demo entity
 	 * @return the entity info as string
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String getEntityInfoAsString(MatchType matchType, String langCode,
 			Map<String, List<IdentityInfoDTO>> demoEntity) throws IdAuthenticationBusinessException {
@@ -191,12 +185,12 @@ public class IdInfoHelper {
 	/**
 	 * Gets the identity values map.
 	 *
+	 * @param matchType the match type
 	 * @param propertyNames the property names
 	 * @param languageCode  the language code
-	 * @param demoEntity    the demo entity
+	 * @param idEntity the id entity
 	 * @return the identity values map
-	 * @throws IdAuthenticationBusinessException
-	 * @throws Exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private Map<String, String> getIdentityValuesMap(MatchType matchType, List<String> propertyNames,
 			String languageCode, Map<String, List<IdentityInfoDTO>> idEntity) throws IdAuthenticationBusinessException {
@@ -215,10 +209,9 @@ public class IdInfoHelper {
 	 *
 	 * @param matchType     the match type
 	 * @param identityInfos the demo entity
-	 * @param language
+	 * @param language the language
 	 * @return the entity info map
-	 * @throws IdAuthenticationBusinessException
-	 * @throws Exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public Map<String, String> getIdEntityInfoMap(MatchType matchType, Map<String, List<IdentityInfoDTO>> identityInfos,
 			String language) throws IdAuthenticationBusinessException {
@@ -233,7 +226,7 @@ public class IdInfoHelper {
 	 * @param authRequestDTO  the identity DTO
 	 * @param identityEntity  the demo entity
 	 * @param listMatchInputs the list match inputs
-	 * @param partnerId
+	 * @param partnerId the partner id
 	 * @return the list
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -258,7 +251,7 @@ public class IdInfoHelper {
 	 * @param uin                the uin
 	 * @param listMatchInputs    the list match inputs
 	 * @param entityValueFetcher the entity value fetcher
-	 * @param partnerId
+	 * @param partnerId the partner id
 	 * @return the list
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -283,7 +276,7 @@ public class IdInfoHelper {
 	 * @param uin                the uin
 	 * @param input              the input
 	 * @param entityValueFetcher the entity value fetcher
-	 * @param partnerId
+	 * @param partnerId the partner id
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -299,7 +292,7 @@ public class IdInfoHelper {
 	 * @param authRequestDTO the auth request DTO
 	 * @param demoEntity     the demo entity
 	 * @param input          the input
-	 * @param partnerId
+	 * @param partnerId the partner id
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -314,8 +307,10 @@ public class IdInfoHelper {
 	 *
 	 * @param authRequestDTO the demo DTO
 	 * @param demoEntity     the demo entity
+	 * @param uin the uin
 	 * @param input          the input
-	 * @param partnerId
+	 * @param entityValueFetcher the entity value fetcher
+	 * @param partnerId the partner id
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -367,12 +362,13 @@ public class IdInfoHelper {
 	 *
 	 * @param demoEntity         the demo entity
 	 * @param uin                the uin
+	 * @param req the req
 	 * @param input              the input
 	 * @param entityValueFetcher the entity value fetcher
 	 * @param matchType          the match type
 	 * @param strategy           the strategy
 	 * @param reqInfo            the req info
-	 * @param partnerId
+	 * @param partnerId the partner id
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception

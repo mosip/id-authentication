@@ -2,6 +2,10 @@ package io.mosip.preregistration.login.util;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -10,8 +14,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.net.ssl.SSLContext;
+
 import java.util.Properties;
 
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +32,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,6 +76,10 @@ public class LoginCommonUtil {
 	@Qualifier("restTemplateConfig")
 	private RestTemplate restTemplate;
 	
+	
+	@Autowired
+	@Qualifier("restTemplateConfig")
+	private RestTemplate restTemplate1;
 	/**
 	 * Logger instance
 	 */
@@ -103,9 +120,15 @@ public class LoginCommonUtil {
 	 * @param body
 	 * @param responseClass
 	 * @return ResponseEntity<?>
+	 * @throws KeyStoreException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
+	 * @throws RestClientException 
 	 */
 	
-	public ResponseEntity<?> callAuthService(String url,HttpMethod httpMethodType,MediaType mediaType,Object body,Map<String,String> headersMap,Class<?> responseClass){
+	public ResponseEntity<?> callAuthService(String url,HttpMethod httpMethodType,MediaType mediaType,Object body,Map<String,String> headersMap,Class<?> responseClass) {
+		ResponseEntity<?> response=null;
+		try {
 		log.info("sessionId", "idType", "id", "In getResponseEntity method of Login Common Util");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(mediaType);
@@ -120,7 +143,12 @@ public class LoginCommonUtil {
 			request = new HttpEntity<>(headers);
 		}
 		log.info("sessionId", "idType", "id", "In call to kernel rest service :"+url);
-		return restTemplate.exchange(url,httpMethodType,request,responseClass);
+		response=getRestTemplate().exchange(url,httpMethodType,request,responseClass);
+		}
+		catch(Exception ex) {
+			throw new RestClientException("rest call failed");
+		}
+		return response;
 		
 	}
 	
@@ -301,11 +329,29 @@ public class LoginCommonUtil {
 		ResponseEntity<String> response=(ResponseEntity<String>) callAuthService(url, HttpMethod.POST, MediaType.APPLICATION_JSON, null, authHeader,String.class);
 		ResponseWrapper<?> responseKernel=requestBodyExchange(response.getBody());
 		if(! (responseKernel.getErrors()==null)) {
-			throw new  LoginServiceException(responseKernel.getErrors(),null);
+			log.error("sessionId", "idType", "id", "Invalid Token");
+			return null;
 		}
 		MosipUserDTO userDetailsDto=(MosipUserDTO) requestBodyExchangeObject(responseToString(responseKernel.getResponse()), MosipUserDTO.class);
 		
 		return userDetailsDto.getUserId();
+	}
+	
+	private RestTemplate getRestTemplate()
+			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		
+			TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+
+			SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
+					.loadTrustMaterial(null, acceptingTrustStrategy).build();
+
+			SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+
+			CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+			HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+
+			requestFactory.setHttpClient(httpClient);
+			return new RestTemplate(requestFactory);
 	}
 
 }
