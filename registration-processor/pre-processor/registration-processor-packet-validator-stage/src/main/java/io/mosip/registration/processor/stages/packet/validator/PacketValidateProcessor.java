@@ -457,6 +457,7 @@ public class PacketValidateProcessor {
 				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
 
 			if (!uinPresentInIdRepo(String.valueOf(uin))) {
+				packetValidaionFailure = "uin is not present in idrepo";
 				return false;
 			}
 		}
