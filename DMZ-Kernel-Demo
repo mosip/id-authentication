@@ -1,0 +1,23 @@
+node{
+projectToBuild = 'kernel'
+stage('------- Checkout --------') {
+  // Checkout only Registration-Processor Module
+  dir(branch) {
+   checkout([$class: 'GitSCM',
+    branches: [
+     [name: branch]
+    ],
+    userRemoteConfigs: [
+     [url: 'https://github.com/mosip/mosip.git', credentialsId:'e80f93ea-49d6-46b6-87df-f7d02dc0e1cf']
+    ],
+      extensions: [
+     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
+      [$class: 'SparseCheckoutPath', path: '/' + projectToBuild + '/']
+     ]]
+    ],
+   ])
+   }
+  }
+ }
+ 
+ 
