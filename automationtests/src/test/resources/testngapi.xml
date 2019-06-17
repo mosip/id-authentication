@@ -110,7 +110,7 @@
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />   
  
-		 	<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  -->
+		 	<!-- <class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  -->
 
 		</classes>
 	</test> 
