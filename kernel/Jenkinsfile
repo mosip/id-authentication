@@ -127,6 +127,7 @@ stage('---------- SonarQube Analysis --------------') {
      /*
      Getting path of the module to be built
      */
+	 if(!(moduleName == 'kernel-keymanager-service')){
      modulePath = locationOfDockerFiles[i].substring(2);
      updatedServices.add(moduleName)
      updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
@@ -156,6 +157,7 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $registryName/$moduleName"
     }
    } 
+   }
    else {
     /*
      If build paramerter is passed as Build Changes (Only changed submodules have to be built)
@@ -174,6 +176,7 @@ stage('---------- SonarQube Analysis --------------') {
      /*
      Getting path of the module to be built
      */
+	  if(!(moduleName == 'kernel-keymanager-service')){
      modulePath = changedModulesLocation[i].substring(2);
      updatedServices.add(moduleName)
      updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
@@ -202,6 +205,7 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
     }
+	}
    }
 
     /*
@@ -294,6 +298,20 @@ stage('---------- SonarQube Analysis --------------') {
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
+	stage('Key-Manager Deployment'){
+			 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '305c7f35-2eb5-44b4-b574-a0855ef70c26',
+usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+def label_env=env.NEXT_BRANCH_NAME
+sh """ssh  madmin@13.71.86.138 /bin/bash << EOF
+sudo docker login -u "${USERNAME}" -p "${PASSWORD}"  docker-registry.mosip.io:5000 
+sudo docker ps -aq | xargs sudo docker stop | xargs sudo docker rm
+sudo docker images -q | xargs sudo docker rmi
+echo "Echoing label_env"
+echo "${label_env}"
+sudo docker run -tid --ulimit memlock=-1 -p 8088:8088 -v softhsm:/softhsm -e spring_config_url_env=http://kernel-config-server:51000/config -e spring_config_label_env="${label_env}" -e active_profile_env=dev --name keymanager docker-registry.mosip.io:5000/kernel-keymanager-service
+EOF"""
+		}
+	}
  }
  
    // Catching the exception for triggering email
