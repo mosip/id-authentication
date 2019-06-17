@@ -8,7 +8,7 @@
 |----------|----------|
 SubmittedBy|Ravi C Balaji
 Date Raised | 17-Jun-2019
-Jenkins Build #	|Min Version : 2133  [Any later version also]
+Jenkins Build #	|Min Version : 2146  [Any later version also]
 Objective & Scope of Release| Pre-registration module
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
@@ -18,11 +18,7 @@ RFC(s) #|	NA
 #### 1.3 Features Delivered : <br><sub>List of Features Delivered as part of this release should be listed here</sub></br>
 Requirement ID | Requirement Type <br>(New\\Enhancement\\Defect)</br> | Description
 -----|----------|-------------
-MOS-25680|New|UI Enhancement - Padding & Alignment Fixes of current implemented UI 
-                 Partially Done For – 
-                      1.	Login Page
-                      2.	Demographic Page
-                      3.	File Upload Page
+MOS-25680|New|UI Enhancement - Padding & Alignment Fixes of current implemented UI. Partially Done For – Login Page,Demographic Page,File Upload Page
 
 
 #### 1.4 Prerequisites 
