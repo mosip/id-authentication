@@ -76,7 +76,8 @@ import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
- * Class for creating the Resident Registration as zip file
+ * Implementation class of {@link PacketCreationService} for creating the
+ * Resident Registration as zip file
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
