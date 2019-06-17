@@ -66,7 +66,7 @@ public class SyncConfigurations extends BaseTestCase implements ITest {
 		String object = (String) testdata[0];
 		testCaseName = object.toString();
 		cookie=auth.getAuthForRegistrationAdmin();
-		build=buildNumber.substring(2, 4);
+		build=io.mosip.report.Reporter.getAppDepolymentVersion().substring(2, 4);
 	} 
 	
 	// Data Providers to read the input json files from the folders

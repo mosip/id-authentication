@@ -185,6 +185,7 @@ public class OTP extends BaseTestCase implements ITest {
 				}
 				
 				response = applicationLibrary.getWithQueryParam(OTPValidation, reqJson,cookie);
+				System.err.println(response.asString());
 				//This method is for checking the authentication is pass or fail in rest services
 				new CommonLibrary().responseAuthValidation(response);
 				logger.info("Obtained Response: " + response);
