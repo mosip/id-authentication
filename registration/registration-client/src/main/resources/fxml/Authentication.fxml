@@ -209,7 +209,7 @@
 													<children>
 														<TextField fx:id="otpUserId" promptText="%username" styleClass="authenticationStyle" />
 														<PasswordField fx:id="otp" promptText="%enterotp" styleClass="authenticationStyle" />
-																<Button mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" fx:id="getOTP"/>
+																<Button fx:id="getOTP" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
 																<Button mnemonicParsing="false" onAction="#validateOTP" styleClass="contiuneButton" text="%submit" />
 														<Label fx:id="otpValidity" />
 													</children>
@@ -495,7 +495,7 @@
                                              <children>
                                                 <ImageView fitHeight="128.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                                    <image>
-                                                      <Image url="@../images/eye.png" />
+                                                      <Image url="@../images/Eye.png" />
                                                    </image>
                                                 </ImageView>
                                              </children>
