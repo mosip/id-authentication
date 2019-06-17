@@ -468,7 +468,7 @@ public class PacketValidateProcessor {
 
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
 		// Sync list table
-		return !validateRegIdAndTypeFromSyncTable(metadataList);
+		return validateRegIdAndTypeFromSyncTable(metadataList);
 	}
 
 	private boolean ifUinIDRepo(String uin) throws ApisResourceAccessException, IOException {
