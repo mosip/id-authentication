@@ -15,7 +15,7 @@
 
 		regression smokeAndRegression -->
 		
-			<test name="Kernel Tests">
+			<!--<test name="Kernel Tests">
 						 <classes>
 
                            <class name="io.mosip.kernel.tests.AuditLog" />   
@@ -111,7 +111,7 @@
 			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  
 
 		</classes>
-	</test>  
+	</test>   -->
 
 	
  	 <test name="RegistrationProcessor Tests">
@@ -137,7 +137,7 @@
 
 
 
-	<test name="AuthenticationTest">
+	<!--<test name="AuthenticationTest">
 		<classes>
 			 <class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" />
 			<class name="io.mosip.authentication.idRepository.prerequiste.CreateVID" />
@@ -153,11 +153,11 @@
 			<class	name="io.mosip.authentication.tests.EkycWithOtpAuthentication" /> 
 			 <class name="io.mosip.authentication.tests.EkycPartnerAuthentication" /> 	
 						
-		<!-- <class name="io.mosip.authentication.idRepository.tests.AddIdentity" />			
+		 <class name="io.mosip.authentication.idRepository.tests.AddIdentity" />			
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
-			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" /> -->
+			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />
 		</classes>
-	</test>  
+	</test>   -->
 
 </suite>
 
