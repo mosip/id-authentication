@@ -55,7 +55,7 @@ public class DataSyncExceptionCatcher {
 					((ZipFileCreationException) ex).getErrorText(), mainResponsedto);
 		} else if (ex instanceof IOException) {
 			throw new SystemFileIOException(ErrorCodes.PRG_DATA_SYNC_014.toString(),
-					ErrorMessages.FILE_IO_EXCEPTION.toString(), mainResponsedto);
+					ErrorMessages.FILE_IO_EXCEPTION.getMessage(), mainResponsedto);
 		} else if (ex instanceof RecordNotFoundForDateRange) {
 			throw new RecordNotFoundForDateRange(((RecordNotFoundForDateRange) ex).getErrorCode(),
 					((RecordNotFoundForDateRange) ex).getErrorText(), mainResponsedto);
