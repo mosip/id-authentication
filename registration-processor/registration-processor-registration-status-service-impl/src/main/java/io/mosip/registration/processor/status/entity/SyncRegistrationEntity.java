@@ -216,7 +216,7 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity {
 	 * @return the optional values
 	 */
 	public byte[] getOptionalValues() {
-		return Arrays.copyOf(optionalValues, optionalValues.length);
+		return optionalValues;
 	}
 
 	/**
