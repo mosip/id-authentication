@@ -30,13 +30,16 @@ stage('------- Checkout --------') {
         sh "basename $currentModule > moduleName"
      moduleName = readFile('moduleName').trim()
      sh "rm -f moduleName"
-     modulePath = locationOfDockerFiles[i].substring(2);
+     if(!moduleName === kernel-keymanager-service){
+          echo moduleName
+     }
+    // modulePath = locationOfDockerFiles[i].substring(2);
      
-     sh "dirname $currentModule > parentDirectory"
-     def parentDirectory = readFile('parentDirectory').trim()
-     parentDirectory = parentDirectory.substring(2);
+     //sh "dirname $currentModule > parentDirectory"
+     //def parentDirectory = readFile('parentDirectory').trim()
+     //parentDirectory = parentDirectory.substring(2);
      
-     echo parentDirectory 
+     //echo parentDirectory 
      }
     }
    }
