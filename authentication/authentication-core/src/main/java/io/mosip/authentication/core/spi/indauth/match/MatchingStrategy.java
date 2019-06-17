@@ -21,8 +21,8 @@ public interface MatchingStrategy {
 	}
 	
 	/**
-	 * gets the MatchFunction
-	 * 
+	 * gets the MatchFunction.
+	 *
 	 * @return MatchFunction
 	 */
 	public default MatchFunction getMatchFunction() {
@@ -30,12 +30,13 @@ public interface MatchingStrategy {
 	}
 	
 	/**
-	 * this method matches the request Values with entity values
-	 * @param reqValues
-	 * @param entityValues
-	 * @param matchProperties
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * this method matches the request Values with entity values.
+	 *
+	 * @param reqValues the req values
+	 * @param entityValues the entity values
+	 * @param matchProperties the match properties
+	 * @return the int
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public default int match(Map<String, String> reqValues, Map<String, String> entityValues,
 			Map<String, Object> matchProperties) throws IdAuthenticationBusinessException {
