@@ -130,10 +130,12 @@ stage('---------- SonarQube Analysis --------------') {
      Getting path of the module to be built
      */
      modulePath = locationOfDockerFiles[i].substring(2);
-	 	 if(!(moduleName == 'kernel-keymanager-service')){
-     updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
-	 }
+     
+     //kernel-keymanager-service will be deployed in another VM, not inside the cluster
+     if(!(moduleName == 'kernel-keymanager-service')){
+         updatedServices.add(moduleName)
+         updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
      /*
      Updating containersToRun List
      */
@@ -180,11 +182,12 @@ stage('---------- SonarQube Analysis --------------') {
      Getting path of the module to be built
      */
      modulePath = changedModulesLocation[i].substring(2);
-	 	  if(!(moduleName == 'kernel-keymanager-service')){
-
-     updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
-	 }
+     
+     //kernel-keymanager-service will be deployed in another VM, not inside the cluster
+     if(!(moduleName == 'kernel-keymanager-service')){
+           updatedServices.add(moduleName)
+           updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
      /*
      Updating containersToRun List
      */
