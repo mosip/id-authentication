@@ -253,17 +253,22 @@ public class ClientJarDecryption extends Application {
 							}
 
 							try {
-								String libPath = new File("lib").getAbsolutePath();
+
+								String libPath = "\"" + new File("lib").getAbsolutePath() + "\"";
+
 								String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.env")
 										+ " -Dfile.encoding=UTF-8 -Dmosip.dbpath="
 										+ properties.getProperty("mosip.dbpath") + " -D" + MOSIP_REGISTRATION_DB_KEY
-										+ "=" + propsFilePath + " -cp " + tempPath + "/*;" + libPath
+										+ "=" + "\"" + propsFilePath + "\"" + " -cp " + tempPath + "/*;" + libPath
 										+ "/* io.mosip.registration.controller.Initialization";
+
 								System.out.println("Command-->>" + cmd);
+								
 								Process process = Runtime.getRuntime().exec(cmd);
 								System.out.println("the output stream is " + process.getOutputStream().getClass());
 								BufferedReader bufferedReader = new BufferedReader(
 										new InputStreamReader(process.getInputStream()));
+
 								String s;
 								while ((s = bufferedReader.readLine()) != null) {
 									System.out.println("The stream is : " + s);
