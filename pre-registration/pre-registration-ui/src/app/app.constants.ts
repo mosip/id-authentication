@@ -70,7 +70,8 @@ export const PARAMS_KEYS = {
 export const ERROR_CODES = {
   noApplicantEnrolled: 'PRG_PAM_APP_005',
   userBlocked: 'PRG_PAM_LGN_013',
-  invalidPin: 'KER-IOV-004'
+  invalidPin: 'KER-IOV-004',
+  tokenExpired: 'KER-ATH-401'
 };
 
 export const CONFIG_KEYS = {
@@ -105,8 +106,6 @@ export const CONFIG_KEYS = {
 
 export const DASHBOARD_RESPONSE_KEYS = {
   bookingRegistrationDTO: {
-  //  dto: 'bookingRegistrationDTO',
-    // new dashboard api
     dto: 'bookingMetadata',
     regDate: 'appointment_date',
     time_slot_from: 'time_slot_from',
