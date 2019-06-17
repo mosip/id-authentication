@@ -84,10 +84,30 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 */
 	@Test(groups = { "IntegrationScenarios" })
-	public void fetchBookedAppointmentCreatedByUser() {
-	dao.makeregistartionCenterActive("10001");
-dao.makeregistartionCenterActive("10001");
-lib.syncMasterData();
+	public void createAppUploadFetchBookAppFetchApp() {
+		String regCenterId = null;
+		String appDate = null;
+		String timeSlotFrom = null;
+		String timeSlotTo = null;
+
+		// Create PreReg
+		response = lib.CreatePreReg();
+		preRegID = response.jsonPath().get("response.preRegistrationId").toString();
+		// Upload document
+		response = lib.documentUpload(response);
+		String documentId = response.jsonPath().get("response.docId").toString();
+		logger.info("Document ID: " + documentId);
+
+		// Fetch Center
+		Response fetchCenterResponse = lib.FetchCentre();
+
+		// Book Appointment
+		response = lib.BookAppointment(response, fetchCenterResponse, preRegID);
+		lib.compareValues(response.jsonPath().getString("response.bookingMessage"), "Appointment booked successfully");
+
+		// Update PreReg
+		response = lib.updatePreReg(preRegID);
+		Assert.assertNotNull(response.jsonPath().get("response.updatedDateTime"));
 	}
 
 	@BeforeMethod(alwaysRun = true)

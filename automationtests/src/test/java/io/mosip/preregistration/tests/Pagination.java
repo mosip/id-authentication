@@ -80,7 +80,7 @@ public class Pagination extends BaseTestCase implements ITest {
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = lib.getPreId(createResponse);
 		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10001");
+		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		Response paginationResponse = lib.pagination("0");

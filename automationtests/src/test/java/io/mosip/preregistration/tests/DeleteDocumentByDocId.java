@@ -131,8 +131,11 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
        // logger.info("Doc upload res::"+docUploadResponse.asString());
 		// Get PreId from Document upload response
-		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
-
+		try {
+			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception occured while uploading document ");
+		}
 		// Get docId from Document upload response
 		try {
 			docId = docUploadResponse.jsonPath().get("response.docId").toString();
@@ -154,8 +157,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 			try {
 				
 				docId = actualRequest.get("documentId").toString();
-				//docId = docUploadResponse.jsonPath().get("response.docId").toString();
-			} catch (NullPointerException e) {
+			} catch (NullPointerException  e) {
 				Assert.assertTrue(false, "Document id is not present in document upload response");
 			}
 

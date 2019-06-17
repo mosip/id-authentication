@@ -69,7 +69,7 @@ public SoftAssert softAssert = new SoftAssert();
 	private static  String preReg_URI;
 	public String dest = "";
 	public String configPaths = "";
-	public String folderPath = "preReg\\Create_PreRegistration";
+	public String folderPath = "preReg//Create_PreRegistration";
 	public String outputFile = "Create_PreRegistrationOutput.json";
 	public String requestKeyFile = "Create_PreRegistrationRequest.json";
 

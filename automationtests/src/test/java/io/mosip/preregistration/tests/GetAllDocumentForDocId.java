@@ -13,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITest;
@@ -134,8 +135,13 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
 		// Get PreId from Document upload response
-		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
-
+		try {
+			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+			
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception occured while uploading document");
+		}
+		
 		// Get docId from Document upload response
 		docId = preRegLib.getDocId(docUploadResponse);
 
