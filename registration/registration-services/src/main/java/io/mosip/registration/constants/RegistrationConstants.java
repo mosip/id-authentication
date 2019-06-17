@@ -1449,5 +1449,9 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_FACE="FACE";
 	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
 	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
+	
+	public static final int DAYS = 31;
+	public static final int MONTH = 12;
+	public static final int YEAR = 3;
 
 }

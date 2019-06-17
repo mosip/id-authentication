@@ -15,6 +15,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegDeviceMaster;
@@ -72,7 +73,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				"getStationID() macAddress --> " + macAddress);
 
 		try {
-			MachineMaster machineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macAddress);
+			MachineMaster machineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(macAddress, ApplicationContext.applicationLanguage());
 
 			if (machineMaster != null && machineMaster.getRegMachineSpecId().getId() != null) {
 				return machineMaster.getRegMachineSpecId().getId();
@@ -150,7 +151,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Key Index of Machine based on MAC Id");
 
-		MachineMaster machineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macId);
+		MachineMaster machineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(macId, ApplicationContext.applicationLanguage());
 
 		LOGGER.info(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Completed fetching Key Index of Machine based on MAC Id");

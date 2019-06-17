@@ -17,6 +17,6 @@ public interface MachineMasterRepository extends BaseRepository<MachineMaster, R
 	 * @param macAddress macAddress to get {@link MachineMaster}
 	 * @return the machine master
 	 */
-	MachineMaster findByIsActiveTrueAndMacAddress(String macAddress);
+	MachineMaster findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(String macAddress, String langCode);
 	
 }
