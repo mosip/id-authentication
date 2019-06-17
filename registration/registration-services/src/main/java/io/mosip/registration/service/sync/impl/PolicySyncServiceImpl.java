@@ -38,7 +38,10 @@ import io.mosip.registration.service.sync.PolicySyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
- * it does the key policy synch
+ * 
+ * It provides the method to download the Mosip public key specific to the user's local machines and center specific and store 
+ * the same into local db for further usage during registration process. The key has expiry period. Based on the expiry period the 
+ * new key would be downloaded from the server through this service by triggering from batch process.  
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0
@@ -102,6 +105,16 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		return responseDTO;
 	}
 
+	/**
+	 * This method invokes the external service 'policysync' to download the public key with respect to local center and machine id combination. 
+	 * And store the key into the local database for further usage during registration process. 
+	 * 
+	 * @param responseDTO
+	 * @param centerMachineId
+	 * @throws KeyManagementException
+	 * @throws IOException
+	 * @throws java.security.NoSuchAlgorithmException
+	 */
 	public synchronized void getPublicKey(ResponseDTO responseDTO, String centerMachineId)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
