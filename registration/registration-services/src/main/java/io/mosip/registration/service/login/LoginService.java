@@ -92,21 +92,17 @@ public interface LoginService {
 	 * This method will Validate login attempts to check whether operator can login
 	 * or not
 	 * 
-	 * <p>
-	 * This will validate against invalid number of attempts and time and update the
-	 * table with the corresponding parameters in case of invalid or valid
-	 * </p>
+	 * <p>This will validate against invalid number of attempts and time and update the
+	 * 	table with the corresponding parameters in case of invalid or valid</p>
 	 * 
 	 * @param userDTO
 	 *            {@code UserDTO} user details
 	 * @param errorMessage
 	 *            {@code String} error message for validation
 	 * @param invalidLoginCount
-	 *            {@code Integer} invalid login count against which validation will
-	 *            be done
+	 *            {@code Integer} invalid login count against which validation will be done
 	 * @param invalidLoginTime
-	 *            {@code Integer} invalid login time against which validation will
-	 *            be done
+	 *            {@code Integer} invalid login time against which validation will be done
 	 * 
 	 * @return {@code String} returns whether validation successful or not
 	 */
@@ -115,39 +111,19 @@ public interface LoginService {
 	/**
 	 * This method will Validate user id entered by operator
 	 * 
-	 * <p>
-	 * If User exists :
-	 * </p>
-	 * <p>
-	 * Fetch the center id mapped to user id entered by operator
-	 * </p>
-	 * <p>
-	 * Fetch the roles mapped to user id
-	 * </p>
-	 * <p>
-	 * The success response DTO will be formed and returned from this method.
-	 * </p>
+	 * <p>If User exists :</p>
+	 * 		<p>Fetch the center id mapped to user id entered by operator</p>
+	 * 			<p>Fetch the roles mapped to user id</p>
+	 * 				<p>The success response DTO will be formed and returned from this method.</p>
 	 * 
-	 * <p>
-	 * If Roles not matches or exists
-	 * </p>
-	 * <p>
-	 * The failure response DTO will be formed and returned from this method.
-	 * </p>
+	 * 			<p>If Roles not matches or exists:</p>
+	 * 				<p>The failure response DTO will be formed and returned from this method.</p>
 	 * 
-	 * <p>
-	 * If Center id not matches or exists
-	 * </p>
-	 * <p>
-	 * The failure response DTO will be formed and returned from this method.
-	 * </p>
+	 * 		<p>If Center id not matches or exists</p>
+	 * 			<p>The failure response DTO will be formed and returned from this method.</p>
 	 * 
-	 * <p>
-	 * If user not exists :
-	 * </p>
-	 * <p>
-	 * The failure response DTO will be formed and returned from this method.
-	 * </p>
+	 * <p>If user not exists :</p>
+	 * 		<p>The failure response DTO will be formed and returned from this method.</p>
 	 * 
 	 * @param userId
 	 *            {@code String} user-id entered by operator
