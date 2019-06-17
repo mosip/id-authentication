@@ -1,7 +1,6 @@
 package io.mosip.kernel.tests;
 
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,7 +15,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -32,8 +30,6 @@ import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.ReadFolder;
-import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
@@ -58,12 +54,8 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	private final String mapLicenseKey = props.get("mapLicenseKey");
 	private final String fetchmapLicenseKey = props.get("fetchmapLicenseKey");
 	private String folderPath = "LicenseKeyController/GenerateLicenseKey";
-	private String outputFile = "GenerateLicenseKeyrOutput.json";
-	private String requestKeyFile = "GenerateLicenceKeyInput.json";
 	private JSONObject Expectedresponse = null;
-	private String finalStatus = "";
 	private String folderPath1 = "LicenseKeyController/MapLicenseKeyPermission";
-	private JSONObject actualRequest1=null;
 	private String folderPath2 = "LicenseKeyController/FetchLicenseKeyPermissions";
 	private Response res_map=null;
 	private String licenseKey="";
@@ -91,7 +83,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 	 * Given input Json as per defined folders When POSt request is sent to /licensekeymanager/v1.0/license/generate"
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
-	@SuppressWarnings("unchecked")
 	@Test(dataProvider="LicenseKeyGenerator",priority=0)
 	public void generateLicenseKey(String testcaseName) throws FileNotFoundException, IOException, ParseException
     {
@@ -120,17 +111,17 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
     	  if(testCaseName.contains("Kernel_GenerateLicenseKey_smoke_generateLicenceKey")){     
     		  int length=licenseKey.length();
     		  if(length==16){
-    			  finalStatus ="Pass";
+    			  status =true;
     		  	}
     		  else{
-				finalStatus="fail";
+    			  status =false;
     		  	}
     	   }
     	  else
-			finalStatus ="Pass";
+    		  status =true;
      }			
 		else {
-			finalStatus="Fail";
+			status =false;
 			logger.error(res);
 		}
      if (!status) {
@@ -178,14 +169,13 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 			 res_map = applicationLibrary.postWithJson(mapLicenseKey, actualRequest_map);
 	    
 	  // Comparing expected and actual response
-	    assertKernel.assertKernel(res_map, Expectedresponse,listOfElementToRemove);
+	   status= assertKernel.assertKernel(res_map, Expectedresponse,listOfElementToRemove);
       if (status) {
-	                
-				finalStatus = "Pass";
+    	     status =true;
 			}	
 		
 		else {
-			finalStatus="Fail";
+			status =false;
 		}
       if (!status) {
 			logger.debug(res_map);
@@ -229,11 +219,10 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(response, Expectedresponse,listOfElementToRemove);
       if (status) {	            
-				finalStatus = "Pass";
+    	  status =true;
 			}	
-		
 		else {
-			finalStatus="Fail";
+			status =false;
 			}
       if (!status) {
 			logger.debug(response);
@@ -241,7 +230,6 @@ public class LicenseKeyController extends BaseTestCase implements ITest{
 		Verify.verify(status);
 		softAssert.assertAll();
 }
-		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;

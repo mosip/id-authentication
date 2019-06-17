@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -122,11 +123,11 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
     		String id = actualRequest.get("id").toString();
 	        String queryStr = "SELECT count(*) FROM master.device_master_h h WHERE h.id='"+id+"'";
 	        long count = kernelDB.validateDBCount(queryStr,"masterdata");   
-	        if(count==3) {
+	        if(count==1) {
 	        	status = true;
 	        }else {
 	        	status=false;
-	        	logger.info("Device History is not equal to 1");
+	        	Assert.assertTrue(false, "device history is more than 1 and the count is "+count);
 	        }
     	  }else
     		  status = true;
