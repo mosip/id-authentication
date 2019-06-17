@@ -4,6 +4,7 @@ import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.processor.packet.service.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
 import static io.mosip.registration.processor.packet.service.mapper.CustomObjectMapper.MAPPER_FACADE;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -14,17 +15,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
+import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
+import io.mosip.kernel.idobjectvalidator.impl.IdObjectSchemaValidator;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.util.ServerUtil;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.builder.AuditRequestBuilder;
 import io.mosip.registration.processor.packet.service.builder.Builder;
@@ -54,6 +67,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private ZipCreationService zipCreationService;
 
 	@Autowired
+	private IdObjectValidator idObjectSchemaValidator;
+	
+	@Autowired
 	private Environment environment;
 
 	private String creationTime = null;
@@ -68,7 +84,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
+	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException, IdObjectValidationFailedException, IdObjectIOException, JsonParseException, JsonMappingException, IOException {
 		String rid = registrationDTO.getRegistrationId();
 		try {
 
@@ -83,6 +99,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			String idJsonAsString = javaObjectToJsonString(registrationDTO.getDemographicDTO().getDemographicInfoDTO());
+			ObjectMapper mapper=new ObjectMapper();
+			JSONObject idObject=mapper.readValue(idJsonAsString, JSONObject.class);
+			idObjectSchemaValidator.validateIdObject(idObject,IdObjectValidatorSupportedOperations.UPDATE_UIN);
 			filesGeneratedForPacket.put(DEMOGRPAHIC_JSON_NAME, idJsonAsString.getBytes());
 
 			AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
@@ -94,8 +113,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				hostName = InetAddress.getLocalHost().getHostName();
 			} catch (UnknownHostException unknownHostException) {
 
-				hostIP = environment.getProperty(RegistrationConstants.HOST_IP);
-				hostName = environment.getProperty(RegistrationConstants.HOST_NAME);
+				hostIP = ServerUtil.getServerUtilInstance().getServerIp();
+				hostName = ServerUtil.getServerUtilInstance().getServerName();
 			}
 			auditRequestBuilder.setActionTimeStamp(LocalDateTime.now(ZoneOffset.UTC))
 					.setCreatedAt(LocalDateTime.now(ZoneOffset.UTC)).setUuid("")

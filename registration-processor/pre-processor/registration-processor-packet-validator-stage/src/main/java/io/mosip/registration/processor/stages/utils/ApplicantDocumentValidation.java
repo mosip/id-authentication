@@ -30,7 +30,7 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
 /**
  * The Class ApplicantDocumentValidation.
  * 
- * M1039285
+ * @author Nagalakshmi
  */
 public class ApplicantDocumentValidation {
 

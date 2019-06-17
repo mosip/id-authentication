@@ -17,8 +17,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -34,6 +36,7 @@ import io.mosip.registration.processor.packet.manager.service.impl.FileManagerIm
  * @author M1022006
  *
  */
+@RefreshScope
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = PacketManagerConfigTest.class)
@@ -51,16 +54,16 @@ public class CleanUpServiceTest {
 	private File file;
 
 	/** The virus scan enc. */
-	@Value("${VIRUS_SCAN_ENC}")
-	private String virusScanEnc;
+	@Value("${ARCHIVE_LOCATION}")
+	private String ARCHIVE_LOCATION;
 
 	/** The virus scan dec. */
-	@Value("${VIRUS_SCAN_DEC}")
-	private String virusScanDec;
+	@Value("${LANDING_ZONE}")
+	private String LANDING_ZONE;
 
 	@Value("${registration.processor.packet.ext}")
 	private String extention;
-	
+
 	@Mock
 	private Environment env;
 
@@ -69,8 +72,8 @@ public class CleanUpServiceTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("1001.zip").getFile());
 		// Mockito.when(env.getProperty(any()).thenReturn("");
-		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_ENC.toString())).thenReturn(virusScanEnc);
-		when(env.getProperty(DirectoryPathDto.VIRUS_SCAN_DEC.toString())).thenReturn(virusScanDec);
+		when(env.getProperty(DirectoryPathDto.ARCHIVE_LOCATION.toString())).thenReturn(ARCHIVE_LOCATION);
+		when(env.getProperty(DirectoryPathDto.LANDING_ZONE.toString())).thenReturn(LANDING_ZONE);
 		when(env.getProperty("registration.processor.packet.ext")).thenReturn(extention);
 
 	}
@@ -80,10 +83,10 @@ public class CleanUpServiceTest {
 	public void cleanUpFileSuccessCheck() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_DEC);
-		fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertFalse(exists);
 
 	}
@@ -93,10 +96,10 @@ public class CleanUpServiceTest {
 	public void cleanUpFileIOExceptionTest() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_DEC);
-		fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertFalse(exists);
 
 	}
@@ -107,8 +110,8 @@ public class CleanUpServiceTest {
 
 		String fileName = "Destination.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
+		fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
 		assertFalse(exists);//
 	}
 
@@ -118,10 +121,10 @@ public class CleanUpServiceTest {
 
 		String fileName = "1002.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_DEC);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
 
-		fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn);
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertFalse(exists);
 
 	}
@@ -132,12 +135,12 @@ public class CleanUpServiceTest {
 		String childFileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(childFileName);
 		fileManager.put("child" + File.separator + fileNameWithoutExtn, new FileInputStream(file),
-				DirectoryPathDto.VIRUS_SCAN_ENC);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_DEC);
-		fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn,
+				DirectoryPathDto.ARCHIVE_LOCATION);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn,
 				"child");
 
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC,
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION,
 				"child" + File.separator + childFileName);
 		assertFalse(exists);
 
@@ -149,9 +152,9 @@ public class CleanUpServiceTest {
 
 		String fileName = "Destination.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn,
+		fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn,
 				"child");
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertFalse(exists);
 	}
 
@@ -161,9 +164,9 @@ public class CleanUpServiceTest {
 
 		String fileName = "1002.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_DEC);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
 
-		fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC, fileNameWithoutExtn,
+		fileManager.cleanUpFile(DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn,
 				"child");
 	}
 
@@ -172,15 +175,15 @@ public class CleanUpServiceTest {
 	public void deleteSuccess() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_DEC);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
 
-		fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		fileManager.deletePacket(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		fileManager.put("child" + File.separator + fileNameWithoutExtn, new FileInputStream(file),
-				DirectoryPathDto.VIRUS_SCAN_ENC);
-		fileManager.deleteFolder(DirectoryPathDto.VIRUS_SCAN_ENC, "child");
+				DirectoryPathDto.ARCHIVE_LOCATION);
+		fileManager.deleteFolder(DirectoryPathDto.ARCHIVE_LOCATION, "child");
 
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertEquals("Deleted file", false, exists);
 	}
 
@@ -190,7 +193,7 @@ public class CleanUpServiceTest {
 		String fileName = "1002.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
 
-		fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		fileManager.deletePacket(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 
 	}
 
@@ -199,9 +202,9 @@ public class CleanUpServiceTest {
 	public void copyTest() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_ENC);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN_DEC);
-		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.VIRUS_SCAN_ENC, DirectoryPathDto.VIRUS_SCAN_DEC);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE);
 	}
 
 	@Test
@@ -209,8 +212,8 @@ public class CleanUpServiceTest {
 	public void getFileTest() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		File file = FileUtils.getFile(DirectoryPathDto.VIRUS_SCAN_ENC.toString(), fileName );
-		File getFile = fileManager.getFile(DirectoryPathDto.VIRUS_SCAN_ENC, fileNameWithoutExtn);
+		File file = FileUtils.getFile(DirectoryPathDto.ARCHIVE_LOCATION.toString(), fileName );
+		File getFile = fileManager.getFile(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertEquals(file.getName().trim(), getFile.getName().trim());
 	}
 

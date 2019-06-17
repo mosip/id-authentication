@@ -23,8 +23,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -57,8 +55,6 @@ import io.mosip.registration.processor.message.sender.exception.TemplateGenerati
 import io.mosip.registration.processor.message.sender.exception.TemplateNotFoundException;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
-import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
-import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 import io.mosip.registration.processor.status.code.RegistrationType;
@@ -298,7 +294,7 @@ public class MessageNotificationServiceImpl
 	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
 			throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		InputStream demographicInfoStream = null;
-		Long uin = null;
+		Long uin = 0l;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
 			JSONObject jsonObject = utility.retrieveUIN(id);
 			uin = JsonUtil.getJSONValue(jsonObject, UIN);
@@ -311,9 +307,7 @@ public class MessageNotificationServiceImpl
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 		String demographicInfo = IOUtils.toString(demographicInfoStream, ENCODING);
 
-		if (regType.equalsIgnoreCase(RegistrationType.NEW.name())) {
-			setAttributes(demographicInfo, attributes, regType);
-		} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
+		if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
 				|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
@@ -385,53 +379,43 @@ public class MessageNotificationServiceImpl
 	private Map<String, Object> setAttributes(String idJsonString, Map<String, Object> attribute, String regType)
 			throws IOException {
 		JSONObject demographicIdentity = null;
-		try {
-			if (regType.equalsIgnoreCase(RegistrationType.NEW.name())) {
-				JSONObject demographicjson = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
-				demographicIdentity = JsonUtil.getJSONObject(demographicjson,
-						utility.getGetRegProcessorDemographicIdentity());
-			} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
-					|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
-					|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
-					|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
-				demographicIdentity = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
-			}
 
-			if (demographicIdentity == null)
-				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-
-			String mapperJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorIdentityJson());
-			JSONObject mapperJson = JsonUtil.objectMapperReadValue(mapperJsonString, JSONObject.class);
-			JSONObject mapperIdentity = JsonUtil.getJSONObject(mapperJson,
+		if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
+				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
+				|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
+				|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
+			demographicIdentity = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
+		} else {
+			JSONObject demographicjson = JsonUtil.objectMapperReadValue(idJsonString, JSONObject.class);
+			demographicIdentity = JsonUtil.getJSONObject(demographicjson,
 					utility.getGetRegProcessorDemographicIdentity());
-
-			List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
-			for (String key : mapperJsonKeys) {
-				JSONObject jsonValue = JsonUtil.getJSONObject(mapperIdentity, key);
-				Object object = JsonUtil.getJSONValue(demographicIdentity, (String) jsonValue.get(VALUE));
-				if (object instanceof ArrayList) {
-					JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String) jsonValue.get(VALUE));
-					JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
-					for (int count = 0; count < jsonValues.length; count++) {
-						String lang = jsonValues[count].getLanguage();
-						attribute.put(key + "_" + lang, jsonValues[count].getValue());
-					}
-				} else if (object instanceof LinkedHashMap) {
-					JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String) jsonValue.get(VALUE));
-					attribute.put(key, json.get(VALUE));
-				} else {
-					attribute.put(key, object);
-				}
-			}
-
-			setEmailAndPhone(demographicIdentity);
-
-		} catch (JsonParseException | JsonMappingException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					null, "Error while parsing Json file" + ExceptionUtils.getStackTrace(e));
-			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
+
+		String mapperJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+				utility.getGetRegProcessorIdentityJson());
+		JSONObject mapperJson = JsonUtil.objectMapperReadValue(mapperJsonString, JSONObject.class);
+		JSONObject mapperIdentity = JsonUtil.getJSONObject(mapperJson, utility.getGetRegProcessorDemographicIdentity());
+
+		List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
+		for (String key : mapperJsonKeys) {
+			JSONObject jsonValue = JsonUtil.getJSONObject(mapperIdentity, key);
+			Object object = JsonUtil.getJSONValue(demographicIdentity, (String) jsonValue.get(VALUE));
+			if (object instanceof ArrayList) {
+				JSONArray node = JsonUtil.getJSONArray(demographicIdentity, (String) jsonValue.get(VALUE));
+				JsonValue[] jsonValues = JsonUtil.mapJsonNodeToJavaObject(JsonValue.class, node);
+				for (int count = 0; count < jsonValues.length; count++) {
+					String lang = jsonValues[count].getLanguage();
+					attribute.put(key + "_" + lang, jsonValues[count].getValue());
+				}
+			} else if (object instanceof LinkedHashMap) {
+				JSONObject json = JsonUtil.getJSONObject(demographicIdentity, (String) jsonValue.get(VALUE));
+				attribute.put(key, json.get(VALUE));
+			} else {
+				attribute.put(key, object);
+			}
+		}
+
+		setEmailAndPhone(demographicIdentity);
 
 		return attribute;
 	}

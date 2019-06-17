@@ -4,19 +4,18 @@
  */
 package io.mosip.preregistration.batchjobservices.service;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
@@ -26,10 +25,16 @@ import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntit
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPKConsumed;
 import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
 import io.mosip.preregistration.batchjobservices.repository.dao.BatchServiceDAO;
+import io.mosip.preregistration.core.code.AuditLogVariables;
+import io.mosip.preregistration.core.code.EventId;
+import io.mosip.preregistration.core.code.EventName;
+import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
+import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
+import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
 
 /**
@@ -64,6 +69,13 @@ public class ConsumedStatusService {
 	 */
 	@Autowired
 	private BatchServiceDAO batchServiceDAO;
+	
+	@Autowired
+	AuditLogUtil auditLogUtil;
+	
+	public AuthUserDetails authUserDetails() {
+		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
 
 	/**
 	 * This method will copy demographic , document , booking details to the
@@ -80,6 +92,7 @@ public class ConsumedStatusService {
 		response.setId(idUrl);
 		response.setVersion(versionUrl);
 		List<ProcessedPreRegEntity> preRegList = null;
+		boolean isSaveSuccess = false;
 		try {
 			preRegList = batchServiceDAO.getAllConsumedPreIds(STATUS_COMMENTS);
 
@@ -132,9 +145,23 @@ public class ConsumedStatusService {
 				}
 
 			});
+			isSaveSuccess=true;
 
 		} catch (Exception e) {
 			new BatchServiceExceptionCatcher().handle(e, response);
+		}
+		finally {
+			if (isSaveSuccess) {
+				setAuditValues(EventId.PRE_412.toString(), EventName.CONSUMEDSTATUS.toString(),
+						EventType.BUSINESS.toString(),
+						"Upadted the consumed status & the consumed PreRegistration ids successfully saved in the database",
+						AuditLogVariables.PRE_REGISTRATION_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername(), null);
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername(), null);
+			}
 		}
 		response.setResponsetime(GenericUtil.getCurrentResponseTime());
 		response.setId(idUrl);
@@ -143,8 +170,30 @@ public class ConsumedStatusService {
 		return response;
 	}
 
-	public String getCurrentResponseTime() {
-		return DateUtils.formatDate(new Date(System.currentTimeMillis()), utcDateTimePattern);
+		
+	/**
+	 * This method is used to audit all the consumed status events
+	 * 
+	 * @param eventId
+	 * @param eventName
+	 * @param eventType
+	 * @param description
+	 * @param idType
+	 */
+	public void setAuditValues(String eventId, String eventName, String eventType, String description, String idType,
+			String userId, String userName, String refId) {
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
+		auditRequestDto.setEventId(eventId);
+		auditRequestDto.setEventName(eventName);
+		auditRequestDto.setEventType(eventType);
+		auditRequestDto.setSessionUserId(userId);
+		auditRequestDto.setSessionUserName(userName);
+		auditRequestDto.setDescription(description);
+		auditRequestDto.setIdType(idType);
+		auditRequestDto.setId(refId);
+		auditRequestDto.setModuleId(AuditLogVariables.BAT.toString());
+		auditRequestDto.setModuleName(AuditLogVariables.CONSUMED_BATCH_SERVICE.toString());
+		auditLogUtil.saveAuditDetails(auditRequestDto);
 	}
 
 }

@@ -463,21 +463,23 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		GlobalParam globalParam = globalParamDAO.get(globalParamId);
 
 		String isSoftwareAvailable = globalParam.getVal();
-		Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
+		if(null != globalParam.getUpdDtimes()) {
+			Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
 
-		try {
-			if (isSoftwareAvailable != null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE)
-					&& Double.parseDouble(String.valueOf(ApplicationContext.map()
-							.get(RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ))) <= getActualDays(
-									lastSoftwareUpdatedTime)) {
-				return true;
+			try {
+				if (isSoftwareAvailable != null && isSoftwareAvailable.equalsIgnoreCase(RegistrationConstants.ENABLE)
+						&& Double.parseDouble(String.valueOf(ApplicationContext.map()
+								.get(RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ))) <= getActualDays(
+										lastSoftwareUpdatedTime)) {
+					return true;
+				}
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error("SYNC-STATUS-VALIDATOR-SERVICE", APPLICATION_NAME, APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+				return false;
 			}
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error("SYNC-STATUS-VALIDATOR-SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-			return false;
-		}
 
+		}
 		return false;
 	}
 }

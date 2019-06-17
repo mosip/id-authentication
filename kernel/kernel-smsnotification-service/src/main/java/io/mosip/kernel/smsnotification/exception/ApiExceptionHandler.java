@@ -26,7 +26,6 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 
-
 /**
  * Central class for handling exceptions.
  * 
@@ -45,13 +44,10 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handles MethodArgumentNotValidException type of exceptions.
 	 * 
-	 * @param httpServletRequest
-	 *            the request
-	 * @param exception
-	 *            The exception
+	 * @param httpServletRequest the request
+	 * @param exception          The exception
 	 * @return The response entity.
-	 * @throws IOException
-	 *             the IOException
+	 * @throws IOException the IOException
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> smsInvalidInputsFound(
@@ -71,20 +67,16 @@ public class ApiExceptionHandler {
 	/**
 	 * This method handles MosipInvalidNumberException type of exceptions.
 	 * 
-	 * @param httpServletRequest
-	 *            the request
-	 * @param e
-	 *            The exception
+	 * @param httpServletRequest the request
+	 * @param e                  The exception
 	 * @return The response entity.
-	 * @throws IOException
-	 *             the IOException
+	 * @throws IOException the IOException
 	 */
 	@ExceptionHandler(InvalidNumberException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> smsNotificationInvalidNumber(
 			final HttpServletRequest httpServletRequest, final InvalidNumberException e) throws IOException {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorCode(),
-				SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorMessage());
+		ServiceError error = new ServiceError(e.getErrorCode(), e.getErrorText());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 

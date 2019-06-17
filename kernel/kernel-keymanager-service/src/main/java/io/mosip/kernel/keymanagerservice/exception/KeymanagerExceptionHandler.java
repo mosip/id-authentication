@@ -75,7 +75,7 @@ public class KeymanagerExceptionHandler {
 			final NoSuchAlgorithmException e) throws IOException {
 		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
-				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+				HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidFormatException.class)
@@ -121,7 +121,7 @@ public class KeymanagerExceptionHandler {
 			final CryptoException e) throws IOException {
 		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
-				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+				HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(InvalidApplicationIdException.class)

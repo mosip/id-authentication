@@ -16,7 +16,6 @@ import * as appConstants from '../../app.constants';
 })
 export class LoginComponent implements OnInit {
   languages: string[] = [];
-
   inputPlaceholderContact = 'Email ID or Phone Number';
   inputPlaceholderOTP = 'Enter OTP';
   disableBtn = false;
@@ -63,7 +62,9 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('langCode', 'fra');
     this.showSpinner = true;
     this.loadConfigs();
-    if (this.authService.isAuthenticated()) this.authService.onLogout();
+    if (this.authService.isAuthenticated()) {
+      this.authService.onLogout();
+    }
   }
 
   loadValidationMessages() {

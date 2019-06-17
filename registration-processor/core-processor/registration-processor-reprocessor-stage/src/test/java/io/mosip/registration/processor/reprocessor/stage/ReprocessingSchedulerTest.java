@@ -109,6 +109,21 @@ public class ReprocessingSchedulerTest {
 						"SESSIONID - REGISTRATIONID -  - ReprocessorStage::schedular()::deployed"));
 	}
 
+	
+	/**
+	 * Failure Test for Chime Scheduler deployment
+	 */
+	@Test
+	public void testDeploySchedulerFailureTest() {
+		listAppender.start();
+		fooLogger.addAppender(listAppender);
+		Mockito.when(res.succeeded()).thenReturn(false);
+		Mockito.when(vertx.eventBus()).thenReturn(getMockEventBus());
+		reprocessorStage.schedulerResult(res);
+		Assertions.assertThat(listAppender.list).extracting(ILoggingEvent::getLevel, ILoggingEvent::getFormattedMessage)
+				.contains(Tuple.tuple(Level.DEBUG,
+						"SESSIONID - REGISTRATIONID -  - ReprocessorStage::schedular()::deploymemnt failure"));
+	}
 	/**
 	 * Returns dummy eventbus instance
 	 * @return Eventbus

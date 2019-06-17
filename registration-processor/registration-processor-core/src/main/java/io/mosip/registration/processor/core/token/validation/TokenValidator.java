@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -46,7 +47,8 @@ public class TokenValidator {
 			throw new InvalidTokenException(INVALIDTOKENMESSAGE);
 		try {	
 			URL obj = new URL(env.getProperty("TOKENVALIDATE"));
-			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+			URLConnection urlConnection= obj.openConnection();
+			HttpsURLConnection con = (HttpsURLConnection) urlConnection;
 
 			con.setRequestProperty("Cookie", token);
 			con.setRequestMethod("POST");
@@ -114,12 +116,7 @@ public class TokenValidator {
 				if (role.contains(assignedRole))
 					return true;
 			}
-		} else if (url.contains("uin-card")) {
-			for (String assignedRole : APIAuthorityList.PRINTUINCARD.getList()) {
-				if (role.contains(assignedRole))
-					return true;
-			}
-		}else if (url.contains("abis")) {
+		} else if (url.contains("abis")) {
 			for (String assignedRole : APIAuthorityList.ABIS.getList()) {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;

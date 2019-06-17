@@ -2,6 +2,7 @@ package io.mosip.registration.processor.core.packet.dto.abis;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
@@ -26,6 +27,13 @@ public class AbisResponseDto implements Serializable{
 	private LocalDateTime respDtimes;
 
 	private byte[] respText;
+	public byte[] getRespText() {
+		return Arrays.copyOf(respText, respText.length);
+	}
+
+	public void setRespText(byte[] respText) {
+		this.respText = respText!=null?respText:null;
+	}
 
 	private String statusCode;
 

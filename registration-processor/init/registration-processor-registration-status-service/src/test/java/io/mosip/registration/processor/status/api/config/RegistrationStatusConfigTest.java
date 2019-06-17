@@ -12,11 +12,12 @@ import io.mosip.registration.processor.core.kernel.beans.KernelConfig;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.rest.client.config.RestConfigBean;
 import io.mosip.registration.processor.status.config.RegistrationStatusBeanConfig;
+import io.mosip.registration.processor.status.config.RegistrationStatusServiceBeanConfig;
 
 @Configuration
 @ComponentScan(basePackages = { "io.mosip.registration.processor.status.*",
 		"io.mosip.registration.processor.rest.client.*" }, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {
-				RegistrationStatusBeanConfig.class, RestConfigBean.class, CoreConfigBean.class, KernelConfig.class }))
+				RegistrationStatusServiceBeanConfig.class,RegistrationStatusBeanConfig.class, RestConfigBean.class, CoreConfigBean.class, KernelConfig.class }))
 public class RegistrationStatusConfigTest {
 
 	@MockBean

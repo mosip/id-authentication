@@ -11,7 +11,7 @@ Date Raised | 11-JUNE-2019
 Impact of Release|NA
 Implementation Start Date |28-MAY-2019
 Implementation end date	|07-JUN-2019
-Jenkins Build #	|Min Version : 1572
+Jenkins Build #	|Min Version : 1582
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 90%
 Role/Job Title|Technical Lead

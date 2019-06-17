@@ -12,6 +12,10 @@ package io.mosip.preregistration.application.errorcodes;
  * @since 1.0.0
  *
  */
+/**
+ * @author M1046129
+ *
+ */
 public enum ErrorCodes {
 
 	/* ErrorCode for UNABLE_TO_CREATE_THE_PRE_REGISTRATION */
@@ -86,7 +90,10 @@ public enum ErrorCodes {
 	PRG_PAM_APP_017("PRG_PAM_APP_017"),
 
 	/* ErrorCode for UBALE_TO_READ_IDENTITY_JSON */
-	PRG_PAM_APP_018("PRG_PAM_APP_018");
+	PRG_PAM_APP_018("PRG_PAM_APP_018"),
+
+	/* ErrorCode for INVALID_PAGE_INDEX_VALUE */
+	PRG_PAM_APP_019("PRG_PAM_APP_019");
 
 	private ErrorCodes(String code) {
 		this.code = code;

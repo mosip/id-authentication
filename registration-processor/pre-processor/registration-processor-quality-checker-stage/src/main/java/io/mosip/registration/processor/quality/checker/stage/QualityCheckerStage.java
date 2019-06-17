@@ -152,12 +152,14 @@ public class QualityCheckerStage extends MosipVerticleManager {
 		object.setMessageBusAddress(MessageBusAddress.QUALITY_CHECKER_BUS_IN);
 		String regId = object.getRid();
 		String description = "";
-		Boolean isTransactionSuccessful = null;
+		Boolean isTransactionSuccessful = Boolean.FALSE;
 		InternalRegistrationStatusDto registrationStatusDto = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 				"QualityCheckerStage::process()::entry");
+
+		registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
+
 		try {
-			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 			InputStream idJsonStream = adapter.getFile(regId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());

@@ -26,7 +26,7 @@ public class OSIConfigBean{
 	public OSIValidator getOSIValidator() {
 		return new OSIValidator();
 	}
-	
+		
 	@Bean
 	public UMCValidator getUMCValidator() {
 		return new UMCValidator();
