@@ -122,7 +122,7 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
     		String id = actualRequest.get("id").toString();
 	        String queryStr = "SELECT count(*) FROM master.device_master_h h WHERE h.id='"+id+"'";
 	        long count = kernelDB.validateDBCount(queryStr,"masterdata");   
-	        if(count==1) {
+	        if(count==3) {
 	        	status = true;
 	        }else {
 	        	status=false;
