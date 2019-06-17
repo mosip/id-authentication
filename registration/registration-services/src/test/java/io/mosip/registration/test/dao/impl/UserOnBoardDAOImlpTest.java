@@ -57,7 +57,7 @@ import io.mosip.registration.repositories.UserMachineMappingRepository;
  * @since 1.0.0
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SessionContext.class })
+@PrepareForTest({ SessionContext.class, ApplicationContext.class })
 public class UserOnBoardDAOImlpTest {
 
 	@Rule
@@ -92,6 +92,9 @@ public class UserOnBoardDAOImlpTest {
 		appMap.put(RegistrationConstants.USER_STATION_ID, "1947");
 		appMap.put(RegistrationConstants.USER_CENTER_ID, "1947");
 		ApplicationContext.getInstance().setApplicationMap(appMap);
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
 	}
 
 	@Test
@@ -330,7 +333,7 @@ public class UserOnBoardDAOImlpTest {
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		userOnboardDAOImpl.getStationID("8C-16-45-88-E7-0B");
 	}
@@ -343,7 +346,7 @@ public class UserOnBoardDAOImlpTest {
 		regMachineSpecId.setId("100311");
 		regMachineSpecId.setLangCode("eng");
 		machineMaster.setRegMachineSpecId(regMachineSpecId);
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineMaster);
 		String stationId = userOnboardDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		Assert.assertSame("100311", stationId);
