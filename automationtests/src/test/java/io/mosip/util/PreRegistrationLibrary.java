@@ -1825,11 +1825,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 */
 		String folder2 = "preReg";
 		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
 		File folder1 = new File(configPath);
 		File[] listOfFiles = folder1.listFiles();
 		for (File f1 : listOfFiles) {

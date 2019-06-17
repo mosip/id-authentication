@@ -83,33 +83,26 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 * 
 	 */
-	@Test(groups = { "IntegrationScenarios" })
-	public void createAppUploadFetchBookAppFetchApp() {
-		String regCenterId = null;
-		String appDate = null;
-		String timeSlotFrom = null;
-		String timeSlotTo = null;
-
-		// Create PreReg
-		response = lib.CreatePreReg();
-		preRegID = response.jsonPath().get("response.preRegistrationId").toString();
-		// Upload document
-		response = lib.documentUpload(response);
-		String documentId = response.jsonPath().get("response.docId").toString();
-		logger.info("Document ID: " + documentId);
-
-		// Fetch Center
-		Response fetchCenterResponse = lib.FetchCentre();
-
-		// Book Appointment
-		response = lib.BookAppointment(response, fetchCenterResponse, preRegID);
-		lib.compareValues(response.jsonPath().getString("response.bookingMessage"), "Appointment booked successfully");
-
-		// Update PreReg
-		response = lib.updatePreReg(preRegID);
-		Assert.assertNotNull(response.jsonPath().get("response.updatedDateTime"));
+	@Test
+	public void pagination_withoutPageIndexValue()
+	{
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse);
+		Response avilibityResponse = lib.FetchCentre();
+		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		Response paginationResponse = lib.pagination("");
+		try {
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(), preID);
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].bookingMetadata").toString(), fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].demographicMetadata.proofOfAddress.documentId").toString(), documentResponse.jsonPath().get("response.docId").toString());
+		} catch (NullPointerException e) {
+			Assert.fail("Exception occured while fetching data from pagination response");
+		}
 	}
-
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
 		authToken = lib.getToken();

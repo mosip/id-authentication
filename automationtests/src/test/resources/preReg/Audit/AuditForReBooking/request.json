@@ -1,6 +1,6 @@
 {
 	"ref_id": "10009",
-	"log_desc": " Appointment booked successfully",
+	"log_desc": "Appointment booked successfully",
 	"event_id": "PRE_407",
 	"event_type": "BUSINESS",
 	"session_user_id": "9475792552",

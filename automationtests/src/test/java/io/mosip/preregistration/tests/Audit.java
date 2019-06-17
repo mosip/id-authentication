@@ -94,7 +94,7 @@ public class Audit extends BaseTestCase implements ITest {
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicDiscard");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 2);
+		JSONObject auditDatas = lib.getAuditData(objs, 3);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -127,7 +127,7 @@ public class Audit extends BaseTestCase implements ITest {
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicFetchAllApplication");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 2);
+		JSONObject auditDatas = lib.getAuditData(objs, 3);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}

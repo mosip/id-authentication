@@ -101,8 +101,8 @@ public class Pagination extends BaseTestCase implements ITest {
 		Response paginationResponse = lib.pagination("abc");
 		String errorCode = lib.getErrorCode(paginationResponse);
 		String errorMessage = lib.getErrorMessage(paginationResponse);
-		lib.compareValues(errorCode, "PRG_PAM_APP_015");
-		lib.compareValues(errorMessage, "Page size must be greater than equal to zero");
+		lib.compareValues(errorCode, "PRG_PAM_APP_019");
+		lib.compareValues(errorMessage, "Invalid page index value");
 	}
 	@Test
 	public void pagination_withoutPageIndexValue()
@@ -112,7 +112,7 @@ public class Pagination extends BaseTestCase implements ITest {
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = lib.getPreId(createResponse);
 		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("");
+		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 		Response paginationResponse = lib.pagination("");
@@ -125,26 +125,36 @@ public class Pagination extends BaseTestCase implements ITest {
 		}
 	}
 	@Test
-	public void pagination_noRecordPresentInThatPage()
+	public void pagination_withNullValue()
+	{
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest);
+		Response paginationResponse = lib.pagination("null");
+		String errorCode = lib.getErrorCode(paginationResponse);
+		String errorMessage = lib.getErrorMessage(paginationResponse);
+		lib.compareValues(errorCode, "PRG_PAM_APP_019");
+		lib.compareValues(errorMessage, "Invalid page index value");
+	}
+	@Test
+	public void pagination_noRecordPresentForThatPageRange()
 	{
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = lib.getPreId(createResponse);
 		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10001");
+		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		Response paginationResponse = lib.pagination(null);
-		try {
-			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(), preID);
-			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].bookingMetadata").toString(), fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
-			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].demographicMetadata.proofOfAddress.documentId").toString(), documentResponse.jsonPath().get("response.docId").toString());
-		} catch (NullPointerException e) {
-			Assert.fail("Exception occured while fetching data from pagination response");
-		}
+		Response paginationResponse = lib.pagination("10");
+		String errorCode = lib.getErrorCode(paginationResponse);
+		String errorMessage = lib.getErrorMessage(paginationResponse);
+		lib.compareValues(errorCode, "PRG_PAM_APP_016");
+		lib.compareValues(errorMessage, "no record found for the requested page index");
+		
 	}
-	
+
 	@Test
 	public void pagination_noApplicationCreatedForThatUser()
 	{
