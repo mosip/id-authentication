@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,29 +42,33 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import io.mosip.registration.validator.OTPValidatorImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAppHealthCheckUtil.class })
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, ApplicationContext.class })
 public class OTPManagerTest {
 
 	@InjectMocks
-	OTPManager otpManager;
+	private OTPManager otpManager;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	ServiceDelegateUtil serviceDelegateUtil;
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@Mock
-	OTPValidatorImpl otpValidator;
+	private OTPValidatorImpl otpValidator;
 
 	@Mock
-	AuthenticationServiceImpl authenticationService;
+	private AuthenticationServiceImpl authenticationService;
 
-	@BeforeClass
-	public static void initialize() {
+	@Before
+	public void initialize() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.OTP_CHANNELS, "EMAIL");
-		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+		applicationMap.put(RegistrationConstants.REGISTRATION_CLIENT, "registrationclient");
+
+		PowerMockito.doReturn(applicationMap).when(ApplicationContext.class, "map");
 	}
 
 	@Test

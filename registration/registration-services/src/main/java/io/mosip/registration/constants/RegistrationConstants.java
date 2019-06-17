@@ -1218,7 +1218,7 @@ public class RegistrationConstants {
 	public static final String AUTH_AUTHORIZATION = "Authorization";
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
-	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
+	public static final String REGISTRATION_CLIENT = "mosip.registration.app.id";
 	public static final String REGISTRATION_CONTEXT = "auth-otp";
 	public static final String COOKIE = "Cookie";
 	public static final String ENGLISH_LANG_CODE = "eng";

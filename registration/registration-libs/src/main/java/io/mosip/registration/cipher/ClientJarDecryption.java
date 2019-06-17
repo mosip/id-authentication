@@ -296,7 +296,8 @@ public class ClientJarDecryption extends Application {
 	}
 
 	private boolean isTPMAvailable(Properties properties) {
-		return !properties.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY);
+		return properties.containsKey(MOSIP_CLIENT_TPM_AVAILABILITY)
+				&& String.valueOf(properties.get(MOSIP_CLIENT_TPM_AVAILABILITY)).equalsIgnoreCase(IS_KEY_ENCRYPTED);
 	}
 
 	private void activateProgressBar(final Task<?> task) {
