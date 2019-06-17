@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -66,6 +67,7 @@ public class BioDedupeControllerTest {
 
 	@Before
 	public void setUp() {
+		ReflectionTestUtils.setField(bioDedupeController, "isEnabled", true);
 		regId = "1234";
 		file = regId.getBytes();
 		Mockito.when(bioDedupeService.getFile(anyString())).thenReturn(file);
