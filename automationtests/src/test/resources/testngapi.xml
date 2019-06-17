@@ -62,6 +62,7 @@
                            <class name="io.mosip.kernel.tests.SmsNotification" />
                            <class name="io.mosip.kernel.tests.SyncConfigurations" />
                            <class name="io.mosip.kernel.tests.SyncIncrementalData" />
+                           <class name="io.mosip.kernel.tests.UploadPublickey" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndex" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId" />
                            <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
@@ -69,7 +70,6 @@
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.UINStatusCheck" />  
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
-                           <class name="io.mosip.kernel.tests.UploadPublickey" />
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />    
                  </classes>
