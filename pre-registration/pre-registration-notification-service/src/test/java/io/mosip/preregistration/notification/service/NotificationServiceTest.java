@@ -137,7 +137,7 @@ public class NotificationServiceTest {
 		notificationDTO.setMobNum("1234567890");
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("12/01/2018");
-		notificationDTO.setAppointmentTime("9:00:00");
+		notificationDTO.setAppointmentTime("09:00 AM");
 		notificationDTO.setAdditionalRecipient(true);
 		notificationDTO.setIsBatch(false);
 		mainReqDto.setId("mosip.pre-registration.notification.notify");
@@ -176,8 +176,8 @@ public class NotificationServiceTest {
 		BookingRegistrationDTO bookingResponse = new BookingRegistrationDTO();
 		bookingResponse.setRegDate("12/01/2018");
 		bookingResponse.setRegistrationCenterId("1");
-		bookingResponse.setSlotFromTime("9:00:00");
-		bookingResponse.setSlotToTime("10:00:00");
+		bookingResponse.setSlotFromTime("09:00");
+		bookingResponse.setSlotToTime("10:00");
 		bookingResultDto.setResponse(bookingResponse);
 		
 		DemographicResponseDTO demo= new DemographicResponseDTO();
