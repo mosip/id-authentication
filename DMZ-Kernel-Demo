@@ -1,4 +1,5 @@
 node{
+def branch = env.NEXT_BRANCH_NAME
 projectToBuild = 'kernel'
 stage('------- Checkout --------') {
   // Checkout only Registration-Processor Module
