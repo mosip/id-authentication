@@ -238,7 +238,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
 
-			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macAdres);
+			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(macAdres, ApplicationContext.applicationLanguage());
 
 			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getRegMachineSpecId().getId() != null) {
 
