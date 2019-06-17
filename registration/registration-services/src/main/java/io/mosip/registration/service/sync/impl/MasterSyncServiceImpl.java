@@ -112,9 +112,9 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 * It invokes the Master Sync service to download the required information from external services if the system is online.  
 	 * Once download, the data would be updated into the DB for further process.  
 	 *
-	 * @param masterSyncDetails the master sync details
-	 * @param triggerPoint from where the call has been initiated [Either : user or system]  
-	 * @return success or failure status as Response DTO. 
+	 * @param masterSyncDtls the master sync details
+	 * @param triggerPoint from where the call has been initiated [Either : user or system]
+	 * @return success or failure status as Response DTO.
 	 */
 	@Override
 	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
@@ -127,7 +127,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	 * It invokes the external 'Master Sync' service to download the required center specific information from MOSIP server if the system is online.  
 	 * Once download, the data would be updated into the DB for further process.  
 	 *
-	 * @param masterSyncDetails
+	 * @param masterSyncDtls
 	 *            the master sync details
 	 * @param triggerPoint
 	 *            from where the call has been initiated [Either : user or system] 

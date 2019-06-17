@@ -75,7 +75,7 @@ public interface LoginService {
 	/**
 	 * This method will update login parameters for every login attempt
 	 * 
-	 * @param {@code UserDTO} user dto which contains the parameters that has to be
+	 * @param userDTO - The {@code UserDTO} user dto which contains the parameters that has to be
 	 *            updated
 	 */
 	void updateLoginParams(UserDTO userDTO);

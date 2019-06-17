@@ -23,7 +23,6 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegCenterMachineUserReqDto;
 import io.mosip.registration.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -142,12 +141,6 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 		return response;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.operator.UserMachineMappingService#isUserNewToMachine()
-	 * 
-	 */
 	@Override
 	public ResponseDTO isUserNewToMachine(String userId) {
 		LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,

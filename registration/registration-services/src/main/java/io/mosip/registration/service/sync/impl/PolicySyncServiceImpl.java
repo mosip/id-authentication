@@ -108,12 +108,12 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	/**
 	 * This method invokes the external service 'policysync' to download the public key with respect to local center and machine id combination. 
 	 * And store the key into the local database for further usage during registration process. 
-	 * 
-	 * @param responseDTO
-	 * @param centerMachineId
-	 * @throws KeyManagementException
-	 * @throws IOException
-	 * @throws java.security.NoSuchAlgorithmException
+	 *
+	 * @param responseDTO the response DTO
+	 * @param centerMachineId the center machine id
+	 * @throws KeyManagementException the key management exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws java.security.NoSuchAlgorithmException the no such algorithm exception
 	 */
 	public synchronized void getPublicKey(ResponseDTO responseDTO, String centerMachineId)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {

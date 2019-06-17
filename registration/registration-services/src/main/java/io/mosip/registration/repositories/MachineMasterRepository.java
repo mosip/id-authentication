@@ -15,6 +15,7 @@ public interface MachineMasterRepository extends BaseRepository<MachineMaster, R
 	 * Find the station id based on macAddress.
 	 *
 	 * @param macAddress macAddress to get {@link MachineMaster}
+	 * @param langCode the lang code
 	 * @return the machine master
 	 */
 	MachineMaster findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(String macAddress, String langCode);

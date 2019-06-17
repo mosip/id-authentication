@@ -25,14 +25,13 @@ public interface BioService {
 	 * <p>
 	 * The MDM service will be triggered to capture the user fingerprint which will
 	 * be validated against the stored fingerprint from the DB
-	 * </p>
-	 * 
-	 * @param userId
-	 *            - the user ID
+	 * </p>.
+	 *
+	 * @param userId            - the user ID
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
-	 * @throws IOException
-	 *             - Exception that may occur while reading the resource
+	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
+	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
 	boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException;
 
@@ -43,14 +42,13 @@ public interface BioService {
 	 * <p>
 	 * The MDM service will be triggered to capture the user Iris data which will be
 	 * validated against the stored iris from the DB through auth validator service
-	 * </p>
-	 * 
-	 * @param userId
-	 *            - the user ID
+	 * </p>.
+	 *
+	 * @param userId            - the user ID
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
-	 * @throws IOException
-	 *             - Exception that may occur in reading the resource
+	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
+	 * @throws IOException             - Exception that may occur in reading the resource
 	 */
 	boolean validateIris(String userId) throws RegBaseCheckedException, IOException;
 
@@ -79,12 +77,10 @@ public interface BioService {
 	/**
 	 * invokes the MDM service and gets the Segmented finger print images.
 	 *
-	 * @param fingerprintDetailsDTO
-	 *            the fingerprint details DTO
-	 * @param filePath
-	 *            the file path
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @param fingerprintDetailsDTO            the fingerprint details DTO
+	 * @param filePath            the file path
+	 * @param fingerType the finger type
+	 * @throws RegBaseCheckedException             the reg base checked exception
 	 */
 	void segmentFingerPrintImage(FingerprintDetailsDTO fingerprintDetailsDTO, String[] filePath, String fingerType)
 			throws RegBaseCheckedException;
