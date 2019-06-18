@@ -585,7 +585,7 @@ public class LoginController extends BaseController implements Initializable {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(userId.getText());
 
-		if (SessionContext.create(userDTO, RegistrationConstants.IRIS, false, false, authenticationValidatorDTO)) {
+		if (SessionContext.create(userDTO, RegistrationConstants.FINGERPRINT_UPPERCASE, false, false, authenticationValidatorDTO)) {
 			bioLoginStatus = validateInvalidLogin(userDTO, "");
 		} else {
 			bioLoginStatus = validateInvalidLogin(userDTO, RegistrationUIConstants.FINGER_PRINT_MATCH);
