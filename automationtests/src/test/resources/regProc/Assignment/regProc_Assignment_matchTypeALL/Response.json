@@ -1,10 +1,10 @@
 {
     "response": {
-        "regId": "60012783330000520190114162541",
+        "regId": "10010100100000120190611085621",
         "mvUsrId": "110037",
         "statusCode": "ASSIGNED",
-        "matchedRefId": "60012783330000520190114134575",
-        "matchedRefType": "uin",
+        "matchedRefId": "10002100320000620190611083847",
+        "matchedRefType": "rid",
         "reasonCode": "Problem with biometrics"
     },
     "id": "mosip.manual.verification.assignment",
