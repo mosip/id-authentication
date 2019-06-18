@@ -121,7 +121,7 @@ public class FetchTemplate  extends BaseTestCase implements ITest {
 
 		}
 		// sending request to get request without param
-		if (response == null) {
+		if (testcaseName.equalsIgnoreCase("allValid_smoke_Get")) {
 			response = applicationLibrary.getWithoutParams(FetchTemplate_URI, cookie);
 			objectData = null;
 		}
