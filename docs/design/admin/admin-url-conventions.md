@@ -80,12 +80,17 @@ Samples:
 	- The sort parameters will  be as part of the URL. 
 	- The default sort parameters will be taken from the configuration server. 
 	- https://mosip.io/admin/regcenters?sort=A:centerType&sort=D:locationCode
-	- A:centerType means, "sort by centerType in Ascending order". B:locationCode means, "sort by locationCode in Descending order"
+	- A:centerType means, "sort by centerType in Ascending order". D:locationCode means, "sort by locationCode in Descending order"
 	- If A: or D: is missed, the default sort is applied. 
 
 4. Pagination parameters
+	- Server has a page size configuration paremeter. for e.g. PAGE_SIZE=50
 	- The pagination parameters will be as part of the URL. 
 	- https://mosip.io/admin/regcenters?pagination=s10:f9
-	- In s10:f9, fetch records 11 to 19
-	- In s10:f70, fetch records 11 to 60. In this case, the max records returned is configured as 50. 
 	- 's' stands for skip and 'f' stands for fetch. 
+	- In s10:f9, fetch records 11 to 19 (Skips 10 and fetches 9)
+	- In s10:f70 (request to skip 10 and fetch 70), fetch records 11 to 60 (limited by PAGE_SIZE which is set as 50)
+	- If pagination is not specified it is treated as s0:fPAGE_SIZE (fetch first 50 matching records)
+	- In case of partial specification s5, it will be treated as s5:fPAGE_SIZE (records 6 to 55)
+	- In case of partial speficiation f7, it will be treated as s0:f7 (records 1 to 7)
+	
