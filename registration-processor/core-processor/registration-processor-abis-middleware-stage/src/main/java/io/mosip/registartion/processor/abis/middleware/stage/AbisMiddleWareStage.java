@@ -593,7 +593,13 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			MessageDTO messageDto = new MessageDTO();
 			messageDto.setRid(regId);
 			messageDto.setReg_type(RegistrationType.valueOf(regType));
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					"",
+					"AbisMiddlewareStage::consumerListener()::sending to Abis handler");
 			this.send(eventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT, messageDto);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					"",
+					"AbisMiddlewareStage::consumerListener()::sent to Abis handler");
 		}
 
 	}
