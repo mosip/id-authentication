@@ -43,13 +43,6 @@ The admin should be able to manage the registration centers in the Admin applica
 	https://github.com/mosip/mosip/wiki/Registration-Center-APIs#post-registrationcenters
 
 
-**Swimlane diagram**
-
-
-![Swimlane Diagram](_images/admin-masterdata-fetcher.jpg)
-
-
-
 ## Implementation
 
 
