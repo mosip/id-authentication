@@ -571,7 +571,11 @@
   "error": {
     "error": "A technical error occurred and the operation cannot be completed. Any data provided may not be saved",
     "button_ok": "OK",
-    "invalidPin": "Entered PIN is invalid",
+    "postalCode": "Entered PIN is invalid",
+    "email": "Entered Email is invalid",
+    "phone": "Entered phone is invalid",
+    "dateOfBirth": "Entered date of birth is invalid",
+    "CNIENumber": "Entered CNIE Number is invalid",
     "tokenExpiredLogout": "You have been LoggedOut due to inactivity."
   },
   "residentTypesMapping": {
