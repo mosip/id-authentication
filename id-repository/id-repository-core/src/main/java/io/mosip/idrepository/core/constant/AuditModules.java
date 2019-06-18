@@ -7,23 +7,11 @@ package io.mosip.idrepository.core.constant;
  * @author Manoj SP
  */
 public enum AuditModules {
-
-	/** The create identity. */
-	CREATE_IDENTITY("IDR-MOD-101"),
-
-	/** The update identity. */
-	UPDATE_IDENTITY("IDR-MOD-102"),
-
-	/** The retrieve identity. */
-	RETRIEVE_IDENTITY("IDR-MOD-103"),
 	
-	CREATE_VID("IDR-MOD-104"),
+	ID_REPO_CORE_SERVICE("IDR-IDS"),
 	
-	UPDATE_VID("IDR-MOD-105"),
+	ID_REPO_VID_SERVICE("IDR-VID");
 	
-	RETRIEVE_VID("IDR-MOD-106"),
-	
-	REGENERATE_VID("IDR-MOD-107");
 
 	/** The module id. */
 	private final String moduleId;

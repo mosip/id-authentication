@@ -154,8 +154,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, CREATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.CREATE_VID, AuditEvents.CREATE_VID_REQUEST_RESPONSE,
-					vidRequest.getUin().toString(), "Create VID requested");
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.CREATE_VID,
+					vidRequest.getVidType(), "Create VID requested");
 		}
 	}
 
@@ -268,7 +268,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.CREATE_VID, AuditEvents.RETRIEVE_UIN_BY_VID_REQUEST_RESPONSE, vid,
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.RETRIEVE_VID_UIN, null,
 					"Retrieve Uin By VID requested");
 		}
 	}
@@ -303,7 +303,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, UPDATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.UPDATE_VID, AuditEvents.UPDATE_VID_REQUEST_RESPONSE, vid,
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.UPDATE_VID_STATUS, null,
 					"Update VID requested");
 		}
 	}
@@ -379,7 +379,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getVid(), ID_REPO_VID_SERVICE, REGENERATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.REGENERATE_VID, AuditEvents.REGENERATE_VID_REQUEST_RESPONSE, vid,
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.REGENERATE_VID, null,
 					"Regenerate VID requested");
 		}
 	}

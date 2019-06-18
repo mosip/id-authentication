@@ -151,10 +151,11 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	@Override
 	public IdResponseDTO addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
+		String regId = request.getRequest().getRegistrationId();
 		try {
 			if (uinRepo.existsByUinHash(retrieveUinHash(uin))
 					|| (uinRepo.existsByRegId(request.getRequest().getRegistrationId())
-							&& uinHistoryRepo.existsByRegId(request.getRequest().getRegistrationId()))) {
+							&& uinHistoryRepo.existsByRegId(regId))) {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 				throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
@@ -171,7 +172,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
-			auditHelper.audit(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, uin,
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, regId,
 					"Create Identity requested");
 		}
 	}
@@ -204,7 +205,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
-			auditHelper.audit(AuditModules.RETRIEVE_IDENTITY, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE, uin,
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_UIN, null,
 					"Retrieve Identity requested");
 		}
 	}
@@ -276,7 +277,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
-			auditHelper.audit(AuditModules.RETRIEVE_IDENTITY, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE, rid,
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_RID, rid,
 					"Retrieve Identity requested");
 		}
 	}
@@ -404,10 +405,11 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	@Override
 	public IdResponseDTO updateIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
+		String regId = request.getRequest().getRegistrationId();
 		try {
 			String uinHash = retrieveUinHash(uin);
 			if (uinRepo.existsByUinHash(uinHash)) {
-				if (uinRepo.existsByRegId(request.getRequest().getRegistrationId())
+				if (uinRepo.existsByRegId(regId)
 						|| uinHistoryRepo.existsByRegId(request.getRequest().getRegistrationId())) {
 					mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
@@ -424,7 +426,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.UPDATE_IDENTITY, AuditEvents.UPDATE_IDENTITY_REQUEST_RESPONSE, uin,
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.UPDATE_IDENTITY_REQUEST_RESPONSE, regId,
 					"Update Identity requested");
 		}
 	}

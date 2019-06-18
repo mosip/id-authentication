@@ -1017,11 +1017,15 @@ public class IdRepoServiceTest {
 	@Test
 	public void testUpdateIdentityUinNotExists() throws IdRepoAppException {
 		try {
+			IdRequestDTO idRequestDTO = new IdRequestDTO();
+			RequestDTO requestDTO = new RequestDTO();
+			requestDTO.setRegistrationId("1234");
+			idRequestDTO.setRequest(requestDTO);
 			when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 			when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 			when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 			when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
-			proxyService.updateIdentity(new IdRequestDTO(), "12343");
+			proxyService.updateIdentity(idRequestDTO, "12343");
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(), e.getErrorText());
@@ -1031,11 +1035,15 @@ public class IdRepoServiceTest {
 	@Test
 	public void testUpdateIdentityDataAccessError() throws IdRepoAppException {
 		try {
+			IdRequestDTO idRequestDTO = new IdRequestDTO();
+			RequestDTO requestDTO = new RequestDTO();
+			requestDTO.setRegistrationId("1234");
+			idRequestDTO.setRequest(requestDTO);
 			when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 			when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 			when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 			when(uinRepo.existsByUinHash(Mockito.any())).thenThrow(new DataAccessResourceFailureException(""));
-			proxyService.updateIdentity(new IdRequestDTO(), "12343");
+			proxyService.updateIdentity(idRequestDTO, "12343");
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorCode(), e.getErrorCode());
 			assertEquals(IdRepoErrorConstants.DATABASE_ACCESS_ERROR.getErrorMessage(), e.getErrorText());
