@@ -71,6 +71,7 @@ import io.vertx.ext.web.RoutingContext;
  * details with the AuthUserDetails that extends Spring Security's UserDetails.
  * 
  * @author Ramadurai Saravana Pandian
+ * @author Raj Jha 
  * @author Urvil Joshi
  * @since 1.0.0
  */
