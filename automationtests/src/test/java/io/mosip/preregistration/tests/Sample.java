@@ -94,7 +94,8 @@ public class Sample extends BaseTestCase implements ITest {
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		Response retrivePreRegistrationData = lib.retrivePreRegistrationData(preID);
-		lib.validateRetrivePreRegistrationData(retrivePreRegistrationData, preID, createResponse);
+		boolean status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationData, preID, createResponse);
+		System.out.println("status is============="+status);
 	}
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
