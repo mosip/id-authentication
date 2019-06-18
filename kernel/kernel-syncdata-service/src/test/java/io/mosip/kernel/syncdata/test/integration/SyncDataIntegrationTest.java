@@ -1389,7 +1389,9 @@ public class SyncDataIntegrationTest {
 	public void syncTPMPublicKey() throws Exception {
 		mockSuccess();
 		String requestBody = objectMapper.writeValueAsString(reqWrapper);
-		when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenReturn(Optional.of(machine));
+		List<Machine>machineList=new ArrayList<>();
+		machineList.add(machine);
+		when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machineList);
 		MvcResult mvcResult = mockMvc
 				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk()).andReturn();
@@ -1407,7 +1409,8 @@ public class SyncDataIntegrationTest {
 	public void syncTPMPublicKeyRequestException() throws Exception {
 		mockSuccess();
 		String requestBody = objectMapper.writeValueAsString(reqWrapper);
-		when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenReturn(Optional.empty());
+		List<Machine>machineList=new ArrayList<>();
+		when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenReturn(machineList);
 		MvcResult mvcResult = mockMvc
 				.perform(post(syncDataUrlTPMPublicKey).contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isOk()).andReturn();
@@ -1422,7 +1425,7 @@ public class SyncDataIntegrationTest {
 	public void syncTPMPublicKeyDataAccessException() throws Exception {
 		mockSuccess();
 		String requestBody = objectMapper.writeValueAsString(reqWrapper);
-		when(machineRepository.findByMachineNameActiveNondeleted(Mockito.anyString())).thenThrow(
+		when(machineRepository.findByMachineNameAndIsActive(Mockito.anyString())).thenThrow(
 				new SyncDataServiceException(MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorCode(),
 						MasterDataErrorCode.MACHINE_PUBLIC_UPLOAD_EXCEPTION.getErrorMessage()));
 		MvcResult mvcResult = mockMvc
