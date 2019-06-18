@@ -138,7 +138,7 @@ public class RestClientAuthAdvice {
 	private void getNewAuthZToken(RequestHTTPDTO requestHTTPDTO) throws RegBaseCheckedException {
 		String authZToken = RegistrationConstants.EMPTY;
 		boolean haveToAuthZByClientId = false;
-		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
+		if (!RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint())) {
 			LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
 			if (loginUserDTO == null || loginUserDTO.getPassword() == null
 					|| SessionContext.isSessionContextAvailable()) {
@@ -167,7 +167,7 @@ public class RestClientAuthAdvice {
 
 		// Get the AuthZ Token from AuthZ Web-Service only if Job is triggered by User
 		// and existing AuthZ Token had expired
-		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
+		if (!RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint())) {
 			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO()
 					&& null != SessionContext.authTokenDTO().getCookie()) {
 				authZToken = SessionContext.authTokenDTO().getCookie();
