@@ -1828,18 +1828,19 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		String configPath = System.getProperty("user.dir")+"\\src\\test\\resources\\" + folder2 + "\\" + "PreRegDocs" + "\\" + PrID;
 		File folder1 = new File(configPath);
 		File[] listOfFiles = folder1.listFiles();
-		for (File f1 : listOfFiles) {
-			try {
+		try {
+			for (File f1 : listOfFiles) {
+				
 				if (f1.getName().contains("ID")) {
 					request = (JSONObject) new JSONParser().parse(new FileReader(f1.getPath()));
-
-			}
-			} catch (NullPointerException | IOException|ParseException e) {
-				Assert.fail("File is not present at specified path :"+configPath);
-			}
+			} 
 			
 			Map<String, Object> actualDemographicDetails = jsonObjectToMap(request);
 			finalResult = actualDemographicDetails.keySet().equals(expectedDemographicDetails.keySet());
+		}
+		}
+		catch (NullPointerException | IOException|ParseException e) {
+			Assert.fail("File is not present at specified path :"+configPath);
 		}
 		return finalResult;
 	}
