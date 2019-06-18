@@ -21,7 +21,6 @@ import org.springframework.util.AntPathMatcher;
 
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
-// TODO: Auto-generated Javadoc
 
 /**
  * The Class BaseIdRepoFilter.
