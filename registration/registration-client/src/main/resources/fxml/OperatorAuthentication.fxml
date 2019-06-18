@@ -712,7 +712,7 @@
 													<children>
 														<GridPane fx:id="irisPane" styleClass="IrisPanes" GridPane.columnIndex="1">
 															<children>
-																<ImageView fitHeight="${irisPane.height-10}" fitWidth="${irisPane.width-10}" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+																<ImageView fx:id="irisImageView" fitHeight="${irisPane.height-10}" fitWidth="${irisPane.width-10}" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
 																	<image>
 																		<Image url="@../images/Eye.png" />
 																	</image>
