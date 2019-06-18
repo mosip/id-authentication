@@ -11,7 +11,7 @@ Date Raised | 28-MAY-2019
 Impact of Release|NA
 Implementation Start Date |20-MAY-2019
 Implementation end date	|31-MAY-2019
-Jenkins Build #	|Min Version : 1767  [Any later version also]
+Jenkins Build #	|Min Version : 1876  [Any later version also]
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
@@ -105,6 +105,45 @@ MOS-25493|FIXED|YES
 MOS-25511|FIXED|YES
 MOS-25495|FIXED|YES
 MOS-25494|FIXED|YES
+MOS-23892|FIXED|YES
+MOS-23889|FIXED|YES
+MOS-22736|FIXED|YES
+MOS-25532|FIXED|YES
+MOS-25602|FIXED|YES
+MOS-25604|FIXED|YES
+MOS-25707|FIXED|YES
+MOS-25479|FIXED|YES
+MOS-25800|FIXED|YES
+MOS-25743|FIXED|YES
+MOS-25597|FIXED|YES
+MOS-25747|FIXED|YES
+MOS-25708|FIXED|YES
+MOS-25611|FIXED|YES
+MOS-25491|FIXED|YES
+MOS-25492|FIXED|YES
+MOS-25749|FIXED|YES
+MOS-25488|FIXED|YES
+MOS-25577|FIXED|YES
+MOS-25514|FIXED|YES
+MOS-25510|FIXED|YES
+MOS-25695|FIXED|YES
+MOS-25704|FIXED|YES
+MOS-25681|FIXED|YES
+MOS-25578|FIXED|YES
+MOS-25509|FIXED|YES
+MOS-25748|FIXED|YES
+MOS-25469|FIXED|YES
+MOS-25470|FIXED|YES
+MOS-25493|FIXED|YES
+MOS-25511|FIXED|YES
+MOS-25493|FIXED|YES
+MOS-25696|FIXED|YES
+MOS-25763|FIXED|YES
+MOS-25488|FIXED|YES
+MOS-25577|FIXED|YES
+MOS-25514|FIXED|YES
+MOS-25510|FIXED|YES
+MOS-25695|FIXED|YES
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
