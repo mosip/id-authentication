@@ -232,6 +232,26 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			}
 		}
 
+		performingAllSyncOperations(val, keyIndex, isInitialSetUp);
+
+		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID, "completed Initial sync");
+
+		return val;
+
+	}
+
+
+	/**
+	 * Performing all sync operations.
+	 *
+	 * @param val 
+	 * 				the List of values
+	 * @param keyIndex 
+	 * 				the key index
+	 * @param isInitialSetUp 
+	 * 				the isInitialSetUp flag
+	 */
+	private void performingAllSyncOperations(List<String> val, String keyIndex, final boolean isInitialSetUp) {
 		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
 				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		ResponseDTO responseDTO = globalParamService.synchConfigData(false);
@@ -261,11 +281,6 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		} else {
 			val.add(RegistrationConstants.SUCCESS);
 		}
-
-		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID, "completed Initial sync");
-
-		return val;
-
 	}
 
 	
