@@ -528,6 +528,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		if (isMdmEnabled()) {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.IRIS_SINGLE);
 			capturedByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
+			return capturedByte;
 		} else
 			bufferedImage = ImageIO
 					.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
