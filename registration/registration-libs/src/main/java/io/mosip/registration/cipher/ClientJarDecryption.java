@@ -63,6 +63,7 @@ public class ClientJarDecryption extends Application {
 	private static String libFolder = "lib/";
 	private static String binFolder = "bin/";
 	private static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	private static final String MOSIP_REGISTRATION_HC_URL = "mosip.reg.healthcheck.url";
 	private static final String MOSIP_REGISTRATION_APP_KEY = "mosip.registration.app.key";
 	private static final String ENCRYPTED_KEY = "mosip.registration.key.encrypted";
 	private static final String IS_KEY_ENCRYPTED = "Y";
@@ -257,6 +258,7 @@ public class ClientJarDecryption extends Application {
 								String libPath = "\"" + new File("lib").getAbsolutePath() + "\"";
 
 								String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.env")
+										+ " -Dmosip.reg.healthcheck.url=" + properties.getProperty(MOSIP_REGISTRATION_HC_URL)
 										+ " -Dfile.encoding=UTF-8 -Dmosip.dbpath="
 										+ properties.getProperty("mosip.dbpath") + " -D" + MOSIP_REGISTRATION_DB_KEY
 										+ "=" + "\"" + propsFilePath + "\"" + " -cp " + tempPath + "/*;" + libPath

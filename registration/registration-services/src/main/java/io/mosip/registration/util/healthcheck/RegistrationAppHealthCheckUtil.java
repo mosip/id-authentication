@@ -18,6 +18,7 @@ import javax.net.ssl.X509TrustManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.util.restclient.RestClientUtil;
 import oshi.SystemInfo;
 import oshi.software.os.FileSystem;
@@ -62,7 +63,7 @@ public class RegistrationAppHealthCheckUtil {
 	public static boolean isNetworkAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECK UTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 				APPLICATION_ID, "Registration Network Checker had been called.");
-		return checkServiceAvailability("https://qa.mosip.io/v1/authmanager/actuator/health");
+		return checkServiceAvailability(System.getProperty(RegistrationConstants.REG_HEALTH_CHECK_URL_PROPERTY));
 	}
 
 	public static boolean checkServiceAvailability(String serviceUrl) {
