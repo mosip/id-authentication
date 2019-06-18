@@ -477,7 +477,7 @@ public class BioServiceTest {
 @Test
        public void validateFaceTest1()
        {
-             bioService.validateFace("userId");
+             bioService.validateFace(bioService.getFaceAuthenticationDto("userId"));
        }
        
        
@@ -583,12 +583,13 @@ public class BioServiceTest {
               CaptureResponseDto captureResponseDto=new CaptureResponseDto();
            Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
            Mockito.when(mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto)).thenReturn("value".getBytes());
-              bioService.validateFingerPrint("userId");
+              bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto("userId"));
            }
+           @Ignore
            @Test
            public void validateIrisTest2() throws RegBaseCheckedException, IOException
            {
-              bioService.validateIris("userId");
+              bioService.validateIris(bioService.getIrisAuthenticationDto("userId"));
            }
        
 
