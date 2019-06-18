@@ -17,8 +17,7 @@
 
 				<test name="Kernel Tests">
 						 <classes>
-						 <class name="io.mosip.kernel.tests.RIDGenerator" />
-						   <!-- <class name="io.mosip.kernel.tests.AuditLog" /> 
+						   <class name="io.mosip.kernel.tests.AuditLog" /> 
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -68,7 +67,7 @@
                            <class name="io.mosip.kernel.tests.UINStatusCheck" /> 
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />  
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" /> -->          
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />          
                  </classes>
 				</test>  
 </suite>
