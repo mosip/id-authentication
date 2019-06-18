@@ -1,6 +1,7 @@
 package io.mosip.registrationProcessor.tests;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -72,6 +73,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	Response actualResponse = null;
 	JSONObject expectedResponse = null;
 	String dest = "";
+	String testSuite = null;
 	static String folderPath = "regProc/PacketReceiver";
 	static String outputFile = "PacketReceiverOutput.json";
 	static String requestKeyFile = "PacketReceiverRequest.json";
@@ -146,6 +148,11 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		File[] listOfFolders = folder.listFiles();
 		JSONObject objectData = new JSONObject();
 
+		EncryptData encryptData=new EncryptData();
+		String regId = null;
+		JSONObject requestToEncrypt = null;
+		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
+
 		try {
 			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -161,135 +168,128 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 					if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
 						logger.info("Testcase name is" + listOfFolders[j].getName());
 						File[] listOfFiles = listOfFolders[j].listFiles();
-						for (File f : listOfFiles) {
+						for (File f : listOfFiles) 
 							if (f.getName().toLowerCase().contains("request")) {
 								objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 								file=new File(f.getParent()+"/"+objectData.get("path"));
 								rId = file.getName().substring(0, file.getName().length()-4);
 							}
-						}
 					}
 				}
 			}
+
 
 
 			//generation of actual response
 			actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
 
-			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-			Assert.assertTrue(status, "object are not equal");
+			String message = null;
+			boolean uploaded = false;
+			Response syncResponse = null;
+			if(actualResponse.asString().contains("errors")) {
+				List<Map<String,String>> error = actualResponse.jsonPath().get("errors");
+				for(Map<String,String> err : error){
+					message = err.get("message").toString();
+				}
+				logger.info("message : "+message);
+				if(message.matches("The request received is a duplicate request to upload a Packet") 
+						&& object.get("testCaseName").toString().matches("PacketReceiver_smoke")) {
+					logger.info("Inside duplicate message block ========================");
+					uploaded = true;
+					finalStatus = "Pass";
+					softAssert.assertAll();
+					object.put("status", finalStatus);
+					arr.add(object);
+				}else if(message.matches("Registration packet is not in Sync with Sync table")) {
+					try {
+						registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
 
-			if (status) {
-				boolean isError = expectedResponse.containsKey("errors");
-				logger.info("isError ========= : "+isError);
+						regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
+						requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
 
-				if(!isError){
-					String actualStatus = null;
-					String expectedStatus = null;
-					Map<String,String> response = actualResponse.jsonPath().get("response"); 
-					JSONObject expected = (JSONObject) expectedResponse.get("response");
+						String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
+						String encrypterURL = "/v1/cryptomanager/encrypt";
+						Response resp=apiRequests.postRequestToDecrypt(encrypterURL ,requestToEncrypt,MediaType.APPLICATION_JSON,
+								MediaType.APPLICATION_JSON,validToken);
+						String encryptedData = resp.jsonPath().get("response.data").toString();
+						LocalDateTime timeStamp = encryptData.getTime(regId);
 
-					//extracting status from the expected response
-					expectedStatus = expected.get("status").toString().trim();
+						syncResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
+								timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
 
-
-
-					for(Map.Entry<String,String> res: response.entrySet()){
-						if(res.getKey().equals("status"))
-							actualStatus =  res.getValue().toString();
-						if (expectedStatus.matches(actualStatus)){
-							logger.info("STATUS MATCHED....");
-							finalStatus = "Pass";
-							softAssert.assertAll();
-							object.put("status", finalStatus);
-							arr.add(object);
-						} 
-					}
-
-				}else{
-
-					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
-					String expectedErrorCode = null;
-					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
-					EncryptData encryptData=new EncryptData();
-					for(Map<String,String> err : error){
-						String errorCode = err.get("errorCode").toString();
-						Iterator<Object> iterator1 = expectedError.iterator();
-						// extracting error code from expected response
-						while(iterator1.hasNext()){
-							JSONObject jsonObject = (JSONObject) iterator1.next();
-							expectedErrorCode = jsonObject.get("errorCode").toString().trim();
+						if(syncResponse.toString().contains("response")) {
+							actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);		
 						}
-						if(expectedErrorCode.matches(errorCode)){
-							finalStatus = "Pass";
-							softAssert.assertAll();
-							object.put("status", finalStatus);
-							arr.add(object);
-						}else if(errorCode.matches("Registration packet is not in Sync with Sync table")) {
-							RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
 
-							JSONObject requestToEncrypt = null;
-							try {
-								registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
+					} catch (java.text.ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 
 
-								//rId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 
-								requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
-								String center_machine_refID=rId.substring(0,5)+"_"+rId.substring(5, 10);
-								String encrypterURL =  "/v1/cryptomanager/encrypt";
-								Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
-										MediaType.APPLICATION_JSON,validToken);
-								String encryptedData = resp.jsonPath().get("response.data").toString();
-								LocalDateTime timeStamp = encryptData.getTime(rId);
 
-								// Actual response generation
-								logger.info("sync API url : "+prop.getProperty("syncListApi"));
-								actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
-										timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
-								
-								String status = null;
-								List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
-								for(Map<String,String> res : response){
-									status=res.get("status").toString();
-									logger.info("status is : " +status);
-								}
-								if (status.matches("SUCCESS")) {
-									logger.info("SYNC IS DONE ....");
-									actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
-									Map<String,String> reUploadresponse = actualResponse.jsonPath().get("response"); 
-									for(Map.Entry<String,String> res: reUploadresponse.entrySet()){
-										String reuploadStatus = null;
-										if(res.getKey().equals("status")) {
-											 reuploadStatus = res.getValue().toString();
-										}
-											
-										if (reuploadStatus.matches("SUCCESS")){
-											logger.info("STATUS MATCHED....REUPLOADED.... ");
-											
-											finalStatus = "Pass";
-											softAssert.assertAll();
-											object.put("status", finalStatus);
-											arr.add(object);
-										} 
-									}	
-									finalStatus = "Pass";
-									softAssert.assertAll();
-									object.put("status", finalStatus);
-									arr.add(object);
-								}
-								
-							} catch (java.text.ParseException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+			//Asserting actual and expected response
+			//		status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+			//	Assert.assertTrue(status, "object are not equal");
+			if(!uploaded) {
+				status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+				Assert.assertTrue(status, "object are not equal");
+				if (status) {
+					boolean isError = expectedResponse.containsKey("errors");
+					logger.info("isError ========= : "+isError);
+
+					if(!isError){
+						String actualStatus = null;
+						String expectedStatus = null;
+						Map<String,String> response = actualResponse.jsonPath().get("response"); 
+						JSONObject expected = (JSONObject) expectedResponse.get("response");
+
+						//extracting status from the expected response
+						expectedStatus = expected.get("status").toString().trim();
+
+
+
+						for(Map.Entry<String,String> res: response.entrySet()){
+							if(res.getKey().equals("status"))
+								actualStatus =  res.getValue().toString();
+							if (expectedStatus.matches(actualStatus)){
+								logger.info("STATUS MATCHED....");
+								finalStatus = "Pass";
+								softAssert.assertAll();
+								object.put("status", finalStatus);
+								arr.add(object);
+							} 
+						}
+
+					}else{
+
+						JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
+						String expectedErrorCode = null;
+						List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
+						for(Map<String,String> err : error){
+							String errorCode = err.get("errorCode").toString();
+							Iterator<Object> iterator1 = expectedError.iterator();
+							// extracting error code from expected response
+							while(iterator1.hasNext()){
+								JSONObject jsonObject = (JSONObject) iterator1.next();
+								expectedErrorCode = jsonObject.get("errorCode").toString().trim();
+							}
+							if(expectedErrorCode.matches(errorCode)){
+								finalStatus = "Pass";
+								softAssert.assertAll();
+								object.put("status", finalStatus);
+								arr.add(object);
 							}
 						}
 					}
+				}else{
+					finalStatus="Fail";
 				}
-			}else{
-				finalStatus="Fail";
 			}
+
 			boolean setFinalStatus=false;
 			if(finalStatus.equals("Fail"))
 				setFinalStatus=false;
@@ -302,6 +302,23 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			Assert.assertTrue(false, "not able to execute packetInfo method : "+ e.getCause());
 		}
 	}
+
+
+	/*
+	@Test
+	public void packetReceiverForSmoke() throws FileNotFoundException, IOException, ParseException {
+		testSuite = "regProc/PacketReceiver/PacketReceiver_smoke";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
+		prop.load(new FileReader(new File(propertyFilePath)));
+		//JSONObject createRequest = Res.createRequest(testSuite);
+		File file = ResponseRequestMapper.mapCreateRequest(testSuite);	
+		//logger.info("actualRequest : "+actualRequest);
+
+		actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
+		logger.info("actualResponse : "+actualResponse);
+
+
+	}*/
 
 	/**
 	 * This method is used for fetching test case name

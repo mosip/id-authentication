@@ -12,7 +12,7 @@ public class TestNgApplication {
               // Create a list of String
               List<String> suitefiles = new ArrayList<String>();
               // Add xml file which you have to execute
-              suitefiles.add("src/test/resources/registrationProcessorTestNgApi.xml");
+              suitefiles.add("src/test/resources/testngapi.xml");
               // now set xml file for execution
               runner.setTestSuites(suitefiles);
               // finally execute the runner using run method
