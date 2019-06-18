@@ -26,6 +26,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 @Component
 public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 
+	/** The Constant ID_REPO_ENTITY_INTERCEPTOR. */
 	private static final String ID_REPO_ENTITY_INTERCEPTOR = "IdRepoEntityInterceptor";
 
 	/** The mosip logger. */
@@ -33,7 +34,8 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4985336846122302850L;
-
+	
+	/** The IdRepo Security Manager */
 	@Autowired
 	private transient IdRepoSecurityManager securityManager;
 
@@ -66,6 +68,13 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 		return super.onSave(entity, id, state, propertyNames, types);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.hibernate.EmptyInterceptor#onFlushDirty(java.lang.Object,
+	 * java.io.Serializable, java.lang.Object[], java.lang.Object[],
+	 * java.lang.String[], org.hibernate.type.Type[])
+	 */
 	@Override
 	public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState, Object[] previousState,
 			String[] propertyNames, Type[] types) {

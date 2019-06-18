@@ -41,36 +41,40 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class VidController {
-	
+
+	/** The Constant VID. */
 	private static final String VID = "vid";
 
+	/** The Constant REGENERATE. */
 	private static final String REGENERATE = "regenerate";
 
+	/** The Constant REGENERATE_VID. */
 	private static final String REGENERATE_VID = "regenerateVid";
 
 	/** The data source. */
 	@Autowired
 	DataSource dataSource;
 
-	/**  The Constant RETRIEVE_UIN_BY_VID. */
+	/** The Constant RETRIEVE_UIN_BY_VID. */
 	private static final String RETRIEVE_UIN_BY_VID = "retrieveUinByVid";
 
-	/**  The Constant UPDATE_VID_STATUS. */
+	/** The Constant UPDATE_VID_STATUS. */
 	private static final String UPDATE_VID_STATUS = "updateVidStatus";
 
-	/**  The Constant VID_CONTROLLER. */
+	/** The Constant VID_CONTROLLER. */
 	private static final String VID_CONTROLLER = "VidController";
-	
+
+	/** The Constant CREATE. */
 	private static final String CREATE = "create";
 
 	/** The Constant UPDATE. */
 	private static final String UPDATE = "update";
-	
-	/**  The Vid Service. */
+
+	/** The Vid Service. */
 	@Autowired
 	private VidService<VidRequestDTO, ResponseWrapper<VidResponseDTO>> vidService;
-	
-	/**  The Vid Request Validator. */
+
+	/** The Vid Request Validator. */
 	@Autowired
 	private VidRequestValidator validator;
 
@@ -86,12 +90,12 @@ public class VidController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
-	
+
 	/**
 	 * Creates the vid.
 	 *
 	 * @param request the request
-	 * @param errors the errors
+	 * @param errors  the errors
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
@@ -141,9 +145,9 @@ public class VidController {
 	 * This Method accepts VidRequest body as parameter and vid from url then it
 	 * will update the status if it is an valid vid.
 	 *
-	 * @param vid the vid
+	 * @param vid     the vid
 	 * @param request the request
-	 * @param errors the errors
+	 * @param errors  the errors
 	 * @return VidResponseDTO
 	 * @throws IdRepoAppException the id repo app exception
 	 */
@@ -170,12 +174,20 @@ public class VidController {
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
-	
-	//TODO have to add roles
+
+	/**
+	 * This method will accepts an vid, if vid is valid to regenerate then regenerated
+	 * vid will be returned as response.
+	 * 
+	 * @param vid
+	 * @return
+	 * @throws IdRepoAppException
+	 */
+	// TODO have to add roles
 //	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@PostMapping(path = "/vid/{VID}/regenerate", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> regenerateVid(@PathVariable("VID") String vid)
-			throws IdRepoAppException{
+			throws IdRepoAppException {
 		try {
 			IdRepoLogger.setVid(vid);
 			validator.validateVid(vid);
