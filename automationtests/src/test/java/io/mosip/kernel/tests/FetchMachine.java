@@ -132,6 +132,8 @@ public class FetchMachine extends BaseTestCase implements ITest {
 
 			// fetching json object from response
 			JSONObject responseJson = (JSONObject) ((JSONObject) new JSONParser().parse(response.asString())).get("response");
+			logger.info(response.asString());
+			logger.info(responseJson.toJSONString());
 			if (responseJson == null || !responseJson.containsKey("machines"))
 				Assert.assertTrue(false, "Response does not contain machines");
 			String queryPart = "select count(*) from master.machine_master where is_active = true";
