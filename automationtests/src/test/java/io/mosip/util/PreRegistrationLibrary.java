@@ -1824,7 +1824,8 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * Reading request body from configpath
 		 */
 		String folder2 = "preReg";
-		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
+		String configPath = System.getProperty("user.dir")+"\\src\\test\\resources\\" + folder2 + "\\" + "PreRegDocs" + "\\" + PrID;
+		System.out.println("syso======================"+configPath);
 		File folder1 = new File(configPath);
 		File[] listOfFiles = folder1.listFiles();
 		for (File f1 : listOfFiles) {

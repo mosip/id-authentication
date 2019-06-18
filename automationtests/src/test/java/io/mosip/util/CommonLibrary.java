@@ -492,7 +492,7 @@ public class CommonLibrary extends BaseTestCase {
 		String regClientAdminAuthToken = lib.regClientAdminToken();
 		Cookie.Builder builder = new Cookie.Builder("Authorization", regClientAdminAuthToken);
 		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(valueMap).log()
-				.all().when().get(url).then().log().all().extract().response();
+				.all().when().get(url);
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());

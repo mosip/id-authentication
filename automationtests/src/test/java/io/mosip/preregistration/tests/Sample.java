@@ -93,15 +93,8 @@ public class Sample extends BaseTestCase implements ITest {
 		Response documentResponse = lib.documentUpload(createResponse);
 		Response avilibityResponse = lib.FetchCentre();
 		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
-		Response paginationResponse = lib.pagination("");
-		try {
-			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(), preID);
-			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].bookingMetadata").toString(), fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
-			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].demographicMetadata.proofOfAddress.documentId").toString(), documentResponse.jsonPath().get("response.docId").toString());
-		} catch (NullPointerException e) {
-			Assert.fail("Exception occured while fetching data from pagination response");
-		}
+		Response retrivePreRegistrationData = lib.retrivePreRegistrationData(preID);
+		lib.validateRetrivePreRegistrationData(retrivePreRegistrationData, preID, createResponse);
 	}
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
