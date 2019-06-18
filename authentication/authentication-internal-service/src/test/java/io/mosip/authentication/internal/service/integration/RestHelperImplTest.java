@@ -1,4 +1,4 @@
-package io.mosip.authentication.internal.service.integarion;
+package io.mosip.authentication.internal.service.integration;
 
 import static org.junit.Assert.assertTrue;
 
@@ -57,6 +57,7 @@ import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.internal.service.integration.RestHelperImpl;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import reactor.core.publisher.Mono;

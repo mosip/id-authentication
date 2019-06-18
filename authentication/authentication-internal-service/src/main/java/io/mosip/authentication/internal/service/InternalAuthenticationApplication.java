@@ -29,7 +29,7 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
-import io.mosip.authentication.internal.service.integarion.RestHelperImpl;
+import io.mosip.authentication.internal.service.integration.RestHelperImpl;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
