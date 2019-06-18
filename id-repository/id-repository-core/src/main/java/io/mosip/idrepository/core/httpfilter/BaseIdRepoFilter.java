@@ -8,25 +8,29 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Resource;
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
+// TODO: Auto-generated Javadoc
+
 /**
+ * The Class BaseIdRepoFilter.
  *
  * @author Manoj SP
  * @author Prem Kumar
- *
  */
 @Component
-public abstract class BaseIdRepoFilter extends OncePerRequestFilter  {
+public abstract class BaseIdRepoFilter implements Filter  {
 	/** The Constant ID_REPO_FILTER. */
 	private static final String ID_REPO_FILTER = "IdRepoFilter";
 
@@ -43,64 +47,84 @@ public abstract class BaseIdRepoFilter extends OncePerRequestFilter  {
 	@Resource
 	private Map<String, String> id;
 
+	/** The uin. */
 	String uin;
-
-	/**
-	 * Allowed end points.
-	 *
-	 * @return the string[] allowed endpoints
-	 */
-	private String[] allowedEndPoints() {
-		return new String[] { "/assets/**", "/icons/**", "/screenshots/**", "/favicon**", "/**/favicon**", "/css/**",
-				"/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
-				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html" };
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.filter.OncePerRequestFilter#shouldNotFilter(javax.
-	 * servlet.http.HttpServletRequest)
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
 	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+	public void init(FilterConfig filterConfig) throws ServletException {
+	}
+	
+	/**
+	 * Should not filter.
+	 *
+	 * @param request the request
+	 * @return true, if successful
+	 */
+	private boolean shouldNotFilter(HttpServletRequest request) {
 		if (Objects.nonNull(request.getPathInfo())) {
 			return Arrays.stream(allowedEndPoints()).anyMatch(p -> pathMatcher.match(p, request.getPathInfo()));
 		}
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.springframework.web.filter.OncePerRequestFilter#doFilterInternal(javax.
-	 * servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
-	 * javax.servlet.FilterChain)
+	/**
+	 * Allowed end points.
+	 *
+	 * @return the string[]
+	 */
+	private String[] allowedEndPoints() {
+		return new String[] { "/assets/**", "/icons/**", "/screenshots/**", "/favicon**", "/**/favicon**", "/css/**",
+				"/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
+				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html" };
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
 	 */
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
-
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 		Instant requestTime = Instant.now();
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + request.getRequestURL());
+		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + ((HttpServletRequest) request).getRequestURL());
 
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request received");
-
-		doFilter(request, response, filterChain);
-
+		if (shouldNotFilter((HttpServletRequest) request)) {
+			chain.doFilter(request, response);
+		} else {
+			String responseString = buildResponse((HttpServletRequest) request);
+			if (Objects.isNull(responseString)) {
+				chain.doFilter(request, response);
+			} else {
+				response.getWriter().write(responseString);
+			}
+		}
 		Instant responseTime = Instant.now();
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
 		long duration = Duration.between(requestTime, responseTime).toMillis();
 		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER,
 				"Time taken to respond in ms: " + duration
 						+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000)
-						+ " for url : " + request.getRequestURL() + " method: " + request.getMethod());
+						+ " for url : " + ((HttpServletRequest) request).getRequestURL() + " method: "
+						+ ((HttpServletRequest) request).getMethod());
 	}
 
-	protected abstract void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws IOException, ServletException;
+	/**
+	 * Builds the response.
+	 *
+	 * @param request the request
+	 * @return the string
+	 */
+	protected abstract String buildResponse(HttpServletRequest request);
+
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#destroy()
+	 */
+	@Override
+	public void destroy() {
+	}
 
 }
