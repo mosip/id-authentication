@@ -19,6 +19,7 @@ import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
+import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
  * @description This is the dashbaord component which displays all the users linked to the login id
@@ -76,7 +77,8 @@ export class DashBoardComponent implements OnInit {
     private bookingService: BookingService,
     private autoLogout: AutoLogoutService,
     private translate: TranslateService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private loggerService: LogService
   ) {
     this.translate.use(this.primaryLangCode);
     localStorage.setItem('modifyDocument', 'false');
@@ -128,6 +130,7 @@ export class DashBoardComponent implements OnInit {
   getUsers() {
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: any) => {
+        this.loggerService.info('applicants in dashboard', applicants);
         if (
           applicants[appConstants.NESTED_ERROR] &&
           applicants[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] ===
@@ -461,9 +464,8 @@ export class DashBoardComponent implements OnInit {
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => this.setUserFiles(response),
-      (error) => {
-        console.log("dashboard error", error);
-
+      error => {
+        this.loggerService.error('dashboard error', error);
         this.disableModifyDataButton = false;
         this.onError(error);
       },
@@ -473,7 +475,7 @@ export class DashBoardComponent implements OnInit {
           response => {
             this.onModification(response, preId);
           },
-          (error) => {
+          error => {
             this.onError(error);
           }
         );
@@ -630,12 +632,14 @@ export class DashBoardComponent implements OnInit {
   private async onError(error?: any) {
     // if invalid token hten message = "invlaid something" else message = "regular message"
     await this.getErrorLabels();
-    let message = this.errorLanguagelabels.error
-    if(error &&
-      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired){
-        message = this.errorLanguagelabels.tokenExpiredLogout;
-        this.titleOnError = '';
-      }
+    let message = this.errorLanguagelabels.error;
+    if (
+      error &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+    ) {
+      message = this.errorLanguagelabels.tokenExpiredLogout;
+      this.titleOnError = '';
+    }
     if (this.errorLanguagelabels) {
       const body = {
         case: 'ERROR',
