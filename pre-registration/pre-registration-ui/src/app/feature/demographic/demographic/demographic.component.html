@@ -147,7 +147,7 @@
               [formControlName]="formControlNames.addressLine1"
               (focusout)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
               (change)="onTransliteration(addressLine1, formControlNames.addressLine1Secondary)"
-              (click)="scrollUp(addressLine1)"
+              (focus)="scrollUp(addressLine1)"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
               'demographic.validation.address_required' | translate
@@ -164,7 +164,7 @@
               [formControlName]="formControlNames.addressLine2"
               (focusout)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
               (change)="onTransliteration(addressLine2, formControlNames.addressLine2Secondary)"
-              (click)="scrollUp(addressLine2)"
+              (focus)="scrollUp(addressLine2)"
             />
             <mat-error *ngIf="!addressLine2.invalid">{{
               'demographic.validation.address_required' | translate
@@ -181,7 +181,7 @@
               [formControlName]="formControlNames.addressLine3"
               (focusout)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
               (change)="onTransliteration(addressLine3, formControlNames.addressLine3Secondary)"
-              (click)="scrollUp(addressLine3)"
+              (focus)="scrollUp(addressLine3)"
             />
             <mat-error *ngIf="!addressLine3.invalid">{{
               'demographic.validation.address_required' | translate
@@ -445,7 +445,7 @@
               name="t_addressLine1"
               [placeholder]="secondaryLanguagelabels.label_address1"
               [formControlName]="formControlNames.addressLine1Secondary"
-              (click)="scrollUp(t_addressLine1)"
+              (focus)="scrollUp(t_addressLine1)"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
@@ -461,7 +461,7 @@
               #keyboardRef
               name="t_addressLine2"
               [placeholder]="secondaryLanguagelabels.label_address2"
-              (click)="scrollUp(t_addressLine2)"
+              (focus)="scrollUp(t_addressLine2)"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
@@ -477,7 +477,7 @@
               #t_addressLine3
               #keyboardRef
               [placeholder]="secondaryLanguagelabels.label_address3"
-              (click)="scrollUp(t_addressLine3)"
+              (focus)="scrollUp(t_addressLine3)"
             />
             <mat-error *ngIf="!addressLine1.invalid">{{
               secondaryLanguagelabels.validation.address_required
