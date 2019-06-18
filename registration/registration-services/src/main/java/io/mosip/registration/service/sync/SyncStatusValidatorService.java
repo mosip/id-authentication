@@ -32,6 +32,7 @@ public interface SyncStatusValidatorService {
 	
 	/**
 	 * Check for force update of application. 
+	 * 
 	 * @return 
 	 * 		true for Force Update.
 	 */
