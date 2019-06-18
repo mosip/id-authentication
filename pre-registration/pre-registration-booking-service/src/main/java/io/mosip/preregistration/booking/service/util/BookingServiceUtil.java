@@ -729,7 +729,7 @@ public class BookingServiceUtil {
 					"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
 			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
 			List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
-			if (!validationErrorList.isEmpty()) {
+			if (validationErrorList!=null && !validationErrorList.isEmpty()) {
 				throw new NotificationException(validationErrorList, null);
 			}
 		} catch (HttpClientErrorException ex) {
