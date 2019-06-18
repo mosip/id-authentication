@@ -7,8 +7,8 @@ import io.mosip.registration.dto.biometric.BiometricDTO;
 
 /**
  * The {@code UserOnboardService} represents to validate the user bio-metirc details against the IDA.
- * It calls the IDA server and send the information in the form user bio-metric DTO information of 
- * fingerprint,iris and face] on successful validation the same will be persisted into the Database.
+ * It calls the IDA server and send the information in the form of user bio-metric DTO{@code BiometricDTO} information of 
+ * fingerprint,iris and face on successful validation the same will be persisted into the Database.
  * 
  *  
  * @author Sreekar Chukka
@@ -39,7 +39,7 @@ public interface UserOnboardService {
 	 * method.
 	 * 
 	 *
-	 * @param biometricDTO {@code BiometricDTO} which holds the biometric
+	 * @param biometricDTO {@code BiometricDTO} which holds the bio-metric
 	 *                     information of the user.
 	 * 
 	 * @return {@code ResponseDTO} based on the result the response DTO will be

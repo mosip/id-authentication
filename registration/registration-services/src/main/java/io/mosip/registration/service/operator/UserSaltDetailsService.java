@@ -40,6 +40,7 @@ public interface UserSaltDetailsService {
 	 * @param triggerpoint {@code String} to identify how this operation happens
 	 *                     [Manual or batch trigger] Manual trigger - value is user
 	 *                     id of the logged user. Batch trigger - value is "system"
+	 *                     
 	 * @return {@code ResponseDTO} based on the result the response DTO will be
 	 *         formed and return to the caller.
 	 */
