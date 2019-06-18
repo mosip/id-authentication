@@ -574,7 +574,7 @@
   },
   "error": {
     "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
-    "button_ok": "OK",
+    "button_ok": "D'accord",
     "postalCode": "Le code PIN entré est invalide",
     "email": "Le courriel entré est invalide",
     "phone": "Le téléphone entré est invalide",
