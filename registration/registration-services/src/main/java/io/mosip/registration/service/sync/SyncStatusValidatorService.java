@@ -2,6 +2,7 @@ package io.mosip.registration.service.sync;
 
 import io.mosip.registration.dto.ResponseDTO;
 
+
 /**
  * It does the pre registration check to ensure that the application can capture the Registration detail from individual. If the pre registration check
  * fails, then don't allow the application to capture the detail from individual.  Post completion of the respective sync process only 
@@ -21,6 +22,7 @@ public interface SyncStatusValidatorService {
 	 * <li>GPS related - center to machine distance shouldn't be greater than what is provided in the config.
 	 * <li>No. of days, the application can run by skipping the Software update if available. 
 	 * </ul>
+	 * 
 	 * 
 	 * @return 
 	 * 		Success or failure Error object along with the message. 
