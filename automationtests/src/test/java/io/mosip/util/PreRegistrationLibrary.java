@@ -1840,7 +1840,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		}
 		}
 		catch (NullPointerException | IOException|ParseException e) {
-			Assert.fail("File is not present at specified path :"+configPath);
+			Assert.fail("File is not present at specified path ::"+configPath);
 		}
 		return finalResult;
 	}
