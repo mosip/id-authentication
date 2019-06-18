@@ -1829,15 +1829,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		File folder1 = new File(configPath);
 		File[] listOfFiles = folder1.listFiles();
 		for (File f1 : listOfFiles) {
-			if (f1.getName().contains("ID")) {
-				try {
+			try {
+				if (f1.getName().contains("ID")) {
 					request = (JSONObject) new JSONParser().parse(new FileReader(f1.getPath()));
-				} catch (NullPointerException |ParseException | IOException e) {
-					e.printStackTrace();
-					Assert.fail("File is not present at specified path :"+configPath);
-				} 
 
 			}
+			} catch (NullPointerException | IOException|ParseException e) {
+				Assert.fail("File is not present at specified path :"+configPath);
+			}
+			
 			Map<String, Object> actualDemographicDetails = jsonObjectToMap(request);
 			finalResult = actualDemographicDetails.keySet().equals(expectedDemographicDetails.keySet());
 		}
