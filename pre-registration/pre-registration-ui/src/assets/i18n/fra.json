@@ -580,7 +580,8 @@
     "phone": "Le téléphone entré est invalide",
     "dateOfBirth": "Date de naissance entrée est invalide",
     "CNIENumber": "Le numéro CNIE entré est invalide",
-    "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité."
+    "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité.",
+    "errorLabel":"ERREUR"
   },
   "residentTypesMapping": {
     "NFR": "Nationale",

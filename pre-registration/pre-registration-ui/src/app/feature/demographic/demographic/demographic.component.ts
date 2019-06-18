@@ -101,6 +101,7 @@ export class DemographicComponent implements OnInit {
   message = {};
   config = {};
   consentMessage: any;
+  titleOnError = '';
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -1190,15 +1191,17 @@ export class DemographicComponent implements OnInit {
   private onError(message: string, error: any) {
     this.dataUploadComplete = true;
     this.hasError = true;
+    this.titleOnError = this.errorlabels.errorLabel;
     if (
       error &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorlabels.tokenExpiredLogout;
+      this.titleOnError = '';
     }
     const body = {
       case: 'ERROR',
-      title: 'ERROR',
+      title: this.titleOnError,
       message: message,
       yesButtonText: this.errorlabels.button_ok
     };
