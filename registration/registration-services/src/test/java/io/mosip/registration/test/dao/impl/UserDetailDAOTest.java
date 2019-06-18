@@ -30,6 +30,7 @@ import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.entity.UserDetail;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.UserBiometricRepository;
 import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserPwdRepository;
@@ -148,6 +149,31 @@ public class UserDetailDAOTest {
 		Mockito.when(userDetailRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		Mockito.when(userPwdRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		Mockito.when(userRoleRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
+		userDetailDAOImpl.save(userDetailsResponse);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected=RegBaseUncheckedException.class)
+	public void userDetlsDaoException() {
+		UserDetailResponseDto userDetailsResponse = new UserDetailResponseDto();
+		List<UserDetailDto> userDetails = new ArrayList<>();
+
+		UserDetailDto user = new UserDetailDto();
+		user.setUserName("110011");
+		user.setUserPassword("test".getBytes());
+		user.setRoles(Arrays.asList("SUPERADMIN"));
+		user.setMobile("9894589435");
+		user.setLangCode("eng");
+		UserDetailDto user1 = new UserDetailDto();
+		user1.setUserName("110011");
+		user1.setUserPassword("test".getBytes());
+		user1.setRoles(Arrays.asList("SUPERADMIN"));
+		user1.setMobile("9894589435");
+		user1.setLangCode("eng");
+		userDetails.add(user);
+		userDetails.add(user1);
+		userDetailsResponse.setUserDetails(userDetails);
+		Mockito.when(userDetailRepository.saveAll(Mockito.anyCollection())).thenThrow(RegBaseUncheckedException.class);
 		userDetailDAOImpl.save(userDetailsResponse);
 	}
 	
