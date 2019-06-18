@@ -7,8 +7,8 @@ actions , filter columns, display and actioncolumns.
 **Solution**
 
 
-    - Create a Rest Controller with Request URL "v1/admin/entityspec/{entity}".
-    - Create a Rest Service which fetches the data to be diplayed for the following entities,
+  - Create a Rest Controller with Request URL "v1/admin/entityspec/{entity}".
+  - Create a Rest Service which fetches the data to be diplayed for the following entities,
      
         Actions : 
             Specifies the actions to be shown on displayed buttons or pop-up.Actions has attributes
@@ -23,7 +23,7 @@ actions , filter columns, display and actioncolumns.
             Specifices the columns to be used for filter data. This has attributes like filter name , filter label,
             ui field such as drop down or date picker and filter type.
             
-    - Admin UI component can fetch the entites to be displayed for the tables.
+  - Admin UI component can fetch the entites to be displayed for the tables.
 
 **Sequence Diagram**
 
