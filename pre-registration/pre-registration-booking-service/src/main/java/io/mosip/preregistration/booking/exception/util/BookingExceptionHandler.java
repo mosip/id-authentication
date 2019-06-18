@@ -51,6 +51,7 @@ import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.exception.JsonException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.NotificationException;
 import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
@@ -341,6 +342,12 @@ public class BookingExceptionHandler {
 
 	@ExceptionHandler(OperationNotAllowedException.class)
 	public ResponseEntity<MainResponseDTO<?>> operationNotAllowedException(final OperationNotAllowedException e) {
+		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
+
+	}
+	
+	@ExceptionHandler(JsonException.class)
+	public ResponseEntity<MainResponseDTO<?>> jsonException(final JsonException e) {
 		return GenericUtil.errorResponse(e, e.getMainResponseDTO());
 
 	}

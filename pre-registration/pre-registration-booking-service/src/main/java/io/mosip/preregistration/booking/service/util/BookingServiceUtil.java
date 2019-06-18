@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
@@ -708,13 +710,16 @@ public class BookingServiceUtil {
 	 * @param notificationDTO
 	 * @param langCode
 	 * @return NotificationResponseDTO
+	 * @throws JsonProcessingException 
 	 */
-	public void emailNotification(NotificationDTO notificationDTO, String langCode) {
+	public void emailNotification(NotificationDTO notificationDTO, String langCode) throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
 		ResponseEntity<String> resp = null;
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
+		ObjectMapper mapper= new ObjectMapper();
+		mapper.setTimeZone(TimeZone.getDefault());
 		try {
 			request.setRequest(notificationDTO);
 			request.setId("mosip.pre-registration.notification.notify");
@@ -722,7 +727,7 @@ public class BookingServiceUtil {
 			request.setRequesttime(new Date());
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 			MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-			emailMap.add("NotificationRequestDTO", request);
+			emailMap.add("NotificationRequestDTO", mapper.writeValueAsString(request));
 			emailMap.add("langCode", langCode);
 			HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
 			log.info("sessionId", "idType", "id",
