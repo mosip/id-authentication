@@ -15,26 +15,26 @@ import io.mosip.registration.dto.ResponseDTO;
 public interface UserSaltDetailsService {
 
 	/**
-	 * This method performs to invoke the user salt details sync operation in
-	 * synchronous way.
+	 * <p>This method performs to invoke the user salt details sync operation in
+	 * synchronous way.</p>
 	 * 
-	 * This service provide unique salt(An Encrypted Key) to for all users. While
+	 * <p>This service provide unique salt(An Encrypted Key) to for all users. While
 	 * performing the call the online connectivity check will be performed as
 	 * preliminary step to connect to the server and then sync the user salt
-	 * details.
+	 * details.</p>
 	 * 
-	 * If Online : The server call performs and based on the result the return
-	 * response will be formed.
+	 * <p>If Online : The server call performs and based on the result the return
+	 * response will be formed.</p>
 	 * 
-	 * If Success: The Response JSON string will be converted to the
-	 * {@code UserDetail} and persist to the database. The success response DTO will
-	 * be formed and returned from this method.
+	 * 			<p>If Success: The Response JSON string will be converted to the
+	 * 			{@code UserDetail} and persist to the database. The success response DTO will
+	 * 			be formed and returned from this method.</p>
 	 * 
-	 * If Failure: The failure response DTO will be formed and returned from this
-	 * method.
+	 * 			<p>If Failure: The failure response DTO will be formed and returned from this
+	 * 			method.</p>
 	 * 
-	 * If Offline: The failure response DTO will be formed and returned from this
-	 * method.
+	 * <p>If Offline: The failure response DTO will be formed and returned from this
+	 * method.</p>
 	 * 
 	 *
 	 * @param tigger {@code String} to identify how this operation happens
