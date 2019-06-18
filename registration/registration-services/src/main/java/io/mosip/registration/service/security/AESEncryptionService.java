@@ -11,8 +11,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  * (substitutions) and others involve shuffling bits around (permutations)
  * 
  * @author Balaji Sridharan
- * @since 1.0.0
- *
+ * 
  */
 public interface AESEncryptionService {
 
@@ -21,12 +20,14 @@ public interface AESEncryptionService {
 	 * Session Key using RSA and combine the RSA encrypted data and AES encrypted
 	 * data.
 	 * 
-	 * * The key size used for an AES cipher specifies the number of transformation
-	 * rounds that convert the input, called the plaintext, into the final output,
-	 * called the ciphertext.
+	 *<p> The key size used for an AES cipher specifies the number of transformation
+	 * rounds that convert the input, called the plain text, into the final output,
+	 * called the cipher text.</p>
 	 * 
 	 * @param {@code byte[]} dataToEncrypt the data to be encrypted in bytes
+	 * 
 	 * @return {@code byte[]} encrypted data as byte array
+	 * 
 	 * @throws {@code
 	 *             RegBaseCheckedException} RegBaseCheckedException if any error
 	 *             occurs during encryption

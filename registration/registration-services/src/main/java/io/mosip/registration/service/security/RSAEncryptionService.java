@@ -24,7 +24,9 @@ public interface RSAEncryptionService {
 	 * key can only be decrypted with the private key.
 	 * 
 	 * @param {@code byte[]} sessionKey has to be encrypted as bytes
+	 * 
 	 * @return {@code byte[]} rsaEncryptedBytes has encrypted by rsa
+	 * 
 	 * @throws {@code
 	 *             RegBaseCheckedException} RegBaseCheckedException if any occurs
 	 *             while encrypting
