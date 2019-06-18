@@ -7,6 +7,8 @@ package io.mosip.preregistration.booking.exception.util;
 import java.time.DateTimeException;
 import java.time.format.DateTimeParseException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
@@ -28,6 +30,7 @@ import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.DocumentNotFoundException;
 import io.mosip.preregistration.booking.exception.InvalidDateTimeFormatException;
+import io.mosip.preregistration.booking.exception.JsonException;
 import io.mosip.preregistration.booking.exception.NotificationException;
 import io.mosip.preregistration.booking.exception.OperationNotAllowedException;
 import io.mosip.preregistration.booking.exception.RecordFailedToDeleteException;
@@ -155,7 +158,8 @@ public class BookingExceptionCatcher {
 		} else if (ex instanceof NotificationException) {
 			throw new NotificationException(((NotificationException) ex).getValidationErrorList(),
 					((NotificationException) ex).getMainResposneDTO());
-
+		} else if(ex instanceof JsonProcessingException) {
+			throw new JsonException(ErrorCodes.PRG_BOOK_RCI_034.getCode(),ErrorMessages.JSON_PROCESSING_EXCEPTION.getMessage(),mainResponseDTO);
 		}
 
 	}
