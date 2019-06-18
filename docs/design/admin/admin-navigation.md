@@ -25,6 +25,8 @@ The admin can access various functionalities available in the Admin application 
 
 5. During the formation of the URL, the URL conventions are followed.
 
+6. Admin menus will be enabled / visible or disabled / hidden based on the role of the person logging in.
+
 
 **Components**
 
