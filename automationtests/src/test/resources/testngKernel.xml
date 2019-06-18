@@ -17,7 +17,7 @@
 
 				<test name="Kernel Tests">
 						 <classes>
-						 <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId" />
+						 <class name="io.mosip.kernel.tests.RIDGenerator" />
 						   <!-- <class name="io.mosip.kernel.tests.AuditLog" /> 
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />

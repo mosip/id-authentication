@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -116,12 +117,14 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String rid = ((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("rid").toString();
-			String timeStampWithHour = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()).replace(".", "").substring(0, 8);
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			String timeStamp = simpleDateFormat.format(new Date()).substring(0, 10);
 			
 			boolean lengthValid = rid.length()==29;
 			boolean centidValid = rid.substring(0, 5).equals(objectData.get("centerid"));
 			boolean machidValid = rid.substring(5, 10).equals(objectData.get("machineid"));
-			boolean ridTimestampvalid = timeStampWithHour.equals(rid.substring(15,23));
+			boolean ridTimestampvalid = timeStamp.equals(rid.substring(15, 25));
 			boolean alphabetValid = rid.substring(10,15).matches("[0-9]+");
 			boolean sequenceValid = true;
 			
