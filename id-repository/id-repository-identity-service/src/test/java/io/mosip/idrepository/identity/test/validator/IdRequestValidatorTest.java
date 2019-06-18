@@ -63,6 +63,8 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @ConfigurationProperties("mosip.idrepo.identity")
 public class IdRequestValidatorTest {
 
+	private static final String UIN = "uin";
+
 	@InjectMocks
 	IdRequestValidator validator;
 
@@ -402,10 +404,17 @@ public class IdRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Test(expected = IdRepoAppException.class)
+	@Test
 	public void testInvalidUin() throws IdRepoAppException {
-		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		try {
+		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
 		validator.validateUin("1234", "read");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN),
+					e.getErrorText());
+		}
 	}
 
 	/**
@@ -414,10 +423,18 @@ public class IdRequestValidatorTest {
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@Test(expected = IdRepoAppException.class)
+	@Test
 	public void testValidateNullId() throws IdRepoAppException {
+		try {
 		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
 		validator.validateUin(null, "create");
+	} catch (IdRepoAppException e) {
+		assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+		assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+				 env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue()))
+				.replace(".", "/"),
+				e.getErrorText());
+	}
 	}
 
 }
