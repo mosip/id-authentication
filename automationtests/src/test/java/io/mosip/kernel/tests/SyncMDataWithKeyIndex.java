@@ -68,7 +68,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationAdmin();
 
 	}
@@ -103,8 +103,7 @@ public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 			JSONObject objectData = objectDataArray[0];
 			responseObject = objectDataArray[1];
 					response = applicationLibrary.getWithQueryParam(syncMdatawithKeyIndex, objectData,cookie);
-		
-		//This method is for checking the authentication is pass or fail in rest services
+					//This method is for checking the authentication is pass or fail in rest services
 				new CommonLibrary().responseAuthValidation(response);
 			// add parameters to remove in response before comparison like time stamp
 			ArrayList<String> listOfElementToRemove = new ArrayList<String>();

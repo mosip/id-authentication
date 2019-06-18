@@ -69,7 +69,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationAdmin();
 	}
 
@@ -108,7 +108,6 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 				regId.put("regcenterId", regcenterId);
 				objectData.remove("regcenterId");
 					response = applicationLibrary.getWithPathQueryParam(syncMdatawithRegCentIdKeyIndex, regId, objectData, cookie);
-
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		
