@@ -36,7 +36,6 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
 import io.mosip.registration.processor.packet.service.dto.MachineResponseDto;
@@ -78,7 +77,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	/** The primary languagecode. */
-	@Value("${primary.language}")
+	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
 
 	@Autowired
@@ -89,9 +88,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	/** The filemanager. */
-	@Autowired
-	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 	private ObjectMapper mapper=new ObjectMapper();
 
 	@Autowired
@@ -365,8 +361,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
 		String rid=null;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		JSONObject ridJson=new JSONObject();
+		ResponseWrapper<?> responseWrapper;
+		JSONObject ridJson;
 		try {
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "",
 					"", ResponseWrapper.class);

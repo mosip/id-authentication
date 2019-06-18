@@ -174,6 +174,13 @@ public class DocumentScanController extends BaseController {
 	private Button backBtn;
 
 
+	/**
+	 * @return the bioExceptionToggleLabel1
+	 */
+	public Label getBioExceptionToggleLabel1() {
+		return bioExceptionToggleLabel1;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -373,6 +380,8 @@ public class DocumentScanController extends BaseController {
 				});
 				hBox.getChildren().addAll(new VBox(new Label(), indicatorImage), comboBox, documentVBox, scanButton);
 				docScanVbox.getChildren().addAll(documentLabel, hBox);
+				hBox.setId(documentCategory.getCode());
+				documentLabel.setId(documentCategory.getCode()+RegistrationConstants.LABEL);
 				comboBox.getItems().addAll(documentCategoryDtos);
 			}
 
@@ -752,7 +761,8 @@ public class DocumentScanController extends BaseController {
 			
 			HBox hbox = (HBox) vboxElement.getParent();
 			ComboBox<String> comboBox=  (ComboBox) hbox.getChildren().get(1);
-			comboBox.setPromptText(comboBox.getPromptText());
+			comboBox.getSelectionModel().clearSelection();
+			(((VBox) hbox.getParent()).lookup(RegistrationConstants.HASH+hbox.getId()+RegistrationConstants.LABEL)).setVisible(false);
 
 			((ImageView) ((VBox) ((hbox).getChildren().get(0))).getChildren().get(1)).setImage(new Image(
 					this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15, true, true));
@@ -934,6 +944,8 @@ public class DocumentScanController extends BaseController {
 						bioExceptionToggleLabel1.setLayoutX(30);
 						toggleBiometricException = true;
 						updatePageFlow(RegistrationConstants.BIOMETRIC_EXCEPTION, true);
+						biometricExceptionController.fingerException();
+						biometricExceptionController.clearIrisException();
 					} else {
 						bioExceptionToggleLabel1.setLayoutX(0);
 

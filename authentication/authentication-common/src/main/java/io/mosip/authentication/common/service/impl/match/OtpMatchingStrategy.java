@@ -14,6 +14,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
+ * Matching Strategy for Otp
+ * 
  * @author Dinesh Karuppiah.T
  */
 public enum OtpMatchingStrategy implements TextMatchingStrategy {
@@ -40,7 +42,6 @@ public enum OtpMatchingStrategy implements TextMatchingStrategy {
 			return 0;
 		}
 	});
-
 
 	/**
 	 * Otp Matching Strategy

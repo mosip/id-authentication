@@ -23,7 +23,6 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegCenterMachineUserReqDto;
 import io.mosip.registration.dto.RegistrationCenterUserMachineMappingDto;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -62,7 +61,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 		List<UserMachineMapping> userMachineMappingList = null;
 		List<RegistrationCenterUserMachineMappingDto> list = new ArrayList<>();
 		ResponseDTO responseDTO = new ResponseDTO();
-		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+
 		if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			responseDTO = buildErrorRespone(responseDTO, RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_CODE,
 					RegistrationConstants.POLICY_SYNC_CLIENT_NOT_ONLINE_ERROR_MESSAGE);

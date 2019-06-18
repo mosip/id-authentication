@@ -98,62 +98,37 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
-	INVALID_DOCUMENT_CATEGORY_CODE("Catagory code is invalid"),
-	
-	/**
-	 * ErrorMessage for PRG_PAM_DOC_019
-	 */
 	DEMOGRAPHIC_DATA_NOT_FOUND("Demographic data not found for the preRegistrationId"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_019
 	 */
 	DEMOGRAPHIC_GET_RECORD_FAILED("Demographic record failed to fetch"),
-	
+
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
 	INVALID_PRE_ID("PreRegistrationId is invalid"),
-	
-	/**
-	 * ErrorMessage for PRG_PAM_DOC_018
-	 */
-	INVALID_DOC_CAT_CODE("Document Catagory code is invalid"),
-	
-	/**
-	 * ErrorMessage for PRG_PAM_DOC_018
-	 */
-	INVALID_DOC_TYPE_CODE("Document type code is invalid"),
-	
-	/**
-	 * ErrorMessage for PRG_PAM_DOC_018
-	 */
-	INVALID_DOC_FILE_FORMAT("Document file format is invalid"),
-	
+
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
 	INVALID_STATUS_CODE("Status code is invalid"),
-	
+
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
 	INVALID_UPLOAD_BY("Uploaded by is invalid"),
-	
-	/**
-	 * ErrorMessage for PRG_PAM_DOC_018
-	 */
-	INVALID_LANG_CODE("Language code is invalid"),
-	
+
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_018
 	 */
 	INVALID_UPLOAD_DATE_TIME("Updated date and time is invalid"),
-	
+
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_021
 	 */
 	DOCUMENT_ALREADY_PRESENT("Document is alredy present");
-	
+
 	private ErrorMessages(String message) {
 		this.message = message;
 	}

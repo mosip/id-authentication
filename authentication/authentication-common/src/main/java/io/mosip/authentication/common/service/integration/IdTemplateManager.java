@@ -25,9 +25,10 @@ import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
 
 /**
  * 
+ * Manage fetching / applying Templates based on entity.
+ *
  * @author Dinesh Karuppiah.T
  */
-
 @Component
 public class IdTemplateManager {
 
@@ -38,7 +39,6 @@ public class IdTemplateManager {
 
 	/** The Constant PRIMARY. */
 	private static final String PRIMARY = "primary";
-
 
 	/** The Constant NOTIFICATION_LANGUAGE_SUPPORT. */
 
@@ -112,11 +112,11 @@ public class IdTemplateManager {
 	}
 
 	/**
-	 * Fetch Templates for e-KYC based on Template name
-	 * 
-	 * @param templateName
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Fetch Templates for e-KYC based on Template name.
+	 *
+	 * @param templateName the template name
+	 * @return the string
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
 		String languageRequired = environment.getProperty(IdAuthConfigKeyConstants.MOSIP_NOTIFICATION_LANGUAGE_TYPE);

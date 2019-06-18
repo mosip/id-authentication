@@ -212,7 +212,7 @@ public class IrisCaptureController extends BaseController {
 				getBiometricDTOFromSession().getOperatorBiometricDTO().getBiometricExceptionDTO().stream()
 						.forEach(bio -> setExceptionIris(bio));
 			}
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null
 					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO() != null
 					&& getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
@@ -705,7 +705,7 @@ public class IrisCaptureController extends BaseController {
 	private List<IrisDetailsDTO> getIrises() {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			return getBiometricDTOFromSession().getOperatorBiometricDTO().getIrisDetailsDTO();
-		} else if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+		} else if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			return getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getIrisDetailsDTO();
 		} else {
 			return getRegistrationDTOFromSession().getBiometricDTO().getApplicantBiometricDTO().getIrisDetailsDTO();
@@ -735,7 +735,7 @@ public class IrisCaptureController extends BaseController {
 		clearProgressBar();
 
 		if (getRegistrationDTOFromSession() != null) {
-			if (getRegistrationDTOFromSession().isUpdateUINChild()) {
+			if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 				getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 						.setIrisDetailsDTO(new ArrayList<>());
 			} else {
@@ -796,15 +796,32 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private void singleBiometricCaptureCheck() {
+		
 		if (!(validateIris() && validateIrisLocalDedup())) {
 			continueBtn.setDisable(true);
 		}
+		
+
+		long irisCountIntroducer = 0;
+
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null) {
+
+			irisCountIntroducer = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+		}
+		
 		if (getRegistrationDTOFromSession() != null
-				&& !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-						.getFingerprintDetailsDTO().isEmpty()
 				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
-			continueBtn.setDisable(false);
+
+			if (!getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFingerprintDetailsDTO()
+					.isEmpty() || irisCountIntroducer == 2) {
+				continueBtn.setDisable(false);
+			} else {
+				continueBtn.setDisable(true);
+			}
 		}
 	}
 

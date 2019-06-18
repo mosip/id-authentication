@@ -8,7 +8,7 @@ import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
 
 /**
- * The Interface KycFacade.
+ * This class used to integrate with kyc service
  * 
  * @author Sanjay Murali
  */
@@ -19,6 +19,7 @@ public interface KycFacade {
 	 *
 	 * @param kycAuthRequestDTO is DTO of KycAuthRequestDTO
 	 * @param authResponseDTO   the auth response DTO
+	 * @param partnerId the partner id
 	 * @return the kyc auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception

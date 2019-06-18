@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -289,7 +290,7 @@ public class Validations extends BaseController {
 			} else {
 				
 				List<String> invalidWorlds = blackListedWords.stream().flatMap(l1->Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream().filter(l2->{
-					return l1.equalsIgnoreCase(l2) || l1.contains(l2);
+					return l1.equalsIgnoreCase(l2) || Pattern.compile(Pattern.quote(l2), Pattern.CASE_INSENSITIVE).matcher(l1).find();
 				})).collect(Collectors.toList());
 				
 				String bWords = String.join(", ", invalidWorlds);
@@ -522,7 +523,7 @@ public class Validations extends BaseController {
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.AGE_FIELD:
-				validation[0] = getValueFromApplicationContext(RegistrationConstants.AGE_REGEX);
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.AGE_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.ADDRESS_LINE1:

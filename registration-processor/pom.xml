@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.7</version>
+		<version>0.12.9</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -186,7 +186,26 @@
 			**/registration/processor/biodedupe/*.java,
 
 
-			**/registration/processor/abis/**/*.java,
+			**/registration/processor/abis/config/*.java,
+			**/registration/processor/abis/controller/*.java,
+			**/registration/processor/abis/exception/*.java,
+			**/registration/processor/abis/messagequeue/*.java,
+			**/registration/processor/abis/service/*.java,
+			**/registration/processor/abis/service/impl/*.java,
+
+
+			**/registration/processor/abis/handler/*.java,
+			**/registration/processor/abis/handler/config/*.java,
+
+
+
+
+
+
+
+
+
+
 			**/registration/processor/packet/service/**/*.java,
 			**/registration/processor/packet/upload/**/*.java,
 
@@ -217,9 +236,23 @@
 			**/registration/processor/packet/receiver/stage/PacketReceiverStage.java,
 			**/registration/processor/camel/bridge/**/*.java,
 			**/registration/processor/stages/connector/stage/**/*.java,
-			**/registration/processor/print/service/impl/PrintPostServiceImpl.java,
 			**/registration/processor/stages/demodedupe/DemoDedupeStage.java,
-			**/registration/processor/print/stage/PrintStage.java,
+
+			**/registration/processor/packet/storage/mapper/PacketInfoMapper.java,
+			**/registration/processor/packet/storage/dao/PacketInfoDao.java,
+			**/registration/processor/packet/uploader/constants/*.java,
+			**/registration/processor/print/exception/PrintGlobalExceptionHandler.java,
+			**/registration/processor/packet/receiver/constants/*.java,
+			**/registration/processor/print/service/exception/*.java,
+			**/registration/processor/print/exception/*.java,
+			**/registration/processor/packet/uploader/constants/*.java,
+			**/registration/processor/packet/uploader/decryptor/*.java,
+			**/registration/processor/core/abstractverticle/MosipRouter.java,
+			**/registration/processor/packet/uploader/decryptor/*.java,
+
+			**/registration/processor/print/service/impl/PrintPostServiceImpl.java
+
+
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>

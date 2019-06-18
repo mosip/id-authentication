@@ -24,6 +24,7 @@ import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
@@ -134,7 +135,7 @@ public class ValidDocumentServiceImpl implements ValidDocumentService {
 					ValidDocumentErrorCode.VALID_DOCUMENT_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if(EmptyCheckUtils.isNullEmpty(categoryDtos) || EmptyCheckUtils.isNullEmpty(validDocCategoryAndDocTypeResponseDto)) {
-			throw new MasterDataServiceException(ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
 					ValidDocumentErrorCode.VALID_DOCUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		validDocCategoryAndDocTypeResponseDto.setDocumentcategories(categoryDtos);

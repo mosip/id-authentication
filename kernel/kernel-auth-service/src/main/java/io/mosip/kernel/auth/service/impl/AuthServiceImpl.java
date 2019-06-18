@@ -254,6 +254,7 @@ public class AuthServiceImpl implements AuthService {
 	public AuthNResponseDto authenticateWithSecretKey(ClientSecret clientSecret) throws Exception {
 		AuthNResponseDto authNResponseDto = null;
 		BasicTokenDto basicTokenDto = null;
+		AuthToken authToken = null;
 		MosipUserDto mosipUser = userStoreFactory.getDataStoreBasedOnApp(clientSecret.getAppId())
 				.authenticateWithSecretKey(clientSecret);
 		if (mosipUser == null) {
@@ -262,7 +263,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 		if (mosipUser != null) {
 			MosipUserTokenDto mosipToken = null;
-			AuthToken authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
+			authToken = customTokenServices.getTokenBasedOnName(clientSecret.getClientId());
 			try {
 				if (authToken != null) {
 					mosipToken = validateToken(authToken.getAccessToken());
@@ -271,11 +272,13 @@ public class AuthServiceImpl implements AuthService {
 			} catch (AuthManagerException auth) {
 				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
 					mosipToken = null;
+					System.out.println("Token expired for user "+authToken);
 				} else {
 					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(),auth);
 				}
 			}
 			if (authToken != null && mosipToken != null) {
+				System.out.println("Token not expired old token ");
 				authNResponseDto = new AuthNResponseDto();
 				authNResponseDto.setToken(authToken.getAccessToken());
 				authNResponseDto.setUserId(mosipUser.getUserId());
@@ -284,6 +287,7 @@ public class AuthServiceImpl implements AuthService {
 				authNResponseDto.setStatus(AuthConstant.SUCCESS_STATUS);
 				authNResponseDto.setMessage(AuthConstant.CLIENT_SECRET_SUCCESS_MESSAGE);
 			} else {
+				System.out.println("New Token generation ");
 				basicTokenDto = tokenGenerator.basicGenerate(mosipUser);
 				if (basicTokenDto != null) {
 					authNResponseDto = new AuthNResponseDto();

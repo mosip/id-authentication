@@ -328,7 +328,7 @@
 													<children>
 														<TextField fx:id="otpUserId" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
 														<TextField fx:id="otp" promptText="%enterotp" styleClass="operatorAuthenticationStyleTextTypeOne" GridPane.rowIndex="1" />
-														<Button mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="%getotp" GridPane.rowIndex="2" />
+														<Button mnemonicParsing="false" onAction="#generateOtp" styleClass="RegbuttonStyle" text="%getotp" GridPane.rowIndex="2" fx:id="getOTP" visible="true"/>
 														<GridPane GridPane.rowIndex="3">
 															<children>
 																<GridPane fx:id="otpValidityPane">
@@ -690,7 +690,7 @@
 											<children>
 												<GridPane fx:id="irisUserIdPane" GridPane.columnIndex="2">
 													<children>
-														<TextField fx:id="fpUserId" prefHeight="${irisUserIdPane.height}" prefWidth="${irisUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+														<TextField fx:id="irisUserId" prefHeight="${irisUserIdPane.height}" prefWidth="${irisUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
 													</children>
 													<columnConstraints>
 														<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -712,7 +712,7 @@
 													<children>
 														<GridPane fx:id="irisPane" styleClass="IrisPanes" GridPane.columnIndex="1">
 															<children>
-																<ImageView fitHeight="${irisPane.height-10}" fitWidth="${irisPane.width-10}" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+																<ImageView fx:id="irisImageView" fitHeight="${irisPane.height-10}" fitWidth="${irisPane.width-10}" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
 																	<image>
 																		<Image url="@../images/Eye.png" />
 																	</image>
@@ -925,7 +925,7 @@
 											<children>
 												<GridPane fx:id="faceUserIdPane" GridPane.columnIndex="2">
 													<children>
-														<TextField fx:id="fpUserId" prefHeight="${faceUserIdPane.height}" prefWidth="${faceUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
+														<TextField fx:id="faceUserId" prefHeight="${faceUserIdPane.height}" prefWidth="${faceUserIdPane.width}" promptText="%username" styleClass="operatorAuthenticationStyleTextTypeOne" />
 													</children>
 													<columnConstraints>
 														<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

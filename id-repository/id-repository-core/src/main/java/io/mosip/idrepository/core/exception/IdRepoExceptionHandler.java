@@ -18,12 +18,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
@@ -45,6 +47,9 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant ID_REPO_EXCEPTION_HANDLER. */
 	private static final String ID_REPO_EXCEPTION_HANDLER = "IdRepoExceptionHandler";
+	
+	/** The Constant TIMESTAMP. */
+	private static final String REQUEST_TIME = "requesttime";
 
 	/** The Constant ID_REPO. */
 	private static final String ID_REPO = "IdRepo";
@@ -138,8 +143,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleExceptionInternal - \n" + ExceptionUtils.getStackTrace(ex));
-		if (ex instanceof ServletException || ex instanceof BeansException
-				|| ex instanceof HttpMessageConversionException) {
+		if (ex instanceof HttpMessageNotReadableException
+				&& ex.getCause().getClass().isAssignableFrom(InvalidFormatException.class)) {
+			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
+
+			return new ResponseEntity<>(buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), null),
+					HttpStatus.OK);
+		}else if (ex instanceof ServletException || ex instanceof BeansException) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 

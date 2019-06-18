@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.collections4.SetValuedMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -54,6 +55,7 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDT
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.datasync.code.RequestCodes;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.DocumentMetaDataDTO;
@@ -142,7 +144,25 @@ public class DataSyncServiceUtil {
 	 */
 	@Value("${booking.resource.url}")
 	private String bookingResourceUrl;
+	//
+	// @Value("${mosip.kernel.idobjectvalidator.masterdata.documenttypes.rest.uri}")
+	// private String documentTypeUri;
 
+	@Autowired
+	ValidationUtil validationUtil;
+
+	/** The doc cat map. */
+	private SetValuedMap<String, String> docCatMap;
+
+	private static final String DOCUMENTS = "documents";
+
+	private static final String DOCUMENTCATEGORIES = "documentcategories";
+
+	private static final String IS_ACTIVE = "isActive";
+
+	private static final String CODE = "code";
+
+	private static final String NAME = "name";
 	private ObjectMapper mapper = new ObjectMapper();
 
 	@Value("${mosip.utc-datetime-pattern}")
@@ -154,19 +174,18 @@ public class DataSyncServiceUtil {
 		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
 		String regId = dataSyncRequest.getRegistrationCenterId();
 		String fromDate = dataSyncRequest.getFromDate();
-		String format = "dd-MM-yyyy";
+		String format = "yyyy-MM-dd";
 
 		if (isNull(regId)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_009.toString(),
 					ErrorMessages.INVALID_REGISTRATION_CENTER_ID.getMessage(), mainResponseDTO);
-		}
-
-		if (isNull(fromDate) || !parseDate(fromDate, format)) {
-
+		} else if (isNull(fromDate) || !parseDate(fromDate, format)) {
+			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
+					ErrorMessages.INVALID_REQUESTED_DATE.getMessage(), mainResponseDTO);
+		} else if (!isNull(dataSyncRequest.getToDate()) && !parseDate(dataSyncRequest.getToDate(), format)) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_DATA_SYNC_010.toString(),
 					ErrorMessages.INVALID_REQUESTED_DATE.getMessage(), mainResponseDTO);
 		}
-
 		return true;
 	}
 
@@ -448,10 +467,10 @@ public class DataSyncServiceUtil {
 			log.info("sessionId", "idType", "id",
 					"In archivingFiles method of datasync service util, Json file content - "
 							+ new JSONObject(finalMap).toJSONString());
-			inputFile.put("ID.json", new JSONObject(finalMap).toJSONString().getBytes());
+			inputFile.put("ID.json", new ObjectMapper().writeValueAsBytes(finalMap));
 			preRegArchiveDTO.setZipBytes(getCompressed(inputFile));
 			preRegArchiveDTO.setFileName(preRegistrationDTO.getPreRegistrationId());
-			/* parsejson(); */
+
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In archivingFiles method of datasync service util - " + ex.getMessage());
@@ -491,7 +510,8 @@ public class DataSyncServiceUtil {
 		DocumentMetaDataDTO documentMetaDataDTO = new DocumentMetaDataDTO();
 		documentMetaDataDTO.setValue(documentMultipartResponseDTO.getDocCatCode().concat("_")
 				.concat(getFileNameWithoutFormat(documentMultipartResponseDTO.getDocName())));
-		documentMetaDataDTO.setType(documentMultipartResponseDTO.getDocTypCode());
+		documentMetaDataDTO.setType(getTypeName(documentMultipartResponseDTO.getLangCode(),
+				documentMultipartResponseDTO.getDocCatCode(), documentMultipartResponseDTO.getDocTypCode()));
 		documentMetaDataDTO.setFormat(getFileFormat(documentMultipartResponseDTO.getDocName()));
 		try {
 			return JsonUtils.jsonStringToJavaMap(JsonUtils.javaObjectToJsonString(documentMetaDataDTO));
@@ -502,6 +522,14 @@ public class DataSyncServiceUtil {
 							+ ex.getMessage());
 		}
 		return null;
+	}
+
+	public String getTypeName(String langCode, String catCode, String typeCode) {
+		Map<String, String> documentTypeMap = validationUtil.getDocumentTypeNameByTypeCode(langCode, catCode);
+		if (documentTypeMap.containsKey(typeCode)) {
+			return documentTypeMap.get(typeCode);
+		}
+		return typeCode;
 	}
 
 	public String getFileNameWithoutFormat(String fileName) {
@@ -563,7 +591,9 @@ public class DataSyncServiceUtil {
 	public boolean parseDate(String reqDate, String format) {
 		log.info("sessionId", "idType", "id", "In parseDate method of datasync service util");
 		try {
-			new SimpleDateFormat(format).parse(reqDate);
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			sdf.setLenient(false);
+			sdf.parse(reqDate);
 		} catch (Exception e) {
 			log.error("sessionId", "idType", "id", "In parseDate method of datasync service util - " + e.getMessage());
 			return false;
@@ -720,12 +750,11 @@ public class DataSyncServiceUtil {
 		Map<String, String> requestMap = new HashMap<>();
 		requestMap.put("id", requestDto.getId());
 		requestMap.put("version", requestDto.getVersion());
-		if(!(requestDto.getRequesttime()==null || requestDto.getRequesttime().toString().isEmpty())) {
+		if (!(requestDto.getRequesttime() == null || requestDto.getRequesttime().toString().isEmpty())) {
 			LocalDate date = requestDto.getRequesttime().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 			requestMap.put("requesttime", date.toString());
-		}
-		else {
-		requestMap.put("requesttime",null);
+		} else {
+			requestMap.put("requesttime", null);
 		}
 		requestMap.put("request", requestDto.getRequest().toString());
 		return requestMap;
@@ -746,22 +775,25 @@ public class DataSyncServiceUtil {
 	 * Call this method in archiving method
 	 */
 
-	/*
-	 * private static void parsejson() throws IOException, JSONException,
-	 * io.mosip.kernel.core.exception.IOException, java.io.IOException { try
-	 * (BufferedReader bufferedReader = new BufferedReader( new FileReader(new
-	 * File("C:/Users/M1046129/Desktop/idjson.json")))) { StringBuilder jsonBuilder
-	 * = new StringBuilder(); String value; while ((value =
-	 * bufferedReader.readLine()) != null) { jsonBuilder.append(value); }
-	 * ObjectMapper mapper = new ObjectMapper(); PreRegArchiveDTO archiveDTO =
-	 * mapper.readValue( new
-	 * org.json.JSONObject(jsonBuilder.toString()).getString("response"),
-	 * PreRegArchiveDTO.class); // change the zip file path to your local machine
-	 * path FileUtils.copyToFile(new ByteArrayInputStream(archiveDTO.getZipBytes()),
-	 * new File("C:/Users/M1046129/Desktop/preZipNew.zip"));
-	 * System.out.println("zip file saved"); }
-	 * 
-	 * }
-	 */
+	// public static void parsejson()
+	// throws IOException, JSONException,
+	// io.mosip.kernel.core.exception.IOException, java.io.IOException {
+	// try (BufferedReader bufferedReader = new BufferedReader(
+	// new FileReader(new File("C:/Users/M1046129/Desktop/idjson.json")))) {
+	// StringBuilder jsonBuilder = new StringBuilder();
+	// String value;
+	// while ((value = bufferedReader.readLine()) != null) {
+	// jsonBuilder.append(value);
+	// }
+	// ObjectMapper mapper = new ObjectMapper();
+	// PreRegArchiveDTO archiveDTO = mapper.readValue(
+	// new org.json.JSONObject(jsonBuilder.toString()).getString("response"),
+	// PreRegArchiveDTO.class); // change
+	// FileUtils.copyToFile(new ByteArrayInputStream(archiveDTO.getZipBytes()),
+	// new File("C:/Users/M1046129/Desktop/preZipNew.zip"));
+	// System.out.println("zip file saved");
+	// }
+	//
+	// }
 
 }

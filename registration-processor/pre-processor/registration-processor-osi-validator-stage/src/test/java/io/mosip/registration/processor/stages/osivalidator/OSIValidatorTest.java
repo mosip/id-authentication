@@ -21,7 +21,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -41,13 +40,13 @@ import org.xml.sax.SAXException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.auth.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.ResponseDTO;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
@@ -62,11 +61,13 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsDto;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserDetailsResponseDto;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -93,9 +94,12 @@ public class OSIValidatorTest {
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	@Mock
+	private IdRepoService idRepoService;
+
 	/** The adapter. */
 	@Mock
-	FileSystemAdapter adapter;
+	PacketManager adapter;
 
 	/** The rest client service. */
 	@Mock
@@ -218,8 +222,6 @@ public class OSIValidatorTest {
 		regOsiDto.setSupervisorHashedPin("supervisorHashedPin");
 		regOsiDto.setIntroducerTyp("Parent");
 		demographicDedupeDtoList.add(demographicInfoDto);
-
-		Mockito.when(env.getProperty("registration.processor.fingerType")).thenReturn("LeftThumb");
 
 		Mockito.when(env.getProperty("mosip.kernel.applicant.type.age.limit")).thenReturn("5");
 
@@ -504,7 +506,7 @@ public class OSIValidatorTest {
 	@Test
 	public void testIntroducerRIDProcessingOnHold() throws NumberFormatException, ApisResourceAccessException,
 			InvalidKeySpecException, NoSuchAlgorithmException, BiometricException, BioTypeException, IOException,
-			ParserConfigurationException, SAXException {
+			ParserConfigurationException, SAXException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = new InternalRegistrationStatusDto();
 
@@ -610,7 +612,6 @@ public class OSIValidatorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testIntroducerUINNull() throws ApisResourceAccessException, IOException, Exception {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 
@@ -622,7 +623,7 @@ public class OSIValidatorTest {
 
 		PowerMockito.when(JsonUtil.class, "getJSONValue", anyObject(), anyString()).thenReturn(null).thenReturn(12345);// .thenReturn(map);
 
-		// Mockito.when(abisHandlerUtil.getUinFromIDRepo(any())).thenReturn(null);
+		Mockito.when(idRepoService.getUinByRid(any(), any())).thenReturn(null);
 		boolean isValid = osiValidator.isValidOSI("reg1234");
 		assertFalse(isValid);
 	}

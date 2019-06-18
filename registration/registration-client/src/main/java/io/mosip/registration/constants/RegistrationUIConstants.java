@@ -259,12 +259,12 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String BIOMETRIC_EXCEPTION_ALERT = bundle.getString("BIOMETRIC_EXCEPTION_ALERT");
 
 	// User Onboard
-	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");
-	public static final String USER_ONBOARD_SUCCESS = bundle.getString("USER_ONBOARD_SUCCESS");
+	public static final String UNABLE_LOAD_USERONBOARD_SCREEN = bundle.getString("UNABLE_LOAD_USERONBOARD_SCREEN");	
 	public static final String USER_MACHINE_VALIDATION_MSG = bundle.getString("USER_MACHINE_VALIDATION_MSG");
 	public static final String USER_ONBOARD_HI = bundle.getString("USER_ONBOARD_HI");
 	public static final String USER_ONBOARD_NOTONBOARDED = bundle.getString("USER_ONBOARD_NOTONBOARDED");
 	public static final String USER_ONBOARD_ERROR = bundle.getString("USER_ONBOARD_ERROR");
+	public static final String NO_INTERNET = bundle.getString("NO_INTERNET");
 
 	// Supervisor Authentication configuration from global_param
 	public static final String SUPERVISOR_AUTHENTICATION_CONFIGURATION = "mosip.registration.supervisor_authentication_configuration";
@@ -280,6 +280,7 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String EOD_REGISTRATIONID_LABEL = bundle.getString("EOD_REGISTRATIONID_LABEL");
 	public static final String EOD_REGISTRATIONDATE_LABEL = bundle.getString("EOD_REGISTRATIONDATE_LABEL");
 	public static final String EOD_STATUS_LABEL = bundle.getString("EOD_STATUS_LABEL");
+	public static final String PACKETUPLOAD_PACKETID_LABEL = bundle.getString("PACKETUPLOAD_PACKETID_LABEL");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");
@@ -315,6 +316,7 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String UPLOAD_COLUMN_HEADER_STATUS = bundle.getString("UPLOAD_COLUMN_HEADER_STATUS");
 	public static final String PACKET_UPLOAD_SUCCESS = bundle.getString("PACKET_UPLOAD_SUCCESS");
 	public static final String UPLOAD_FAILED = bundle.getString("UPLOAD_FAILED");
+	public static final String PACKET_STATUS_EXPORT = bundle.getString("PACKET_STATUS_EXPORT");
 
 	// Scheduler
 	public static final String TIMEOUT_TITLE = bundle.getString("TIMEOUT_TITLE");

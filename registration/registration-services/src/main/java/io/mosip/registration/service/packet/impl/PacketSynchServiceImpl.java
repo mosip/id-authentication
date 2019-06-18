@@ -1,6 +1,7 @@
 package io.mosip.registration.service.packet.impl;
 
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
+
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -49,9 +50,12 @@ import io.mosip.registration.service.security.AESEncryptionService;
 import io.mosip.registration.service.sync.PacketSynchService;
 
 /**
- * The PacketSynchServiceImpl class is to sync the packets to server.
+ * This class invokes the external MOSIP service 'Packet Sync' to sync the packet ids, which are ready for upload to the server from client.   
+ * The packet upload can't be done, without synching the packet ids to the server. 
+ * While sending this request, the data would be encrypted using MOSIP public key and same can be decrypted at Server end using the respective private key.  
  * 
- * @author Saravana Kumar
+ * @author saravanakumar gnanaguru
+ *
  */
 @Service
 public class PacketSynchServiceImpl extends BaseService implements PacketSynchService {
@@ -69,20 +73,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.impl.PacketSynchStatus#fetchPacketsToBeSynched(
-	 * )
-	 */
-
-	/**
-	 * This method is used to synch the local packets with the server.
-	 *
-	 * @param packetsToBeSynched 
-	 * 				the packets to be synched
-	 * @return the string
-	 * @throws RegBaseCheckedException 
-	 * 				the reg base checked exception
+	 * @see io.mosip.registration.service.sync.PacketSynchService#packetSync(java.util.List)
 	 */
 	@Override
 	public String packetSync(List<PacketStatusDTO> packetsToBeSynched) throws RegBaseCheckedException {
@@ -193,9 +184,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	 * io.mosip.registration.service.impl.PacketSynchStatus#syncPacketsToServer(java
 	 * .util.List)
 	 */
-
 	@SuppressWarnings("unchecked")
-	@Override
 	public ResponseDTO syncPacketsToServer(String encodedString, String triggerPoint)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
 		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -307,5 +296,15 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		List<PacketStatusDTO> packetsToBeSynched = fetchPacketsToBeSynched();
 		packetSync(packetsToBeSynched);
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PacketSynchService#fetchSynchedPacket(java.lang.String)
+	 */
+	@Override
+	public Boolean fetchSynchedPacket(String rId) {
+		Registration reg = syncRegistrationDAO.getRegistrationById(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), rId);
+		return reg != null && !reg.getId().isEmpty();
 	}
 }

@@ -14,13 +14,10 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -200,7 +197,7 @@ public class CommonLibrary extends BaseTestCase {
 
 			errors = (JSONArray) ((JSONObject) new JSONParser().parse(response.asString())).get("errors");
 		} catch (ParseException pe) {
-			Assert.assertTrue(false, "Response from the service is not able to parse and exception is" + pe.getClass());
+			Assert.assertTrue(false, "Response from the service is not able to read and exception is " + pe.getClass());
 		} catch (NullPointerException npe) {
 			Assert.assertTrue(false, "Errors in the response is not null and exception is " + npe.getClass());
 		}

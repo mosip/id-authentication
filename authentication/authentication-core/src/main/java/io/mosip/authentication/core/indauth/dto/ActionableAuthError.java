@@ -5,9 +5,10 @@ import lombok.EqualsAndHashCode;
 
 /**
  * 
+ * Actionable error class
+ * 
  * @author Dinesh Karuppiah.T
  */
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ActionableAuthError extends AuthError {
@@ -15,16 +16,19 @@ public class ActionableAuthError extends AuthError {
 	/** variable holds Action message */
 	private String actionMessage;
 
+	/**
+	 * Instantiates a new actionable auth error.
+	 */
 	public ActionableAuthError() {
 		super();
 	}
 
 	/**
-	 * Actionable Auth Error
-	 * 
+	 * Actionable Auth Error.
+	 *
 	 * @param errorCode    - error code
 	 * @param errorMessage - error message
-	 * @param actnCode     - action code
+	 * @param actionMessage the action message
 	 */
 	public ActionableAuthError(String errorCode, String errorMessage, String actionMessage) {
 		super(errorCode, errorMessage);

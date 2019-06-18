@@ -225,7 +225,7 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
     const index = this.usersInfo.indexOf(name);
     if (!this.usersInfo[index].qrCodeBlob) {
       return new Promise((resolve, reject) => {
-        this.dataStorageService.generateQRCode(JSON.stringify(name)).subscribe(response => {
+        this.dataStorageService.generateQRCode(name).subscribe(response => {
           this.usersInfo[index].qrCodeBlob = response['response'].qrcode;
           resolve(true);
         });
@@ -239,8 +239,8 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
       const notificationDto = new NotificationDtoModel(
         user.fullName,
         user.preRegId,
-        user.bookingDataPrimary,
-        user.bookingTimePrimary,
+        user.bookingData ? user.bookingData.split(',')[0] : user.regDto.appointment_date,
+        Number(user.bookingTimePrimary.split(':')[0]) < 10 ? '0' + user.bookingTimePrimary : user.bookingTimePrimary,
         applicantNumber[1] === undefined ? null : applicantNumber[1],
         applicantNumber[0] === undefined ? null : applicantNumber[0],
         additionalRecipient,

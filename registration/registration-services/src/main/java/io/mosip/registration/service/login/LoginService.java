@@ -9,7 +9,10 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.UserDTO;
 
 /**
- * Service Class for Login
+ * The {@code LoginService} represents to fetch the information related to
+ * authentication data, user data, center data, screen authorization data and
+ * validating the user and updating table on every login attempt. This will also
+ * handle initial sync which will happen before loading login screen.
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -18,83 +21,115 @@ import io.mosip.registration.dto.UserDTO;
 public interface LoginService {
 
 	/**
-	 * get login modes
+	 * This method will fetch the list of authentication modes based on the
+	 * authentication type and set of roles
 	 * 
 	 * @param authType
-	 *            authentication type
+	 *            {@code String} authentication type [Login auth, Packet auth,
+	 *            Exception auth, EOD auth, Onboard auth]
 	 * @param roleList
-	 *            list of user roles
+	 *            {@code List} list of user roles[Registration Officer, Registration
+	 *            supervisor, Registration Admin]
 	 * 
-	 * @return Map of login modes along with sequence
+	 * @return List of login modes
 	 */
 	List<String> getModesOfLogin(String authType, Set<String> roleList);
 
 	/**
-	 * fetching user details
+	 * This method will fetch the user details based on the entered userId
 	 * 
 	 * @param userId
-	 *            entered userId
-	 * @return UserDTO
+	 *            {@code String} user id entered by the operator
+	 * 
+	 * @return {@code UserDTO} UserDTO which will have roles, pword, center and
+	 *         machine information
 	 */
 	UserDTO getUserDetail(String userId);
 
 	/**
-	 * fetching registration center details
+	 * This method will fetch Registration Center details based on the center id
+	 * mapped to the user id entered by operator and the primary language code
 	 * 
 	 * @param centerId
-	 *            centerId corresponding to entered userId
+	 *            {@code String} centerId corresponding to entered userId
 	 * @param langCode
-	 *            language code
-	 * @return RegistrationCenterDetailDTO center details
+	 *            {@code String} primary language code
+	 * 
+	 * @return {@code RegistrationCenterDetailDTO} which contains Registration
+	 *         center details
 	 */
 	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId, String langCode);
 
 	/**
-	 * fetching registration screen authorization details
+	 * This method will fetch Registration screen authorization details based on the
+	 * list of roles mapped to the user id entered by operator
 	 * 
 	 * @param roleCode
-	 *            list of roles
-	 * @return AuthorizationDTO authorization details
+	 *            {@code List} list of roles mapped to the user
+	 * 
+	 * @return {@code AuthorizationDTO} which contains screen authorization details
+	 *         based on which screen validation will happen
 	 */
 	AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode);
 
 	/**
-	 * updating login params on invalid login attempts
+	 * This method will update login parameters for every login attempt
 	 * 
-	 * @param userDTO
-	 *            user dto
+	 * @param userDTO - The {@code UserDTO} user dto which contains the parameters that has to be
+	 *            updated
 	 */
 	void updateLoginParams(UserDTO userDTO);
-	
+
 	/**
-	 * Execute initial sync
+	 * Execute global param, master sync, user detail, user salt detail and key
+	 * policy sync's as a initial sync
 	 * 
-	 * @return List of sync results
+	 * @return {@code List} list of sync results
 	 */
 	List<String> initialSync();
-	
-	
+
 	/**
-	 * Validating login attempts
+	 * This method will Validate login attempts to check whether operator can login
+	 * or not
+	 * 
+	 * <p>This will validate against invalid number of attempts and time and update the
+	 * 	table with the corresponding parameters in case of invalid or valid</p>
 	 * 
 	 * @param userDTO
-	 *            user details
+	 *            {@code UserDTO} user details
 	 * @param errorMessage
-	 *            error message
+	 *            {@code String} error message for validation
 	 * @param invalidLoginCount
-	 *            invalid login count
+	 *            {@code Integer} invalid login count against which validation will be done
 	 * @param invalidLoginTime
-	 *            invalid login time
-	 * @return String - returns whether validation successful or not
+	 *            {@code Integer} invalid login time against which validation will be done
+	 * 
+	 * @return {@code String} returns whether validation successful or not
 	 */
 	String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime);
-	
+
 	/**
-	 * Validating user
+	 * This method will Validate user id entered by operator
+	 * 
+	 * <p>If User exists :</p>
+	 * 		<p>Fetch the center id mapped to user id entered by operator</p>
+	 * 			<p>Fetch the roles mapped to user id</p>
+	 * 				<p>The success response DTO will be formed and returned from this method.</p>
+	 * 
+	 * 			<p>If Roles not matches or exists:</p>
+	 * 				<p>The failure response DTO will be formed and returned from this method.</p>
+	 * 
+	 * 		<p>If Center id not matches or exists</p>
+	 * 			<p>The failure response DTO will be formed and returned from this method.</p>
+	 * 
+	 * <p>If user not exists :</p>
+	 * 		<p>The failure response DTO will be formed and returned from this method.</p>
 	 * 
 	 * @param userId
-	 *            userid
-	 * @return {@link ResponseDTO}
+	 *            {@code String} user-id entered by operator
+	 * 
+	 * @return {@code ResponseDTO} based on the result the response DTO will be
+	 *         formed and return to the caller.
 	 */
 	ResponseDTO validateUser(String userId);
 

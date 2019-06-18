@@ -97,6 +97,7 @@ public class RegistrationConstants {
 	public static final String LABEL_RED = "labelRed";
 	public static final String LABEL_GREEN = "labelGreen";
 	public static final String IRIS_PANES_SELECTED = "IrisPanesSelected";
+	public static final String BIO_IRIS_SELECTED = "bioIris";
 
 	// Page Flow
 	public static final String VISIBILITY = "visibility";
@@ -690,6 +691,7 @@ public class RegistrationConstants {
 	public static final String PACKET_UPLOAD_SNO = "slno";
 	public static final String PACKET_UPLOAD_DATE = "createdTime";
 	public static final String PACKET_UPLOAD_FILE = "fileName";
+	public static final String UPLOAD_FILE_NAME = "PacketUploadList";
 	// opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
 	public static final String ICS_CODE_ONE = "REG-ICS‌-001";
@@ -974,6 +976,7 @@ public class RegistrationConstants {
 	public static final String COMMA = ",";
 	public static final String HYPHEN = "-";
 	public static final String FINGERPRINT_PANES_SELECTED = "fingerPrintPanesSelected";
+	public static final String BIOMETRIC_PANES_SELECTED = "biometricPaneSelected";
 	public static final Set<String> BIO_TYPE = new HashSet<>(
 			Arrays.asList(RegistrationConstants.HAND, RegistrationConstants.THUMB));
 	public static final String LEFTSLAPCOUNT = "leftSlapCount";
@@ -1093,7 +1096,7 @@ public class RegistrationConstants {
 	public static final String MASTER_SYNC_JOD_DETAILS = "MASTER_SYNC_JOB_DETAILS";
 	public static final String MASTER_SYNC_SUCCESS = "Sync successful";
 	public static final String MASTER_SYNC = "MASTER_SYNC";
-	public static final String NO_INTERNET = "Unable to sync data as there is no internet connection";
+	public static final String NO_INTERNET = "NO_INTERNET";
 	public static final String MASTER_VALIDATOR_SERVICE_NAME = "master_sync";
 	public static final String MASTER_CENTER_REMAP_SERVICE_NAME="center_remap_sync";
 	public static final String MASTER_CENTER_PARAM="regcenterId";
@@ -1215,7 +1218,7 @@ public class RegistrationConstants {
 	public static final String AUTH_AUTHORIZATION = "Authorization";
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
-	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
+	public static final String REGISTRATION_CLIENT = "mosip.registration.app.id";
 	public static final String REGISTRATION_CONTEXT = "auth-otp";
 	public static final String COOKIE = "Cookie";
 	public static final String ENGLISH_LANG_CODE = "eng";
@@ -1265,6 +1268,7 @@ public class RegistrationConstants {
 			.concat("addressLine2.[*].value");
 	public static final String ADDRESS_LINE_3_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT)
 			.concat("addressLine3.[*].value");
+	public static final String AGE_VALIDATION_REGEX = ID_JSON_BIZ_VALIDATION_PREFIX.concat(DOT).concat("age");
 	public static final String TRUE = String.valueOf(true);
 	public static final String FALSE = String.valueOf(false);
 	public static String CNI_MANDATORY = String.valueOf(false);
@@ -1353,8 +1357,7 @@ public class RegistrationConstants {
 	public static final String KER = "SIGN";
 	public static final String DTAE_MONTH_YEAR_REGEX = "dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage|ageField";
 
-	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
-	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
+	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";	
 
 	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
@@ -1443,5 +1446,11 @@ public class RegistrationConstants {
 	
 	public static final String RESPONSE_SIGNATURE="response-signature";
 	public static final String ON_BOARD_FACE="FACE";
+	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
+	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
+	
+	public static final int DAYS = 31;
+	public static final int MONTH = 12;
+	public static final int YEAR = 3;
 
 }

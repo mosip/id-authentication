@@ -1,6 +1,7 @@
 package io.mosip.kernel.syncdata.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -415,35 +416,40 @@ public class SyncMasterDataServiceImpl implements SyncMasterDataService {
 	}
 
 	@Override
-	//@Transactional("syncDataTransactionManager")
-	@Transactional
+	@Transactional("syncDataTransactionManager")
 	public UploadPublicKeyResponseDto uploadpublickey(UploadPublicKeyRequestDto uploadPublicKeyRequestDto) {
 		final byte[] publicKey = CryptoUtil.decodeBase64(uploadPublicKeyRequestDto.getPublicKey());
 		final String keyIndex = CryptoUtil.computeFingerPrint(publicKey, null);
 
-		Machine machineDetail = machineRepo.findByMachineNameAndIsActive(uploadPublicKeyRequestDto.getMachineName());
-		if (machineDetail != null) {
-			if (Arrays.equals(publicKey, machineDetail.getPublicKey())) {
-				return new UploadPublicKeyResponseDto(machineDetail.getKeyIndex());
-			} else if (machineDetail.getPublicKey() != null && machineDetail.getPublicKey().length != 0
-					&& !Arrays.equals(publicKey, machineDetail.getPublicKey())) {
+		List<Machine> machineDetail = machineRepo
+				.findByMachineNameAndIsActive(uploadPublicKeyRequestDto.getMachineName());
+		if (machineDetail != null && !machineDetail.isEmpty()) {
+			if (Arrays.equals(publicKey, machineDetail.get(0).getPublicKey())) {
+				return new UploadPublicKeyResponseDto(machineDetail.get(0).getKeyIndex());
+			} else if (machineDetail.get(0).getPublicKey() != null && machineDetail.get(0).getPublicKey().length != 0
+					&& !Arrays.equals(publicKey, machineDetail.get(0).getPublicKey())) {
 				throw new SyncDataServiceException(MasterDataErrorCode.MACHINE_PUBLIC_KEY_ALREADY_EXIST.getErrorCode(),
 						MasterDataErrorCode.MACHINE_PUBLIC_KEY_ALREADY_EXIST.getErrorMessage());
 			}
 		}
 
 		try {
-			Optional<Machine> machineOptional = machineRepo
-					.findByMachineNameActiveNondeleted(uploadPublicKeyRequestDto.getMachineName());
-			if (machineOptional.isPresent()) {
-				Machine machine = MetaDataUtils.setUpdateMetaData(machineOptional.get());
-				machine.setPublicKey(publicKey);
-				machine.setKeyIndex(keyIndex);
-				MachineHistory machineHistory = MapperUtils.map(machine, MachineHistory.class);
-				machineHistory.setEffectDateTime(machine.getUpdatedDateTime());
-				MapperUtils.mapBaseFieldValue(machine, machineHistory);
-				machineRepo.save(machine);
-				machineHistoryRepo.save(machineHistory);
+			if (machineDetail != null && !machineDetail.isEmpty()) {
+				List<Machine>updatedMachineList=new ArrayList<>();
+				List<MachineHistory>updatedMachineHistoryList=new ArrayList<>();
+				machineDetail.forEach(machineEntity -> {
+					Machine machine = MetaDataUtils.setUpdateMetaData(machineEntity);
+					machine.setPublicKey(publicKey);
+					machine.setKeyIndex(keyIndex);
+					MachineHistory machineHistory = MapperUtils.map(machine, MachineHistory.class);
+					machineHistory.setEffectDateTime(machine.getUpdatedDateTime());
+					MapperUtils.mapBaseFieldValue(machine, machineHistory);	
+                    updatedMachineList.add(machine);
+                    updatedMachineHistoryList.add(machineHistory);
+				});
+
+				machineRepo.saveAll(updatedMachineList);
+				machineHistoryRepo.saveAll(updatedMachineHistoryList);
 			} else {
 				throw new RequestException(MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorCode(),
 						MasterDataErrorCode.MACHINE_NOT_FOUND.getErrorMessage());

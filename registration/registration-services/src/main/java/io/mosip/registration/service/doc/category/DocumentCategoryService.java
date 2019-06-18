@@ -8,7 +8,7 @@ import io.mosip.registration.entity.DocumentCategory;
  * Service class for Document Category
  * 
  * @author balamurugamn.ramamoorthy
- *
+ * @since 1.0.0
  */
 public interface DocumentCategoryService {
 

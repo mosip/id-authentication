@@ -150,7 +150,7 @@ public class OTPServiceImpl implements OTPService {
 			}
 		}
 
-		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE, otpRequestDto.getId(),
+		auditHelper.audit(AuditModules.OTP_REQUEST, AuditEvents.AUTH_REQUEST_RESPONSE, otpRequestDto.getIndividualId(),
 				IdType.getIDTypeOrDefault(otpRequestDto.getIndividualIdType()), AuditModules.OTP_REQUEST.getDesc());
 
 		return otpResponseDTO;
@@ -170,8 +170,9 @@ public class OTPServiceImpl implements OTPService {
 	private void auditTxn(OtpRequestDTO otpRequestDto, String uin, String staticTokenId, boolean status)
 			throws IdAuthenticationBusinessException {
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance().withOtpRequest(otpRequestDto)
-				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId).withStatus(status).withUin(uin)
-				.build(idInfoFetcher, env);
+				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId)
+				.withStatus(status).withUin(uin)
+				.build(env);
 		idAuthService.saveAutnTxn(authTxn);
 	}
 
@@ -244,19 +245,6 @@ public class OTPServiceImpl implements OTPService {
 	 */
 	private String getPhoneNumber(Map<String, List<IdentityInfoDTO>> idInfo) throws IdAuthenticationBusinessException {
 		return idInfoHelper.getEntityInfoAsString(DemoMatchType.PHONE, idInfo);
-	}
-
-	/**
-	 * Adds a number of minutes(positive/negative) to a date returning a new Date
-	 * object. Add positive, date increase in minutes. Add negative, date reduce in
-	 * minutes.
-	 *
-	 * @param date   the date
-	 * @param minute the minute
-	 * @return the date
-	 */
-	private Date addMinutes(Date date, int minute) {
-		return DateUtils.addMinutes(date, minute);
 	}
 
 	/**

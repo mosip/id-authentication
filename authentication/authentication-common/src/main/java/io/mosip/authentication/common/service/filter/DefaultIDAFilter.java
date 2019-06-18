@@ -4,9 +4,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
 /**
  * The Class DefaultIDAFilter - used to authenticate the request received
- * for the static pin storage {@link StaticPinController} and VID
- * generation {@link VIDController}
- * 
+ * for the static pin storage and VID
+ * generation .
+ *
  * @author Sanjay Murali
  */
 public class DefaultIDAFilter extends BaseIDAFilter {
@@ -21,6 +21,7 @@ public class DefaultIDAFilter extends BaseIDAFilter {
 	@Override
 	protected void authenticateRequest(ResettableStreamHttpServletRequest requestWrapper)
 			throws IdAuthenticationAppException {
+		//default implementation does nothing
 	}
 
 }

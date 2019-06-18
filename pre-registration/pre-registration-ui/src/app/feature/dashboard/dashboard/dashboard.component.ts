@@ -19,6 +19,7 @@ import Utils from 'src/app/app.util';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
+import { LogService } from 'src/app/shared/logger/log.service';
 
 /**
  * @description This is the dashbaord component which displays all the users linked to the login id
@@ -54,6 +55,7 @@ export class DashBoardComponent implements OnInit {
   allApplicants: any[];
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
+  titleOnError = 'ERROR';
 
   /**
    * @description Creates an instance of DashBoardComponent.
@@ -75,7 +77,8 @@ export class DashBoardComponent implements OnInit {
     private bookingService: BookingService,
     private autoLogout: AutoLogoutService,
     private translate: TranslateService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private loggerService: LogService
   ) {
     this.translate.use(this.primaryLangCode);
     localStorage.setItem('modifyDocument', 'false');
@@ -127,6 +130,7 @@ export class DashBoardComponent implements OnInit {
   getUsers() {
     this.dataStorageService.getUsers(this.loginId).subscribe(
       (applicants: any) => {
+        this.loggerService.info('applicants in dashboard', applicants);
         if (
           applicants[appConstants.NESTED_ERROR] &&
           applicants[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] ===
@@ -229,8 +233,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   createApplicant(applicants: any, index: number) {
-    console.log('applicants', applicants);
-
     const applicantResponse =
       applicants[appConstants.RESPONSE][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.basicDetails][index];
     const demographicMetadata = applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.demographicMetadata];
@@ -360,13 +362,17 @@ export class DashBoardComponent implements OnInit {
       response => {
         if (!response['errors']) {
           this.removeApplicant(element.applicationID);
-          this.displayMessage(
-            this.secondaryLanguagelabels.title_success,
-            this.secondaryLanguagelabels.deletePreregistration.msg_deleted
-          );
           const index = this.users.indexOf(element);
           this.users.splice(index, 1);
-          if (this.users.length == 0) localStorage.setItem('newApplicant', 'true');
+          if (this.users.length == 0) {
+            this.onNewApplication();
+            localStorage.setItem('newApplicant', 'true');
+          } else {
+            this.displayMessage(
+              this.secondaryLanguagelabels.title_success,
+              this.secondaryLanguagelabels.deletePreregistration.msg_deleted
+            );
+          }
         } else {
           this.displayMessage(
             this.secondaryLanguagelabels.title_error,
@@ -458,9 +464,10 @@ export class DashBoardComponent implements OnInit {
     this.disableModifyDataButton = true;
     this.dataStorageService.getUserDocuments(preId).subscribe(
       response => this.setUserFiles(response),
-      () => {
+      error => {
+        this.loggerService.error('dashboard error', error);
         this.disableModifyDataButton = false;
-        this.onError();
+        this.onError(error);
       },
       () => {
         this.addtoNameList(user);
@@ -468,8 +475,8 @@ export class DashBoardComponent implements OnInit {
           response => {
             this.onModification(response, preId);
           },
-          () => {
-            this.onError();
+          error => {
+            this.onError(error);
           }
         );
       }
@@ -622,13 +629,22 @@ export class DashBoardComponent implements OnInit {
    * @private
    * @memberof DashBoardComponent
    */
-  private async onError() {
+  private async onError(error?: any) {
+    // if invalid token hten message = "invlaid something" else message = "regular message"
     await this.getErrorLabels();
+    let message = this.errorLanguagelabels.error;
+    if (
+      error &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+    ) {
+      message = this.errorLanguagelabels.tokenExpiredLogout;
+      this.titleOnError = '';
+    }
     if (this.errorLanguagelabels) {
       const body = {
         case: 'ERROR',
-        title: 'ERROR',
-        message: this.errorLanguagelabels.error,
+        title: this.titleOnError,
+        message: message,
         yesButtonText: this.errorLanguagelabels.button_ok
       };
       this.dialog.open(DialougComponent, {

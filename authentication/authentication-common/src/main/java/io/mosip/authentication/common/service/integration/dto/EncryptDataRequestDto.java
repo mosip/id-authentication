@@ -10,6 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * This class is used to construct the data to be encrypted
+ * 
+ * @author Sanjay Murali
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

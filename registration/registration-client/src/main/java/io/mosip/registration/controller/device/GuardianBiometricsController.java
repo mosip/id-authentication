@@ -175,6 +175,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 		return photoAlert;
 	}
 
+	public GridPane getBiometricPane() {
+		return biometricPane;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -298,7 +301,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				scanFingers(RegistrationConstants.RIGHTPALM,
-						RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
+						RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
 				scanFingers(RegistrationConstants.LEFTPALM,
@@ -407,6 +410,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Updating biometrics and clearing previous data");
 		clearCaptureData();
+		biometricPane.getStyleClass().clear();
+		biometricPane.getStyleClass().add(RegistrationConstants.BIOMETRIC_PANES_SELECTED);
 		biometricImage.setImage(new Image(this.getClass().getResourceAsStream(bioImage)));
 		biometricType.setText(bioType);
 		if (!bioType.equalsIgnoreCase(RegistrationUIConstants.PHOTO)) {
@@ -600,6 +605,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Upadting captured values of biometrics");
 
+		biometricPane.getStyleClass().clear();
 		biometricPane.getStyleClass().add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
 		biometricImage.setImage(convertBytesToImage(capturedBio));
 		qualityScore.setText(getQualityScore(qltyScore));
@@ -843,12 +849,20 @@ public class GuardianBiometricsController extends BaseController implements Init
 				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
 				retryBox.setVisible(false);
 				if (getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() == null) {
+					scanBtn.setDisable(false);
+					continueBtn.setDisable(true);
 					updateBiometric(RegistrationUIConstants.PHOTO, RegistrationConstants.IMAGE_PATH, "",
 							String.valueOf(RegistrationConstants.PARAM_ZERO));
+				} else {
+					continueBtn.setDisable(false);
 				}
 			} else {
 				biometricTypecombo.setVisible(true);
-				biometricBox.setVisible(false);
+				if (bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
+					biometricBox.setVisible(false);
+				} else {
+					biometricBox.setVisible(true);
+				}
 				thresholdBox.setVisible(true);
 				scanBtn.setText(RegistrationUIConstants.SCAN);
 				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
@@ -867,6 +881,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 					}
 					if (anyIrisException(RegistrationConstants.RIGHT)) {
 						modifyBiometricType(RegistrationUIConstants.RIGHT_IRIS);
+					}
+					List<String> bioList = new ArrayList<>();
+					biometricTypecombo.getItems().forEach(bio -> bioList.add(bio.getName()));
+					if(!bioList.contains(bioValue)) {
+						bioValue = RegistrationUIConstants.SELECT;
+						clearCapturedBioData();
 					}
 			}
 

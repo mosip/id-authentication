@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.impl;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,8 +68,10 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/**
 	 * Validates generated OTP via OTP Manager.
 	 *
-	 * @param authreqdto the authreqdto
+	 * @param authRequestDTO the auth request DTO
 	 * @param uin        the ref id
+	 * @param idInfo the id info
+	 * @param partnerId the partner id
 	 * @return true - when the OTP is Valid.
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -81,8 +82,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authRequestDTO.getTransactionID();
 		Optional<String> otp = getOtpValue(authRequestDTO);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnAndIdvid(txnId, authRequestDTO.getIndividualId(),
-					authRequestDTO.getIndividualIdType(), authRequestDTO.getRequestTime());
+			boolean isValidRequest = validateTxnAndIdvid(txnId, authRequestDTO.getIndividualId());
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", this.getClass().getSimpleName(), "Inside Validate Otp Request", "");
 				List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
@@ -102,10 +102,11 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	/**
 	 * Gets the s pin.
 	 *
-	 * @param uinValue  the uin value
-	 * @param matchType the match type
+	 * @param uin the uin
+	 * @param authReq the auth req
+	 * @param partnerId the partner id
 	 * @return the s pin
-	 * @throws IdValidationFailedException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public Map<String, String> getOtpKey(String uin, AuthRequestDTO authReq, String partnerId)
 			throws IdAuthenticationBusinessException {
@@ -151,16 +152,13 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * Validates Transaction ID and Unique ID.
 	 *
 	 * @param txnId   the txn id
-	 * @param uin     the uin
-	 * @param reqTime
+	 * @param idvid the idvid
 	 * @return true, if successful
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
-	 * @throws ParseException
 	 */
 
-	public boolean validateTxnAndIdvid(String txnId, String idvid, String idType, String reqTime)
-			throws IdAuthenticationBusinessException {
+	public boolean validateTxnAndIdvid(String txnId, String idvid) throws IdAuthenticationBusinessException {
 		boolean validOtpAuth;
 		String hashedIdvid = HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvid.getBytes()));
 		Optional<AutnTxn> authTxn = autntxnrepository

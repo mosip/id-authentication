@@ -55,9 +55,11 @@ public class OTPController {
 	 *
 	 * @param otpRequestDto as request body
 	 * @param errors        associate error
+	 * @param partnerId the partner id
+	 * @param mispLK the misp LK
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IDDataValidationException
+	 * @throws IDDataValidationException the ID data validation exception
 	 */
 	@PostMapping(path = "/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors,

@@ -170,18 +170,16 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 
 	private void setExceptionPhotograph(RegistrationDTO source, Identity identity) {
 		boolean isIntroducerFace = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-				|| source.isUpdateUINChild();
+				|| source.isUpdateUINNonBiometric();
 		identity.setExceptionPhotograph(buildExceptionPhotograph(
-				isIntroducerFace || (source.isUpdateUINChild()
-						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-								.equals(RegistrationConstants.ENABLE))
+				isIntroducerFace || (source.isUpdateUINNonBiometric()
+						&& !source.isUpdateUINChild())
 										? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 												.getNumOfRetries()
 										: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
 												.getNumOfRetries(),
-				isIntroducerFace || (source.isUpdateUINChild()
-						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-								.equals(RegistrationConstants.ENABLE))
+				isIntroducerFace || (source.isUpdateUINNonBiometric()
+						&& !source.isUpdateUINChild())
 										? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 												.getFace()
 										: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
@@ -206,13 +204,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			exceptionPhotograph = new ExceptionPhotograph();
 			exceptionPhotograph.setNumRetry(numRetry);
 			exceptionPhotograph.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-					|| (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-							.equals(RegistrationConstants.ENABLE) && source.isUpdateUINChild())
+					|| (source.isUpdateUINChild() && source.isUpdateUINNonBiometric())
 									? RegistrationConstants.PARENT
 									: RegistrationConstants.INDIVIDUAL);
 			exceptionPhotograph.setPhotoName(((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-					|| (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-							.equals(RegistrationConstants.ENABLE) && source.isUpdateUINChild())
+					|| (source.isUpdateUINChild() && source.isUpdateUINNonBiometric())
 									? RegistrationConstants.PARENT.toLowerCase()
 									: RegistrationConstants.INDIVIDUAL.toLowerCase())
 											.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO));
@@ -331,7 +327,7 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		metaData.add(buildFieldValue("creationDate", DateUtils.formatToISOString(LocalDateTime.now())));
 
 		metaData.add(buildFieldValue("authenticationBiometricFileName",
-				registrationDTO.isUpdateUINChild()
+				registrationDTO.isUpdateUINNonBiometric()
 						? removeFileExt(RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)
 						: null));
 

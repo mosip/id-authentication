@@ -5,16 +5,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.h2.store.fs.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
@@ -33,13 +36,12 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.receiver.decrypter.Decryptor;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
-import io.mosip.registration.processor.packet.receiver.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
@@ -54,7 +56,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
-import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
@@ -107,8 +108,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	/** The registration exception mapper util. */
 	private RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
-	private RegistrationStatusEntity entity = new RegistrationStatusEntity();
-
 	/** The reg entity. */
 	private SyncRegistrationEntity regEntity;
 
@@ -155,7 +154,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
 			messageDTO.setRid(registrationId);
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+			try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithSync();
 				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
@@ -240,7 +239,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void storePacket(String stageName) throws IOException {
+	private void storePacket(String stageName) {
 
 		dto = registrationStatusService.getRegistrationStatus(registrationId);
 		if (dto == null) {
@@ -395,7 +394,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		HMACUtils.update(isbytearray);
 		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 		String packetHashSequence = regEntity.getPacketHashValue();
-		if (!(packetHashSequence.equals(hashSequence))) {
+		if(!(MessageDigest.isEqual(packetHashSequence.getBytes(),hashSequence.getBytes()))){
 			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"
 					+ registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -444,7 +443,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		messageDTO.setRid(registrationId);
 		regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 		messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
-		try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+		try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));
 			if (scanningFlag) {
@@ -476,22 +475,23 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					+ e.getMessage();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Error while updating status : "
-							+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage());
-		} catch (PacketDecryptionFailureException e) {
+							+ PlatformErrorMessages.RPR_PKR_DATA_ACCESS_EXCEPTION.getMessage()+ExceptionUtils.getStackTrace(e));
+		} catch (ApisResourceAccessException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "API resource not accessible : "
+							+ PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage()+ExceptionUtils.getStackTrace(e));
+			description = PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage();
+
+		} catch (io.mosip.registration.processor.core.exception.PacketDecryptionFailureException e) {
 			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(StatusMessage.PACKET_DECRYPTION_FAILED);
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
-					+ e.getErrorText();
+			+ e.getErrorText();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, e.getMessage());
-		} catch (ApisResourceAccessException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "API resource not accessible : "
-							+ PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage());
-			description = PlatformErrorMessages.RPR_PKR_API_RESOUCE_ACCESS_FAILED.getMessage();
-
+					registrationId, ExceptionUtils.getStackTrace(e));
+		
 		} finally {
 
 			registrationStatusService.updateRegistrationStatus(dto);

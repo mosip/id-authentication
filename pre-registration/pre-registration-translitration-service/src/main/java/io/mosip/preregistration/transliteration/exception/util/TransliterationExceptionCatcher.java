@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ParseException;
-import io.mosip.kernel.core.jsonvalidator.exception.HttpRequestException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
@@ -38,10 +37,7 @@ public class TransliterationExceptionCatcher {
 	 *            pass the exception
 	 */
 	public void handle(Exception ex,MainResponseDTO<?> response) {
-		if (ex instanceof HttpRequestException) {
-			throw new JsonValidationException(ErrorCodes.PRG_TRL_APP_004.getCode(),
-					ErrorMessage.JSON_HTTP_REQUEST_EXCEPTION.getMessage(), ex.getCause(),response);
-		} else if (ex instanceof DataAccessLayerException) {
+		 if (ex instanceof DataAccessLayerException) {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_TRL_APP_005.getCode(),
 					ErrorMessage.PRE_REG_TRANSLITRATION_TABLE_NOT_ACCESSIBLE.getMessage(), ex.getCause());
 		} else if (ex instanceof NullPointerException) {

@@ -50,7 +50,6 @@ public class SoftwareInstallationHandler {
 
 		latestVersion = properties.getProperty("mosip.version");
 
-		
 		getLocalManifest();
 
 		deleteUnNecessaryJars();
@@ -78,7 +77,6 @@ public class SoftwareInstallationHandler {
 	private String mosip = "mosip";
 
 	private String versionTag = "version";
-
 
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
 
@@ -338,9 +336,15 @@ public class SoftwareInstallationHandler {
 			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
 			String manifestCheckSum = (String) manifest.getEntries().get(jarFile.getName())
 					.get(Attributes.Name.CONTENT_TYPE);
+
 			return manifestCheckSum.equals(checkSum);
 
 		} catch (IOException ioException) {
+			try {
+				FileUtils.forceDelete(jarFile);
+			} catch (io.mosip.kernel.core.exception.IOException exception) {
+				return false;
+			}
 			return false;
 		}
 

@@ -1,9 +1,20 @@
 
-# External Stage Integration
+# Integration
+
+However, MOSIP architecture gives ability to plugin external system in between any two stages in workflow but we recommend to add external system at the end of logical sections as explained below:
+
+In Registration Processor, we have below logical sections:
+1. Pre-Processing: This logical section take care of the security of the packet.
+1. Processing: This section validate packet for various business rules and deduplication of packet.
+1. Post-Processing: In this section all notifications regarding approval or rejection of packet will be send.
+
+MOSIP recommend to plugin external system at the end of pre-processing section or at the end of processing section.
+
+# System Integration Options
 
 **Introduction**
 
-Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation, can be deployed independently and does not depend on the previous or next stage in the flow. This design document will helps support team to understand steps to integrate MOSIP with external system using http end point.
+Technical stack used in Registration Processor gives ability to add or change order/sequence of stages/route in the flow. Most of the stages works in isolation can be deployed independently and does not depend on the previous or next stage in the flow. This design document will helps support team to understand steps to integrate MOSIP with external system using http end point.
 
 This document is intended for advanced option to integrate external system with the MOSIP.
 

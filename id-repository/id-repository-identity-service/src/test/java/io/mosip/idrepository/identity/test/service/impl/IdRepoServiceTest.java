@@ -240,10 +240,9 @@ public class IdRepoServiceTest {
 		RequestDTO req = new RequestDTO();
 		req.setIdentity(obj);
 		request.setRequest(req);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg	");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.addIdentity(request, "1234");
@@ -267,10 +266,9 @@ public class IdRepoServiceTest {
 						.getBytes(),
 				RequestDTO.class);
 		request.setRequest(req);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(uinDocHRepo.save(Mockito.any())).thenThrow(new DataAccessResourceFailureException(null));
@@ -289,10 +287,9 @@ public class IdRepoServiceTest {
 						.getBytes(),
 				RequestDTO.class);
 		request.setRequest(req);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(uinDocHRepo.save(Mockito.any())).thenThrow(new JDBCConnectionException(null, null));
@@ -310,14 +307,12 @@ public class IdRepoServiceTest {
 		uinObj.setUin("1234");
 		uinObj.setUinRefId("1234");
 		RequestDTO req = mapper.readValue(
-				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
+				"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
 						.getBytes(),
 				RequestDTO.class);
 		request.setRequest(req);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(false);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.addIdentity(request, "1234");
@@ -341,8 +336,7 @@ public class IdRepoServiceTest {
 		request.setRequest(req);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.addIdentity(request, "1234");
@@ -361,9 +355,9 @@ public class IdRepoServiceTest {
 		RequestDTO req = new RequestDTO();
 		req.setIdentity(obj);
 		request.setRequest(req);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.addIdentity(request, "1234");
@@ -382,7 +376,7 @@ public class IdRepoServiceTest {
 		RequestDTO req = new RequestDTO();
 		req.setIdentity(obj);
 		request.setRequest(req);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(uinRepo.save(Mockito.any())).thenThrow(new RecoverableDataAccessException(null));
@@ -430,7 +424,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", null);
@@ -445,7 +439,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
@@ -484,7 +478,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
@@ -510,7 +504,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
@@ -536,9 +530,9 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", "bio");
@@ -562,8 +556,8 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
@@ -587,7 +581,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
@@ -612,7 +606,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		proxyService.retrieveIdentityByUin("1234", "demo");
@@ -636,7 +630,7 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", "demo");
@@ -660,9 +654,9 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", "demo");
@@ -686,8 +680,8 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg	");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", "demo");
@@ -710,10 +704,8 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg	");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", "demo");
@@ -742,9 +734,8 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", "all");
@@ -771,9 +762,8 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"},\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.retrieveIdentityByUin("1234", "a");
@@ -798,9 +788,8 @@ public class IdRepoServiceTest {
 						.getBytes(),
 				Object.class);
 		uinObj.setUinData(mapper.writeValueAsBytes(obj2));
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.updateIdentity(request, "234").getResponse().equals(obj2);
@@ -825,10 +814,9 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"rgAADOjjov89sjVwvI8Gc4ngK9lQgPxMpNDe+LXb5qI=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE=|P6NGM4tYz1Zdy+ZC/ikKYNp1csxrarX/dCEta1HCHWE="
 						.getBytes());
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.updateIdentity(request, "1234");
@@ -853,10 +841,9 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"identity\":{ \"fullName\" : [ {\"language\" : \"aba\"} ],\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"},{\"language\":\"FR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes());
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.getStatusByUin(Mockito.any())).thenReturn("REGISTERED");
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		proxyService.updateIdentity(request, "1234");
@@ -939,7 +926,7 @@ public class IdRepoServiceTest {
 		uinObj.setStatusCode("");
 		uinObj.setUinData(new byte[] { 0 });
 		uinObj.setUinDataHash("");
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
@@ -1044,8 +1031,7 @@ public class IdRepoServiceTest {
 				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
@@ -1079,8 +1065,7 @@ public class IdRepoServiceTest {
 				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
@@ -1112,8 +1097,7 @@ public class IdRepoServiceTest {
 				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
@@ -1142,10 +1126,9 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.existsByUin(Mockito.any())).thenReturn(true);
+		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
@@ -1179,7 +1162,7 @@ public class IdRepoServiceTest {
 						.getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
 				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
@@ -1209,8 +1192,6 @@ public class IdRepoServiceTest {
 				"{\"individualBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
-		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(true);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
@@ -1243,7 +1224,7 @@ public class IdRepoServiceTest {
 				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
 				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
@@ -1273,7 +1254,7 @@ public class IdRepoServiceTest {
 				+ IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue() + "\":\"fileReferenceID\"}}").getBytes());
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		when(cbeffUtil.getBIRDataFromXML(Mockito.any()))
 				.thenReturn(Collections.singletonList(rFinger.toBIRType(rFinger)));
@@ -1312,10 +1293,9 @@ public class IdRepoServiceTest {
 		uinObj.setUinData(
 				"{\"ProofOfIdentity\":{\"format\":\"pdf\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}}"
 						.getBytes());
-		when(uinRepo.findByUin(Mockito.any())).thenReturn(uinObj);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
 		Mockito.when(uinRepo.getUinHashByRid(Mockito.anyString())).thenReturn(value);
-		when(uinRepo.getUinHash(Mockito.any())).thenReturn(uinObj);
+		when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		ReflectionTestUtils.invokeMethod(proxyService, "retrieveIdentityByRid", ridValue,

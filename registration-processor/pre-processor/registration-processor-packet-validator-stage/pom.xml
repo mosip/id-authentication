@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>pre-processor</artifactId>
-		<version>0.12.7</version>
+		<version>0.12.9</version>
 	</parent>
 	<artifactId>registration-processor-packet-validator-stage</artifactId>
 	<properties>
@@ -96,7 +96,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-jsonvalidator</artifactId>
+			<artifactId>kernel-idobjectvalidator</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
 		<dependency>

@@ -32,7 +32,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN", "Please retry with the correct UIN"),
 	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated", "Your UIN status is not active"),
 	INVALID_VID("IDA-MLC-004", "Invalid VID", "Please retry with correct VID"),
-	EXPIRED_VID("IDA-MLC-005", "Expired VID", "Please regenerate VID and try again"),
+	EXPIRED_VID("IDA-MLC-005", "%s", "Please regenerate VID and try again"),
 	MISSING_INPUT_PARAMETER("IDA-MLC-006", "Missing Input Parameter - %s"),
 	UNABLE_TO_PROCESS("IDA-MLC-007", "Request could not be processed. Please try again"),
 	NO_AUTHENTICATION_TYPE_SELECTED_IN_REQUEST("IDA-MLC-008", "No authentication type selected"),
@@ -46,6 +46,8 @@ public enum IdAuthenticationErrorConstants {
 			"Please register your %s and try again"),
 	IDENTITYTYPE_NOT_ALLOWED("IDA-MLC-015", "Identity Type - %s not configured for the country"),
 	INVALID_TXNID_BIO("IDA-MLC-016", "Transaction ID parameters in the request does not match"),
+	INVALID_USERID( "IDA-MLC-017","Invalid UserID"),
+	ID_NOT_AVAILABLE("IDA-MLC-018", "%s not available in database"),
 	
 	
 	  DEMOGRAPHIC_DATA_MISMATCH_LANG("IDA-DEA-001", "Demographic data %s in %s did not match",
@@ -67,7 +69,7 @@ public enum IdAuthenticationErrorConstants {
 	FACE_EXCEEDING("IDA-BIA-009", "Number of FID records should not exceed 1"),
 	FACE_EXCEEDING_FMR("IDA-BIA-010", "Single FMR record contains more than one finger"),
 	INVALID_BIOMETRIC("IDA-BIA-011", "Invalid biometric data"),
-	INVALID_USERID( "IDA-BIA-012","Invalid userid of the individual"),
+
 	
 
 	INVALID_ENCRYPT_EKYC_RESPONSE("IDA-EKA-001", "Unable to encrypt eKYC response"),
@@ -82,7 +84,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_ENCRYPTION("IDA-MPA-003", "Unable to decrypt Request"),
 	PUBLICKEY_EXPIRED("IDA-MPA-004", "MOSIP Public key expired"),
 	OTPREQUEST_NOT_ALLOWED("IDA-MPA-005", "OTP Request Usage not allowed as per policy"),
-	AUTHTYPE_NOT_ALLOWED("IDA-MPA-006", "%s-authentiation usage not allowed as per policy",
+	AUTHTYPE_NOT_ALLOWED("IDA-MPA-006", "%s Authentication usage not allowed as per policy",
 			"Please use other Authentication Types in the request"),
 	INVALID_LICENSEKEY("IDA-MPA-007", "License key does not belong to a registered MISP"),
 	LICENSEKEY_EXPIRED("IDA-MPA-008", "License key of MISP has expired"),

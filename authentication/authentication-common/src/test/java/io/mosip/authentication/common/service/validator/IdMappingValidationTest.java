@@ -132,10 +132,15 @@ public class IdMappingValidationTest {
 		emailList.add("phone");
 		List<String> pincodeList = new ArrayList<>();
 		pincodeList.add("phone");
+		List<String> dobList = new ArrayList<>();
+		dobList.add("dateofBirth");
 		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PHONE, DemoMatchType.PHONE)).thenReturn(phoneList);
 		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.EMAIL, DemoMatchType.EMAIL)).thenReturn(emailList);
 		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.PINCODE, DemoMatchType.PINCODE))
 				.thenReturn(pincodeList);
+		Mockito.when(idinfoHelper.getIdMappingValue(IdaIdMapping.DOB, DemoMatchType.DOB))
+		.thenReturn(dobList);
+		
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "checkAuthRequest", authRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -198,9 +203,9 @@ public class IdMappingValidationTest {
 		AuthRequestDTO authRequestDTO = getBioFingerDetails();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Set<String> allowedAuthtype = new HashSet<>();
-		allowedAuthtype.add("FID");
-		allowedAuthtype.add("FIR");
-		allowedAuthtype.add("IIR");
+		allowedAuthtype.add("bio-FID");
+		allowedAuthtype.add("bio-FIR");
+		allowedAuthtype.add("bio-IIR");
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors,
 				allowedAuthtype);
 		assertFalse(errors.hasErrors());

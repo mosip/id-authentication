@@ -46,6 +46,7 @@ import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.AuditLogUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.datasync.DataSyncApplicationTest;
 import io.mosip.preregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.preregistration.datasync.dto.PreRegArchiveDTO;
@@ -85,6 +86,9 @@ public class DataSyncServiceUtilTest {
 
 	@MockBean
 	AuditLogUtil auditLogUtil;
+
+	@MockBean
+	ValidationUtil validationUtil;
 
 	@MockBean
 	RestTemplate restTemplate;
@@ -206,6 +210,15 @@ public class DataSyncServiceUtilTest {
 		serviceUtil.validateDataSyncRequest(dataSyncRequestDTO, null);
 
 	}
+	
+	@Test(expected = InvalidRequestParameterException.class)
+	public void invalidToDateTest() {
+		dataSyncRequestDTO.setRegistrationCenterId("1005");
+		dataSyncRequestDTO.setFromDate("2019-02-10");
+		dataSyncRequestDTO.setToDate("2019-00-1");
+		serviceUtil.validateDataSyncRequest(dataSyncRequestDTO, null);
+
+	}
 
 	@Test
 	public void validateReverseDataSyncRequestTest() {
@@ -314,9 +327,10 @@ public class DataSyncServiceUtilTest {
 	@Test
 	public void callGetDocRestServiceTest() {
 
-		multipartResponseDTOs.setDocName("Address.pdf");
+		multipartResponseDTOs.setDocName("RNC.pdf");
 		multipartResponseDTOs.setDocumentId("1234");
 		multipartResponseDTOs.setDocCatCode("POA");
+		multipartResponseDTOs.setLangCode("ENG");
 
 		responsestatusDto.add(multipartResponseDTOs);
 		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
@@ -340,10 +354,10 @@ public class DataSyncServiceUtilTest {
 	@Test
 	public void callGetDocRestServiceTestFailure() {
 
-		multipartResponseDTOs.setDocName("Address.pdf");
+		multipartResponseDTOs.setDocName("RNC.pdf");
 		multipartResponseDTOs.setDocumentId("1234");
 		multipartResponseDTOs.setDocCatCode("POA");
-
+		multipartResponseDTOs.setLangCode("ENG");
 		responsestatusDto.add(multipartResponseDTOs);
 		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
 		documentsMetaData.setDocumentsMetaData(responsestatusDto);
@@ -491,34 +505,32 @@ public class DataSyncServiceUtilTest {
 		bookingRegistrationDTO.setRegistrationCenterId("1005");
 		bookingRegistrationDTO.setRegDate(resTime);
 
-		multipartResponseDTOs.setDocName("Address.pdf");
+		multipartResponseDTOs.setDocName("RNC.pdf");
 		multipartResponseDTOs.setDocumentId("1234");
 		multipartResponseDTOs.setDocCatCode("POA");
-		multipartResponseDTOs.setDocTypCode("address");
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocTypCode("RNC");
 		responsestatusDto.add(multipartResponseDTOs);
 		multipartResponseDTOs = new DocumentMultipartResponseDTO();
-		multipartResponseDTOs.setDocName("Passport.pdf");
+		multipartResponseDTOs.setDocName("CIN.pdf");
 		multipartResponseDTOs.setDocumentId("1235");
 		multipartResponseDTOs.setDocCatCode("POI");
-		multipartResponseDTOs.setDocTypCode("passport");
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocTypCode("CIN");
 		responsestatusDto.add(multipartResponseDTOs);
 		multipartResponseDTOs = new DocumentMultipartResponseDTO();
-		multipartResponseDTOs.setDocName("Passport.pdf");
+		multipartResponseDTOs.setDocName("COB.pdf");
 		multipartResponseDTOs.setDocumentId("4223");
 		multipartResponseDTOs.setDocCatCode("POB");
-		multipartResponseDTOs.setDocTypCode("passport");
-		responsestatusDto.add(multipartResponseDTOs);
-		multipartResponseDTOs = new DocumentMultipartResponseDTO();
-		multipartResponseDTOs.setDocName("Passport.pdf");
-		multipartResponseDTOs.setDocumentId("4313");
-		multipartResponseDTOs.setDocCatCode("POD");
-		multipartResponseDTOs.setDocTypCode("passport");
+		multipartResponseDTOs.setLangCode("ENG");
+		multipartResponseDTOs.setDocTypCode("COB");
 		responsestatusDto.add(multipartResponseDTOs);
 		multipartResponseDTOs = new DocumentMultipartResponseDTO();
 		multipartResponseDTOs.setDocName("drivingLicense.pdf");
 		multipartResponseDTOs.setDocumentId("5324");
+		multipartResponseDTOs.setLangCode("ENG");
 		multipartResponseDTOs.setDocCatCode("POR");
-		multipartResponseDTOs.setDocTypCode("drivingLicense");
+		multipartResponseDTOs.setDocTypCode("CRN");
 		documentDTO.setDocument(file.toString().getBytes());
 		responsestatusDto.add(multipartResponseDTOs);
 		documentsMetaData.setDocumentsMetaData(responsestatusDto);
@@ -530,6 +542,9 @@ public class DataSyncServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentDTO>>() {
 				}), Mockito.anyMap())).thenReturn(responseEntity);
+		Map<String, String> documentTypeMap = new HashMap<>();
+		Mockito.when(validationUtil.getDocumentTypeNameByTypeCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(documentTypeMap);
 		serviceUtil.archivingFiles(demographicResponseDTO, bookingRegistrationDTO, documentsMetaData);
 	}
 
@@ -547,10 +562,11 @@ public class DataSyncServiceUtilTest {
 		bookingRegistrationDTO.setRegistrationCenterId("1005");
 		bookingRegistrationDTO.setRegDate(resTime);
 
-		multipartResponseDTOs.setDocName("Passport.pdf");
+		multipartResponseDTOs.setDocName("CIN.pdf");
 		multipartResponseDTOs.setDocumentId("1235");
 		multipartResponseDTOs.setDocCatCode("POI");
-		multipartResponseDTOs.setDocTypCode("passport");
+		multipartResponseDTOs.setDocTypCode("RNC");
+		multipartResponseDTOs.setLangCode("ENG");
 		responsestatusDto.add(multipartResponseDTOs);
 		// documentDTO.setDocument(file.toString().getBytes());
 		documentDTO = null;
@@ -569,6 +585,9 @@ public class DataSyncServiceUtilTest {
 		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentDTO>>() {
 				}), Mockito.anyMap())).thenReturn(responseEntity);
+		Map<String, String> documentTypeMap = new HashMap<>();
+		Mockito.when(validationUtil.getDocumentTypeNameByTypeCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(documentTypeMap);
 		serviceUtil.archivingFiles(demographicResponseDTO, bookingRegistrationDTO, documentsMetaData);
 	}
 

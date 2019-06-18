@@ -399,7 +399,7 @@ public class KeymanagerIntegrationTest {
 		requestWrapper.setRequest(symmetricKeyRequestDto);
 		String content = mapper.writeValueAsString(requestWrapper);
 		MvcResult result = mockMvc.perform(post("/decrypt").contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().is(500)).andReturn();
+				.andExpect(status().is(200)).andReturn();
 		// System.out.println(result.getResponse().getContentAsString());
 	}
 

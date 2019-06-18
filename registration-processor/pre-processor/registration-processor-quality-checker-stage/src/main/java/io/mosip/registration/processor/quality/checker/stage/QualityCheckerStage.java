@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -14,11 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -34,6 +33,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -104,7 +104,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The core audit request builder. */
 	@Autowired
@@ -152,12 +152,14 @@ public class QualityCheckerStage extends MosipVerticleManager {
 		object.setMessageBusAddress(MessageBusAddress.QUALITY_CHECKER_BUS_IN);
 		String regId = object.getRid();
 		String description = "";
-		Boolean isTransactionSuccessful = null;
+		Boolean isTransactionSuccessful = Boolean.FALSE;
 		InternalRegistrationStatusDto registrationStatusDto = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 				"QualityCheckerStage::process()::entry");
+
+		registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
+
 		try {
-			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 			InputStream idJsonStream = adapter.getFile(regId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -230,7 +232,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.QUALITY_CHECK.toString());
 
 		} catch (FSAdapterException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto
 					.setStatusComment(PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
@@ -242,7 +244,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 			description = "FileSytem is not accessible for packet " + regId + "::" + e.getMessage();
 			object.setRid(regId);
 		} catch (BiometricException e) {
-			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_QCR_BIOMETRIC_EXCEPTION.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION));

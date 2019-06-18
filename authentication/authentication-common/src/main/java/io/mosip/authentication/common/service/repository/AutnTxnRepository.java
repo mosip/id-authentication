@@ -1,6 +1,5 @@
 package io.mosip.authentication.common.service.repository;
 
-import java.lang.annotation.Native;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,10 +23,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * Obtain all Authentication Transaction for particular TxnId and UIN.
 	 *
 	 * @param txnId                       the txn id
-	 * @param addMinutesInOtpRequestDTime
-	 * @param requestTime
-	 * @param type 
-	 * @param refId                       the ref id
+	 * @param pagaeable the pagaeable
+	 * @param authtypecode the authtypecode
 	 * @return the list
 	 */
 	@Query(value="Select * from ida.auth_transaction where request_trn_id=:txnId AND auth_type_code=:authtypecode ORDER BY cr_dtimes DESC", nativeQuery = true)

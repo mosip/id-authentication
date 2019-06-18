@@ -255,7 +255,7 @@ public class RegIdObjectMasterDataValidator {
 				locationDetails.put(location.getHierarchyName(), null);
 			});
 
-			Set<String> locationHierarchyNames = locationDetails.keySet().parallelStream().collect(Collectors.toSet());
+			Set<String> locationHierarchyNames = locationDetails.keySet().stream().collect(Collectors.toSet());
 			locationHierarchyNames.stream().forEach(hierarchyName -> {
 				SetValuedMap<String, String> locations = new HashSetValuedHashMap<>();
 				locationList.forEach(location -> {
@@ -289,7 +289,7 @@ public class RegIdObjectMasterDataValidator {
 		Map<String, String> dataMap = IntStream.range(0, pathList.size()).boxed().parallel()
 				.collect(Collectors.toMap(i -> String.valueOf(pathList.get(i)),
 						i -> JsonPath.compile(String.valueOf(pathList.get(i))).read(identityString, READ_OPTIONS)));
-		dataMap.entrySet().parallelStream().filter(entry -> !languageList.contains(entry.getValue()))
+		dataMap.entrySet().stream().filter(entry -> !languageList.contains(entry.getValue()))
 				.forEach(entry -> errorList
 						.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),
 								String.format(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getMessage(),
@@ -322,7 +322,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(genderLangPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(genderValuePathList.get(i),
 								JsonPath.compile(genderValuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			System.out.println(
 					"Entry Val**" + lang + "->>>>" + genderMap.get(lang).contains(entry.getValue().getValue()));
@@ -350,7 +350,7 @@ public class RegIdObjectMasterDataValidator {
 
 		SetValuedMap<String, String> regionMap = new HashSetValuedHashMap<>();
 		Set<String> regionNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.REGION.getLevel());
-		Optional.ofNullable(regionNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(regionNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> regionMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_REGION_LANGUAGE_PATH.getValue());
@@ -364,7 +364,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return regionMap.containsKey(lang) && !regionMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
@@ -391,7 +391,7 @@ public class RegIdObjectMasterDataValidator {
 		SetValuedMap<String, String> provinceMap = new HashSetValuedHashMap<>();
 		Set<String> provinceNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.PROVINCE.getLevel());
-		Optional.ofNullable(provinceNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(provinceNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> provinceMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_PROVINCE_LANGUAGE_PATH.getValue());
@@ -405,7 +405,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return provinceMap.containsKey(lang) && !provinceMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
@@ -430,7 +430,7 @@ public class RegIdObjectMasterDataValidator {
 
 		SetValuedMap<String, String> cityMap = new HashSetValuedHashMap<>();
 		Set<String> cityNameList = locationHierarchyDetails.get(IdObjectValidatorLocationMapping.CITY.getLevel());
-		Optional.ofNullable(cityNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(cityNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> cityMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath.compile(IdObjectValidatorConstant.IDENTITY_CITY_LANGUAGE_PATH.getValue());
@@ -444,7 +444,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return cityMap.containsKey(lang) && !cityMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
@@ -470,7 +470,7 @@ public class RegIdObjectMasterDataValidator {
 		SetValuedMap<String, String> localAdministrativeAuthorityMap = new HashSetValuedHashMap<>();
 		Set<String> localAdminAuthNameList = locationHierarchyDetails
 				.get(IdObjectValidatorLocationMapping.LOCAL_ADMINISTRATIVE_AUTHORITY.getLevel());
-		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).parallelStream()
+		Optional.ofNullable(localAdminAuthNameList).orElse(Collections.emptySet()).stream()
 				.forEach(hierarchyName -> Optional.ofNullable(locationDetails.get(hierarchyName))
 						.ifPresent(locationDetail -> localAdministrativeAuthorityMap.putAll(locationDetail)));
 		JsonPath langPath = JsonPath
@@ -486,7 +486,7 @@ public class RegIdObjectMasterDataValidator {
 				.collect(Collectors.toMap(langPathList::get,
 						i -> new AbstractMap.SimpleImmutableEntry<String, String>(valuePathList.get(i),
 								JsonPath.compile(valuePathList.get(i)).read(identityString, READ_OPTIONS))));
-		dataMap.entrySet().parallelStream().filter(entry -> {
+		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
 			return localAdministrativeAuthorityMap.containsKey(lang)
 					&& !localAdministrativeAuthorityMap.get(lang).contains(entry.getValue().getValue());
@@ -535,7 +535,7 @@ public class RegIdObjectMasterDataValidator {
 		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Validating documents has been started");
 
-		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().parallelStream()
+		IdObjectValidatorDocumentMapping.getAllMapping().entrySet().stream()
 				.filter(entry -> docTypeMap.containsKey(entry.getKey())).forEach(entry -> {
 					JsonPath jsonPath = JsonPath.compile("identity." + entry.getValue() + ".type");
 					Object value = jsonPath.read(identityString, READ_OPTIONS);
