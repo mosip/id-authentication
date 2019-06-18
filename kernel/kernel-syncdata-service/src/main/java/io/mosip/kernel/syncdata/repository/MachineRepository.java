@@ -52,10 +52,10 @@ public interface MachineRepository extends JpaRepository<Machine, String> {
 	/** Get machine by name
 	 * @param name machine name
 	 * @return {@link Machine}
-	 */
+	 *//*
 	@Query("FROM Machine m WHERE m.name=?1 and (m.isDeleted is null or m.isDeleted =false) and m.isActive = true")
 	Optional<Machine> findByMachineNameActiveNondeleted(String name);
-	
+	*/
 	@Query("From Machine m WHERE m.name=?1 and (m.isDeleted is null or m.isDeleted =false) and m.isActive = true")
-	Machine findByMachineNameAndIsActive(String machineName);
+	List<Machine> findByMachineNameAndIsActive(String machineName);
 }

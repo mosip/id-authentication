@@ -575,7 +575,11 @@
   "error": {
     "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
     "button_ok": "OK",
-    "invalidPin": "Le code PIN entré est invalide",
+    "postalCode": "Le code PIN entré est invalide",
+    "email": "Le courriel entré est invalide",
+    "phone": "Le téléphone entré est invalide",
+    "dateOfBirth": "Date de naissance entrée est invalide",
+    "CNIENumber": "Le numéro CNIE entré est invalide",
     "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité."
   },
   "residentTypesMapping": {
