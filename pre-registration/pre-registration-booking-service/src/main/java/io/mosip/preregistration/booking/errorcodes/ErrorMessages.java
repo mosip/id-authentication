@@ -172,7 +172,9 @@ public enum ErrorMessages {
 	
 	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id"),
 	
-	NOTIFICATION_CALL_FAILED("Notification service call failed");
+	NOTIFICATION_CALL_FAILED("Notification service call failed"),
+	
+	JSON_PROCESSING_EXCEPTION("Json processing exception");
 	/**
 	 * @param code
 	 */
