@@ -8,7 +8,7 @@
 |----------|----------|
 SubmittedBy|Ravi C Balaji
 Date Raised | 17-Jun-2019
-Jenkins Build #	|Min Version : 2146  [Any later version also]
+Jenkins Build #	|Min Version : 2154 [Any later version also]
 Objective & Scope of Release| Pre-registration module
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
 Role/Job Title|Technical Lead
