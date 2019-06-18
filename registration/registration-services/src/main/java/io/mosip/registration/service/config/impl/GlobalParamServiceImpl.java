@@ -83,7 +83,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		if (isJob && RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+		if (isJob && !RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"NO Internet Connection So calling off global param sync");
 
