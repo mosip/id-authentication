@@ -121,7 +121,8 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
     	  if(testCaseName.equals("Kernel_GetDeviceHistory_smoke_1"))
     	  {
     		String id = actualRequest.get("id").toString();
-	        String queryStr = "SELECT count(*) FROM master.device_master_h h WHERE h.id='"+id+"'";
+    		String langcode = actualRequest.get("langcode").toString();
+	        String queryStr = "SELECT count(*) FROM master.device_master_h h WHERE h.id='"+id+"' and lang_code='"+langcode+"'";
 	        long count = kernelDB.validateDBCount(queryStr,"masterdata");   
 	        if(count==1) {
 	        	status = true;
