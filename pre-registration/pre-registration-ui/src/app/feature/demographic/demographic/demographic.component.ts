@@ -885,7 +885,7 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   onTransliteration(fromControl: FormControl, toControl: any) {
-    if (fromControl.value) {
+     if (fromControl.value) {
       const request: any = {
         from_field_lang: this.primaryLang,
         from_field_value: fromControl.value,
@@ -1232,6 +1232,9 @@ export class DemographicComponent implements OnInit {
       this._keyboardRef.instance.setInputInstance(el);
       this._keyboardRef.instance.attachControl(control);
     }
+  }
+   scrollUp(ele:HTMLElement){
+    ele.scrollIntoView({ behavior: "smooth" });
   }
 
   @HostListener('blur', ['$event'])
