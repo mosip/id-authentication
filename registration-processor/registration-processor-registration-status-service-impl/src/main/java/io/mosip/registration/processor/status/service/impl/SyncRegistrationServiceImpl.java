@@ -429,8 +429,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
 
 			syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
-			syncResponseFailureDto.setMessage(e.getMessage());
-			syncResponseFailureDto.setErrorCode(e.getErrorCode());
+			syncResponseFailureDto.setMessage(PlatformErrorMessages.RPR_RGS_DECRYPTION_FAILED.getMessage());
+			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_RGS_DECRYPTION_FAILED.getCode());
 			syncResponseList.add(syncResponseFailureDto);
 		} catch (JsonParseException e) {
 			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
