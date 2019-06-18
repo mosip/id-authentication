@@ -37,7 +37,7 @@ public interface UserSaltDetailsService {
 	 * method.
 	 * 
 	 *
-	 * @param triggerpoint {@code String} to identify how this operation happens
+	 * @param tigger {@code String} to identify how this operation happens
 	 *                     [Manual or batch trigger] Manual trigger - value is user
 	 *                     id of the logged user. Batch trigger - value is "system"
 	 *                     

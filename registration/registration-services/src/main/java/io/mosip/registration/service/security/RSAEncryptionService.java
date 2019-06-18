@@ -23,12 +23,12 @@ public interface RSAEncryptionService {
 	 * everyone; it is used to encrypt messages. Messages encrypted using the public
 	 * key can only be decrypted with the private key.
 	 * 
-	 * @param {@code byte[]} sessionKey has to be encrypted as bytes
+	 * @param sessionKey {@code byte[]} has to be encrypted as bytes
 	 * 
 	 * @return {@code byte[]} rsaEncryptedBytes has encrypted by rsa
 	 * 
-	 * @throws {@code
-	 *             RegBaseCheckedException} RegBaseCheckedException if any occurs
+	 * @throws RegBaseCheckedException {@code
+	 *             RegBaseCheckedException} if any occurs
 	 *             while encrypting
 	 */
 	byte[] encrypt(final byte[] sessionKey) throws RegBaseCheckedException;

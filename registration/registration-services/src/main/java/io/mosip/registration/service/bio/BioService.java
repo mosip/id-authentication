@@ -94,8 +94,8 @@ public interface BioService {
 	 * Validates Face after getting the scanned data
 	 * 
 	 * 
-	 * @param userId
-	 *            - the userID
+	 * @param authenticationValidatorDTO
+	 *            - the AuthenticationValidator DTO
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
 	 */

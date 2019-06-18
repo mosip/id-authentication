@@ -24,12 +24,12 @@ public interface AESEncryptionService {
 	 * rounds that convert the input, called the plain text, into the final output,
 	 * called the cipher text.</p>
 	 * 
-	 * @param {@code byte[]} dataToEncrypt the data to be encrypted in bytes
+	 * @param dataToEncrypt {@code byte[]} the data to be encrypted in bytes
 	 * 
 	 * @return {@code byte[]} encrypted data as byte array
 	 * 
-	 * @throws {@code
-	 *             RegBaseCheckedException} RegBaseCheckedException if any error
+	 * @throws RegBaseCheckedException {@code
+	 *             RegBaseCheckedException} if any error
 	 *             occurs during encryption
 	 */
 	byte[] encrypt(final byte[] dataToEncrypt) throws RegBaseCheckedException;
