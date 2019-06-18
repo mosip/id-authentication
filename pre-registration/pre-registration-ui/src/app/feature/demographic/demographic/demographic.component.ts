@@ -24,6 +24,7 @@ import { FilesModel } from 'src/app/shared/models/demographic-model/files.model'
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
 import { RouterExtService } from 'src/app/shared/router/router-ext.service';
 import { LogService } from 'src/app/shared/logger/log.service';
+import { HttpResponse } from '@angular/common/http';
 
 /**
  * @description This component takes care of the demographic page.
@@ -133,7 +134,7 @@ export class DemographicComponent implements OnInit {
   formControlNames: FormControlModal = {
     fullName: 'fullName',
     gender: 'gender',
-    dateOfBirth: 'dob',
+    dateOfBirth: 'dateOfBirth',
     residenceStatus: 'residenceStatus',
     addressLine1: 'addressLine1',
     addressLine2: 'addressLine2',
@@ -144,8 +145,8 @@ export class DemographicComponent implements OnInit {
     localAdministrativeAuthority: 'localAdministrativeAuthority',
     email: 'email',
     postalCode: 'postalCode',
-    phone: 'mobilePhone',
-    CNIENumber: 'pin',
+    phone: 'phone',
+    CNIENumber: 'CNIENumber',
 
     age: 'age',
     date: 'date',
@@ -950,10 +951,7 @@ export class DemographicComponent implements OnInit {
               if (
                 response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.invalidPin
               ) {
-                message = this.errorlabels.invalidPin;
-                this.userForm.controls[this.formControlNames.postalCode].setErrors({
-                  incorrect: true
-                });
+                message = this.formValidation(response);
               } else message = this.errorlabels.error;
               this.onError(message, '');
               return;
@@ -979,10 +977,12 @@ export class DemographicComponent implements OnInit {
               if (
                 response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.invalidPin
               ) {
-                message = this.errorlabels.invalidPin;
-                this.userForm.controls[this.formControlNames.postalCode].setErrors({
-                  incorrect: true
-                });
+                // this.loggerService.info('error message', response[appConstants.NESTED_ERROR][0]['message']);
+                // message = this.errorlabels.invalidPin;
+                // this.userForm.controls[this.formControlNames.postalCode].setErrors({
+                //   incorrect: true
+                // });
+                message = this.formValidation(response);
               } else message = this.errorlabels.error;
               this.onError(message, '');
               return;
@@ -998,6 +998,21 @@ export class DemographicComponent implements OnInit {
         );
       }
     }
+  }
+
+  formValidation(response: any) {
+    const str = response[appConstants.NESTED_ERROR][0]['message'];
+    this.loggerService.info('error message', str);
+    this.loggerService.info('last / position', str.lastIndexOf('/'));
+    this.loggerService.info('substring', str.substring(str.lastIndexOf('/') + 1));
+    const attr = str.substring(str.lastIndexOf('/') + 1);
+
+    let message = this.errorlabels[attr];
+    this.loggerService.info('message', message);
+    this.userForm.controls[this.formControlNames[attr]].setErrors({
+      incorrect: true
+    });
+    return message;
   }
 
   /**
