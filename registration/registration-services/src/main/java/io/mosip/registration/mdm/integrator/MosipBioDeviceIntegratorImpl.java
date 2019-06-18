@@ -119,7 +119,7 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 		} catch (IOException exception) {
 			LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Error while reading the response from capture%s",
-							exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
+							exception.getMessage() , ExceptionUtils.getStackTrace(exception)));
 			auditFactory.audit(AuditEvent.MDM_CAPTURE_FAILED, Components.MDM_CAPTURE_FAIELD,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 

@@ -11,15 +11,20 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.impl.UserDetailDAOImpl;
 import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
@@ -30,6 +35,9 @@ import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserPwdRepository;
 import io.mosip.registration.repositories.UserRoleRepository;
 
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class })
 public class UserDetailDAOTest {
 
 	@Rule
@@ -52,6 +60,12 @@ public class UserDetailDAOTest {
 	/** The userDetail repository. */
 	@Mock
 	private UserRoleRepository userRoleRepository;
+	
+	@Before
+	public void initialize() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
+	}
 
 	@Test
 	public void getUserDetailSuccessTest() {
@@ -110,7 +124,6 @@ public class UserDetailDAOTest {
 
 	}
 
-	@Ignore
 	@SuppressWarnings("unchecked")
 	@Test
 	public void userDetlsDao() {

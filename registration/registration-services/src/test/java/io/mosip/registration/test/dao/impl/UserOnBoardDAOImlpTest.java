@@ -207,7 +207,6 @@ public class UserOnBoardDAOImlpTest {
 
 	}
 	
-	@Ignore
 	@Test
 	public void savetest() {
 		UserMachineMapping machineMapping = new UserMachineMapping();
