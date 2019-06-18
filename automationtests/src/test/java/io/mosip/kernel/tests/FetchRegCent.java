@@ -135,7 +135,7 @@ public class FetchRegCent extends BaseTestCase implements ITest {
 		// add parameters to remove in response before comparison like time stamp
 		ArrayList<String> listOfElementToRemove = new ArrayList<String>();
 		listOfElementToRemove.add("responsetime");
-		if (response == null) {
+		if (testcaseName.equalsIgnoreCase("allValid_smoke_get")) {
 			response = applicationLibrary.getWithoutParams(FetchRegCent_URI, cookie);
 		}
 		//This method is for checking the authentication is pass or fail in rest services

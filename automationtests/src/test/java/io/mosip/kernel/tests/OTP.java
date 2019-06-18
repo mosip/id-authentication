@@ -170,11 +170,11 @@ public class OTP extends BaseTestCase implements ITest {
 				case "expired":
 					try {
 						// reading validation timeout from property
+						logger.info("waiting for 181 seconds to expire the OTP");
 						TimeUnit.SECONDS.sleep(Integer.parseInt(props.get("OTPTimeOut").toString()));
 						cookie=auth.getAuthForRegistrationAdmin();
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						logger.info(e.getMessage());
 					}
 					reqJson.put("otp", otp);
 					break;
