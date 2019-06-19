@@ -31,12 +31,14 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorC
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -74,6 +76,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
  * @author Uday Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -687,6 +690,102 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return registrationCenterPages;
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * createRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
+	 * RegistrationCenterDto)
+	 */
+	@Override
+	@Transactional
+	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
+			RegistarionCenterReqDto<RegistrationCenterDto> registarionCenterReqDto) {
+		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
+		RegistrationCenterHistory registrationCenterHistoryEntity = new RegistrationCenterHistory();
+		List<RegistrationCenter> registrationCenterList = new ArrayList<>();
+		List<RegistrationCenterExtnDto> registrationCenterDtoList = new ArrayList<>();
+			
+		try {
+			for (RegistrationCenterDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+						registrationCenterEntity.getClass());
+				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+						RegistrationCenterHistory.class);
+				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+
+				RegistrationCenter registrationCenter;
+
+				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
+				registrationCenterList.add(registrationCenter);
+				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+			}
+
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(exception));
+		}
+
+		
+		RegistrationCenterPostResponseDto registrationCenterPostResponseDto = new RegistrationCenterPostResponseDto();
+		registrationCenterDtoList = MapperUtils.mapAll(registrationCenterList, RegistrationCenterExtnDto.class);
+		registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
+		return registrationCenterPostResponseDto;
+
+	}
+
+	@Transactional
+	@Override
+	public RegistrationCenterPostResponseDto updateRegistrationCenterAdmin(
+			RegistarionCenterReqDto<RegistrationCenterDto> registarionCenterReqDto) {
+		RegistrationCenter updRegistrationCenter = null;
+		RegistrationCenter updRegistrationCenterEntity = null;
+		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+		List<RegistrationCenterDto> notUpdRegistrationCenterList = new ArrayList<>();
+		List<RegistrationCenter> updRegistrationCenterList = new ArrayList<>();
+
+		try {
+			for (RegistrationCenterDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+
+				RegistrationCenter renRegistrationCenter = registrationCenterRepository
+						.findByIdAndLangCodeAndIsDeletedTrue(registrationCenterDto.getId(),
+								registrationCenterDto.getLangCode());
+				if (renRegistrationCenter != null) {
+					// updating reg center
+					updRegistrationCenterEntity = MetaDataUtils.setUpdateMetaData(registrationCenterDto,
+							renRegistrationCenter, false);
+					updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
+					// creating reg center history
+					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+					MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
+					MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
+					registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
+					registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
+					registrationCenterHistoryRepository.create(registrationCenterHistory);
+					// adding into updated list
+					updRegistrationCenterList.add(updRegistrationCenter);
+				} else {
+					// adding into non-updated list
+					notUpdRegistrationCenterList.add(registrationCenterDto);
+				}
+			}
+
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+
+		RegistrationCenterPostResponseDto registrationCenterPostResponseDto = new RegistrationCenterPostResponseDto();
+		registrationCenterDtoList = MapperUtils.mapAll(updRegistrationCenterList, RegistrationCenterExtnDto.class);
+		registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
+		registrationCenterPostResponseDto.setNotUpdatedRegCenters(notUpdRegistrationCenterList);
+		return registrationCenterPostResponseDto;
 	}
 
 }

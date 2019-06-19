@@ -20,12 +20,14 @@ import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.swagger.annotations.Api;
@@ -301,6 +303,42 @@ public class RegistrationCenterController {
 		ResponseWrapper<PageDto<RegistrationCenterExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.getAllExistingRegistrationCenters(pageNumber, pageSize,
 				sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * This method creates registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            the request DTO for creating registration center.
+	 * @return the response i.e. the id of the registration center created.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PostMapping("/registrationcenters/admin")
+	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenterAdmin(
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto) {
+      ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(registrationCenterService.createRegistrationCenterAdmin(registrationCenterDto));
+		return responseWrapper;
+	}
+	
+	/**
+	 * This method updates registration center.
+	 * 
+	 * @param registrationCenterDto
+	 *            the request DTO for updating registration center.
+	 * @return the response i.e. the id of the registration center updated.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/registrationcenters/admin")
+	public ResponseWrapper<RegistrationCenterPostResponseDto> updateRegistrationCenterAdmin(
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto) {
+
+		 ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenterAdmin(registrationCenterDto));
 		return responseWrapper;
 	}
 }

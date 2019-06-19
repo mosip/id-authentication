@@ -28,6 +28,7 @@ import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -193,9 +194,12 @@ public class DeviceController {
 			@ApiResponse(code = 404, message = "When No Device Details not mapped with the Given Registation Center ID"),
 			@ApiResponse(code = 500, message = "While retrieving Device Detail any error occured") })
 	public ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> getDevicesByRegistrationCenter(
-			@PathVariable("regCenterId") String regCenterId, @RequestParam("page") int page,
-			@RequestParam("size") int size, @RequestParam("orderBy") String orderBy,
-			@RequestParam("direction") String direction) {
+			@PathVariable("regCenterId") String regCenterId, 
+			@RequestParam(name="pageNumber", defaultValue="0") @ApiParam(value="page number for the requested data", defaultValue="0") int page,
+			@RequestParam(name="pageSize", defaultValue="10") @ApiParam(value="page size for the requested data", defaultValue="1")int size, 
+			@RequestParam(name="orderBy", defaultValue="cr_dtimes") 
+			@ApiParam(value="sort the requested data based on param value", defaultValue="createdDateTime")String orderBy,
+			@RequestParam(name="direction", defaultValue="DESC") @ApiParam(value="order the requested data based on param", defaultValue="DESC") String direction) {
 
 		ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper

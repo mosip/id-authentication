@@ -4,12 +4,14 @@ import java.util.List;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -184,5 +186,16 @@ public interface RegistrationCenterService {
 	 */
 	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNo, int pageSize, String sortBy,
 			String orderBy);
+
+	/**
+	 * This service method can be used to create registration center by Admin.
+	 * 
+	 * @param registrationCenterDto
+	 *            the input registration center dto.
+	 * @return the id response dto.
+	 */
+	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto);
+	
+	public RegistrationCenterPostResponseDto updateRegistrationCenterAdmin(RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto);
 
 }

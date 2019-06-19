@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BaseDto;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
