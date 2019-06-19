@@ -4,7 +4,7 @@
 
 [Refer - Steps-to-Install-and-configuration-HDFS](https://github.com/mosip/mosip/wiki/Steps-to-Install-and-configuration-HDFS)
 
-**NOTE: Currently  hadoop security is disabled.<WIP>**
+
 
 [Api Documentation]
 

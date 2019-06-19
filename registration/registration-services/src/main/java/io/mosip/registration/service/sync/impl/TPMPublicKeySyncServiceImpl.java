@@ -16,6 +16,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.tpm.PublicKeyUploadRequestDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -56,7 +57,8 @@ public class TPMPublicKeySyncServiceImpl implements TPMPublicKeySyncService {
 		try {
 			// Get the Public Key of the TPM Signing Key
 			RequestWrapper<PublicKeyUploadRequestDTO> tpmKeyUploadRequest = new RequestWrapper<>();
-			tpmKeyUploadRequest.setId(RegistrationConstants.REGISTRATION_CLIENT);
+			tpmKeyUploadRequest.setId(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 			tpmKeyUploadRequest.setVersion(RegistrationConstants.VER);
 			tpmKeyUploadRequest.setRequesttime(DateUtils.getUTCCurrentDateTime());
 			PublicKeyUploadRequestDTO publicKeyUploadRequestDTO = new PublicKeyUploadRequestDTO();

@@ -25,8 +25,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.external.StorageService;
 
 /**
- * Class to store the encrypted packet of the {@link Registration} in configured
- * location in local disk
+ * Implementation class of {@link StorageService} to store the encrypted packet
+ * of the {@link Registration} to the configured location in local disk
  * 
  * @author Balaji Sridharan
  * @since 1.0.0

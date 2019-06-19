@@ -36,7 +36,7 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 /**
  * Implementation for {@link UserDetailService}
  * 
- * @author chukka sreekar
+ * @author Sreekar Chukka
  *
  */
 @Service
@@ -127,13 +127,6 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 	}
 
-	/**
-	 * Gets the usr details.
-	 *
-	 * @param regCentrId the reg centr id
-	 * @return the usr details
-	 * @throws RegBaseCheckedException the reg base checked exception
-	 */
 	@SuppressWarnings("unchecked")
 	private LinkedHashMap<String, Object> getUsrDetails(String regCentrId, String triggerPoint)
 			throws RegBaseCheckedException {

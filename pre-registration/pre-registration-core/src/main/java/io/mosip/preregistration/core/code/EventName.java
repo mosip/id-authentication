@@ -39,6 +39,12 @@ public enum EventName {
 	REVERSESYNC,
 	
 	/** Triggering notification . */
-	NOTIFICATION
+	NOTIFICATION,
+	
+	/** Triggering batch-service for consumed status . */
+	CONSUMEDSTATUS,
+	
+	/** Triggering batch-service for expired status . */
+	EXPIREDSTATUS
 
 }

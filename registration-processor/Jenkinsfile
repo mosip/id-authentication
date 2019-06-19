@@ -269,10 +269,10 @@ docker ps -aq | xargs docker stop | xargs docker rm
 docker images -q | xargs docker rmi
 echo "Echoing label_env"
 echo "${label_env}"
-docker run --restart always -it -d -p 8083:8083 -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://kernel-config-server:51000/config  docker-registry.mosip.io:5000/registration-processor-registration-status-service
-docker run --restart always -it -d -p 8082:8082 -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://kernel-config-server:51000/config  docker-registry.mosip.io:5000/registration-processor-packet-generator-service
-docker run --restart always -it -d --network host --privileged=true -v /home/ftp1/LANDING_ZONE:/home/ftp1/LANDING_ZONE -v /home/ftp1/ARCHIVE_PACKET_LOCATION:/home/ftp1/ARCHIVE_PACKET_LOCATION -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://kernel-config-server:51000/config  docker-registry.mosip.io:5000/registration-processor-packet-receiver-stage
-docker run --restart always -it -d --network host --privileged=true -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://kernel-config-server:51000/config  -e zone_env=dmz  docker-registry.mosip.io:5000/registration-processor-common-camel-bridge
+docker run --restart always -it -d -p 8083:8083 -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 docker-registry.mosip.io:5000/registration-processor-registration-status-service
+docker run --restart always -it -d -p 8082:8082 -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 docker-registry.mosip.io:5000/registration-processor-packet-generator-service
+docker run --restart always -it -d --network host --privileged=true -v /home/ftp1/LANDING_ZONE:/home/ftp1/LANDING_ZONE -v /home/ftp1/ARCHIVE_PACKET_LOCATION:/home/ftp1/ARCHIVE_PACKET_LOCATION -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 docker-registry.mosip.io:5000/registration-processor-packet-receiver-stage
+docker run --restart always -it -d --network host --privileged=true -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 -e zone_env=dmz  docker-registry.mosip.io:5000/registration-processor-common-camel-bridge
 EOF"""
     }
   }

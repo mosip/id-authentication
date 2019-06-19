@@ -69,7 +69,7 @@
         </div>
       </div>
     </div>
-    <div class="file-upload__body__2" *ngIf="this.users[0].files">
+    <div class="file-upload__body__2" *ngIf="this.users[0].files && fileIndex >= 0">
       <p>{{ fileName }}</p>
       <iframe
         *ngIf="fileExtension == 'pdf'"
@@ -108,7 +108,12 @@
   </div>
 </div>
 <div class="user__buttons">
-  <button class="user__btn" type="button" (click)="onBack()" [disabled]="isModify == 'true' || disableNavigation">
+  <button
+    class="user__btn user__btn--back"
+    type="button"
+    (click)="onBack()"
+    [disabled]="isModify == 'true' || disableNavigation"
+  >
     {{ 'documents.action_back' | translate }}
   </button>
   <button *ngIf="isModify == 'false'" class="user__btn" type="button" (click)="onNext()" [disabled]="disableNavigation">

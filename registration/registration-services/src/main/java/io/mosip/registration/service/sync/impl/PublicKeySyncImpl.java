@@ -34,6 +34,10 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 /**
  * The Interface for Public Key service implementation.
  * 
+ * It downloads the Mosip public key from server and store the same into local database for further usage. 
+ * The stored key will be used to validate the signature provided in the external services response. If signature doesn't match then 
+ * response would be rejected and error response would be sent to the invoking client application. 
+ * 
  * @author Sreekar Chukka
  * @since 1.0.0
  *

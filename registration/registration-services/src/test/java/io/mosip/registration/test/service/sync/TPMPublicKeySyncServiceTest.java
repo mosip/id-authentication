@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.sync.impl.TPMPublicKeySyncServiceImpl;
@@ -27,7 +29,7 @@ import io.mosip.registration.tpm.spi.TPMUtil;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ TPMUtil.class })
+@PrepareForTest({ TPMUtil.class, ApplicationContext.class })
 public class TPMPublicKeySyncServiceTest {
 
 	@Rule
@@ -36,6 +38,16 @@ public class TPMPublicKeySyncServiceTest {
 	private ServiceDelegateUtil serviceDelegateUtil;
 	@InjectMocks
 	private TPMPublicKeySyncServiceImpl tpmPublicKeySyncServiceImpl;
+
+	@Before
+	public void initialize() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+
+		Map<String, Object> applicationMap = new HashMap<>();
+		applicationMap.put(RegistrationConstants.REGISTRATION_CLIENT, "registrationclient");
+
+		PowerMockito.doReturn(applicationMap).when(ApplicationContext.class, "map");
+	}
 
 	@Test
 	public void syncTPMPublicKeySuccess() throws Exception {

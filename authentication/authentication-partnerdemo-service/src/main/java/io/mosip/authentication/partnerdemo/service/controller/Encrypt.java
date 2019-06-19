@@ -51,7 +51,6 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -104,29 +103,24 @@ public class Encrypt {
 	
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(Encrypt.class);
+	
 	/**
 	 * Encrypt.
 	 *
-	 * @param encryptionRequestDto
-	 *            the encryption request dto
+	 * @param encryptionRequestDto            the encryption request dto
+	 * @param isInternal the is internal
 	 * @return the encryption response dto
-	 * @throws NoSuchAlgorithmException
-	 *             the no such algorithm exception
-	 * @throws InvalidKeySpecException
-	 *             the invalid key spec exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws KeyManagementException
-	 *             the key management exception
-	 * @throws RestClientException
-	 *             the rest client exception
-	 * @throws JSONException
-	 *             the JSON exception
-	 * @throws BadPaddingException 
-	 * @throws IllegalBlockSizeException 
-	 * @throws InvalidAlgorithmParameterException 
-	 * @throws NoSuchPaddingException 
-	 * @throws InvalidKeyException 
+	 * @throws NoSuchAlgorithmException             the no such algorithm exception
+	 * @throws InvalidKeySpecException             the invalid key spec exception
+	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws KeyManagementException             the key management exception
+	 * @throws JSONException             the JSON exception
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws NoSuchPaddingException the no such padding exception
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 * @throws IllegalBlockSizeException the illegal block size exception
+	 * @throws BadPaddingException the bad padding exception
+	 * @throws RestClientException             the rest client exception
 	 */
 	@PostMapping(path = "/encrypt")
 	@ApiOperation(value = "Encrypt Identity with sessionKey and Encrypt Session Key with Public Key", response = EncryptionResponseDto.class)
@@ -140,22 +134,20 @@ public class Encrypt {
 	/**
 	 * this method is used to call Kernel encrypt api.
 	 *
-	 * @param encryptionRequestDto
-	 *            the encryption request dto
-	 * @param isInternal 
+	 * @param encryptionRequestDto            the encryption request dto
+	 * @param isInternal the is internal
 	 * @return the encryption response dto
-	 * @throws KeyManagementException
-	 *             the key management exception
-	 * @throws RestClientException
-	 *             the rest client exception
-	 * @throws NoSuchAlgorithmException
-	 *             the no such algorithm exception
-	 * @throws JsonProcessingException
-	 *             the json processing exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws JSONException
-	 *             the JSON exception
+	 * @throws KeyManagementException             the key management exception
+	 * @throws NoSuchAlgorithmException             the no such algorithm exception
+	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws JSONException             the JSON exception
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws NoSuchPaddingException the no such padding exception
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 * @throws IllegalBlockSizeException the illegal block size exception
+	 * @throws BadPaddingException the bad padding exception
+	 * @throws InvalidKeySpecException the invalid key spec exception
+	 * @throws RestClientException             the rest client exception
 	 */
 	private EncryptionResponseDto kernelEncrypt(EncryptionRequestDto encryptionRequestDto, boolean isInternal)
 			throws KeyManagementException, NoSuchAlgorithmException, IOException, JSONException, InvalidKeyException,
@@ -182,22 +174,14 @@ public class Encrypt {
 	/**
 	 * Gets the encrypted value.
 	 *
-	 * @param data
-	 *            the data
-	 * @param isInternal 
-	 * @param tspID
-	 *            the tsp ID
+	 * @param data            the data
+	 * @param isInternal the is internal
 	 * @return the encrypted value
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws KeyManagementException
-	 *             the key management exception
-	 * @throws NoSuchAlgorithmException
-	 *             the no such algorithm exception
-	 * @throws RestClientException
-	 *             the rest client exception
-	 * @throws JSONException
-	 *             the JSON exception
+	 * @throws IOException             Signals that an I/O exception has occurred.
+	 * @throws KeyManagementException             the key management exception
+	 * @throws NoSuchAlgorithmException             the no such algorithm exception
+	 * @throws RestClientException             the rest client exception
+	 * @throws JSONException             the JSON exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String getPublicKey(String data, boolean isInternal)
@@ -236,6 +220,11 @@ public class Encrypt {
 		return (String) ((Map<String, Object>) response.getBody().get("response")).get("publicKey");
 	}
 
+	/**
+	 * Generate auth token.
+	 *
+	 * @return the string
+	 */
 	private String generateAuthToken() {
 		ObjectNode requestBody = objMapper.createObjectNode();
 		requestBody.put("clientId", env.getProperty("auth-token-generator.rest.clientId"));

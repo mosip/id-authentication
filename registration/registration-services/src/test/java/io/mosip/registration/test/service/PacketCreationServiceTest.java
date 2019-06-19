@@ -104,7 +104,6 @@ public class PacketCreationServiceTest {
 
 		Map<String, Object> sessionMap = new HashMap<>();
 		sessionMap.put(RegistrationConstants.IS_Child, true);
-		sessionMap.put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN, RegistrationConstants.DISABLE);
 
 		PowerMockito.mockStatic(SessionContext.class, ApplicationContext.class);
 		PowerMockito.doReturn(sessionMap).when(SessionContext.class, "map");

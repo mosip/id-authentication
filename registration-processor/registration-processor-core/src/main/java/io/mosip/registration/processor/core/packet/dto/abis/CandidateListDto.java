@@ -38,7 +38,7 @@ public class CandidateListDto {
 	 * @return the candidates
 	 */
 	public CandidatesDto[] getCandidates() {
-		return Arrays.copyOf(candidates, candidates.length);
+		return candidates;
 		
 	}
 	

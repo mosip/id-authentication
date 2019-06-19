@@ -41,6 +41,12 @@ public enum EventId {
 	PRE_410,
 	
 	/** Id for trigger notification event . */
-	PRE_411
+	PRE_411,
+	
+	/** Id for update the consumed status event . */
+	PRE_412,
+	
+	/** Id for update the expired status event . */
+	PRE_413
 
 }

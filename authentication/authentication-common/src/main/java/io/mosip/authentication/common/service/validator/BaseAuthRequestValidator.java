@@ -40,7 +40,6 @@ import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -146,10 +145,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * validates the Static Pin Details
-	 * 
-	 * @param authRequestDTO
-	 * @param errors
+	 * validates the Static Pin Details.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param errors the errors
 	 */
 	protected void validateAdditionalFactorsDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getRequestedAuth();
@@ -206,6 +205,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 *
 	 * @param authRequestDTO the auth request DTO
 	 * @param errors         the errors
+	 * @param allowedAuthType the allowed auth type
 	 */
 	protected void validateBioMetadataDetails(AuthRequestDTO authRequestDTO, Errors errors,
 			Set<String> allowedAuthType) {
@@ -224,26 +224,27 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { Category.BIO.getType() },
 						IdAuthenticationErrorConstants.MISSING_AUTHTYPE.getErrorMessage());
 			} else {
-
 				List<DataDTO> bioData = bioInfo.stream().map(BioIdentityInfoDTO::getData).collect(Collectors.toList());
-
 				validateBioType(bioData, errors, allowedAuthType);
-
 				validateBioData(bioData, errors);
-				if (!errors.hasErrors()) {
-					if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
-						validateFinger(authRequestDTO, bioData, errors);
-					}
-					if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
-						validateIris(authRequestDTO, bioData, errors);
-					}
-					if (isMatchtypeEnabled(BioMatchType.FACE)) {
-						validateFace(authRequestDTO, bioData, errors);
-					}
-				}
+				validateCount(authRequestDTO, errors, bioData);
 			}
 		}
 
+	}
+
+	private void validateCount(AuthRequestDTO authRequestDTO, Errors errors, List<DataDTO> bioData) {
+		if (!errors.hasErrors()) {
+			if (isAuthtypeEnabled(BioAuthType.FGR_MIN, BioAuthType.FGR_IMG, BioAuthType.FGR_MIN_MULTI)) {
+				validateFinger(authRequestDTO, bioData, errors);
+			}
+			if (isAuthtypeEnabled(BioAuthType.IRIS_IMG, BioAuthType.IRIS_COMP_IMG)) {
+				validateIris(authRequestDTO, bioData, errors);
+			}
+			if (isMatchtypeEnabled(BioMatchType.FACE)) {
+				validateFace(authRequestDTO, bioData, errors);
+			}
+		}
 	}
 
 	private void validateBioData(List<DataDTO> bioData, Errors errors) {
@@ -267,19 +268,21 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * @param errors
 	 */
 	private void validateBioType(List<DataDTO> bioInfos, Errors errors, Set<String> allowedAuthTypesFromConfig) {
-		AuthType[] authTypes = BioAuthType.values();
+		BioAuthType[] authTypes = BioAuthType.values();
 		Set<String> availableAuthTypeInfos = new HashSet<>();
-		for (AuthType authType : authTypes) {
-			availableAuthTypeInfos.add(authType.getType());
+		for (BioAuthType authType : authTypes) {
+			availableAuthTypeInfos.add(authType.getConfigKey().toLowerCase());
 		}
 		Set<String> allowedAvailableAuthTypes = allowedAuthTypesFromConfig.stream().filter(authTypeFromConfig -> {
-			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig);
+			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig.toLowerCase());
 			if (!contains) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "Invalid bio type config: " + authTypeFromConfig);
 			}
 			return contains;
-		}).collect(Collectors.toSet());
+		}).map(BioAuthType::getTypeForConfigKey).filter(Optional::isPresent).map(Optional::get)
+				.collect(Collectors.toSet());
+
 		for (DataDTO bioInfo : bioInfos) {
 			String bioType = bioInfo.getBioType();
 			if (StringUtils.isEmpty(bioType)) {
@@ -293,7 +296,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 						new Object[] { MatchType.Category.BIO.getType() + "-" + bioType },
 						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
 			} else {
-				validateBioType(errors, allowedAuthTypesFromConfig, bioInfo);
+				validateBioType(errors, allowedAvailableAuthTypes, bioInfo);
 			}
 		}
 
@@ -851,10 +854,10 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Validates the AuthType
-	 * 
-	 * @param authType
-	 * @param errors
+	 * Validates the AuthType.
+	 *
+	 * @param authType the auth type
+	 * @param errors the errors
 	 */
 	protected void validateAuthType(AuthTypeDTO authType, Errors errors) {
 		if (!(authType.isDemo() || authType.isBio() || authType.isOtp() || authType.isPin())) {
@@ -865,10 +868,11 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	/**
-	 * Method to validate auth type
-	 * 
-	 * @param requestDTO
-	 * @param errors
+	 * Method to validate auth type.
+	 *
+	 * @param requestDTO the request DTO
+	 * @param errors the errors
+	 * @param configKey the config key
 	 */
 	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors, String configKey) {
 		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
@@ -897,15 +901,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 		checkAllowedAuthType(requestDTO, errors, authTypeDTO, allowedAuthType);
 
 		if (authTypeDTO.isBio()) {
-			if (allowedAuthType.contains(MatchType.Category.BIO.getType())) {
-				validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
-			} else {
-				errors.rejectValue(IdAuthCommonConstants.REQUESTEDAUTH,
-						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
-						new Object[] { MatchType.Category.BIO.getType() },
-						IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorMessage());
-			}
-
+			validateBioMetadataDetails(requestDTO, errors, allowedAuthType);
 		}
 	}
 
@@ -952,6 +948,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	/**
 	 * Extract auth info.
 	 *
+	 * @param configKey the config key
 	 * @return the sets the
 	 */
 	protected Set<String> getAllowedAuthTypes(String configKey) {
@@ -961,9 +958,9 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 
 	/**
 	 * validateSecondayLangCode method used to validate secondaryLangCode for KYC
-	 * request
+	 * request.
 	 *
-	 * @param string the {@link KycAuthRequestDTO}
+	 * @param langCode the lang code
 	 * @param errors the errors
 	 * @param field  the field
 	 */
