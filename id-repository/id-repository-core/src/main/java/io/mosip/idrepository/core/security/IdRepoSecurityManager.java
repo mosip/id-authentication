@@ -27,7 +27,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class IdRepoSecurityManager.
  *
@@ -88,7 +87,10 @@ public class IdRepoSecurityManager {
 	 * @return the user
 	 */
 	public static String getUser() {
-		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AuthUserDetails) {
+		if (Objects.nonNull(SecurityContextHolder.getContext())
+				&& Objects.nonNull(SecurityContextHolder.getContext().getAuthentication())
+				&& Objects.nonNull(SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof AuthUserDetails) {
 			return ((AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
 					.getUserId();
 		} else {
