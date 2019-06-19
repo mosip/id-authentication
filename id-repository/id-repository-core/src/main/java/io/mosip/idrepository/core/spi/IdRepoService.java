@@ -2,7 +2,6 @@ package io.mosip.idrepository.core.spi;
 
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IdRepoService - service to provide functionality to create, 
  * retrieve and update Uin data in Id repository.

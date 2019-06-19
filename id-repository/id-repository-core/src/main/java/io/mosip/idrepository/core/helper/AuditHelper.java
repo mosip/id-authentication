@@ -42,6 +42,7 @@ public class AuditHelper {
 	 * @param module the module
 	 * @param event  the event
 	 * @param id     the id
+	 * @param idType the id type
 	 * @param desc   the desc
 	 * @throws IdRepoDataValidationException the ID data validation exception
 	 */

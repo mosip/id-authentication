@@ -166,28 +166,29 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	@Autowired
 	private FileSystemAdapter fsAdapter;
 
+	/** The security manager. */
 	@Autowired
 	private IdRepoSecurityManager securityManager;
 
+	/** The bio attributes. */
 	@Resource
 	private List<String> bioAttributes;
 
+	/** The uin hash salt repo. */
 	@Autowired
 	private UinHashSaltRepo uinHashSaltRepo;
 
+	/** The uin encrypt salt repo. */
 	@Autowired
 	private UinEncryptSaltRepo uinEncryptSaltRepo;
 
 	/**
 	 * Adds the identity to DB.
 	 *
-	 * @param request
-	 *            the request
-	 * @param uin
-	 *            the uin
+	 * @param request the request
+	 * @param uin the uin
 	 * @return the uin
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@Override
 	public Uin addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
@@ -236,22 +237,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	}
 
 	/**
-	 * Adds the documents.
+	 * Stores the documents to FileSystem.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param identityInfo
-	 *            the identity info
-	 * @param documents
-	 *            the documents
-	 * @param uinRefId
-	 *            the uin ref id
-	 * @param docList
-	 *            the doc list
-	 * @param bioList
-	 *            the bio list
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param uinHash the uin hash
+	 * @param identityInfo the identity info
+	 * @param documents the documents
+	 * @param uinRefId the uin ref id
+	 * @param docList the doc list
+	 * @param bioList the bio list
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void addDocuments(String uinHash, byte[] identityInfo, List<DocumentsDTO> documents, String uinRefId,
 			List<UinDocument> docList, List<UinBiometric> bioList) throws IdRepoAppException {
@@ -275,20 +269,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	}
 
 	/**
-	 * Adds the biometric documents.
+	 * Stores the biometric documents to FileSystem.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param uinRefId
-	 *            the uin ref id
-	 * @param bioList
-	 *            the bio list
-	 * @param doc
-	 *            the doc
-	 * @param docType
-	 *            the doc type
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param uinHash the uin hash
+	 * @param uinRefId the uin ref id
+	 * @param bioList the bio list
+	 * @param doc the doc
+	 * @param docType the doc type
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void addBiometricDocuments(String uinHash, String uinRefId, List<UinBiometric> bioList, DocumentsDTO doc,
 			JsonNode docType) throws IdRepoAppException {
@@ -327,20 +315,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	}
 
 	/**
-	 * Adds the demographic documents.
+	 * Stores the demographic documents to FileSystem.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param uinRefId
-	 *            the uin ref id
-	 * @param docList
-	 *            the doc list
-	 * @param doc
-	 *            the doc
-	 * @param docType
-	 *            the doc type
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param uinHash the uin hash
+	 * @param uinRefId the uin ref id
+	 * @param docList the doc list
+	 * @param doc the doc
+	 * @param docType the doc type
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void addDemographicDocuments(String uinHash, String uinRefId, List<UinDocument> docList, DocumentsDTO doc,
 			JsonNode docType) throws IdRepoAppException {
@@ -375,13 +357,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Convert to FMR.
 	 *
-	 * @param category
-	 *            the category
-	 * @param encodedCbeffFile
-	 *            the encoded cbeff file
+	 * @param category the category
+	 * @param encodedCbeffFile the encoded cbeff file
 	 * @return the byte[]
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private byte[] convertToFMR(String category, String encodedCbeffFile) throws IdRepoAppException {
 		try {
@@ -399,13 +378,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Retrieve identity by uin from DB.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param type
-	 *            the type
+	 * @param uinHash the uin hash
+	 * @param type the type
 	 * @return the uin
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@Override
 	public Uin retrieveIdentityByUin(String uinHash, String type) throws IdRepoAppException {
@@ -479,16 +455,11 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Update identity.
 	 *
-	 * @param inputData
-	 *            the input data
-	 * @param dbData
-	 *            the db data
-	 * @param comparisonResult
-	 *            the comparison result
-	 * @throws JSONException
-	 *             the JSON exception
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param inputData the input data
+	 * @param dbData the db data
+	 * @param comparisonResult the comparison result
+	 * @throws JSONException the JSON exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void updateIdentityObject(DocumentContext inputData, DocumentContext dbData,
 			JSONCompareResult comparisonResult) throws JSONException, IdRepoAppException {
@@ -518,12 +489,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Update missing fields.
 	 *
-	 * @param dbData
-	 *            the db data
-	 * @param comparisonResult
-	 *            the comparison result
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param dbData the db data
+	 * @param comparisonResult the comparison result
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void updateMissingFields(DocumentContext dbData, JSONCompareResult comparisonResult)
@@ -559,14 +527,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Update failing fields.
 	 *
-	 * @param inputData
-	 *            the input data
-	 * @param dbData
-	 *            the db data
-	 * @param comparisonResult
-	 *            the comparison result
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param inputData the input data
+	 * @param dbData the db data
+	 * @param comparisonResult the comparison result
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void updateFailingFields(DocumentContext inputData, DocumentContext dbData,
 			JSONCompareResult comparisonResult) throws IdRepoAppException {
@@ -602,12 +566,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Update missing values.
 	 *
-	 * @param inputData
-	 *            the input data
-	 * @param dbData
-	 *            the db data
-	 * @param comparisonResult
-	 *            the comparison result
+	 * @param inputData the input data
+	 * @param dbData the db data
+	 * @param comparisonResult the comparison result
 	 */
 	@SuppressWarnings("unchecked")
 	private void updateMissingValues(DocumentContext inputData, DocumentContext dbData,
@@ -639,14 +600,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Update documents.
 	 *
-	 * @param uin
-	 *            the uin
-	 * @param uinObject
-	 *            the uin object
-	 * @param requestDTO
-	 *            the request DTO
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param uinHash the uin hash
+	 * @param uinObject the uin object
+	 * @param requestDTO the request DTO
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void updateDocuments(String uinHash, Uin uinObject, RequestDTO requestDTO) throws IdRepoAppException {
 		List<UinDocument> docList = new ArrayList<>();
@@ -691,12 +648,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Update cbeff.
 	 *
-	 * @param uinObject
-	 *            the uin object
-	 * @param requestDTO
-	 *            the request DTO
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @param uinObject the uin object
+	 * @param requestDTO the request DTO
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private void updateCbeff(Uin uinObject, RequestDTO requestDTO) throws IdRepoAppException {
 		ObjectNode identityMap = (ObjectNode) convertToObject(uinObject.getUinData(), ObjectNode.class);
@@ -737,9 +691,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Converts all BIRType to BIR.
 	 *
-	 * @param birTypeList
-	 *            the bir type list
-	 * @return the list of BIR
+	 * @param birTypeList the bir type list
+	 * @return the list
 	 */
 	private List<BIR> convertToBIR(List<BIRType> birTypeList) {
 		return birTypeList.stream().filter(
@@ -786,9 +739,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Get the current time.
 	 *
-	 * @return the date
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @return the local date time
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private LocalDateTime now() throws IdRepoAppException {
 		try {
@@ -805,13 +757,10 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Convert to object.
 	 *
-	 * @param identity
-	 *            the identity
-	 * @param clazz
-	 *            the clazz
+	 * @param identity the identity
+	 * @param clazz the clazz
 	 * @return the object
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private Object convertToObject(byte[] identity, Class<?> clazz) throws IdRepoAppException {
 		try {
@@ -825,11 +774,9 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/**
 	 * Convert to bytes.
 	 *
-	 * @param identity
-	 *            the identity
+	 * @param identity the identity
 	 * @return the byte[]
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private byte[] convertToBytes(Object identity) throws IdRepoAppException {
 		try {

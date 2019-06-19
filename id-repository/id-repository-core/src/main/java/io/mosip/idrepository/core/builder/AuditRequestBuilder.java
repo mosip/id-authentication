@@ -22,12 +22,16 @@ import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 
 /**
- * A factory for creating and building AuditRequest objects from
- * audit.properties
+ * A builder for creating and building AuditRequest objects from
+ * properties.
  *
  * @author Manoj SP
  */
 @Component
+
+/**
+ * Instantiates a new audit request builder.
+ */
 @NoArgsConstructor
 public class AuditRequestBuilder {
 
@@ -44,6 +48,7 @@ public class AuditRequestBuilder {
 	 * @param module the module
 	 * @param event  the event
 	 * @param id     the id
+	 * @param idType the id type
 	 * @param desc   the desc
 	 * @return the audit request dto
 	 */

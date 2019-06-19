@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>id-repository-vid-service</artifactId>
 	<name>vid-service</name>
-	<description>Virtual ID Service</description>
+	<description>ID-Repository Virtual ID Service</description>
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.idrepository</groupId>

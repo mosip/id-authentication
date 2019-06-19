@@ -22,10 +22,10 @@ public interface UinHistoryRepo extends JpaRepository<UinHistory, String> {
 	boolean existsByRegId(String regId);
 	
 	/**
-	 * Gets the uin by refId 
-	 * 
-	 * @param regId
-	 * @return the Uin 
+	 * Gets the uin by refId .
+	 *
+	 * @param regId the reg id
+	 * @return the Uin
 	 */
 	@Query("select uinHash from UinHistory where regId = :regId")
 	String getUinHashByRid(@Param("regId") String regId);

@@ -176,10 +176,10 @@ public class VidController {
 	/**
 	 * This method will accepts an vid, if vid is valid to regenerate then regenerated
 	 * vid will be returned as response.
-	 * 
-	 * @param vid
-	 * @return
-	 * @throws IdRepoAppException
+	 *
+	 * @param vid the vid
+	 * @return the response entity
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	// TODO have to add roles when partner service is available
 //	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")

@@ -13,10 +13,11 @@ import io.mosip.idrepository.vid.entity.UinHashSalt;
  *
  */
 public interface UinHashSaltRepo extends JpaRepository<UinHashSalt, Integer> {
+	
 	/**
 	 * The Query to retrieve salt by passing id as parameter.
-	 * 
-	 * @param id
+	 *
+	 * @param id the id
 	 * @return String salt
 	 */
 	@Query("select salt from UinHashSalt where id = :id")

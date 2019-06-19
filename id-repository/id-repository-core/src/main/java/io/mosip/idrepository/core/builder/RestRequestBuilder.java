@@ -28,7 +28,7 @@ import io.mosip.kernel.core.util.StringUtils;
 import lombok.NoArgsConstructor;
 
 /**
- * A factory for creating and building RestRequest objects from
+ * A builder for creating and building RestRequest objects from
  * properties
  * 
  * @author Manoj SP

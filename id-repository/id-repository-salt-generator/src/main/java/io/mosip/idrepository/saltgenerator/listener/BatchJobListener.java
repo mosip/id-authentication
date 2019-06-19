@@ -13,7 +13,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * The class that is interested in processing a batchJob
  * event implements this interface, and the object created
  * with that class is registered with a component using the
- * component's <code>addBatchJobListener<code> method. When
+ * component's addBatchJobListener method. When
  * the batchJob event occurs, that object's appropriate
  * method is invoked.
  *

@@ -57,11 +57,9 @@ public class VidPolicyProvider {
 
 	/**
 	 * Loads policy details from policy json and validates against the schema provided.
-	 * 
-	 * @throws MalformedURLException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
-	 * @throws ProcessingException
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ProcessingException schema validation processing exception
 	 */
 	@PostConstruct
 	public void loadPolicyDetails() throws IOException, ProcessingException {

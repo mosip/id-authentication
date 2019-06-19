@@ -101,7 +101,6 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	/**
 	 * Builds the data source.
 	 *
-	 * @param dataSourceValues the data source values
 	 * @return the data source
 	 */
 	@Override
