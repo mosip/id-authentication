@@ -31,6 +31,7 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -82,7 +83,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAllExceptions - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
 		return new ResponseEntity<>(
@@ -95,7 +96,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		//BeanCreationException is handled because IdObjetMasterDataValidator is loaded lazily and
 		// maskes use of RestTemplate in PostConstruct. When RestTemplate throws any exception inside PostConstruct,
 		// it is wrapped as BeanCreationException and thrown by Spring.
-		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleBeanCreationException - \n" + ExceptionUtils.getStackTrace(ex));
 		Throwable rootCause = org.apache.commons.lang3.exception.ExceptionUtils.getRootCause(ex);
 		if (rootCause.getClass().isAssignableFrom(AuthenticationException.class)) {
@@ -109,7 +110,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(AccessDeniedException.class)
 	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
-		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAccessDeniedException - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.AUTHORIZATION_FAILED);
 		return new ResponseEntity<>(
@@ -119,7 +120,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(AuthenticationException.class)
 	protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
-		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleAuthenticationException - \n" + ExceptionUtils.getStackTrace(ex));
 		IdRepoUnknownException e = new IdRepoUnknownException(
 				ex.getErrorTexts().isEmpty() ? "KER-ATH-401" : ex.getErrorCode(),
@@ -141,7 +142,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleExceptionInternal - \n" + ExceptionUtils.getStackTrace(ex));
 		if (ex instanceof HttpMessageNotReadableException
 				&& ex.getCause().getClass().isAssignableFrom(InvalidFormatException.class)) {
@@ -171,7 +172,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdRepoAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
 
-		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppException - \n" + ExceptionUtils.getStackTrace(ex));
 
 		return new ResponseEntity<>(buildExceptionResponse((Exception) ex,
@@ -188,7 +189,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdRepoAppUncheckedException.class)
 	protected ResponseEntity<Object> handleIdAppUncheckedException(IdRepoAppUncheckedException ex, WebRequest request) {
 
-		mosipLogger.error(IdRepoLogger.getUin(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
+		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleIdAppUncheckedException - \n" + ExceptionUtils.getStackTrace(ex));
 
 		return new ResponseEntity<>(

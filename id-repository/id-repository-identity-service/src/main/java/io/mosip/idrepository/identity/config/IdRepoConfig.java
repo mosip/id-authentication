@@ -31,6 +31,7 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -78,28 +79,28 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 			@Override
 			protected void handleError(ClientHttpResponse response, HttpStatus statusCode) throws IOException {
-				mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError", "Rest Template logs",
+				mosipLogger.error(IdRepoSecurityManager.getUser(), "restTemplate - handleError", "Rest Template logs",
 						"Status error : " + response.getRawStatusCode() + " " + response.getStatusCode() + "  "
 								+ response.getStatusText());
 				if (response.getStatusCode().is4xxClientError()) {
 					if (response.getRawStatusCode() == 401 || response.getRawStatusCode() == 403) {
-						mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError",
+						mosipLogger.error(IdRepoSecurityManager.getUser(), "restTemplate - handleError",
 								"request failed with status code :" + response.getRawStatusCode(),
 								"\n\n" + new String(super.getResponseBody(response)));
 						List<ServiceError> errorList = ExceptionUtils
 								.getServiceErrorList(new String(super.getResponseBody(response)));
-						mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError",
+						mosipLogger.error(IdRepoSecurityManager.getUser(), "restTemplate - handleError",
 								"Throwing AuthenticationException", errorList.toString());
 						throw new AuthenticationException(errorList.get(0).getErrorCode(),
 								errorList.get(0).getMessage(), response.getRawStatusCode());
 					} else {
-						mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError", "Rest Template logs",
+						mosipLogger.error(IdRepoSecurityManager.getUser(), "restTemplate - handleError", "Rest Template logs",
 								"Status error - returning RestServiceException - CLIENT_ERROR -- "
 										+ new String(super.getResponseBody(response)));
 						throw new IdRepoAppUncheckedException(IdRepoErrorConstants.CLIENT_ERROR);
 					}
 				} else {
-					mosipLogger.error(IdRepoLogger.getUin(), "restTemplate - handleError", "Rest Template logs",
+					mosipLogger.error(IdRepoSecurityManager.getUser(), "restTemplate - handleError", "Rest Template logs",
 							"Status error - returning RestServiceException - CLIENT_ERROR -- "
 									+ new String(super.getResponseBody(response)));
 					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.MASTERDATA_RETRIEVE_ERROR);

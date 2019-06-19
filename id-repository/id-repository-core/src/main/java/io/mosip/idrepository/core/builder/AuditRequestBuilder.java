@@ -14,6 +14,7 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -58,7 +59,7 @@ public class AuditRequestBuilder {
 			hostName = inetAddress.getHostName();
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {
-			mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(),
+			mosipLogger.error(IdRepoSecurityManager.getUser(), "AuditRequestFactory", ex.getClass().getName(),
 					"Exception : " + ExceptionUtils.getStackTrace(ex));
 			hostName = env.getProperty("audit.defaultHostName");
 			hostAddress = env.getProperty("audit.defaultHostAddress");

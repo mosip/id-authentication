@@ -157,20 +157,20 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			if (uinRepo.existsByUinHash(retrieveUinHash(uin))
 					|| uinRepo.existsByRegId(request.getRequest().getRegistrationId())
 							|| uinHistoryRepo.existsByRegId(regId)) {
-				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
+				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 				throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
 			} else {
 				return constructIdResponse(this.id.get(CREATE), service.addIdentity(request, uin), null);
 			}
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, e.getErrorText());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, e.getErrorText());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} catch (IdRepoAppUncheckedException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE,
@@ -192,18 +192,18 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			if (uinRepo.existsByUinHash(uinHash)) {
 				return retrieveIdentityByUinHash(type, uinHash);
 			} else {
-				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
+				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
 						IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage());
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} catch (IdRepoAppUncheckedException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_UIN,
@@ -222,27 +222,27 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		List<DocumentsDTO> documents = new ArrayList<>();
 		Uin uinObject = service.retrieveIdentityByUin(uinHash, type);
 		if (Objects.isNull(type)) {
-			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
+			mosipLogger.info(IdRepoSecurityManager.getUser(), RETRIEVE_IDENTITY, "method - " + RETRIEVE_IDENTITY,
 					"filter - null");
 			return constructIdResponse(this.id.get(READ), uinObject, null);
 		} else if (type.equalsIgnoreCase(BIO)) {
 			getFiles(uinObject, documents, BIOMETRICS);
-			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - bio",
+			mosipLogger.info(IdRepoSecurityManager.getUser(), RETRIEVE_IDENTITY, "filter - bio",
 					"bio documents  --> " + documents);
 			return constructIdResponse(this.id.get(READ), uinObject, documents);
 		} else if (type.equalsIgnoreCase(DEMO)) {
 			getFiles(uinObject, documents, DEMOGRAPHICS);
-			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - demo",
+			mosipLogger.info(IdRepoSecurityManager.getUser(), RETRIEVE_IDENTITY, "filter - demo",
 					"docs documents  --> " + documents);
 			return constructIdResponse(this.id.get(READ), uinObject, documents);
 		} else if (type.equalsIgnoreCase(ALL)) {
 			getFiles(uinObject, documents, BIOMETRICS);
 			getFiles(uinObject, documents, DEMOGRAPHICS);
-			mosipLogger.info(IdRepoLogger.getUin(), RETRIEVE_IDENTITY, "filter - all",
+			mosipLogger.info(IdRepoSecurityManager.getUser(), RETRIEVE_IDENTITY, "filter - all",
 					"docs documents  --> " + documents);
 			return constructIdResponse(this.id.get(READ), uinObject, documents);
 		} else {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY,
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE));
@@ -269,13 +269,13 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				throw new IdRepoAppException(IdRepoErrorConstants.NO_RECORD_FOUND);
 			}
 		} catch (DataAccessException | TransactionException | JDBCConnectionException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} catch (IdRepoAppUncheckedException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_RID,
@@ -315,7 +315,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 				byte[] data = securityManager
 						.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUinHash(), fileName)));
-				mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
+				mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES,
 						"time taken to get file in millis: " + fileName + "  - "
 								+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
 								+ "Start time : " + startTime + "  " + "end time : "
@@ -323,22 +323,22 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 				if (demo.getDocHash().equals(securityManager.hash(data))) {
 					documents.add(new DocumentsDTO(demo.getDoccatCode(), CryptoUtil.encodeBase64(data)));
 				} else {
-					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
+					mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES,
 							IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH.getErrorMessage());
 					throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
 				}
 			} catch (IdRepoAppException e) {
-				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, "\n" + e.getMessage());
+				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES, "\n" + e.getMessage());
 				throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 			} catch (FSAdapterException e) {
-				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, "\n" + e.getMessage());
+				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES, "\n" + e.getMessage());
 				throw new IdRepoAppUncheckedException(
 						e.getErrorCode().equals(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode())
 								? IdRepoErrorConstants.FILE_NOT_FOUND
 								: IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR,
 						e);
 			} catch (IOException e) {
-				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, "\n" + e.getMessage());
+				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES, "\n" + e.getMessage());
 				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 			}
 		});
@@ -359,7 +359,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 					LocalDateTime startTime = DateUtils.getUTCCurrentDateTime();
 					byte[] data = securityManager
 							.decrypt(IOUtils.toByteArray(fsAdapter.getFile(uinObject.getUinHash(), fileName)));
-					mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
+					mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES,
 							"time taken to get file in millis: " + fileName + "  - "
 									+ Duration.between(startTime, DateUtils.getUTCCurrentDateTime()).toMillis() + "  "
 									+ "Start time : " + startTime + "  " + "end time : "
@@ -368,23 +368,23 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 						if (StringUtils.equals(bio.getBiometricFileHash(), securityManager.hash(data))) {
 							documents.add(new DocumentsDTO(bio.getBiometricFileType(), CryptoUtil.encodeBase64(data)));
 						} else {
-							mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES,
+							mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES,
 									IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH.getErrorMessage());
 							throw new IdRepoAppException(IdRepoErrorConstants.DOCUMENT_HASH_MISMATCH);
 						}
 					}
 				} catch (IdRepoAppException e) {
-					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
+					mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
 					throw new IdRepoAppUncheckedException(e.getErrorCode(), e.getErrorText(), e);
 				} catch (FSAdapterException e) {
-					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
+					mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
 					throw new IdRepoAppUncheckedException(
 							e.getErrorCode().equals(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode())
 									? IdRepoErrorConstants.FILE_NOT_FOUND
 									: IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR,
 							e);
 				} catch (IOException e) {
-					mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
+					mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, GET_FILES, e.getMessage());
 					throw new IdRepoAppUncheckedException(IdRepoErrorConstants.FILE_STORAGE_ACCESS_ERROR, e);
 				}
 			}
@@ -463,7 +463,7 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		try {
 			return mapper.readValue(identity, clazz);
 		} catch (IOException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, "convertToObject", e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_SERVICE_IMPL, "convertToObject", e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.ID_OBJECT_PROCESSING_FAILED, e);
 		}
 	}
