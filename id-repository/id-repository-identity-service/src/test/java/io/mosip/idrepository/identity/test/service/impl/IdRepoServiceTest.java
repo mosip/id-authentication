@@ -246,6 +246,7 @@ public class IdRepoServiceTest {
 				ObjectNode.class);
 		RequestDTO req = new RequestDTO();
 		req.setIdentity(obj);
+		req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
@@ -274,6 +275,7 @@ public class IdRepoServiceTest {
 					"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
 							.getBytes(),
 					RequestDTO.class);
+			req.setRegistrationId("27841457360002620190730095024");
 			request.setRequest(req);
 			when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 			when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
@@ -300,6 +302,7 @@ public class IdRepoServiceTest {
 					"{\"identity\":{\"proofOfDateOfBirth\":{\"format\":\"pdf\",\"type\":\"passport\",\"value\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfDateOfBirth\",\"value\":\"dGVzdA\"}]}"
 							.getBytes(),
 					RequestDTO.class);
+			req.setRegistrationId("27841457360002620190730095024");
 			request.setRequest(req);
 			when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 			when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
@@ -331,6 +334,7 @@ public class IdRepoServiceTest {
 							+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
 									.getBytes(),
 							RequestDTO.class);
+			req.setRegistrationId("27841457360002620190730095024");
 			request.setRequest(req);
 			when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 			when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
@@ -359,6 +363,7 @@ public class IdRepoServiceTest {
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
+		 req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
 		when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(false);
 		when(uinRepo.existsByRegId(Mockito.any())).thenReturn(false);
@@ -381,6 +386,7 @@ public class IdRepoServiceTest {
 							.getBytes(),
 					ObjectNode.class);
 			RequestDTO req = new RequestDTO();
+			req.setRegistrationId("27841457360002620190730095024");
 			req.setIdentity(obj);
 			request.setRequest(req);
 			when(uinRepo.existsByUinHash(Mockito.any())).thenReturn(true);
@@ -407,6 +413,7 @@ public class IdRepoServiceTest {
 							.getBytes(),
 					ObjectNode.class);
 			RequestDTO req = new RequestDTO();
+			 req.setRegistrationId("27841457360002620190730095024");
 			req.setIdentity(obj);
 			request.setRequest(req);
 			when(uinRepo.findByUinHash(Mockito.any())).thenReturn(uinObj);
@@ -441,6 +448,7 @@ public class IdRepoServiceTest {
 					"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 							.getBytes(),
 					Object.class));
+			request2.setRegistrationId("27841457360002620190730095024");
 			request.setRequest(request2);
 			proxyService.addIdentity(request, "1234");
 		} catch (IdRepoAppException e) {
@@ -880,6 +888,7 @@ public class IdRepoServiceTest {
 				Object.class);
 		RequestDTO req = new RequestDTO();
 		req.setStatus("REGISTERED");
+		req.setRegistrationId("27841457360002620190730095024");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		Uin uinObj = new Uin();
@@ -909,6 +918,7 @@ public class IdRepoServiceTest {
 
 			RequestDTO req = new RequestDTO();
 			req.setStatus("REGISTERED");
+			req.setRegistrationId("27841457360002620190730095024");
 			req.setIdentity(obj);
 			request.setRequest(req);
 			Uin uinObj = new Uin();
@@ -940,6 +950,7 @@ public class IdRepoServiceTest {
 
 		RequestDTO req = new RequestDTO();
 		req.setStatus("REGISTERED");
+		req.setRegistrationId("27841457360002620190730095024");
 		req.setIdentity(obj);
 		request.setRequest(req);
 		Uin uinObj = new Uin();
@@ -1006,7 +1017,9 @@ public class IdRepoServiceTest {
 			when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 			when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 			IdRequestDTO idRequestDTO = new IdRequestDTO();
-			idRequestDTO.setRequest(new RequestDTO());
+			RequestDTO req=new RequestDTO();
+			req.setRegistrationId("27841457360002620190730095024");
+			idRequestDTO.setRequest(req);
 			proxyService.updateIdentity(idRequestDTO, "12343");
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.RECORD_EXISTS.getErrorCode(), e.getErrorCode());
@@ -1067,6 +1080,7 @@ public class IdRepoServiceTest {
 		RequestDTO req = new RequestDTO();
 		String status = "status";
 		req.setStatus(status);
+		req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
 		IdResponseDTO updateIdentity = proxyService.updateIdentity(request, "12343");
 		assertEquals(status, updateIdentity.getResponse().getStatus());
@@ -1156,6 +1170,7 @@ public class IdRepoServiceTest {
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"individualBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
+		req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
 		UinBiometric biometrics = new UinBiometric();
 		biometrics.setBiometricFileType("individualBiometrics");
@@ -1193,7 +1208,9 @@ public class IdRepoServiceTest {
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
+						req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
+		
 		UinBiometric biometrics = new UinBiometric();
 		biometrics.setBiometricFileType("individualBiometrics");
 		biometrics.setBiometricFileHash("W3LDtXpyxkl0YSifynsfhl7W-wWWtEb-ofkq-TGl1Lc");
@@ -1227,6 +1244,7 @@ public class IdRepoServiceTest {
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
+		req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
 		UinBiometric biometrics = new UinBiometric();
 		biometrics.setBiometricFileType("individualBiometrics");
@@ -1259,6 +1277,7 @@ public class IdRepoServiceTest {
 					"{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}"
 							.getBytes(),
 					RequestDTO.class);
+			req.setRegistrationId("27841457360002620190730095024");
 			request.setRequest(req);
 			UinBiometric biometrics = new UinBiometric();
 			biometrics.setBiometricFileType("parentOrGuardianBiometrics");
@@ -1298,6 +1317,7 @@ public class IdRepoServiceTest {
 					"{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}"
 							.getBytes(),
 					RequestDTO.class);
+			req.setRegistrationId("27841457360002620190730095024");
 			request.setRequest(req);
 			UinBiometric biometrics = new UinBiometric();
 			biometrics.setBiometricFileType("parentOrGuardianBiometrics");
@@ -1336,6 +1356,7 @@ public class IdRepoServiceTest {
 					"{\"identity\":{\"parentOrGuardianBiometrics\":{\"format\":\"cbeff\",\"version\":1.0,\"fileReference\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"parentOrGuardianBiometrics\",\"value\":\"dGVzdA\"}]}"
 							.getBytes(),
 					RequestDTO.class);
+			req.setRegistrationId("27841457360002620190730095024");
 			request.setRequest(req);
 			UinBiometric biometrics = new UinBiometric();
 			biometrics.setBiometricFileType("parentOrGuardianBiometrics");
@@ -1374,6 +1395,7 @@ public class IdRepoServiceTest {
 						+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"proofOfRelationship\",\"value\":\"dGVzdA\"}]}")
 								.getBytes(),
 						RequestDTO.class);
+		req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
 		UinDocument document = new UinDocument();
 		document.setDoccatCode("ProofOfIdentity");
@@ -1406,6 +1428,7 @@ public class IdRepoServiceTest {
 				+ "\":\"fileReferenceID\"}},\"documents\":[{\"category\":\"ProofOfIdentity\",\"value\":\"dGVzdA\"}]}")
 						.getBytes(),
 				RequestDTO.class);
+		req.setRegistrationId("27841457360002620190730095024");
 		request.setRequest(req);
 		UinDocument document = new UinDocument();
 		document.setDoccatCode("ProofOfIdentity");

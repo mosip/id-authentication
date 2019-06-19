@@ -2,6 +2,7 @@ package io.mosip.idrepository.core.builder;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -44,7 +46,7 @@ public class AuditRequestBuilder {
 	 * @param desc   the desc
 	 * @return the audit request dto
 	 */
-	public RequestWrapper<AuditRequestDTO> buildRequest(AuditModules module, AuditEvents event, String id,
+	public RequestWrapper<AuditRequestDTO> buildRequest(AuditModules module, AuditEvents event, String id, IdType idType,
 			String desc) {
 		RequestWrapper<AuditRequestDTO> request = new RequestWrapper<>();
 		AuditRequestDTO auditRequest = new AuditRequestDTO();
@@ -74,7 +76,7 @@ public class AuditRequestBuilder {
 		auditRequest.setSessionUserId("sessionUserId");
 		auditRequest.setSessionUserName("sessionUserName");
 		auditRequest.setId(id);
-		auditRequest.setIdType("UIN");
+		auditRequest.setIdType(Objects.isNull(idType) ? null : idType.getIdType());
 		auditRequest.setCreatedBy(env.getProperty("user.name"));
 		auditRequest.setModuleName(module.getModuleName());
 		auditRequest.setModuleId(module.getModuleId());

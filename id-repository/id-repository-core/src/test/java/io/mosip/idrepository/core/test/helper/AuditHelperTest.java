@@ -19,6 +19,7 @@ import io.mosip.idrepository.core.builder.AuditRequestBuilder;
 import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.helper.AuditHelper;
 import io.mosip.idrepository.core.helper.RestHelper;
@@ -58,7 +59,7 @@ public class AuditHelperTest {
 
 	@Test
 	public void testAuditUtil() throws IdRepoDataValidationException {
-		auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
+		auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc");
 	}
 
 }

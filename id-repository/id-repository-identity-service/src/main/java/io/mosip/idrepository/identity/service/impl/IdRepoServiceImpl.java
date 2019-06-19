@@ -191,15 +191,15 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	 */
 	@Override
 	public Uin addIdentity(IdRequestDTO request, String uin) throws IdRepoAppException {
-		String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime())
+		String uinRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + IdRepoConstants.SPLITTER.getValue() + DateUtils.getUTCCurrentDateTime())
 				.toString();
 		byte[] identityInfo = convertToBytes(request.getRequest().getIdentity());
 		Integer moduloValue = env.getProperty(IdRepoConstants.MODULO_VALUE.getValue(), Integer.class);
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinHash = modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
+		String uinHash = modResult + IdRepoConstants.SPLITTER.getValue() + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
-		String uinToEncrypt = modResult + "_" + uin + "_" + encryptSalt;
+		String uinToEncrypt = modResult + IdRepoConstants.SPLITTER.getValue() + uin + IdRepoConstants.SPLITTER.getValue() + encryptSalt;
 
 		List<UinDocument> docList = new ArrayList<>();
 		List<UinBiometric> bioList = new ArrayList<>();
@@ -295,7 +295,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		byte[] data = null;
 		String fileRefId = UUIDUtils
 				.getUUID(UUIDUtils.NAMESPACE_OID,
-						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_"
+						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + IdRepoConstants.SPLITTER.getValue()
 								+ DateUtils.getUTCCurrentDateTime())
 				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
@@ -346,7 +346,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			JsonNode docType) throws IdRepoAppException {
 		String fileRefId = UUIDUtils
 				.getUUID(UUIDUtils.NAMESPACE_OID,
-						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + "_"
+						docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText() + IdRepoConstants.SPLITTER.getValue()
 								+ DateUtils.getUTCCurrentDateTime())
 				.toString() + DOT + docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText();
 
@@ -424,8 +424,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinToEncrypt = modResult + "_" + uin + "_" + encryptSalt;
-		String uinHash = modResult + "_" + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
+		String uinToEncrypt = modResult + IdRepoConstants.SPLITTER.getValue() + uin + IdRepoConstants.SPLITTER.getValue() + encryptSalt;
+		String uinHash = modResult + IdRepoConstants.SPLITTER.getValue() + securityManager.hashwithSalt(uin.getBytes(), hashSalt.getBytes());
 
 		try {
 			Uin uinObject = retrieveIdentityByUin(uinHash, null);

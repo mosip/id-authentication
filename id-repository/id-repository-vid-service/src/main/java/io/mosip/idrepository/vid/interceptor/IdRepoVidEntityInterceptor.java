@@ -9,6 +9,7 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
@@ -53,10 +54,10 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 				Vid vidEntity = (Vid) entity;
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int uinIndex = propertyNamesList.indexOf("uin");
-				List<String> uinList = Arrays.asList(vidEntity.getUin().split("_"));
+				List<String> uinList = Arrays.asList(vidEntity.getUin().split(IdRepoConstants.SPLITTER.getValue()));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
-				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
+				String encryptedUinWithSalt = uinList.get(0) + IdRepoConstants.SPLITTER.getValue() + new String(encryptedUinByteWithSalt);
 				vidEntity.setUin(encryptedUinWithSalt);
 				state[uinIndex] = vidEntity.getUin();
 				entity = vidEntity;
@@ -84,10 +85,10 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
 				int uinIndex = propertyNamesList.indexOf("uin");
 				Vid vidEntity = (Vid) entity;
-				List<String> uinList = Arrays.asList(vidEntity.getUin().split("_"));
+				List<String> uinList = Arrays.asList(vidEntity.getUin().split(IdRepoConstants.SPLITTER.getValue()));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
-				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
+				String encryptedUinWithSalt = uinList.get(0) + IdRepoConstants.SPLITTER.getValue() + new String(encryptedUinByteWithSalt);
 				vidEntity.setUin(encryptedUinWithSalt);
 				currentState[uinIndex] = vidEntity.getUin();
 				entity = vidEntity;

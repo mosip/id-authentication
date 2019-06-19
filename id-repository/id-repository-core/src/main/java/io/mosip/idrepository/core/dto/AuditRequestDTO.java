@@ -69,13 +69,11 @@ public class AuditRequestDTO {
 	private String sessionUserName;
 
 	/** The id. */
-	@NotNull
-	@Size(min = 1, max = 255)
+	@Size(max = 255)
 	private String id;
 
 	/** The id type. */
-	@NotNull
-	@Size(min = 1, max = 255)
+	@Size(max = 255)
 	private String idType;
 
 	/** The created by. */

@@ -24,6 +24,7 @@ import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
@@ -136,8 +137,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 */
 	@Override
 	public ResponseWrapper<VidResponseDTO> createVid(VidRequestDTO vidRequest) throws IdRepoAppException {
+		String uin = vidRequest.getUin().toString();
 		try {
-			String uin = vidRequest.getUin().toString();
 			Vid vid = generateVid(uin, vidRequest.getVidType());
 			VidResponseDTO responseDTO = new VidResponseDTO();
 			responseDTO.setVid(Long.parseLong(vid.getVid()));
@@ -155,7 +156,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.CREATE_VID,
-					vidRequest.getVidType(), "Create VID requested");
+					securityManager.hash(uin.getBytes()), IdType.VID,
+					"Create VID requested for " + vidRequest.getVidType());
 		}
 	}
 
@@ -173,15 +175,15 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		int modResult = (int) (Long.parseLong(uin) % moduloValue);
 		String encryptSalt = uinEncryptSaltRepo.retrieveSaltById(modResult);
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(modResult);
-		String uinToEncrypt = modResult + "_" + uin + "_" + encryptSalt;
-		String uinHash = String.valueOf(modResult) + "_"
+		String uinToEncrypt = modResult + IdRepoConstants.SPLITTER.getValue() + uin + IdRepoConstants.SPLITTER.getValue() + encryptSalt;
+		String uinHash = String.valueOf(modResult) + IdRepoConstants.SPLITTER.getValue()
 				+ securityManager.hashwithSalt(uin.getBytes(), CryptoUtil.decodeBase64(hashSalt));
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime();
 		List<Vid> vidDetails = vidRepo.findByUinHashAndStatusCodeAndVidTypeCodeAndExpiryDTimesAfter(uinHash,
 				env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()), vidType, currentTime);
 		VidPolicy policy = policyProvider.getPolicy(vidType);
 		if (Objects.isNull(vidDetails) || vidDetails.isEmpty() || vidDetails.size() < policy.getAllowedInstances()) {
-			String vidRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + "_" + DateUtils.getUTCCurrentDateTime())
+			String vidRefId = UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uin + IdRepoConstants.SPLITTER.getValue() + DateUtils.getUTCCurrentDateTime())
 					.toString();
 			return vidRepo
 					.save(new Vid(vidRefId, vidGenerator.generateId(), uinHash, uinToEncrypt, vidType, currentTime,
@@ -248,7 +250,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			Vid vidObject = retrieveVidEntity(vid);
 			if (vidObject != null) {
 				String decryptedUin = decryptUin(vidObject.getUin(), vidObject.getUinHash());
-				List<String> uinList = Arrays.asList(decryptedUin.split("_"));
+				List<String> uinList = Arrays.asList(decryptedUin.split(IdRepoConstants.SPLITTER.getValue()));
 				checkExpiry(vidObject.getExpiryDTimes());
 				checkStatus(vidObject.getStatusCode());
 				checkUinStatus(uinList.get(1));
@@ -268,8 +270,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.RETRIEVE_VID_UIN, null,
-					"Retrieve Uin By VID requested");
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.RETRIEVE_VID_UIN,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Retrieve Uin By VID requested");
 		}
 	}
 
@@ -303,8 +305,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, UPDATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.UPDATE_VID_STATUS, null,
-					"Update VID requested");
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.UPDATE_VID_STATUS,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Update VID requested");
 		}
 	}
 
@@ -321,7 +323,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 */
 	private VidResponseDTO updateVidStatus(String vidStatus, Vid vidObject, String decryptedUin, VidPolicy policy)
 			throws IdRepoAppException {
-		String uin = Arrays.asList(decryptedUin.split("_")).get(1);
+		String uin = Arrays.asList(decryptedUin.split(IdRepoConstants.SPLITTER.getValue())).get(1);
 		if (!(vidStatus.equals(env.getProperty(IdRepoConstants.VID_UNLIMITED_TRANSACTION_STATUS.getValue()))
 				&& Objects.isNull(policy.getAllowedTransactions()))) {
 			vidObject.setStatusCode(vidStatus);
@@ -366,7 +368,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			checkRegenerateStatus(vidObject.getStatusCode());
 			String decryptedUin = decryptUin(vidObject.getUin(), vidObject.getUinHash());
 			updateVidStatus(IdRepoConstants.VID_REGENERATE_ACTIVE_STATUS.getValue(), vidObject, decryptedUin, policy);
-			List<String> uinList = Arrays.asList(decryptedUin.split("_"));
+			List<String> uinList = Arrays.asList(decryptedUin.split(IdRepoConstants.SPLITTER.getValue()));
 			VidResponseDTO response = new VidResponseDTO();
 			Vid generateVidObject = generateVid(uinList.get(1), vidObject.getVidTypeCode());
 			response.setVid(Long.parseLong(generateVidObject.getVid()));
@@ -380,8 +382,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getVid(), ID_REPO_VID_SERVICE, REGENERATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.REGENERATE_VID, null,
-					"Regenerate VID requested");
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.REGENERATE_VID,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Regenerate VID requested");
 		}
 	}
 
@@ -450,18 +452,18 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private String decryptUin(String uin, String uinHash) throws IdRepoAppException {
-		List<String> uinDetails = Arrays.stream(uin.split("_")).collect(Collectors.toList());
+		List<String> uinDetails = Arrays.stream(uin.split(IdRepoConstants.SPLITTER.getValue())).collect(Collectors.toList());
 		String decryptSalt = uinEncryptSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
 		String hashSalt = uinHashSaltRepo.retrieveSaltById(Integer.parseInt(uinDetails.get(0)));
 		String encryptedUin = uin.substring(uinDetails.get(0).length() + 1, uin.length());
 		String decryptedUin = new String(securityManager.decryptWithSalt(CryptoUtil.decodeBase64(encryptedUin),
 				CryptoUtil.decodeBase64(decryptSalt)));
-		String uinHashWithSalt = uinDetails.get(0) + "_"
+		String uinHashWithSalt = uinDetails.get(0) + IdRepoConstants.SPLITTER.getValue()
 				+ securityManager.hashwithSalt(decryptedUin.getBytes(), CryptoUtil.decodeBase64(hashSalt));
 		if (!MessageDigest.isEqual(uinHashWithSalt.getBytes(), uinHash.getBytes())) {
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UIN_HASH_MISMATCH);
 		}
-		return uinDetails.get(0) + "_" + decryptedUin + "_" + decryptSalt;
+		return uinDetails.get(0) + IdRepoConstants.SPLITTER.getValue() + decryptedUin + IdRepoConstants.SPLITTER.getValue() + decryptSalt;
 	}
 
 	/**

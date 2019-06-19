@@ -10,6 +10,7 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
@@ -58,10 +59,10 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				byte[] encryptedData = securityManager.encrypt(uinEntity.getUinData());
 				uinEntity.setUinData(encryptedData);
 
-				List<String> uinList = Arrays.asList(uinEntity.getUin().split("_"));
+				List<String> uinList = Arrays.asList(uinEntity.getUin().split(IdRepoConstants.SPLITTER.getValue()));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
-				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
+				String encryptedUinWithSalt = uinList.get(0) + IdRepoConstants.SPLITTER.getValue() + new String(encryptedUinByteWithSalt);
 				uinEntity.setUin(encryptedUinWithSalt);
 				
 				List<String> propertyNamesList = Arrays.asList(propertyNames);
@@ -75,10 +76,10 @@ public class IdRepoEntityInterceptor extends EmptyInterceptor {
 				UinHistory uinHEntity = (UinHistory) entity;
 				uinHEntity.setUinData(securityManager.encrypt(uinHEntity.getUinData()));
 				
-				List<String> uinList = Arrays.asList(uinHEntity.getUin().split("_"));
+				List<String> uinList = Arrays.asList(uinHEntity.getUin().split(IdRepoConstants.SPLITTER.getValue()));
 				byte[] encryptedUinByteWithSalt = securityManager.encryptWithSalt(uinList.get(1).getBytes(),
 						CryptoUtil.decodeBase64(uinList.get(2)));
-				String encryptedUinWithSalt = uinList.get(0) + "_" + new String(encryptedUinByteWithSalt);
+				String encryptedUinWithSalt = uinList.get(0) + IdRepoConstants.SPLITTER.getValue() + new String(encryptedUinByteWithSalt);
 				uinHEntity.setUin(encryptedUinWithSalt);
 				
 				return super.onSave(uinHEntity, id, state, propertyNames, types);
