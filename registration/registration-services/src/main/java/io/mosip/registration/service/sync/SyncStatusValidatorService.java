@@ -35,7 +35,7 @@ public interface SyncStatusValidatorService {
 	 * If 'Y' then validate the days skipped for update. If the days are greater than the configured one at the properties then this method would return 
 	 * true otherwise false.  
 	 * 
-	 * Check for force update of application. 
+	 * This method would be invoked, during start up of the application.  
 	 * 
 	 * @return 
 	 * 		true for Force Update.

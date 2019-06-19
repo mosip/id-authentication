@@ -6,18 +6,21 @@ import java.util.Map;
 import io.mosip.registration.dto.ResponseDTO;
 
 /**
- * Service Class for GlobalContextParameters
+ * It interface with the external 'global' service and sync the application specific configuration data from server to local machine. 
+ * It stores the downloaded configuration detail into local db that will be used by the application through out the life cycle. 
+ * 
+ * This service is invoked during start of the application OR post successful login to the application based on use cases.  
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
- *
  */
 public interface GlobalParamService {
 
 	/**
-	 * Fetching Global parameters of application
+	 * Fetching application configuration detail from Global parameters table, that will be used by the application.  
 	 * 
 	 * @return map
+	 * 		It contains the key and value pair of each configuration.  
 	 */
 	Map<String, Object> getGlobalParams();
 
@@ -47,16 +50,17 @@ public interface GlobalParamService {
 	 * 			- the timestamp
 	 *
 	 * @return the response DTO
+	 * 			It contains the SuccessResponseDTO, where the flag value would be available. 
 	 */
 	ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp);
 
 	/**
-	 * Update global param table with particular key value pair. 
+	 * Update global param table with particular key value pair which is download from the external system. 
 	 * 
 	 * @param code
 	 *            global param code
 	 * @param val
-	 *            value
+	 *            value 
 	 */
 	void update(String code, String val);
 

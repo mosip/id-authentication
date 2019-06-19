@@ -45,6 +45,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 public class RestClientAuthAdvice {
 
 	private static final String INVALID_TOKEN_STRING = "Invalid Token";
+	private static final String TOKEN_EXPIRED = "Token expired";
 
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
@@ -259,7 +260,8 @@ public class RestClientAuthAdvice {
 			throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 				"Entering into the invlalid token check");
-		if (response != null && StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING)) {
+		if (response != null && (StringUtils.containsIgnoreCase(response.toString(), TOKEN_EXPIRED) || 
+				StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING))) {
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 			getNewAuthZToken(requestHTTPDTO);
 			return true;

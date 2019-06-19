@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="ID Repo API Automation Suite">
+
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+
+	<test name="ID Repo Store identity data - positive scenerio - post request">
+		<parameter name="testType" value="smoke" />
+		<classes>
+			<class
+				name="io.mosip.authentication.idrepo.tests.StoreIdDataPositiveScenario" />
+		</classes>
+	</test>
+
+	<test name="ID Repo Store identity data - negative scenerio - post request">
+		<parameter name="testType" value="regression" />
+		<classes>
+			<class
+				name="io.mosip.authentication.idrepo.tests.StoreIdDataNegativeScenario" />
+		</classes>
+	</test>
+	
+	<test name="ID Repo Update identity data - positive scenerio - update request">
+		<parameter name="testType" value="smoke" />
+		<classes>
+			<class
+				name="io.mosip.authentication.idrepo.tests.UpdateIdDataPositiveScenario" />
+		</classes>
+	</test>
+
+	<test name="ID Repo Update identity data - negative scenerio - update request">
+		<parameter name="testType" value="regression" />
+		<classes>
+			<class
+				name="io.mosip.authentication.idrepo.tests.UpdateIdDataNagativeScenario" />
+		</classes>
+	</test>
+	
+	<test name="ID Repo Retrive identity data - negative scenerio - get request">
+		<parameter name="testType" value="regression" />
+		<classes>
+			<class
+				name="io.mosip.authentication.idrepo.tests.RetriveIdDataNegativeScenario" />
+		</classes>
+	</test>
+</suite> 
+
