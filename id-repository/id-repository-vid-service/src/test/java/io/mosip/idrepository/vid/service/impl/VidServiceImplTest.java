@@ -469,7 +469,8 @@ public class VidServiceImplTest {
 	public void testCreateVidRestDataValidationFailed() throws IdRepoAppException, JsonProcessingException {
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
-				.thenThrow(new IdRepoDataValidationException("", ""));
+				.thenThrow(new IdRepoDataValidationException(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "vid")));
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
 		IdResponseDTO identityResponse = new IdResponseDTO();
@@ -496,7 +497,7 @@ public class VidServiceImplTest {
 			service.createVid(request);
 		} catch (IdRepoAppException e) {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
-			assertEquals("", e.getErrorText());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "vid"), e.getErrorText());
 		}
 	}
 
@@ -506,7 +507,7 @@ public class VidServiceImplTest {
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
 		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691",
-				"461_null", "461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual",
+				"461_null", "461_3920450236_7C9JlRD32RnFTzAmeTfIzg", "perpetual",
 				currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false, currentTime);
 		when(securityManager.hash(Mockito.any())).thenReturn("123");
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any(Class.class)))
@@ -520,8 +521,10 @@ public class VidServiceImplTest {
 		Mockito.when(vidRepo.retrieveUinByVid(Mockito.anyString())).thenReturn("1234567");
 		when(uinEncryptSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("7C9JlRD32RnFTzAmeTfIzg");
 		when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("AG7JQI1HwFp_cI_DcdAQ9A");
-		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any())).thenReturn("3920450236".getBytes());
-		service.retrieveUinByVid("12345678");
+		String uin = "3920450236";
+		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any())).thenReturn(uin.getBytes());
+		ResponseWrapper<VidResponseDTO> retrieveUinByVid = service.retrieveUinByVid("12345678");
+		assertEquals(uin, String.valueOf(retrieveUinByVid.getResponse().getUin()));
 	}
 
 	@Test
@@ -604,7 +607,9 @@ public class VidServiceImplTest {
 		try {
 			service.retrieveUinByVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getMessage());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(),
+					e.getErrorText());
 		}
 	}
 
@@ -630,8 +635,10 @@ public class VidServiceImplTest {
 		policy.setValidForInMinutes(null);
 		Mockito.when(vidPolicyProvider.getPolicy(Mockito.anyString())).thenReturn(policy);
 		VidRequestDTO request = new VidRequestDTO();
-		request.setVidStatus("ACTIVE");
-		service.updateVid("12345678", request);
+		String vidStatus = "EXPIRED";
+		request.setVidStatus(vidStatus);
+		ResponseWrapper<VidResponseDTO> updateVid = service.updateVid("12345678", request);
+		assertEquals(vidStatus, updateVid.getResponse().getVidStatus());
 	}
 
 	@Test
@@ -682,7 +689,9 @@ public class VidServiceImplTest {
 		try {
 			service.updateVid("12345678", request);
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getMessage());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(),
+					e.getErrorText());
 		}
 	}
 
@@ -691,7 +700,8 @@ public class VidServiceImplTest {
 		LocalDateTime currentTime = DateUtils.getUTCCurrentDateTime()
 				.atZone(ZoneId.of(environment.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue())))
 				.toLocalDateTime().plusDays(1);
-		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", "2015642902372691",
+		String vidValue = "2015642902372691";
+		Vid vid = new Vid("18b67aa3-a25a-5cec-94c2-90644bf5b05b", vidValue,
 				"461_null", "461_7329815461_7C9JlRD32RnFTzAmeTfIzg", "perpetual",
 				currentTime, currentTime, "ACTIVE", "IdRepo", currentTime, "IdRepo", currentTime, false, currentTime);
 		Mockito.when(vidRepo.findByVid(Mockito.anyString())).thenReturn(vid);
@@ -717,7 +727,9 @@ public class VidServiceImplTest {
 		Mockito.when(securityManager.hash(Mockito.any()))
 				.thenReturn("6B764AE0FF065490AEFAF796A039D6B4F251101A5F13DA93146B9DEB11087AFC");
 		Mockito.when(securityManager.decryptWithSalt(Mockito.any(), Mockito.any())).thenReturn("3920450236".getBytes());
-		service.regenerateVid("12345678");
+		ResponseWrapper<VidResponseDTO> regenerateVid = service.regenerateVid("12345678");
+		assertEquals(vidValue, String.valueOf(regenerateVid.getResponse().getVid()));
+		assertEquals("INVALIDATED",regenerateVid.getResponse().getVidStatus());
 	}
 
 	@Test
@@ -728,7 +740,9 @@ public class VidServiceImplTest {
 		try {
 			service.regenerateVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-IDC-007 --> No Record(s) found", e.getMessage());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.NO_RECORD_FOUND.getErrorMessage(),
+					e.getErrorText());
 		}
 	}
 
@@ -754,7 +768,9 @@ public class VidServiceImplTest {
 		try {
 			service.regenerateVid("12345678");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-VID-001 --> VID is INACTIVE", e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_VID.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_VID.getErrorMessage(), "INACTIVE"),
+					e.getErrorText());
 		}
 	}
 

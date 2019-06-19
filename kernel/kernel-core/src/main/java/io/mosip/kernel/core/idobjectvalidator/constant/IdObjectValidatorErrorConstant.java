@@ -16,9 +16,9 @@ public enum IdObjectValidatorErrorConstant {
 	
 	ID_OBJECT_PARSING_FAILED("KER-IOV-003", "Failed to parse/convert Id Object"),
 	
-	INVALID_INPUT_PARAMETER("KER-IOV-004", "Invalid input parameter - %s"),
+	INVALID_INPUT_PARAMETER("KER-IOV-004", "Invalid Input Parameter - %s"),
 	
-	MISSING_INPUT_PARAMETER("KER-IOV-005", "Missing input parameter - %s"),
+	MISSING_INPUT_PARAMETER("KER-IOV-005", "Missing Input Parameter - %s"),
 	
 	MASTERDATA_LOAD_FAILED("KER-IOV-006", "Failed to load data from kernel masterdata"),
 	

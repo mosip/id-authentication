@@ -20,6 +20,7 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
+ * The Class Vid Repo Config.
  * 
  * @author Prem Kumar
  *
@@ -27,20 +28,21 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 @Configuration
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidRepoConfig extends HibernateDaoConfig {
-	
+
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
+
+	/** The Interceptor. */
 	@Autowired
 	private Interceptor interceptor;
-	
+
 	/** The id. */
 	private Map<String, String> id;
-	
+
 	/** The status. */
 	private List<String> allowedStatus;
-	
+
 	/**
 	 * Sets the id.
 	 *
@@ -49,7 +51,6 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	public void setId(Map<String, String> id) {
 		this.id = id;
 	}
-	
 
 	/**
 	 * Sets the status.
@@ -69,7 +70,7 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	public Map<String, String> id() {
 		return Collections.unmodifiableMap(id);
 	}
-	
+
 	/**
 	 * Status.
 	 *
@@ -79,7 +80,7 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	public List<String> allowedStatus() {
 		return Collections.unmodifiableList(allowedStatus);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -94,7 +95,7 @@ public class VidRepoConfig extends HibernateDaoConfig {
 		jpaProperties.replace("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
 		return jpaProperties;
 	}
-	
+
 	/**
 	 * Builds the data source.
 	 *
@@ -104,7 +105,8 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	@Override
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource(env.getProperty(IdRepoConstants.VID_DB_URL.getValue()));
+		DriverManagerDataSource dataSource = new DriverManagerDataSource(
+				env.getProperty(IdRepoConstants.VID_DB_URL.getValue()));
 		dataSource.setUsername(env.getProperty(IdRepoConstants.VID_DB_USERNAME.getValue()));
 		dataSource.setPassword(env.getProperty(IdRepoConstants.VID_DB_PASSWORD.getValue()));
 		dataSource.setDriverClassName(env.getProperty(IdRepoConstants.VID_DB_DRIVER_CLASS_NAME.getValue()));

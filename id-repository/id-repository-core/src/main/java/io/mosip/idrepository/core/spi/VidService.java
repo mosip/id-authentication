@@ -9,7 +9,13 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
  * @param <RESPONSE> the Response Object
  */
 public interface VidService<REQUEST, RESPONSE> {
-
+	/**
+	 * This method will create new Vid.
+	 * 
+	 * @param vidRequest
+	 * @return
+	 * @throws IdRepoAppException
+	 */
 	RESPONSE createVid(REQUEST vidRequest) throws IdRepoAppException;
 
 	/**

@@ -36,7 +36,9 @@ public enum IdRepoConstants {
 	DATETIME_PATTERN("mosip.utc-datetime-pattern"),
 
 	/** The application version. */
-	APPLICATION_VERSION("mosip.idrepo.application.version"),
+	APPLICATION_VERSION("mosip.idrepo.identity.application.version"),
+	/** The application version. */
+	APPLICATION_VERSION_VID("mosip.idrepo.vid.application.version"),
 
 	/** The application id. */
 	APPLICATION_ID("mosip.idrepo.application.id"),

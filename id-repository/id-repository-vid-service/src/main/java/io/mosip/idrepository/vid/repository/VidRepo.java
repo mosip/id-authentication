@@ -16,6 +16,7 @@ import io.mosip.idrepository.vid.entity.Vid;
  *
  */
 public interface VidRepo extends JpaRepository<Vid, String> {
+	
 	/**
 	 * This Method is used to retrieve Vid Object.
 	 * 
@@ -24,6 +25,14 @@ public interface VidRepo extends JpaRepository<Vid, String> {
 	 */
 	Vid findByVid(String vid);
 	
+	/**
+	 * The Query will retrieve List of vid's.
+	 * @param uinHash
+	 * @param statusCode
+	 * @param vidTypeCode
+	 * @param currentTime
+	 * @return
+	 */
 	List<Vid> findByUinHashAndStatusCodeAndVidTypeCodeAndExpiryDTimesAfter(String uinHash, String statusCode, String vidTypeCode, LocalDateTime currentTime);
 	
 	/**

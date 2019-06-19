@@ -47,7 +47,7 @@ public class AuditRequestBuilderTest {
 
 	@Test
 	public void testBuildRequest() {
-		RequestWrapper<AuditRequestDTO> actualRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+		RequestWrapper<AuditRequestDTO> actualRequest = auditBuilder.buildRequest(AuditModules.ID_REPO_CORE_SERVICE,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 		actualRequest.getRequest().setActionTimeStamp(null);
 		AuditRequestDTO expectedRequest = new AuditRequestDTO();
@@ -67,8 +67,8 @@ public class AuditRequestBuilderTest {
 			expectedRequest.setId("id");
 			expectedRequest.setIdType("UIN");
 			expectedRequest.setCreatedBy(env.getProperty("user.name"));
-			expectedRequest.setModuleName(AuditModules.CREATE_IDENTITY.getModuleName());
-			expectedRequest.setModuleId(AuditModules.CREATE_IDENTITY.getModuleId());
+			expectedRequest.setModuleName(AuditModules.ID_REPO_CORE_SERVICE.getModuleName());
+			expectedRequest.setModuleId(AuditModules.ID_REPO_CORE_SERVICE.getModuleId());
 			expectedRequest.setDescription("desc");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

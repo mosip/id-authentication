@@ -58,7 +58,7 @@ public class AuditHelperTest {
 
 	@Test
 	public void testAuditUtil() throws IdRepoDataValidationException {
-		auditHelper.audit(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
+		auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 	}
 
 }

@@ -61,7 +61,7 @@ public class RestRequestBuilderTest {
 
 	@Test
 	public void testBuildRequest() throws IdRepoDataValidationException {
-		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.ID_REPO_CORE_SERVICE,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 		auditRequest.getRequest().setActionTimeStamp(null);
 
@@ -98,7 +98,7 @@ public class RestRequestBuilderTest {
 		environment.setProperty("mosip.idrepo.audit.rest.uri.pathparam.test", "yes");
 
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
-		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
+		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.ID_REPO_CORE_SERVICE,
 				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
 		auditRequest.getRequest().setActionTimeStamp(null);
 
@@ -117,7 +117,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -130,7 +130,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -144,7 +144,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -152,7 +152,7 @@ public class RestRequestBuilderTest {
 	public void testBuildRequestEmptyResponseType() throws IdRepoDataValidationException {
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder.buildRequest(
-				AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"), null);
+				AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"), null);
 	}
 	
 	@Test
@@ -178,7 +178,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -192,7 +192,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
 				AuditResponseDTO.class);
 	}
 
