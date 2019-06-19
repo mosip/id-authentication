@@ -159,8 +159,7 @@ public class MatchInputBuilder {
 							.parseInt(environment.getProperty(IdAuthConfigKeyConstants.DEFAULT_MATCH_VALUE)));
 				}
 			}
-			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher,
-					bioMatcherUtil, language);
+			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);
 
 			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, language);
 		}

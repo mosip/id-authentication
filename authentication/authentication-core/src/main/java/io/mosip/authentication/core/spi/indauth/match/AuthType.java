@@ -73,7 +73,7 @@ public interface AuthType {
 	 * @return the match properties
 	 */
 	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			IdInfoFetcher languageInfoFetcher, BioMatcherUtil bioMatcherUtil, String language) {
+			IdInfoFetcher languageInfoFetcher, String language) {
 		return Collections.emptyMap();
 	}
 

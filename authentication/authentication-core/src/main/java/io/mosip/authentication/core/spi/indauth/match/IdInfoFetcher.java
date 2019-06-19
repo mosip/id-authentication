@@ -11,7 +11,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.bioauth.CbeffDocType;;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
+import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;;
 
 /**
  * The IdInfoFetcher interface that provides the helper methods invoked by the
@@ -96,5 +98,14 @@ public interface IdInfoFetcher {
 	 * @return the matching threshold
 	 */
 	public Optional<Integer> getMatchingThreshold(String key);
+	
+	
+	public DemoNormalizer getDemoNormalizer();
+	
+	
+	public BioMatcherUtil getBioMatcherUtil() ;
+	
+	
+	
 
 }
