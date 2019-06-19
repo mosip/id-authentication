@@ -214,23 +214,22 @@ public class ReprocessorStage extends MosipVerticleManager {
 							object.setRid(registrationId);
 							object.setIsValid(false);
 							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
-							description = PlatformSuccessMessages.RPR_RE_PROCESS_FAILED.getMessage();
+							description.setMessage(PlatformSuccessMessages.RPR_RE_PROCESS_FAILED.getMessage());
 						} else {
 							object.setRid(registrationId);
 							object.setIsValid(true);
 							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
-							description = "";
 							isTransactionSuccessful = true;
 							String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
 							if (RegistrationTransactionStatusCode.REPROCESS.name()
 									.equalsIgnoreCase(dto.getLatestTransactionStatusCode())) {
-								stageName = stageName.concat(BUS_IN);
+								stageName = stageName.concat(ReprocessorConstants.BUS_IN);
 							} else {
-								stageName = stageName.concat(BUS_OUT);
+								stageName = stageName.concat(ReprocessorConstants.BUS_OUT);
 							}
 							MessageBusAddress address = new MessageBusAddress(stageName);
 							sendMessage(object, address);
-							dto.setUpdatedBy(USER);
+							dto.setUpdatedBy(ReprocessorConstants.USER);
 							Integer reprocessRetryCount = dto.getReProcessRetryCount() != null
 									? dto.getReProcessRetryCount() + 1
 									: 1;
@@ -240,8 +239,9 @@ public class ReprocessorStage extends MosipVerticleManager {
 							dto.setStatusComment("Reprocess Completed");
 							registrationStatusService.updateRegistrationStatus(dto);
 
-						description.setMessage(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage());
-						description.setCode(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getCode());
+							description.setMessage(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage());
+
+						}
 						String eventId = EventId.RPR_402.toString();
 						String eventName = EventName.UPDATE.toString();
 						String eventType = EventType.BUSINESS.toString();
@@ -252,8 +252,10 @@ public class ReprocessorStage extends MosipVerticleManager {
 						auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 								moduleId, moduleName, registrationId);
 					});
+
 					totalUnprocessesPackets = totalUnprocessesPackets - fetchSize;
 				}
+
 			}
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					description.getCode(), "PacketValidatorStage::process()::exit");
@@ -261,9 +263,9 @@ public class ReprocessorStage extends MosipVerticleManager {
 		} catch (TablenotAccessibleException e) {
 			isTransactionSuccessful = false;
 			object.setInternalError(Boolean.TRUE);
-			description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
-			code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code + " -- " + registrationId,
+			description.setMessage(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), description.getCode() + " -- " + registrationId,
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
 
 		} catch (Exception ex) {

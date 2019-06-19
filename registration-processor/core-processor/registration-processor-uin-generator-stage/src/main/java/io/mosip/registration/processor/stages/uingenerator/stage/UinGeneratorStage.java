@@ -475,7 +475,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel)
 			throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		Documents documentsInfoDto = new Documents();
-		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
+		InputStream poiStream = adapter.getFile(registrationId, folderPath + UINConstants.FILE_SEPARATOR + idDocObj.get("value"));
 		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
 		documentsInfoDto.setCategory(idDocLabel);
 		return documentsInfoDto;
@@ -503,7 +503,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			throws ApisResourceAccessException, IOException, RegistrationProcessorCheckedException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		IdResponseDTO result;
 		List<Documents> documentInfo = utility.getAllDocumentsByRegId(regId);
-		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, documentInfo);
+		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, documentInfo, demographicIdentity);
 		if (result != null && result.getResponse() != null) {
 
 			if ((RegistrationType.ACTIVATED.toString().toUpperCase())
