@@ -1,24 +1,12 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import io.mosip.authentication.common.service.impl.match.DemoNormalizer;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 @RunWith(SpringRunner.class)
 public class DemoNormalizerTest {
 
-	@Test
+	/*@Test
 	public void testNameNormalizer1() throws IdAuthenticationBusinessException {
 		assertEquals("mosip", DemoNormalizer.normalizeName("mr mosip", "fra", () -> createFetcher()));
 	}
@@ -61,5 +49,5 @@ public class DemoNormalizerTest {
 
 		assertEquals("mosip mosip", DemoNormalizer.normalizeAddress("c/o- Mr.mosip,.*  no    mosip"));
 	}
-
+*/
 }
