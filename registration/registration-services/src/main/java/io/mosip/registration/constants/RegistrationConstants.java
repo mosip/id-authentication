@@ -160,6 +160,7 @@ public class RegistrationConstants {
 	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
 	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
 	public static final String ROLES_LIST = "roleList";
+	public static final String USER_NAME_VALIDATION = "USER_NAME_VALIDATION"; 
 
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";

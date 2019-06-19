@@ -357,7 +357,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 		UserDTO userDTO = getUserDetail(userId);
 		if (userDTO == null) {
-			setErrorResponse(responseDTO, RegistrationConstants.USER_MACHINE_VALIDATION_MSG, null);
+			setErrorResponse(responseDTO, RegistrationConstants.USER_NAME_VALIDATION, null);
 		} else {
 			Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
 
