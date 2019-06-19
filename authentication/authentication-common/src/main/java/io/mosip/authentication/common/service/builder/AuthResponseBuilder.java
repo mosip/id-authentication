@@ -89,10 +89,10 @@ public class AuthResponseBuilder {
 	}
 
 	/**
-	 * Sets the Static Token Id
-	 * 
-	 * @param staticTokenId
-	 * @return
+	 * Sets the Static Token Id.
+	 *
+	 * @param staticTokenId the static token id
+	 * @return the auth response builder
 	 */
 	public AuthResponseBuilder setStaticTokenId(String staticTokenId) {
 		ResponseDTO res = new ResponseDTO();
@@ -115,6 +115,7 @@ public class AuthResponseBuilder {
 	/**
 	 * Builds the.
 	 *
+	 * @param staticTokenID the static token ID
 	 * @return the auth response DTO
 	 */
 	public AuthResponseDTO build(String staticTokenID) {

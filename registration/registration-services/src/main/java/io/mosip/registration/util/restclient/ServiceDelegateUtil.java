@@ -463,21 +463,24 @@ public class ServiceDelegateUtil {
 		switch (loginMode) {
 		case PASSWORD:
 			AuthNUserPasswordDTO authNUserPasswordDTO = new AuthNUserPasswordDTO();
-			authNUserPasswordDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNUserPasswordDTO.setAppId(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 			authNUserPasswordDTO.setUserName(loginUserDTO.getUserId());
 			authNUserPasswordDTO.setPassword(loginUserDTO.getPassword());
 			authNRequestDTO.setRequest(authNUserPasswordDTO);
 			break;
 		case OTP:
 			AuthNUserOTPDTO authNUserOTPDTO = new AuthNUserOTPDTO();
-			authNUserOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNUserOTPDTO.setAppId(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 			authNUserOTPDTO.setUserId(loginUserDTO.getUserId());
 			authNUserOTPDTO.setOtp(loginUserDTO.getOtp());
 			authNRequestDTO.setRequest(authNUserOTPDTO);
 			break;
 		default:
 			AuthNClientIDDTO authNClientIDDTO = new AuthNClientIDDTO();
-			authNClientIDDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNClientIDDTO.setAppId(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 			authNClientIDDTO.setClientId(clientId);
 			authNClientIDDTO.setSecretKey(secretKey);
 			authNRequestDTO.setRequest(authNClientIDDTO);

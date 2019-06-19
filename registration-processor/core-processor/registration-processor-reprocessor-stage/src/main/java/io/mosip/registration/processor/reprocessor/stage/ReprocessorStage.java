@@ -143,7 +143,6 @@ public class ReprocessorStage extends MosipVerticleManager {
 		EventBus eventBus = vertx.eventBus();
 		// listen the timer events
 		eventBus.consumer(("scheduler:stage_timer"), message -> {
-
 			process(new MessageDTO());
 		});
 

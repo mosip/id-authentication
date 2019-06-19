@@ -57,6 +57,14 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 /**
  * Implementation for {@link PreRegistrationDataSyncService}
  * 
+ * It interfaces with external pre-registration data sync services and download the packets based on the date range and packet id then  
+ * store it into the local machine in encrypted format. 
+ * It also maintain the records in local database along with the key used for encryption. 
+ * 
+ * This is invoked from job scheduler and new registration demographic screen.  
+ * Job scheduler - download the pre-registration packets between the date range based on value configured in the properties. 
+ * New Registration screen - download a particular packet from MOSIP server if online connectivity exists, otherwise use the packet from local file system.   
+ * 
  * @author YASWANTH S
  * @since 1.0.0
  */

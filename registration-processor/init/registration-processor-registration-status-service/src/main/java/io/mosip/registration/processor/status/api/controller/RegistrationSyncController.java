@@ -135,7 +135,7 @@ public class RegistrationSyncController {
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		List<SyncErrorDTO> syncErrorDTOList = new ArrayList<>();
-		List<SyncResponseDto> syncResponseList = new ArrayList<SyncResponseDto>();
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
 		for (SyncResponseDto syncResponseDto : syncResponseDtoList) {
 			if (syncResponseDto.getStatus().equals(ResponseStatusCode.SUCCESS.toString())) {
 				syncResponseList.add(syncResponseDto);

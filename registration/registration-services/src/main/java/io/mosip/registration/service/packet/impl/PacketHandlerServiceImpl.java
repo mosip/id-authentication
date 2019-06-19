@@ -22,7 +22,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.PacketCreationService;
@@ -30,8 +29,9 @@ import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 
 /**
- * The class to handle the registration data to create packet out of it and save
- * the registration packet data in {@link Registration}
+ * The implementation class of {@link PacketHandlerService} to handle the
+ * registration data to create packet out of it and save the encrypted packet
+ * data in the configured local system
  * 
  * @author Balaji Sridharan
  * @since 1.0.0

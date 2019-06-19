@@ -64,7 +64,10 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
- * Service class to sync master data from server to client
+ * It makes call to the external 'MASTER Sync' services to download the master data which are relevant to center specific by passing the 
+ * center id or mac address or machine id. Once download the data, it stores the information into the DB for further processing.  
+ * If center remapping found from the sync response object, it invokes this 'CenterMachineReMapService' object to initiate the center remapping related activities.   
+ * During the process, the required informations are updated into the audit table for further tracking.  
  * 
  * @author Sreekar Chukka
  * @since 1.0.0
@@ -99,14 +102,46 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	/** Object for Logger. */
 	private static final Logger LOGGER = AppConfig.getLogger(MasterSyncServiceImpl.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.MasterSyncService#getMasterSync(java.lang.
-	 * String)
+	/**
+	 * It invokes the Master Sync service to download the required information from external services if the system is online.  
+	 * Once download, the data would be updated into the DB for further process.  
+	 *
+	 * @param masterSyncDtls the master sync details
+	 * @param triggerPoint from where the call has been initiated [Either : user or system]
+	 * @return success or failure status as Response DTO.
 	 */
 	@Override
+<<<<<<< HEAD
 	public synchronized ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
+=======
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint) {
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID, "Initiating the Master Sync");
+
+		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, null));
+	}
+
+	/**
+	 * It invokes the external 'Master Sync' service to download the required center specific information from MOSIP server if the system is online.  
+	 * Once download, the data would be updated into the DB for further process.  
+	 *
+	 * @param masterSyncDtls
+	 *            the master sync details
+	 * @param triggerPoint
+	 *            from where the call has been initiated [Either : user or system] 
+	 * @param keyIndex
+	 *            This is the key index provided by the MOSIP server post submission of local TPM public key. Based on this key the MOSIP server would identify the 
+	 *            client and send the sync response accordingly. 
+	 * @return the master sync
+	 * 			  Success or failure status is wrapped in ResponseDTO. 
+	 */
+	@Override
+	public ResponseDTO getMasterSync(String masterSyncDtls, String triggerPoint, String keyIndex) {
+		LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+				"Initiating the Master Sync for initial setup");
+
+		return syncMasterData(masterSyncDtls, triggerPoint, getRequestParams(masterSyncDtls, keyIndex));
+	}
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		String resoponse = RegistrationConstants.EMPTY;
@@ -221,12 +256,12 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 	}
 
 	/**
-	 * Gets the master sync json.
-	 *
-	 * @param machineId    the machine id
-	 * @param lastSyncTime the last sync time
-	 * @return the master sync json
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * It makes the call to external Master sync service [master_sync/ center_remap_sync] with respect to the current center 
+	 * 
+	 * @param triggerPoint	from where the call has been initiated. Applicable values are {user or system}.  
+	 * @param requestParamMap	it holds the center id, last sync datetime, mac address and machine id. 
+	 * @return Map	Response object, which contains the master sync data.  
+	 * @throws RegBaseCheckedException
 	 */
 	@SuppressWarnings("unchecked")
 	private LinkedHashMap<String, Object> getMasterSyncJson(String machineId, LocalDateTime lastSyncTime,
@@ -241,18 +276,38 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 
 		// Setting uri Variables
 
+<<<<<<< HEAD
 		Map<String, String> requestParamMap = new LinkedHashMap<>();
 		requestParamMap.put(RegistrationConstants.MAC_ADDRESS, machineId);
+=======
+			// Setting uri Variables
+			// If initial setup, then invoke the 'Master Sync' without center id. That will be returned based on the mac id/ machine name. 
+			if (RegistrationConstants.ENABLE.equalsIgnoreCase(
+					(String) globalParamService.getGlobalParams().get(RegistrationConstants.INITIAL_SETUP))) {
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 
 		if (null != lastSyncTime) {
 			time = DateUtils.formatToISOString(lastSyncTime);
 			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, time);
 		}
 
+<<<<<<< HEAD
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 				(String) globalParamService.getGlobalParams().get(RegistrationConstants.INITIAL_SETUP))) {
 
 			serviceName = RegistrationConstants.MASTER_VALIDATOR_SERVICE_NAME;
+=======
+			} else {
+				// If Center id available in db, then invoke the 'Master Sync' with center id.  
+				requestParamMap.put(RegistrationConstants.MASTER_CENTER_PARAM, getCenterId());
+				serviceName = RegistrationConstants.MASTER_CENTER_REMAP_SERVICE_NAME;
+			}
+	
+			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.MAC_ADDRESS + "===> " + requestParamMap.get(RegistrationConstants.MAC_ADDRESS)
+							+ " " + RegistrationConstants.MASTER_DATA_LASTUPDTAE + "==> "
+							+ requestParamMap.get(RegistrationConstants.MASTER_DATA_LASTUPDTAE));
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 
 		} else {
 			requestParamMap.put(RegistrationConstants.MASTER_CENTER_PARAM, getCenterId());
@@ -298,12 +353,51 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return masterSyncResponse;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * io.mosip.registration.service.MasterSyncService#findLocationByHierarchyCode(
 	 * java.lang.String, java.lang.String)
+=======
+	private Map<String, String> getRequestParams(String masterSyncDtls, String keyIndex) {
+		Map<String, String> requestParamMap = new HashMap<>();
+
+		// Add Mac Address
+		String macId = RegistrationSystemPropertiesChecker.getMachineId();
+		requestParamMap.put(RegistrationConstants.MAC_ADDRESS, macId);
+
+		// Get KeyIndex
+		if (!RegistrationConstants.ENABLE
+				.equalsIgnoreCase(String.valueOf(ApplicationContext.map().get(RegistrationConstants.INITIAL_SETUP)))) {
+			keyIndex = machineMappingDAO.getKeyIndexByMacId(macId);
+		}
+
+		// Add the Key Index
+		if (null != keyIndex) {
+			requestParamMap.put(RegistrationConstants.KEY_INDEX.toLowerCase(), keyIndex);
+		}
+
+		// getting Last Sync date from Data from sync table
+		SyncControl masterSyncDetails = masterSyncDao.syncJobDetails(masterSyncDtls);
+
+		// Add the Last Updated Date
+		if (masterSyncDetails != null) {
+			requestParamMap.put(RegistrationConstants.MASTER_DATA_LASTUPDTAE, DateUtils.formatToISOString(
+					LocalDateTime.ofInstant(masterSyncDetails.getLastSyncDtimes().toInstant(), ZoneOffset.ofHours(0))));
+		}
+
+		return requestParamMap;
+	}
+
+	/**
+	 * Find location or region by hierarchy code.   
+	 *
+	 * @param hierarchyCode the hierarchy code
+	 * @param langCode      the lang code
+	 * @return the list holds the Location data to be displayed in the UI.  
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	@Override
 	public List<LocationDto> findLocationByHierarchyCode(String hierarchyCode, String langCode) {
@@ -324,12 +418,12 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return locationDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.MasterSyncService#findProvianceByHierarchyCode(
-	 * java.lang.String)
+	/**
+	 * Find proviance by hierarchy code.
+	 *
+	 * @param code the code
+	 * @param langCode the lang code
+	 * @return the list holds the Province data to be displayed in the UI.  
 	 */
 	@Override
 	public List<LocationDto> findProvianceByHierarchyCode(String code, String langCode) {
@@ -350,11 +444,11 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return locationDto;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.MasterSyncService#getAllReasons(java.lang.
-	 * String)
+	/**
+	 * Gets all the reasons for rejection that to be selected during EOD approval process.
+	 *
+	 * @param langCode the lang code
+	 * @return the all reasons
 	 */
 	@Override
 	public List<ReasonListDto> getAllReasonsList(String langCode) {
@@ -385,12 +479,11 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.MasterSyncService#getAllBlackListedWords(java.
-	 * lang.String)
+	/**
+	 * Gets all the black listed words that shouldn't be allowed while capturing demographic information from user. 
+	 *
+	 * @param langCode the lang code
+	 * @return the all black listed words
 	 */
 	@Override
 	public List<BlacklistedWordsDto> getAllBlackListedWords(String langCode) {
@@ -411,11 +504,11 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return blackWords;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.MasterSyncService#getGenderDtls(java.lang.
-	 * String)
+	/**
+	 * Gets the gender details.
+	 *
+	 * @param langCode the lang code
+	 * @return the gender dtls
 	 */
 	@Override
 	public List<GenderDto> getGenderDtls(String langCode) {
@@ -435,12 +528,12 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return gendetDtoList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.MasterSyncService#getDocumentCategories(java.
-	 * lang.String)
+	/**
+	 * Gets all the document categories from db that to be displayed in the UI dropdown.
+	 *
+	 * @param docCode the doc code
+	 * @param langCode the lang code
+	 * @return all the document categories
 	 */
 	@Override
 	public List<DocumentCategoryDto> getDocumentCategories(String docCode, String langCode) {
@@ -468,12 +561,12 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return documentsDTO;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.MasterSyncService#getIndividualType(java.lang.
-	 * String, java.lang.String)
+	/**
+	 * Gets the individual type.
+	 *
+	 * @param code the code
+	 * @param langCode the lang code
+	 * @return the individual type
 	 */
 	@Override
 	public List<IndividualTypeDto> getIndividualType(String code, String langCode) {
@@ -489,12 +582,11 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		return listOfIndividualDTO;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.MasterSyncService#getBiometricType(java.lang.
-	 * String, java.lang.String)
+	/**
+	 * Gets the biometric type.
+	 *
+	 * @param langCode the lang code
+	 * @return the biometric type
 	 */
 	public List<BiometricAttributeDto> getBiometricType(String langCode) {
 

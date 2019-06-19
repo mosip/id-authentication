@@ -11,17 +11,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+<<<<<<< HEAD
+=======
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.DeviceTypes;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.impl.MachineMappingDAOImpl;
 import io.mosip.registration.entity.MachineMaster;
 import io.mosip.registration.entity.RegDeviceMaster;
@@ -40,6 +48,8 @@ import io.mosip.registration.repositories.RegistrationCenterMachineDeviceReposit
 import io.mosip.registration.repositories.UserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ApplicationContext.class})
 public class UserClientMachineMappingDAOTest {
 
 	@Mock
@@ -69,11 +79,14 @@ public class UserClientMachineMappingDAOTest {
 	public void initialize() throws IOException, URISyntaxException {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
+		
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0B");
 	}
@@ -86,7 +99,7 @@ public class UserClientMachineMappingDAOTest {
 		specId.setId("100131");
 		specId.setLangCode("eng");
 		machineMaster.setRegMachineSpecId(specId);
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddress(Mockito.anyString()))
+		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineMaster);
 		String stationId = machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		Assert.assertSame("100131", stationId);
@@ -165,4 +178,29 @@ public class UserClientMachineMappingDAOTest {
 		Assert.assertNotNull((machineMappingDAOImpl.getDevicesMappedToRegCenter("eng")));
 	}
 
+<<<<<<< HEAD
+=======
+	@Test
+	public void getKeyIndexByMacIdTest() {
+		MachineMaster machineMaster = PowerMockito.mock(MachineMaster.class);
+		machineMaster.setKeyIndex("keyIndex");
+
+		PowerMockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(machineMaster);
+
+		Assert.assertEquals(machineMaster.getKeyIndex(), machineMappingDAOImpl.getKeyIndexByMacId("name"));
+
+	}
+
+	@Test
+	public void getKeyIndexByMacIdNullTest() {
+
+		PowerMockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(null);
+
+		Assert.assertNull(machineMappingDAOImpl.getKeyIndexByMacId("name"));
+
+	}
+
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 }

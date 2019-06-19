@@ -325,7 +325,7 @@ public class SessionContext {
 				sessionContext = null;
 				return false;
 			}
-		} catch (RegBaseCheckedException exception) {
+		} catch (Exception exception) {
 			return false;
 		}
 	}

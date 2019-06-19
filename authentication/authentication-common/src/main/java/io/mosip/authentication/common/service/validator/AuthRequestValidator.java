@@ -38,8 +38,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant AUTH_REQUEST. */
 	private static final String AUTH_REQUEST = "authRequest";
 
-	private static final String ALLOWED_AUTH_TYPE = "auth.types.allowed";
-
 	/** The Constant VALIDATE_REQUEST_TIMED_OUT. */
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
@@ -175,7 +173,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	 * @return the allowedAuthType
 	 */
 	protected String getAllowedAuthTypeProperty() {
-		return ALLOWED_AUTH_TYPE;
+		return IdAuthConfigKeyConstants.ALLOWED_AUTH_TYPE;
 	}
 
 	@Override

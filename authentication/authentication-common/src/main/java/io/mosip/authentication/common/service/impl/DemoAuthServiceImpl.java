@@ -42,6 +42,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	@Autowired
 	public MatchInputBuilder matchInputBuilder;
 
+	/** The ida mapping config. */
 	@Autowired
 	IDAMappingConfig idaMappingConfig;
 
@@ -51,7 +52,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param listMatchInputs the list match inputs
 	 * @param authRequestDTO  the demo DTO
 	 * @param demoEntity      the demo entity
-	 * @param partnerId
+	 * @param partnerId the partner id
 	 * @return the match output
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception

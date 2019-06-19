@@ -287,8 +287,7 @@ public class TemplateGenerator extends BaseService {
 			templateValues.put(RegistrationConstants.TEMPLATE_PHOTO_LOCAL_LANG,
 					localProperties.getString("individualphoto"));
 			byte[] applicantImageBytes;
-			if (registration.isUpdateUINNonBiometric() && !SessionContext.map()
-					.get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN).equals(RegistrationConstants.ENABLE)) {
+			if (registration.isUpdateUINNonBiometric() && !registration.isUpdateUINChild()) {
 				applicantImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace();
 			} else {
 				applicantImageBytes = registration.getBiometricDTO().getApplicantBiometricDTO().getFace().getFace();

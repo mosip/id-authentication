@@ -36,7 +36,7 @@ public interface AbisService {
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto);
 
 	/**
-	 * Perform dedupe.
+	 * Identify.
 	 *
 	 * @param identifyRequest the identify request
 	 * @return the abis identify response dto
@@ -45,7 +45,7 @@ public interface AbisService {
 	 * @throws ParserConfigurationException the parser configuration exception
 	 * @throws SAXException the SAX exception
 	 */
-	public AbisIdentifyResponseDto performDedupe(AbisIdentifyRequestDto identifyRequest);
+	public AbisIdentifyResponseDto identify(AbisIdentifyRequestDto identifyRequest);
 	/**
 	 * Delete.
 	 */
@@ -57,5 +57,5 @@ public interface AbisService {
 	 * @param abisPingRequestDto the abis ping request dto
 	 * @return the abis ping response dto
 	 */
-	AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto);
+	public AbisPingResponseDto ping(AbisPingRequestDto abisPingRequestDto);
 }

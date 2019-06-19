@@ -11,7 +11,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+<<<<<<< HEAD
 import org.junit.BeforeClass;
+=======
+import org.junit.Ignore;
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -118,6 +122,7 @@ public class UserDetailDAOTest {
 
 	}
 
+	@Ignore
 	@SuppressWarnings("unchecked")
 	@Test
 	public void userDetlsDao() {

@@ -69,7 +69,8 @@ public class OTPManager extends BaseService {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				AuthNRequestDTO authNRequestDTO = new AuthNRequestDTO();
 				AuthNSendOTPDTO authNSendOTPDTO = new AuthNSendOTPDTO();
-				authNSendOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+				authNSendOTPDTO.setAppId(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 				authNSendOTPDTO.setContext(RegistrationConstants.REGISTRATION_CONTEXT);
 				authNSendOTPDTO.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				authNSendOTPDTO.setOtpChannel(Arrays.asList(

@@ -5,12 +5,9 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -55,9 +52,6 @@ public class DigitalSign {
 	 * @throws UnrecoverableEntryException the unrecoverable entry exception
 	 * @throws JoseException the jose exception
 	 * @throws InvalidKeySpecException the invalid key spec exception
-	 * @throws SignatureException 
-	 * @throws NoSuchProviderException 
-	 * @throws InvalidKeyException 
 	 */
 	@PostMapping(path = "/sign")
 	public String sign(@RequestBody String data) throws KeyStoreException, NoSuchAlgorithmException,

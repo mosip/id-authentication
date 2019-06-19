@@ -247,11 +247,23 @@ public class MosipBioDeviceManagerTest {
 
 	}
 
+<<<<<<< HEAD
 	//@Test
+=======
+	@Test(expected = NullPointerException.class)
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	public void scan() throws RegBaseCheckedException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
+		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
 		mosipBioDeviceManager.scan("deviceType");
+	}
+	@Test(expected=RegBaseCheckedException.class)
+	public void scan1() throws RegBaseCheckedException {
+		Map<String, BioDevice> deviceRegistry = new HashMap<>();
+		deviceRegistry.put("deviceType", new BioDevice());
+		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
+		mosipBioDeviceManager.scan("deviceTyp");
 	}
 
 <<<<<<< HEAD

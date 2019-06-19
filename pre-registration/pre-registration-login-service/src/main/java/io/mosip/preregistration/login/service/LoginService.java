@@ -280,7 +280,10 @@ public class LoginService {
 		try {
 			
 			Map<String,String> headersMap=new HashMap<>();
-			headersMap.put("Cookie",authHeader);
+			if(authHeader!=null) {
+				headersMap.put("Cookie",authHeader);
+			}
+			
 			String url=sendOtpResourceUrl+"/authorize/invalidateToken";
 			userId=loginCommonUtil.getUserDetailsFromToken(headersMap);
 			responseEntity=(ResponseEntity<String>) loginCommonUtil.callAuthService(url,HttpMethod.POST,MediaType.APPLICATION_JSON,null,headersMap,String.class);

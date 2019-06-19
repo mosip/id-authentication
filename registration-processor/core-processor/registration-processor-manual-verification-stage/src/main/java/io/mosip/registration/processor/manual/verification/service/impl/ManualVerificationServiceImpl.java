@@ -124,6 +124,10 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		String matchType = dto.getMatchType();
+		if(dto.getUserId() == null || dto.getUserId().isEmpty()) {
+			throw new UserIDNotPresentException(PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
+					PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
+		}
 		checkUserIDExistsInMasterList(dto);
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
 				ManualVerificationStatus.ASSIGNED.name());
@@ -275,7 +279,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
-
+		messageDTO.setReg_type(RegistrationType.valueOf(registrationStatusDto.getRegistrationType()));
 		if (entities.isEmpty()) {
 			throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
@@ -290,7 +294,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			registrationStatusDto.setRegistrationStageName(stageName);
 
 			if (manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
-				if (messageDTO.getReg_type().toString().equalsIgnoreCase(RegistrationType.LOST.toString()))
+				if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(RegistrationType.LOST.toString()))
 					packetInfoManager.saveRegLostUinDet(registrationId, manualVerificationDTO.getMatchedRefId());
 				messageDTO.setIsValid(true);
 				manualVerificationStage.sendMessage(messageDTO);
@@ -415,6 +419,10 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), null,
 					PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getMessage() + e);
+			throw new UserIDNotPresentException(PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getCode(),
+					PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getMessage());
+
+			
 		}
 	}
 

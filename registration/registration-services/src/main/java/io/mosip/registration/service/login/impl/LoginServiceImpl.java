@@ -51,7 +51,7 @@ import io.mosip.registration.service.sync.PublicKeySync;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
- * Class for implementing login service
+ * Implementation for {@link LoginService}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -112,12 +112,21 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	
 	@Autowired
 	private UserSaltDetailsService userSaltDetailsService;
+<<<<<<< HEAD
 	
 	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.mosip.registration.service.login.LoginService#getModesOfLogin()
+=======
+	@Autowired
+	private TPMPublicKeySyncService tpmPublicKeySyncService;
+
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getModesOfLogin(java.lang.String, java.util.Set)
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	@Override
 	public List<String> getModesOfLogin(String authType, Set<String> roleList) {
@@ -131,6 +140,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 		return appAuthenticationDAO.getModesOfLogin(authType, roleList);
 	}
+<<<<<<< HEAD
 	
 	/*
 	 * (non-Javadoc)
@@ -138,6 +148,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	 * @see
 	 * org.mosip.registration.service.login.LoginService#getUserDetail(java.lang.
 	 * String)
+=======
+
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getUserDetail(java.lang.String)
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	@Override
 	public UserDTO getUserDetail(String userId) {
@@ -153,11 +169,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return MAPPER_FACADE.map(userDetail, UserDTO.class);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.service.login.LoginService#
-	 * getRegistrationCenterDetails(java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getRegistrationCenterDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId,String langCode) {
@@ -172,11 +186,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId,langCode);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.service.login.LoginService#
-	 * getScreenAuthorizationDetails(java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getScreenAuthorizationDetails(java.util.List)
 	 */
 	@Override
 	public AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode) {
@@ -190,12 +202,19 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 		return screenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
 	}
+<<<<<<< HEAD
 	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
 	 * registration.dto.UserDTO)
+=======
+
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#updateLoginParams(io.mosip.registration.dto.UserDTO)
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	public void updateLoginParams(UserDTO userDTO) {
 
@@ -216,6 +235,13 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 	}
 
+<<<<<<< HEAD
+=======
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#initialSync()
+	 */
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	@Override
 	public List<String> initialSync() {
 		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
@@ -258,12 +284,19 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return val;
 
 	}
+<<<<<<< HEAD
 	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.service.LoginService#validateInvalidLogin(io.mosip.
 	 * registration.dto.UserDTO,java.lang.String,integer,integer)
+=======
+
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#validateInvalidLogin(io.mosip.registration.dto.UserDTO, java.lang.String, int, int)
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	public String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime) {
 		
@@ -320,6 +353,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			return "true";
 		}
 	}
+<<<<<<< HEAD
 
 	/**
 	 * Validating login time and count
@@ -350,6 +384,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	 * 
 	 * @param userId
 	 * 			userid
+=======
+
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#validateUser(java.lang.String)
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	public ResponseDTO validateUser(String userId) {
 		ResponseDTO responseDTO = new ResponseDTO();

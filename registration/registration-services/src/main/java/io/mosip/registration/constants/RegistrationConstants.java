@@ -1217,7 +1217,7 @@ public class RegistrationConstants {
 	public static final String AUTH_AUTHORIZATION = "Authorization";
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
-	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
+	public static final String REGISTRATION_CLIENT = "mosip.registration.app.id";
 	public static final String REGISTRATION_CONTEXT = "auth-otp";
 	public static final String COOKIE = "Cookie";
 	public static final String ENGLISH_LANG_CODE = "eng";
@@ -1356,8 +1356,7 @@ public class RegistrationConstants {
 	public static final String KER = "SIGN";
 	public static final String DTAE_MONTH_YEAR_REGEX = "dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage|ageField";
 
-	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
-	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
+	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";	
 
 	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
@@ -1439,5 +1438,9 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_FACE="FACE";
 	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
 	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
+	
+	public static final int DAYS = 31;
+	public static final int MONTH = 12;
+	public static final int YEAR = 3;
 
 }
