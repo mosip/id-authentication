@@ -24,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.idrepository.core.builder.AuditRequestBuilder;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 
@@ -48,7 +49,7 @@ public class AuditRequestBuilderTest {
 	@Test
 	public void testBuildRequest() {
 		RequestWrapper<AuditRequestDTO> actualRequest = auditBuilder.buildRequest(AuditModules.ID_REPO_CORE_SERVICE,
-				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
+				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc");
 		actualRequest.getRequest().setActionTimeStamp(null);
 		AuditRequestDTO expectedRequest = new AuditRequestDTO();
 		try {
@@ -65,7 +66,7 @@ public class AuditRequestBuilderTest {
 			expectedRequest.setSessionUserId("sessionUserId");
 			expectedRequest.setSessionUserName("sessionUserName");
 			expectedRequest.setId("id");
-			expectedRequest.setIdType("UIN");
+			expectedRequest.setIdType(IdType.REG_ID.getIdType());
 			expectedRequest.setCreatedBy(env.getProperty("user.name"));
 			expectedRequest.setModuleName(AuditModules.ID_REPO_CORE_SERVICE.getModuleName());
 			expectedRequest.setModuleId(AuditModules.ID_REPO_CORE_SERVICE.getModuleId());

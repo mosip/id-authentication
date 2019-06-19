@@ -24,6 +24,7 @@ import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
@@ -136,8 +137,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 */
 	@Override
 	public ResponseWrapper<VidResponseDTO> createVid(VidRequestDTO vidRequest) throws IdRepoAppException {
+		String uin = vidRequest.getUin().toString();
 		try {
-			String uin = vidRequest.getUin().toString();
 			Vid vid = generateVid(uin, vidRequest.getVidType());
 			VidResponseDTO responseDTO = new VidResponseDTO();
 			responseDTO.setVid(Long.parseLong(vid.getVid()));
@@ -155,7 +156,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
 			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.CREATE_VID,
-					vidRequest.getVidType(), "Create VID requested");
+					securityManager.hash(uin.getBytes()), IdType.VID,
+					"Create VID requested for " + vidRequest.getVidType());
 		}
 	}
 
@@ -268,8 +270,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.RETRIEVE_VID_UIN, null,
-					"Retrieve Uin By VID requested");
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.RETRIEVE_VID_UIN,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Retrieve Uin By VID requested");
 		}
 	}
 
@@ -303,8 +305,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, UPDATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.UPDATE_VID_STATUS, null,
-					"Update VID requested");
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.UPDATE_VID_STATUS,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Update VID requested");
 		}
 	}
 
@@ -379,8 +381,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 			mosipLogger.error(IdRepoLogger.getVid(), ID_REPO_VID_SERVICE, REGENERATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.REGENERATE_VID, null,
-					"Regenerate VID requested");
+			auditHelper.audit(AuditModules.ID_REPO_VID_SERVICE, AuditEvents.REGENERATE_VID,
+					securityManager.hash(vid.getBytes()), IdType.VID, "Regenerate VID requested");
 		}
 	}
 

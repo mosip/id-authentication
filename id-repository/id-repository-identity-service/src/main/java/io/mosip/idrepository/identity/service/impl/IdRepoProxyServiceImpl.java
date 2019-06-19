@@ -25,6 +25,7 @@ import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.dto.DocumentsDTO;
 import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.IdResponseDTO;
@@ -172,8 +173,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, regId,
-					"Create Identity requested");
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE,
+					securityManager.hash(regId.getBytes()), IdType.REG_ID, "Create Identity requested");
 		}
 	}
 
@@ -186,8 +187,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	 */
 	@Override
 	public IdResponseDTO retrieveIdentityByUin(String uin, String type) throws IdRepoAppException {
+		String uinHash = retrieveUinHash(uin);
 		try {
-			String uinHash = retrieveUinHash(uin);
 			if (uinRepo.existsByUinHash(uinHash)) {
 				return retrieveIdentityByUinHash(type, uinHash);
 			} else {
@@ -205,8 +206,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_UIN, null,
-					"Retrieve Identity requested");
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_UIN,
+					securityManager.hash(uin.getBytes()), IdType.UIN,"Retrieve Identity requested");
 		}
 	}
 
@@ -277,20 +278,17 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, RETRIEVE_IDENTITY, "\n" + e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_RID, rid,
-					"Retrieve Identity requested");
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.RETRIEVE_IDENTITY_REQUEST_RESPONSE_RID,
+					securityManager.hash(rid.getBytes()), IdType.REG_ID,"Retrieve Identity requested");
 		}
 	}
 
 	/**
 	 * Gets the files.
 	 *
-	 * @param uinObject
-	 *            the uin object
-	 * @param documents
-	 *            the documents
-	 * @param type
-	 *            the type
+	 * @param uinObject the uin object
+	 * @param documents the documents
+	 * @param type      the type
 	 * @return the files
 	 */
 	private void getFiles(Uin uinObject, List<DocumentsDTO> documents, String type) {
@@ -306,10 +304,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/**
 	 * Gets the demographic files.
 	 *
-	 * @param uinObject
-	 *            the uin object
-	 * @param documents
-	 *            the documents
+	 * @param uinObject the uin object
+	 * @param documents the documents
 	 * @return the demographic files
 	 */
 	private void getDemographicFiles(Uin uinObject, List<DocumentsDTO> documents) {
@@ -351,10 +347,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/**
 	 * Gets the biometric files.
 	 *
-	 * @param uinObject
-	 *            the uin object
-	 * @param documents
-	 *            the documents
+	 * @param uinObject the uin object
+	 * @param documents the documents
 	 * @return the biometric files
 	 */
 	private void getBiometricFiles(Uin uinObject, List<DocumentsDTO> documents) {
@@ -426,25 +420,22 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 			mosipLogger.error(ID_REPO_SERVICE, ID_REPO_SERVICE_IMPL, UPDATE_IDENTITY, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATABASE_ACCESS_ERROR, e);
 		} finally {
-			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.UPDATE_IDENTITY_REQUEST_RESPONSE, regId,
-					"Update Identity requested");
+			auditHelper.audit(AuditModules.ID_REPO_CORE_SERVICE, AuditEvents.UPDATE_IDENTITY_REQUEST_RESPONSE,
+					securityManager.hash(regId.getBytes()), IdType.REG_ID, "Update Identity requested");
 		}
 	}
 
 	/**
 	 * Construct id response.
 	 *
-	 * @param id
-	 *            the id
-	 * @param uin
-	 *            the uin
-	 * @param documents
-	 *            the documents
+	 * @param id        the id
+	 * @param uin       the uin
+	 * @param documents the documents
 	 * @return the id response DTO
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
-	private IdResponseDTO constructIdResponse(String id, Uin uin, List<DocumentsDTO> documents) throws IdRepoAppException {
+	private IdResponseDTO constructIdResponse(String id, Uin uin, List<DocumentsDTO> documents)
+			throws IdRepoAppException {
 		IdResponseDTO idResponse = new IdResponseDTO();
 		idResponse.setId(id);
 		idResponse.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
@@ -463,13 +454,10 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 	/**
 	 * Convert to object.
 	 *
-	 * @param identity
-	 *            the identity
-	 * @param clazz
-	 *            the clazz
+	 * @param identity the identity
+	 * @param clazz    the clazz
 	 * @return the object
-	 * @throws IdRepoAppException
-	 *             the id repo app exception
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private Object convertToObject(byte[] identity, Class<?> clazz) throws IdRepoAppException {
 		try {
