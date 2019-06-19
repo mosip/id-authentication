@@ -121,7 +121,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
 			//validate the input against the schema, mandatory, pattern and master data. if any error then stop the rest of the process
 			//and display error message to the user.
-			if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
+			if (registrationCategory != null && !registrationCategory.equals(RegistrationConstants.EMPTY)) {
 
 				idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
 						registrationCategory);

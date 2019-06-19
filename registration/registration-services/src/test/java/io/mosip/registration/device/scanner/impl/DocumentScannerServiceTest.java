@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 
+@Ignore
 public class DocumentScannerServiceTest {
 
 	@Rule

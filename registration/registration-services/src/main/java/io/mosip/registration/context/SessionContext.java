@@ -278,7 +278,7 @@ public class SessionContext {
 	private static boolean validateFingerprint(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateFingerPrint(authenticationValidatorDTO.getUserId())) {				
+			if(bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto(authenticationValidatorDTO.getUserId()))) {				
 				createSessionContext();
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
@@ -309,7 +309,7 @@ public class SessionContext {
 	private static boolean validateIris(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateIris(authenticationValidatorDTO.getUserId())) {
+			if(bioService.validateIris(bioService.getIrisAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
 				createSessionContext();
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
@@ -340,7 +340,7 @@ public class SessionContext {
 	private static boolean validateFace(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateFace(authenticationValidatorDTO.getUserId())) {
+			if(bioService.validateFace(bioService.getFaceAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
 				createSessionContext();
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	

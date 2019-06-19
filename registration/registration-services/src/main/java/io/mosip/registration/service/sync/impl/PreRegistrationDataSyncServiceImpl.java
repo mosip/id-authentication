@@ -129,15 +129,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				Map<String, String> preRegIds = (Map<String, String>) preRegistrationIdsDTO.getPreRegistrationIds();
 
-				/* Get Packets Using pre registration ID's */
-				for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
-
-					if (!preRegDetail.getValue().contains("Z")) {
-						preRegDetail.setValue(preRegDetail.getValue() + "Z");
-					}
-					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
-							Timestamp.from(Instant.parse(preRegDetail.getValue())));
-				}
+				getPreRegistrationPackets(syncJobId, responseDTO, preRegIds);
+				
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
 				boolean isNoRecordMsg = false;
@@ -171,6 +164,29 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching Pre-Registration Id's ended");
 
 		return responseDTO;
+	}
+
+	/**
+	 * Gets the pre registration packets.
+	 *
+	 * @param syncJobId 
+	 * 				the sync job id
+	 * @param responseDTO 
+	 * 				the response DTO
+	 * @param preRegIds 
+	 * 				the pre-registration id's
+	 */
+	private void getPreRegistrationPackets(String syncJobId, ResponseDTO responseDTO, Map<String, String> preRegIds) {
+		
+		/* Get Packets Using pre registration ID's */
+		for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
+
+			if (!preRegDetail.getValue().contains("Z")) {
+				preRegDetail.setValue(preRegDetail.getValue() + "Z");
+			}
+			getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
+					Timestamp.from(Instant.parse(preRegDetail.getValue())));
+		}
 	}
 
 	/*

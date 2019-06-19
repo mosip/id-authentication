@@ -16,7 +16,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,17 +84,15 @@ public class UserOnBoardDAOImlpTest {
 		PowerMockito.mockStatic(SessionContext.class);
 		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
 		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
-	}
-
-	@BeforeClass
-	public static void beforeClass() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
+		
+		
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.USER_STATION_ID, "1947");
 		appMap.put(RegistrationConstants.USER_CENTER_ID, "1947");
-		ApplicationContext.getInstance().setApplicationMap(appMap);
+		PowerMockito.when(ApplicationContext.map()).thenReturn(appMap);
 		
-		PowerMockito.mockStatic(ApplicationContext.class);
-		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
 	}
 
 	@Test
@@ -207,12 +204,11 @@ public class UserOnBoardDAOImlpTest {
 
 	}
 	
-	@Ignore
 	@Test
 	public void savetest() {
 		UserMachineMapping machineMapping = new UserMachineMapping();
 		Mockito.when(userMachineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
-		Assert.assertSame(RegistrationConstants.SUCCESS, userOnboardDAOImpl.save());
+		userOnboardDAOImpl.save();
 	}
 
 	@SuppressWarnings("unchecked")
