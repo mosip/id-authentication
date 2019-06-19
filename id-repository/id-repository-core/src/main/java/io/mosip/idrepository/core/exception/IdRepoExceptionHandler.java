@@ -150,7 +150,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
 			return new ResponseEntity<>(buildExceptionResponse(ex, ((ServletWebRequest) request).getHttpMethod(), null),
 					HttpStatus.OK);
-		}else if (ex instanceof ServletException || ex instanceof BeansException) {
+		} else if (ex instanceof HttpMessageNotReadableException || ex instanceof ServletException || ex instanceof BeansException) {
 			ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
