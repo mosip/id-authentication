@@ -50,12 +50,7 @@ public class AuditHelper {
 		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(module, event, id,idType, desc);
 		RestRequestDTO restRequest = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDTO.class);
-		try {
-			Object requestSync = restHelper.requestSync(restRequest);
-		} catch (RestServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		 restHelper.requestAsync(restRequest);
 	}
 
 }

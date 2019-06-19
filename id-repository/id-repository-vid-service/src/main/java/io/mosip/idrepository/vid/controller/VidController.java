@@ -24,6 +24,7 @@ import io.mosip.idrepository.core.dto.VidResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.core.spi.VidService;
 import io.mosip.idrepository.core.util.DataValidationUtil;
 import io.mosip.idrepository.vid.validator.VidRequestValidator;
@@ -110,7 +111,7 @@ public class VidController {
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(vidService.createVid(request.getRequest()), HttpStatus.OK);
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, CREATE);
 		}
 	}
@@ -132,11 +133,11 @@ public class VidController {
 			validator.validateVid(vid);
 			return new ResponseEntity<>(vidService.retrieveUinByVid(vid), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(IdRepoLogger.getVid(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VID));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getVid(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
@@ -163,14 +164,14 @@ public class VidController {
 			DataValidationUtil.validate(errors);
 			return new ResponseEntity<>(vidService.updateVid(vid, request.getRequest()), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(IdRepoLogger.getVid(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VID));
 		} catch (IdRepoDataValidationException e) {
-			mosipLogger.error(IdRepoLogger.getVid(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getVid(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, UPDATE_VID_STATUS, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 	}
@@ -193,11 +194,11 @@ public class VidController {
 			validator.validateVid(vid);
 			return new ResponseEntity<>(vidService.regenerateVid(vid), HttpStatus.OK);
 		} catch (InvalidIDException e) {
-			mosipLogger.error(IdRepoLogger.getVid(), VID_CONTROLLER, REGENERATE_VID, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, REGENERATE_VID, e.getMessage());
 			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VID));
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getVid(), VID_CONTROLLER, REGENERATE_VID, e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, REGENERATE_VID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, REGENERATE);
 		}
 	}

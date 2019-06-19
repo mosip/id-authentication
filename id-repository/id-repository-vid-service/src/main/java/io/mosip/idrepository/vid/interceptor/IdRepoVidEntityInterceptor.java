@@ -63,7 +63,7 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 				entity = vidEntity;
 			}
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_ENTITY_INTERCEPTOR, "onSave", "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_ENTITY_INTERCEPTOR, "onSave", "\n" + e.getMessage());
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onSave(entity, id, state, propertyNames, types);
@@ -94,7 +94,7 @@ public class IdRepoVidEntityInterceptor extends EmptyInterceptor {
 				entity = vidEntity;
 			}
 		} catch (IdRepoAppException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_ENTITY_INTERCEPTOR, "onFlushDirty", "\n" + e.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO_ENTITY_INTERCEPTOR, "onFlushDirty", "\n" + e.getMessage());
 			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.ENCRYPTION_DECRYPTION_FAILED, e);
 		}
 		return super.onFlushDirty(entity, id, currentState, currentState, propertyNames, types);

@@ -25,6 +25,7 @@ import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -93,41 +94,41 @@ public class RestHelper {
 		Object response;
 		try {
 			requestTime = DateUtils.getUTCCurrentDateTime();
-			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+			mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Request received at : " + requestTime);
-			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
+			mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			if (request.getTimeout() != null) {
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 			} else {
 				response = request(request).block();
-				mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						PREFIX_RESPONSE + response);
 			}
 			checkErrorResponse(response, request.getResponseType());
 			return (T) response;
 		} catch (WebClientResponseException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					THROWING_REST_SERVICE_EXCEPTION + "- Http Status error - \n " + e.getMessage()
 							+ " \n Response Body : \n" + ExceptionUtils.getStackTrace(e));
 			throw handleStatusError(e, request.getResponseType());
 		} catch (RuntimeException e) {
 			if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
-				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 						THROWING_REST_SERVICE_EXCEPTION + "- CONNECTION_TIMED_OUT - \n " + e.getMessage());
 				throw new RestServiceException(IdRepoErrorConstants.CONNECTION_TIMED_OUT, e);
 			} else {
-				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 						THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
 				throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 			}
 		} finally {
 			LocalDateTime responseTime = DateUtils.getUTCCurrentDateTime();
-			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+			mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Response sent at : " + responseTime);
 			long duration = Duration.between(requestTime, responseTime).toMillis();
-			mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+			mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 					"Time difference between request and response in millis:" + duration
 							+ ".  Time difference between request and response in Seconds: "
 							+ ((double) duration / 1000));
@@ -142,10 +143,10 @@ public class RestHelper {
 	 * @return the supplier
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
-		mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
+		mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
-		mosipLogger.debug(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
+		mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
 		return () -> sendRequest.block();
 	}
 
@@ -213,7 +214,7 @@ public class RestHelper {
 						mapper.readValue(responseNode.toString().getBytes(), responseType));
 			}
 		} catch (IOException e) {
-			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
+			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, REQUEST_SYNC_RUNTIME_EXCEPTION,
 					THROWING_REST_SERVICE_EXCEPTION + "- UNKNOWN_ERROR - " + e.getMessage());
 			throw new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 		}
@@ -228,35 +229,35 @@ public class RestHelper {
 	 */
 	private RestServiceException handleStatusError(WebClientResponseException e, Class<?> responseType) {
 		try {
-			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error : " + e.getRawStatusCode() + " " + e.getStatusCode() + "  " + e.getStatusText());
 			if (e.getStatusCode().is4xxClientError()) {
 				if (e.getRawStatusCode() == 401 || e.getRawStatusCode() == 403) {
-					mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER,
+					mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER,
 							"request failed with status code :" + e.getRawStatusCode(),
 							"\n\n" + e.getResponseBodyAsString());
 					List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(e.getResponseBodyAsString());
-					mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, "Throwing AuthenticationException",
+					mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, "Throwing AuthenticationException",
 							errorList.toString());
 					throw new AuthenticationException(errorList.get(0).getErrorCode(), errorList.get(0).getMessage(),
 							e.getRawStatusCode());
 					
 				} else {
-				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - CLIENT_ERROR -- "
 								+ e.getResponseBodyAsString());
 				return new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 				}
 			} else {
-				mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+				mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 						"Status error - returning RestServiceException - SERVER_ERROR -- "
 								+ e.getResponseBodyAsString());
 				return new RestServiceException(IdRepoErrorConstants.SERVER_ERROR, e.getResponseBodyAsString(),
 						mapper.readValue(e.getResponseBodyAsString().getBytes(), responseType));
 			}
 		} catch (IOException ex) {
-			mosipLogger.error(IdRepoLogger.getUin(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, ex.getMessage());
+			mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, ex.getMessage());
 			return new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR, ex);
 		}
 

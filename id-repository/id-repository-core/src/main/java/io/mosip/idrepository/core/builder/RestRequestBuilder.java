@@ -22,6 +22,7 @@ import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import lombok.NoArgsConstructor;
@@ -44,9 +45,6 @@ public class RestRequestBuilder {
 	private static final String REST_URI = ".rest.uri";
 
 	private static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
-
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The Constant METHOD_BUILD_REQUEST. */
 	private static final String METHOD_BUILD_REQUEST = "buildRequest";
@@ -126,7 +124,7 @@ public class RestRequestBuilder {
 			headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE))));
 			return headers;
 		} catch (InvalidMediaTypeException e) {
-			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
+			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
 					"throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
 							+ env.getProperty(serviceName.concat(REST_HEADERS_MEDIA_TYPE)));
 			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
@@ -179,7 +177,7 @@ public class RestRequestBuilder {
 			request.setResponseType(returnType);
 		} else {
 
-			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
+			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "returnType",
 					"throwing IDDataValidationException - INVALID_RETURN_TYPE");
 			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "returnType"));
@@ -197,7 +195,7 @@ public class RestRequestBuilder {
 		if (!StringUtils.isEmpty(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
-			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
+			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "httpMethod",
 					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
 			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "httpMethod"));
@@ -215,7 +213,7 @@ public class RestRequestBuilder {
 		if (!StringUtils.isEmpty(uri)) {
 			request.setUri(uri);
 		} else {
-			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
+			mosipLogger.error(IdRepoSecurityManager.getUser(), METHOD_BUILD_REQUEST, "uri",
 					"throwing IDDataValidationException - uri is empty or whitespace" + uri);
 			throw new IdRepoDataValidationException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "uri"));
