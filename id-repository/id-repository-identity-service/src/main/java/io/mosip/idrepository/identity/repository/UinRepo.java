@@ -12,15 +12,6 @@ import io.mosip.idrepository.identity.entity.Uin;
  * @author Manoj SP
  */
 public interface UinRepo extends JpaRepository<Uin, String> {
-
-	/**
-	 * Gets the uin ref id by uin.
-	 *
-	 * @param uin the uin
-	 * @return the uin ref id by uin
-	 */
-	@Query("select uinRefId from Uin where uin = :uin")
-	String getUinRefIdByUin(@Param("uin") String uin);
 	
 	/**
 	 * Gets the uin by refId 
@@ -30,22 +21,6 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	 */
 	@Query("select uinHash from Uin where regId = :regId")
 	String getUinHashByRid(@Param("regId") String regId);
-
-	/**
-	 * Find by uin.
-	 *
-	 * @param uin the uin
-	 * @return the uin
-	 */
-	Uin findByUin(String uin);
-
-	/**
-	 * Exists by uin.
-	 *
-	 * @param uin the uin
-	 * @return true, if successful
-	 */
-	boolean existsByUin(String uin);
 
 	/**
 	 * Exists by reg id.
@@ -70,8 +45,7 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	 * @param uin the uin
 	 * @return the uin
 	 */
-	@Query("select u from Uin u where uinHash = :uinHash")
-	Uin getUinHash(@Param("uinHash") String uinHash);
+	Uin findByUinHash(String uinHash);
 	
 	
 	/**

@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.constant;
 
 /**
- * The Enum RestServiceContants - contains service names based on which {@link RestServiceBuilder}
+ * The Enum RestServiceContants - contains service names based on which RestRequestFactory
  * will build rest requests from properties.
  *
  * @author Manoj SP

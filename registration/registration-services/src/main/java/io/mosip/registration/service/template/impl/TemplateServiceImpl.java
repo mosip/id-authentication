@@ -20,7 +20,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.template.TemplateService;
 
 /**
- * Template Service for choosing the required template for acknowledgement
+ * Implementation class for {@link TemplateService}
  * 
  * @author Himaja Dhanyamraju
  *
@@ -44,7 +44,6 @@ public class TemplateServiceImpl implements TemplateService {
 	 *            specified language code
 	 * @return single template
 	 */
-
 	public Template getTemplate(String templateTypeCode, String langCode) {
 		LOGGER.info("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
 				"Getting templates from database has been started");
@@ -80,6 +79,9 @@ public class TemplateServiceImpl implements TemplateService {
 		return ackTemplate;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.template.TemplateService#getHtmlTemplate(java.lang.String, java.lang.String)
+	 */
 	public String getHtmlTemplate(String templateTypeCode, String langCode) {
 		LOGGER.info("REGISTRATION - TEMPLATE_GENERATION - TEMPLATE_SERVICE_IMPL", APPLICATION_NAME, APPLICATION_ID,
 				"Getting required template from DB started");

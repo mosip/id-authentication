@@ -84,7 +84,7 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_ENCRYPTION("IDA-MPA-003", "Unable to decrypt Request"),
 	PUBLICKEY_EXPIRED("IDA-MPA-004", "MOSIP Public key expired"),
 	OTPREQUEST_NOT_ALLOWED("IDA-MPA-005", "OTP Request Usage not allowed as per policy"),
-	AUTHTYPE_NOT_ALLOWED("IDA-MPA-006", "%s-authentiation usage not allowed as per policy",
+	AUTHTYPE_NOT_ALLOWED("IDA-MPA-006", "%s Authentication usage not allowed as per policy",
 			"Please use other Authentication Types in the request"),
 	INVALID_LICENSEKEY("IDA-MPA-007", "License key does not belong to a registered MISP"),
 	LICENSEKEY_EXPIRED("IDA-MPA-008", "License key of MISP has expired"),

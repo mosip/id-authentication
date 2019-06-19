@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.h2.store.fs.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -54,7 +56,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
-import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
@@ -107,8 +108,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	/** The registration exception mapper util. */
 	private RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 
-	private RegistrationStatusEntity entity = new RegistrationStatusEntity();
-
 	/** The reg entity. */
 	private SyncRegistrationEntity regEntity;
 
@@ -155,7 +154,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationId, "PacketReceiverServiceImpl::validatePacket()::entry");
 			messageDTO.setRid(registrationId);
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-			try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+			try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 				validatePacketWithSync();
 				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
@@ -240,7 +239,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void storePacket(String stageName) throws IOException {
+	private void storePacket(String stageName) {
 
 		dto = registrationStatusService.getRegistrationStatus(registrationId);
 		if (dto == null) {
@@ -395,7 +394,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		HMACUtils.update(isbytearray);
 		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 		String packetHashSequence = regEntity.getPacketHashValue();
-		if (!(packetHashSequence.equals(hashSequence))) {
+		if(!(MessageDigest.isEqual(packetHashSequence.getBytes(),hashSequence.getBytes()))){
 			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"
 					+ registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -444,7 +443,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		messageDTO.setRid(registrationId);
 		regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 		messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
-		try (InputStream encryptedInputStream = new FileInputStream(file.getAbsolutePath())) {
+		try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray));
 			if (scanningFlag) {
@@ -489,7 +488,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			description = "Packet decryption failed for registrationId " + registrationId + "::" + e.getErrorCode()
-					+ e.getErrorText();
+			+ e.getErrorText();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
 		

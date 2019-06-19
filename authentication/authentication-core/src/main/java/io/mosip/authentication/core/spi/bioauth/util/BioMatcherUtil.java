@@ -51,7 +51,7 @@ public class BioMatcherUtil {
 	 * @param reqInfo    the req info
 	 * @param entityInfo the entity info
 	 * @return the double
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public double matchValue(Map<String, String> reqInfo, Map<String, String> entityInfo)
 			throws IdAuthenticationBusinessException {
@@ -81,10 +81,10 @@ public class BioMatcherUtil {
 	}
 
 	/**
-	 * To create BIRType based on requested input
-	 * 
-	 * @param info
-	 * @return
+	 * To create BIRType based on requested input.
+	 *
+	 * @param info the info
+	 * @return the bir
 	 */
 	private BIR getBir(Object info) {
 		BIRBuilder birBuilder = new BIRBuilder();
@@ -97,12 +97,12 @@ public class BioMatcherUtil {
 	}
 
 	/**
-	 * Calculates composite Match score and returns sum value
-	 * 
-	 * @param reqInfo
-	 * @param entityInfo
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Calculates composite Match score and returns sum value.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @return the double
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private double matchCompositeValue(Object[] reqInfo, Object[] entityInfo) throws IdAuthenticationBusinessException {
 		BIR[] reqBIR = Stream.of(reqInfo).map(this::getBir).toArray(size -> new BIR[size]);
@@ -121,13 +121,12 @@ public class BioMatcherUtil {
 	}
 
 	/**
-	 * 
-	 * Match Multiple values and return calculated score
-	 * 
-	 * @param reqInfo
-	 * @param entityInfo
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Match Multiple values and return calculated score.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @return the double
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public double matchMultiValue(Map<String, String> reqInfo, Map<String, String> entityInfo)
 			throws IdAuthenticationBusinessException {
@@ -139,9 +138,8 @@ public class BioMatcherUtil {
 	 *
 	 * @param reqInfo    the req info
 	 * @param entityInfo the entity info
-	 * @param matchScore the match score
 	 * @return the double
-	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private double matchMultiValues(Map<String, String> reqInfo, Map<String, String> entityInfo)
 			throws IdAuthenticationBusinessException {
@@ -151,6 +149,13 @@ public class BioMatcherUtil {
 		return matchCompositeValue(reqInfoObj, entityInfoObj);
 	}
 
+	/**
+	 * Match values.
+	 *
+	 * @param reqInfo the req info
+	 * @param entityInfo the entity info
+	 * @return the object[][]
+	 */
 	private Object[][] matchValues(Map<String, String> reqInfo, Map<String, String> entityInfo) {
 		Object[] reqInfoObj;
 		Object[] entityInfoObj;

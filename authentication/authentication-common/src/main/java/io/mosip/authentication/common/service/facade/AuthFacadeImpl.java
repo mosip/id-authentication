@@ -165,6 +165,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param idInfo         list of identityInfoDto request
 	 * @param uin            the uin
 	 * @param isAuth         the is auth
+	 * @param staticTokenId the static token id
+	 * @param partnerId the partner id
 	 * @return the list
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -190,13 +192,14 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Process the authorisation type and corresponding authorisation service is
 	 * called according to authorisation type.
-	 * 
-	 * @param authRequestDTO
-	 * @param uin
-	 * @param isAuth
-	 * @param authStatusList
-	 * @param idType
-	 * @throws IdAuthenticationBusinessException
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param uin the uin
+	 * @param authStatusList the auth status list
+	 * @param idType the id type
+	 * @param staticTokenId the static token id
+	 * @param partnerId the partner id
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void processPinAuth(AuthRequestDTO authRequestDTO, String uin,
 			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
@@ -224,14 +227,16 @@ public class AuthFacadeImpl implements AuthFacade {
 	}
 
 	/**
-	 * process the BioAuth
-	 * 
-	 * @param authRequestDTO
-	 * @param idInfo
-	 * @param isAuth
-	 * @param authStatusList
-	 * @param idType
-	 * @throws IdAuthenticationBusinessException
+	 * process the BioAuth.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param idInfo the id info
+	 * @param uin the uin
+	 * @param authStatusList the auth status list
+	 * @param idType the id type
+	 * @param staticTokenId the static token id
+	 * @param partnerId the partner id
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void processBioAuth(AuthRequestDTO authRequestDTO, Map<String, List<IdentityInfoDTO>> idInfo, String uin, 
 			List<AuthStatusInfo> authStatusList, IdType idType, String staticTokenId, String partnerId)
@@ -263,6 +268,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param isAuth         the is auth
 	 * @param authStatusList the auth status list
 	 * @param idType         the id type
+	 * @param staticTokenId the static token id
+	 * @param partnerId the partner id
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
@@ -299,6 +306,8 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @param isAuth         the is auth
 	 * @param authStatusList the auth status list
 	 * @param idType         the id type
+	 * @param staticTokenId the static token id
+	 * @param partnerId the partner id
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
@@ -348,12 +357,13 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/**
 	 * Processed to authentic bio type request.
-	 * 
+	 *
 	 * @param authRequestDTO authRequestDTO
-	 * @param isAuth         boolean value for verify is auth type request or not.
+	 * @param uin the uin
 	 * @param idType         idtype
-	 * @param isStatus
-	 * @throws IdAuthenticationBusinessException
+	 * @param isStatus the is status
+	 * @param staticTokenId the static token id
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void saveAndAuditBioAuthTxn(AuthRequestDTO authRequestDTO, String uin, IdType idType,
 			boolean isStatus, String staticTokenId) throws IdAuthenticationBusinessException {
@@ -381,6 +391,17 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 	}
 
+	/**
+	 * Fetch auth txn.
+	 *
+	 * @param authRequestDTO the auth request DTO
+	 * @param uin the uin
+	 * @param isStatus the is status
+	 * @param staticTokenId the static token id
+	 * @param requestType the request type
+	 * @return the autn txn
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private AutnTxn fetchAuthTxn(AuthRequestDTO authRequestDTO, String uin, boolean isStatus, String staticTokenId,
 			RequestType requestType) throws IdAuthenticationBusinessException {
 		return AuthTransactionBuilder.newInstance()

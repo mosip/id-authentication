@@ -19,6 +19,7 @@ import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.UserDetailDAO;
 import io.mosip.registration.dto.UserDetailResponseDto;
@@ -156,7 +157,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setPwd(CryptoUtil.encodeBase64(userDtals.getUserPassword()));
 				usrPwd.setStatusCode("00");
 				usrPwd.setIsActive(true);
-				usrPwd.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+				usrPwd.setLangCode(ApplicationContext.applicationLanguage());
 				if (SessionContext.isSessionContextAvailable()) {
 					usrPwd.setCrBy(SessionContext.userContext().getUserId());
 				} else {
@@ -170,7 +171,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				userDtls.setEmail(userDtals.getMail());
 				userDtls.setMobile(userDtals.getMobile());
 				userDtls.setName(userDtals.getName());
-				userDtls.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+				userDtls.setLangCode(ApplicationContext.applicationLanguage());
 				if (SessionContext.isSessionContextAvailable()) {
 					userDtls.setCrBy(SessionContext.userContext().getUserId());
 				} else {
@@ -191,7 +192,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 
 				UserRole roles = new UserRole();
 				roles.setIsActive(true);
-				roles.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
+				roles.setLangCode(ApplicationContext.applicationLanguage());
 				if (SessionContext.isSessionContextAvailable()) {
 					roles.setCrBy(SessionContext.userContext().getUserId());
 				} else {

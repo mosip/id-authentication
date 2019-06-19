@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -246,7 +247,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.name()
-							+ ExceptionUtils.getStackTrace(e));
+					+ ExceptionUtils.getStackTrace(e));
 
 			description = "Registration status TablenotAccessibleException for registrationId " + this.registrationId
 					+ "::" + e.getMessage();
@@ -381,7 +382,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		HMACUtils.update(isbytearray);
 		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 		String packetHashSequence = regEntity.getPacketHashValue();
-		if (!(packetHashSequence.equals(hashSequence))) {
+		if(!(MessageDigest.isEqual(packetHashSequence.getBytes(),hashSequence.getBytes()))){
 			description = "The Registration Packet HashSequence is not equal as synced packet HashSequence"
 					+ registrationId;
 			dto.setLatestTransactionStatusCode(
@@ -415,7 +416,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 */
 	private MessageDTO uploadPacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object,
 			SftpJschConnectionDto jschConnectionDto)
-			throws IOException, JschConnectionException, SftpFileOperationException {
+					throws IOException, JschConnectionException, SftpFileOperationException {
 
 		object.setIsValid(false);
 		registrationId = dto.getRegistrationId();
