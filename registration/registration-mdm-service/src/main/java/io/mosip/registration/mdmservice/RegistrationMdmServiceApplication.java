@@ -25,7 +25,7 @@ public class RegistrationMdmServiceApplication {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		String port = properties.getProperty("mosip.server.port");
+		String port = properties.getProperty("mosip.reg.mdm.server.port");
 
 		SpringApplication app = new SpringApplication(RegistrationMdmServiceApplication.class);
 		app.setDefaultProperties(Collections.singletonMap("server.port", port));
