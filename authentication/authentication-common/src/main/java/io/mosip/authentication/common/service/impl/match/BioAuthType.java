@@ -13,7 +13,6 @@ import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.BiFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;

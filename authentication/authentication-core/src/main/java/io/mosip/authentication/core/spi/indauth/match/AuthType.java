@@ -12,7 +12,6 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 
 /**
  * Auth type interface

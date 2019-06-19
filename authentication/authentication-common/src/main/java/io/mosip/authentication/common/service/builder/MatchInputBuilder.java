@@ -17,7 +17,6 @@ import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
@@ -40,9 +39,6 @@ public class MatchInputBuilder {
 
 	@Autowired
 	private IdInfoFetcher idInfoFetcher;
-
-	@Autowired
-	private BioMatcherUtil bioMatcherUtil;
 
 	@Autowired
 	private IdInfoHelper idInfoHelper;
