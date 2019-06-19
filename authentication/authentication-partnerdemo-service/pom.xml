@@ -95,6 +95,11 @@
 			<artifactId>jose4j</artifactId>
 			<version>0.6.4</version>
 		</dependency>
+		<dependency>
+			<groupId>Mantra</groupId>
+			<artifactId>MFS100</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
