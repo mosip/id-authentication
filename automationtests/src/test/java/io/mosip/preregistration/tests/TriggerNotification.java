@@ -262,9 +262,6 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 
 		String source = "src/test/resources/" + folderPath + "/";
 		CommonLibrary.backUpFiles(source, folderPath);
-
-		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
-		preIds.add(preId);
 	}
 
 	/**
