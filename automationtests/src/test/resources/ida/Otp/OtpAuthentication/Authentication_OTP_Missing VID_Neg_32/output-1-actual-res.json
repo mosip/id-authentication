@@ -1,0 +1,13 @@
+{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "7134512163",
+  "responseTime": "2019-06-15T09:54:10.714+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID",
+      "actionMessage": "Please retry with correct VID"
+    }
+  ]
+}

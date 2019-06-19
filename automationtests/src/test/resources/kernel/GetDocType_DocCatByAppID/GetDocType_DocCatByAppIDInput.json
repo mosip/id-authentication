@@ -1,0 +1,11 @@
+{
+	"applicantId": "001",
+	"languages": [
+		 "eng"
+	],
+	"Kernel_GetDocType_DocCatByAppID_langcode_twoLanguageCodes":"string",
+	"Kernel_GetDocType_DocCatByAppID_langcode_threeLanguageCodes":"string",
+	"Kernel_GetDocType_DocCatByAppID_responsetime":"string",
+	"Kernel_GetDocType_DocCatByAppID_validatingRequest":"string",
+	"Kernel_GetDocType_DocCatByAppID_validatingResponse":"string"
+}

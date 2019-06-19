@@ -1,0 +1,12 @@
+{
+  "response": [
+    {
+      "registrationId": "10031100110030620190304122930",
+      "statusCode": "PACKET_DECRYPTION_FAILED",
+      "retryCount": 0
+    }
+  ],
+  "id": "mosip.registration.status",
+  "version": "1.0",
+  "responsetime": "2019-04-11T12:07:25.087Z"
+}

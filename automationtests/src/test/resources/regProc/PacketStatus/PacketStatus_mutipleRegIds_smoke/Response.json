@@ -1,0 +1,17 @@
+{
+  "response": [
+    {
+      "registrationId": "10011100115245020190404123845",
+      "statusCode": "PACKET_DECRYPTION_FAILED",
+      "retryCount": 4
+    },
+    {
+      "registrationId": "20916100110014920190218154630",
+      "statusCode": "PACKET_DECRYPTION_FAILED",
+      "retryCount": 0
+    }
+  ],
+  "id": "mosip.registration.status",
+  "version": "1.0",
+  "responsetime": "2019-04-11T12:02:25.961Z"
+}

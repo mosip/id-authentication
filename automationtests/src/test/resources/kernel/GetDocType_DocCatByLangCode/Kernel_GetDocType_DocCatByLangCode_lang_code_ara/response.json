@@ -1,0 +1,277 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-26T05:59:49.975Z",
+  "metadata": null,
+  "response": {
+    "documentcategories": [
+      {
+        "code": "POA",
+        "name": "إثبات العنوان",
+        "description": "عنوان الدليل",
+        "langCode": "ara",
+        "isActive": true,
+        "documenttypes": [
+          {
+            "code": "RNC",
+            "name": "عقد ايجار",
+            "description": "اتفاق تأجير العنوان",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "COR",
+            "name": "شهادة الاقامة",
+            "description": "اثبات محل الاقامة",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC001",
+            "name": "جواز سفر",
+            "description": "إثبات الهوية",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC013",
+            "name": "دفتر أو كشف حساب بنكي",
+            "description": "دفتر أو كشف حساب بنكي",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC014",
+            "name": "كشف حساب أو دفتر بيانات مكتب البريد",
+            "description": "كشف حساب أو دفتر بيانات مكتب البريد",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC015",
+            "name": "البطاقة التموينية",
+            "description": "البطاقة التموينية",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC004",
+            "name": "بطاقة هويه الناخب",
+            "description": "بطاقة هويه الناخب",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC005",
+            "name": "رخصه القيادة لمقدم الطلب",
+            "description": "رخصه القيادة لمقدم الطلب",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC006",
+            "name": "بطاقات هويه مصوره صادره عن الحكومة",
+            "description": "بطاقات هويه مصوره صادره عن الحكومة",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC016",
+            "name": "أصدرت الهيئة بطاقة هويه صوره الخدمة مع عنوان",
+            "description": "أصدرت الهيئة بطاقة هويه صوره الخدمة مع عنوان",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC017",
+            "name": "فاتورة كهرباء لمده 3 أشهر سابقه",
+            "description": "فاتورة كهرباء لمده 3 أشهر سابقه",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC018",
+            "name": "فاتورة المياه طالما انها ليست أكثر من 3 أشهر من العمر",
+            "description": "فاتورة المياه طالما انها ليست أكثر من 3 أشهر من العمر",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC008",
+            "name": "ترخيص الاسلحه",
+            "description": "ترخيص الاسلحه",
+            "langCode": "ara",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "code": "POI",
+        "name": "إثبات هوية",
+        "description": "إثبات الهوية",
+        "langCode": "ara",
+        "isActive": true,
+        "documenttypes": [
+          {
+            "code": "CIN",
+            "name": "نَتِنَل ِد",
+            "description": "بطاقة الهوية الوطنية المغربية",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC001",
+            "name": "جواز سفر",
+            "description": "إثبات الهوية",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC002",
+            "name": "بطاقة PAN",
+            "description": "بطاقة PAN",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC003",
+            "name": "بطاقة الصورة التموينية أو الحصة الخاصة",
+            "description": "بطاقة الصورة التموينية أو الحصة الخاصة",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC004",
+            "name": "بطاقة هويه الناخب",
+            "description": "بطاقة هويه الناخب",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC005",
+            "name": "رخصه القيادة لمقدم الطلب",
+            "description": "رخصه القيادة لمقدم الطلب",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC006",
+            "name": "بطاقات هويه مصوره صادره عن الحكومة",
+            "description": "بطاقات هويه مصوره صادره عن الحكومة",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC007",
+            "name": "خدمه بطاقات هويه الصورة التي يتم إصدارها من قبل الأمير سلطان",
+            "description": "خدمه بطاقات هويه الصورة التي يتم إصدارها من قبل الأمير سلطان",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC008",
+            "name": "ترخيص الاسلحه",
+            "description": "ترخيص الاسلحه",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC009",
+            "name": "بطاقة الصراف الألى من بنك الصور",
+            "description": "بطاقة الصراف الألى من بنك الصور",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC010",
+            "name": "بطاقة الصور الائتمانية",
+            "description": "بطاقة الصور الائتمانية",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC011",
+            "name": "صوره بطاقة من الحرية مقاتله",
+            "description": "صوره بطاقة من الحرية مقاتله",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC012",
+            "name": "شهادة الزواج",
+            "description": "شهادة الزواج",
+            "langCode": "ara",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "code": "POR",
+        "name": "إثبات العلاقة",
+        "description": "إثبات علاقة الشخص",
+        "langCode": "ara",
+        "isActive": true,
+        "documenttypes": [
+          {
+            "code": "CRN",
+            "name": "شهادة العلاقة",
+            "description": "علاقة إثبات للشخص",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC024",
+            "name": "بطاقة الهوية الخاصة",
+            "description": "بطاقة الهوية الخاصة",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC025",
+            "name": "البطاقة الطبية الصادرة عن حكومة الولاية و CGHS و ECHS و ESIC",
+            "description": "البطاقة الطبية الصادرة عن حكومة الولاية و CGHS و ECHS و ESIC أيضا",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC026",
+            "name": "بطاقة المقصف للجيش",
+            "description": "بطاقة المقصف للجيش",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC001",
+            "name": "جواز سفر",
+            "description": "إثبات الهوية",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC027",
+            "name": "وثيقة استحقاق الأسرة",
+            "description": "اي وثيقة استحقاق عائلي صادره عن اي حكومة مركزيه أو حكوميه",
+            "langCode": "ara",
+            "isActive": true
+          },
+          {
+            "code": "DOC028",
+            "name": "شهادة الميلاد",
+            "description": "مسجل الميلاد/مؤسسه البلدية أو اي شهادة ميلاد حكوميه محليه",
+            "langCode": "ara",
+            "isActive": true
+          }
+        ]
+      },
+      {
+        "code": "POE",
+        "name": "دليل استثناء البيومترية",
+        "description": "دليل استثناء البيومترية",
+        "langCode": "ara",
+        "isActive": true,
+        "documenttypes": []
+      }
+    ]
+  },
+  "errors": null
+}

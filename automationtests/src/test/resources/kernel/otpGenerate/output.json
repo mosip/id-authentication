@@ -1,0 +1,1 @@
+[{"testType":"smoke","testCaseName":"TestCase22_smoke","jiraId":"MOS-1005","key":"valid","status":""}, {"testType":"regression","key":"invalid","testCaseName":"invalid_key","jiraId":"MOS-1001","status":""}]

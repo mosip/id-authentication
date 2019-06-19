@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "errorCode": "$IGNORE$",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

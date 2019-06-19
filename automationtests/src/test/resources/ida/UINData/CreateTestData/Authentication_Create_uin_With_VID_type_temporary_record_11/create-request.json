@@ -1,0 +1,170 @@
+{
+  "id": "mosip.id.create",
+  "request": {
+    "documents": [
+      {
+        "category": "individualBiometrics",
+        "value": "java.net.ConnectException: Connection refused: connect"
+      }
+    ],
+    "identity": {
+      "CNIENumber": "6789545678913",
+      "IDSchemaVersion": 1.0,
+      "UIN": "$generate_UIN$",
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Annai Theresa Street"
+        },
+        {
+          "language": "ara",
+          "value": "َننَِ تهِرِسَ سترِِت"
+        },
+        {
+          "language": "fra",
+          "value": "Annai Theresa Street"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Ramanjun House"
+        },
+        {
+          "language": "ara",
+          "value": "رَمَنجُن هُُسِ"
+        },
+        {
+          "language": "fra",
+          "value": "Ramanjun House"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Manali"
+        },
+        {
+          "language": "ara",
+          "value": "مَنَلِ"
+        },
+        {
+          "language": "fra",
+          "value": "Manali"
+        }
+      ],
+      "age": 25,
+      "city": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "dateOfBirth": "1990/12/19",
+      "email": "Leonamary.Susairaja@mindtree.com",
+      "fullName": [
+        {
+          "language": "eng",
+          "value": "Vignesh Ravi"
+        },
+        {
+          "language": "ara",
+          "value": "ڤِگنِسه رَڤِ"
+        },
+        {
+          "language": "fra",
+          "value": "Vignesh Ravi"
+        }
+      ],
+      "gender": [
+        {
+          "language": "ara",
+          "value": "الذكر"
+        },
+        {
+          "language": "fra",
+          "value": "Mâle"
+        },
+        {
+          "language": "eng",
+          "value": "Male"
+        }
+      ],
+      "individualBiometrics": {
+        "format": "cbeff",
+        "value": "fileReferenceID",
+        "version": 1.0
+      },
+      "localAdministrativeAuthority": [
+        {
+          "language": "eng",
+          "value": "Mograne"
+        },
+        {
+          "language": "ara",
+          "value": "بن منصور"
+        },
+        {
+          "language": "fra",
+          "value": "Mograne"
+        }
+      ],
+      "parentOrGuardianName": [
+        {
+          "language": "eng",
+          "value": "Himaja H"
+        },
+        {
+          "language": "ara",
+          "value": "هِمَجَ ه"
+        },
+        {
+          "language": "fra",
+          "value": "Himaja H"
+        }
+      ],
+      "phone": "9333356541",
+      "postalCode": "14110",
+      "province": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Kénitra"
+        }
+      ],
+      "region": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat-Salé-Kénitra"
+        }
+      ],
+      "residenceStatus": "MOROCCO"
+    },
+    "registrationId": "27847657360002520190615093633"
+  },
+  "requesttime": "2019-06-15T04:06:33.158Z",
+  "version": "v1"
+}

@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data name in ara did not match"
+    }
+  ],
+  "id": "mosip.identity.auth",
+  "response": {
+    "authStatus": false,
+    "staticToken": "TOKENID:NoVIDLoaded.1873299273"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "0472727874",
+  "version": "1.0"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1730603341",
+  "responseTime": "2019-06-15T09:54:06.988+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-002",
+      "errorMessage": "Invalid UIN",
+      "actionMessage": "Please retry with the correct UIN"
+    }
+  ]
+}

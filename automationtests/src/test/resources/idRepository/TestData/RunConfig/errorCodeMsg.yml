@@ -1,0 +1,137 @@
+#error -> Scenar;ioName -> errorCode,Message,Action
+errors:
+  InvalidUIN:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/UIN
+  InvalidRegistrationId:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - registrationId
+  InvalidVersion:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - version
+  InvalidRequestTime:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - requestTime
+  InvalidDateOfBirth:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/dateOfBirth
+  InvalidPhone:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/phone
+  InvalidEmail:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/email
+  InvalidPostalCode:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/postalCode
+  InvalidId:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - id
+  InvalidAge:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/age
+  InvalidFirstLangForGender:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/gender/0/language
+  InvalIDCecLangForGender:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/gender/1/language
+  InvalidThirdLangForGender:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/gender/2/language
+  InvalidFirstLangForfullName:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/fullName/0/language
+  InvalIDCecLangForfullName:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/fullName/1/language
+  InvalidThirdLangForfullName:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/fullName/2/language
+  InvalidFirstLangForParentOrGuardianName:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/parentOrGuardianName/0/language
+  InvalIDCecLangForParentOrGuardianName:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/parentOrGuardianName/1/language
+  InvalidThirdLangForParentOrGuardianName:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/parentOrGuardianName/2/language
+  InvalidFirstLangForlocalAdministrativeAuthority:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/localAdministrativeAuthority/0/language
+  InvalIDCecLangForlocalAdministrativeAuthority:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/localAdministrativeAuthority/1/language
+  InvalidThirdLangForlocalAdministrativeAuthority:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/localAdministrativeAuthority/2/language
+  InvalidFirstLangForRegion:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/region/0/language
+  InvalIDCecLangForRegion:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/region/1/language
+  InvalidThirdLangForRegion:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/region/2/language
+  InvalidFirstLangForProvince:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/province/0/language
+  InvalIDCecLangForProvince:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/province/1/language
+  InvalidThirdLangForProvince:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/province/2/language
+  InvalidFirstLangForCity:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/city/0/language
+  InvalIDCecLangForCity:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/city/1/language
+  InvalidThirdLangForCity:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - identity/city/2/language
+  VidInvalidVersion:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - version
+  VidInvalidUIN:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - UIN
+  VidInvalidRequestTime:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - requestTime
+  VidInvalidVidType:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - vidType
+  VidInvalidId:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - id
+  VidInvalidVidStatus:
+    errorCode: IDR-IDC-002
+    errorMessage: Invalid Input Parameter - vidStatus
+  VidMissingVersion:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - version
+  VidMissingUIN:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - UIN
+  VidMissingRequestTime:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - requesttime
+  VidMissingVidType:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - vidType
+  VidMissingId:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - id
+  MissingregistrationId:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - registrationId
+  MissingVidStatus:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - vidStatus
+  USEDVID:
+    errorCode: IDR-VID-002
+    errorMessage: USED VID

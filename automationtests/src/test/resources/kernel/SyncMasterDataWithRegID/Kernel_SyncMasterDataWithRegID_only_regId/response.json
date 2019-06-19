@@ -1,0 +1,13 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-16T07:36:46.346Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-140",
+      "message": "Mac-Address and Serial Number cannot be empty"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "mosip.vid.update",
+  "metadata": {},
+  "request": {
+    "vidStatus": "DEACTIVATED"
+  },
+  "requesttime": "2019-06-15T04:07:33.967Z",
+  "version": "v1"
+}

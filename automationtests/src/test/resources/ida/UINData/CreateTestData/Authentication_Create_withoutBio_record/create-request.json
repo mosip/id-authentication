@@ -1,0 +1,164 @@
+{
+  "request": {
+    "identity": {
+      "CNIENumber": "6789545678910",
+      "gender": [
+        {
+          "language": "ara",
+          "value": "الذكر"
+        },
+        {
+          "language": "fra",
+          "value": "Mâle"
+        },
+        {
+          "language": "eng",
+          "value": "Male"
+        }
+      ],
+      "city": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        },
+        {
+          "language": "fra",
+          "value": "Kénitra"
+        }
+      ],
+      "postalCode": "14023",
+      "fullName": [
+        {
+          "language": "eng",
+          "value": "Arjun Chandra"
+        },
+        {
+          "language": "ara",
+          "value": "َرجُن كهَندرَ"
+        },
+        {
+          "language": "fra",
+          "value": "Arjun Chandra"
+        }
+      ],
+      "localAdministrativeAuthority": [
+        {
+          "language": "eng",
+          "value": "Mograne"
+        },
+        {
+          "language": "ara",
+          "value": "بن منصور"
+        },
+        {
+          "language": "fra",
+          "value": "Mograne"
+        }
+      ],
+      "dateOfBirth": "1973/07/14",
+      "individualBiometrics": {
+        "format": "cbeff",
+        "value": "fileReferenceID",
+        "version": 1
+      },
+      "IDSchemaVersion": 1,
+      "province": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "phone": "9393356547",
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Bhaubali Street"
+        },
+        {
+          "language": "ara",
+          "value": "بهَُبَلِ سترِِت"
+        },
+        {
+          "language": "fra",
+          "value": "Bhaubali Street"
+        }
+      ],
+      "parentOrGuardianName": [
+        {
+          "language": "eng",
+          "value": "Arun Boss"
+        },
+        {
+          "language": "ara",
+          "value": "َرُن بُسس"
+        },
+        {
+          "language": "fra",
+          "value": "Arun Boss"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Sravya Street House"
+        },
+        {
+          "language": "ara",
+          "value": "سرَڤيَ سترِِت هُُسِ"
+        },
+        {
+          "language": "fra",
+          "value": "Sravya Street House"
+        }
+      ],
+      "residenceStatus": "MOROCCO",
+      "UIN": "$generate_UIN$",
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Green Land"
+        },
+        {
+          "language": "ara",
+          "value": "گرِِن لَند"
+        },
+        {
+          "language": "fra",
+          "value": "Green Land"
+        }
+      ],
+      "region": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat-Salé-Kénitra"
+        }
+      ],
+      "age": 18,
+      "email": "Leonamary.Susairaja@mindtree.com"
+    },
+    "registrationId": "27847657360002520190615093500"
+  },
+  "requesttime": "2019-06-15T04:05:00.239Z",
+  "id": "mosip.id.create",
+  "version": "v1"
+}

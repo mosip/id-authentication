@@ -1,0 +1,8 @@
+{
+  "id":"string",
+  "langcode":"string",
+  "effdatetimes":"string",
+  "Kernel_GetDeviceHistory_invalid_effdatetimes_format_2":"string",
+  "Kernel_GetDeviceHistory_invalid_effdatetimes_format_3":"string",
+  "Kernel_GetDeviceHistory_response_time":"string"
+}

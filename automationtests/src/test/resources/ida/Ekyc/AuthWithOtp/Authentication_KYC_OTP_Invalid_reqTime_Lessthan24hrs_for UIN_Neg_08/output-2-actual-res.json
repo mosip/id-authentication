@@ -1,0 +1,16 @@
+{
+  "transactionID": "5411686844",
+  "version": "1.0",
+  "id": "mosip.identity.kyc",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-001",
+      "errorMessage": "Request to be received at MOSIP within 30 minutes",
+      "actionMessage": "Please send the request within 30 minutes"
+    }
+  ],
+  "responseTime": "2019-06-07T12:16:19.079+05:30",
+  "response": {
+    "kycStatus": false
+  }
+}

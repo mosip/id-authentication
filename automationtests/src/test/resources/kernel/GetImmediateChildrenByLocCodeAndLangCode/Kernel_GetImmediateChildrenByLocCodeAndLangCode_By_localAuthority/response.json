@@ -1,0 +1,20 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T13:35:51.374Z",
+  "metadata": null,
+  "response": {
+    "locations": [
+      {
+        "code": "10106",
+        "name": "10106",
+        "hierarchyLevel": 0,
+        "hierarchyName": "Postal Code",
+        "parentLocCode": "AGDL",
+        "langCode": "eng",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": null
+}

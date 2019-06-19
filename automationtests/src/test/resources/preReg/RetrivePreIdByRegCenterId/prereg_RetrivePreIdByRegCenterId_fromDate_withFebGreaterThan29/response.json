@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.appointment.ids",
+    "version": "1.0",
+    "responsetime": "2019-06-02T12:32:14.414Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_BOOK_RCI_032",
+            "message": "Record not found for date range and reg center id"
+        }
+    ]
+}

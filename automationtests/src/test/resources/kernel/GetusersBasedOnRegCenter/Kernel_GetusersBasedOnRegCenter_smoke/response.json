@@ -1,0 +1,42 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-05-16T12:32:41.991Z",
+  "metadata": null,
+  "response": {
+    "lastSyncTime": "2019-05-16T12:32:40.939Z",
+    "userDetails": [
+      {
+        "isDeleted": null,
+        "langCode": null,
+        "isActive": null,
+        "userName": "110001",
+        "mail": "sravya.surampalli@mindtree.com",
+        "mobile": "9989636932",
+        "userPassword": "3066C39623ED9F03FA149CC3D89F93A274DF1D8AE3F6DB9823C89A4957D95996",
+        "name": "test",
+        "roles": [
+          "REGISTRATION_ADMIN",
+          "REGISTRATION_OFFICER",
+          "REGISTRATION_SUPERVISOR"
+        ],
+        "rid": null
+      },
+      {
+        "isDeleted": null,
+        "langCode": null,
+        "isActive": null,
+        "userName": "110030",
+        "mail": "sagar.mahapatra2@mindtree.com",
+        "mobile": "7504871938",
+        "userPassword": "A7373822E5ABD0DB6A43D17B8AFBBF4F694A9F17",
+        "name": "ridtest",
+        "roles": [
+          ""
+        ],
+        "rid": null
+      }
+    ]
+  },
+  "errors": null
+}

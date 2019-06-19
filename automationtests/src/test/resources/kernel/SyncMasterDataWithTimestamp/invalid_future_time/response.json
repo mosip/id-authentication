@@ -1,0 +1,10 @@
+{
+  "timestamp": 1551938927125,
+  "status": 200,
+  "errors": [
+    {
+      "errorCode": "KER-SNC-135",
+      "errorMessage": "Timestamp cannot be future date"
+    }
+  ]
+}

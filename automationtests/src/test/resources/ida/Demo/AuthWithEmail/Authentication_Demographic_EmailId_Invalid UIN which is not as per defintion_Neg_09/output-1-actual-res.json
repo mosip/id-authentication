@@ -1,0 +1,7 @@
+{
+  "timestamp": "2019-06-15T04:14:25.007+0000",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "KER-UTL-103 --\u003e Parsing error occours; \nnested exception is java.text.ParseException: Unparseable date: \"2019-06-15T04:14:25Z\"",
+  "path": "/idauthentication/v1/auth/1873299273/735899345"
+}

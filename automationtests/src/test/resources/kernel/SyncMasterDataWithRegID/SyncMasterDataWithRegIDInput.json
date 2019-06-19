@@ -1,0 +1,12 @@
+{
+	"regcenterId":"string",
+	"empty_lastupdated":"string",
+	"macaddress":"string",
+	"serialnumber":"string",
+	"Kernel_SyncMasterDataWithRegID_regId_macId":"string",
+	"Kernel_SyncMasterDataWithRegID_serialNumber_anotherMachine":"string",
+	"Kernel_SyncMasterDataWithRegID_anotherMachine_macId":"string",
+	"Kernel_SyncMasterDataWithRegID_regId_serialNumber":"string",
+	"Kernel_SyncMasterDataWithRegID_only_regId":"string",
+	"Kernel_SyncMasterDataWithRegID_response_time":"string"
+}

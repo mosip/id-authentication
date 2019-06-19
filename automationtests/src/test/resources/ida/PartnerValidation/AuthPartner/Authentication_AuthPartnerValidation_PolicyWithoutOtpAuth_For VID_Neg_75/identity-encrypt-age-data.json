@@ -1,0 +1,13 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "age": [
+        {
+          "value": "18"
+        }
+      ]
+    },
+    "otp": "818215",
+    "timestamp": "2019-06-15T09:49:02.002+05:30"
+  }
+}

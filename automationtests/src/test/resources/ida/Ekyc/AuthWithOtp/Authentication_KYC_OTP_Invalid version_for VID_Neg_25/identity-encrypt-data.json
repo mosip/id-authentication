@@ -1,0 +1,7 @@
+{
+  "identityRequest": {
+    "otp": "select otp from kernel.otp_transaction where id like \u0027%NoVIDLoaded%\u0027:5",
+    "timestamp": "2019-06-15T10:17:30.030+05:30",
+    "transactionID": "2004537070"
+  }
+}

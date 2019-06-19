@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID"
+    }
+  ],
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

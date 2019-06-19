@@ -1,0 +1,13 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-10T13:13:33.379Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-150",
+      "message": "Document Category- Document Type mapping not found"
+    }
+  ]
+}

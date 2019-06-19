@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.appointment.cancel",
+    "version": "1.0",
+    "responsetime": "2019-05-30T09:00:35.371Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_PAM_APP_005",
+            "message": "No data found for the requested pre-registration id"
+        }
+    ]
+}
