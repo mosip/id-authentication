@@ -18,6 +18,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.exception.util.PlatformSuccessMessages;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.util.MessageBusUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -29,7 +30,7 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.auth.VertxContextPRNG;
+import io.mosip.registration.processor.retry.verticle.constants.ReprocessorConstants;
 
 /**
  * The Reprocessor Stage to deploy the scheduler and implement re-processing
@@ -44,9 +45,6 @@ import io.vertx.ext.auth.VertxContextPRNG;
  */
 public class ReprocessorStage extends MosipVerticleManager {
 
-	private static final String BUS_OUT = "-bus-out";
-
-	private static final String BUS_IN = "-bus-in";
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(ReprocessorStage.class);
 
@@ -73,17 +71,12 @@ public class ReprocessorStage extends MosipVerticleManager {
 	@Value("${registration.processor.reprocess.attempt.count}")
 	private Integer reprocessCount;
 
-	/** The registration id. */
-	private String registrationId = "";
-
 	/** The description. */
-	String description;
+	@Autowired
+	LogDescription description;
 
 	/** The is transaction successful. */
 	boolean isTransactionSuccessful;
-
-	/** The Constant USER. */
-	private static final String USER = "MOSIP_SYSTEM";
 
 	/** The registration status service. */
 	@Autowired
@@ -92,9 +85,9 @@ public class ReprocessorStage extends MosipVerticleManager {
 	/** The core audit request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
-
-	/** the Error Code */
-	private String code;
+	
+	/** The registration id. */
+	private String registrationId = "";
 
 	/**
 	 * Deploy verticle.
@@ -112,7 +105,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 	 *            the vertx
 	 */
 	private void deployScheduler(Vertx vertx) {
-		vertx.deployVerticle("ceylon:herd.schedule.chime/0.2.0",this::schedulerResult);
+		vertx.deployVerticle(ReprocessorConstants.CEYLON_SCHEDULER,this::schedulerResult);
 	}
 	
 	public void schedulerResult(AsyncResult<String> res) {
@@ -138,24 +131,24 @@ public class ReprocessorStage extends MosipVerticleManager {
 
 		EventBus eventBus = vertx.eventBus();
 		// listen the timer events
-		eventBus.consumer(("scheduler:stage_timer"), message -> {
+		eventBus.consumer((ReprocessorConstants.TIMER_EVENT), message -> {
 
 			process(new MessageDTO());
 		});
 
 		// description of timers
 		JsonObject timer = (new JsonObject())
-				.put("type", environment.getProperty("registration.processor.reprocess.type"))
-				.put("seconds", environment.getProperty("registration.processor.reprocess.seconds"))
-				.put("minutes", environment.getProperty("registration.processor.reprocess.minutes"))
-				.put("hours", environment.getProperty("registration.processor.reprocess.hours"))
-				.put("days of month", environment.getProperty("registration.processor.reprocess.days_of_month"))
-				.put("months", environment.getProperty("registration.processor.reprocess.months"))
-				.put("days of week", environment.getProperty("registration.processor.reprocess.days_of_week"));
+				.put(ReprocessorConstants.TYPE, environment.getProperty(ReprocessorConstants.TYPE_VALUE))
+				.put(ReprocessorConstants.SECONDS, environment.getProperty(ReprocessorConstants.SECONDS_VALUE))
+				.put(ReprocessorConstants.MINUTES, environment.getProperty(ReprocessorConstants.MINUTES_VALUE))
+				.put(ReprocessorConstants.HOURS, environment.getProperty(ReprocessorConstants.HOURS_VALUE))
+				.put(ReprocessorConstants.DAY_OF_MONTH, environment.getProperty(ReprocessorConstants.DAY_OF_MONTH_VALUE))
+				.put(ReprocessorConstants.MONTHS, environment.getProperty(ReprocessorConstants.MONTHS_VALUE))
+				.put(ReprocessorConstants.DAYS_OF_WEEK, environment.getProperty(ReprocessorConstants.DAYS_OF_WEEK_VALUE));
 
 		// create scheduler
-		eventBus.send("chime", (new JsonObject()).put("operation", "create").put("name", "scheduler:stage_timer")
-				.put("description", timer), ar -> {
+		eventBus.send(ReprocessorConstants.CHIME, (new JsonObject()).put(ReprocessorConstants.OPERATION, ReprocessorConstants.OPERATION_VALUE).put(ReprocessorConstants.NAME, ReprocessorConstants.NAME_VALUE)
+				.put(ReprocessorConstants.DESCRIPTION, timer), ar -> {
 					if (ar.succeeded()) {
 						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), "",
@@ -210,28 +203,28 @@ public class ReprocessorStage extends MosipVerticleManager {
 						object.setRid(registrationId);
 						object.setIsValid(true);
 						object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
-						description = "";
 						isTransactionSuccessful = true;
 						String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
 						if (RegistrationTransactionStatusCode.REPROCESS.name()
 								.equalsIgnoreCase(dto.getLatestTransactionStatusCode())) {
-							stageName = stageName.concat(BUS_IN);
+							stageName = stageName.concat(ReprocessorConstants.BUS_IN);
 						} else {
-							stageName = stageName.concat(BUS_OUT);
+							stageName = stageName.concat(ReprocessorConstants.BUS_OUT);
 						}
 						MessageBusAddress address = new MessageBusAddress(stageName);
 						sendMessage(object, address);
-						dto.setUpdatedBy(USER);
+						dto.setUpdatedBy(ReprocessorConstants.USER);
 						Integer reprocessRetryCount = dto.getReProcessRetryCount() != null
 								? dto.getReProcessRetryCount() + 1
 								: 1;
 						dto.setReProcessRetryCount(reprocessRetryCount);
 						dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 						dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.REPROCESS.toString());
-						dto.setStatusComment("Reprocess Completed");
+						dto.setStatusComment(ReprocessorConstants.REPROCESS_COMPLETE);
 						registrationStatusService.updateRegistrationStatus(dto);
 
-						description = PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage();
+						description.setMessage(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage());
+						description.setCode(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getCode());
 						String eventId = EventId.RPR_402.toString();
 						String eventName = EventName.UPDATE.toString();
 						String eventType = EventType.BUSINESS.toString();
@@ -239,45 +232,46 @@ public class ReprocessorStage extends MosipVerticleManager {
 						/** Module-Id can be Both Success/Error code */
 						String moduleId = PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getCode();
 						String moduleName = ModuleName.RE_PROCESSOR.toString();
-						auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+						auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 								moduleId, moduleName, registrationId);
 					});
 					totalUnprocessesPackets = totalUnprocessesPackets - fetchSize;
 				}
 			}
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					code, "PacketValidatorStage::process()::exit");
+					description.getCode(), "PacketValidatorStage::process()::exit");
 
 		} catch (TablenotAccessibleException e) {
 			isTransactionSuccessful = false;
 			object.setInternalError(Boolean.TRUE);
-			description = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage();
-			code = PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode();
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), code + " -- " + registrationId,
+			description.setMessage(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
+			description.setCode(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode());
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), description.getCode() + " -- " + registrationId,
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
 
 		} catch (Exception ex) {
 			isTransactionSuccessful = false;
-			description = PlatformErrorMessages.REPROCESSOR_STAGE_FAILED.getMessage();
-			code = PlatformErrorMessages.REPROCESSOR_STAGE_FAILED.getCode();
+			description.setMessage(PlatformErrorMessages.REPROCESSOR_STAGE_FAILED.getMessage());
+			description.setCode(PlatformErrorMessages.REPROCESSOR_STAGE_FAILED.getCode());
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					code + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
+					description.getCode() + " -- " + registrationId, PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage()
 							+ ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			object.setInternalError(Boolean.TRUE);
 
 		} finally {
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description);
-			description = isTransactionSuccessful ? PlatformSuccessMessages.RPR_RE_PROCESS_SUCCESS.getMessage()
-					: description;
+					registrationId, description.getMessage());
+			if(isTransactionSuccessful)
+				description.setMessage(PlatformSuccessMessages.RPR_RE_PROCESS_SUCCESS.getMessage());
+			
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
 			/** Module-Id can be Both Success/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_RE_PROCESS_SUCCESS.getCode() : code;
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_RE_PROCESS_SUCCESS.getCode() : description.getCode();
 			String moduleName = ModuleName.RE_PROCESSOR.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
 

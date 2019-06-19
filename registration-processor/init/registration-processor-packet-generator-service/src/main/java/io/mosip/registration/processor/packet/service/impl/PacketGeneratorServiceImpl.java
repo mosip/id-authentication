@@ -323,7 +323,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		boolean isValidMachine = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(machine);
-		pathsegments.add(primaryLanguagecode);
+		pathsegments.add("eng");
 		MachineResponseDto machinedto;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		try {

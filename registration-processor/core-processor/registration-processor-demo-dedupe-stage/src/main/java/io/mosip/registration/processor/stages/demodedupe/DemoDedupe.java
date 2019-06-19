@@ -19,6 +19,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
+import io.mosip.registration.processor.stages.app.constants.DemoDedupeConstants;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
@@ -39,9 +40,6 @@ public class DemoDedupe {
 
 	@Autowired
 	private RegistrationStatusService registrationStatusService;
-
-	/** The identity DTO. */
-	private IdentityDTO identityDTO = new IdentityDTO();
 
 	/** The packet info dao. */
 	@Autowired
@@ -121,8 +119,9 @@ public class DemoDedupe {
 	void setFingerBiometric(List<IdentityInfoDTO> biometricData, String type)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IntrospectionException {
 		String finger = null;
-		String[] fingerType = env.getProperty("fingerType").split(",");
+		String[] fingerType = env.getProperty(DemoDedupeConstants.FINGERTYPE).split(",");
 		List<String> list = new ArrayList<>(Arrays.asList(fingerType));
+		IdentityDTO identityDTO = new IdentityDTO();
 		Iterator<String> it = list.iterator();
 		while (it.hasNext()) {
 			String ftype = it.next();

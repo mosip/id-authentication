@@ -108,9 +108,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private String clusterManagerUrl;
 	/** The url. */
 	private static final String SYSTEM = "SYSTEM";
-	private Map<Integer, String> failureReason = new HashMap<>();
-	private List<AbisQueueDetails> abisQueueDetails;
-	private String registrationId;
+	private static List<AbisQueueDetails> abisQueueDetails;
 	private static final String REQUESTID = "requestId";
 	private static final String DEMOGRAPHIC_VERIFICATION = "DEMOGRAPHIC_VERIFICATION";
 	private static final String BIOGRAPHIC_VERIFICATION = "BIOGRAPHIC_VERIFICATION";
@@ -146,7 +144,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, ExceptionUtils.getStackTrace(e));
+					"", ExceptionUtils.getStackTrace(e));
 			throw new RegistrationProcessorUnCheckedException(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode(),
 					PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage(), e);
 
@@ -163,7 +161,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;
 		String description = "";
-		registrationId = object.getRid();
+		String registrationId = object.getRid();
 		InternalRegistrationStatusDto internalRegDto = registrationStatusService.getRegistrationStatus(registrationId);
 		try {
 			List<String> abisRefList = packetInfoManager.getReferenceIdByRid(registrationId);
@@ -284,7 +282,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	public void consumerListener(Message message, String abisInBoundAddress, MosipQueue queue, MosipEventBus eventBus)
 			throws RegistrationProcessorCheckedException {
 		InternalRegistrationStatusDto internalRegStatusDto = null;
-
+		String registrationId = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisMiddlewareStage::consumerListener()::entry");
 
@@ -299,7 +297,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			validateNullCheck(bioRefId, "ABIS_REFERENCE_ID_NOT_FOUND");
 			List<String> registrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(bioRefId);
 			internalRegStatusDto = registrationStatusService.getRegistrationStatus(registrationIds.get(0));
-
+			registrationId = internalRegStatusDto.getRegistrationId();
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"AbisMiddlewareStage::consumerListener()::response from abis for requestId ::" + requestId);
 
@@ -420,7 +418,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, ExceptionUtils.getStackTrace(e));
+					"", ExceptionUtils.getStackTrace(e));
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
@@ -522,6 +520,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private String getFaliureReason(Integer key) {
 		if (key == null)
 			return null;
+
+		Map<Integer, String> failureReason = new HashMap<>();
 		failureReason.put(1, "Internal error - Unknown");
 		failureReason.put(2, "Aborted");
 		failureReason.put(3, "Unexpected error - Unable to access biometric data");

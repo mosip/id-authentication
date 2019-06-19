@@ -112,33 +112,11 @@ public class OSIValidator {
 	@Autowired
 	ABISHandlerUtil abisHandlerUtil;
 
-	private JSONObject demographicIdentity;
-
-	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
 	/** The Constant TRUE. */
 	private static final String TRUE = "true";
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
-
-	/** The auth request DTO. */
-	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-
-	/** The auth type DTO. */
-	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-
-	/** The identity DTO. */
-	IdentityDTO identityDTO = new IdentityDTO();
-
-	/** The identity info DTO. */
-	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-
-	/** The pin info. */
-	PinInfo pinInfo = new PinInfo();
-
-	/** The identity iterator util. */
-	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
@@ -151,7 +129,8 @@ public class OSIValidator {
 	@Autowired
 	private Utilities utility;
 
-	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
+	@Autowired
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil;
 
 	@Autowired
 	private AuthUtil authUtil;
@@ -201,8 +180,8 @@ public class OSIValidator {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-		demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
-		regProcessorIdentityJson = utility.getRegistrationProcessorIdentityJson();
+		JSONObject demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
+		RegistrationProcessorIdentity regProcessorIdentityJson = utility.getRegistrationProcessorIdentityJson();
 		Identity identity = osiUtils.getIdentity(registrationId);
 		/** Getting data from packet MetadataInfo */
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
@@ -229,7 +208,7 @@ public class OSIValidator {
 				return false;
 			}
 			if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
-					&& (isValidIntroducer(registrationId)))
+					&& (isValidIntroducer(registrationId, demographicIdentity, regProcessorIdentityJson)))
 				isValidOsi = true;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "OSIValidator::isValidOSI()::exit");
@@ -476,7 +455,7 @@ public class OSIValidator {
 	 * @throws io.mosip.kernel.core.exception.IOException
 	 * @throws PacketDecryptionFailureException
 	 */
-	private boolean isValidIntroducer(String registrationId)
+	private boolean isValidIntroducer(String registrationId, JSONObject demographicIdentity, RegistrationProcessorIdentity regProcessorIdentityJson)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
 			ParserConfigurationException, SAXException, BiometricException, BioTypeException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
