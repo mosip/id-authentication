@@ -127,12 +127,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	/** The Constant ID_REPO_SERVICE_IMPL. */
 	private static final String ID_REPO_SERVICE_IMPL = "IdRepoServiceImpl";
 
-	/** The Constant CREATED_BY. */
-	private static final String CREATED_BY = "createdBy";
-
-	/** The Constant UPDATED_BY. */
-	private static final String UPDATED_BY = "updatedBy";
-
 	/** The Constant DEMOGRAPHICS. */
 	private static final String DEMOGRAPHICS = "Demographics";
 
@@ -216,8 +210,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			uinEntity = new Uin(uinRefId, uinToEncrypt, uinHash, identityInfo, securityManager.hash(identityInfo),
 					request.getRequest().getRegistrationId(), request.getRequest().getBiometricReferenceId(),
 					env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
-					UPDATED_BY, now(), false, now(), bioList, docList);
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), IdRepoSecurityManager.getUser(),
+					now(), null, null, false, null, bioList, docList);
 			uinRepo.save(uinEntity);
 			mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"Record successfully saved in db with documents");
@@ -225,19 +219,19 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			uinEntity = new Uin(uinRefId, uinToEncrypt, uinHash, identityInfo, securityManager.hash(identityInfo),
 					request.getRequest().getRegistrationId(), request.getRequest().getBiometricReferenceId(),
 					env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(),
-					UPDATED_BY, now(), false, now(), null, null);
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), IdRepoSecurityManager.getUser(),
+					now(), null, null, false, null, null, null);
 			uinRepo.save(uinEntity);
 			mosipLogger.debug(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 					"Record successfully saved in db without documents");
 		}
 
-		uinHistoryRepo.save(new UinHistory(uinRefId, now(), uinToEncrypt, uinHash, identityInfo,
-				securityManager.hash(identityInfo), request.getRequest().getRegistrationId(),
-				request.getRequest().getBiometricReferenceId(),
-				env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
+		uinHistoryRepo.save(
+				new UinHistory(uinRefId, now(), uinToEncrypt, uinHash, identityInfo, securityManager.hash(identityInfo),
+						request.getRequest().getRegistrationId(), request.getRequest().getBiometricReferenceId(),
+						env.getProperty(IdRepoConstants.ACTIVE_STATUS.getValue()),
+						env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()),
+						IdRepoSecurityManager.getUser(), now(), null, null, false, null));
 		return retrieveIdentityByUin(uinHash, null);
 	}
 
@@ -322,14 +316,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 
 		bioList.add(new UinBiometric(uinRefId, fileRefId, doc.getCategory(),
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), IdRepoSecurityManager.getUser(),
+				now(), null, null, false, null));
 
 		uinBioHRepo.save(new UinBiometricHistory(uinRefId, now(), fileRefId, doc.getCategory(),
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
 				securityManager.hash(doc.getValue().getBytes()),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), IdRepoSecurityManager.getUser(),
+				now(), null, null, false, null));
 	}
 
 	/**
@@ -368,14 +362,14 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		docList.add(new UinDocument(uinRefId, doc.getCategory(), docType.get(TYPE).asText(), fileRefId,
 				docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
 				docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), IdRepoSecurityManager.getUser(),
+				now(), null, null, false, null));
 
 		uinDocHRepo.save(new UinDocumentHistory(uinRefId, now(), doc.getCategory(), docType.get(TYPE).asText(),
 				fileRefId, docType.get(IdRepoConstants.FILE_NAME_ATTRIBUTE.getValue()).asText(),
 				docType.get(IdRepoConstants.FILE_FORMAT_ATTRIBUTE.getValue()).asText(), securityManager.hash(data),
-				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-				now(), false, now()));
+				env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), IdRepoSecurityManager.getUser(),
+				now(), null, null, false, null));
 	}
 
 	/**
@@ -439,6 +433,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			if (Objects.nonNull(request.getRequest().getStatus())
 					&& !StringUtils.equals(uinObject.getStatusCode(), request.getRequest().getStatus())) {
 				uinObject.setStatusCode(request.getRequest().getStatus());
+				uinObject.setUpdatedBy(IdRepoSecurityManager.getUser());
 				uinObject.setUpdatedDateTime(now());
 			}
 			if (Objects.nonNull(request.getRequest()) && Objects.nonNull(request.getRequest().getIdentity())) {
@@ -454,11 +449,13 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					updateIdentityObject(inputData, dbData, comparisonResult);
 					uinObject.setUinData(convertToBytes(convertToObject(dbData.jsonString().getBytes(), Map.class)));
 					uinObject.setUinDataHash(securityManager.hash(uinObject.getUinData()));
+					uinObject.setUpdatedBy(IdRepoSecurityManager.getUser());
 					uinObject.setUpdatedDateTime(now());
 				}
 
 				if (Objects.nonNull(requestDTO.getDocuments()) && !requestDTO.getDocuments().isEmpty()) {
 					updateDocuments(uinHash, uinObject, requestDTO);
+					uinObject.setUpdatedBy(IdRepoSecurityManager.getUser());
 					uinObject.setUpdatedDateTime(now());
 				}
 			}
@@ -466,8 +463,8 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 			uinHistoryRepo.save(new UinHistory(uinObject.getUinRefId(), now(), uinToEncrypt, uinHash,
 					uinObject.getUinData(), uinObject.getUinDataHash(), uinObject.getRegId(),
 					request.getRequest().getBiometricReferenceId(), uinObject.getStatusCode(),
-					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), CREATED_BY, now(), UPDATED_BY,
-					now(), false, now()));
+					env.getProperty(IdRepoConstants.MOSIP_PRIMARY_LANGUAGE.getValue()), IdRepoSecurityManager.getUser(),
+					now(), IdRepoSecurityManager.getUser(), now(), false, null));
 
 			return uinRepo.save(uinObject);
 		} catch (JSONException | InvalidJsonException e) {
@@ -668,6 +665,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 					docObj.setDocName(doc.getDocName());
 					docObj.setDocfmtCode(doc.getDocfmtCode());
 					docObj.setDocHash(doc.getDocHash());
+					docObj.setUpdatedBy(IdRepoSecurityManager.getUser());
 					docObj.setUpdatedDateTime(doc.getUpdatedDateTime());
 				}));
 		docList.stream()
@@ -681,6 +679,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 							bioObj.setBioFileId(bio.getBioFileId());
 							bioObj.setBiometricFileName(bio.getBiometricFileName());
 							bioObj.setBiometricFileHash(bio.getBiometricFileHash());
+							bioObj.setUpdatedBy(IdRepoSecurityManager.getUser());
 							bioObj.setUpdatedDateTime(bio.getUpdatedDateTime());
 						}));
 		bioList.stream()

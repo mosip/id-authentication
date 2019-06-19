@@ -154,8 +154,8 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 		String regId = request.getRequest().getRegistrationId();
 		try {
 			if (uinRepo.existsByUinHash(retrieveUinHash(uin))
-					|| (uinRepo.existsByRegId(request.getRequest().getRegistrationId())
-							&& uinHistoryRepo.existsByRegId(regId))) {
+					|| uinRepo.existsByRegId(request.getRequest().getRegistrationId())
+							|| uinHistoryRepo.existsByRegId(regId)) {
 				mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_SERVICE_IMPL, ADD_IDENTITY,
 						IdRepoErrorConstants.RECORD_EXISTS.getErrorMessage());
 				throw new IdRepoAppException(IdRepoErrorConstants.RECORD_EXISTS);
