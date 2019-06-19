@@ -188,8 +188,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 							Objects.nonNull(policy.getValidForInMinutes())
 									? DateUtils.getUTCCurrentDateTime().plusMinutes(policy.getValidForInMinutes())
 									: LocalDateTime.MAX.withYear(9999),
-							env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()), "createdBy", currentTime,
-							"updatedBy", currentTime, false, currentTime));
+							env.getProperty(IdRepoConstants.VID_ACTIVE_STATUS.getValue()), IdRepoSecurityManager.getUser(), currentTime,
+							null, null, false, null));
 		} else {
 			mosipLogger.error(IdRepoLogger.getUin(), ID_REPO_VID_SERVICE, CREATE_VID, "throwing vid creation failed");
 			throw new IdRepoAppException(IdRepoErrorConstants.VID_POLICY_FAILED);
@@ -325,6 +325,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 		if (!(vidStatus.equals(env.getProperty(IdRepoConstants.VID_UNLIMITED_TRANSACTION_STATUS.getValue()))
 				&& Objects.isNull(policy.getAllowedTransactions()))) {
 			vidObject.setStatusCode(vidStatus);
+			vidObject.setUpdatedBy(IdRepoSecurityManager.getUser());
 			vidObject.setUpdatedDTimes(DateUtils.getUTCCurrentDateTime());
 			vidObject.setUin(decryptedUin);
 			vidRepo.saveAndFlush(vidObject);
