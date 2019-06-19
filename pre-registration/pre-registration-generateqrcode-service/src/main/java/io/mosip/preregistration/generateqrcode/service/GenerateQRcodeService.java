@@ -83,6 +83,8 @@ public class GenerateQRcodeService {
 		
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
 		
+		response.setId(Id);
+		response.setVersion(version);
 		try {
 			JSONObject qrCodeReqData = new JSONObject(data);
 
