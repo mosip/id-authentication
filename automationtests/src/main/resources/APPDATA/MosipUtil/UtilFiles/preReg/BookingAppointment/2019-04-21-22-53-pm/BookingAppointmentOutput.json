@@ -1,1 +1,0 @@
-[{"BookAnAppointmentByPassingInvalidId_Empty":"valid","BookAnAppointmentByPassingInvalidId_otherThanStandardValue":"invalid","jiraId":"MOS-1001","testType":"regression","testCaseName":"BookAnAppointmentByPassingInvalidId_otherThanStandardValue","BookAnAppointmentByPassingInvalidStatusCode_Consumed":"valid","status":"Pass"}]

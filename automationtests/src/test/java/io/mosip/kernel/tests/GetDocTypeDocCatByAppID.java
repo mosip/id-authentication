@@ -1,7 +1,6 @@
 package io.mosip.kernel.tests;
 
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -18,7 +17,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -33,9 +31,8 @@ import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.ReadFolder;
-import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
@@ -45,13 +42,14 @@ import io.restassured.response.Response;
 public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 
 	public GetDocTypeDocCatByAppID() {
-		
 		super();
 	}
 	
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetDocTypeDocCatByAppID.class);
-	protected static String testCaseName = "";
+	protected String testCaseName = "";
+	private final String moduleName = "kernel";
+	private final String apiName = "GetDocType_DocCatByAppID";
 	public SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
@@ -59,26 +57,22 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	private AssertKernel assertKernel = new AssertKernel();
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String getDocType_DocCatByAppID = props.get("getDocType_DocCatByAppID");
-	private String folderPath = "kernel/GetDocType_DocCatByAppID";
-	private String outputFile = "GetDocType_DocCatByAppIDOutput.json";
-	private String requestKeyFile = "GetDocType_DocCatByAppIDInput.json";
 	private JSONObject Expectedresponse = null;
-	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 	
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		String object = (String) testdata[0];
+		testCaseName = object.toString();
 		 cookie=auth.getAuthForIndividual();
 	} 
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetDocType_DocCatByAppID")
 	public Object[][] readData1(ITestContext context) throws Exception {	 
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
+			return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 	/**
 	 * @throws FileNotFoundException
@@ -90,10 +84,12 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider="GetDocType_DocCatByAppID")
-	public void getDocTypeDocCatByAppID(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	public void getDocTypeDocCatByAppID(String testcaseName) throws FileNotFoundException, IOException, ParseException
     {	
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
+		JSONObject actualRequest = objectDataArray[0];
+		Expectedresponse = objectDataArray[1];		
 		// Getting the application id
 		String applicantId = actualRequest.get("applicantId").toString();
 		
@@ -108,8 +104,6 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		HashMap<String, List<String>> queryParam=new HashMap<>();
 		queryParam.put("languages",languages);
 				
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		
 		// Calling the get method
 		Response res=applicationLibrary.getWithPathParamQueryParamList(getDocType_DocCatByAppID, pathPar,queryParam,cookie);
 		//This method is for checking the authentication is pass or fail in rest services
@@ -121,24 +115,12 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 		
 		// Comparing expected and actual response
 		status = assertKernel.assertKernel(res, Expectedresponse,listOfElementToRemove);
-      if (status) {
-				finalStatus = "Pass";
-			}	
-		else {
-			finalStatus="Fail";
-			logger.error(res);
+		if (!status) {
+			logger.debug(res);
 		}
-		object.put("status", finalStatus);
-		arr.add(object);
-		boolean setFinalStatus=false;
-		if(finalStatus.equals("Fail"))
-			setFinalStatus=false;
-		else if(finalStatus.equals("Pass"))
-			setFinalStatus=true;
-		Verify.verify(setFinalStatus);
+		Verify.verify(status);
 		softAssert.assertAll();
 }
-		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
@@ -153,18 +135,9 @@ public class GetDocTypeDocCatByAppID extends BaseTestCase implements ITest {
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-				f.set(baseTestMethod, GetDocTypeDocCatByAppID.testCaseName);
+				f.set(baseTestMethod, testCaseName);
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}
 		}  
-		
-		@AfterClass
-		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/GetDocType_DocCatByAppID/GetDocType_DocCatByAppIDOutput.json";
-			try (FileWriter file = new FileWriter(configPath)) {
-				file.write(arr.toString());
-				logger.info("Successfully updated Results to GetDocType_DocCatByAppIDOutput.json file.......................!!");
-			}
-		}
 }

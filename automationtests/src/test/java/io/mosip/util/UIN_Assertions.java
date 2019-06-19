@@ -2,6 +2,8 @@ package io.mosip.util;
 
 import java.util.regex.Pattern;
 
+import org.testng.Assert;
+
 public class UIN_Assertions {
 
 	public static boolean ascendingMethod(String uin){
@@ -11,14 +13,13 @@ public class UIN_Assertions {
 	 		   if(first_char>'9'){
 	 			  first_char='0';
 	 		   }
-	 		   
-	 		   
 	 		  latest_uin=latest_uin+first_char;
 	 	 	   first_char++;
 	 	   }
 	 	   
 	 	   if(uin.equals(latest_uin)){
-	 		   return true;
+	 		   Assert.assertTrue(false, "UIN is in ascending order");
+	 		  return true;
 	 	   }else{
 	 		   return false;
 	 	   }
@@ -30,13 +31,11 @@ public class UIN_Assertions {
 	 		   if(first_char<'0'){
 	 			  first_char='9';
 	 		   }
-	 		   
-	 		   
 	 		  latest_uin=latest_uin+first_char;
 	 	 	   first_char--;
 	 	   }
-	 	   
 	 	   if(uin.equals(latest_uin)){
+	 		  Assert.assertTrue(false, "UIN is in descending order");
 	 		   return true;
 	 	   }else{
 	 		   return false;

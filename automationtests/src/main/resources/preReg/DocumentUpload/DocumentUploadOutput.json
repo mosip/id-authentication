@@ -1,1 +1,0 @@
-[{"testType":"smoke","testCaseName":"DocumentUpload_smoke","jiraId":"MOS-1006","DocumentUploadInvalidRequesttime_Alphabets":"valid","DocumentUploadInvalidId_Alphabets":"valid","DocumentUploadInvalidVersion_Alphabets":"valid","DocumentUploadInvalidDocType_xlsx":"valid","status":""}]

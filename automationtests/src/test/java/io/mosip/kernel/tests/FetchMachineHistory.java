@@ -1,7 +1,6 @@
 
 package io.mosip.kernel.tests;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,7 +22,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -36,13 +34,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.kernel.service.AssertKernel;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
-import io.mosip.kernel.service.ApplicationLibrary;
-import io.mosip.kernel.service.AssertKernel;
-import io.mosip.service.BaseTestCase;
 import io.mosip.kernel.util.TestCaseReader;
+import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 
 /**
@@ -55,11 +53,8 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 	}
 
 	private static Logger logger = Logger.getLogger(FetchMachineHistory.class);
-	private final String jiraID = "MOS-8229";
 	private final String moduleName = "kernel";
 	private final String apiName = "FetchMachineHistory";
-	private final String requestJsonName = "FetchMachineHistoryRequest";
-	private final String outputJsonName = "FetchMachineHistoryOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String FetchMachineHistory_URI = props.get("FetchMachineHistory_URI").toString();
 	protected String testCaseName = "";
@@ -96,7 +91,7 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context)
 			throws ParseException {	
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 	}
 
 	/**
@@ -108,10 +103,9 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "fetchData", alwaysRun = true)
-	public void fetchMachineHistory(String testcaseName, JSONObject object)
+	public void fetchMachineHistory(String testcaseName)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		logger.info("Test Case Name:" + testcaseName);
-		object.put("Jira ID", jiraID);
 
 		// getting request and expected response jsondata from json files.
 		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
@@ -130,7 +124,6 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 		}
 		
 				response = applicationLibrary.getWithPathParam(FetchMachineHistory_URI, objectData,cookie);
-				logger.info("----"+response.asString());
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		if (testcaseName.toLowerCase().contains("smoke")) {
@@ -188,13 +181,9 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 
 		if (!status) {
 			logger.debug(response);
-			object.put("status", "Fail");
-		} else if (status) {
-			object.put("status", "Pass");
 		}
 		Verify.verify(status);
 		softAssert.assertAll();
-		arr.add(object);
 	}
 
 	@Override
@@ -217,15 +206,4 @@ public class FetchMachineHistory extends BaseTestCase implements ITest {
 		}
 	}
 
-	/**
-	 * this method write the output to corressponding json
-	 */
-	@AfterClass
-	public void updateOutput() throws IOException {
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
-		try (FileWriter file = new FileWriter(configPath)) {
-			file.write(arr.toString());
-			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
-		}
-	}
 }
