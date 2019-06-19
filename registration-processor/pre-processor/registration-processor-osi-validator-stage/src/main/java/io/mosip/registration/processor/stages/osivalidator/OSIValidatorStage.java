@@ -119,12 +119,12 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 
 		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.OSI_VALIDATE.toString());
 		registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
-		osiValidator.registrationStatusDto = registrationStatusDto;
+//		osiValidator.registrationStatusDto = registrationStatusDto;
 		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
 			isValidUMC = umcValidator.isValidUMC(registrationId);
 			if (isValidUMC) {
-				isValidOSI = osiValidator.isValidOSI(registrationId);
+				isValidOSI = osiValidator.isValidOSI(registrationId, registrationStatusDto);
 				if (isValidOSI) {
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -139,12 +139,12 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 					int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;
-					registrationStatusDto.setLatestTransactionStatusCode(
-							osiValidator.registrationStatusDto.getLatestTransactionStatusCode());
+//					registrationStatusDto.setLatestTransactionStatusCode(
+//							osiValidator.registrationStatusDto.getLatestTransactionStatusCode());
 					registrationStatusDto.setRetryCount(retryCount);
 
-					registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
-					registrationStatusDto.setStatusCode(osiValidator.registrationStatusDto.getStatusCode());
+//					registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
+//					registrationStatusDto.setStatusCode(osiValidator.registrationStatusDto.getStatusCode());
 
 					code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();
 					description = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage() + registrationId + "::"
