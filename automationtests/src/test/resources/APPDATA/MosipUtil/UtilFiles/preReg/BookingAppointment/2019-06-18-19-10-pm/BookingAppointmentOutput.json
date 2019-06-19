@@ -1,0 +1,1 @@
+[{"BookAnAppointmentByPassingInvalidTimeSlotTo_Alphabets":"valid","jiraId":"MOS-1015","testType":"smoke","testCaseName":"BookingAppointment_smoke","status":"Pass"},{"BookAnAppointmentByPassingInvalidTimeSlotTo_Alphabets":"valid","jiraId":"MOS-1016","testType":"smoke","testCaseName":"ReBookingAppointment_smoke","status":"Pass"}]

@@ -274,7 +274,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		
 		preReg_URI =preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		
 	}
 
 	/**
@@ -311,6 +311,11 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		}
 		String source = "src/test/resources/" + folderPath + "/";
 
+	}
+	@BeforeClass
+	public void getToken()
+	{
+		authToken = preRegLib.getToken();
 	}
 
 	@Override

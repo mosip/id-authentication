@@ -1527,7 +1527,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 */
 	public String randomRegistrationCenterId() {
 		Random rand = new Random();
-		List<String> givenList = Lists.newArrayList("10002", "10013", "10014", "10010", "10015", "10006", "10004", "10008", "10012", "10005", "10003", "10007", "10009");
+		List<String> givenList = Lists.newArrayList("10002", "10013", "10014", "10010", "10015", "10006", "10004", "10008", "10012", "10005", "10003", "10007");
 		String s = null;
 		int numberOfElements = givenList.size();
 		for (int i = 0; i < numberOfElements; i++) {
@@ -1825,7 +1825,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		 * Reading request body from configpath
 		 */
 		String folder2 = "preReg";
-		String configPath = System.getProperty("user.dir")+"//src//test//resources//" + folder2 + "//" + "PreRegDocs" + "//" + PrID;
+		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
 		File folder1 = new File(configPath);
 		File[] listOfFiles = folder1.listFiles();
 		try {

@@ -41,18 +41,18 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 	@Test
 	public void makeRegistartionCenterInactive() {
 		String syncAvailability = null;
-		dao.makeregistartionCenterActive("10009");
+		dao.makeregistartionCenterActive("10001");
 		lib.syncAvailability();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
 		Response createResponse = lib.CreatePreReg(createPregRequest);
 		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10009");
+		Response avilibityResponse = lib.FetchCentre("10001");
 		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
 		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),
 				"Appointment booked successfully");
-		dao.makeregistartionCenterDeActive("10009");
+		dao.makeregistartionCenterDeActive("10001");
 		Response syncAvailabilityResponse = lib.syncAvailability();
 		try {
 			syncAvailability = syncAvailabilityResponse.jsonPath().get("response").toString();
@@ -61,7 +61,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		}
 
 		lib.compareValues(syncAvailability, "MASTER_DATA_SYNCED_SUCCESSFULLY");
-		Response fetchCenterResponse = lib.FetchCentre("10009");
+		Response fetchCenterResponse = lib.FetchCentre("10001");
 		try {
 			lib.compareValues(fetchCenterResponse.jsonPath().get("errors[0].message").toString(),
 					"No available slots found for specified registration center");
@@ -76,11 +76,11 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 			Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 			lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString(),
 					"Pending_Appointment");
-			dao.makeregistartionCenterActive("10009");
+			dao.makeregistartionCenterActive("10001");
 			syncAvailabilityResponse = lib.syncAvailability();
 			lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),
 					"MASTER_DATA_SYNCED_SUCCESSFULLY");
-			lib.FetchCentre("10009");
+			lib.FetchCentre("10001");
 
 		} catch (NullPointerException e) {
 			Assert.assertTrue(false, "Exception occured while sync availibility");
@@ -89,24 +89,24 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 	@Test
 	public void makeRegCntrInactiveAndCheckAppointmentGettingCanceled() {
 		try {
-			dao.makeregistartionCenterActive("10009");
+			dao.makeregistartionCenterActive("10001");
 			lib.syncAvailability();
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = lib.createRequest(testSuite);
 			Response createResponse = lib.CreatePreReg(createPregRequest);
 			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentResponse = lib.documentUpload(createResponse);
-			Response avilibityResponse = lib.FetchCentre("10009");
+			Response avilibityResponse = lib.FetchCentre("10001");
 			Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
 			lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),"Appointment booked successfully");
-			dao.makeregistartionCenterDeActive("10009");
+			dao.makeregistartionCenterDeActive("10001");
 			Response syncAvailabilityResponse = lib.syncAvailability();
 			lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 			Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
 			lib.compareValues(appointmentDetailsResponse.jsonPath().get("errors[0].message").toString(), "Booking data not found");
 			Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
 			lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString(), "Pending_Appointment");
-			dao.makeregistartionCenterActive("10009");
+			dao.makeregistartionCenterActive("10001");
 			syncAvailabilityResponse = lib.syncAvailability();
 			lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
 		} catch (NullPointerException e) {
@@ -122,7 +122,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 			Response createResponse = lib.CreatePreReg(createPregRequest);
 			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
 			Response documentResponse = lib.documentUpload(createResponse);
-			Response avilibityResponse = lib.FetchCentre("10009");
+			Response avilibityResponse = lib.FetchCentre("10001");
 			Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
 			lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),"Appointment booked successfully");
 			Date date = dao.MakeDayAsHoliday();
@@ -145,7 +145,7 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		dao.updateHoliday(date);
 		syncAvailabilityResponse = lib.syncAvailability();
 		lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-		Response avilibityResponse = lib.FetchCentre("10009");
+		Response avilibityResponse = lib.FetchCentre("10001");
 	}
 */
 	@Override

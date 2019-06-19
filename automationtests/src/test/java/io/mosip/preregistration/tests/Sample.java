@@ -84,18 +84,15 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 */
 	@Test
-	public void pagination_withoutPageIndexValue()
-	{
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = lib.getPreId(createResponse);
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
-		Response retrivePreRegistrationData = lib.retrivePreRegistrationData(preID);
-		boolean status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationData, preID, createResponse);
-		System.out.println("status is============="+status);
+	public void makeAdayAsHoliday() {
+		try {
+			lib.syncAvailability();
+			System.out.println(lib.FetchCentre("10001"));
+			
+			
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while running sync master data for holiday");
+		}
 	}
 	@BeforeMethod(alwaysRun = true)
 	public void run() {

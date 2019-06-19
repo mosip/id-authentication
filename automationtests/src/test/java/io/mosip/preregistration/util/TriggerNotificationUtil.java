@@ -12,6 +12,7 @@ import io.mosip.preregistration.service.PreRegistrationApplicationLibrary;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
+import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
 public class TriggerNotificationUtil {
@@ -62,7 +63,7 @@ public class TriggerNotificationUtil {
 				object.remove(langCodeKey);
 			}
 		}
-		request.put("requesttime", preregUtil.getCurrentDate());
+		request.put("requesttime", PreRegistrationLibrary.getCurrentDate());
 		response = applnLib.postFileAndJsonParam(notification_URI, request, file, langCodeKey, value);
 
 		return response;
