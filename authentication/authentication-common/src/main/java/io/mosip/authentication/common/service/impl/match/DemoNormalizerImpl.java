@@ -2,7 +2,7 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -59,16 +59,16 @@ public class DemoNormalizerImpl implements DemoNormalizer {
 			}
 		}
 		Map<Pattern, String> namePatterns = normalizeWithCommonAttributes("name", language);
-		
+
 		normalize(nameBuilder, namePatterns);
 		return nameBuilder.toString().trim();
 	}
 
 	private Map<Pattern, String> normalizeWithCommonAttributes(String type, String language) {
-		Map<Pattern, String> namePatterns = getNormalisersByTypeAndLang("common", "any");
-		namePatterns.putAll(getNormalisersByTypeAndLang("common", language));
+		Map<Pattern, String> namePatterns = getNormalisersByTypeAndLang(type, language);
 		namePatterns.putAll(getNormalisersByTypeAndLang(type, "any"));
-		namePatterns.putAll(getNormalisersByTypeAndLang(type, language));
+		namePatterns.putAll(getNormalisersByTypeAndLang("common", language));
+		namePatterns.putAll(getNormalisersByTypeAndLang("common", "any"));
 		return namePatterns;
 	}
 
@@ -110,8 +110,7 @@ public class DemoNormalizerImpl implements DemoNormalizer {
 	 */
 	@Override
 	public String normalizeAddress(String address, String language) {
-		Map<Pattern, String> addressPattern = normalizeWithCommonAttributes("address", language);;
-
+		Map<Pattern, String> addressPattern = normalizeWithCommonAttributes("address", language);
 		return normalize(address, addressPattern);
 	}
 
@@ -146,11 +145,12 @@ public class DemoNormalizerImpl implements DemoNormalizer {
 			while (m.find(findStart)) {
 				int start = m.start();
 				int end = m.end();
-				//If it matches no character, break to proceed to next pattern in the outer loop
-				if(end - start == 0) {
+				// If it matches no character, break to proceed to next pattern in the outer
+				// loop
+				if (end - start == 0) {
 					break;
 				}
-				
+
 				String replacement = entry.getValue();
 				stringBuilder.replace(m.start(), end, replacement);
 				// Find next from the replacement index
@@ -160,9 +160,9 @@ public class DemoNormalizerImpl implements DemoNormalizer {
 	}
 
 	private Map<Pattern, String> getBasicNormalisers(String normalizerKey) {
-		Map<Pattern, String> basicPatternMap = new HashMap<>();
+		Map<Pattern, String> basicPatternMap = new LinkedHashMap<>();
 		for (int i = 0; i < NORMALIZER_CONFIG_LIMIT; i++) {
-			String basicPattern = String.format(normalizerKey,i);
+			String basicPattern = String.format(normalizerKey, i);
 			String normaliseValue = environment.getProperty(basicPattern);
 			if (null != normaliseValue) {
 				String sep = environment.getProperty(IdAuthConfigKeyConstants.IDA_NORMALISER_SEP, DEFAULT_SEP);
@@ -170,7 +170,7 @@ public class DemoNormalizerImpl implements DemoNormalizer {
 					String patternReplacement[] = normaliseValue.split(sep);
 					Pattern normPattern = Pattern.compile(patternReplacement[0], Pattern.UNICODE_CHARACTER_CLASS);
 					String replacement;
-					if (patternReplacement.length > 0) {
+					if (patternReplacement.length > 1) {
 						replacement = patternReplacement[1];
 					} else {
 						replacement = "";
