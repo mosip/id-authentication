@@ -42,11 +42,11 @@ public class DaoConfig extends HibernateDaoConfig {
 	private static final Logger LOGGER = AppConfig.getLogger(DaoConfig.class);
 	
 	private static final String DRIVER_CLASS_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
-	private static final String DB_PATH_VAR = "mosip.dbpath";
+	private static final String DB_PATH_VAR = "mosip.reg.dbpath";
 	private static final String URL = "jdbc:derby:";
 	private static final String DB_AUTHENITICATION = ";bootPassword=";
-	private static final String DB_AUTH_FILE_PATH = "mosip.registration.db.key";
-	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration";
+	private static final String DB_AUTH_FILE_PATH = "mosip.reg.db.key";
+	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.reg.client.tpm.availability";
 
 	/**
 	 * instance of datasource

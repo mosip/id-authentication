@@ -45,10 +45,10 @@ public class SoftwareInstallationHandler {
 		FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
-		serverRegClientURL = properties.getProperty("mosip.client.url");
-		serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
+		serverRegClientURL = properties.getProperty("mosip.reg.client.url");
+		serverMosipXmlFileUrl = properties.getProperty("mosip.reg.xml.file.url");
 
-		latestVersion = properties.getProperty("mosip.version");
+		latestVersion = properties.getProperty("mosip.reg.version");
 
 		getLocalManifest();
 

@@ -18,7 +18,6 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -208,6 +207,45 @@ public class BioServiceTest {
        }
 
        @Test
+       public void testSegmentFingerPrintImage2() throws IOException, RegBaseCheckedException {
+             FingerprintDetailsDTO fingerprintDTO = new FingerprintDetailsDTO();
+       ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled","N");
+
+             PowerMockito.mockStatic(IOUtils.class);
+       Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
+             String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
+                          "/fingerprints/lefthand/leftLittle/" };
+
+             List<BiometricExceptionDTO> biometricExceptionDTOs = new ArrayList<>();
+             BiometricExceptionDTO biometricExceptionDTO1 = new BiometricExceptionDTO();
+              biometricExceptionDTO1.setMissingBiometric("leftMiddle");
+             BiometricExceptionDTO biometricExceptionDTO2 = new BiometricExceptionDTO();
+             biometricExceptionDTO2.setMissingBiometric("rightMiddle");
+             biometricExceptionDTOs.add(biometricExceptionDTO1);
+             biometricExceptionDTOs.add(biometricExceptionDTO2);
+
+             ((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
+                    .getBiometricDTO().getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
+
+             bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
+
+             assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(0).getFingerPrint()));
+             assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerprintImageName());
+             assertEquals("leftIndex", fingerprintDTO.getSegmentedFingerprints().get(0).getFingerType());
+             assertEquals(0, fingerprintDTO.getSegmentedFingerprints().get(0).getNumRetry());
+             assertEquals(90.0, fingerprintDTO.getSegmentedFingerprints().get(0).getQualityScore(), 0.1);
+             assertEquals(false, fingerprintDTO.isForceCaptured());
+
+             assertEquals("image", new String(fingerprintDTO.getSegmentedFingerprints().get(1).getFingerPrint()));
+             assertEquals("leftLittle", fingerprintDTO.getSegmentedFingerprints().get(1).getFingerprintImageName());
+             assertEquals("leftLittle", fingerprintDTO.getSegmentedFingerprints().get(1).getFingerType());
+             assertEquals(0, fingerprintDTO.getSegmentedFingerprints().get(1).getNumRetry());
+             assertEquals(90.0, fingerprintDTO.getSegmentedFingerprints().get(1).getQualityScore(), 0.1);
+             assertEquals(false, fingerprintDTO.isForceCaptured());
+       }
+
+       
+       @Test
        public void testSegmentedFingerPrintUserOnBoard() throws IOException, RegBaseCheckedException {
 
              FingerprintDetailsDTO fingerprintDTO = new FingerprintDetailsDTO();
@@ -282,17 +320,16 @@ public class BioServiceTest {
              
        }
 
-       @Ignore
        @Test
        public void testGetIrisImageAsDTO() throws RegBaseCheckedException, IOException {
              PowerMockito.mockStatic(ImageIO.class);
        when(ImageIO.read(Mockito.any(InputStream.class))).thenReturn(Mockito.mock(BufferedImage.class));
-
+       ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled","N");
              IrisDetailsDTO detailsDTO = new IrisDetailsDTO();
              bioService.getIrisImageAsDTO(detailsDTO, "LeftEye");
-
+             
              assertNotNull(detailsDTO.getIris());
-             assertEquals(" ", detailsDTO.getIrisImageName());
+             assertEquals("LeftEye.png", detailsDTO.getIrisImageName());
              assertEquals("LeftEye", detailsDTO.getIrisType());
              assertEquals(0, detailsDTO.getNumOfIrisRetry());
              assertEquals(90.5, detailsDTO.getQualityScore(), 0.1);
@@ -474,46 +511,21 @@ public class BioServiceTest {
              assertTrue(res);
        }
 
-@Test
+       @Test
        public void validateFaceTest1()
        {
-             bioService.validateFace("userId");
+             bioService.validateFace(bioService.getFaceAuthenticationDto("userId"));
        }
        
        
        @Test
-       public void testExceptionSegmentFingerPrintImage1() throws IOException, RegBaseCheckedException {
-             FingerprintDetailsDTO fingerprintDTO = new FingerprintDetailsDTO();
-        ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled","N");
-             PowerMockito.mockStatic(IOUtils.class);
-       Mockito.when(IOUtils.resourceToByteArray(Mockito.anyString())).thenReturn("image".getBytes());
-             String[] LEFTHAND_SEGMNTD_FILE_PATHS = new String[] { "/fingerprints/lefthand/leftIndex/",
-                          "/fingerprints/lefthand/leftLittle/", "/fingerprints/lefthand/leftMiddle/",
-                          "/fingerprints/lefthand/leftRing/" };
-
-             List<BiometricExceptionDTO> biometricExceptionDTOs = new ArrayList<>();
-             BiometricExceptionDTO biometricExceptionDTO1 = new BiometricExceptionDTO();
-              biometricExceptionDTO1.setMissingBiometric("leftMiddle");
-             BiometricExceptionDTO biometricExceptionDTO2 = new BiometricExceptionDTO();
-              biometricExceptionDTO2.setMissingBiometric("leftRing");
-             biometricExceptionDTOs.add(biometricExceptionDTO1);
-             biometricExceptionDTOs.add(biometricExceptionDTO2);
-
-             ((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
-                    .getBiometricDTO().getApplicantBiometricDTO().setBiometricExceptionDTO(biometricExceptionDTOs);
-
-             bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, null);
-             /*CaptureResponseDto captureResponseDto=new CaptureResponseDto();
-             CaptureResponseBioDto captureResponseBioDto=new CaptureResponseBioDto();
-             captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
-             
-       captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
-       Mockito.when(mosipBioDeviceManager.scan("leftslap")).thenReturn(captureResponseDto);*/
-       //Mockito.when(mosipBioDeviceManager.scan("leftslap")).thenReturn(value)
-              //bioService.segmentFingerPrintImage(fingerprintDTO, LEFTHAND_SEGMNTD_FILE_PATHS, "leftslap");
-
+       public void validateFaceTest2()
+       {
+    	     ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled","N");
+             bioService.validateFace(bioService.getFaceAuthenticationDto("userId"));
        }
-        // @Test
+       
+         @Test
            public void nonMdmTest() throws RegBaseCheckedException
            {
            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
@@ -522,16 +534,27 @@ public class BioServiceTest {
          @Test
            public void getFingerPrintImageAsDtoTest() throws RegBaseCheckedException
            {
-           ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "Y");
-              bioService.getIrisImageAsDTO(new IrisDetailsDTO(), "LeftEye");
+            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "Y");
+             bioService.getIrisImageAsDTO(new IrisDetailsDTO(), "LeftEye");
            }
          @Test
            public void getFingerPrintImageAsDTOWithMdmThumbsTest() throws RegBaseCheckedException
            {
-           Mockito.when(mosipBioDeviceManager.scan(Mockito.any())).thenReturn(Mockito.any());
+           CaptureResponseDto captureResponseDto=new CaptureResponseDto();
+           Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
+           Mockito.when(mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto)).thenReturn("value".getBytes());
               bioService.getFingerPrintImageAsDTOWithMdm(new FingerprintDetailsDTO(),"thumbs");
               
-           } 
+           }
+         @Test
+         public void getFingerPrintImageAsDTOWithMdmrightSlapTest() throws RegBaseCheckedException
+         {
+         CaptureResponseDto captureResponseDto=new CaptureResponseDto();
+         Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
+         Mockito.when(mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto)).thenReturn("value".getBytes());
+            bioService.getFingerPrintImageAsDTOWithMdm(new FingerprintDetailsDTO(),"rightSlap");
+            
+         } 
           @Test
            public void getFingerPrintImageAsDTOWithMdmleftSlapTest() throws RegBaseCheckedException
            {
@@ -560,20 +583,31 @@ public class BioServiceTest {
               bioService.getFingerPrintImageAsDTOWithMdm(new FingerprintDetailsDTO(),"default");
               
            }
-           @Test(expected=RegBaseUncheckedException.class)
-           public void getFingerPrintImageAsDTOTest() throws RegBaseCheckedException
+           
+           @Test
+           public void getFingerPrintImageAsDTOTest1() throws RegBaseCheckedException
+           {
+           ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
+              FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
+           bioService.getFingerPrintImageAsDTO(fingerprintDetailsDTO,"rightSlap");
+              
+           }
+           
+           @Test
+           public void getFingerPrintImageAsDTOTest2() throws RegBaseCheckedException
            {
            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
               FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
            bioService.getFingerPrintImageAsDTO(fingerprintDetailsDTO,"leftSlap");
               
            }
+           
            @Test
-           public void getFingerPrintImageAsDTOTest1() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOTest3() throws RegBaseCheckedException
            {
            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
               FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
-           bioService.getFingerPrintImageAsDTO(fingerprintDetailsDTO,"right");
+           bioService.getFingerPrintImageAsDTO(fingerprintDetailsDTO,"thumbs");
               
            }
            @Test
@@ -583,12 +617,37 @@ public class BioServiceTest {
               CaptureResponseDto captureResponseDto=new CaptureResponseDto();
            Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
            Mockito.when(mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto)).thenReturn("value".getBytes());
-              bioService.validateFingerPrint("userId");
+              bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto("userId"));
+           }
+           @Test
+           public void validateFingerPrintTest1() throws RegBaseCheckedException, IOException
+           {
+              
+              CaptureResponseDto captureResponseDto=new CaptureResponseDto();
+           Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
+           Mockito.when(mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto)).thenReturn(null);
+              bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto("userId"));
+           }
+           @Test
+           public void validateFingerPrintTest2() throws RegBaseCheckedException, IOException
+           {
+         	  ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled","N");
+              bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto("userId"));
            }
            @Test
            public void validateIrisTest2() throws RegBaseCheckedException, IOException
            {
-              bioService.validateIris("userId");
+        	  ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled","N");
+              bioService.validateIris(bioService.getIrisAuthenticationDto("userId"));
+           }
+           
+           @Test
+           public void validateIrisTest1() throws RegBaseCheckedException, IOException
+           { 
+               CaptureResponseDto captureResponseDto=new CaptureResponseDto();
+               Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
+               Mockito.when(mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto)).thenReturn("value".getBytes());
+              bioService.validateIris(bioService.getIrisAuthenticationDto("userId"));
            }
        
 

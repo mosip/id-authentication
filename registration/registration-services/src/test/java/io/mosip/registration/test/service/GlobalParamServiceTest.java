@@ -13,11 +13,15 @@ import java.util.Map;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
@@ -35,6 +39,8 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class })
 public class GlobalParamServiceTest {
 
 	@Rule
@@ -75,6 +81,8 @@ public class GlobalParamServiceTest {
 	@Test
 	public void syncConfigDataTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
 		globalParamJsonMap.put("retryAttempts", "3");
 		globalParamJsonMap.put("kernel", "5");
@@ -104,6 +112,9 @@ public class GlobalParamServiceTest {
 
 	@Test
 	public void syncConfigData() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
+
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		HashMap<String, Object> globalParamJsonMap = new LinkedHashMap<>();
 
@@ -150,6 +161,8 @@ public class GlobalParamServiceTest {
 	@Test
 	public void syncConfigTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		HashMap<String, Object> globalParamJsonMap = new HashMap<>();
 		globalParamJsonMap.put("retryAttempts", "3");
 		globalParamJsonMap.put("kernel", "5");
@@ -232,6 +245,8 @@ public class GlobalParamServiceTest {
 	@Test
 	public void syncConfigDataUpdate()
 			throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
+		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
+		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		HashMap<String, Object> globalParamJsonMap = new LinkedHashMap<>();
 

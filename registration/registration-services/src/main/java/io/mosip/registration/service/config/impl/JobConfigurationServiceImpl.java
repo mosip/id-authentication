@@ -699,7 +699,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 					|| syncJob.getValue().getParentSyncJobId().equalsIgnoreCase("NULL"))
 					&& syncJob.getValue().getApiName() != null) {
 
-				ResponseDTO jobResponse = executeJob(syncJob.getKey(), RegistrationConstants.JOB_TRIGGER_POINT_USER);
+				String triggerPoint = getUserIdFromSession().equals(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM)
+						? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
+						: RegistrationConstants.JOB_TRIGGER_POINT_USER;
+
+				// Execute Job
+				ResponseDTO jobResponse = executeJob(syncJob.getKey(), triggerPoint);
+
 				if (jobResponse.getErrorResponseDTOs() != null) {
 					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
 					responseDTOForSync.getErrorJobs().add(syncJob.getKey());

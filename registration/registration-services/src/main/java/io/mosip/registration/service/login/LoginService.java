@@ -25,11 +25,9 @@ public interface LoginService {
 	 * authentication type and set of roles
 	 * 
 	 * @param authType
-	 *            {@code String} authentication type [Login auth, Packet auth,
-	 *            Exception auth, EOD auth, Onboard auth]
+	 *            {@code String} authentication type [Login auth, Packet auth, Exception auth, EOD auth, Onboard auth]
 	 * @param roleList
-	 *            {@code List} list of user roles[Registration Officer, Registration
-	 *            supervisor, Registration Admin]
+	 *            {@code List} list of user roles[Registration Officer, Registration supervisor, Registration Admin]
 	 * 
 	 * @return List of login modes
 	 */
@@ -41,8 +39,7 @@ public interface LoginService {
 	 * @param userId
 	 *            {@code String} user id entered by the operator
 	 * 
-	 * @return {@code UserDTO} UserDTO which will have roles, pword, center and
-	 *         machine information
+	 * @return {@code UserDTO} UserDTO which will have roles, pword, center and machine information
 	 */
 	UserDTO getUserDetail(String userId);
 
@@ -55,8 +52,7 @@ public interface LoginService {
 	 * @param langCode
 	 *            {@code String} primary language code
 	 * 
-	 * @return {@code RegistrationCenterDetailDTO} which contains Registration
-	 *         center details
+	 * @return {@code RegistrationCenterDetailDTO} which contains Registration center details
 	 */
 	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId, String langCode);
 
@@ -83,6 +79,15 @@ public interface LoginService {
 	/**
 	 * Execute global param, master sync, user detail, user salt detail and key
 	 * policy sync's as a initial sync
+	 * 
+	 * <p>If Initial setup is enabled and TPM is enabled:</p>
+	 * 		<p>Exceute TPM PublicKeySyncService:</p> 
+	 * 			<p>Keyindex will be returned being used in other sync in case of initial setup</p>
+	 * <p>Execute PublicKey Sync, Global Param Sync, Master Sync, User Detail Sync, User Salt Detail Sync:</p>
+	 * 		<p>If all above sync are success:</p>
+	 * 			<p>return Success as status</p>
+	 * 		<p>If any sync is failed</p>
+	 * 			<p>return Failure as status</p>
 	 * 
 	 * @return {@code List} list of sync results
 	 */
