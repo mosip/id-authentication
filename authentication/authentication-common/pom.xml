@@ -115,11 +115,6 @@
 			<version>${commons.lang.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>Mantra</groupId>
-			<artifactId>MFS100</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-api-mockito2</artifactId>
 			<version>${powermock.version}</version>
