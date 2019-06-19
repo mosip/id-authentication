@@ -143,7 +143,10 @@ public class VidControllerTest {
 		Mockito.when(vidService.updateVid(Mockito.anyString(), Mockito.any())).thenReturn(value);
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
 		ResponseEntity<ResponseWrapper<VidResponseDTO>> updateVidStatus = controller.updateVidStatus("123456", req, errors);
-		assertEquals(response, updateVidStatus.getBody());
+		ResponseWrapper<VidResponseDTO> responseBody = updateVidStatus.getBody();
+		responseBody.setResponsetime(null);
+		response.setResponsetime(null);
+		assertEquals(response, responseBody);
 		assertEquals(HttpStatus.OK, updateVidStatus.getStatusCode());
 	}
 
