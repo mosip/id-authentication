@@ -14,7 +14,7 @@ public class IndividualDemographicDedupe {
 	/** The name. */
 	private JsonValue[] name;
 	public JsonValue[] getName() {
-		return Arrays.copyOf(name, name.length);
+		return name;
 	}
 
 	public void setName(JsonValue[] name) {
@@ -27,7 +27,7 @@ public class IndividualDemographicDedupe {
 	/** The gender. */
 	private JsonValue[] gender;
 	public JsonValue[] getGender() {
-		return Arrays.copyOf(gender, gender.length);
+		return gender;
 	}
 
 	public void setGender(JsonValue[] gender) {

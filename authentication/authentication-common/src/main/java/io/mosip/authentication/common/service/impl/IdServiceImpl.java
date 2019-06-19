@@ -17,8 +17,6 @@ import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -76,8 +74,9 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 * Do validate VID entity and checks for the expiry date.
 	 *
 	 * @param vid the vid
+	 * @param isBio the is bio
 	 * @return the string
-	 * @throws IdValidationFailedException the id validation failed exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	Map<String, Object> getIdRepoByVidAsRequest(String vid, boolean isBio) throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = null;
@@ -101,7 +100,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	 *
 	 * @param idvIdType idType
 	 * @param idvId     id-number
-	 * @param isBio
+	 * @param isBio the is bio
 	 * @return map map
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
@@ -147,13 +146,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	/**
 	 * Store entry in Auth_txn table for all authentications.
 	 *
-	 * @param idvId       idvId
-	 * @param idvIdType   idvIdType(D/V)
-	 * @param reqTime     reqTime
-	 * @param txnId       txnId
-	 * @param status      status('Y'/'N')
-	 * @param comment     comment
-	 * @param requestType requestType(OTP_REQUEST,OTP_AUTH,DEMO_AUTH,BIO_AUTH)
+	 * @param authTxn the auth txn
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
@@ -162,7 +155,11 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	}
 
 	/**
-	 * Fetch data from Identity info value based on Identity response
+	 * Fetch data from Identity info value based on Identity response.
+	 *
+	 * @param idResponseDTO the id response DTO
+	 * @return the id info
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Map<String, List<IdentityInfoDTO>> getIdInfo(Map<String, Object> idResponseDTO)
@@ -203,11 +200,10 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 	}
 
 	/**
-	 * Fetch document values for Individual's
-	 * 
-	 * @param value
-	 * @return
-	 * @throws IdAuthenticationDaoException
+	 * Fetch document values for Individual's.
+	 *
+	 * @param value the value
+	 * @return the document values
 	 */
 	private Map<String, Object> getDocumentValues(List<Map<String, Object>> value) {
 		return value.stream().filter(map -> INDIVIDUAL_BIOMETRICS.equals(map.get("category")))

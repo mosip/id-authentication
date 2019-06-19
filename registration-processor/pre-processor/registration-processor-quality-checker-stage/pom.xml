@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.mosip.registrationprocessor</groupId>
         <artifactId>pre-processor</artifactId>
-        <version>0.12.8</version>
+        <version>0.12.9</version>
     </parent>
 
     <artifactId>registration-processor-quality-checker-stage</artifactId>
@@ -70,17 +70,17 @@
         <dependency>
             <groupId>io.mosip.kernel</groupId>
             <artifactId>kernel-core</artifactId>
-            <version>0.12.8</version>
+            <version>0.12.9</version>
         </dependency>
         <dependency>
             <groupId>io.mosip.kernel</groupId>
             <artifactId>kernel-bioapi-provider</artifactId>
-            <version>0.12.8</version>
+            <version>0.12.9</version>
         </dependency>
         <dependency>
             <groupId>io.mosip.kernel</groupId>
             <artifactId>kernel-cbeffutil-api</artifactId>
-            <version>0.12.8</version>
+            <version>0.12.9</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>

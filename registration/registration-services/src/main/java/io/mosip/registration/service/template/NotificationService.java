@@ -10,28 +10,32 @@ import io.mosip.registration.dto.ResponseDTO;
 public interface NotificationService {
 	
 	/**
-	 * This method accepts the message and phone number to send sms service.
+	 * This method accepts the message, phone number, registration id to invoke sms service.
 	 *
 	 * @param message 
-	 * 				the message
+	 * 				{@code String} the message to be sent through SMS
 	 * @param number 
-	 * 				the number
+	 * 				{@code String} the number to which SMS to be sent
 	 * @param regId 
-	 * 				the registration id
-	 * @return 		response for the sms notification
+	 * 				{@code String} the registration id
+	 * 
+	 * @return {@code ResponseDTO} based on the result the response DTO will be
+	 *         formed and return to the caller.
 	 */	
 	ResponseDTO sendSMS(String message,String number,String regId);
 	
 	/**
-	 * This method accept the message and email id to send email service.
+	 * This method accept the message and email id, registration id to invoke email service.
 	 *
 	 * @param message 
-	 * 				the message
+	 * 				{@code String} the message to be sent through Email
 	 * @param emailId 
-	 * 				the email id
+	 * 				{@code String} the enail id to which Email to be sent
 	 * @param regId 
-	 * 				the registration id
-	 * @return 		response for the email notification
+	 * 				{@code String} the registration id
+	 * 
+	 * @return 	{@code ResponseDTO} based on the result the response DTO will be
+	 *         formed and return to the caller.
 	 */
 	ResponseDTO sendEmail(String message,String emailId,String regId);
 }

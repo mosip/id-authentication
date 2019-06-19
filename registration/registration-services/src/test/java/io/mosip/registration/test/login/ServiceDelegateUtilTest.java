@@ -79,6 +79,7 @@ public class ServiceDelegateUtilTest {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		Map<String, Object> globalParams = new HashMap<>();
 		globalParams.put(RegistrationConstants.USER_DTO, loginDto);
+		globalParams.put(RegistrationConstants.REGISTRATION_CLIENT, "registrationclient");
 		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 

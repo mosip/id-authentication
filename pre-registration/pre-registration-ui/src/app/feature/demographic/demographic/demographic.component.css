@@ -1,5 +1,5 @@
 :root {
-  --text-size: 0.7rem;
+  --text-size: 0.8rem;
 }
 
 .spinner {
@@ -13,7 +13,8 @@
   background-color: #f4f4f4;
   z-index: -1;
   overflow-x: hidden;
-  padding: 10px;
+  margin: 0px 2vw;
+  padding-top: 0;
   padding-bottom: 0;
   color: #000000;
 }
@@ -22,7 +23,7 @@
   background-color: #ffffff;
   z-index: 1;
   margin: auto;
-  padding: 1.2rem 3rem 0 3rem;
+  padding: 1.2rem 2rem 0 2rem;
   padding-top: 1.2rem;
   background-color: white;
   border-bottom: 1px solid lightgray;
@@ -39,49 +40,64 @@
 .user hr {
   border-top: 1.5px solid red;
   position: relative;
-  left: -48px;
+  left: -31.8px;
   margin-top: 0.5rem;
-  width: calc(100% + 95px);
+  width: calc(100% + 64px);
 }
 
 .user__container {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   /* box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3); */
-  padding: 1rem 0 0.5rem 1.5rem;
-  width: 48%;
-  margin-left: 2%;
+  padding: 1rem 0rem 1rem 0rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 50%;
+  /* margin-left: 2%; */
   float: left;
 }
 
-.user__container:focus-within {
-  box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3);
+.test1 {
+  /* margin-left: 4%; */
 }
+
+/* .user__container:focus-within {
+  box-shadow: 3px 3px 5px 3px rgba(0, 0, 0, 0.3);
+} */
 
 .user__container h6 {
   font-weight: bold;
   color: #2f3033;
 }
 
-.user__form {
-  width: 85%;
-  margin: auto;
+.user__form[_ngcontent-c17] {
+  width: 100%;
+  /* margin: auto; */
 }
 
 .user__form h4 {
   margin: 0;
+  padding-left: 3px;
+  padding-bottom: 8px;
 }
 
 mat-icon {
   position: relative;
-  top: 11px;
+  top: 3px;
+  font-size: 14px;
+  left: -16px;
+  display: none;
 }
 
 .user__form mat-form-field {
-  width: 92%;
-  /* width: 84%; keyboard*/
+  /* width: 92%; */
+  width: 95%;
   padding: 3px;
   color: #000000;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
+}
+
+.mat-form-field-appearance-legacy.mat-form-field-disabled .mat-form-field-underline {
+  background-image: none;
 }
 
 .user__age-or-date {
@@ -110,7 +126,7 @@ mat-icon {
 .user__age {
   text-align: end;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .user__age mat-form-field {
@@ -124,7 +140,7 @@ mat-icon {
 }
 
 .user__age--disabled {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: #595f6e;
 }
 
@@ -137,10 +153,11 @@ mat-icon {
 
 .user__genderAndForeigner {
   font-weight: inherit;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   display: flex;
   margin-bottom: 6px;
   margin-top: 0px;
+  padding-left: 2px;
 }
 
 .user__genderAndForeigner mat-button-toggle-group {
@@ -150,7 +167,7 @@ mat-icon {
 
 .user__genderAndForeigner mat-button-toggle {
   font-family: Helvetica, Regular;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   margin: 10px 10px 10px 10px;
   color: #fd518c;
   width: 80%;
@@ -173,13 +190,18 @@ mat-icon {
 
 .user__genderAndForeigner--text {
   width: 37%;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   align-self: center;
+  padding-right: 4px;
+}
+
+.test2 {
+  display: none;
 }
 
 .user__dropdown {
-  /* width: 49.5%; keyboard*/
-  width: 48%;
+  width: 48.7%;
+  /* width: 48%; */
   /* margin-right: 3%; */
   display: inline-block;
 }
@@ -194,27 +216,40 @@ mat-icon {
   margin-top: 0.2rem;
   background-color: white;
   border-top: 5px solid #f4f4f4;
-  z-index: 22;
+  padding: 0 2vw;
 }
 
 .user__btn {
   background-color: #ff4081;
   border: none;
   color: white;
-  padding: 0.8rem 4rem;
+  padding: 0.8rem 2rem;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 0.8rem;
   margin: 4px 2px;
+  margin-right: 2rem;
   cursor: pointer;
+  border-radius: 2px;
+}
+
+.user__btn--back {
+  border: 1px solid #ff4081;
+  background-color: white;
+  color: #ff4081;
+  margin-left: 2rem;
+}
+
+.user__btn--continue {
+  margin-right: 61px;
 }
 
 .user__btn:disabled,
 .user__btn:active {
-  border: 1px solid gray;
-  background-color: white;
-  color: #ff4081;
+  border: 1px solid lightgray;
+  background-color: lightgray;
+  color: #2f3033;
   cursor: default;
 }
 
@@ -257,7 +292,7 @@ mat-icon {
   }
 
   .genderAndForeigner--foreigner {
-    margin-top: 0.7rem;
+    margin-top: 0.8rem;
     font-size: 0.8rem;
   }
 }

@@ -28,6 +28,7 @@ CREATE TABLE idrepo.uin(
 	del_dtimes timestamp,
 	CONSTRAINT pk_uin PRIMARY KEY (uin_ref_id),
 	CONSTRAINT uk_uin UNIQUE (uin),
+	CONSTRAINT uk_uin_hash UNIQUE (uin_hash),
 	CONSTRAINT uk_uin_reg_id UNIQUE (reg_id)
 
 );
@@ -67,12 +68,5 @@ COMMENT ON COLUMN idrepo.uin.del_dtimes IS 'Deleted DateTimestamp : Date and Tim
 ALTER TABLE idrepo.uin OWNER TO sysadmin;
 -- ddl-end --
 
--- object: idx_uin_uin_hash | type: INDEX --
--- DROP INDEX IF EXISTS idrepo.idx_uin_uin_hash CASCADE;
-CREATE INDEX idx_uin_uin_hash ON idrepo.uin
-	USING btree
-	(
-	  uin_hash
-	);
--- ddl-end --
+
 

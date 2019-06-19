@@ -133,7 +133,7 @@ public class LoginController extends BaseController implements Initializable {
 
 	@Autowired
 	private SchedulerUtil schedulerUtil;
-	
+
 	@Autowired
 	private Validations validations;
 
@@ -195,9 +195,13 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_LENGTH);
 				}
 			});
-			
-			int otpExpirySeconds = Integer
-					.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
+
+			String otpExpiryTime = getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME);
+			int otpExpirySeconds = 0;
+			if (otpExpiryTime != null) {
+				otpExpirySeconds = Integer
+						.parseInt((getValueFromApplicationContext(RegistrationConstants.OTP_EXPIRY_TIME)).trim());
+			}
 			int minutes = otpExpirySeconds / 60;
 			String seconds = String.valueOf(otpExpirySeconds % 60);
 			seconds = seconds.length() < 2 ? "0" + seconds : seconds;
@@ -404,7 +408,7 @@ public class LoginController extends BaseController implements Initializable {
 				"Validating Credentials entered through UI");
 
 		UserDTO userDTO = loginService.getUserDetail(userId.getText());
-		
+
 		if (isInitialSetUp || isUserNewToMachine) {
 
 			if (!RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -420,7 +424,8 @@ public class LoginController extends BaseController implements Initializable {
 				try {
 					// Get Auth Token
 					ApplicationContext.map().put(RegistrationConstants.USER_DTO, loginUserDTO);
-					if(SessionContext.create(userDTO, RegistrationConstants.PWORD, isInitialSetUp, isUserNewToMachine, null)) {
+					if (SessionContext.create(userDTO, RegistrationConstants.PWORD, isInitialSetUp, isUserNewToMachine,
+							null)) {
 						if (isInitialSetUp) {
 							executePreLaunchTask(credentialsPane, passwordProgressIndicator);
 
@@ -429,14 +434,14 @@ public class LoginController extends BaseController implements Initializable {
 						}
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
-					}					
+					}
 
 				} catch (Exception exception) {
 					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, String.format(
 							"Exception while getting AuthZ Token --> %s", ExceptionUtils.getStackTrace(exception)));
 
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_GET_AUTH_TOKEN);
-					
+
 					SessionContext.destroySession();
 					loadInitialScreen(Initialization.getPrimaryStage());
 				}
@@ -452,13 +457,14 @@ public class LoginController extends BaseController implements Initializable {
 		if (password.getText().isEmpty()) {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PWORD_FIELD_EMPTY);
 		} else {
-			if (userDTO != null) {		
-				
+			if (userDTO != null) {
+
 				AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 				authenticationValidatorDTO.setUserId(userId.getText());
-				authenticationValidatorDTO.setPassword(password.getText());				
+				authenticationValidatorDTO.setPassword(password.getText());
 
-				if (SessionContext.create(userDTO, RegistrationConstants.PWORD, false, false, authenticationValidatorDTO)) {
+				if (SessionContext.create(userDTO, RegistrationConstants.PWORD, false, false,
+						authenticationValidatorDTO)) {
 					pwdValidationStatus = validateInvalidLogin(userDTO, "");
 				} else {
 					pwdValidationStatus = validateInvalidLogin(userDTO, RegistrationUIConstants.INCORRECT_PWORD);
@@ -468,7 +474,7 @@ public class LoginController extends BaseController implements Initializable {
 
 					LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 							"Loading next login screen");
-					
+
 					credentialsPane.setVisible(false);
 					loadNextScreen(userDTO, RegistrationConstants.PWORD);
 				}
@@ -531,11 +537,11 @@ public class LoginController extends BaseController implements Initializable {
 			UserDTO userDTO = loginService.getUserDetail(userId.getText());
 
 			boolean otpLoginStatus = false;
-			
+
 			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			authenticationValidatorDTO.setUserId(userId.getText());
 			authenticationValidatorDTO.setOtp(otp.getText());
-			
+
 			if (SessionContext.create(userDTO, RegistrationConstants.OTP, false, false, authenticationValidatorDTO)) {
 				otpLoginStatus = validateInvalidLogin(userDTO, "");
 			} else {
@@ -615,7 +621,7 @@ public class LoginController extends BaseController implements Initializable {
 		UserDTO userDTO = loginService.getUserDetail(userId.getText());
 
 		boolean irisLoginStatus = false;
-			
+
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(userId.getText());
 
@@ -645,8 +651,7 @@ public class LoginController extends BaseController implements Initializable {
 		auditFactory.audit(AuditEvent.LOGIN_WITH_FACE, Components.LOGIN, userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Capturing face for validation");
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Capturing face for validation");
 
 		UserDTO userDTO = loginService.getUserDetail(userId.getText());
 
@@ -662,13 +667,11 @@ public class LoginController extends BaseController implements Initializable {
 		}
 
 		if (faceLoginStatus) {
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"Face validation succeeded");
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Face validation succeeded");
 			facePane.setVisible(false);
 			loadNextScreen(userDTO, RegistrationConstants.FACE);
-		}else {
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"Face validation failed");
+		} else {
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Face validation failed");
 		}
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Face validation done");
@@ -774,8 +777,7 @@ public class LoginController extends BaseController implements Initializable {
 				} catch (RuntimeException runtimeException) {
 
 					LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-							runtimeException.getMessage()
-									+ ExceptionUtils.getStackTrace(runtimeException));
+							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
 

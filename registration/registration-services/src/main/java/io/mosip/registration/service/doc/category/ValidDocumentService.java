@@ -5,16 +5,18 @@ import java.util.List;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 
 /**
- * Service class for Documents
+ * Service class {@code ValidDocumentService} is to access the Valid Documents
+ * details
  * 
  * @author balamurugan.ramamoorthy
+ * @since 1.0.0
  *
  */
 public interface ValidDocumentService {
 
 	/**
 	 * This method is used to fetch all the configured valid documents for a
-	 * specific applicant type,document category code and lancode
+	 * specific applicant type,document category code and langcode
 	 * 
 	 * @param applicantType
 	 *            - applicant type
