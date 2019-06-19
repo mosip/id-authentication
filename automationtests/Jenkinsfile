@@ -1,6 +1,5 @@
 node {
-
- def branch =env.NEXT_BRANCH_NAME
+ def branch = env.NEXT_BRANCH_NAME
  def projectToBuild = 'automationtests'
  stage('------- Checkout --------') {
   // Checkout only automation tests Module
@@ -41,7 +40,8 @@ stage ('---------- mvn-clean-test ---------------') {
    reportName: 'HTML Report'
 ])
 }
-          recipients =  "$env.AUTOMATION_TEST_RECIPIENT_LIST"
+
+          recipients = "$env.AUTOMATION_TEST_RECIPIENT_LIST"
 emailext ( 
 	    attachmentsPattern:'**/surefire-reports/MOSIP_AllModuleAutoRun_TestNGReport.html',
 	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER on Environment ${params.Environment}",
