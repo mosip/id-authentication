@@ -27,6 +27,7 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -120,17 +121,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetRepository;
 
-	/** The event id. */
-	private String eventId = "";
 
-	/** The event name. */
-	private String eventName = "";
-
-	/** The event type. */
-	private String eventType = "";
 
 	/** The description. */
-	String description = "";
+	@Autowired
+	LogDescription description;
 
 	/** The core audit request builder. */
 	@Autowired
@@ -154,9 +149,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Value("${registration.processor.demodedupe.manualverification.status}")
 	private String manualVerificationStatus;
-
-	/** The reg id. */
-	private String regId;
 
 	/** The pre reg id. */
 	private String preRegId;
@@ -185,26 +177,26 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		try {
 			applicantInfoDtoList = packetInfoDao.getPacketsforQCUser(qcUserId);
 			isTransactionSuccessful = true;
-			description = "QcUser packet Info fetch Success";
+			description.setMessage("QcUser packet Info fetch Success");
 			return applicantInfoDtoList;
 		} catch (DataAccessLayerException e) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-			description = "DataAccessLayerException while fetching QcUser packet Info" + "::" + e.getMessage();
+		description.setMessage( "DataAccessLayerException while fetching QcUser packet Info" + "::" + e.getMessage());
 
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					qcUserId, "PacketInfoManagerImpl::getPacketsforQCUser()::exit");
@@ -318,7 +310,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param demographicJsonBytes
 	 *            the demographic json bytes
 	 */
-	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes) {
+	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes, String regId) {
 
 		String getJsonStringFromBytes = new String(demographicJsonBytes);
 		IndividualDemographicDedupe demographicData = getIdentityKeysAndFetchValuesFromJSON(getJsonStringFromBytes);
@@ -331,21 +323,21 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			}
 			isTransactionSuccessful = true;
-			description = "Individual Demographic Dedupe data saved ";
+			description.setMessage("Individual Demographic Dedupe data saved ");
 
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving Individual Demographic Dedupe data " + "::"
-					+ e.getMessage();
+			description.setMessage("DataAccessLayerException while saving Individual Demographic Dedupe data " + "::"
+					+ e.getMessage());
 
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
@@ -373,21 +365,21 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			}
 			isTransactionSuccessful = true;
-			description = "Individual Demographic Dedupe data saved ";
+			description.setMessage("Individual Demographic Dedupe data saved ");
 
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving Individual Demographic Dedupe data " + "::"
-					+ e.getMessage();
+			description.setMessage("DataAccessLayerException while saving Individual Demographic Dedupe data " + "::"
+					+ e.getMessage());
 
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
@@ -406,7 +398,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveDemographicInfoJson()::entry");
 
-		regId = registrationId;
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
 		if (bytes == null)
@@ -415,27 +406,27 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		try {
 
-			saveIndividualDemographicDedupe(bytes);
+			saveIndividualDemographicDedupe(bytes, registrationId);
 
 			isTransactionSuccessful = true;
-			description = "Demographic Json saved";
+			description.setMessage("Demographic Json saved");
 
 		} catch (DataAccessLayerException e) {
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-			description = "DataAccessLayerException while saving Demographic Json" + "::" + e.getMessage();
+			description.setMessage("DataAccessLayerException while saving Demographic Json" + "::" + e.getMessage());
 
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
@@ -497,26 +488,26 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				manualVerificationEntity.setTrnTypCode(sourceName.toString());
 				manualVerficationRepository.save(manualVerificationEntity);
 				isTransactionSuccessful = true;
-				description = "Manual Adjudication data saved successfully";
+				description.setMessage("Manual Adjudication data saved successfully");
 			}
 
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving Manual Adjudication data for rid" + registrationId
-					+ "::" + e.getMessage();
+			description.setMessage("DataAccessLayerException while saving Manual Adjudication data for rid" + registrationId
+					+ "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + registrationId, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
@@ -559,8 +550,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
 		boolean isTransactionSuccessful = false;
 
+		String regisId = "";
 		try {
-			String regisId = "";
 
 			if (regAbisRefDto != null) {
 				regisId = regAbisRefDto.getReg_id();
@@ -569,25 +560,25 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
 				regAbisRefRepository.save(regAbisRefEntity);
 				isTransactionSuccessful = true;
-				description = "ABIS data saved successfully";
+				description.setMessage("ABIS data saved successfully");
 			}
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regisId,
 					"PacketInfoManagerImpl::saveAbisRef()::exit");
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving the ABIS data" + "::" + e.getMessage();
+			description.setMessage("DataAccessLayerException while saving the ABIS data" + "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regisId, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
@@ -742,11 +733,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			RegBioRefEntity regBioRefEntity = PacketInfoMapper.convertBioRefDtoToEntity(regBioRefDto);
 			regBioRefRepository.save(regBioRefEntity);
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving ABIS data" + "::" + e.getMessage();
+			description.setMessage("DataAccessLayerException while saving ABIS data" + "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regBioRefDto.getRegId(), e);
 		}
 	}
 
@@ -764,11 +755,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			AbisRequestEntity abisRequestEntity = PacketInfoMapper.convertAbisRequestDtoToEntity(abisRequestDto);
 			regAbisRequestRepository.save(abisRequestEntity);
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving ABIS data" + "::" + e.getMessage();
+			description.setMessage("DataAccessLayerException while saving ABIS data" + "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
-			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + abisRequestDto.getId(), e);
 		}
 	}
 
@@ -797,7 +788,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
 		boolean isTransactionSuccessful = false;
-
+		String regId="";
 		try {
 
 			if (regDemoDedupeListDto != null) {
@@ -809,25 +800,25 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 						.convertDemoDedupeEntityToDto(regDemoDedupeListDto);
 				regDemoDedupeListRepository.save(regDemoDedupeListEntity);
 				isTransactionSuccessful = true;
-				description = "Demo dedupe potential match data saved successfully";
+				description.setMessage("Demo dedupe potential match data saved successfully");
 
 			}
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving Demo dedupe potential match data" + "::"
-					+ e.getMessage();
+			description.setMessage("DataAccessLayerException while saving Demo dedupe potential match data" + "::"
+					+ e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
@@ -939,10 +930,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 			regLostUinDetRepository.save(regLostUinDetEntity);
 			isTransactionSuccessful = true;
-			description = "Lost Uin detail data saved successfully";
+			description.setMessage("Lost Uin detail data saved successfully");
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while saving Lost Uin detail data for rid" + regId + "::"
-					+ e.getMessage();
+			description.setMessage("DataAccessLayerException while saving Lost Uin detail data for rid" + regId + "::"
+					+ e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -950,13 +941,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}

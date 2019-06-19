@@ -128,13 +128,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Autowired
 	private Utilities utility;
 
-	/** The attributes. */
-	private Map<String, Object> attributes = new LinkedHashMap<>();
-
-	/** The packet info manager. */
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-
 	/** The template generator. */
 	@Autowired
 	private TemplateGenerator templateGenerator;
@@ -182,6 +175,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		Map<String, byte[]> byteMap = new HashMap<>();
 		String uin = null;
 		String description = null;
+		Map<String, Object> attributes = new LinkedHashMap<>();
 
 		try {
 			if (idType.toString().equalsIgnoreCase(UIN)) {
@@ -200,7 +194,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 			IdResponseDTO1 response = getIdRepoResponse(idValue);
 
-			boolean isPhotoSet = setApplicantPhoto(response);
+			boolean isPhotoSet = setApplicantPhoto(response, attributes);
 			if (!isPhotoSet) {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), uin,
@@ -210,10 +204,10 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			setTemplateAttributes(jsonString, attributes);
 			attributes.put(UIN, uin);
 
-			byte[] textFileByte = createTextFile();
+			byte[] textFileByte = createTextFile(attributes);
 			byteMap.put(UIN_TEXT_FILE, textFileByte);
 
-			boolean isQRcodeSet = setQrCode(textFileByte);
+			boolean isQRcodeSet = setQrCode(textFileByte, attributes);
 			if (!isQRcodeSet) {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), uin,
@@ -341,12 +335,13 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/**
 	 * Creates the text file.
+	 * @param attributes 
 	 *
 	 * @return the byte[]
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private byte[] createTextFile() throws IOException {
+	private byte[] createTextFile(Map<String, Object> attributes) throws IOException {
 		JsonFileDTO jsonDto = new JsonFileDTO();
 		jsonDto.setId("mosip.registration.print.send");
 		jsonDto.setVersion("1.0");
@@ -390,13 +385,14 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *
 	 * @param textFileByte
 	 *            the text file byte
+	 * @param attributes 
 	 * @return true, if successful
 	 * @throws QrcodeGenerationException
 	 *             the qrcode generation exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean setQrCode(byte[] textFileByte) throws QrcodeGenerationException, IOException {
+	private boolean setQrCode(byte[] textFileByte, Map<String, Object> attributes) throws QrcodeGenerationException, IOException {
 		String qrString = new String(textFileByte);
 		boolean isQRCodeSet = false;
 		byte[] qrCodeBytes = qrCodeGenerator.generateQrCode(qrString, QrVersion.V30);
@@ -414,11 +410,12 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *
 	 * @param response
 	 *            the response
+	 * @param attributes 
 	 * @return true, if successful
 	 * @throws Exception
 	 *             the exception
 	 */
-	private boolean setApplicantPhoto(IdResponseDTO1 response) throws Exception {
+	private boolean setApplicantPhoto(IdResponseDTO1 response, Map<String, Object> attributes) throws Exception {
 		String value = null;
 		boolean isPhotoSet = false;
 

@@ -114,8 +114,6 @@ public class Utilities {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	JSONObject idJson = null;
-
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
@@ -369,7 +367,7 @@ public class Utilities {
 	public List<Documents> getAllDocumentsByRegId(String regId) throws IOException, PacketDecryptionFailureException,
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		List<Documents> applicantDocuments = new ArrayList<>();
-
+		JSONObject idJson = null;
 		idJson = getDemographicIdentityJSONObject(regId);
 		regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String proofOfAddressLabel = regProcessorIdentityJson.getIdentity().getPoa().getValue();

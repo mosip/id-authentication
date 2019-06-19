@@ -59,7 +59,6 @@ public class AuthUtil {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AuthUtil.class);
 
-
 	/** The key generator. */
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -72,8 +71,6 @@ public class AuthUtil {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
-	private ObjectMapper mapper = new ObjectMapper();
-
 	/** The Constant APPLICATION_ID. */
 	public static final String IDA_APP_ID = "IDA";
 
@@ -81,15 +78,7 @@ public class AuthUtil {
 	public static final String RSA = "RSA";
 
 	/** The Constant RSA. */
-	public static final String PARTNER_ID = "INTERNAL";
-
-	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
-
-	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
-
-
-
-	
+	public static final String PARTNER_ID = "INTERNAL";	
 	
 	@Value("${mosip.identity.auth.internal.requestid}")
 	private String authRequestId;
@@ -115,7 +104,8 @@ public class AuthUtil {
 		authRequestDTO.setRequestedAuth(authType);
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
-
+		
+		ObjectMapper mapper = new ObjectMapper();
 		String identityBlock = mapper.writeValueAsString(req);
 		
 		final SecretKey secretKey = keyGenerator.getSymmetricKey();
@@ -124,7 +114,7 @@ public class AuthUtil {
 		authRequestDTO.setRequest(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
 
 		byte[] encryptedSessionKeyByte = encryptRSA(secretKey.getEncoded(), PARTNER_ID,
-				DateUtils.getUTCCurrentDateTimeString());
+				DateUtils.getUTCCurrentDateTimeString(), mapper);
 		authRequestDTO.setRequestSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
 
 		byte[] byteArr = encryptor.symmetricEncrypt(secretKey,
@@ -138,7 +128,7 @@ public class AuthUtil {
 
 	}
 
-	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
+	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime, ObjectMapper mapper)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
 			IOException {
 
@@ -161,6 +151,8 @@ public class AuthUtil {
 	}
 
 	private DataInfoDTO getBioType(DataInfoDTO dataInfoDTO, String bioType) {
+
+		BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
 		if (bioType.equalsIgnoreCase(BioType.FINGER.toString())) {
 			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FINGER));
 		} else if (bioType.equalsIgnoreCase(BioType.FACE.toString())) {
@@ -172,6 +164,7 @@ public class AuthUtil {
 	}
 
 	private DataInfoDTO getBioSubType(DataInfoDTO dataInfoDTO, String bioSubType) {
+		BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
 		if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_INDEX_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_INDEX_FINGER));
 		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_LITTLE_FINGER.getBioType())) {

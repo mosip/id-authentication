@@ -35,6 +35,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
@@ -155,6 +156,10 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
+	
+	@Mock
+	private LogDescription description;
+	
 	/** The byte array. */
 	byte[] byteArray = null;
 
@@ -189,6 +194,8 @@ public class PacketInfoManagerImplTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(description.getMessage()).thenReturn("DESCRIPTION");
 		ClassLoader classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);

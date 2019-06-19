@@ -123,7 +123,9 @@ public class MessageNotificationServiceImpl
 	private static final String SMS_SERVICE_ID = "mosip.registration.processor.sms.id";
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	private ObjectMapper mapper = new ObjectMapper();
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	/*
 	 * (non-Javadoc)
