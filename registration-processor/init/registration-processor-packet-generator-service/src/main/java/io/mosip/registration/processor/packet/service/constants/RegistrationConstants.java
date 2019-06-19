@@ -52,9 +52,6 @@ public class RegistrationConstants {
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
 
-	/** The Constant PACKET_STORE_DATE_FORMAT. */
-	public static final String PACKET_STORE_DATE_FORMAT = "registration.processor.packet.location.dateFormat";
-
 	/** The Constant ZIP_FILE_EXTENSION. */
 	// Packet Creation Constants
 	public static final String ZIP_FILE_EXTENSION = ".zip";

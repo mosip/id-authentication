@@ -28,7 +28,6 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.RestRequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
@@ -80,14 +79,13 @@ public class KeyManager {
 
 	/**
 	 * requestData method used to decipher the request block {@link RequestDTO}
-	 * present in AuthRequestDTO {@link AuthRequestDTO}
+	 * present in AuthRequestDTO {@link AuthRequestDTO}.
 	 *
 	 * @param requestBody the request body
 	 * @param mapper      the mapper
-	 * @param refId 
+	 * @param refId the ref id
 	 * @return the map
 	 * @throws IdAuthenticationAppException      the id authentication app exception
-	 * @throws IdAuthenticationBusinessException
 	 */
 	public Map<String, Object> requestData(Map<String, Object> requestBody, ObjectMapper mapper, String refId)
 			throws IdAuthenticationAppException {
@@ -122,12 +120,11 @@ public class KeyManager {
 	}
 
 	/**
-	 * This method does the necessary decryption of the request
+	 * This method does the necessary decryption of the request.
 	 *
 	 * @param encryptedRequest the encrypted request
 	 * @param encryptedSessionKey the encrypted session key
-	 * @param refId 
-	 * @param string 
+	 * @param refId the ref id
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -197,10 +194,10 @@ public class KeyManager {
 	}
 	
 	/**
-	 * This method is used to encrypt the KYC identity response
+	 * This method is used to encrypt the KYC identity response.
 	 *
 	 * @param responseBody the response body
-	 * @param mapper 
+	 * @param mapper the mapper
 	 * @return the string
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */

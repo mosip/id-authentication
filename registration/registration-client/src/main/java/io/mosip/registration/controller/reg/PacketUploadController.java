@@ -602,10 +602,10 @@ public class PacketUploadController extends BaseController implements Initializa
 			String fileData = table.getItems().stream()
 					.map(packetVo -> packetVo.getSlno().trim().concat(RegistrationConstants.COMMA).concat("'")
 							.concat(packetVo.getFileName()).concat("'").concat(RegistrationConstants.COMMA).concat("'")
-							.concat(packetVo.getCreatedTime()))
+							.concat(packetVo.getCreatedTime()).concat("'"))
 					.collect(Collectors.joining(RegistrationConstants.NEW_LINE));
 			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)
-					.concat(RegistrationUIConstants.UPLOAD_COLUMN_HEADER_FILE).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.PACKETUPLOAD_PACKETID_LABEL).concat(RegistrationConstants.COMMA)
 					.concat(RegistrationUIConstants.EOD_REGISTRATIONDATE_LABEL).concat(RegistrationConstants.COMMA)
 					.concat(RegistrationConstants.NEW_LINE);
 			fileData = headers + fileData;

@@ -1,0 +1,15 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-003",
+      "errorMessage": "OTP has expired"
+    }
+  ],
+  "id": "mosip.identity.auth",
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$IGNORE$",
+  "transactionID": "$RANDOM:N:10$",
+  "version": "1.0"
+}

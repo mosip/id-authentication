@@ -796,15 +796,32 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private void singleBiometricCaptureCheck() {
+		
 		if (!(validateIris() && validateIrisLocalDedup())) {
 			continueBtn.setDisable(true);
 		}
+		
+
+		long irisCountIntroducer = 0;
+
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getBiometricDTO() != null) {
+
+			irisCountIntroducer = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.getBiometricExceptionDTO().stream()
+					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
+
+		}
+		
 		if (getRegistrationDTOFromSession() != null
-				&& !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-						.getFingerprintDetailsDTO().isEmpty()
 				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
-			continueBtn.setDisable(false);
+
+			if (!getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFingerprintDetailsDTO()
+					.isEmpty() || irisCountIntroducer == 2) {
+				continueBtn.setDisable(false);
+			} else {
+				continueBtn.setDisable(true);
+			}
 		}
 	}
 

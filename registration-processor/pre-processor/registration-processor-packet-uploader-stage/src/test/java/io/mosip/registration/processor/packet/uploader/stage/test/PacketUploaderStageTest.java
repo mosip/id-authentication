@@ -1,13 +1,16 @@
-/*package io.mosip.registration.processor.packet.uploader.stage.test;
+package io.mosip.registration.processor.packet.uploader.stage.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,11 +25,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.packet.uploader.PacketUploaderJobApplication;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.packet.uploader.stage.PacketUploaderStage;
 import io.vertx.core.Handler;
@@ -44,23 +50,25 @@ import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.Locale;
 import io.vertx.ext.web.ParsedHeaderValues;
 import io.vertx.ext.web.Route;
+import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.Session;
-import static org.junit.Assert.assertEquals;
-*//**
+/**
  * The Class PacketUploaderJobTest.
  * @author Rishabh Keshari
- *//*
+ */
 @RunWith(SpringRunner.class)
 public class PacketUploaderStageTest {
 
-	
 	private static final int maxRetryCount = 5;
 
 	private static final InputStream stream = Mockito.mock(InputStream.class);
 	
 	private RoutingContext ctx;
 	private Boolean responseObject;
+	
+	@Mock
+	private MosipRouter router;
 	
 	@InjectMocks
 	PacketUploaderStage packetUploaderStage = new PacketUploaderStage() {
@@ -74,17 +82,23 @@ public class PacketUploaderStageTest {
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		}
 		
-		 (non-Javadoc)
-		 * @see io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager#getEventBus(java.lang.Object, java.lang.String, int)
 		 
 		@Override
 		public MosipEventBus getEventBus(Object verticleName, String url, int instanceNumber) {
 			return null;
 		}
+		
+		@Override
+		public void createServer(Router route,int port)
+		{
+			
+		}
+		@Override
+		public Router postUrl(Vertx vertx, MessageBusAddress consumeAddress, MessageBusAddress sendAddress) {
+			return null;
+		}
 	};
-	
-	
-	
+
 	private RoutingContext setContext() {
 		return new RoutingContext() {
 
@@ -323,9 +337,10 @@ public class PacketUploaderStageTest {
 	public void setup() {
 
 		ctx = setContext();
-		
-		PacketUploaderJobApplication.main(null);
-		
+		ReflectionTestUtils.setField(packetUploaderStage, "port", "7999");
+		Mockito.when(router.post(Mockito.any())).thenReturn(null);
+		Mockito.doNothing().when(router).setRoute(Mockito.any());
+		Mockito.doNothing().when(router).nonSecureHandler(Mockito.any(),Mockito.any());
 		MessageDTO messageDTO= new MessageDTO();
 		messageDTO.setInternalError(Boolean.FALSE);
 		messageDTO.setIsValid(Boolean.TRUE);
@@ -338,29 +353,15 @@ public class PacketUploaderStageTest {
 	@Test
 	public void processallTests() throws ClientProtocolException, IOException{
 		processURLTest();
-		secureZoneTest();
-		healthCheckTest();
+		testStart();
 		processFailureURLTest();
 	}
 	
-	private void healthCheckTest() throws ClientProtocolException, IOException {
-		HttpGet httpGet = new HttpGet("http://localhost:8087/v1/uploader/securezone/health");
-		org.apache.http.client.HttpClient client = HttpClientBuilder.create().build();
-		HttpResponse getResponse = client.execute(httpGet);
-		assertEquals(200, getResponse.getStatusLine().getStatusCode());
-		
-	}
-	public void secureZoneTest() throws ClientProtocolException, IOException{
-		HttpPost httpPost = new HttpPost("http://localhost:8087/v1/uploader/securezone");
-
-	    String json = "{'rid':'27847657360002520181208183004','isValid':'true','internalError':'false','messageBusAddress':null,'retryCount':0}";
-	    StringEntity entity = new StringEntity(json);
-	    httpPost.setEntity(entity);
-	    httpPost.setHeader("Content-type", "application/json");
-		
-	    CloseableHttpResponse response = HttpClients.createDefault().execute(httpPost);
-	    assertEquals(response.getStatusLine().getStatusCode(), 200);
-	}
+    public void testStart()
+    {
+    	packetUploaderStage.start();
+    	packetUploaderStage.deployVerticle();
+    }
 	
 	
 	public void processURLTest() {
@@ -379,4 +380,3 @@ public class PacketUploaderStageTest {
 		assertTrue(responseObject);
 	}
 }
-*/

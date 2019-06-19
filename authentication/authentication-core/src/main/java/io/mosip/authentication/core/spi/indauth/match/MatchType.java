@@ -74,22 +74,22 @@ public interface MatchType {
 	}
 
 	/**
-	 * Gets the IDMapping
+	 * Gets the IDMapping.
 	 *
 	 * @return ID Mapping
 	 */
 	public IdMapping getIdMapping();
 
 	/**
-	 * Gets the allowed matching strategy for the MatchingStrategyType value
+	 * Gets the allowed matching strategy for the MatchingStrategyType value.
 	 *
-	 * @param matchStrategyType
+	 * @param matchStrategyType the match strategy type
 	 * @return the allowed matching strategy
 	 */
 	Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType);
 
 	/**
-	 * Get the Identity Info Function
+	 * Get the Identity Info Function.
 	 *
 	 * @return the Identity Info Function
 	 */
@@ -105,7 +105,7 @@ public interface MatchType {
 	}
 
 	/**
-	 * Get the IdentityInfoDTO list out of the identity block for this MatchType
+	 * Get the IdentityInfoDTO list out of the identity block for this MatchType.
 	 *
 	 * @param identity the IdentityDTO
 	 * @return the list of IdentityInfoDTO
@@ -116,22 +116,22 @@ public interface MatchType {
 	}
 
 	/**
-	 * Gets the Entity info mapper function
+	 * Gets the Entity info mapper function.
 	 *
 	 * @return the Entity info mapper function
 	 */
 	public Function<Map<String, String>, Map<String, String>> getEntityInfoMapper();
 
 	/**
-	 * Get the category of this MatchType
+	 * Get the category of this MatchType.
 	 *
 	 * @return the category
 	 */
 	public Category getCategory();
 
 	/**
-	 * Flag to fetch Identity Info
-	 * 
+	 * Flag to fetch Identity Info.
+	 *
 	 * @return boolean value true or false
 	 */
 	public default boolean hasIdEntityInfo() {
@@ -139,8 +139,8 @@ public interface MatchType {
 	}
 
 	/**
-	 * Flag to fetch Request Entity Info
-	 * 
+	 * Flag to fetch Request Entity Info.
+	 *
 	 * @return the flag
 	 */
 	public default boolean hasRequestEntityInfo() {
@@ -148,8 +148,8 @@ public interface MatchType {
 	}
 
 	/**
-	 * Flag to check MultiLanguage
-	 * 
+	 * Flag to check MultiLanguage.
+	 *
 	 * @return the flag
 	 */
 	public default boolean isMultiLanguage() {
@@ -157,7 +157,7 @@ public interface MatchType {
 	}
 
 	/**
-	 * Returns the set of given matching strategies
+	 * Returns the set of given matching strategies.
 	 *
 	 * @param matchingStrategies the matching strategies
 	 * @return the sets the
@@ -168,12 +168,12 @@ public interface MatchType {
 	}
 
 	/**
-	 * To fetch Map Entity Info
-	 * 
-	 * @param idEntity
-	 * @param idInfoHelper
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * To fetch Map Entity Info.
+	 *
+	 * @param idEntity the id entity
+	 * @param idInfoHelper the id info helper
+	 * @return the map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public default Map<String, Entry<String, List<IdentityInfoDTO>>> mapEntityInfo(
 			Map<String, List<IdentityInfoDTO>> idEntity, IdInfoFetcher idInfoHelper)
@@ -183,11 +183,11 @@ public interface MatchType {
 	}
 
 	/**
-	 * Check if the mapped property is of multi-language type
-	 * 
+	 * Check if the mapped property is of multi-language type.
+	 *
 	 * @param propName mapped property name
 	 * @param cfg mapping
-	 * @return
+	 * @return true, if is prop multi lang
 	 */
 	public default boolean isPropMultiLang(String propName, MappingConfig cfg) {
 		return false;

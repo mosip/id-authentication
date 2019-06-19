@@ -52,13 +52,17 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -142,7 +146,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	/** The demographic dedupe repository. */
 	@Autowired
 	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetEntity;
-	
+
 	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -154,7 +158,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	/** The utility. */
 	@Autowired
 	private Utilities utility;
-	
+
 	/** The description. */
 	@Autowired
 	private LogDescription description;
@@ -220,7 +224,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					uinResponseDto = gsonObj.fromJson(test, UinGenResponseDto.class);
 					long uinInLong = Long.parseLong(uinResponseDto.getResponse().getUin());
 					demographicIdentity.put("UIN", uinInLong);
-					
+
 					idResponseDTO = sendIdRepoWithUin(registrationId, demographicIdentity, uinResponseDto.getResponse().getUin());
 					if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
 						generateVid(registrationId, uinResponseDto.getResponse().getUin());
@@ -328,7 +332,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(description.getStatusComment());
 			if(registrationStatusDto.getLatestTransactionStatusCode() != null)
 				registrationStatusDto.setLatestTransactionStatusCode(description.getTransactionStatusCode());
-			
+
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
@@ -471,8 +475,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel)
 			throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		Documents documentsInfoDto = new Documents();
-		;
-		InputStream poiStream = adapter.getFile(registrationId, folderPath + UINConstants.FILE_SEPARATOR + idDocObj.get("value"));
+		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
 		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
 		documentsInfoDto.setCategory(idDocLabel);
 		return documentsInfoDto;
@@ -500,7 +503,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			throws ApisResourceAccessException, IOException, RegistrationProcessorCheckedException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		IdResponseDTO result;
 		List<Documents> documentInfo = utility.getAllDocumentsByRegId(regId);
-		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, uin, documentInfo, demographicIdentity);
+		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, documentInfo);
 		if (result != null && result.getResponse() != null) {
 
 			if ((RegistrationType.ACTIVATED.toString().toUpperCase())
@@ -539,7 +542,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private IdResponseDTO idRepoRequestBuilder(String status, String regId, Long uin, List<Documents> documentInfo, JSONObject demographicIdentity)
+	private IdResponseDTO idRepoRequestBuilder(String status, String regId, List<Documents> documentInfo, JSONObject demographicIdentity)
 			throws ApisResourceAccessException {
 		IdResponseDTO idResponseDto;
 		List<String> pathsegments = new ArrayList<>();
@@ -837,14 +840,11 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
-	private RegistrationProcessorIdentity getMappeedJSONIdentity()
-			throws JsonParseException, JsonMappingException, IOException {
-		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-				utility.getGetRegProcessorIdentityJson());
+	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws IOException {
+		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		RegistrationProcessorIdentity regProcessorIdentityJson = mapIdentityJsonStringToObject
-				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
-		return regProcessorIdentityJson;
+		return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+
 	}
 
 	private JSONObject getDemoIdentity(String registrationId) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
@@ -853,13 +853,12 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 		byte[] bytes = IOUtils.toByteArray(documentInfoStream);
 		String demographicJsonString = new String(bytes);
-		JSONObject demographicJson = (JSONObject) JsonUtil.objectMapperReadValue(demographicJsonString,
+		JSONObject demographicJson = JsonUtil.objectMapperReadValue(demographicJsonString,
 				JSONObject.class);
-		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicJson,
-				utility.getGetRegProcessorDemographicIdentity());
-		if (demographicIdentity == null)
+		JSONObject demographicIdentity1 = JsonUtil.getJSONObject(demographicJson,utility.getGetRegProcessorDemographicIdentity());
+		if (demographicIdentity1 == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
-		return demographicIdentity;
+		return demographicIdentity1;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -884,8 +883,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			response = (ResponseWrapper<VidResponseDto>) registrationProcessorRestClientService
 					.postApi(ApiName.CREATEVID, "", "", request, ResponseWrapper.class);
 
-			vidResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()), VidResponseDto.class);
-			Gson gson = new GsonBuilder().create();
+				Gson gson = new GsonBuilder().create();
 			String vidRes = gson.toJson(vidResponseDto);
 
 		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
@@ -896,21 +894,11 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				throw new VidCreationException(PlatformErrorMessages.RPR_UGS_VID_EXCEPTION.getMessage(),
 						"VID creation exception");
 
-			}
+		}
 
-		} catch (JsonProcessingException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_UGS_JSON__PARSER_ERROR.getMessage() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
-			throw e;
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_UGS_API_RESOURCE_EXCEPTION.getMessage() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
-			throw e;
-		} catch (IOException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_UGS_IO_EXCEPTION.getMessage() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw e;
 		}
@@ -1003,7 +991,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			description.setTransactionStatusCode(registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));
 			description.setMessage(UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + "  " + UINConstants.NULL_IDREPO_RESPONSE
 					+ " UIN not available for matchedRegId " + matchedRegId);
-			
+
 			object.setIsValid(Boolean.FALSE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 					LoggerFileConstant.REGISTRATIONID.toString() + lostPacketRegId, " UIN NOT LINKED WITH " +matchedRegId,

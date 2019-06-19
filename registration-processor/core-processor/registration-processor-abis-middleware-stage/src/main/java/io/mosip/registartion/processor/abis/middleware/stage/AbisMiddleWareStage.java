@@ -187,7 +187,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString()))
 					.collect(Collectors.toList());
 			// If all insert request are null then send all identify requests.
-			if (abisInsertRequestList == null || abisInsertRequestList != null && abisInsertRequestList.isEmpty()) {
+			if (abisInsertRequestList.isEmpty()) {
 				for (AbisRequestDto abisIdentifyRequest : abisIdentifyRequestList) {
 					List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
 							.filter(dto -> dto.getName().equals(abisIdentifyRequest.getAbisAppCode()))

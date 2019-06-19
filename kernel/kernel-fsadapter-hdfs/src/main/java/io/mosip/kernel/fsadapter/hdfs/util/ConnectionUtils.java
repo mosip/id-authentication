@@ -1,7 +1,6 @@
 package io.mosip.kernel.fsadapter.hdfs.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -64,6 +63,24 @@ public class ConnectionUtils {
 	private String keytabPath;
 
 	/**
+	 * Field to set connection timeout in milliseconds
+	 */
+	@Value("${mosip.kernel.fsadapter.hdfs.connect.timeout:6000}")
+	private String connectTimeout;
+
+	/**
+	 * Field to set retries the connection after timeout
+	 */
+	@Value("${mosip.kernel.fsadapter.hdfs.connect.max.retries.on.timeouts:10}")
+	private String maxRetries;
+
+	/**
+	 * Field for the kerberos config file location
+	 */
+	@Value("${mosip.kernel.fsadapter.hdfs.krb-file:classpath:krb5.conf}")
+	private String kerberosConfigFile;
+
+	/**
 	 * Field for hadoop FileSystem
 	 */
 	private FileSystem configuredFileSystem;
@@ -123,10 +140,12 @@ public class ConnectionUtils {
 	private Configuration initSecurityConfiguration(Configuration configuration) throws IOException {
 		configuration.set("dfs.data.transfer.protection", "authentication");
 		configuration.set("hadoop.security.authentication", "kerberos");
-		InputStream krbStream = getClass().getClassLoader().getResourceAsStream("krb5.conf");
-		Path krbPath = Paths.get(hadoopLibPath.toString(), "krb5.conf");
-		Files.copy(krbStream, krbPath);
-		System.setProperty("java.security.krb5.conf", krbPath.toString());
+		Resource configFile = resourceLoader.getResource(kerberosConfigFile);
+		if (configFile.exists()) {
+			Path krbPath = Paths.get(hadoopLibPath.toString(), "krb5.conf");
+			Files.copy(configFile.getInputStream(), krbPath);
+			System.setProperty("java.security.krb5.conf", krbPath.toString());
+		}
 		UserGroupInformation.setConfiguration(configuration);
 		String user = userName + "@" + kdcDomain;
 		loginWithKeyTab(user, keytabPath);
@@ -169,6 +188,8 @@ public class ConnectionUtils {
 			configuration.set("fs.defaultFS", nameNodeUrl);
 			configuration.set("dfs.client.use.datanode.hostname", "true");
 			configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
+			configuration.set("ipc.client.connect.timeout", connectTimeout);
+			configuration.set("ipc.client.connect.max.retries.on.timeouts", maxRetries);
 			hadoopLibPath = Files.createTempDirectory(HADOOP_HOME);
 			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			if (SystemUtils.IS_OS_WINDOWS) {
@@ -205,7 +226,7 @@ public class ConnectionUtils {
 			Files.copy(resource.getInputStream(), keyPath, StandardCopyOption.REPLACE_EXISTING);
 		} else {
 			throw new FSAdapterException(HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage()+": "+keytabPath);
+					HDFSAdapterErrorCode.KEYTAB_FILE_NOT_FOUND_EXCEPTION.getErrorMessage() + ": " + keytabPath);
 		}
 		try {
 			UserGroupInformation.loginUserFromKeytab(user, keyPath.toString());

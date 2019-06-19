@@ -94,15 +94,21 @@ public class SessionContext {
 	}
 	
 	/**
-	 * making sessionContext as singleton
+	 * creating sessionContext and validating login
 	 * 
-	 * @param userDTO - UserInfo to create session
-	 * @param loginMethod - mode of login
-	 * @param isInitialSetUp - boolean variable to know if it is initial setup or not
-	 * @param isUserNewToMachine - is user first time accessing machine
-	 * @param authenticationValidatorDTO - Authentication validator
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * @param isInitialSetUp
+	 *            - boolean variable to know if it is initial setup or not
+	 * @param isUserNewToMachine
+	 *            - is user first time accessing machine
+	 * @param authenticationValidatorDTO
+	 *            - Authentication validator should contain user id, pwd, otp
 	 * 
-	 * @return sessionContext
+	 * @return boolean
 	 */
 	public static boolean create(UserDTO userDTO, String loginMethod, boolean isInitialSetUp, boolean isUserNewToMachine, AuthenticationValidatorDTO authenticationValidatorDTO){
 		
@@ -136,6 +142,17 @@ public class SessionContext {
 		}
 	}
 
+	/**
+	 * Validating login in case of initial setup or user new to machine
+	 * 
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * 
+	 * @return boolean
+	 */
 	private static boolean validateInitialLogin(UserDTO userDTO, String loginMethod) {
 		ServiceDelegateUtil serviceDelegateUtil = applicationContext.getBean(ServiceDelegateUtil.class);
 		try {
@@ -159,6 +176,19 @@ public class SessionContext {
 		}
 	}
 	
+	/**
+	 * Validating login wrt corresponding login method
+	 * 
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * @param authenticationValidatorDTO
+	 *            - Authentication validator should contain user id, pwd, otp
+	 * 
+	 * @return boolean
+	 */
 	private static boolean validateAuthMethods(UserDTO userDTO, String loginMethod, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		switch (loginMethod) {
 		case RegistrationConstants.PWORD:
@@ -176,6 +206,19 @@ public class SessionContext {
 		return false;
 	}
 
+	/**
+	 * Validating login with pwd
+	 * 
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * @param authenticationValidatorDTO
+	 *            - Authentication validator should contain user id, pwd
+	 * 
+	 * @return boolean
+	 */
 	private static boolean validatePword(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		AuthenticationService authenticationService = applicationContext.getBean(AuthenticationService.class);
 		if(authenticationService.validatePassword(authenticationValidatorDTO).equalsIgnoreCase(RegistrationConstants.PWD_MATCH)) {
@@ -190,6 +233,19 @@ public class SessionContext {
 		}
 	}
 	
+	/**
+	 * Validating login with otp
+	 * 
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * @param authenticationValidatorDTO
+	 *            - Authentication validator should contain user id, otp
+	 * 
+	 * @return boolean
+	 */
 	private static boolean validateOTP(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		AuthenticationService authenticationService = applicationContext.getBean(AuthenticationService.class);
 		AuthTokenDTO authTknDTO = authenticationService.authValidator(RegistrationConstants.OTP, authenticationValidatorDTO.getUserId(), authenticationValidatorDTO.getOtp());
@@ -206,10 +262,23 @@ public class SessionContext {
 		}
 	}
 	
+	/**
+	 * Validating login with Fingerprint
+	 * 
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * @param authenticationValidatorDTO
+	 *            - Authentication validator should contain user id
+	 * 
+	 * @return boolean
+	 */
 	private static boolean validateFingerprint(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateFingerPrint(authenticationValidatorDTO.getUserId())) {				
+			if(bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto(authenticationValidatorDTO.getUserId()))) {				
 				createSessionContext();
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
@@ -224,10 +293,23 @@ public class SessionContext {
 		} 
 	}
 	
+	/**
+	 * Validating login with Iris
+	 * 
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * @param authenticationValidatorDTO
+	 *            - Authentication validator should contain user id
+	 * 
+	 * @return boolean
+	 */
 	private static boolean validateIris(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateIris(authenticationValidatorDTO.getUserId())) {
+			if(bioService.validateIris(bioService.getIrisAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
 				createSessionContext();
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
@@ -242,10 +324,23 @@ public class SessionContext {
 		}
 	}
 	
+	/**
+	 * Validating login with Face
+	 * 
+	 * @param userDTO
+	 *            - UserInfo to create session which contains user id, user name,
+	 *            roles, center id
+	 * @param loginMethod
+	 *            - mode of login
+	 * @param authenticationValidatorDTO
+	 *            - Authentication validator should contain user id
+	 * 
+	 * @return boolean
+	 */
 	private static boolean validateFace(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		BioService bioService = applicationContext.getBean(BioService.class);
 		try {
-			if(bioService.validateFace(authenticationValidatorDTO.getUserId())) {
+			if(bioService.validateFace(bioService.getFaceAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
 				createSessionContext();
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
@@ -255,11 +350,14 @@ public class SessionContext {
 				sessionContext = null;
 				return false;
 			}
-		} catch (RegBaseCheckedException exception) {
+		} catch (Exception exception) {
 			return false;
 		}
 	}
 
+	/**
+	 * Creating Session Context
+	 */
 	private static void createSessionContext() {
 		if (null == sessionContext) {
 			sessionContext = new SessionContext();
@@ -268,6 +366,9 @@ public class SessionContext {
 		}
 	}
 
+	/**
+	 * Creating Security Context
+	 */
 	private static void createSecurityContext(UserDTO userDTO) {
 		
 		if(null != authModes && null != validAuthModes && authModes.containsAll(validAuthModes)) {
@@ -327,6 +428,9 @@ public class SessionContext {
 		userContext.setUserMap(new HashMap<String, Object>());
 	}
 
+	/**
+	 * validating User machine mapping status
+	 */
 	private static void getCenterMachineStatus(UserDTO userDTO) {
 		List<String> machineList = new ArrayList<>();
 		List<String> centerList = new ArrayList<>();

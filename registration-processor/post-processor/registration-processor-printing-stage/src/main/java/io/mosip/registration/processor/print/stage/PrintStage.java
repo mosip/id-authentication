@@ -155,18 +155,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 	@Value("${server.servlet.path}")
 	private String contextPath;
 
-	/** The packet info manager. */
-	@Autowired
-	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
-
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
 
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
-	
-	MessageDTO messageDTO;
 	
 	boolean isConnection = false;
 

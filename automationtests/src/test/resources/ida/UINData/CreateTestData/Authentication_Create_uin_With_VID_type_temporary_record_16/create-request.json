@@ -1,0 +1,170 @@
+{
+  "id": "mosip.id.create",
+  "request": {
+    "documents": [
+      {
+        "category": "individualBiometrics",
+        "value": "java.net.ConnectException: Connection refused: connect"
+      }
+    ],
+    "identity": {
+      "CNIENumber": "6789545678912",
+      "IDSchemaVersion": 1.0,
+      "UIN": "$generate_UIN$",
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Ramanujan IT Park"
+        },
+        {
+          "language": "ara",
+          "value": "رَمَنُجَن ِت پَرك"
+        },
+        {
+          "language": "fra",
+          "value": "Ramanujan IT Park"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Chitti Robo Nagar House"
+        },
+        {
+          "language": "ara",
+          "value": "كهِتتِ رُبُ نَگَر هُُسِ"
+        },
+        {
+          "language": "fra",
+          "value": "Chitti Robo Nagar House"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Dubai-600063"
+        },
+        {
+          "language": "ara",
+          "value": "دُبَِ-٦٠٠٠٦٣"
+        },
+        {
+          "language": "fra",
+          "value": "Dubai-600063"
+        }
+      ],
+      "age": 25,
+      "city": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "dateOfBirth": "1994/01/20",
+      "email": "athila.sirajudeen@mindtree.com",
+      "fullName": [
+        {
+          "language": "eng",
+          "value": "Dinesh Pudukottai"
+        },
+        {
+          "language": "ara",
+          "value": "دِنِسه پُدُكُتتَِ"
+        },
+        {
+          "language": "fra",
+          "value": "Dinesh Pudukottai"
+        }
+      ],
+      "gender": [
+        {
+          "language": "ara",
+          "value": "الذكر"
+        },
+        {
+          "language": "fra",
+          "value": "Mâle"
+        },
+        {
+          "language": "eng",
+          "value": "Male"
+        }
+      ],
+      "individualBiometrics": {
+        "format": "cbeff",
+        "value": "fileReferenceID",
+        "version": 1.0
+      },
+      "localAdministrativeAuthority": [
+        {
+          "language": "eng",
+          "value": "Mograne"
+        },
+        {
+          "language": "ara",
+          "value": "بن منصور"
+        },
+        {
+          "language": "fra",
+          "value": "Mograne"
+        }
+      ],
+      "parentOrGuardianName": [
+        {
+          "language": "eng",
+          "value": "Full Name"
+        },
+        {
+          "language": "ara",
+          "value": "فُلل نَمِ"
+        },
+        {
+          "language": "fra",
+          "value": "Full Name"
+        }
+      ],
+      "phone": "9333356541",
+      "postalCode": "14110",
+      "province": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "region": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat-Salé-Kénitra"
+        }
+      ],
+      "residenceStatus": "MOROCCO"
+    },
+    "registrationId": "27847657360002520190615093709"
+  },
+  "requesttime": "2019-06-15T04:07:09.867Z",
+  "version": "v1"
+}

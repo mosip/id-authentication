@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.packet.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -18,7 +19,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -29,7 +32,9 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
@@ -49,6 +54,7 @@ import io.mosip.registration.processor.packet.storage.exception.IdRepoAppExcepti
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationType;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 /**
  * @author Sowmya The Class PacketGeneratorServiceImpl.
  */
@@ -76,9 +82,15 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
 
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
 	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
+
+	@Autowired
+	private ObjectMapper mapper=new ObjectMapper();
 
 	@Autowired
 	private Utilities utilities;
@@ -259,7 +271,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		pathsegments.add(primaryLanguagecode);
 		RegistrationCenterResponseDto rcpdto;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		ObjectMapper mapper=new ObjectMapper();
 		try {
 			if(centerId!=null && !centerId.isEmpty()) {
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.CENTERDETAILS, pathsegments, "",
@@ -313,7 +324,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		pathsegments.add(primaryLanguagecode);
 		MachineResponseDto machinedto;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		ObjectMapper mapper=new ObjectMapper();
 		try {
 
 			if(machine!=null && !machine.isEmpty())  {
@@ -353,6 +363,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
 		String rid=null;
+		ResponseWrapper<?> responseWrapper;
+		JSONObject ridJson;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		JSONObject ridJson=new JSONObject();
 		ObjectMapper mapper=new ObjectMapper();

@@ -38,8 +38,8 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
  * and service requests for those beans at runtime
  * 
  * @author Dharmesh Khandelwal
- * @author Shashank Agrawal
  * @author Bal Vikash Sharma
+ * @author Raj Jha 
  * @since 1.0.0
  * 
  *

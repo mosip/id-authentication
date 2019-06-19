@@ -4,6 +4,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpInterceptor
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
 
 import * as appConstants from '../app.constants';
 
@@ -22,7 +23,7 @@ export class AuthInterceptorService implements HttpInterceptor {
    * @description Creates an instance of AuthInterceptorService.
    * @memberof AuthInterceptorService
    */
-  constructor(private router: Router, private locaiton: Location) {}
+  constructor(private router: Router, private locaiton: Location, private dialog: MatDialog) {}
 
   /**
    * @description This is the interceptor, which intercept all the http request
@@ -39,14 +40,10 @@ export class AuthInterceptorService implements HttpInterceptor {
     return next.handle(copiedReq).pipe(
       retry(2),
       catchError((error: HttpErrorResponse) => {
-        if (error[appConstants.ERROR][appConstants.NESTED_ERROR] !== 'KER-ATH-401') {
-          console.log('error interceptor', error);
-          // 401 handled in auth.interceptor
-          console.log('loc', this.locaiton);
+        if (
+          error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+        ) {
           this.router.navigateByUrl('/');
-
-          // this.autoLogout.onLogOut();
-          // this.locaiton.reload();
         }
         return throwError(error);
       })

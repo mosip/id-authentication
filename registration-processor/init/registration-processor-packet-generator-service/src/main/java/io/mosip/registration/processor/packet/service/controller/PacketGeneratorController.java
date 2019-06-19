@@ -89,7 +89,7 @@ public class PacketGeneratorController {
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
-	
+
 	/** The is enabled. */
 	@Value("${registration.processor.signature.isEnabled}")
 	Boolean isEnabled;
@@ -101,12 +101,13 @@ public class PacketGeneratorController {
 	/**
 	 * Gets the status.
 	 *
-	 * @param packerGeneratorRequestDto the packer generator request dto
-	 * @param token the token
-	 * @param errors                    the errors
+	 * @param packerGeneratorRequestDto
+	 *            the packer generator request dto
+	 * @param errors
+	 *            the errors
 	 * @return the status
-	 * @throws RegBaseCheckedException the reg base checked exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws RegBaseCheckedException
+	 * @throws IOException
 	 */
 	@PostMapping(path = "/registrationpacket", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)
@@ -114,18 +115,20 @@ public class PacketGeneratorController {
 			@ApiResponse(code = 400, message = "Unable to fetch the status "),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public ResponseEntity<Object> getStatus(
-			@Validated @RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
-			@CookieValue(value = "Authorization", required = true) String token, @ApiIgnore Errors errors)
-					throws RegBaseCheckedException, IOException {
+			@RequestBody(required = true) PacketGeneratorRequestDto packerGeneratorRequestDto,
+			@CookieValue(value = "Authorization", required = true) String token)
+			throws RegBaseCheckedException, IOException {
 		tokenValidator.validate("Authorization=" + token, "packetgenerator");
+
 		try {
-			PacketGeneratorValidationUtil.validate(errors);
+			validator.validate(packerGeneratorRequestDto);
 			PacketGeneratorResDto packerGeneratorResDto;
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
 
-			if(isEnabled) {
+			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildPacketGeneratorResponse(packerGeneratorResDto)));
+				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility
+						.getDigitalSignature(buildPacketGeneratorResponse(packerGeneratorResDto)));
 				return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
@@ -138,7 +141,8 @@ public class PacketGeneratorController {
 	/**
 	 * Builds the packet generator response.
 	 *
-	 * @param packerGeneratorResDto the packer generator res dto
+	 * @param packerGeneratorResDto
+	 *            the packer generator res dto
 	 * @return the string
 	 */
 	public String buildPacketGeneratorResponse(PacketGeneratorResDto packerGeneratorResDto) {

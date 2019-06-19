@@ -14,8 +14,10 @@ import io.mosip.authentication.core.otp.dto.OtpResponseDTO;
 public interface OTPService {
 
 	/**
-	 * 
+	 * Generate otp.
+	 *
 	 * @param otpRequest OtpRequestDTO request.
+	 * @param partnerID the partner ID
 	 * @return OtpResponseDTO object return.
 	 * @throws IdAuthenticationBusinessException exception
 	 */

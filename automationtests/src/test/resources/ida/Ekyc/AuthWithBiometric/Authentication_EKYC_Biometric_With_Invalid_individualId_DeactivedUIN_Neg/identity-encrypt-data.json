@@ -1,0 +1,18 @@
+{
+  "identityRequest": {
+    "biometrics": [
+      {
+        "data": {
+          "bioSubType": "LEFT_INDEX",
+          "bioType": "FMR",
+          "bioValue": "Content is not allowed in prolog.",
+          "deviceCode": "cogent",
+          "deviceProviderID": "cogent",
+          "timestamp": "2019-06-15T10:14:24.024+05:30"
+        }
+      }
+    ],
+    "timestamp": "2019-06-15T10:14:24.024+05:30",
+    "transactionID": "0227006841"
+  }
+}

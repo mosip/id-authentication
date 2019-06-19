@@ -40,6 +40,7 @@ import io.mosip.preregistration.application.exception.OperationNotAllowedExcepti
 import io.mosip.preregistration.application.exception.system.DateParseException;
 import io.mosip.preregistration.application.exception.system.JsonParseException;
 import io.mosip.preregistration.application.exception.system.SystemFileIOException;
+import io.mosip.preregistration.application.exception.system.SystemIllegalArgumentException;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
@@ -411,10 +412,46 @@ public class DemographicServiceUtil {
 
 		return response;
 	}
+	
+	public static Integer parsePageIndex(String text) {
+		try {
+			return Integer.parseInt(text);
+		} catch (NumberFormatException e) {
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_019.getCode(),
+					ErrorMessages.INVALID_PAGE_INDEX_VALUE.getMessage());
+		}
+	}
 
+	public static Integer parsePageSize(String text) {
+		try {
+			return Integer.parseInt(text);
+		} catch (IllegalArgumentException e) {
+			throw new SystemIllegalArgumentException(ErrorCodes.PRG_PAM_APP_015.getCode(),
+					ErrorMessages.PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO.getMessage());
+		}
+	}
 	public DemographicIdentityRequestDTO getPreregistrationIdentityJson() {
 
 		String getIdentityJsonString = getJson(preregistrationIdJson);
+		// ClassLoader classLoader = getClass().getClassLoader();
+		// URI uri;
+		// JSONParser parser = new JSONParser();
+		// JSONObject jsonObject = null;
+		// try {
+		// uri = new
+		// URI(classLoader.getResource("PreRegistrationIdentitiyMapping.json").getFile().trim()
+		// .replaceAll("\\u0020", "%20"));
+		// File fileCr = new File(uri.getPath());
+		// try {
+		// jsonObject = (JSONObject) parser.parse(new FileReader(fileCr));
+		// } catch (IOException e) {
+		// }
+		// } catch (ParseException e) {
+		// e.printStackTrace();
+		// } catch (URISyntaxException e1) {
+		// e1.printStackTrace();
+		// }
+		// String getIdentityJsonString = jsonObject.toJSONString();
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 		try {
 			return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, DemographicIdentityRequestDTO.class);
@@ -449,4 +486,6 @@ public class DemographicServiceUtil {
 					ErrorMessages.UBALE_TO_READ_IDENTITY_JSON.getMessage(), null);
 		}
 	}
+	
+	
 }

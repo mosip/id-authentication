@@ -231,7 +231,7 @@ public class FXUtils {
 			boolean haveToTransliterate) {
 
 		focusAction(parentPane, field);
-		field.textProperty().addListener((obsValue, oldValue, newValue) -> {
+		field.textProperty().addListener((obsValue, oldValue, newValue) -> {		
 			showLabel(parentPane, field);
 			if (isInputTextValid(parentPane, field, field.getId().concat(RegistrationConstants.ON_TYPE), validation)) {
 				field.getStyleClass().removeIf((s) -> {
@@ -286,39 +286,47 @@ public class FXUtils {
 			boolean haveToTransliterate) {
 
 		field.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
-			if (oldValue) {
-				if (isInputTextValid(parentPane, field, field.getId() + "_ontype", validation)) {
-					field.getStyleClass().removeIf((s) -> {
-						return s.equals("demoGraphicTextFieldFocus");
-					});
-					field.getStyleClass().add("demoGraphicTextField");
-					hideLabel(parentPane, field);
-					hideErrorMessageLabel(parentPane, field);
-					if (localField != null) {
-						if (haveToTransliterate) {
-							try {
-								localField
-										.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
-												ApplicationContext.localLanguage(), field.getText()));
-							} catch (RuntimeException runtimeException) {
-								LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
-										RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
-							}
-						} else {
-							localField.setText(field.getText());
-						}
-					}
-				} else {
-					toggleUIField(parentPane, field.getId() + RegistrationConstants.MESSAGE, true);
-				}
-			} else {
-				showLabel(parentPane, field);
-			}
+			validateOnFocusOut(parentPane, field, validation, localField, haveToTransliterate, oldValue);
 		});
 
+		validateLabelFocusOut(parentPane, field, localField);
+
+	}
+
+	public void validateLabelFocusOut(Pane parentPane, TextField field, TextField localField) {
 		onTypeFocusUnfocusListener(parentPane, localField);
 		onTypeFocusUnfocusForLabel(parentPane, field);
+	}
 
+	public void validateOnFocusOut(Pane parentPane, TextField field, Validations validation, TextField localField,
+			boolean haveToTransliterate, Boolean oldValue) {
+		if (oldValue) {
+			if (isInputTextValid(parentPane, field, field.getId() + "_ontype", validation)) {
+				field.getStyleClass().removeIf((s) -> {
+					return s.equals("demoGraphicTextFieldFocus");
+				});
+				field.getStyleClass().add("demoGraphicTextField");
+				hideLabel(parentPane, field);
+				hideErrorMessageLabel(parentPane, field);
+				if (localField != null) {
+					if (haveToTransliterate) {
+						try {
+							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
+									ApplicationContext.localLanguage(), field.getText()));
+						} catch (RuntimeException runtimeException) {
+							LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+									RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
+						}
+					} else {
+						localField.setText(field.getText());
+					}
+				}
+			} else {
+				toggleUIField(parentPane, field.getId() + RegistrationConstants.MESSAGE, true);
+			}
+		} else {
+			showLabel(parentPane, field);
+		}
 	}
 
 	/**
@@ -439,7 +447,7 @@ public class FXUtils {
 	 *            the {@link TextField} for which Prompt Text has to be removed
 	 *            and show its corresponding {@link Label}
 	 */
-	private void showLabel(Pane parentPane, TextField field) {
+	public void showLabel(Pane parentPane, TextField field) {
 		toggleUIField(parentPane, field.getId() + RegistrationConstants.LABEL, true);
 		((TextField) parentPane.lookup(RegistrationConstants.HASH + field.getId())).setPromptText(null);
 	}

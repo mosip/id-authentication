@@ -50,7 +50,8 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	private static final Set<String> NON_REMOVABLE_PARAMS = new HashSet<>(
 			Arrays.asList("mosip.registration.machinecenterchanged", "mosip.registration.initial_setup",
-					"mosip.reg.db.current.version", "mosip.reg.services.version"));
+					"mosip.reg.db.current.version", "mosip.reg.services.version",
+					RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE));
 	/**
 	 * Instance of LOGGER
 	 */
@@ -75,6 +76,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		return globalParamDAO.getGlobalParams();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData(boolean)
+	 */
 	@Override
 	public ResponseDTO synchConfigData(boolean isJob) {
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
@@ -82,7 +87,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		if (isJob && RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+		if (isJob && !RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					"NO Internet Connection So calling off global param sync");
 

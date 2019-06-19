@@ -110,13 +110,6 @@ public class MosipBioDeviceIntegratorTest {
 
 	}
 
-	@Test(expected=IOException.class)
-	public void captureFailure() throws RegBaseCheckedException, JsonParseException, JsonMappingException, IOException {
-		Mockito.when(serviceDelegateUtil.invokeRestService(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
-				Mockito.any())).thenThrow(IOException.class);
-		mosipBioDeviceIntegratorImpl.capture("url", new Object(), Object.class);
-	}
-
 	@Test
 	public void getFrameTest() {
 		mosipBioDeviceIntegratorImpl.getFrame();
@@ -131,6 +124,55 @@ public class MosipBioDeviceIntegratorTest {
 	@Test
 	public void responseParsingTest() {
 		mosipBioDeviceIntegratorImpl.responseParsing();
+	}
+
+	@Test
+	public void captureFailureTest()
+			throws RegBaseCheckedException, JsonParseException, JsonMappingException, IOException {
+
+		CaptureResponseDto captureResponseDto = new CaptureResponseDto();
+		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
+
+		captureResponseBioDto.setHash("hash");
+		captureResponseBioDto.setSessionKey("sessionKey");
+		captureResponseBioDto.setSignature("signature");
+
+		CaptureResponsBioDataDto captureResponsBioDataDto = new CaptureResponsBioDataDto();
+		captureResponsBioDataDto.setBioExtract("Extract".getBytes());
+		captureResponsBioDataDto.setBioSegmentedType("bioSegmentedType");
+		captureResponsBioDataDto.setBioSubType("bioSubType");
+		captureResponsBioDataDto.setBioType("bioType");
+		captureResponsBioDataDto.setBioValue("bio".getBytes());
+		captureResponsBioDataDto.setDeviceCode("deviceCode");
+		captureResponsBioDataDto.setDeviceProviderID("deviceProviderID");
+		captureResponsBioDataDto.setDeviceServiceID("deviceServiceID");
+		captureResponsBioDataDto.setDeviceServiceVersion("deviceServiceVersion");
+		captureResponsBioDataDto.setEnv("env");
+		captureResponsBioDataDto.setMosipProcess("mosipProcess");
+		captureResponsBioDataDto.setQualityScore("qualityScore");
+		captureResponsBioDataDto.setRequestedScore("requestedScore");
+		captureResponsBioDataDto.setTimestamp("timestamp");
+		captureResponsBioDataDto.setTransactionID("transactionID");
+
+		captureResponseDto.setSlapImage("slapImageslapImageslapImage".getBytes());
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		byte[] byt = Base64.encode(objectMapper.writeValueAsString(captureResponsBioDataDto).getBytes());
+		captureResponseBioDto.setCaptureBioData("data");
+		captureResponseBioDto.setCaptureResponseData(captureResponsBioDataDto);
+
+		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
+		String json = objectMapper.writeValueAsString(captureResponseDto);
+
+		Map<String, Object> mosipBioCaptureResponseMap = new HashMap<>();
+		Map<String, Object> mosipBioCaptureResponseMap1 = objectMapper.readValue(json,
+				mosipBioCaptureResponseMap.getClass());
+
+		Mockito.when(serviceDelegateUtil.invokeRestService(Mockito.anyString(), Mockito.anyString(), Mockito.any(),
+				Mockito.any())).thenReturn(mosipBioCaptureResponseMap1);
+		mosipBioDeviceIntegratorImpl.capture("url", new Object(), Object.class);
+
 	}
 
 }

@@ -30,7 +30,6 @@ import io.mosip.registration.processor.packet.receiver.util.StatusMessage;
 import io.vertx.ext.web.FileUpload;
 import io.vertx.ext.web.RoutingContext;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PacketReceiverStage.
  */

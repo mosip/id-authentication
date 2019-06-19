@@ -79,14 +79,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 /**
@@ -479,6 +476,8 @@ public class BaseController {
 		updatePageFlow(RegistrationConstants.IRIS_CAPTURE,
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG))
 						.equalsIgnoreCase(RegistrationConstants.ENABLE));
+		
+		updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC,false);
 	}
 
 	/**
@@ -1064,8 +1063,7 @@ public class BaseController {
 	 * @return true, if successful
 	 */
 	protected boolean isChild() {
-		return RegistrationConstants.ENABLE.equalsIgnoreCase(
-				(String) (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)));
+		return getRegistrationDTOFromSession().isUpdateUINChild();
 	}
 
 	/**

@@ -129,7 +129,7 @@ public class TokenServicesImpl implements TokenService {
 	@Override
 	public AuthToken getTokenDetails(String token) {
 
-		return jdbcTemplate.query(selectTokenSQL, new MapSqlParameterSource().addValue("token", token),
+		return jdbcTemplate.query(selectTokenSQL, new MapSqlParameterSource().addValue("token", token.trim()),
 				new ResultSetExtractor<AuthToken>() {
 
 					@Override
@@ -190,7 +190,7 @@ public class TokenServicesImpl implements TokenService {
 		}
 		else
 		{
-			throw new AuthManagerException(String.valueOf(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode()),"Token is not present in datastore,Please try with new token");
+			throw new AuthManagerException(AuthErrorCode.TOKEN_DATASTORE_ERROR.getErrorCode(),AuthErrorCode.TOKEN_DATASTORE_ERROR.getErrorMessage());
 		}
 	}
 

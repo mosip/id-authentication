@@ -259,7 +259,7 @@ public class HeaderController extends BaseController {
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		} else {
-			generateAlert(RegistrationUIConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
 	}
 
@@ -434,9 +434,8 @@ public class HeaderController extends BaseController {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
+						return jobConfigurationService.executeAllJobs();
 
-						return responseDto;
 					}
 				};
 			}

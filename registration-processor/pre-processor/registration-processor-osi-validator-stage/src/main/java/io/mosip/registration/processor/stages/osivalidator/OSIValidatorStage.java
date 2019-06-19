@@ -120,9 +120,9 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.OSI_VALIDATE.toString());
 		registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 //		osiValidator.registrationStatusDto = registrationStatusDto;
-		umcValidator.setRegistrationStatusDto(registrationStatusDto);
+//		umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
-			isValidUMC = umcValidator.isValidUMC(registrationId);
+			isValidUMC = umcValidator.isValidUMC(registrationId, registrationStatusDto);
 			if (isValidUMC) {
 				isValidOSI = osiValidator.isValidOSI(registrationId, registrationStatusDto);
 				if (isValidOSI) {
@@ -159,7 +159,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_OSI_VALIDATION_FAILED));
 				registrationStatusDto.setRetryCount(retryCount);
 
-				registrationStatusDto.setStatusComment(umcValidator.getRegistrationStatusDto().getStatusComment());
+				registrationStatusDto.setStatusComment(registrationStatusDto.getStatusComment());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 
 				code = PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode();

@@ -169,8 +169,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 		setExceptionImage();
 		fingerException();
-		irisExceptionListener(leftEye);
-		irisExceptionListener(rightEye);
+		irisException();
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			employeeName.setText(SessionContext.userContext().getName());
 			regCenterID
@@ -249,6 +248,11 @@ public class BiometricExceptionController extends BaseController implements Init
 		leftEyePaneHolder.setOnMouseClicked(mouseClick);
 	}
 
+	private void irisException() {
+		irisExceptionListener(leftEye);
+		irisExceptionListener(rightEye);
+	}
+
 	public void fingerException() {
 		fingerExceptionListener(rightLittle);
 		fingerExceptionListener(rightRing);
@@ -263,6 +267,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	public void clearIrisException() {
+		irisException();
 		rightEyePaneHolder.getStyleClass().clear();
 		leftEyePaneHolder.getStyleClass().clear();
 	}

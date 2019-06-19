@@ -57,6 +57,14 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 /**
  * Implementation for {@link PreRegistrationDataSyncService}
  * 
+ * It interfaces with external pre-registration data sync services and download the packets based on the date range and packet id then  
+ * store it into the local machine in encrypted format. 
+ * It also maintain the records in local database along with the key used for encryption. 
+ * 
+ * This is invoked from job scheduler and new registration demographic screen.  
+ * Job scheduler - download the pre-registration packets between the date range based on value configured in the properties. 
+ * New Registration screen - download a particular packet from MOSIP server if online connectivity exists, otherwise use the packet from local file system.   
+ * 
  * @author YASWANTH S
  * @since 1.0.0
  */
@@ -121,15 +129,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 				Map<String, String> preRegIds = (Map<String, String>) preRegistrationIdsDTO.getPreRegistrationIds();
 
-				/* Get Packets Using pre registration ID's */
-				for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
-
-					if (!preRegDetail.getValue().contains("Z")) {
-						preRegDetail.setValue(preRegDetail.getValue() + "Z");
-					}
-					getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
-							Timestamp.from(Instant.parse(preRegDetail.getValue())));
-				}
+				getPreRegistrationPackets(syncJobId, responseDTO, preRegIds);
+				
 			} else {
 				String errMsg = RegistrationConstants.PRE_REG_TO_GET_ID_ERROR;
 				boolean isNoRecordMsg = false;
@@ -163,6 +164,29 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching Pre-Registration Id's ended");
 
 		return responseDTO;
+	}
+
+	/**
+	 * Gets the pre registration packets.
+	 *
+	 * @param syncJobId 
+	 * 				the sync job id
+	 * @param responseDTO 
+	 * 				the response DTO
+	 * @param preRegIds 
+	 * 				the pre-registration id's
+	 */
+	private void getPreRegistrationPackets(String syncJobId, ResponseDTO responseDTO, Map<String, String> preRegIds) {
+		
+		/* Get Packets Using pre registration ID's */
+		for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
+
+			if (!preRegDetail.getValue().contains("Z")) {
+				preRegDetail.setValue(preRegDetail.getValue() + "Z");
+			}
+			getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
+					Timestamp.from(Instant.parse(preRegDetail.getValue())));
+		}
 	}
 
 	/*

@@ -90,7 +90,8 @@ public class SendNotificationController extends BaseController implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		String modeOfCommunication = (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION)).toLowerCase();
+		String modeOfCommunication = (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION))
+				.toLowerCase();
 		if (!modeOfCommunication.contains(RegistrationConstants.EMAIL_SERVICE.toLowerCase())) {
 			email.setVisible(false);
 			emailIcon.setVisible(false);
@@ -115,8 +116,21 @@ public class SendNotificationController extends BaseController implements Initia
 
 		try {
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-				Writer emailNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
-				Writer smsNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
+				Writer emailNotificationTemplate;
+				Writer smsNotificationTemplate;
+				if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST)) {
+					emailNotificationTemplate = getNotificationTemplate(RegistrationConstants.LOST_UIN_EMAIL_TEMPLATE);
+					smsNotificationTemplate = getNotificationTemplate(RegistrationConstants.LOST_UIN_SMS_TEMPLATE);
+				} else if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_UPDATE)) {
+					emailNotificationTemplate = getNotificationTemplate(
+							RegistrationConstants.UPDATE_UIN_EMAIL_TEMPLATE);
+					smsNotificationTemplate = getNotificationTemplate(RegistrationConstants.UPDATE_UIN_SMS_TEMPLATE);
+				} else {
+					emailNotificationTemplate = getNotificationTemplate(RegistrationConstants.EMAIL_TEMPLATE);
+					smsNotificationTemplate = getNotificationTemplate(RegistrationConstants.SMS_TEMPLATE);
+				}
 				String registrationId = getRegistrationDTOFromSession().getRegistrationId();
 
 				List<String> notifications = new ArrayList<>();
@@ -230,7 +244,7 @@ public class SendNotificationController extends BaseController implements Initia
 					contentsList.add(content);
 				}
 			}
-			if(contents.size() != contentsList.size()) {
+			if (contents.size() != contentsList.size()) {
 				if (RegistrationConstants.CONTENT_TYPE_EMAIL.equalsIgnoreCase(contentType)) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.INVALID_EMAIL);
 				} else {

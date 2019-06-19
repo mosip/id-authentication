@@ -1,0 +1,13 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "gender": [
+        {
+          "language": "ara",
+          "value": "الذكر"
+        }
+      ]
+    },
+    "timestamp": "2019-06-15T09:37:56.056+05:30"
+  }
+}

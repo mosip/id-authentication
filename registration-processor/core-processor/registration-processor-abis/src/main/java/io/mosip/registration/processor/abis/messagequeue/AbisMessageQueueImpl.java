@@ -137,7 +137,7 @@ public class AbisMessageQueueImpl {
 
 			else if (id.matches(ABIS_IDENTIFY)) {
 				AbisIdentifyRequestDto identifyRequestDto = JsonUtil.objectMapperReadValue(request, AbisIdentifyRequestDto.class);
-				AbisIdentifyResponseDto identifyResponseDto = abisService.performDedupe(identifyRequestDto);
+				AbisIdentifyResponseDto identifyResponseDto = abisService.identify(identifyRequestDto);
 				response = obj.writeValueAsString(identifyResponseDto);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",

@@ -1,0 +1,17 @@
+{
+  "identityRequest": {
+    "biometrics": [
+      {
+        "data": {
+          "bioSubType": "LEFT_INDEX",
+          "bioType": "FMR",
+          "bioValue": "Content is not allowed in prolog.",
+          "deviceProviderID": "mantra",
+          "timestamp": "2019-06-15T10:18:24.024+05:30",
+          "transactionID": "1234567890"
+        }
+      }
+    ],
+    "timestamp": "2019-06-15T10:18:24.024+05:30"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "errors": [
+    {
+      "errorCode": "$IGNORE$",
+      "errorMessage": "$IGNORE$"
+    }
+  ],
+  "response": {
+    "identity": "$IGNORE$",
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

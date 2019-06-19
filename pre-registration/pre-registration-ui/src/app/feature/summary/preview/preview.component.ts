@@ -51,7 +51,7 @@ export class PreviewComponent implements OnInit {
     this.formatDob(this.previewData.dateOfBirth);
     this.setFieldValues();
     this.getSecondaryLanguageLabels();
-    this.files = this.user.files.documentsMetaData;
+    this.files = this.user.files ? this.user.files.documentsMetaData : [];
     this.documentsMapping();
   }
 
@@ -72,7 +72,7 @@ export class PreviewComponent implements OnInit {
 
   documentsMapping() {
     this.documentMapObject = [];
-    if (this.documentTypes.length !== 0) {
+    if (this.files && this.documentTypes.length !== 0) {
       this.documentTypes.forEach(type => {
         const file = this.files.filter(file => file.docCatCode === type.code);
         if (type.code === 'POA' && file.length === 0 && this.registrationService.getSameAs() !== '') {

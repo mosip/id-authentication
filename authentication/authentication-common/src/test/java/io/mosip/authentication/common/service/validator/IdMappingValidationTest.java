@@ -203,9 +203,9 @@ public class IdMappingValidationTest {
 		AuthRequestDTO authRequestDTO = getBioFingerDetails();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		Set<String> allowedAuthtype = new HashSet<>();
-		allowedAuthtype.add("FID");
-		allowedAuthtype.add("FIR");
-		allowedAuthtype.add("IIR");
+		allowedAuthtype.add("bio-FID");
+		allowedAuthtype.add("bio-FIR");
+		allowedAuthtype.add("bio-IIR");
 		ReflectionTestUtils.invokeMethod(authRequestValidator, "validateBioMetadataDetails", authRequestDTO, errors,
 				allowedAuthtype);
 		assertFalse(errors.hasErrors());

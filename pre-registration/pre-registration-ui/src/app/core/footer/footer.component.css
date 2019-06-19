@@ -8,6 +8,6 @@
   position: fixed;
   bottom: -9px;
   width: 100%;
-  z-index: 2;
+  z-index: -1;
   margin-bottom: 2px;
 }

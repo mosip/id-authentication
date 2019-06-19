@@ -170,7 +170,11 @@ public enum ErrorMessages {
 	 */
 	INVALID_BOOKING_DATE_TIME("Invalid Booking Date Time"),
 	
-	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id");
+	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id"),
+	
+	NOTIFICATION_CALL_FAILED("Notification service call failed"),
+	
+	JSON_PROCESSING_EXCEPTION("Json processing exception");
 	/**
 	 * @param code
 	 */

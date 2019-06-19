@@ -377,7 +377,6 @@ public class ManualVerificationStageTest{
 
 				if(serviceID=="bio") {
 					obj1.put("regId", "51130282650000320190117144316");
-					obj1.put("fileName", "APPLICANTPHOTO");
 				}else if(serviceID=="demo") {
 					obj1.put("regId", "51130282650000320190117144316");
 
