@@ -60,7 +60,6 @@
                            <class name="io.mosip.kernel.tests.RIDGenerator" />   
                            <class name="io.mosip.kernel.tests.SmsNotification" />
                            <class name="io.mosip.kernel.tests.SyncConfigurations" />
-                           <class name="io.mosip.kernel.tests.SyncIncrementalData" />
                            <class name="io.mosip.kernel.tests.UploadPublickey" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndex" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId" />
