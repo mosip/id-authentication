@@ -20,7 +20,7 @@
 
                            <class name="io.mosip.kernel.tests.AuditLog" />   
                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
-                  <!--         <class name="io.mosip.kernel.tests.EmailNotification" />
+      			  <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAuthType" />
@@ -71,7 +71,7 @@
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
                            <class name="io.mosip.kernel.tests.UploadPublickey" />
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" /> -->
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" /> 
                  </classes>
 				</test>   
 
@@ -80,7 +80,7 @@
 		<classes>
 		
 			 <class name="io.mosip.preregistration.tests.BatchJob" />	
-		<!--	 <class name="io.mosip.preregistration.tests.Audit" />
+			 <class name="io.mosip.preregistration.tests.Audit" />
 			<class name="io.mosip.preregistration.tests.BookingAppointment" />
 			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
 			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
@@ -108,7 +108,7 @@
 			<class name="io.mosip.preregistration.tests.TriggerNotification" />
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
-			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  -->
+			<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" /> 
 
 		</classes>
 	</test>  
@@ -117,8 +117,8 @@
 
  	 <test name="RegistrationProcessor Tests">
 		<classes>
-					<class name="io.mosip.registrationProcessor.tests.SecurityTests" />
-                <!--    <class name="io.mosip.registrationProcessor.tests.Sync" />
+		   <class name="io.mosip.registrationProcessor.tests.SecurityTests" />
+                    <class name="io.mosip.registrationProcessor.tests.Sync" />
                     <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
                     <class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
                     <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
@@ -129,7 +129,7 @@
                     <class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
                     <class name="io.mosip.registrationProcessor.tests.ApplicantDemographic" />
                     <class name="io.mosip.registrationProcessor.tests.ApplicantBiometric" />
-                   <class name="io.mosip.registrationProcessor.tests.PacketInfo" />  -->
+                   <class name="io.mosip.registrationProcessor.tests.PacketInfo" />  
 
 
 		</classes>
@@ -140,7 +140,7 @@
 	<test name="AuthenticationTest">
 		<classes>
 			 <class name="io.mosip.authentication.tests.OtpGeneration" />
-		<!--	 <class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" />
+			 <class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" />
 			<class name="io.mosip.authentication.idRepository.prerequiste.CreateVID" />
 			 <class name="io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord" />
 			 <class name="io.mosip.authentication.idRepository.prerequiste.UpdateVID" />  
@@ -156,7 +156,7 @@
 						
 		<class name="io.mosip.authentication.idRepository.tests.AddIdentity" />			
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
-			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" /> -->
+			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" /> 
 		</classes>
 	</test>  
 
