@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -97,7 +98,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
 				String jsoFileName = zipEntry.getName();
 				if (jsoFileName.endsWith(".json")) {
-					bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
+					bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream, StandardCharsets.UTF_8));
 					parseDemographicJson(bufferedReader, zipEntry);
 					break;
 				} 
