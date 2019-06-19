@@ -31,7 +31,7 @@ test.txt
 
 **/*.iml
 *.log
-src/logs/mosip-api-test.log
+
 /target/
 target/
 test-output/
