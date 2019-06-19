@@ -76,6 +76,10 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		return globalParamDAO.getGlobalParams();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData(boolean)
+	 */
 	@Override
 	public ResponseDTO synchConfigData(boolean isJob) {
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,

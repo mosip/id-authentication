@@ -4,7 +4,7 @@ import io.mosip.registration.dto.ResponseDTO;
 
 
 /**
- * It does the pre registration check to ensure that the application can capture the Registration detail from individual. If the pre registration check
+ * It does the pre check before doing registration to ensure that the application can capture the Registration detail from individual. If the pre check
  * fails, then don't allow the application to capture the detail from individual.  Post completion of the respective sync process only 
  * the application can be used for Registration process. 
  * 
@@ -31,6 +31,10 @@ public interface SyncStatusValidatorService {
 	
 	
 	/**
+	 * This method helps to check whether application should perform force software update or not. It checks the software update flag value in the database table. 
+	 * If 'Y' then validate the days skipped for update. If the days are greater than the configured one at the properties then this method would return 
+	 * true otherwise false.  
+	 * 
 	 * Check for force update of application. 
 	 * 
 	 * @return 
