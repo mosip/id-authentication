@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Mosip API Suite" parallel="tests" thread-count="2">
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
+	<listeners>
+		<listener class-name="io.mosip.report.CustomTestNGReporter" />
+		<listener class-name="io.mosip.report.ExtentReportListener" />
+	</listeners>
+	<test name="PreReg Tests">
+		<parameter name="testType" value="smokeAndRegression" />
+		<classes>
+			<!-- <class name="io.mosip.preregistration.tests.SyncMasterData" /> <class 
+				name="io.mosip.preregistration.tests.DocumentUpload" /> <class name="io.mosip.preregistration.tests.BookingAppointment" 
+				/> <class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" 
+				/> <class name="io.mosip.preregistration.tests.CopyUploadedDocument" /> <class 
+				name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" /> <class 
+				name="io.mosip.preregistration.tests.DeleteDocumentByDocId" /> <class name="io.mosip.preregistration.tests.DocumentUpload" 
+				/> <class name="io.mosip.preregistration.tests.MultipleBookingAppointment" 
+				/> <class name="io.mosip.preregistration.tests.QRCode" /> <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" 
+				/> <class name="io.mosip.preregistration.tests.TriggerNotification" /> -->
+			<class name="io.mosip.preregistration.tests.Audit" />
+			<class name="io.mosip.preregistration.tests.BatchJob" />
+			<class name="io.mosip.preregistration.tests.BookingAppointment" />
+			<class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
+			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
+			<class name="io.mosip.preregistration.tests.CreatePreRegistration" />
+			<class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" />
+			<class name="io.mosip.preregistration.tests.DeleteDocumentByDocId" />
+			<class name="io.mosip.preregistration.tests.DiscardIndividual" />
+			<class name="io.mosip.preregistration.tests.DocumentUpload" />
+			<class
+				name="io.mosip.preregistration.tests.FetchAllApplicationCreatedByUser" />
+			<class name="io.mosip.preregistration.tests.FetchAllPreRegistrationIds" />
+			<class name="io.mosip.preregistration.tests.FetchAppointmentDetails" />
+			<class
+				name="io.mosip.preregistration.tests.FetchAvailabilityDataOfRegistrationCenters" />
+			<class name="io.mosip.preregistration.tests.FetchTheStatusOfApplication" />
+			<class name="io.mosip.preregistration.tests.GetAllDocumentForDocId" />
+			<class name="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" />
+			<class name="io.mosip.preregistration.tests.GetPreRegistartionData" />
+			<class name="io.mosip.preregistration.tests.IntegrationScenarios" />
+			<class name="io.mosip.preregistration.tests.InvalidateToken" />
+			<class name="io.mosip.preregistration.tests.MultipleBookingAppointment" />
+			<class name="io.mosip.preregistration.tests.QRCode" />
+
+			<class
+				name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId" />
+			<class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
+			<class name="io.mosip.preregistration.tests.SendOtp" />
+			<class name="io.mosip.preregistration.tests.Translitration" />
+			<class name="io.mosip.preregistration.tests.TriggerNotification" />
+			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
+			<class name="io.mosip.preregistration.tests.ValidateOtp" />
+		</classes>
+	</test>
+</suite>
