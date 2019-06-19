@@ -153,7 +153,7 @@ public class Sync extends BaseTestCase implements ITest {
 		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
 		try{
 			if(file!=null){
-				registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
+				registrationPacketSyncDto=encryptData.createSyncRequest(file,"UPDATE");
 
 				regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 

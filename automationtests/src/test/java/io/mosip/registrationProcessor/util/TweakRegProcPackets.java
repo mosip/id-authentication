@@ -386,7 +386,7 @@ public class TweakRegProcPackets extends BaseTestCase {
 									metaInfo = (JSONObject) new JSONParser().parse(metaFileReader);
 									metaFileReader.close();
 									identity = (JSONObject) metaInfo.get("identity");
-
+									JSONObject copy = (JSONObject) new JSONObject(identity).clone();
 									//identity.put("fullName", property);
 									JSONArray updatedProperty = null;
 									if(testCaseName.matches("fullName")||testCaseName.matches("dateOfBirth")
@@ -397,8 +397,8 @@ public class TweakRegProcPackets extends BaseTestCase {
 										JSONObject poi = updatePOI(identity);
 										identity.clear();
 										logger.info("identity..........: " +identity);
-										if(property.matches("fullName")) {
-											updatedProperty = updateProperty(identity,testCaseName,property);
+										if(testCaseName.matches("fullName")) {
+											updatedProperty = updateProperty(copy,testCaseName,property);
 											identity.put(testCaseName, updatedProperty);
 										}else
 											identity.put(testCaseName, property);
@@ -786,10 +786,10 @@ public class TweakRegProcPackets extends BaseTestCase {
 
 	private JSONArray updateProperty(JSONObject identity, String testcaseName, String property) {
 		JSONArray propertyfield = (JSONArray) identity.get(testcaseName);
-
+		logger.info("propertyfield : "+propertyfield);
 		for (int i = 0; i < propertyfield.size(); i++) {
 			JSONObject labels = (JSONObject) propertyfield.get(i);
-			if (labels.get("language").equals("fra")) {
+			if (labels.get("language").equals("eng")) {
 				labels.put("value", property);
 			}
 		}

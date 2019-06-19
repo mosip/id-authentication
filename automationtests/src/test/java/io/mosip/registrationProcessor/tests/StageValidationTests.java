@@ -166,7 +166,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	}
 	
 	
-	@Test(dataProvider = "packetValidatorStage")
+/*	@Test(dataProvider = "packetValidatorStage")
 	public void packetValidatorStage(File[] listOfInvpackets) {
 
 		List<String> statusCodes = new ArrayList<String>();
@@ -207,9 +207,9 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		//cleanUp.prepareQueryList(regID);
 		regID="";
 	
-	}
+	}*/
 	
-	@Test(dataProvider = "osiValidatorStage")
+/*	@Test(dataProvider = "osiValidatorStage")
 	public void osiValidatorStage(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
@@ -247,8 +247,8 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	cleanUp.prepareQueryList(regID);
 	//	softAssert.assertAll();
 		regID="";
-	}
-	@Test(dataProvider = "demoDedupeStage")
+	}*/
+	/*@Test(dataProvider = "demoDedupeStage")
 	public void demoDedupeStage(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
@@ -286,7 +286,7 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	cleanUp.prepareQueryList(regID);
 		softAssert.assertAll();
 		regID="";
-	}
+	}*/
 	@Test(dataProvider = "updatePacket")
 	public void updatePacket(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
