@@ -62,12 +62,12 @@ public class ClientJarDecryption extends Application {
 	private static final String MOSIP_SERVICES = "mosip-services.jar";
 	private static String libFolder = "lib/";
 	private static String binFolder = "bin/";
-	private static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	private static final String MOSIP_REGISTRATION_DB_KEY = "mosip.reg.db.key";
 	private static final String MOSIP_REGISTRATION_HC_URL = "mosip.reg.healthcheck.url";
-	private static final String MOSIP_REGISTRATION_APP_KEY = "mosip.registration.app.key";
+	private static final String MOSIP_REGISTRATION_APP_KEY = "mosip.reg.app.key";
 	private static final String ENCRYPTED_KEY = "mosip.registration.key.encrypted";
 	private static final String IS_KEY_ENCRYPTED = "Y";
-	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.client.tpm.registration";
+	private static final String MOSIP_CLIENT_TPM_AVAILABILITY = "mosip.reg.client.tpm.availability";
 
 	ProgressBar progressBar = new ProgressBar();
 	Stage primaryStage = new Stage();
@@ -162,7 +162,7 @@ public class ClientJarDecryption extends Application {
 
 			try {
 				String dbpath = new File(System.getProperty("user.dir")) + SLASH
-						+ properties.getProperty("mosip.dbpath");
+						+ properties.getProperty("mosip.reg.dbpath");
 				if (!new File(dbpath).exists()) {
 					System.out.println("coming alert");
 					Alert alert = new Alert(AlertType.INFORMATION);
@@ -257,10 +257,10 @@ public class ClientJarDecryption extends Application {
 
 								String libPath = "\"" + new File("lib").getAbsolutePath() + "\"";
 
-								String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.env")
+								String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.reg.env")
 										+ " -Dmosip.reg.healthcheck.url=" + properties.getProperty(MOSIP_REGISTRATION_HC_URL)
-										+ " -Dfile.encoding=UTF-8 -Dmosip.dbpath="
-										+ properties.getProperty("mosip.dbpath") + " -D" + MOSIP_REGISTRATION_DB_KEY
+										+ " -Dfile.encoding=UTF-8 -Dmosip.reg.dbpath="
+										+ properties.getProperty("mosip.reg.dbpath") + " -D" + MOSIP_REGISTRATION_DB_KEY
 										+ "=" + "\"" + propsFilePath + "\"" + " -cp " + tempPath + "/*;" + libPath
 										+ "/* io.mosip.registration.controller.Initialization";
 

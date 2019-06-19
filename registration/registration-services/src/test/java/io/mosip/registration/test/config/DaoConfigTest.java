@@ -35,7 +35,7 @@ public class DaoConfigTest {
 
 	@Test
 	public void dataSourceTest() throws Exception {
-		System.setProperty("mosip.registration.db.key", "src/test/resources/labels_en.properties");
+		System.setProperty("mosip.reg.db.key", "src/test/resources/labels_en.properties");
 		
 		Map<String, Object> applicationMap = new HashMap<>();		
 		PowerMockito.mockStatic(ApplicationContext.class);
@@ -55,7 +55,7 @@ public class DaoConfigTest {
 	
 	@Test
 	public void dataSourceTestTPMEnabled() throws Exception {
-		System.setProperty("mosip.registration.db.key", "src/test/resources/messages_en.properties");
+		System.setProperty("mosip.reg.db.key", "src/test/resources/messages_en.properties");
 		
 		Map<String, Object> applicationMap = new HashMap<>();		
 		PowerMockito.mockStatic(ApplicationContext.class);
@@ -75,7 +75,7 @@ public class DaoConfigTest {
 
 	@Test(expected = RuntimeException.class)
 	public void propertiesTest() throws Exception {
-		System.setProperty("mosip.registration.db.key", "src/test/resources/labels_en.properties");
+		System.setProperty("mosip.reg.db.key", "src/test/resources/labels_en.properties");
 
 		Map<String, Object> applicationMap = new HashMap<>();		
 		PowerMockito.mockStatic(ApplicationContext.class);

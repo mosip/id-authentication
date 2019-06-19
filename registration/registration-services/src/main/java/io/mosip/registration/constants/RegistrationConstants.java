@@ -1369,7 +1369,7 @@ public class RegistrationConstants {
 
 	// TPM
 	public static final byte[] NULL_VECTOR = new byte[0];
-	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.reg.db.key";
 	
 	//SQL Execution
 	public static final String SQL_EXECUTION_SUCCESS = "SQL EXECUTION SUCCESS";
