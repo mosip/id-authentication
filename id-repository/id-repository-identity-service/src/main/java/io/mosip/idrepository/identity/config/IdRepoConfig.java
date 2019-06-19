@@ -77,21 +77,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 	@PostConstruct
 	public void init() {
-		restTemplate.getInterceptors().add(new ClientHttpRequestInterceptor() {
-
-			@Override
-			public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
-					throws IOException {
-				mosipLogger.debug(IdRepoLogger.getUin(), "Rest Template logs", "Request URL: ",
-						request.getURI().toString());
-				ClientHttpResponse response = execution.execute(request, body);
-				BufferingClientHttpResponseWrapper responseWrapper = new BufferingClientHttpResponseWrapper(response);
-				mosipLogger.debug(IdRepoLogger.getUin(), "Rest Template logs", "Resposne: ",
-						responseWrapper.getResponseBody());
-				return responseWrapper;
-			}
-		});
-
 		restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
 
 			@Override
