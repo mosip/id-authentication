@@ -296,19 +296,22 @@ public class NotificationService {
 
 	public void notificationDtoValidation(NotificationDTO dto) throws IOException, ParseException  {
 		getDemographicDetails(dto);
-		BookingRegistrationDTO bookingDTO = getAppointmentDetailsRestService(dto.getPreRegistrationId());
-		String time = LocalTime
-				.parse(bookingDTO.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
-				.format(DateTimeFormatter.ofPattern("hh:mm a")); 
-		if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
-			if (!time.equals(dto.getAppointmentTime())) {
-				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_010.getCode(),
-						ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getMessage(), response);
+		if(!dto.getIsBatch()) {
+			BookingRegistrationDTO bookingDTO = getAppointmentDetailsRestService(dto.getPreRegistrationId());
+			String time = LocalTime
+					.parse(bookingDTO.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
+					.format(DateTimeFormatter.ofPattern("hh:mm a")); 
+			if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
+				if (!time.equals(dto.getAppointmentTime())) {
+					throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_010.getCode(),
+							ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getMessage(), response);
+				}
+			} else {
+				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_009.getCode(),
+						ErrorMessages.APPOINTMENT_DATE_NOT_CORRECT.getMessage(), response);
 			}
-		} else {
-			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_009.getCode(),
-					ErrorMessages.APPOINTMENT_DATE_NOT_CORRECT.getMessage(), response);
 		}
+		
 	}
 
 	/**

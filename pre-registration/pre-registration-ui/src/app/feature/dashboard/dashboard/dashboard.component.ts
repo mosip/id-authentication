@@ -55,7 +55,7 @@ export class DashBoardComponent implements OnInit {
   allApplicants: any[];
   users: Applicant[] = [];
   selectedUsers: Applicant[] = [];
-  titleOnError = 'ERROR';
+  titleOnError = '';
 
   /**
    * @description Creates an instance of DashBoardComponent.
@@ -633,6 +633,7 @@ export class DashBoardComponent implements OnInit {
     // if invalid token hten message = "invlaid something" else message = "regular message"
     await this.getErrorLabels();
     let message = this.errorLanguagelabels.error;
+    this.titleOnError = this.errorLanguagelabels.errorLabel;
     if (
       error &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired

@@ -157,7 +157,7 @@ public class BookingExceptionCatcher {
 					((RestCallException) ex).getErrorText(), mainResponseDTO);
 		} else if (ex instanceof NotificationException) {
 			throw new NotificationException(((NotificationException) ex).getValidationErrorList(),
-					((NotificationException) ex).getMainResposneDTO());
+					mainResponseDTO);
 		} else if(ex instanceof JsonProcessingException) {
 			throw new JsonException(ErrorCodes.PRG_BOOK_RCI_034.getCode(),ErrorMessages.JSON_PROCESSING_EXCEPTION.getMessage(),mainResponseDTO);
 		}

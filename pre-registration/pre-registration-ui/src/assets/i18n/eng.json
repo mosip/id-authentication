@@ -576,7 +576,8 @@
     "phone": "Entered phone is invalid",
     "dateOfBirth": "Entered date of birth is invalid",
     "CNIENumber": "Entered CNIE Number is invalid",
-    "tokenExpiredLogout": "You have been LoggedOut due to inactivity."
+    "tokenExpiredLogout": "You have been LoggedOut due to inactivity.",
+    "errorLabel":"ERROR"
   },
   "residentTypesMapping": {
     "NFR": "National",
