@@ -697,7 +697,7 @@ public class OSIValidator {
 		String creationDate = osiUtils.getMetaDataValue(JsonConstant.CREATIONDATE, identity);
 		if (creationDate != null && !(StringUtils.isEmpty(creationDate))) {
 
-			isValid = isActiveUser(regOsi.getOfficerId(), creationDate, regOsi.getSupervisorId());
+			isValid = isActiveUser(regOsi.getOfficerId(), creationDate, regOsi.getSupervisorId(), registrationStatusDto);
 			if (!isValid) {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));

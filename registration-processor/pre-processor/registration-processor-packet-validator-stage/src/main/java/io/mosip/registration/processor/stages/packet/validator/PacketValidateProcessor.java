@@ -411,7 +411,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
-			MessageDTO object, IdentityIteratorUtil identityIteratorUtil) throws IOException, ApisResourceAccessException, JSONException, ParseException,
+			MessageDTO object, IdentityIteratorUtil identityIteratorUtil) throws IOException, ApisResourceAccessException, JSONException,
 			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException,
 			IdObjectValidationFailedException, IdObjectIOException , PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		String registrationId = registrationStatusDto.getRegistrationId();
@@ -483,12 +483,11 @@ public class PacketValidateProcessor {
 				&& !mandatoryValidation(registrationStatusDto)) {
 			return false;
 		}
-
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
-		// Sync list table
-		if (!validateRegIdAndTypeFromSyncTable(metadataList, identityIteratorUtil)) {
-			return false;
-		}
+				// Sync list table
+				return validateRegIdAndTypeFromSyncTable(metadataList,identityIteratorUtil);
+			}
+	
 
 	private boolean uinPresentInIdRepo(String uin) throws ApisResourceAccessException, IOException {
 		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) != null;
@@ -602,7 +601,7 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean applicantDocumentValidation(String jsonString, String registrationId)
-			throws IOException, ApisResourceAccessException, ParseException, org.json.simple.parser.ParseException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			throws IOException, ApisResourceAccessException, org.json.simple.parser.ParseException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		if (env.getProperty(VALIDATEAPPLICANTDOCUMENT).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			isApplicantDocumentValidation = true;
 			return isApplicantDocumentValidation;

@@ -363,8 +363,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
 		String rid=null;
-		ResponseWrapper<?> responseWrapper;
-		JSONObject ridJson;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		JSONObject ridJson=new JSONObject();
 		ObjectMapper mapper=new ObjectMapper();

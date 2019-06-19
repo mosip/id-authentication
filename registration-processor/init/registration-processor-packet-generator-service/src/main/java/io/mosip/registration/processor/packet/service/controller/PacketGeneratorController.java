@@ -10,20 +10,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
@@ -35,12 +29,10 @@ import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRespons
 import io.mosip.registration.processor.packet.service.exception.PacketGeneratorValidationException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.upload.service.request.validator.PacketGeneratorRequestValidator;
-import io.mosip.registration.processor.packet.upload.service.vlaidator.util.PacketGeneratorValidationUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The Class PacketGeneratorController.
@@ -60,11 +52,10 @@ public class PacketGeneratorController {
 	@Autowired
 	private Environment env;
 
-	/**  Token validator class. */
+	/** Token validator class */
 	@Autowired
 	TokenValidator tokenValidator;
 
-	/** The Constant RESPONSE_SIGNATURE. */
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
@@ -80,21 +71,9 @@ public class PacketGeneratorController {
 	@Autowired
 	private PacketGeneratorRequestValidator validator;
 
-	/**
-	 * Inits the binder.
-	 *
-	 * @param binder the binder
-	 */
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		binder.addValidators(validator);
-	}
-
-	/** The is enabled. */
 	@Value("${registration.processor.signature.isEnabled}")
 	Boolean isEnabled;
 
-	/** The digital signature utility. */
 	@Autowired
 	DigitalSignatureUtility digitalSignatureUtility;
 
