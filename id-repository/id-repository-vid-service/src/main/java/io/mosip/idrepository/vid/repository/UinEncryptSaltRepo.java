@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import io.mosip.idrepository.vid.entity.UinEncryptSalt;
 
 /**
- * The Repository for {@link UinEncryptSaltRepo}
+ * The Repository for UinEncryptSalt table.
  * 
  * @author Prem Kumar
  *

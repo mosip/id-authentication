@@ -18,8 +18,9 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * The Class Swagger Config.
+ * The Class Swagger Config - configuration class for swagger.
  *
+ * @author Manoj SP
  * @author Prem Kumar
  */
 @Configuration(value = "idrepo_vid_swagger_config")

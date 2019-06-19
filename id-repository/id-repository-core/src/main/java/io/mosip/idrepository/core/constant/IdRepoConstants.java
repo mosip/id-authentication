@@ -1,7 +1,8 @@
 package io.mosip.idrepository.core.constant;
 
 /**
- * The Enum IdRepoConstants.
+ * The Enum IdRepoConstants - contains constants used internally by the
+ * application.
  *
  * @author Manoj SP
  */

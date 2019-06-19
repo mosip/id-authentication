@@ -36,7 +36,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
- * The Class IdRequestValidator.
+ * The Class IdRequestValidator - Validator for {@code IdRequestDTO}.
  *
  * @author Manoj SP
  */

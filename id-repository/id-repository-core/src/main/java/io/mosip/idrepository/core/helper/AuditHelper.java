@@ -13,11 +13,11 @@ import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.idrepository.core.dto.AuditResponseDTO;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
-import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.http.RequestWrapper;
 
 /**
- * The Class AuditHelper.
+ * The Class AuditHelper - helper class that makes async rest call to audit
+ * service with provided audit details .
  *
  * @author Manoj SP
  */
@@ -37,7 +37,7 @@ public class AuditHelper {
 	private RestRequestBuilder restBuilder;
 
 	/**
-	 * Audit.
+	 * Audit - method to call audit service and store audit details.
 	 *
 	 * @param module the module
 	 * @param event  the event

@@ -212,7 +212,7 @@ public class VidControllerTest {
 		request.setUin(2953190571L);
 		req.setRequest(request);
 		ResponseWrapper<VidResponseDTO> value = new ResponseWrapper<VidResponseDTO>();
-		Mockito.when(vidService.createVid(Mockito.any())).thenReturn(value);
+		Mockito.when(vidService.generateVid(Mockito.any())).thenReturn(value);
 		when(validator.validateId(Mockito.anyString())).thenReturn(true);
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
 		ResponseEntity<ResponseWrapper<VidResponseDTO>> responseEntity = controller.createVid(req, errors);
@@ -227,7 +227,7 @@ public class VidControllerTest {
 			request.setUin(2953190571L);
 			req.setRequest(request);
 			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(req, "RequestWrapper<RequestDTO>");
-			Mockito.when(vidService.createVid(Mockito.any())).thenThrow(new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(),
+			Mockito.when(vidService.generateVid(Mockito.any())).thenThrow(new IdRepoAppException(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorCode(),
 					String.format(IdRepoErrorConstants.VID_GENERATION_FAILED.getErrorMessage(), CREATE)));
 			when(validator.validateId(Mockito.anyString())).thenReturn(true);
 			controller.createVid(req, errors);

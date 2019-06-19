@@ -39,7 +39,7 @@ public class AuditRequestBuilder {
 	private Environment env;
 
 	/**
-	 * Builds the request.
+	 * Builds the audit request for audit service.
 	 *
 	 * @param module the module
 	 * @param event  the event

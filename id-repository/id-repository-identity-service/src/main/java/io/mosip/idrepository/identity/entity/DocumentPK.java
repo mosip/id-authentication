@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class DocumentPK.
+ * The Class DocumentPK - Composite key for Document table.
  *
  * @author Manoj SP
  */

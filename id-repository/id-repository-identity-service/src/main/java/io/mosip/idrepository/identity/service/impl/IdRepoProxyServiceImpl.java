@@ -48,7 +48,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 
 /**
- * The Class IdRepoServiceImpl.
+ * The Class IdRepoServiceImpl - Service implementation for Identity service.
  *
  * @author Manoj SP
  */
@@ -68,9 +68,6 @@ public class IdRepoProxyServiceImpl implements IdRepoService<IdRequestDTO, IdRes
 
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoProxyServiceImpl.class);
-
-	/** The Constant ID_REPO_SERVICE. */
-	private static final String ID_REPO_SERVICE = "IdRepoService";
 
 	/** The Constant TYPE. */
 	private static final String TYPE = "type";

@@ -35,6 +35,10 @@ import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.http.RequestWrapper;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest

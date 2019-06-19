@@ -5,7 +5,8 @@ import org.springframework.validation.Errors;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 
 /**
- * The Class DataValidationUtil.
+ * The Class DataValidationUtil - utility to validate {@code Errors} from
+ * validator and throw exception compiling all errors.
  *
  * @author Manoj SP
  */
@@ -18,7 +19,7 @@ public final class DataValidationUtil {
 	}
 
 	/**
-	 * Get list of errors from error object
+	 * Get list of errors from error object and build and throw {@code IdRepoDataValidationException}.
 	 *
 	 * @param errors the errors
 	 * @throws IdRepoDataValidationException the IdRepoDataValidationException

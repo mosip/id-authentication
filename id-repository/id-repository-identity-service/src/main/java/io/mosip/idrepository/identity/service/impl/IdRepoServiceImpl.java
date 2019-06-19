@@ -82,7 +82,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.kernel.fsadapter.hdfs.constant.HDFSAdapterErrorCode;
 
 /**
- * The Class IdRepoServiceImpl.
+ * The Class IdRepoServiceImpl - Service implementation for VID service.
  */
 @Component
 @Transactional(rollbackFor = { IdRepoAppException.class, IdRepoAppUncheckedException.class })

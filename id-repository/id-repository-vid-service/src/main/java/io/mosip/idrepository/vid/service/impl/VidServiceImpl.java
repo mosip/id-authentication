@@ -56,7 +56,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
 import io.mosip.kernel.idgenerator.vid.exception.VidException;
 
 /**
- * The Class VidServiceImpl.
+ * The Class VidServiceImpl - service implementation for VID service.
  *
  * @author Manoj SP
  * @author Prem Kumar
@@ -136,7 +136,7 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	 * @see io.mosip.idrepository.core.spi.VidService#createVid(java.lang.Object)
 	 */
 	@Override
-	public ResponseWrapper<VidResponseDTO> createVid(VidRequestDTO vidRequest) throws IdRepoAppException {
+	public ResponseWrapper<VidResponseDTO> generateVid(VidRequestDTO vidRequest) throws IdRepoAppException {
 		String uin = vidRequest.getUin().toString();
 		try {
 			Vid vid = generateVid(uin, vidRequest.getVidType());
@@ -199,7 +199,8 @@ public class VidServiceImpl implements VidService<VidRequestDTO, ResponseWrapper
 	}
 
 	/**
-	 * Check uin status.
+	 * Fetch details of the provided uin from Id Repository identity service and 
+	 * check if the uin is active or not. If not, Exception will be thrown.
 	 *
 	 * @param uin the uin
 	 * @throws IdRepoAppException the id repo app exception

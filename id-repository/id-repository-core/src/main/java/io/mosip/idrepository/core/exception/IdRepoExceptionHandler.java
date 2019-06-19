@@ -39,7 +39,8 @@ import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
- * The Class IdRepoExceptionHandler.
+ * The Class IdRepoExceptionHandler - Handler class for all exceptions thrown in
+ * Id Repository Idenitty and VID service.
  *
  * @author Manoj SP
  */
@@ -71,13 +72,15 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	@Autowired
 	private Environment env;
 
+	/** The id. */
 	@Resource
 	private Map<String, String> id;
 
 	/**
-	 * Handle all exceptions.
+	 * Handles exceptions that are not handled by other methods in
+	 * {@code IdRepoExceptionHandler}.
 	 *
-	 * @param ex      the ex
+	 * @param ex the exception
 	 * @param request the request
 	 * @return the response entity
 	 */
@@ -91,11 +94,18 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				HttpStatus.OK);
 	}
 	
+	/**
+	 * Handles bean creation exception.{@code BeanCreationException} is handled because
+	 * IdObjetMasterDataValidator is loaded lazily and maskes use of RestTemplate in
+	 * PostConstruct. When RestTemplate throws any exception inside PostConstruct,
+	 * it is wrapped as BeanCreationException and thrown by Spring.
+	 *
+	 * @param ex the ex
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(BeanCreationException.class)
 	protected ResponseEntity<Object> handleBeanCreationException(BeanCreationException ex, WebRequest request) {
-		//BeanCreationException is handled because IdObjetMasterDataValidator is loaded lazily and
-		// maskes use of RestTemplate in PostConstruct. When RestTemplate throws any exception inside PostConstruct,
-		// it is wrapped as BeanCreationException and thrown by Spring.
 		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
 				"handleBeanCreationException - \n" + ExceptionUtils.getStackTrace(ex));
 		Throwable rootCause = org.apache.commons.lang3.exception.ExceptionUtils.getRootCause(ex);
@@ -108,6 +118,16 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 	}
 
+	/**
+	 * Handle access denied exception thrown when user is not allowed to access the
+	 * specific API.
+	 *
+	 * @param ex
+	 *            the ex
+	 * @param request
+	 *            the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(AccessDeniedException.class)
 	protected ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
 		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
@@ -118,6 +138,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 				HttpStatus.OK);
 	}
 
+	/**
+	 * Handle authentication exception - thrown in {@code RestHelper} when an 
+	 * application fails to authenticate the rest request.
+	 *
+	 * @param ex the ex
+	 * @param request the request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(AuthenticationException.class)
 	protected ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex, WebRequest request) {
 		mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_EXCEPTION_HANDLER,
@@ -164,9 +192,10 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	/**
-	 * Handle id app exception.
+	 * Handle id app exception - handle {@code IdRepoAppException} thrown from 
+	 * application.
 	 *
-	 * @param ex      the ex
+	 * @param ex the ex
 	 * @param request the request
 	 * @return the response entity
 	 */
@@ -181,9 +210,10 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	/**
-	 * Handle id app unchecked exception.
+	 * Handle id app unchecked exception - handle {@code IdRepoAppUncheckedException} thrown from 
+	 * application..
 	 *
-	 * @param ex      the ex
+	 * @param ex the ex
 	 * @param request the request
 	 * @return the response entity
 	 */
@@ -201,9 +231,10 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex         the exception occurred
-	 * @param httpMethod
-	 * @return Object .
+	 * @param ex the ex
+	 * @param httpMethod the http method
+	 * @param operation the operation
+	 * @return the object
 	 */
 	private Object buildExceptionResponse(Exception ex, HttpMethod httpMethod, String operation) {
 
@@ -251,8 +282,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Gets the root cause.
 	 *
-	 * @param ex       the ex
-	 * @param response the response
+	 * @param ex the ex
 	 * @return the root cause
 	 */
 	private Throwable getRootCause(Exception ex) {

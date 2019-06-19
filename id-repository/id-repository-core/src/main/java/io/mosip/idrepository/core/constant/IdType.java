@@ -1,18 +1,29 @@
 package io.mosip.idrepository.core.constant;
+
 /**
- * 
- * @author Prem Kumar.
+ * The Enum IdType - Contains all Id types used in Id Repository.
  *
+ * @author Prem Kumar.
  */
 public enum IdType {
 
+	/** The reg id. */
 	REG_ID("RegistrationId"),
+	
+	/** The vid. */
 	VID("VID"),
+	
+	/** The uin. */
 	UIN("UIN");
 	
 	/** The id Type. */
 	private final String idType;
 
+	/**
+	 * Gets the id type.
+	 *
+	 * @return the id type
+	 */
 	public String getIdType() {
 		return idType;
 	}

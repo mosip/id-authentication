@@ -48,17 +48,20 @@ import io.mosip.kernel.core.util.StringUtils;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The Class IdRepoController.
+ * The Class IdRepoController - Controller class for Identity service.
  *
  * @author Manoj SP
  */
 @RestController
 public class IdRepoController {
 
+	/** The Constant READ. */
 	private static final String READ = "read";
 
+	/** The Constant REGISTRATION_ID. */
 	private static final String REGISTRATION_ID = "registrationId";
 
+	/** The Constant RETRIEVE_IDENTITY_BY_RID. */
 	private static final String RETRIEVE_IDENTITY_BY_RID = "retrieveIdentityByRid";
 
 	/** The Constant RETRIEVE_IDENTITY. */
@@ -111,6 +114,7 @@ public class IdRepoController {
 	@Autowired
 	private ObjectMapper mapper;
 
+	/** The env. */
 	@Autowired
 	Environment env;
 
@@ -127,7 +131,6 @@ public class IdRepoController {
 	/**
 	 * Adds the identity.
 	 *
-	 * @param uin     the uin
 	 * @param request the request
 	 * @param errors  the errors
 	 * @return the response entity
@@ -139,7 +142,6 @@ public class IdRepoController {
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
 			String uin = getUin(request.getRequest());
-			IdRepoLogger.setUin(uin);
 			validator.validateId(request.getId(), CREATE);
 			DataValidationUtil.validate(errors);
 			validator.validateUin(uin, CREATE);
@@ -167,8 +169,7 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByUin(@PathVariable String uin,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
 		try {
-			IdRepoLogger.setUin(uin);
-			type = validateType(uin, type);
+			type = validateType(type);
 			validator.validateUin(uin,READ);
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByUin(uin, type), HttpStatus.OK);
 		} catch (IdRepoAppException e) {
@@ -179,10 +180,10 @@ public class IdRepoController {
 
 	/**
 	 * This Method will accept rid and type,it will return an response of
-	 * IdResponseDTO
-	 * 
-	 * @param rid
-	 * @param type
+	 * IdResponseDTO.
+	 *
+	 * @param rid the rid
+	 * @param type the type
 	 * @return the response entity
 	 * @throws IdRepoAppException the id repo app exception
 	 */
@@ -191,8 +192,7 @@ public class IdRepoController {
 	public ResponseEntity<IdResponseDTO> retrieveIdentityByRid(@PathVariable String rid,
 			@RequestParam(name = TYPE, required = false) @Nullable String type) throws IdRepoAppException {
 		try {
-			IdRepoLogger.setRid(rid);
-			type = validateType(rid, type);
+			type = validateType(type);
 			validator.validateRid(rid);
 			return new ResponseEntity<>(idRepoService.retrieveIdentityByRid(rid, type), HttpStatus.OK);
 		} catch (InvalidIDException e) {
@@ -208,7 +208,6 @@ public class IdRepoController {
 	/**
 	 * Update identity.
 	 *
-	 * @param uin     the uin
 	 * @param request the request
 	 * @param errors  the errors
 	 * @return the response entity
@@ -220,7 +219,6 @@ public class IdRepoController {
 			@ApiIgnore Errors errors) throws IdRepoAppException {
 		try {
 			String uin = getUin(request.getRequest());
-			IdRepoLogger.setUin(uin);
 			validator.validateId(request.getId(), UPDATE);
 			DataValidationUtil.validate(errors);
 			validator.validateUin(uin, UPDATE);
@@ -235,13 +233,13 @@ public class IdRepoController {
 	}
 
 	/**
-	 * 
-	 * @param id
-	 * @param type
-	 * @return
-	 * @throws IdRepoAppException
+	 * Validate type.
+	 *
+	 * @param type the type
+	 * @return the string
+	 * @throws IdRepoAppException the id repo app exception
 	 */
-	public String validateType(String id, String type) throws IdRepoAppException {
+	public String validateType(String type) throws IdRepoAppException {
 		if (Objects.nonNull(type)) {
 			List<String> typeList = Arrays.asList(StringUtils.split(type.toLowerCase(), ','));
 			if (typeList.size() == 1 && !allowedTypes.containsAll(typeList)) {
@@ -267,10 +265,10 @@ public class IdRepoController {
 
 	/**
 	 * This Method returns Uin from the Identity Object.
-	 * 
-	 * @param identity
-	 * @return
-	 * @throws IdRepoAppException
+	 *
+	 * @param request the request
+	 * @return the uin
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	private String getUin(Object request) throws IdRepoAppException {
 		Object uin = null;

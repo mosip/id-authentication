@@ -29,21 +29,29 @@ import lombok.NoArgsConstructor;
 
 /**
  * A factory for creating and building RestRequest objects from
- * rest-services.properties
+ * properties
  * 
  * @author Manoj SP
  *
  */
 @Component
+
+/**
+ * Instantiates a new rest request builder.
+ */
 @NoArgsConstructor
 public class RestRequestBuilder {
 
+	/** The Constant REST_TIMEOUT. */
 	private static final String REST_TIMEOUT = ".rest.timeout";
 
+	/** The Constant REST_HTTP_METHOD. */
 	private static final String REST_HTTP_METHOD = ".rest.httpMethod";
 
+	/** The Constant REST_URI. */
 	private static final String REST_URI = ".rest.uri";
 
+	/** The Constant REST_HEADERS_MEDIA_TYPE. */
 	private static final String REST_HEADERS_MEDIA_TYPE = ".rest.headers.mediaType";
 
 	/** The Constant METHOD_BUILD_REQUEST. */
@@ -57,7 +65,7 @@ public class RestRequestBuilder {
 	private static Logger mosipLogger = IdRepoLogger.getLogger(RestRequestBuilder.class);
 
 	/**
-	 * Builds the request.
+	 * Builds the rest request based on the rest service provided using {@code RestServicesConstants}.
 	 *
 	 * @param restService the rest service
 	 * @param requestBody the request body
@@ -118,6 +126,13 @@ public class RestRequestBuilder {
 		return request;
 	}
 
+	/**
+	 * Construct http headers.
+	 *
+	 * @param serviceName the service name
+	 * @return the http headers
+	 * @throws IdRepoDataValidationException the id repo data validation exception
+	 */
 	private HttpHeaders constructHttpHeaders(String serviceName) throws IdRepoDataValidationException {
 		try {
 			HttpHeaders headers = new HttpHeaders();
@@ -134,7 +149,7 @@ public class RestRequestBuilder {
 	}
 
 	/**
-	 * Construct params.
+	 * Construct uri params and path variables from properties.
 	 *
 	 * @param paramMap      the param map
 	 * @param pathVariables the path variables
@@ -166,7 +181,7 @@ public class RestRequestBuilder {
 	}
 
 	/**
-	 * Check return type.
+	 * Check return type is null or not. If null, exception is thrown.
 	 *
 	 * @param returnType the return type
 	 * @param request    the request
@@ -185,7 +200,7 @@ public class RestRequestBuilder {
 	}
 
 	/**
-	 * Check http method.
+	 * Check http method is null or empty. If so, exception is thrown.
 	 *
 	 * @param request    the request
 	 * @param httpMethod the http method
@@ -203,7 +218,7 @@ public class RestRequestBuilder {
 	}
 
 	/**
-	 * Check uri.
+	 * Check uri is null or empty. If so, exception is thrown.
 	 *
 	 * @param request the request
 	 * @param uri     the uri

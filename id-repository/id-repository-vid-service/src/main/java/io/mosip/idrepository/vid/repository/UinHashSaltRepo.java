@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import io.mosip.idrepository.vid.entity.UinHashSalt;
 
 /**
- * The Repository for {@link UinHashSaltRepo}
+ * The Repository for UinHashSalt table.
  * 
  * @author Prem Kumar
  *

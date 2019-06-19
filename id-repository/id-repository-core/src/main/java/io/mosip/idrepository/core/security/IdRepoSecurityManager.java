@@ -28,7 +28,9 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.HMACUtils;
 
 /**
- * The Class IdRepoSecurityManager.
+ * The Class IdRepoSecurityManager - provides security related functionalities
+ * such as hashing, encryption and decryption using kernel-cryptomanager and
+ * providing user details.
  *
  * @author Manoj SP
  */
@@ -61,7 +63,7 @@ public class IdRepoSecurityManager {
 	private ObjectMapper mapper;
 
 	/**
-	 * Hash.
+	 * Hash - provides basic hash.
 	 *
 	 * @param data the identity info
 	 * @return the string
@@ -71,7 +73,7 @@ public class IdRepoSecurityManager {
 	}
 
 	/**
-	 * Hash with salt.
+	 * Hash with salt - provides hash value based on provided salt.
 	 *
 	 * @param data the identity info
 	 * @param salt the salt
@@ -82,7 +84,7 @@ public class IdRepoSecurityManager {
 	}
 	
 	/**
-	 * Gets the user.
+	 * provides the user id.
 	 *
 	 * @return the user
 	 */
@@ -99,7 +101,7 @@ public class IdRepoSecurityManager {
 	}
 
 	/**
-	 * Encrypt.
+	 * Encryption of data by making rest call to kernel-cryptomanager.
 	 *
 	 * @param dataToEncrypt the data to encrypt
 	 * @return the byte[]
@@ -126,7 +128,7 @@ public class IdRepoSecurityManager {
 	}
 	
 	/**
-	 * Encrypt.
+	 * Encryption of data by making rest call to kernel-cryptomanager with salt.
 	 *
 	 * @param dataToEncrypt the data to encrypt
 	 * @param saltToEncrypt the salt to encrypt
@@ -155,7 +157,7 @@ public class IdRepoSecurityManager {
 	}
 
 	/**
-	 * Decrypt.
+	 * Decryption of data by making rest call to kernel-cryptomanager.
 	 *
 	 * @param dataToDecrypt the data to decrypt
 	 * @return the byte[]
@@ -182,7 +184,7 @@ public class IdRepoSecurityManager {
 	}
 	
 	/**
-	 * Decrypt with salt.
+	 * Decryption of data by making rest call to kernel-cryptomanager with salt.
 	 *
 	 * @param dataToDecrypt the data to decrypt
 	 * @param saltToDecrypt the salt to decrypt
@@ -211,7 +213,8 @@ public class IdRepoSecurityManager {
 	}
 
 	/**
-	 * Encrypt decrypt data.
+	 * Rest calls is made to kernel-cryptomanager and required data from response is 
+	 * extracted and handled.
 	 *
 	 * @param restRequest the rest request
 	 * @return the byte[]

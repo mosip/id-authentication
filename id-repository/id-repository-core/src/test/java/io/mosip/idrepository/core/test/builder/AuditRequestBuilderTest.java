@@ -28,6 +28,10 @@ import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest

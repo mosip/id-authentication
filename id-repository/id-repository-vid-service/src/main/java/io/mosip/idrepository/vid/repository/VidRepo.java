@@ -12,6 +12,7 @@ import io.mosip.idrepository.vid.entity.Vid;
 /**
  * The Repository for Vid Entity
  * 
+ * @author Manoj SP
  * @author Prem Kumar
  *
  */
@@ -26,7 +27,8 @@ public interface VidRepo extends JpaRepository<Vid, String> {
 	Vid findByVid(String vid);
 	
 	/**
-	 * The Query will retrieve List of vid's.
+	 * The Query will retrieve List of vid based on the conditions provided.
+	 * 
 	 * @param uinHash
 	 * @param statusCode
 	 * @param vidTypeCode

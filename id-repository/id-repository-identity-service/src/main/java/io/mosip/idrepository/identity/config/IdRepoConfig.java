@@ -66,8 +66,10 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The allowed bio types. */
 	private List<String> allowedBioAttributes;
 
+	/** The bio attributes. */
 	private List<String> bioAttributes;
 
+	/** The allowed types. */
 	private List<String> allowedTypes;
 
 	/** The id. */
@@ -131,8 +133,7 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/**
 	 * Sets the status.
 	 *
-	 * @param status
-	 *            the status
+	 * @param uinStatus the new uin status
 	 */
 	public void setUinStatus(List<String> uinStatus) {
 		this.uinStatus = uinStatus;
@@ -158,10 +159,20 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		this.allowedBioAttributes = allowedBioAttributes;
 	}
 
+	/**
+	 * Sets the bio attributes.
+	 *
+	 * @param bioAttributes the new bio attributes
+	 */
 	public void setBioAttributes(List<String> bioAttributes) {
 		this.bioAttributes = bioAttributes;
 	}
 
+	/**
+	 * Sets the allowed types.
+	 *
+	 * @param allowedTypes the new allowed types
+	 */
 	public void setAllowedTypes(List<String> allowedTypes) {
 		this.allowedTypes = allowedTypes;
 	}
@@ -202,11 +213,21 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		return Collections.unmodifiableList(allowedBioAttributes);
 	}
 
+	/**
+	 * Bio attributes.
+	 *
+	 * @return the list
+	 */
 	@Bean
 	public List<String> bioAttributes() {
 		return Collections.unmodifiableList(bioAttributes);
 	}
 
+	/**
+	 * Allowed types.
+	 *
+	 * @return the list
+	 */
 	@Bean
 	public List<String> allowedTypes() {
 		return Collections.unmodifiableList(allowedTypes);
@@ -242,21 +263,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		return em;
 	}
 
-	//
-	// /**
-	// * Transaction manager.
-	// *
-	// * @param emf the emf
-	// * @return the platform transaction manager
-	// */
-	// @Bean
-	// public PlatformTransactionManager transactionManager(EntityManagerFactory
-	// emf) {
-	// JpaTransactionManager transactionManager = new JpaTransactionManager();
-	// transactionManager.setEntityManagerFactory(emf);
-	// return transactionManager;
-	// }
-	//
 	/**
 	 * Additional properties.
 	 *
@@ -288,6 +294,11 @@ public class IdRepoConfig implements WebMvcConfigurer {
 		return dataSource;
 	}
 
+	/**
+	 * Data source.
+	 *
+	 * @return the data source
+	 */
 	@Bean
 	public DataSource dataSource() {
 		return buildDataSource(db.get("shard"));

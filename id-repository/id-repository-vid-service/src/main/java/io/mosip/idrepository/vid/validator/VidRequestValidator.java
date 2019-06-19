@@ -14,7 +14,6 @@ import org.springframework.validation.Validator;
 
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.VidRequestDTO;
-import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
@@ -37,12 +36,16 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @ConfigurationProperties("mosip.idrepo.vid")
 public class VidRequestValidator extends BaseIdRepoValidator implements Validator {
 
+	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(VidRequestValidator.class);
 
+	/** The Constant VID_REQUEST_VALIDATOR. */
 	private static final String VID_REQUEST_VALIDATOR = "VidRequestValidator";
 
+	/** The Constant VID_TYPE. */
 	private static final String VID_TYPE = "vidType";
 
+	/** The Constant CREATE. */
 	private static final String CREATE = "create";
 
 	/** The Constant UPDATE. */
@@ -54,15 +57,18 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	/** The Constant STATUS_FIELD. */
 	private static final String STATUS_FIELD = "vidStatus";
 
+	/** The Constant UIN. */
 	private static final String UIN = "UIN";
 
+	/** The policy provider. */
 	@Autowired
 	private VidPolicyProvider policyProvider;
 
-	/** The Vid Validator */
+	/**  The Vid Validator. */
 	@Autowired
 	private VidValidator<String> vidValidator;
 
+	/** The uin validator. */
 	@Autowired
 	private UinValidator<String> uinValidator;
 
@@ -107,6 +113,12 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		}
 	}
 
+	/**
+	 * Validate vid type.
+	 *
+	 * @param vidType the vid type
+	 * @param errors the errors
+	 */
 	private void validateVidType(String vidType, Errors errors) {
 		if (Objects.isNull(vidType)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateVidType", "vidType is null");
@@ -120,6 +132,12 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		}
 	}
 
+	/**
+	 * Validate uin.
+	 *
+	 * @param uin the uin
+	 * @param errors the errors
+	 */
 	private void validateUin(String uin, Errors errors) {
 		if (Objects.isNull(uin)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateUin",
@@ -138,6 +156,12 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		}
 	}
 
+	/**
+	 * Validate request.
+	 *
+	 * @param request the request
+	 * @param errors the errors
+	 */
 	private void validateRequest(VidRequestDTO request, Errors errors) {
 		if (Objects.isNull(request)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateRequest",
@@ -149,9 +173,9 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 
 	/**
 	 * This method will validate the Status of Vid.
-	 * 
-	 * @param vidStatus
-	 * @param errors
+	 *
+	 * @param vidStatus the vid status
+	 * @param errors the errors
 	 */
 	private void validateStatus(String vidStatus, Errors errors) {
 		if (Objects.isNull(vidStatus)) {
@@ -170,9 +194,8 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 
 	/**
 	 * This method will validate the Vid value.
-	 * 
-	 * @param vid
-	 * @throws IdRepoAppException
+	 *
+	 * @param vid the vid
 	 */
 	public void validateVid(String vid) {
 		vidValidator.validateId(vid);

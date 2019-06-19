@@ -4,19 +4,21 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
 
 /**
  * 
+ * @author Manoj SP
  * @author Prem Kumar.
  * @param <REQUEST> the Request Object
  * @param <RESPONSE> the Response Object
  */
 public interface VidService<REQUEST, RESPONSE> {
 	/**
-	 * This method will create new Vid.
+	 * This method will generate new Vid based on the provided request and based on
+	 * the conditions provided by vid policy.
 	 * 
 	 * @param vidRequest
 	 * @return
 	 * @throws IdRepoAppException
 	 */
-	RESPONSE createVid(REQUEST vidRequest) throws IdRepoAppException;
+	RESPONSE generateVid(REQUEST vidRequest) throws IdRepoAppException;
 
 	/**
 	 * This Method will return the Vid Response with Respective Uin.
@@ -28,7 +30,8 @@ public interface VidService<REQUEST, RESPONSE> {
 	RESPONSE retrieveUinByVid(String vid) throws IdRepoAppException;
 
 	/**
-	 * This Method will Return The Vid Response with respective vid Status.
+	 * This method will update the vid status based on the conditions provided by
+	 * vid policy.
 	 * 
 	 * @param vid
 	 * @param request
@@ -38,7 +41,7 @@ public interface VidService<REQUEST, RESPONSE> {
 	RESPONSE updateVid(String vid, REQUEST request) throws IdRepoAppException;
 
 	/**
-	 * This Method will return the Vid Response with Newly generated Vid.
+	 * This method will regenerate vid based on the conditions provided by vid policy.
 	 * 
 	 * @param vid
 	 * @return

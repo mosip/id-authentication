@@ -35,7 +35,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The Class Vid Controller.
+ * The Class Vid Controller - controller class for vid service.
  *
  * @author Manoj SP
  * @author Prem Kumar
@@ -93,7 +93,7 @@ public class VidController {
 	}
 
 	/**
-	 * Creates the vid.
+	 * This service will generate a new VID based on VID type provided.
 	 *
 	 * @param request the request
 	 * @param errors  the errors
@@ -107,9 +107,8 @@ public class VidController {
 			throws IdRepoAppException {
 		try {
 			validator.validateId(request.getId(), CREATE);
-			IdRepoLogger.setUin(request.getRequest().getUin().toString());
 			DataValidationUtil.validate(errors);
-			return new ResponseEntity<>(vidService.createVid(request.getRequest()), HttpStatus.OK);
+			return new ResponseEntity<>(vidService.generateVid(request.getRequest()), HttpStatus.OK);
 		} catch (IdRepoAppException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_CONTROLLER, RETRIEVE_UIN_BY_VID, e.getMessage());
 			throw new IdRepoAppException(e.getErrorCode(), e.getErrorText(), e, CREATE);
@@ -129,7 +128,6 @@ public class VidController {
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> retrieveUinByVid(@PathVariable("VID") String vid)
 			throws IdRepoAppException {
 		try {
-			IdRepoLogger.setVid(vid);
 			validator.validateVid(vid);
 			return new ResponseEntity<>(vidService.retrieveUinByVid(vid), HttpStatus.OK);
 		} catch (InvalidIDException e) {
@@ -158,7 +156,6 @@ public class VidController {
 			@Validated @RequestBody RequestWrapper<VidRequestDTO> request, @ApiIgnore Errors errors)
 			throws IdRepoAppException {
 		try {
-			IdRepoLogger.setVid(vid);
 			validator.validateId(request.getId(), UPDATE);
 			validator.validateVid(vid);
 			DataValidationUtil.validate(errors);
@@ -184,13 +181,12 @@ public class VidController {
 	 * @return
 	 * @throws IdRepoAppException
 	 */
-	// TODO have to add roles
+	// TODO have to add roles when partner service is available
 //	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@PostMapping(path = "/vid/{VID}/regenerate", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResponseWrapper<VidResponseDTO>> regenerateVid(@PathVariable("VID") String vid)
 			throws IdRepoAppException {
 		try {
-			IdRepoLogger.setVid(vid);
 			validator.validateVid(vid);
 			return new ResponseEntity<>(vidService.regenerateVid(vid), HttpStatus.OK);
 		} catch (InvalidIDException e) {

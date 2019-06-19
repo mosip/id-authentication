@@ -21,15 +21,19 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
- * 
- * @author Prem Kumar
+ * The Class BaseIdRepoValidator - base validator to validate common fields from
+ * request in Identity and VID service.
  *
+ * @author Manoj SP
+ * @author Prem Kumar
  */
 @Component
 public abstract class BaseIdRepoValidator {
 	
+	/** The Constant BASE_ID_REPO_VALIDATOR. */
 	private static final String BASE_ID_REPO_VALIDATOR = "BaseIdRepoValidator";
 
+	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(BaseIdRepoValidator.class);
 	
 	/** The Constant TIMESTAMP. */
@@ -41,7 +45,7 @@ public abstract class BaseIdRepoValidator {
 	/** The Constant ID. */
 	protected static final String ID = "id";
 
-	/** The Environment */
+	/**  The Environment. */
 	@Autowired
 	protected Environment env;
 
@@ -50,32 +54,34 @@ public abstract class BaseIdRepoValidator {
 	protected Map<String, String> id;
 
 	/**
-	 * Validate req time.
+	 * Validate request time.
 	 *
 	 * @param reqTime the timestamp
 	 * @param errors  the errors
 	 */
-	public void validateReqTime(LocalDateTime reqTime, Errors errors) {
+	protected void validateReqTime(LocalDateTime reqTime, Errors errors) {
 		if (Objects.isNull(reqTime)) {
-			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateReqTime", "requesttime is null");
+			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateReqTime",
+					"requesttime is null");
 			errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 		} else {
 			if (DateUtils.after(reqTime, DateUtils.getUTCCurrentDateTime())) {
-				mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateReqTime", "requesttime is InValid");
-				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
-						.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
+				mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateReqTime",
+						"requesttime is InValid");
+				errors.rejectValue(REQUEST_TIME, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQUEST_TIME));
 			}
 		}
 	}
 
 	/**
-	 * Validate ver.
+	 * Validate version.
 	 *
 	 * @param ver    the ver
 	 * @param errors the errors
 	 */
-	public void validateVersion(String ver, Errors errors) {
+	protected void validateVersion(String ver, Errors errors) {
 		if (Objects.isNull(ver)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), BASE_ID_REPO_VALIDATOR, "validateVersion", "version is null");
 			errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
@@ -89,11 +95,11 @@ public abstract class BaseIdRepoValidator {
 	}
 
 	/**
-	 * This method will validate the id field in the request
-	 * 
-	 * @param id
-	 * @param errors
-	 * @param operation
+	 * This method will validate the id field in the request.
+	 *
+	 * @param id the id
+	 * @param operation the operation
+	 * @throws IdRepoAppException the id repo app exception
 	 */
 	public void validateId(String id,String operation) throws IdRepoAppException {
 		if (Objects.isNull(id)) {

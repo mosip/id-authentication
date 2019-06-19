@@ -20,7 +20,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
- * The Class IdRepoEntityInterceptor.
+ * The Class IdRepoEntityInterceptor - Interceptor for repository calls and
+ * allows to update/modify the entity data.
  *
  * @author Manoj SP
  */

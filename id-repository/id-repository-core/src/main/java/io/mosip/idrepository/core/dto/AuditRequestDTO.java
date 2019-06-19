@@ -10,7 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class AuditRequestDto.
+ * The Class AuditRequestDTO - class defines attributes for making audit
+ * requests.
  *
  * @author Manoj SP
  */

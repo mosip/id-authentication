@@ -1,8 +1,8 @@
 package io.mosip.idrepository.core.constant;
 
 /**
- * The Enum AuditModules - Contains all the modules in IdAuthentication for
- * Audit purpose.
+ * The Enum AuditModules - Contains all the modules in Id Repository for Audit
+ * purpose.
  *
  * @author Manoj SP
  */

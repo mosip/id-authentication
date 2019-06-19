@@ -22,6 +22,8 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 /**
  * The Class Vid Repo Config.
  * 
+ * 
+ * @author Manoj SP
  * @author Prem Kumar
  *
  */

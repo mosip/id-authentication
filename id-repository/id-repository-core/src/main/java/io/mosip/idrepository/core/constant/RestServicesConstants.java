@@ -1,13 +1,14 @@
 package io.mosip.idrepository.core.constant;
 
 /**
- * The Enum RestServiceContants.
+ * The Enum RestServiceContants - defines modules for which rest calls are made
+ * from id repository. The value of constant is used to build the rest call
+ * request.
  *
  * @author Manoj SP
  */
 public enum RestServicesConstants {
 
-	/** The audit manager service. */
 	AUDIT_MANAGER_SERVICE("mosip.idrepo.audit"),
 	
 	IDREPO_IDENTITY_SERVICE("mosip.idrepo.retrieve-by-uin"),
