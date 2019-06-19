@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.constant.AbisConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
@@ -157,6 +158,9 @@ public class BioDedupeProcessorTest {
 	@Mock
 	ObjectMapper mapIdentityJsonStringToObject;
 
+	@Mock
+	LogDescription description;
+	
 	/**
 	 * Sets the up.
 	 *
@@ -179,7 +183,8 @@ public class BioDedupeProcessorTest {
 		registrationStatusDto.setRegistrationType("new");
 
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
-
+		Mockito.doNothing().when(description).setMessage(any());
+		
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(abisHandlerUtil.getPacketStatus(any())).thenReturn(AbisConstant.PRE_ABIS_IDENTIFICATION);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any()))

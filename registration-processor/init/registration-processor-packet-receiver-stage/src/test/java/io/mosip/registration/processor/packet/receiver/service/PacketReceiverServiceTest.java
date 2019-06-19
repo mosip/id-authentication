@@ -36,6 +36,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -55,6 +56,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
@@ -108,7 +110,9 @@ public class PacketReceiverServiceTest {
 	@Mock
 	private Decryptor decryptor;
 
-
+	@Mock
+	LogDescription description;
+	
 	@Mock
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
@@ -147,6 +151,7 @@ public class PacketReceiverServiceTest {
 		registrationStatusDto.setStatusCode("RESEND");
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
+		Mockito.doNothing().when(description).setMessage(any());
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
 		PowerMockito.mockStatic(HMACUtils.class);
 		PowerMockito.when(HMACUtils.digestAsPlainText(any())).thenReturn("abcd1234");

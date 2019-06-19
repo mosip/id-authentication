@@ -60,12 +60,12 @@ public class PacketGeneratorController {
 	@Autowired
 	private Environment env;
 
-	/** Token validator class */
+	/**  Token validator class. */
 	@Autowired
 	TokenValidator tokenValidator;
 
+	/** The Constant RESPONSE_SIGNATURE. */
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
-
 
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
@@ -80,13 +80,21 @@ public class PacketGeneratorController {
 	@Autowired
 	private PacketGeneratorRequestValidator validator;
 
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
 	}
+	
+	/** The is enabled. */
 	@Value("${registration.processor.signature.isEnabled}")
 	Boolean isEnabled;
 
+	/** The digital signature utility. */
 	@Autowired
 	DigitalSignatureUtility digitalSignatureUtility;
 
@@ -94,10 +102,11 @@ public class PacketGeneratorController {
 	 * Gets the status.
 	 *
 	 * @param packerGeneratorRequestDto the packer generator request dto
+	 * @param token the token
 	 * @param errors                    the errors
 	 * @return the status
-	 * @throws RegBaseCheckedException
-	 * @throws IOException
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@PostMapping(path = "/registrationpacket", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the status of packet", response = String.class)

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-// TODO: Auto-generated Javadoc
 /**
  * Class contains the constants used in Registration application.
  *

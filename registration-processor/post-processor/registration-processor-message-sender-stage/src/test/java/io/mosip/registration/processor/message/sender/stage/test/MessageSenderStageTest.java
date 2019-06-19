@@ -31,6 +31,7 @@ import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCo
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateDto;
@@ -42,6 +43,8 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.message.sender.dto.MessageSenderDto;
 import io.mosip.registration.processor.message.sender.stage.MessageSenderStage;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -92,7 +95,18 @@ public class MessageSenderStageTest {
 	/** The input stream. */
 	@Mock
 	private InputStream inputStream;
+	@Mock
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil;
 
+	@Mock
+	LogDescription description;
+	@Mock
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
+
+//	@Mock
+//	MessageSenderDto messageSenderDto=Mockito.mock(MessageSenderDto.class);
+	
+	
 	@InjectMocks
 	private MessageSenderStage stage = new MessageSenderStage() {
 		@Override
@@ -132,7 +146,17 @@ public class MessageSenderStageTest {
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionTypeCode(any());
 		Mockito.doNothing().when(registrationStatusDto).setRegistrationStageName(any());
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
-
+		Mockito.doNothing().when(description).setMessage(any());
+		
+		//Mockito.doNothing().when(messageSenderDto).setEmailTemplateCode(any());
+	///	Mockito.doNothing().when(messageSenderDto).setSmsTemplateCode(any());
+		//Mockito.doNothing().when(messageSenderDto).setIdType(any());
+	//	Mockito.doNothing().when(messageSenderDto).setSubject(any());
+	//	Mockito.doNothing().when(messageSenderDto).setTemplateAvailable(any());
+		
+		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
+		Mockito.when(registrationExceptionMapperUtil.getStatusCode(any())).thenReturn("ERROR");
+		
 		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
