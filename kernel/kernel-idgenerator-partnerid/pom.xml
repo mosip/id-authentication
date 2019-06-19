@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip.kernel</groupId>
 		<artifactId>kernel-parent</artifactId>
-		<version>0.12.9</version>
+		<version>0.12.10</version>
 	</parent>
 	<artifactId>kernel-idgenerator-partnerid</artifactId>
 	<name>kernel-idgenerator-partnerid</name>
