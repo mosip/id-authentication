@@ -36,8 +36,12 @@ import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
 /**
- * The custom Orika Mapper converter class for converting the
- * {@link RegistrationDTO} object to {@link PacketMetaInfo}
+ * This class extends the {@link CustomConverter} class provided by Orika Mapper
+ * library
+ * 
+ * <p>
+ * This class maps the {@link RegistrationDTO} object to {@link PacketMetaInfo}
+ * </p>
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
