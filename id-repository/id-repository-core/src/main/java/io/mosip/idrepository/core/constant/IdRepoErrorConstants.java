@@ -1,7 +1,8 @@
 package io.mosip.idrepository.core.constant;
 
 /**
- * The Enum IdRepoErrorConstants.
+ * The Enum IdRepoErrorConstants - contains error codes and messages thrown by
+ * the application.
  *
  * @author Manoj SP
  */
