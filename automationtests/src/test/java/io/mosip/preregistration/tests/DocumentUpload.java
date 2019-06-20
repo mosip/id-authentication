@@ -18,6 +18,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -92,7 +93,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
-		switch (testLevel) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -239,6 +240,11 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		// Add generated PreRegistrationId to list to be Deleted from DB  AfterSuite
 		// preIds.add(preId);
 	}
+	@BeforeClass
+	public void getToken()
+	{
+		authToken=preRegLib.getToken();
+	}
 
 	/**
 	 * This method is used for generating report
@@ -275,8 +281,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 
 		//Document Upload Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		
 	}
 
 	@Override

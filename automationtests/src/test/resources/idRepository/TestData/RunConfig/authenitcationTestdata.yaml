@@ -5,6 +5,8 @@ id_CreateVid_valid:
       - mosip.vid.create
 id_UpdateVid_valid:
       - mosip.vid.update
+id_RetrieveVid_valid:
+      - mosip.vid.read
 id_AddIdentity_Invalid:
       - mosip.id.update
       - mosip.ida.update
@@ -198,17 +200,6 @@ location3_valid:
       - Brigade Road
       - Kazhakuttam
       - Navalur
-phone_valid:
-      - 9003356540
-      - 9333356541
-      - 9343356542
-      - 9353356543
-      - 9363356544
-      - 9373356545
-      - 9383356546
-      - 9393356547
-      - 9103356548
-      - 9113356549
 phone_Invalid:
       - 90033565401234
       - 9333356541sadf
@@ -216,13 +207,6 @@ phone_Invalid:
       - $%@@%_+-><@
       - 1234adsf@$$
       - asdfghjkmn
-postalcode_valid:
-      - 600031
-      - 600041
-      - 600051
-      - 600061
-      - 600071
-      - 600081
 postalcode_Invalid:
       - 60001
       - $00041
@@ -236,6 +220,13 @@ CNIENumber_valid:
       - 6789545678911
       - 6789545678912
       - 6789545678913
+      - 6789545678914
+CNIENumber_Invalid:
+      - 67895456789qwr
+      - 123456
+      - 123456789
+      - asdfiohjkj
+      - 123456789012345678901234567890123
       - 6789545678914
 emailId_valid:
       - vignesh.vijayakumar@mindtree.com
@@ -337,4 +328,58 @@ invalid_langCode:
       - 123
       - $@@
       - 12@776
-     
+localAdministrativeAuthority_fra_valid:
+      - Mograne
+localAdministrativeAuthority_eng_valid:
+      - Mograne
+localAdministrativeAuthority_ara_valid:
+      - بن منصور
+city_eng_valid:
+      - Kenitra
+      - Rabat
+city_fra_valid:
+      - Kénitra
+      - Rabat
+city_ara_valid:
+      - القنيطرة
+      - الرباط  
+region_eng_valid:
+      - Rabat Sale Kenitra  
+region_fra_valid:      
+      - Rabat-Salé-Kénitra
+region_ara_valid:      
+      - جهة الرباط سلا القنيطرة
+location2_valid:
+      - AbuDhabi
+      - Taramani
+      - krishnarajapuram
+      - Brigade Road
+      - Kazhakuttam
+      - Navalur
+province_eng_valid:
+      - Kenitra
+      - Rabat
+province_fra_valid:
+      - Kénitra
+      - Rabat
+province_ara_valid:
+      - القنيطرة
+      - الرباط
+phone_valid:
+      - 9003356540
+      - 9333356541
+      - 9343356542
+      - 9353356543
+      - 9363356544
+      - 9373356545
+      - 9383356546
+      - 9393356547
+      - 9103356548
+      - 9113356549
+postalcode_valid:
+      - 14022
+      - 14053
+      - 14023
+      - 14000
+      - 14110
+      - 14080    

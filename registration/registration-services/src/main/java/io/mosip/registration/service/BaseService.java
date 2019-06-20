@@ -40,7 +40,9 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
- * The BaseService class.
+ * This is a base class for service package. The common functionality across the 'services' classes are 
+ * implemented in this class to inherit this property at the required extended classes. 
+ * 
  */
 @Service
 public class BaseService {

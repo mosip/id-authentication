@@ -154,6 +154,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			if (e.getCause() instanceof BaseCheckedException
 					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
 				e = e.getCause();
+			} else if (e instanceof BaseCheckedException) {
+				e = new IdAuthenticationAppException(((BaseCheckedException) e).getErrorCode(),
+						((BaseCheckedException) e).getErrorText());
+				break;
 			} else {
 				break;
 			}
@@ -165,6 +169,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * Constructs exception response body for all exceptions.
 	 *
 	 * @param ex the exception occurred
+	 * @param request the request
 	 * @return Object .
 	 */
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {

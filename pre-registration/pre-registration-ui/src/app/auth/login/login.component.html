@@ -16,6 +16,8 @@
       <div>
         <mat-form-field appearance="outline">
           <mat-select
+            disableOptionCentering
+            panelClass="select-option"
             [(ngModel)]="selectedLanguage"
             (selectionChange)="changeLanguage()"
             placeholder="Select your language"
@@ -29,6 +31,7 @@
         <div [dir]="textDir">
           <mat-form-field appearance="outline">
             <input
+              class="input_pri"
               autofocus="autofocus"
               matInput
               [(ngModel)]="inputContactDetails"
@@ -54,10 +57,11 @@
         </mat-form-field>
       </div>
 
+      <!-- class="pinkBg whiteText boldText" -->
       <div *ngIf="showSendOTP">
         <button
           mat-raised-button
-          class="pinkBg whiteText boldText"
+          class="btn_axn-pri"
           [disabled]="inputContactDetails.length > 0 ? false : true"
           (click)="submit()"
         >
@@ -66,13 +70,13 @@
       </div>
 
       <div *ngIf="showVerify">
-        <button mat-raised-button class="pinkBg whiteText boldText" disabled="{{ disableBtn }}" (click)="submit()">
+        <button mat-raised-button class="btn_axn-pri" disabled="{{ disableBtn }}" (click)="submit()">
           {{ 'login.action_verify' | translate }}
         </button>
       </div>
 
       <div *ngIf="showResend">
-        <button mat-raised-button class="pinkBg whiteText boldText" disabled="{{ disableBtn }}" (click)="submit()">
+        <button mat-raised-button class="btn_axn-pri" disabled="{{ disableBtn }}" (click)="submit()">
           {{ 'login.action_resend' | translate }}
         </button>
       </div>

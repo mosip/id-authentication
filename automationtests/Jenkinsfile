@@ -1,5 +1,4 @@
 node {
-
  def branch = env.NEXT_BRANCH_NAME
  def projectToBuild = 'automationtests'
  stage('------- Checkout --------') {
@@ -27,7 +26,8 @@ node {
 stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
   {
-	sh '/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=dev -Denv.endpoint=https://dev.mosip.io -Denv.testLevel=smokeAndRegression'
+
+	sh "/usr/local/maven/bin/mvn clean install -Dmaven.test.failure.ignore=true -Denv.user=${params.Environment} -Denv.endpoint=https://${params.Environment}.mosip.io -Denv.testLevel=smoke"
 			  
   }
   
@@ -37,14 +37,15 @@ stage ('---------- mvn-clean-test ---------------') {
    alwaysLinkToLastBuild: false, 
    keepAll: true, 
    reportDir: branch+"/"+projectToBuild+"/target/surefire-reports", 
-   reportFiles: 'MOSIP_ModuleLevelAutoRun_TestNGReport.html', 
+   reportFiles: 'MOSIP_AllModuleAutoRun_TestNGReport.html', 
    reportName: 'HTML Report'
 ])
 }
+
           recipients = "$env.AUTOMATION_TEST_RECIPIENT_LIST"
 emailext ( 
-	    attachmentsPattern:'**/surefire-reports/MOSIP_ModuleLevelAutoRun_TestNGReport.html',
-	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER'",
+	    attachmentsPattern:'**/surefire-reports/MOSIP_AllModuleAutoRun_TestNGReport.html',
+	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER on Environment ${params.Environment}",
 	    body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
 	    to: "$recipients",
 	    from: '"Jenkins" <info@mosip.io>'

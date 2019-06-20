@@ -89,13 +89,13 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(matchInputBuilder, "environment", environment);
-		ReflectionTestUtils.setField(matchInputBuilder, "bioMatcherUtil", bioMatcherUtil);
 		ReflectionTestUtils.setField(bioMatcherUtil, "environment", environment);
 		ReflectionTestUtils.setField(bioMatcherUtil, "bioApi", bioApi);
 		ReflectionTestUtils.setField(idInfoHelper, "idInfoFetcher", idInfoFetcherImpl);
 		ReflectionTestUtils.setField(idInfoHelper, "environment", environment);
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
+		ReflectionTestUtils.setField(idInfoFetcherImpl, "bioMatcherUtil", bioMatcherUtil);
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)

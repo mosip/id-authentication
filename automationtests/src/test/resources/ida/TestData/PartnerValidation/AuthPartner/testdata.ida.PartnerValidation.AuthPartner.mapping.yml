@@ -17,7 +17,7 @@ testdata:
       output.1.response.y.transactionID: $input.auth-request:AuthReq.transactionID$
       output.1.response.y.staticToken: $IGNORE$
       
-  AuthPartner_Invalid_UIN_Neg_02:
+  Authentication_AuthPartner_Invalid_UIN_Neg_02:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -35,7 +35,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
      
-  AuthPartner_Invalid_reqTime_For UIN_Neg_03:
+  Authentication_AuthPartner_Invalid_reqTime_For UIN_Neg_03:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -53,7 +53,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
    
-  AuthPartner_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
+  Authentication_AuthPartner_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -71,7 +71,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
   
-  AuthPartner_Invalid_reqTime_lessthan24hrs_For UIN_Neg_05:
+  Authentication_AuthPartner_Invalid_reqTime_lessthan24hrs_For UIN_Neg_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -89,7 +89,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       
-  AuthPartner_Invalid_individualIdType_For UIN_Neg_06:
+  Authentication_AuthPartner_Invalid_individualIdType_For UIN_Neg_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -108,7 +108,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  AuthPartner_Invalid_version_For UIN_Neg_07:
+  Authentication_AuthPartner_Invalid_version_For UIN_Neg_07:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -127,7 +127,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  AuthPartner_Invalid_txnID_For UIN_Neg_08:
+  Authentication_AuthPartner_Invalid_txnID_For UIN_Neg_08:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -145,7 +145,7 @@ testdata:
       output.1.response.n.err.errorMessage: $IGNORE$ 
       output.1.response.n.err.errorCode:  $IGNORE$
    
-  AuthPartner_Missing_UIN_For UIN_Neg_09:
+  Authentication_AuthPartner_Missing_UIN_For UIN_Neg_09:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -163,7 +163,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       
-  AuthPartner_Missing_txnID_For UIN_Neg_10:
+  Authentication_AuthPartner_Missing_txnID_For UIN_Neg_10:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -181,7 +181,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
   
-  AuthPartner_Missing_reqTime_For UIN_Neg_11:
+  Authentication_AuthPartner_Missing_reqTime_For UIN_Neg_11:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -199,7 +199,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
   
-  AuthPartner_Missing_version_For UIN_Neg_12:
+  Authentication_AuthPartner_Missing_version_For UIN_Neg_12:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -218,7 +218,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       
-  AuthPartner_Missing_individualIdType_For UIN_Neg_13:
+  Authentication_AuthPartner_Missing_individualIdType_For UIN_Neg_13:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -237,7 +237,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
   
-  AuthPartner_Invalid_UIN which is not as per data definition_Neg_14:
+  Authentication_AuthPartner_Invalid_UIN which is not as per data definition_Neg_14:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -255,7 +255,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
      
-  AuthPartner_Invalid_reqTime which is not as per definition_For UIN_Neg_15:
+  Authentication_AuthPartner_Invalid_reqTime which is not as per definition_For UIN_Neg_15:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -273,7 +273,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       
-  AuthPartner_Invalid_individualIdType which is not as per defenition_For UIN_Neg_16:
+  Authentication_AuthPartner_Invalid_individualIdType which is not as per defenition_For UIN_Neg_16:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -292,7 +292,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  AuthPartner_Invalid_version which is not as per defenition_For UIN_Neg_17:
+  Authentication_AuthPartner_Invalid_version which is not as per defenition_For UIN_Neg_17:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -311,7 +311,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  AuthPartner_Invalid_txnID which is not as per defenition_For UIN_Neg_18:
+  Authentication_AuthPartner_Invalid_txnID which is not as per defenition_For UIN_Neg_18:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -558,7 +558,7 @@ testdata:
       AuthReq.bio: BOOLEAN:true
     input.identity-encrypt-bio-data:
       identityReq.bioSubType: Right
-      identityReq.bioType: Iris
+      identityReq.bioType: IIR
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false
@@ -604,7 +604,7 @@ testdata:
       output.1.response.y.transactionID: $input.auth-request:AuthReq.transactionID$
       output.1.response.y.staticToken: $IGNORE$
       
-  AuthPartner_Invalid_VID_Neg_36:
+  Authentication_AuthPartner_Invalid_VID_Neg_36:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -623,7 +623,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
      
-  AuthPartner_Invalid_reqTime_For VID_Neg_37:
+  Authentication_AuthPartner_Invalid_reqTime_For VID_Neg_37:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -642,7 +642,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
    
-  AuthPartner_Invalid_reqTime_greaterthan24hrs_For VID_Neg_38:
+  Authentication_AuthPartner_Invalid_reqTime_greaterthan24hrs_For VID_Neg_38:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -661,7 +661,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
   
-  AuthPartner_Invalid_reqTime_lessthan24hrs_For VID_Neg_39:
+  Authentication_AuthPartner_Invalid_reqTime_lessthan24hrs_For VID_Neg_39:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -680,7 +680,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
       output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
       
-  AuthPartner_Invalid_individualIdType_For VID_Neg_40:
+  Authentication_AuthPartner_Invalid_individualIdType_For VID_Neg_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -700,7 +700,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  AuthPartner_Invalid_version_For VID_Neg_40:
+  Authentication_AuthPartner_Invalid_version_For VID_Neg_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -720,7 +720,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  AuthPartner_Invalid_txnID_For VID_Neg_41:
+  Authentication_AuthPartner_Invalid_txnID_For VID_Neg_41:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -739,7 +739,7 @@ testdata:
       output.1.response.n.err.errorMessage: $IGNORE$ 
       output.1.response.n.err.errorCode:  $IGNORE$
    
-  AuthPartner_Missing_VID_For VID_Neg_42:
+  Authentication_AuthPartner_Missing_VID_For VID_Neg_42:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -758,7 +758,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
       
-  AuthPartner_Missing_txnID_For VID_Neg_43:
+  Authentication_AuthPartner_Missing_txnID_For VID_Neg_43:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -777,7 +777,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
   
-  AuthPartner_Missing_reqTime_For VID_Neg_44:
+  Authentication_AuthPartner_Missing_reqTime_For VID_Neg_44:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -796,7 +796,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
   
-  AuthPartner_Missing_version_For VID_Neg_45:
+  Authentication_AuthPartner_Missing_version_For VID_Neg_45:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -816,7 +816,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
       
-  AuthPartner_Missing_individualIdType_For VID_Neg_46:
+  Authentication_AuthPartner_Missing_individualIdType_For VID_Neg_46:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -836,7 +836,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
   
-  AuthPartner_Invalid_VID which is not as per data definition_Neg_47:
+  Authentication_AuthPartner_Invalid_VID which is not as per data definition_Neg_47:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -855,7 +855,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
      
-  AuthPartner_Invalid_reqTime which is not as per definition_For VID_Neg_48:
+  Authentication_AuthPartner_Invalid_reqTime which is not as per definition_For VID_Neg_48:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -874,7 +874,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
       
-  AuthPartner_Invalid_individualIdType which is not as per defenition_For VID_Neg_49:
+  Authentication_AuthPartner_Invalid_individualIdType which is not as per defenition_For VID_Neg_49:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -894,7 +894,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
       output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
       
-  AuthPartner_Invalid_version which is not as per defenition_For VID_Neg_50:
+  Authentication_AuthPartner_Invalid_version which is not as per defenition_For VID_Neg_50:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -914,7 +914,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
    
-  AuthPartner_Invalid_txnID which is not as per defenition_For VID_Neg_51:
+  Authentication_AuthPartner_Invalid_txnID which is not as per defenition_For VID_Neg_51:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:
@@ -1186,7 +1186,7 @@ testdata:
       AuthReq.bio: BOOLEAN:true
     input.identity-encrypt-bio-data:
       identityReq.bioSubType: Right
-      identityReq.bioType: Iris
+      identityReq.bioType: IIR
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false

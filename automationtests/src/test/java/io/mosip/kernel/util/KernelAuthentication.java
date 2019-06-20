@@ -179,19 +179,8 @@ public class KernelAuthentication extends BaseTestCase{
 	//Reading the request file from folder
 	public JSONObject getRequestJson(String testSuite){
 		JSONObject Request=null;
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					 Request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-					
-				} catch (Exception e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}return Request;
+		String configPath = folder + "/" + testSuite+"/request.json";
+		return new CommonLibrary().readJsonData(configPath);
 		
 	}
 }

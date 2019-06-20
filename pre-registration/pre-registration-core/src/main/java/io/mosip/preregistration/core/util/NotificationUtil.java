@@ -107,7 +107,7 @@ public class NotificationUtil {
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		String merseTemplate = null;
-		if(acknowledgementDTO.isBatch()) {
+		if(acknowledgementDTO.getIsBatch()) {
 			 fileText = templateUtil.getTemplate(langCode, cancelAppoinment);
 		}
 		else { 
@@ -163,7 +163,7 @@ public class NotificationUtil {
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		ResponseEntity<ResponseWrapper<NotificationResponseDTO>> resp = null;
 		String mergeTemplate =null;
-		if(acknowledgementDTO.isBatch()) {
+		if(acknowledgementDTO.getIsBatch()) {
 			mergeTemplate = templateUtil.templateMerge(templateUtil.getTemplate(langCode, cancelAppoinment),
 					acknowledgementDTO);
 		}

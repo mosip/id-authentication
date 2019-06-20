@@ -188,7 +188,7 @@ public class QRCode extends BaseTestCase implements ITest {
 		//QR Code Resource URI
 		preReg_URI = preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		
 	}
 
 	/**
@@ -233,6 +233,11 @@ public class QRCode extends BaseTestCase implements ITest {
 
 		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
 		// preIds.add(preId);
+	}
+	@BeforeClass
+	public void token()
+	{
+		authToken = preRegLib.getToken();
 	}
 
 	@Override

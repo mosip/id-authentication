@@ -32,10 +32,8 @@ import lombok.NoArgsConstructor;
 /**
  * A factory for creating and building RestRequest objects from
  * rest-services.properties
- * 
- * @author Manoj SP
- * @param <T>
  *
+ * @author Manoj SP
  */
 @Component
 @NoArgsConstructor

@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package io.mosip.authentication.partnerdemo.service.controller;
 
 import java.io.ByteArrayInputStream;
@@ -115,20 +118,24 @@ public class AuthRequestController {
 	 *
 	 * @param id the id
 	 * @param idType the id type
-	 * @param identity the identity
+	 * @param isKyc the is kyc
+	 * @param isInternal the is internal
+	 * @param reqAuth the req auth
+	 * @param transactionId the transaction id
+	 * @param request the request
 	 * @return the string
-	 * @throws JSONException 
-	 * @throws IOException 
-	 * @throws BadPaddingException 
-	 * @throws IllegalBlockSizeException 
-	 * @throws InvalidAlgorithmParameterException 
-	 * @throws NoSuchPaddingException 
-	 * @throws InvalidKeySpecException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws InvalidKeyException 
-	 * @throws KeyManagementException 
-	 * @throws IdAuthenticationAppException 
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws KeyManagementException the key management exception
+	 * @throws InvalidKeyException the invalid key exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws InvalidKeySpecException the invalid key spec exception
+	 * @throws NoSuchPaddingException the no such padding exception
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 * @throws IllegalBlockSizeException the illegal block size exception
+	 * @throws BadPaddingException the bad padding exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws JSONException the JSON exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@SuppressWarnings("unchecked")
 	@PostMapping(path = "/createAuthRequest",consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)

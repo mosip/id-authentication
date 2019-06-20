@@ -34,7 +34,7 @@ public class SynchConfigDataJob extends BaseJob {
 		LOGGER.info(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 		
-		this.responseDTO = globalParamService.synchConfigData(true);
+		this.responseDTO = globalParamService.synchConfigData(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equalsIgnoreCase(triggerPoint));
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.info(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,

@@ -140,7 +140,7 @@ public class BaseTestCase{
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {
-			buildNumber=getBuildTag();
+			//buildNumber=getBuildTag();
 			logger.info("Test Framework for Mosip api Initialized");
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
 			initialize();
@@ -275,7 +275,7 @@ public class BaseTestCase{
 			        
 			        
 		}
-		
+	/*	
 		public String getBuildTag() {
 			MavenXpp3Reader reader = new MavenXpp3Reader();
 	        Model model=null;
@@ -291,7 +291,7 @@ public class BaseTestCase{
 			return model.getParent().getVersion();
 
 			
-		}
+		}*/
 
 	}
 

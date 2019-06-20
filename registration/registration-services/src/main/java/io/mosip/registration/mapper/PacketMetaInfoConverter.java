@@ -36,8 +36,12 @@ import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
 /**
- * The custom Orika Mapper converter class for converting the
- * {@link RegistrationDTO} object to {@link PacketMetaInfo}
+ * This class extends the {@link CustomConverter} class provided by Orika Mapper
+ * library
+ * 
+ * <p>
+ * This class maps the {@link RegistrationDTO} object to {@link PacketMetaInfo}
+ * </p>
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -173,15 +177,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				|| source.isUpdateUINNonBiometric();
 		identity.setExceptionPhotograph(buildExceptionPhotograph(
 				isIntroducerFace || (source.isUpdateUINNonBiometric()
-						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-								.equals(RegistrationConstants.ENABLE))
+						&& !source.isUpdateUINChild())
 										? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 												.getNumOfRetries()
 										: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
 												.getNumOfRetries(),
 				isIntroducerFace || (source.isUpdateUINNonBiometric()
-						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-								.equals(RegistrationConstants.ENABLE))
+						&& !source.isUpdateUINChild())
 										? source.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 												.getFace()
 										: source.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace()
@@ -206,13 +208,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 			exceptionPhotograph = new ExceptionPhotograph();
 			exceptionPhotograph.setNumRetry(numRetry);
 			exceptionPhotograph.setIndividualType((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-					|| (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-							.equals(RegistrationConstants.ENABLE) && source.isUpdateUINNonBiometric())
+					|| (source.isUpdateUINChild() && source.isUpdateUINNonBiometric())
 									? RegistrationConstants.PARENT
 									: RegistrationConstants.INDIVIDUAL);
 			exceptionPhotograph.setPhotoName(((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-					|| (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-							.equals(RegistrationConstants.ENABLE) && source.isUpdateUINNonBiometric())
+					|| (source.isUpdateUINChild() && source.isUpdateUINNonBiometric())
 									? RegistrationConstants.PARENT.toLowerCase()
 									: RegistrationConstants.INDIVIDUAL.toLowerCase())
 											.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO));

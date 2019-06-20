@@ -6,6 +6,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.naming.AuthenticationException;
+
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.ITest;
@@ -23,6 +26,7 @@ import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.AuthenticationTestException;
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.dto.UinDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
@@ -113,9 +117,10 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 
 	/**
 	 * The test method perform generation of UIN test data
+	 * @throws AuthenticationTestException 
 	 */
 	@Test
-	public void generateUINTestData() {
+	public void generateUINTestData() throws AuthenticationTestException {
 		Object[][] object = DataProviderClass.getDataProvider(
 				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
 				RunConfigUtil.objRunConfig.getScenarioPath(), "smokeandregression");
@@ -161,8 +166,9 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
+	 * @throws AuthenticationTestException 
 	 */
-	public void createUinDataTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void createUinDataTest(TestParameters objTestParameters, String testScenario, String testcaseName) throws AuthenticationTestException {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -177,13 +183,15 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 		Reporter.log("<b><u>UIN create request</u></b>");
 		Assert.assertEquals(modifyRequest(testCaseName.listFiles(), tempMap, mapping, "create"), true);
 		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath() + " *******");
-		postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(),
-				"create", "output-1-actual-res", AUTHORIZATHION_COOKIENAME, cookieValue, 0);
+		if(!postRequestAndGenerateOuputFileForUINGeneration(testCaseName.listFiles(), IdRepoUtil.getCreateUinPath(),
+				"create", "output-1-actual-res", AUTHORIZATHION_COOKIENAME, cookieValue, 0))
+			throw new AuthenticationTestException("Failed at HTTP-POST request");
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
-		Assert.assertEquals(OutputValidationUtil.publishOutputResult(ouputValid),true);
+		if(!OutputValidationUtil.publishOutputResult(ouputValid))
+			throw new AuthenticationTestException("Failed at output response validation");
 		wait(5000);
 		if (OutputValidationUtil.publishOutputResult(ouputValid))
 			storeUinData.put(uin, testcaseName);
@@ -203,4 +211,3 @@ public class CreateUinRecord extends AuthTestsUtil implements ITest {
 	}
 
 }
-

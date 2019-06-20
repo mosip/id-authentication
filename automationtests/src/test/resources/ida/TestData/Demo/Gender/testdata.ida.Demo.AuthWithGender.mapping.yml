@@ -476,27 +476,6 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-      
-  Authentication_Demographic_Gender_for missing gender_Neg_21:
-    endpoint.url:
-      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
-    input.demo-auth-request:
-      AuthReq.individualId: $UIN:WITH:WithoutGender$
-      AuthReq.requestTime: $TIMESTAMP$
-      AuthReq.transactionID: $RANDOM:N:10$
-    input.identity-encrypt-data:
-      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
-      identityReq.languagegender0: $TestData:secondary_lang_code$
-      identityReq.valuegender1: $REMOVE$
-      identityReq.languagegender1:  $REMOVE$ 
-      identityReq.timestamp: $TIMESTAMP$
-      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
-    output.output-1-expected-n-error-res:
-      output.1.response.n.err.status: BOOLEAN:false
-      output.1.response.y.responseTime: $TIMESTAMP$
-      output.1.response.n.err.errorMessage: $errors:MisssingGenderInMosipDB:errorMessage$
-      output.1.response.n.err.errorCode: $errors:MisssingGenderInMosipDB:errorCode$
-      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
      
   Authentication_Demographic_Gender_No authentication type is selected_Neg_22:
     endpoint.url:
