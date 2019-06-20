@@ -261,7 +261,7 @@
                                                     <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane fx:id="leftEyePaneHolder" alignment="CENTER"  GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <GridPane fx:id="leftEyePaneHolder" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                                                         </columnConstraints>
@@ -271,7 +271,7 @@
                                                          <children>
                                                             <Pane fx:id="leftEyePane">
                                                                <children>
-                                                                  <ImageView fx:id="leftEye" layoutY="8" fitHeight="${leftEyePane.height}" fitWidth="${leftEyePane.width}" pickOnBounds="true" preserveRatio="true" styleClass="addBorderStyle">
+                                                                  <ImageView fx:id="leftEye" fitHeight="${leftEyePane.height}" fitWidth="${leftEyePane.width}" layoutY="8" pickOnBounds="true" preserveRatio="true" styleClass="addBorderStyle">
                                                                      <image>
                                                                         <Image url="@../images/exceptionEye.png" />
                                                                      </image>
@@ -296,7 +296,7 @@
                                                     <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane fx:id="rightEyePaneHolder" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" >
+                                                      <GridPane fx:id="rightEyePaneHolder" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                                                         </columnConstraints>
@@ -306,7 +306,7 @@
                                                          <children>
                                                             <Pane fx:id="rightEyePane">
                                                                <children>
-                                                                  <ImageView fx:id="rightEye" layoutY="8" fitHeight="${rightEyePane.height}" fitWidth="${rightEyePane.width}" pickOnBounds="true" preserveRatio="true">
+                                                                  <ImageView fx:id="rightEye" fitHeight="${rightEyePane.height}" fitWidth="${rightEyePane.width}" layoutY="8" pickOnBounds="true" preserveRatio="true">
                                                                      <image>
                                                                         <Image url="@../images/exceptionEye.png" />
                                                                      </image>
@@ -518,13 +518,13 @@
                     </rowConstraints>
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="2.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
                           <children>
                               <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
                               <Label fx:id="registrationNavlabel" styleClass="headerLabel" text="%/registration" />
                            </children>
+                           <GridPane.margin>
+                              <Insets left="25.0" />
+                           </GridPane.margin>
                         </HBox>
                         <GridPane alignment="CENTER" styleClass="headerPageTracker" GridPane.columnIndex="1">
                            <children>
@@ -592,9 +592,9 @@
                               <Text fx:id="onboardHomeLink" onMouseClicked="#goToHomePage" text="%homeLink" />
                               <Text fx:id="onboardPageDesc" text="%onboardOperator" />
                            </children>
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
+                           <GridPane.margin>
+                              <Insets left="25.0" />
+                           </GridPane.margin>
                         </HBox>
                      </children>
                      <columnConstraints>
