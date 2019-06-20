@@ -85,6 +85,7 @@ import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * This class provides the utility methods for Booking application.
@@ -710,7 +711,7 @@ public class BookingServiceUtil {
 	 * @param notificationDTO
 	 * @param langCode
 	 * @return NotificationResponseDTO
-	 * @throws JsonProcessingException 
+	 * @throws JsonProcessingException
 	 */
 	public void emailNotification(NotificationDTO notificationDTO, String langCode) throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
@@ -718,7 +719,7 @@ public class BookingServiceUtil {
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
-		ObjectMapper mapper= new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		mapper.setTimeZone(TimeZone.getDefault());
 		try {
 			request.setRequest(notificationDTO);
@@ -734,7 +735,7 @@ public class BookingServiceUtil {
 					"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
 			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
 			List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
-			if (validationErrorList!=null && !validationErrorList.isEmpty()) {
+			if (validationErrorList != null && !validationErrorList.isEmpty()) {
 				throw new NotificationException(validationErrorList, null);
 			}
 		} catch (HttpClientErrorException ex) {
@@ -748,10 +749,9 @@ public class BookingServiceUtil {
 	}
 
 	/**
-	 * This static method is used to check whether the appointment date is valid or
-	 * not
+	 * This method is used to check whether the appointment date is valid or not
 	 * 
-	 * @param regDate
+	 * @param requestMap
 	 * @return true if the appointment date time is not older date or false if the
 	 *         appointment date is older date
 	 */
@@ -784,6 +784,35 @@ public class BookingServiceUtil {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for preregistration id - "
 							+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
+					null);
+		}
+		return true;
+	}
+
+	/**
+	 * This method is used to validate from date and to date params
+	 * 
+	 * @param fromDate
+	 * @param toDate
+	 * @param format
+	 * @return true or false
+	 */
+	public boolean validateFromDateAndToDate(String fromDate, String toDate, String format) {
+		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
+
+		if (isNull(fromDate) || !ValidationUtil.parseDate(fromDate, format)) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
+		} else if (!isNull(toDate) && !ValidationUtil.parseDate(toDate, format)) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
+		} else if (!isNull(fromDate) && !isNull(toDate)
+				&& ((LocalDate.parse(fromDate)).isAfter(LocalDate.parse(toDate)))) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_020.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.FROM_DATE_GREATER_THAN_TO_DATE.getMessage(),
 					null);
 		}
 		return true;

@@ -407,7 +407,7 @@ public class DataSyncServiceUtilTest {
 		mainResponseDTO.setResponsetime(resTime);
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
 		ExceptionJSONInfoDTO exceptionJSONInfoDTO = new ExceptionJSONInfoDTO();
-		exceptionJSONInfoDTO.setErrorCode(ErrorCodes.PRG_PAM_APP_002.toString());
+//		exceptionJSONInfoDTO.setErrorCode(ErrorCodes.PRG_PAM_APP_002.toString());
 		exceptionJSONInfoDTO.setMessage(ErrorMessages.DEMOGRAPHIC_GET_RECORD_FAILED.toString());
 		exceptionJSONInfoDTOs.add(exceptionJSONInfoDTO);
 		mainResponseDTO.setErrors(exceptionJSONInfoDTOs);
@@ -447,7 +447,7 @@ public class DataSyncServiceUtilTest {
 		responseDTO.setResponsetime(resTime);
 		List<ExceptionJSONInfoDTO> exceptionJSONInfoDTOs = new ArrayList<>();
 		ExceptionJSONInfoDTO exceptionJSONInfoDTO = new ExceptionJSONInfoDTO();
-		exceptionJSONInfoDTO.setErrorCode(ErrorCodes.PRG_PAM_APP_002.toString());
+//		exceptionJSONInfoDTO.setErrorCode(ErrorCodes.PRG_PAM_APP_002.toString());
 		exceptionJSONInfoDTO.setMessage(ErrorMessages.BOOKING_NOT_FOUND.toString());
 		exceptionJSONInfoDTOs.add(exceptionJSONInfoDTO);
 		responseDTO.setErrors(exceptionJSONInfoDTOs);

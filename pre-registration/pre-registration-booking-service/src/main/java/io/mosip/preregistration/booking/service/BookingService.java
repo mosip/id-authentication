@@ -1,6 +1,5 @@
 package io.mosip.preregistration.booking.service;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -57,7 +56,6 @@ import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdResponseDTO;
-import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
@@ -196,11 +194,14 @@ public class BookingService {
 									.findAllPreIds(regDto.getId(), sDate);
 							if (!regBookingEntityList.isEmpty()) {
 								for (int i = 0; i < regBookingEntityList.size(); i++) {
-								if(bookingDAO.getDemographicStatus(regBookingEntityList.get(i).getBookingPK().getPreregistrationId()).equals(StatusCodes.BOOKED.getCode())) {
-									cancelBooking(regBookingEntityList.get(i).getBookingPK().getPreregistrationId(),
-											true);
-									sendNotification(regBookingEntityList.get(i));
-								}
+									if (bookingDAO
+											.getDemographicStatus(
+													regBookingEntityList.get(i).getBookingPK().getPreregistrationId())
+											.equals(StatusCodes.BOOKED.getCode())) {
+										cancelBooking(regBookingEntityList.get(i).getBookingPK().getPreregistrationId(),
+												true);
+										sendNotification(regBookingEntityList.get(i));
+									}
 								}
 							}
 							bookingDAO.deleteSlots(regDto.getId(), sDate);
@@ -218,9 +219,10 @@ public class BookingService {
 							LocalDate.now());
 					if (!entityList.isEmpty()) {
 						for (int j = 0; j < entityList.size(); j++) {
-							if(bookingDAO.getDemographicStatus(entityList.get(j).getBookingPK().getPreregistrationId()).equals(StatusCodes.BOOKED.getCode())) {	
-							cancelBooking(entityList.get(j).getBookingPK().getPreregistrationId(), true);
-							sendNotification(entityList.get(j));
+							if (bookingDAO.getDemographicStatus(entityList.get(j).getBookingPK().getPreregistrationId())
+									.equals(StatusCodes.BOOKED.getCode())) {
+								cancelBooking(entityList.get(j).getBookingPK().getPreregistrationId(), true);
+								sendNotification(entityList.get(j));
 							}
 						}
 					}
@@ -253,7 +255,7 @@ public class BookingService {
 	/**
 	 * 
 	 * @param registrationBookingEntity
-	 * @throws JsonProcessingException 
+	 * @throws JsonProcessingException
 	 */
 	public void sendNotification(RegistrationBookingEntity registrationBookingEntity) throws JsonProcessingException {
 		log.info("sessionId", "idType", "id", "In sendNotification method of Booking Service");
@@ -907,20 +909,19 @@ public class BookingService {
 			if (toDateStr == null || toDateStr.isEmpty()) {
 				toDateStr = fromDateStr;
 			}
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			sdf.setLenient(false);
-			sdf.parse(fromDateStr);
-			sdf.parse(toDateStr);
-			DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
-			LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);
+			String format = "yyyy-MM-dd";
+			if (serviceUtil.validateFromDateAndToDate(fromDateStr, toDateStr, format)) {
+				DateTimeFormatter parseFormatter = DateTimeFormatter.ofPattern(format);
+				LocalDate fromDate = LocalDate.parse(fromDateStr, parseFormatter);
+				LocalDate toDate = LocalDate.parse(toDateStr, parseFormatter);
 
-			List<String> details = bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, regCenterId);
-			PreRegIdsByRegCenterIdResponseDTO responseDTO = new PreRegIdsByRegCenterIdResponseDTO();
-			responseDTO.setPreRegistrationIds(details);
-			responseDTO.setRegistrationCenterId(regCenterId);
+				List<String> details = bookingDAO.findByBookingDateBetweenAndRegCenterId(fromDate, toDate, regCenterId);
+				PreRegIdsByRegCenterIdResponseDTO responseDTO = new PreRegIdsByRegCenterIdResponseDTO();
+				responseDTO.setPreRegistrationIds(details);
+				responseDTO.setRegistrationCenterId(regCenterId);
 
-			response.setResponse(responseDTO);
+				response.setResponse(responseDTO);
+			}
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getPreRegistrationByDate method of pre-registration service - " + ex.getMessage());
