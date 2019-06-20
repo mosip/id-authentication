@@ -611,6 +611,7 @@ public class RegistrationConstants {
 	public static final String LIST_ITEM_CLOSING_TAG = "</span></li><br/>";
 	public static final String SPLIT_DELIMITOR = "\\.";
 	public static final String TEMPLATE_GUIDELINES = "Guidelines";
+	public static final String TEMPLATE_IS_UIN_UPDATE = "IsUINUpdate";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
