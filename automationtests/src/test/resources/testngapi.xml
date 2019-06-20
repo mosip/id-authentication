@@ -106,10 +106,10 @@
 			<class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
 			<class name="io.mosip.preregistration.tests.SendOtp" />
 			<class name="io.mosip.preregistration.tests.Translitration" />
-			<class name="io.mosip.preregistration.tests.TriggerNotification" />
+			<!--<class name="io.mosip.preregistration.tests.TriggerNotification" />--> 
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
-		 	<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  
+		 	<!-- <class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" /> --> 
 		</classes>
 	</test> 
 
