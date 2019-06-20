@@ -16,6 +16,6 @@ server.servlet.path=/registrationprocessor/v1/externaleventbus.port=5736
 ##### Configurable Properties from Config Server
 ```
 EISERVICE=${mosip.base.url}/registrationprocessor/v1/eis/registration-processor/external-integration-service/v1.0
-
+```
 ##### Operations in External stage
 External validation by sending requests to external integration system
