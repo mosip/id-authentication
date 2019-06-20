@@ -35,7 +35,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -204,11 +203,6 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				successResponseDTO.setOtherAttributes(statusMap);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			} else if(response.get("errors") != null) {
-				List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
-				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-				errorResponseDTO.setMessage(response.get("errors").toString());
-				errorResponseDTOs.add(errorResponseDTO);
-				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 						response.get("errors").toString());
 			}

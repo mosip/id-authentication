@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,23 +160,6 @@ public class TemplateGenerator extends BaseService {
 
 			boolean isChild = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child);
 
-			int leftSlapCount = 0;
-			int rightSlapCount = 0;
-			int thumbCount = 0;
-			int irisCount = 0;
-
-			boolean parentPhotoCaptured = false;
-
-			Map<String, Integer> exceptionCount = exceptionFingersCount(registration, leftSlapCount, rightSlapCount,
-					thumbCount, irisCount);
-			int excepCount = exceptionCount.isEmpty() ? 0 : exceptionCount.get(RegistrationConstants.EXCEPTIONCOUNT);
-
-			if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag) && excepCount == 2)
-					|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag) && excepCount == 10)
-					|| excepCount == 12) {
-				parentPhotoCaptured = true;
-			}
-
 			if (templateType.equals(RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE)) {
 				/* Set-up Registration Acknowledgement related content */
 				setUpAcknowledgementContent(registration, templateValues, response, applicationLanguageProperties,
@@ -221,11 +203,11 @@ public class TemplateGenerator extends BaseService {
 
 			/* Set-up captured images of applicant */
 			setUpCapturedImages(templateValues, registration, isChild, applicationLanguageProperties, localProperties,
-					faceDisableFlag, parentPhotoCaptured);
+					faceDisableFlag);
 
 			/* Set-up Biometrics related content */
 			setUpBiometricContent(templateValues, registration, isChild, applicationLanguageProperties, localProperties,
-					fingerPrintDisableFlag, irisDisableFlag, faceDisableFlag, parentPhotoCaptured);
+					fingerPrintDisableFlag, irisDisableFlag, faceDisableFlag);
 
 			/* Set-up Registration Office and Officer related content */
 			setUpROContent(templateValues, registration, applicationLanguageProperties, localProperties);
@@ -290,8 +272,13 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	private void setUpCapturedImages(Map<String, Object> templateValues, RegistrationDTO registration, boolean isChild,
-			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties, String faceDisableFlag,
-			boolean parentPhotoCaptured) {
+			ResourceBundle applicationLanguageProperties, ResourceBundle localProperties, String faceDisableFlag) {
+		boolean parentPhotoCaptured = false;
+		if (registration.getBiometricDTO().getIntroducerBiometricDTO() != null
+				&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace() != null
+				&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() != null) {
+			parentPhotoCaptured = true;
+		}
 		if (!parentPhotoCaptured) {
 			templateValues.put(RegistrationConstants.PARENT_PHOTO_CAPTURED,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
@@ -355,8 +342,7 @@ public class TemplateGenerator extends BaseService {
 
 	private void setUpBiometricContent(Map<String, Object> templateValues, RegistrationDTO registration,
 			boolean isChild, ResourceBundle applicationLanguageProperties, ResourceBundle localProperties,
-			String fingerPrintDisableFlag, String irisDisableFlag, String faceDisableFlag,
-			boolean parentPhotoCaptured) {
+			String fingerPrintDisableFlag, String irisDisableFlag, String faceDisableFlag) {
 		boolean exceptionWithParentPhoto = false;
 		// iris is configured
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(irisDisableFlag)
@@ -453,8 +439,26 @@ public class TemplateGenerator extends BaseService {
 					applicationLanguageProperties.getString("thumbs"));
 			templateValues.put(RegistrationConstants.TEMPLATE_THUMBS_LOCAL_LANG_LABEL,
 					localProperties.getString("thumbs"));
+<<<<<<< HEAD
+			if (isChild || registration.isUpdateUINChild()) {
+				if (registration.getBiometricDTO().getIntroducerBiometricDTO().getFace() != null
+						&& registration.getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() != null) {
+					templateValues.put(RegistrationConstants.PARENT_PHOTO_NOT_CAPTURED,
+							RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+					templateValues.put(RegistrationConstants.PARENT_PHOTO_PRIMARY_LANG,
+							applicationLanguageProperties.getString("parentPhoto"));
+					templateValues.put(RegistrationConstants.PARENT_PHOTO_LOCAL_LANG,
+							localProperties.getString("parentPhoto"));
+					byte[] parentImageBytes = registration.getBiometricDTO().getIntroducerBiometricDTO().getFace()
+							.getFace();
+					String parentImageEncodedBytes = StringUtils
+							.newStringUtf8(Base64.encodeBase64(parentImageBytes, false));
+					templateValues.put(RegistrationConstants.PARENT_IMAGE_SOURCE,
+							RegistrationConstants.TEMPLATE_JPG_IMAGE_ENCODING + parentImageEncodedBytes);
+=======
 			if (isChild || registration.isUpdateUINNonBiometric()) {
 				if (parentPhotoCaptured) {
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 					setUpParentFingerprints(registration, templateValues);
 				} else {
 					templateValues.put(RegistrationConstants.PARENT_PHOTO_CAPTURED,
@@ -494,17 +498,17 @@ public class TemplateGenerator extends BaseService {
 						}
 						templateValues.put(RegistrationConstants.TEMPLATE_IS_CHILD,
 								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+						templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
+								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					} else {
 						templateValues.put(RegistrationConstants.TEMPLATE_FINGERPRINTS_CAPTURED,
 								RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 					}
 				}
-				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_LEFT_FINGERS,
-						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_RIGHT_FINGERS,
-						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-				templateValues.put(RegistrationConstants.TEMPLATE_MISSING_THUMBS,
-						RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			} else {
 				templateValues.put(RegistrationConstants.TEMPLATE_CHILD_LEFT,
 						RegistrationConstants.TEMPLATE_LEFT_INDEX_FINGER);
@@ -1507,6 +1511,8 @@ public class TemplateGenerator extends BaseService {
 				"Getting values of demographic fields has been completed");
 		return value;
 	}
+<<<<<<< HEAD
+=======
 
 	/**
 	 * To count the number of exceptions for face/iris/fingerprint
@@ -1553,4 +1559,5 @@ public class TemplateGenerator extends BaseService {
 
 		return exceptionCountMap;
 	}
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 }

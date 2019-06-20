@@ -1,5 +1,7 @@
 package io.mosip.registration.mdm.dto;
 
+import java.util.Map;
+
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;

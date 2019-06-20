@@ -74,7 +74,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 	@Autowired
 	private PacketSynchService packetSynchService;
-
+	
 	@Autowired
 	private AESEncryptionService aesEncryptionService;
 
@@ -258,7 +258,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		packetStatusReaderDTO.setRequest(registrationIdDTOs);
 
 		try {
-			if (!packetIds.isEmpty()) {
+			if (!packetIds.isEmpty()) {				
 				/* Obtain RegistrationStatusDTO from service delegate util */
 				LinkedHashMap<String, Object> packetStatusResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.post(SERVICE_NAME, packetStatusReaderDTO, triggerPoint);
@@ -306,8 +306,13 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 						"Success Response Created");
 			}
 		} catch (SocketTimeoutException | RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException
+<<<<<<< HEAD
 				| HttpServerErrorException | ResourceAccessException exception) {
 			LOGGER.error(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+=======
+				| HttpServerErrorException | ResourceAccessException  exception) {
+			LOGGER.error("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
@@ -318,8 +323,13 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 			setErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE, null);
 			return response;
+<<<<<<< HEAD
 		}
 		LOGGER.info(LoggerConstants.LOG_PKT_SYNC, APPLICATION_NAME, APPLICATION_ID,
+=======
+		} 
+		LOGGER.info("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 				"Packet Status Sync ended");
 
 		return response;
@@ -424,7 +434,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 
 				for (PacketStatusDTO packetToBeSynch : packetDto) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-					syncDto.setLangCode(getGlobalConfigValueOf(RegistrationConstants.PRIMARY_LANGUAGE));
+					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
 					syncDto.setRegistrationType(packetToBeSynch.getPacketStatus().toUpperCase());
 					syncDto.setPacketHashValue(packetToBeSynch.getPacketHash());
@@ -438,8 +448,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				registrationPacketSyncDTO.setSyncRegistrationDTOs(syncDtoList);
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
-				response = packetSynchService.syncPacketsToServer(CryptoUtil.encodeBase64(
-						aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
+				response = packetSynchService.syncPacketsToServer(
+						CryptoUtil.encodeBase64(
+								aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						triggerPoint);
 			}
 			if (response != null && response.getSuccessResponseDTO() != null) {

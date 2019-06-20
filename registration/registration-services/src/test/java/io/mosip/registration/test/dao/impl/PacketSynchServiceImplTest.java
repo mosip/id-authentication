@@ -40,7 +40,6 @@ import io.mosip.registration.constants.Components;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationPacketSyncDTO;
@@ -54,7 +53,7 @@ import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ HMACUtils.class, SessionContext.class })
+@PrepareForTest({ HMACUtils.class })
 public class PacketSynchServiceImplTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -76,17 +75,13 @@ public class PacketSynchServiceImplTest {
 	private PacketSynchServiceImpl packetSynchServiceImpl;
 
 	@Before
-	public void initialize() throws Exception{
+	public void initialize() {
 		
 		PowerMockito.mockStatic(HMACUtils.class);
-		PowerMockito.mockStatic(SessionContext.class);
 				
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
-		
-		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);		
-		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
-		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip1214");
+		SessionContext.getInstance().getUserContext().setUserId("mosip1214");
 		
 		Map<String, Object> maplastTime = new HashMap<>();
 		maplastTime.put("PRIMARY_LANGUAGE", "ENG");

@@ -13,13 +13,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.context.SessionContext.UserContext;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.mastersync.LanguageDto;
 import io.mosip.registration.dto.mastersync.TitleDto;
 import io.mosip.registration.entity.Language;
@@ -32,15 +30,14 @@ import io.mosip.registration.util.mastersync.EmptyCheckUtils;
  * @author Sreekar Chukka
  * @since 1.0.0
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ SessionContext.class })
+@RunWith(MockitoJUnitRunner.class)
 public class MapperTest {
 	
 	private static List<TitleDto> rcdDtos = null;
 	private static TitleDto rcdDto = null;
 
 	@Before
-	public void setup() throws Exception{
+	public void setup() {
 		rcdDtos = new ArrayList<>();
 		rcdDto = new TitleDto();
 		rcdDto.setTitleName("Admin");
@@ -48,10 +45,8 @@ public class MapperTest {
 		rcdDto.setCode("T1001");
 		rcdDto.setIsActive(true);
 		rcdDtos.add(rcdDto);
-		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
-		PowerMockito.mockStatic(SessionContext.class);
-		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
-		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
+		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
 
 	}
 

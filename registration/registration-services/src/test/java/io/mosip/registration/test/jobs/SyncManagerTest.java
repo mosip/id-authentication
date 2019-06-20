@@ -2,6 +2,7 @@ package io.mosip.registration.test.jobs;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -29,10 +30,12 @@ import org.quartz.Trigger;
 import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dao.UserOnboardDAO;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;

@@ -11,7 +11,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+<<<<<<< HEAD
 import org.junit.Before;
+=======
+<<<<<<< HEAD
+import org.junit.BeforeClass;
+=======
+import org.junit.Ignore;
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +32,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+<<<<<<< HEAD
 import io.mosip.registration.context.ApplicationContext;
+=======
+import io.mosip.registration.context.SessionContext;
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 import io.mosip.registration.dao.impl.UserDetailDAOImpl;
 import io.mosip.registration.dto.UserDetailDto;
 import io.mosip.registration.dto.UserDetailResponseDto;
@@ -66,6 +78,13 @@ public class UserDetailDAOTest {
 	public void initialize() throws Exception {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
+	}
+
+	@BeforeClass
+	public static void init() {
+
+		SessionContext.getInstance().userContext().setUserId("mosip");
+
 	}
 
 	@Test
@@ -151,6 +170,7 @@ public class UserDetailDAOTest {
 		Mockito.when(userRoleRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		userDetailDAOImpl.save(userDetailsResponse);
 	}
+<<<<<<< HEAD
 	
 	@SuppressWarnings("unchecked")
 	@Test(expected=RegBaseUncheckedException.class)
@@ -185,5 +205,7 @@ public class UserDetailDAOTest {
 		Mockito.when(userBiometricRepository.findByUserBiometricIdUsrIdAndIsActiveTrueAndUserBiometricIdBioTypeCodeAndUserBiometricIdBioAttributeCodeIgnoreCase("mosip","bio","sub")).thenReturn(userBiometric);
 		assertEquals(userBiometric, userDetailDAOImpl.getUserSpecificBioDetail("mosip","bio","sub"));
 	}
+=======
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 
 }

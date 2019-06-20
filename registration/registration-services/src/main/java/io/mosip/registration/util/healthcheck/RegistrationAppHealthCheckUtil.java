@@ -89,9 +89,15 @@ public class RegistrationAppHealthCheckUtil {
 				LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
 						APPLICATION_ID, "Internet Access Not Available." + "====>" + connection.getResponseCode());
 			}
+<<<<<<< HEAD
+		} catch (IOException | URISyntaxException | KeyManagementException | NoSuchAlgorithmException ioException) {
+			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
+					APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(ioException));
+=======
 		} catch (Exception exception) {
 			LOGGER.error("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE" + isNWAvailable,
 					APPLICATION_NAME, APPLICATION_ID, "No Internet Access." + ExceptionUtils.getStackTrace(exception));
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 		}
 		return isNWAvailable;
 	}
