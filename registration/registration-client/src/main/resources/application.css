@@ -1103,8 +1103,8 @@ Working on new Css by taleev
 }
 
 .headerFooter{
-	-fx-background-color : white;
-	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,5.4) , 5.0, 0.0 , 0.0 , 0.0 );
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
 .headerTexts{
