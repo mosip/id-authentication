@@ -1,10 +1,12 @@
 package io.mosip.idrepository.identity.validator;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
@@ -25,6 +27,7 @@ import io.mosip.idrepository.core.logger.IdRepoLogger;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.idrepository.core.validator.BaseIdRepoValidator;
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
@@ -239,8 +242,20 @@ public class IdRequestValidator extends BaseIdRepoValidator implements Validator
 		} catch (IdObjectValidationFailedException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REQUEST_VALIDATOR,
 					(VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e)));
-			e.getErrorTexts().parallelStream().forEach(errorText -> errors.rejectValue(REQUEST,
-					IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), errorText));
+			IntStream.range(0, e.getErrorTexts().size()).boxed().parallel().forEach(index -> {
+				errors.rejectValue(REQUEST,
+						e.getCodes().get(index)
+								.equals(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode())
+										? IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode()
+										: IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+						String.format(
+								e.getCodes().get(index)
+										.equals(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode())
+												? IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage()
+												: IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
+								Arrays.asList(e.getErrorTexts().get(index).split("-")[1].trim().split("\\|")).stream()
+										.collect(Collectors.joining(" | "))));
+			});
 		} catch (IdObjectIOException e) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REQUEST_VALIDATOR,
 					VALIDATE_REQUEST + ExceptionUtils.getStackTrace(e));

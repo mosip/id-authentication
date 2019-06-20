@@ -132,7 +132,7 @@ public class IdRequestValidatorTest {
 	public void testValidateRequestJsonAttributes() throws JsonParseException, JsonMappingException, IOException,
 			IdObjectValidationFailedException, IdObjectIOException {
 		when(idObjectValidator.validateIdObject(Mockito.any(), Mockito.any()))
-				.thenThrow(new IdObjectValidationFailedException("", "Invalid Request"));
+				.thenThrow(new IdObjectValidationFailedException("", "Invalid - Request"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -324,7 +324,7 @@ public class IdRequestValidatorTest {
 	public void testValidateRequestUnidentifiedJsonException() throws JsonParseException, JsonMappingException,
 			IOException, IdObjectIOException, IdObjectValidationFailedException {
 		when(idObjectValidator.validateIdObject(Mockito.any(), Mockito.any()))
-				.thenThrow(new IdObjectValidationFailedException("errorCode", "errorMessage"));
+				.thenThrow(new IdObjectValidationFailedException("errorCode", "error - Message"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -332,8 +332,9 @@ public class IdRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals("errorMessage", error.getDefaultMessage());
+			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Message"),
+					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
