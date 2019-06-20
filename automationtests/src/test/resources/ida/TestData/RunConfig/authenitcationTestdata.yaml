@@ -114,9 +114,12 @@ dob_Invalid:
       - 1965-04-11
       - 04-11-1965
       - 06/13/1970
-      - 1973/07/14
       - 09/1930/07
-
+dob_mismatch:
+      - 1965/04/12
+      - 1967/05/13
+      - 1970/06/14
+      - 1973/07/15
 male_gender_code_valid:
       - MLE
 female_gender_code_valid:
@@ -145,11 +148,11 @@ female_gender_eng_valid:
       - Female
 other_gender_eng_valid:
       - Others
-male_gender_primary_valid:
+male_gender_fra_valid:
       - Mâle
-female_gender_primary_valid:
+female_gender_fra_valid:
       - Femelle
-other_gender_primary_valid:
+other_gender_fra_valid:
       - Dautres
 male_gender_secondary_valid:
       - الذكر
@@ -312,6 +315,8 @@ bio_finger_RightLittle_subType:
 bio_finger_RightIndex_subType:
       - RIGHT_INDEX
       - UNKNOWN
+bio_finger_RightIndexOnly_subType:
+      - RIGHT_INDEX
 bio_finger_LeftMiddle_subType:
       - LEFT_MIDDLE
       - UNKNOWN
@@ -355,7 +360,7 @@ invalid:
       - DFR
       - FTY
 primary_lang_code:
-      - fra
+      - eng
 secondary_lang_code:
       - ara
 #Auth_transaction
@@ -365,10 +370,22 @@ auth_transaction_FINGER_authTypeCode:
       - FINGERPRINT-AUTH
 auth_transaction_FACE_authTypeCode:
       - FACE-AUTH
+auth_transaction_OTP_authTypeCode:
+      - OTP-AUTH
+auth_transaction_OTPREQUEST_authTypeCode:
+      - OTP-REQUEST
 auth_transaction_success_statusCode:
       - Y
 auth_transaction_fail_statusCode:
       - N
+auth_transaction_OTPREQUEST_success_statusComment:
+      - $REGEXP:.*OTP.*Request.*Success.*$
+auth_transaction_OTPREQUEST_fail_statusComment:
+      - $REGEXP:.*OTP.*Request.*Failed.*$
+auth_transaction_OTP_success_statusComment:
+      - $REGEXP:.*OTP.*Authentication.*Success.*$
+auth_transaction_OTP_fail_statusComment:
+      - $REGEXP:.*OTP.*Authentication.*Failed.*$
 auth_transaction_IRIS_success_statusComment:
       - $REGEXP:.*Iris.*Authentication.*Success.*$
 auth_transaction_IRIS_fail_statusComment:
@@ -416,6 +433,10 @@ audit_log_finger_moduleName:
       - Fingerprint Authenticator
 audit_log_face_moduleName:
       - Face Authenticator
+audit_log_otp_moduleName:
+      - OTP Authenticator
+audit_log_otprequest_moduleName:
+      - Otp Requestor
 audit_log_UIN_refIdType:
       - UIN
 audit_log_demo_moduleName:
@@ -423,17 +444,17 @@ audit_log_demo_moduleName:
 audit_log_VID_refIdType:
       - VID
 #Demo-Name Normalisation
-name_tittle_UnMarriedfemale_eng_lang:
-      - Miss.
-name_tittle_female_eng_lang:
-      - Mrs.
-name_tittle_male_eng_lang:
-      - Mr.
 name_tittle_UnMarriedfemale_primary_lang:
-      - Mademoiselle.
+      - Miss.
 name_tittle_female_primary_lang:
-      - Madame.
+      - Mrs.
 name_tittle_male_primary_lang:
+      - Mr.
+name_tittle_UnMarriedfemale_fra_lang:
+      - Mademoiselle.
+name_tittle_female_fra_lang:
+      - Madame.
+name_tittle_male_fra_lang:
       - Monsieur.
 name_tittle_UnMarriedfemale_secondary_lang:
       - 'آنسة '

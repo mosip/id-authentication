@@ -1,1 +1,1 @@
-{"id":"mosip.id.create","version":"v1","responsetime":"2019-06-15T04:07:20.174Z","metadata":null,"response":null,"errors":[{"errorCode":"IDR-IDC-002","message":"Invalid Input Parameter - documents - individualBiometrics"}]}
+{"id":"mosip.id.create","version":"v1","responsetime":"2019-06-20T07:14:50.986Z","metadata":null,"response":{"status":"ACTIVATED","identity":null,"documents":null},"errors":[]}

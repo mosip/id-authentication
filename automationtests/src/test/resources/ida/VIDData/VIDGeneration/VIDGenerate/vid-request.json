@@ -1,9 +1,0 @@
-{
-  "id": "mosip.vid.create",
-  "request": {
-    "UIN": "$uin$",
-    "vidType": "Perpetual"
-  },
-  "requesttime": "2019-06-15T04:07:22.402Z",
-  "version": "v1"
-}
