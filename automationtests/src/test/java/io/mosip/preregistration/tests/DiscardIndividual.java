@@ -26,6 +26,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
@@ -170,7 +171,12 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 					"Successfully updated Results to Retrive_PreRegistrationOutput.json file.......................!!");
 
 		}
-		// preIds.add(preId);
+		lib.logOut();
+	}
+	@BeforeClass
+	public void getToken()
+	{
+		authToken = lib.getToken();
 	}
 
 	@AfterMethod(alwaysRun = true)
@@ -186,7 +192,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		lib.logOut();
+		
 	}
 
 	@BeforeMethod(alwaysRun = true)
@@ -194,7 +200,6 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
-		authToken = lib.getToken();
 	}
 
 	@Override

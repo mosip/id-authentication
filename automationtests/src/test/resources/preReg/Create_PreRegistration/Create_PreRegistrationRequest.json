@@ -8,5 +8,16 @@
    "Pre Reg_Demographic_Create Pre Registration By passing invalid Language Code":"",
    "Pre Reg_Demographic_Create Pre Registration with invalid email format":"",
    "Pre Reg_Demographic_Create Pre Registration with invalid mobile no format":"",
-   "Pre Reg_Demographic_Create Pre Registration with other DOB format":""
+   "Pre Reg_Demographic_Create Pre Registration without passing name in request":"",
+   "Pre Reg_Demographic_Create Pre Registration by passing 51 charecter in name":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing DOB in request":"",
+   "Pre Reg_Demographic_Create Pre Registration By Passing future DOB":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing Address line 1 in request":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing City in request":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing CNIE in request":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing gender in request":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing Local Administrative Authority in request":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing Postal code in request":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing Province in request":"",
+   "Pre Reg_Demographic_Create Pre Registration without passing Region in request":""
 }

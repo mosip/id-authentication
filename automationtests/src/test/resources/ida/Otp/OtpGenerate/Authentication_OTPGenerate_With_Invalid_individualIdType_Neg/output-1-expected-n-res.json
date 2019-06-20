@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "2187440158",
+  "version": "1.0"
+}

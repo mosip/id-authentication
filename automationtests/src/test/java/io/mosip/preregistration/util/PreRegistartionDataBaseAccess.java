@@ -10,6 +10,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 
 public class PreRegistartionDataBaseAccess {
@@ -38,7 +39,7 @@ public class PreRegistartionDataBaseAccess {
 			return (List<String>) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list();
 
 		} catch (IndexOutOfBoundsException e) {
-			logger.info("error while getting otp");
+			Assert.assertTrue(false, "error while getting data from db :"+dbName);
 			return null;
 		}
 

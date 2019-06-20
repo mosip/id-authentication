@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - requestTime"
+    }
+  ],
+  "responseTime": "$TIMESTAMPZ$",
+  "transactionID": "0214083511",
+  "version": "1.0"
+}
