@@ -35,8 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
-
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertKernel;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -76,7 +75,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 	String outputFile = "GetAllDocumentForPreRegIdOutput.json";
 	String requestKeyFile = "GetAllDocumentForPreRegIdRequest.json";
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	ApplicationLibrary appLib=new ApplicationLibrary();
 
 	// implement,IInvokedMethodListener
 	public GetAllDocumentForPreRegId() {
@@ -125,19 +124,20 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
+		Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 	
 		// Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+		//Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+		Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse, preId,null, individualToken);
 
 		// Get PreId from Document upload response
 		docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		if (testCaseName.contains("smoke")) {
 			// Get All Document For PreID
-			Response getAllDocRes = preRegLib.getAllDocumentForPreId(preId);
+			Response getAllDocRes = preRegLib.getAllDocumentForPreId(preId,individualToken);
 			logger.info("getAllDocRes::"+getAllDocRes.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("documentsMetaData");
@@ -147,10 +147,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 					"POA");
 			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].docTypCode").toString(),
 					"RNC");
-			preRegLib.compareValues(getAllDocRes.jsonPath().get("response.documentsMetaData[0].langCode").toString(),
-					"fra");
-			
-			
+
 			status = AssertResponses.assertResponses(getAllDocRes, Expectedresponse, outerKeys, innerKeys);
 		} else {
 
@@ -159,7 +156,7 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 			HashMap<String, String> parm = new HashMap<>();
 			parm.put("preRegistrationId", preIdVal);
 			//Actualresponse = applicationLibrary.getRequestPathParam(preReg_URI, parm);
-			Actualresponse = applicationLibrary.getRequestWithoutParm(preRegURL);
+			Actualresponse = appLib.getWithoutParams(preRegURL,individualToken);
 			logger.info(
 					"Test Case name:" + testCaseName + "getAllDocResDoc Actualresponse::" + Actualresponse.asString());
 			
@@ -205,7 +202,10 @@ public class GetAllDocumentForPreRegId extends BaseTestCase implements ITest {
 		//Get All document by PreReg Id Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_GetDocByPreId");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		if(!preRegLib.isValidToken(individualToken))
+		{
+			individualToken=preRegLib.getToken();
+		}
 	}
 
 	/**

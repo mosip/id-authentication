@@ -63,18 +63,18 @@ public class Audit extends BaseTestCase implements ITest {
 	public String folder = "preReg";
 	public ApplicationLibrary applnLib = new ApplicationLibrary();
 	public PreregistrationDAO dao = new PreregistrationDAO();
+	String cookie=null;
 
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		// authToken = lib.getToken();
 	}
 
 	@Test
 	public void getAuditDataForDemographicCreate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		lib.CreatePreReg(createPregRequest);
+		lib.CreatePreReg(createPregRequest,cookie);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicCreate");
 		expectedRequest.put("session_user_id", userId);
@@ -87,9 +87,9 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForDemographicDiscard() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
 		String preID =lib.getPreId(createResponse);
-		lib.discardApplication(preID);
+		lib.discardApplication(preID,cookie);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicDiscard");
 		expectedRequest.put("session_user_id", userId);
@@ -103,11 +103,11 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForDemographicUpdate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createRequest = lib.createRequest(testSuite);
-		Response createRequestResponse = lib.CreatePreReg(createRequest);
+		Response createRequestResponse = lib.CreatePreReg(createRequest,cookie);
 		String pre_registration_id = lib.getPreId(createRequestResponse);
 		JSONObject updateRequest = lib.getRequest("UpdateDemographicData/UpdateDemographicData_smoke");
 		updateRequest.put("requesttime", lib.getCurrentDate());
-		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id);
+		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id,cookie);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicUpdate");
 		expectedRequest.put("session_user_id", userId);
@@ -121,8 +121,8 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForDemographicFetchAllApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createRequest = lib.createRequest(testSuite);
-		Response createRequestResponse = lib.CreatePreReg(createRequest);
-		lib.fetchAllPreRegistrationCreatedByUser();
+		Response createRequestResponse = lib.CreatePreReg(createRequest,cookie);
+		lib.fetchAllPreRegistrationCreatedByUser(cookie);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicFetchAllApplication");
 		expectedRequest.put("session_user_id", userId);
@@ -138,7 +138,7 @@ public class Audit extends BaseTestCase implements ITest {
 		JSONObject createRequest = lib.createRequest(testSuite);
 		createRequest.put("version", "2.0");
 		System.out.println(createRequest.toString());
-		Response createRequestResponse = lib.CreatePreReg(createRequest);
+		Response createRequestResponse = lib.CreatePreReg(createRequest,cookie);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicException");
 		expectedRequest.put("session_user_id", userId);
@@ -152,7 +152,7 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForGetAvailbleSlot() {
 		String regCenterId = null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		Response fetchCenterResponse = lib.FetchCentre();
+		Response fetchCenterResponse = lib.FetchCentre(cookie);
 		try {
 			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
 		} catch (NullPointerException e) {
@@ -173,11 +173,11 @@ public class Audit extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		String regCenterId = null;
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
 		String preID = lib.getPreId(createResponse);
-		Response fetchCenterResponse = lib.FetchCentre();
-		lib.BookAppointment(fetchCenterResponse, preID);
-		lib.CancelBookingAppointment(preID);
+		Response fetchCenterResponse = lib.FetchCentre(cookie);
+		lib.BookAppointment(fetchCenterResponse, preID,cookie);
+		lib.CancelBookingAppointment(preID,cookie);
 		try {
 			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
 		} catch (NullPointerException e) {
@@ -197,12 +197,12 @@ public class Audit extends BaseTestCase implements ITest {
 		String regCenterId = null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
 		String preID = lib.getPreId(createResponse);
-		Response fetchCenterResponse = lib.FetchCentre();
-		lib.BookAppointment(fetchCenterResponse, preID);
-		fetchCenterResponse = lib.FetchCentre();
-		lib.BookAppointment(fetchCenterResponse, preID);
+		Response fetchCenterResponse = lib.FetchCentre(cookie);
+		lib.BookAppointment(fetchCenterResponse, preID,cookie);
+		fetchCenterResponse = lib.FetchCentre(cookie);
+		lib.BookAppointment(fetchCenterResponse, preID,cookie);
 		try {
 			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
 		} catch (NullPointerException e) {
@@ -228,7 +228,7 @@ public class Audit extends BaseTestCase implements ITest {
 	public void login( Method method)
 	{
 		testCaseName="preReg_BatchJob_" + method.getName();
-		authToken=lib.getToken();
+		cookie=lib.getToken();
 		
 	}
 	@AfterMethod

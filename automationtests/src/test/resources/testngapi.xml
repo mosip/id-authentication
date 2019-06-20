@@ -96,7 +96,7 @@
 			<class name="io.mosip.preregistration.tests.GetAllDocumentForDocId" />
 			<class name="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" />
 			<class name="io.mosip.preregistration.tests.GetPreRegistartionData" />
-			<class name="io.mosip.preregistration.tests.IntegrationScenarios" />
+			<!-- <class name="io.mosip.preregistration.tests.IntegrationScenarios" /> -->
 			<class name="io.mosip.preregistration.tests.InvalidateToken" />
 			<class name="io.mosip.preregistration.tests.MultipleBookingAppointment" />
 			<class name="io.mosip.preregistration.tests.QRCode" />
@@ -106,10 +106,10 @@
 			<class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
 			<class name="io.mosip.preregistration.tests.SendOtp" />
 			<class name="io.mosip.preregistration.tests.Translitration" />
-			<class name="io.mosip.preregistration.tests.TriggerNotification" />
+		<!-- 	<class name="io.mosip.preregistration.tests.TriggerNotification" /> -->
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" />  
-		 	<class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  
+		 	<!-- <class name="io.mosip.preregistration.tests.SyncAvailabilityBatchJob" />  --> 
 		</classes>
 	</test> 
 

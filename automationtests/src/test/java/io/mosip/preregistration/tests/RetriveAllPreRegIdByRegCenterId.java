@@ -34,8 +34,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
+import io.mosip.kernel.service.ApplicationLibrary;
+import io.mosip.preregistration.util.BookingUtil;
 import io.mosip.preregistration.util.PreRegistrationUtil;
-import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -75,6 +76,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 	CommonLibrary commonLibrary = new CommonLibrary();
 	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
+	BookingUtil bookUtil=new BookingUtil();
 	String preReg_URI;
 
 	// implement,IInvokedMethodListener
@@ -122,10 +124,14 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		String testCase = object.get("testCaseName").toString();
+		String frmDate;
+		String toDate;
 		LocalDateTime currentTime = LocalDateTime.now();
 		LocalDate fromDate = currentTime.toLocalDate();
-
+		frmDate=fromDate.toString();
+		toDate=currentTime.toString();
+		String regCenterId;
+		
 		String val = null;
 		String name = null;
 		if (testCaseName.contains("smoke")) {
@@ -137,29 +143,64 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		}
 
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
+		Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
-		logger.info("jhhiudshcusducduc::");
+		
 		/* Fetch availability[or]center details */
-		Response fetchCenter = preRegLib.FetchCentre();
+		Response fetchCenter = preRegLib.FetchCentre(individualToken);
 
 		/* Book An Appointment for the available data */
-		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+		Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString(),individualToken);
 		
-		Response fetchAppDet = preRegLib.FetchAppointmentDetails(preId);
+		Response fetchAppDet = preRegLib.FetchAppointmentDetails(preId,individualToken);
 		String fetchAppStr = fetchAppDet.jsonPath().get("response.appointment_date").toString();
 		logger.info("Fetch App Res::" + fetchAppStr);
 
-		String toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
-		String regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
+		 toDate = fetchAppDet.jsonPath().get("response.appointment_date").toString();
+		regCenterId = fetchAppDet.jsonPath().get("response.registration_center_id").toString();
 		
-		logger.info("Val::"+val);
-		switch (val) {
-
+		
+		HashMap<String, String> parm = new HashMap<>();
+		
+		if(testCaseName.contains("registrationCenterId"))
+		{
+			regCenterId = actualRequest.get("registartion_center_id").toString();
+		}
+		else if (testCaseName.contains("fromDate"))
+		{
+			frmDate= actualRequest.get("from_date").toString();
+		}
+		else if (testCaseName.contains("toDate"))
+		{
+			toDate= actualRequest.get("to_date").toString();
+		}
+		
+		
+		parm.put("from_date", frmDate);
+		parm.put("to_date", toDate);
+		
+		Actualresponse = bookUtil.retriveAllPreRegIdByRegCenterId(preReg_URI+regCenterId, parm, individualToken);
+		logger.info("Retrive All Pre Reg ::"+Actualresponse.asString());
+		if(testCaseName.contains("smoke"))
+		{
+			//outer and inner keys which are dynamic in the actual response
+			outerKeys.add("responsetime");
+			innerKeys.add("registration_center_id");
+			innerKeys.add("pre_registration_ids");
+		}
+		else
+		{
+			//outer and inner keys which are dynamic in the actual response
+			outerKeys.add("responsetime");
+		}
+		
+		status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+		
+		
+		/*switch (val) {
 		case "preReg_RetrivePreIdByRegCenterId_smoke":
-
 			// Retrieve all pre-registration ids by registration center id
-			Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(fetchAppDet, preId);
+			Response retrivePreIDFromRegCenId = preRegLib.retriveAllPreIdByRegId(fetchAppDet, preId,individualToken);
 			logger.info("preReg_RetrivePreIdByRegCenterId_smoke::" + retrivePreIDFromRegCenId.asString());
 			
 			//outer and inner keys which are dynamic in the actual response
@@ -168,47 +209,34 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			innerKeys.add("pre_registration_ids");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(retrivePreIDFromRegCenId, Expectedresponse, outerKeys, innerKeys);
-
 			break;
-
 		case "prereg_RetrivePreIdByRegCenterId_registrationCenterId":
 			String registartionCenterId = actualRequest.get("registartion_center_id").toString();
-
 			HashMap<String, String> parm = new HashMap<>();
 			parm.put("from_date", fromDate.toString());
 			parm.put("to_date", toDate);
-
 			String preReg_RetriveBookedPreRegIdsByRegId = preReg_URI + registartionCenterId;
-
 			Actualresponse = applicationLibrary
 					.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdsByRegId, parm);
-
 			logger.info("My test case name:" + val + "_" + name + "My res::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
-
 			break;
-
 		case "prereg_RetrivePreIdByRegCenterId_fromDate":
 			String frmDate = actualRequest.get("from_date").toString();
-
 			HashMap<String, String> invPreIdParm = new HashMap<>();
 			invPreIdParm.put("from_date", frmDate);
 			invPreIdParm.put("to_date", toDate);
-
 			String preReg_RetriveBookedPreRegIdByRegId = preReg_URI + regCenterId;
-
 			Actualresponse = applicationLibrary
 					.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId, invPreIdParm);
-
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
-
 			break;
 			
 		case "prereg_RetrivePreIdByRegCenterId_toDate":
@@ -218,28 +246,21 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			HashMap<String, String> parmForToDate = new HashMap<>();
 			parmForToDate.put("from_date", curFrmDate.toString());
 			parmForToDate.put("to_date", invToDate);
-
 			String preReg_RetriveBookedPreRegIdByRegId_InvTodate = preReg_URI + regCenterId;
-
 			Actualresponse = applicationLibrary
 					.get_Request_pathAndMultipleQueryParam(preReg_RetriveBookedPreRegIdByRegId_InvTodate, parmForToDate);
-
 			logger.info("My test case name:" + val + "_" + name + "My resuu::" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
-
 			break;
-
 		default:
-
 			break;
 		}
-
-		if (name != null) {
+*/		/*if (name != null) {
 			testCaseName = val + "_" + name;
-		}
+		}*/
 
 		if (status) {
 			finalStatus = "Pass";
@@ -274,7 +295,10 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		
 		preReg_URI =preRegUtil.fetchPreregProp().get("preReg_RetriveBookedPreIdsByRegId");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		
+		if(!preRegLib.isValidToken(individualToken))
+		{
+			individualToken=preRegLib.getToken();
+		}
 	}
 
 	/**
@@ -291,8 +315,8 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			//f.set(baseTestMethod, RetriveAllPreRegIdByRegCenterId.testCaseName);
-			f.set(baseTestMethod, "Pre Reg_RetriveAllPreRegIdByRegCenterId_" +RetriveAllPreRegIdByRegCenterId.testCaseName);
+			f.set(baseTestMethod, RetriveAllPreRegIdByRegCenterId.testCaseName);
+			//f.set(baseTestMethod, "Pre Reg_RetriveAllPreRegIdByRegCenterId_" +RetriveAllPreRegIdByRegCenterId.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -309,13 +333,8 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		String source = "src/test/resources/" + folderPath + "/";
+	
 
-	}
-	@BeforeClass
-	public void getToken()
-	{
-		authToken = preRegLib.getToken();
 	}
 
 	@Override

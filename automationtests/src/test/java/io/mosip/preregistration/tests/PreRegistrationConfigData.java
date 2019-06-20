@@ -76,7 +76,7 @@ public class PreRegistrationConfigData extends BaseTestCase implements ITest {
 		boolean status = false;
 		outerKeys.add("responsetime");
 		testSuite = "PreRegistrationConfigData/PreRegistrationConfigData_smoke";
-		Response getPreRegistrationConfigData = lib.getPreRegistrationConfigData();
+		Response getPreRegistrationConfigData = lib.getPreRegistrationConfigData(individualToken);
 		JSONObject expectedRequest = lib.getRequest(testSuite);
 		try {
 			status = AssertResponses.assertResponses(getPreRegistrationConfigData, expectedRequest, outerKeys,

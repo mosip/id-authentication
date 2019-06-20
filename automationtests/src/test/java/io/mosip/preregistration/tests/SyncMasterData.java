@@ -72,7 +72,6 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 	JSONObject Expectedresponse = null;
 	CommonLibrary commonLibrary = new CommonLibrary();
 	String preReg_URI;
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	HashMap<String, String> parm = new HashMap<>();
 	String dest = "";
 	String folderPath = "preReg/SyncMasterData";
@@ -124,12 +123,13 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+		
 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
-		Response syncMsterData = syncUtil.syncMasterData();
-		logger.info("Sync Master data Res:" + syncMsterData.asString());
+		
+		Response syncMsterData = syncUtil.syncMasterData(preReg_URI,authToken);
+		logger.info("SyncMasterData Res:" + syncMsterData.asString());
 
 		//Removing the dynamic value from Sync Master data response
 		outerKeys.add("responsetime");
@@ -172,7 +172,10 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 		 */
 
 		preReg_URI = preRegUtil.fetchPreregProp().get("preReg_SyncMasterDataURI");
-		authToken = preRegLib.preRegAdminToken();
+		if(!preRegLib.isValidToken(individualToken))
+		{
+			individualToken=preRegLib.getToken();
+		}
 	}
 
 	/**
@@ -190,7 +193,7 @@ public class SyncMasterData extends BaseTestCase implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			//f.set(baseTestMethod, SyncMasterData.testCaseName);
-			f.set(baseTestMethod, "Pre Reg_SyncMasterData_" +SyncMasterData.testCaseName);
+			f.set(baseTestMethod, "PreReg_SyncMasterData_" +SyncMasterData.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}

@@ -38,6 +38,7 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
+import com.jayway.jsonpath.JsonPath;
 import com.mongodb.internal.thread.DaemonThreadFactory;
 
 import io.mosip.dbentity.OtpEntity;
@@ -67,8 +68,24 @@ public class Sample extends BaseTestCase implements ITest {
 	ApplicationLibrary applnLib = new ApplicationLibrary();
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
 	PreregistrationDAO dao = new PreregistrationDAO();
+	public String expectedMessageDeleteDoc = "DOCUMENT_DELETE_SUCCESSFUL";
+	public String docMissingMessage = "Documents is not found for the requested pre-registration id";
+	public String unableToFetchPreReg = "UNABLE_TO_FETCH_THE_PRE_REGISTRATION";
+	public String appointmentCanceledMessage = "APPOINTMENT_SUCCESSFULLY_CANCELED";
+	public String bookingSuccessMessage = "APPOINTMENT_SUCCESSFULLY_BOOKED";
+	public String expectedErrMessageDocGreaterThanFileSize = "DOCUMENT_EXCEEDING_PREMITTED_SIZE";
+	public String expectedErrCodeDocGreaterThanFileSize = "PRG_PAM_DOC_007";
+	public String filepathPOA = "IntegrationScenario/DocumentUpload_POA";
+	public String filepathPOB = "IntegrationScenario/DocumentUpload_POB";
+	public String filepathPOI = "IntegrationScenario/DocumentUpload_POI";
+	public String filepathDocGreaterThanFileSize = "IntegrationScenario/DocumentUploadGreaterThanFileSize";
+	public String POADocName = "AadhaarCard_POA.pdf";
+	public String POBDocName = "ProofOfBirth_POB.pdf";
+	public String POIDocName = "LicenseCertification_POI.pdf";
+	public String ExceedingSizeDocName = "ProofOfAddress.pdf";
 
 	SoftAssert soft = new SoftAssert();
+	
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -83,20 +100,95 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 * 
 	 */
-	@Test
-	public void makeAdayAsHoliday() {
-		try {
-			lib.syncAvailability();
-			System.out.println(lib.FetchCentre("10001"));
-			
-			
-		} catch (NullPointerException e) {
-			Assert.assertTrue(false, "Exception while running sync master data for holiday");
+	
+		@Test(groups = { "IntegrationScenarios" })
+		public void multipleDocumentUpload() {
+
+			PreRegistrationLibrary lib = new PreRegistrationLibrary();
+
+			// Create PreReg
+
+			String preRegID = null;
+			String createdBy = null;
+			Response createApplicationResponse = null;
+			Response docUploadRes_POA = null;
+			Response docUploadRes_POB = null;
+			Response docUploadRes_POI = null;
+			Response getAllDocForPreId = null;
+
+			try {
+				createApplicationResponse = lib.CreatePreReg(individualToken);
+				preRegID = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+				createdBy = createApplicationResponse.jsonPath().get("response.createdBy").toString();
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error(e.getMessage());
+			}
+
+			// Upload document for different cat codes for same preId
+			try {
+
+				docUploadRes_POA = lib.multipleDocumentUpload(createApplicationResponse, filepathPOA, "/" + POADocName,individualToken);
+				docUploadRes_POB = lib.multipleDocumentUpload(createApplicationResponse, filepathPOB, "/" + POBDocName,individualToken);
+				docUploadRes_POI = lib.multipleDocumentUpload(createApplicationResponse, filepathPOI, "/" + POIDocName,individualToken);
+
+				getAllDocForPreId = lib.getAllDocumentForPreId(preRegID,individualToken);
+
+				JSONObject filePathPOAReq = lib.requestJson(filepathPOA);
+				JSONObject filePathPOBReq = lib.requestJson(filepathPOB);
+				JSONObject filePathPOIReq = lib.requestJson(filepathPOI);
+
+				// Assertion for Document category POA - 0th element in response
+
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response.prereg_id").toString(), preRegID);
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response.doc_name").toString(), POADocName);
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response.doc_cat_code").toString(),
+						JsonPath.parse(filePathPOAReq).read("$.request.doc_cat_code"));
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response.doc_typ_code").toString(),
+						JsonPath.parse(filePathPOAReq).read("$.request.doc_typ_code"));
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response.doc_file_format").toString(),
+						JsonPath.parse(filePathPOAReq).read("$.request.doc_file_format"));
+
+				// Assertion for Document category POB - 1st element in response
+
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[1].prereg_id").toString(), preRegID);
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[1].doc_name").toString(), POBDocName);
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[1].doc_cat_code").toString(),
+						JsonPath.parse(filePathPOBReq).read("$.request.doc_cat_code"));
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[1].doc_typ_code").toString(),
+						JsonPath.parse(filePathPOBReq).read("$.request.doc_typ_code"));
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[1].doc_file_format").toString(),
+						JsonPath.parse(filePathPOBReq).read("$.request.doc_file_format"));
+
+				// Assertion for Document category POI - 2nd element in response
+
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[2].prereg_id").toString(), preRegID);
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[2].doc_name").toString(), POIDocName);
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[2].doc_cat_code").toString(),
+						JsonPath.parse(filePathPOIReq).read("$.request.doc_cat_code"));
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[2].doc_typ_code").toString(),
+						JsonPath.parse(filePathPOIReq).read("$.request.doc_typ_code"));
+				lib.compareValues(getAllDocForPreId.jsonPath().get("response[2].doc_file_format").toString(),
+						JsonPath.parse(filePathPOIReq).read("$.request.doc_file_format"));
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error(e.getMessage());
+			}
+
 		}
-	}
+
+		
+	
+
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
-		authToken = lib.getToken();
+if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
+		
 	}
 
 	@Override

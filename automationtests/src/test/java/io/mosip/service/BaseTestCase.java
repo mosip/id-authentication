@@ -65,13 +65,15 @@ public class BaseTestCase{
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	
-		
+	protected static String individualToken;
+	public String preRegAdminToken;
+	protected static String regClientToken;
+	public String regProcToken;	
 	/**
 	 * Method that will take care of framework setup
 	 */
 	// GLOBAL CLASS VARIABLES
-	private Properties prop;
+	public Properties prop;
 	public static String ApplnURI;
 	protected static String authToken;
 	public static String regProcAuthToken;
@@ -140,6 +142,10 @@ public class BaseTestCase{
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {
+			individualToken=null;
+			preRegAdminToken=null;
+			regClientToken=null;
+			regProcToken=null;
 			buildNumber=getBuildTag();
 			logger.info("Test Framework for Mosip api Initialized");
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");

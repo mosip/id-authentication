@@ -128,7 +128,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 		if (testCaseName.contains("smoke")) {
 
 			/* Creating the Pre-Registration Application */
-			Response createApplicationResponse = preRegLib.CreatePreReg();
+			Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 			logger.info("triggerNotifyResponsuyuyuyuyuye:"+testCaseName);
 			//Response triggerNotifyResponse = preRegLib.TriggerNotification();
 			Response triggerNotifyResponse =triggerNotUtil.TriggerNotification(testCaseName);
@@ -261,7 +261,6 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 		}
 
 		String source = "src/test/resources/" + folderPath + "/";
-		CommonLibrary.backUpFiles(source, folderPath);
 	}
 
 	/**
@@ -299,14 +298,12 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 		//Trigger Notification Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_NotifyURI");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
+		if(!preRegLib.isValidToken(individualToken))
+		{
+			individualToken=preRegLib.getToken();
+		}
 		
 	}
-	@BeforeClass
-	public void getToken()
-	{
-		authToken = preRegLib.getToken();
-	}
-
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
