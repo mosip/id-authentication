@@ -102,6 +102,8 @@ public class FullAddressMatchingStrategyTest {
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
@@ -112,6 +114,8 @@ public class FullAddressMatchingStrategyTest {
 	public void TestExactMatchInvalidSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);
@@ -122,6 +126,8 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value2);
@@ -131,6 +137,8 @@ public class FullAddressMatchingStrategyTest {
 	public void TestInvalidPartialMatch() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
@@ -141,6 +149,8 @@ public class FullAddressMatchingStrategyTest {
 	public void TestInvalidPartialMatchSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);
@@ -151,6 +161,8 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value2);
@@ -160,6 +172,8 @@ public class FullAddressMatchingStrategyTest {
 	public void TestInvalidPhoneticsMatch() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
@@ -170,6 +184,8 @@ public class FullAddressMatchingStrategyTest {
 	public void TestInvalidPhoneticsMatchSecondaryLang() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", LanguageType.SECONDARY_LANG);
 		int value1 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value1);
@@ -180,6 +196,8 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
 		matchProperties.put("languageType", DemoAuthType.ADDRESS);
 		int value2 = matchFunction.match(2, "no 1 second street chennai", matchProperties);
 		assertEquals(0, value2);
