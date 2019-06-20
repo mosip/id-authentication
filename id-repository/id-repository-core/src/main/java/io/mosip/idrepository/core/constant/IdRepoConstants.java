@@ -38,6 +38,7 @@ public enum IdRepoConstants {
 
 	/** The application version. */
 	APPLICATION_VERSION("mosip.idrepo.identity.application.version"),
+	
 	/** The application version. */
 	APPLICATION_VERSION_VID("mosip.idrepo.vid.application.version"),
 
@@ -79,6 +80,7 @@ public enum IdRepoConstants {
 	VID_REGENERATE_ACTIVE_STATUS("INVALIDATED"),
 	
 	MODULO_VALUE("mosip.idrepo.modulo-value"),
+	
 	SPLITTER("_");
 	
 	/** The value. */
