@@ -307,7 +307,7 @@ public class BookingService {
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_401.toString(), EventName.RETRIEVE.toString(), EventType.BUSINESS.toString(),
-						"  Availability retrieved successfully for booking  ", AuditLogVariables.MULTIPLE_ID.toString(),
+						"Availability retrieved successfully for booking", AuditLogVariables.MULTIPLE_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername(), regID);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
@@ -545,7 +545,7 @@ public class BookingService {
 			} finally {
 				if (isSaveSuccess) {
 					setAuditValues(EventId.PRE_407.toString(), EventName.PERSIST.toString(),
-							EventType.BUSINESS.toString(), "  Appointment booked successfully    ",
+							EventType.BUSINESS.toString(), "Appointment booked successfully",
 							AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
 							authUserDetails().getUsername(),
 							bookingRequestDTOs.getRequest().getBookingRequest().get(0).getRegistrationCenterId());
@@ -735,11 +735,11 @@ public class BookingService {
 
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(),
-						"  Booking cancel successfully ", AuditLogVariables.MULTIPLE_ID.toString(),
+						"Booking cancel successfully", AuditLogVariables.MULTIPLE_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						" Booking failed to cancel ", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						"Booking failed to cancel", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
 						authUserDetails().getUsername(), null);
 			}
 		}
@@ -764,6 +764,7 @@ public class BookingService {
 		DeleteBookingDTO deleteDto = new DeleteBookingDTO();
 		Map<String, String> requestParamMap = new HashMap<>();
 		AvailibityEntity availableEntity;
+		boolean isSaveSuccess=false;
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preregId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
@@ -786,9 +787,22 @@ public class BookingService {
 				deleteDto.setDeletedDateTime(new Date(System.currentTimeMillis()));
 
 			}
+			isSaveSuccess=true;
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In deleteBooking method of Booking Service- " + ex.getMessage());
 			new BookingExceptionCatcher().handle(ex, response);
+		}
+		finally {
+
+			if (isSaveSuccess) {
+				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
+						"Booking deleted successfully", AuditLogVariables.MULTIPLE_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Booking failed to delete", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername(), null);
+			}
 		}
 
 		response.setResponsetime(serviceUtil.getCurrentResponseTime());
