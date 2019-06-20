@@ -40,7 +40,7 @@ public class GlobalParamDAOTest {
 	public void getGlobalParamsTest() {
 		List<GlobalParamName> params = new ArrayList<>(); 
 		
-		Mockito.when(globalParamRepository.findByIsActiveTrue()).thenReturn(params);
+		Mockito.when(globalParamRepository.findByIsActiveTrueAndValIsNotNull()).thenReturn(params);
 		Map<String,Object> globalParamMap = new LinkedHashMap<>();
 		assertEquals(globalParamMap, globalContextParamDAOImpl.getGlobalParams());
 	}
