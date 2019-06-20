@@ -31,7 +31,8 @@ import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.idrepository.core.dto.VidPolicy;
 
 /**
- * The Class VidPolicyProvider.
+ * The Class VidPolicyProvider - Provider class to load policy from policy json
+ * and provide the vid policy details based on vid type.
  *
  * @author Manoj SP
  */
@@ -55,12 +56,10 @@ public class VidPolicyProvider {
 	private Map<String, VidPolicy> vidPolicies;
 
 	/**
-	 * Policy details.
-	 * 
-	 * @throws MalformedURLException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
-	 * @throws ProcessingException
+	 * Loads policy details from policy json and validates against the schema provided.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ProcessingException schema validation processing exception
 	 */
 	@PostConstruct
 	public void loadPolicyDetails() throws IOException, ProcessingException {
@@ -79,7 +78,7 @@ public class VidPolicyProvider {
 	}
 
 	/**
-	 * Gets the policy.
+	 * Returns the policy based on the vid type provided.
 	 *
 	 * @param vidType
 	 *            the vid type
@@ -90,7 +89,7 @@ public class VidPolicyProvider {
 	}
 
 	/**
-	 * Gets the all vid types.
+	 * Returns all the vid types available in the vid policy.
 	 *
 	 * @return the all vid types
 	 */
