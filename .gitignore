@@ -29,4 +29,3 @@ test.txt
 /.recommenders/
 **/*.iml
 .vscode
-*.dat
