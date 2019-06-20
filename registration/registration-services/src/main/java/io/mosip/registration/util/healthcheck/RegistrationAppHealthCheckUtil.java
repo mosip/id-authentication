@@ -56,9 +56,17 @@ public class RegistrationAppHealthCheckUtil {
 	}
 
 	/**
-	 * Checks the Internet connectivity.
+	 * This method checks the Internet connectivity across the application.
+	 * 
+	 * <p>
+	 * Creates a {@link HttpURLConnection} and opens a communications link to the
+	 * resource referenced by this URL. If the connection is established
+	 * successfully, this method will return true which indicates Internet Access
+	 * available, otherwise, it will return false, indicating Internet Access not
+	 * available.
+	 * </p>
 	 *
-	 * @return true, if is network available
+	 * @return true, if is network available and false, if it is not available.
 	 */
 	public static boolean isNetworkAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATION APP HEALTHCHECK UTIL - ISNETWORKAVAILABLE", APPLICATION_NAME,
@@ -66,6 +74,21 @@ public class RegistrationAppHealthCheckUtil {
 		return checkServiceAvailability(System.getProperty(RegistrationConstants.REG_HEALTH_CHECK_URL_PROPERTY));
 	}
 
+	/**
+	 * This method checks the service availability.
+	 * 
+	 * <p>
+	 * Creates a {@link HttpURLConnection} and opens a communications link to the
+	 * resource referenced by this URL. If the connection is established
+	 * successfully, this method will return true which indicates Internet Access
+	 * available, otherwise, it will return false, indicating Internet Access not
+	 * available.
+	 * </p>
+	 *
+	 * @param serviceUrl
+	 *            the service url which is required to open the communications link.
+	 * @return true, if connection is available and false, if it is not available.
+	 */
 	public static boolean checkServiceAvailability(String serviceUrl) {
 		boolean isNWAvailable = false;
 		try {
@@ -97,9 +120,19 @@ public class RegistrationAppHealthCheckUtil {
 	}
 
 	/**
-	 * Checks the Disk Space Availability.
+	 * This method checks for the Disk Space Availability.
+	 * 
+	 * <p>
+	 * Gets the {@link FileSystem} of the {@link OperatingSystem} that is currently
+	 * used. Gets all the {@link OSFileStore} from the fileSystem and takes the
+	 * FileStore that matches the current directory and then checks whether the
+	 * usable space of the fileStore is greater than required disk space threshold.
+	 * If it is greater, then it indicates that the required disk space is
+	 * available, else, the required space is not available.
+	 * </p>
 	 *
-	 * @return true, if is disk space available
+	 * @return true, if is disk space available and false, if space is not
+	 *         available.
 	 */
 	public static boolean isDiskSpaceAvailable() {
 		LOGGER.info("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE", APPLICATION_NAME,
@@ -127,12 +160,18 @@ public class RegistrationAppHealthCheckUtil {
 	}
 	
 	/**
-	 * Accept any SSL certicficate.
+	 * This method is used to accept any SSL certificate.
+	 * 
+	 * <p>
+	 * Installs the all-trusting {@link TrustManager} by creating a null
+	 * implementation which is treated as a successful validation and removing all
+	 * other implementations.
+	 * </p>
 	 *
-	 * @throws NoSuchAlgorithmException 
-	 * 				the no such algorithm exception
-	 * @throws KeyManagementException 
-	 * 				the key management exception
+	 * @throws NoSuchAlgorithmException
+	 *             the no such algorithm exception
+	 * @throws KeyManagementException
+	 *             the key management exception
 	 */
 	public static void acceptAnySSLCerticficate() throws NoSuchAlgorithmException, KeyManagementException {
 		// Install the all-trusting trust manager
@@ -164,9 +203,9 @@ public class RegistrationAppHealthCheckUtil {
 	} };
 
 	/**
-	 * Checks if is windows.
+	 * This method checks if the Operating System is windows.
 	 *
-	 * @return true, if is windows
+	 * @return true, if the OS is windows
 	 */
 	public static boolean isWindows() {
 		return operatingSystem instanceof WindowsOperatingSystem;
@@ -174,9 +213,9 @@ public class RegistrationAppHealthCheckUtil {
 	}
 
 	/**
-	 * Checks if is linux.
+	 * This method checks if the Operating System is Linux.
 	 *
-	 * @return true, if is linux
+	 * @return true, if the OS is Linux
 	 */
 	public static boolean isLinux() {
 		return operatingSystem instanceof LinuxOperatingSystem;
