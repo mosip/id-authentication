@@ -472,4 +472,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	public int getMaxRetryCount() {
 		return maxRetryCount;
 	}
+
+	@Override
+	public void disconnectSftpConnection() {
+		fileManager.disconnectSftp();
+	}
 }
