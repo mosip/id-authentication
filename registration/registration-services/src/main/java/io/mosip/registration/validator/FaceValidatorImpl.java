@@ -19,7 +19,8 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.service.bio.BioService;
 
 /**
- * This class is for validating Face Authentication
+ * This class will take the face details from the DB and verify against the captured face.
+ * <p>The validation will be happen by calling the corresponding method in the bioservice</p>
  * 
  * @author Sravya Surampalli
  * @since 1.0.0 
@@ -35,6 +36,9 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator{
 	@Autowired
 	private BioService bioService;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.validator.AuthenticationBaseValidator#validate(io.mosip.registration.dto.AuthenticationValidatorDTO)
+	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		
@@ -50,6 +54,9 @@ public class FaceValidatorImpl extends AuthenticationBaseValidator{
 		return bioService.validateFaceAgainstDb(authenticationValidatorDTO.getFaceDetail(), userFaceDetails);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.validator.AuthenticationBaseValidator#validate(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public AuthTokenDTO validate(String userId, String otp) {
 		return null;
