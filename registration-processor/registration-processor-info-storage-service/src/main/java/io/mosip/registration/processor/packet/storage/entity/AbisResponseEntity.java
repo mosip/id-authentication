@@ -114,9 +114,7 @@ public class AbisResponseEntity extends BasePacketEntity<AbisResponsePKEntity> i
 	}
 
 	public byte[] getRespText() {
-		if(respText!=null)
-			return Arrays.copyOf(respText, respText.length);
-		return null;
+		return respText;
 	}
 
 	public void setRespText(byte[] respText) {
