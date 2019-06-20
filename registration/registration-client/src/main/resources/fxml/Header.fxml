@@ -17,10 +17,13 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <ImageView fitHeight="25.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
+      <ImageView fitHeight="25.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT">
          <image>
             <Image url="@../images/logo-final-small.png" />
          </image>
+         <GridPane.margin>
+            <Insets left="22.0" />
+         </GridPane.margin>
       </ImageView>
       <GridPane styleClass="headerDetails" GridPane.columnIndex="1">
         <columnConstraints>
@@ -166,13 +169,14 @@
       </GridPane>
       <GridPane GridPane.columnIndex="2">
         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <MenuBar fx:id="menu" styleClass="menuBar">
+            <MenuBar fx:id="menu" styleClass="menuBar" GridPane.columnIndex="1">
                <menus>
                   <Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
                      <graphic>
@@ -202,7 +206,7 @@
             </MenuBar>
          </children>
          <GridPane.margin>
-            <Insets left="5.0" />
+            <Insets />
          </GridPane.margin>
       </GridPane>
    </children>

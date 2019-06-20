@@ -45,7 +45,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <GridPane.margin>
-                        <Insets bottom="50.0" left="50.0" right="50.0" />
+                        <Insets bottom="50.0" left="25.0" right="50.0" />
                      </GridPane.margin>
                      <children>
                         <TableView fx:id="table" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
@@ -104,7 +104,7 @@
                         <Label styleClass="headerLabel" text="%/uploadpacket" />
                      </children>
                      <GridPane.margin>
-                        <Insets left="50.0" />
+                        <Insets left="25.0" />
                      </GridPane.margin></HBox>
                   <HBox alignment="CENTER" GridPane.columnIndex="1">
                      <children>
