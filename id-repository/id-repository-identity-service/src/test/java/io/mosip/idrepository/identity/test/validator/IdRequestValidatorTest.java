@@ -44,6 +44,7 @@ import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.identity.validator.IdRequestValidator;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
@@ -324,7 +325,8 @@ public class IdRequestValidatorTest {
 	public void testValidateRequestUnidentifiedJsonException() throws JsonParseException, JsonMappingException,
 			IOException, IdObjectIOException, IdObjectValidationFailedException {
 		when(idObjectValidator.validateIdObject(Mockito.any(), Mockito.any()))
-				.thenThrow(new IdObjectValidationFailedException("errorCode", "error - Message"));
+				.thenThrow(new IdObjectValidationFailedException(
+						IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(), "error - Message"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -332,8 +334,8 @@ public class IdRequestValidatorTest {
 		ReflectionTestUtils.invokeMethod(validator, "validateRequest", request, errors, "create");
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
-			assertEquals(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals(String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "Message"),
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "Message"),
 					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
