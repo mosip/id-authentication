@@ -21,6 +21,7 @@ import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
  * Generic class to normalize individual name, address.
  *
  * @author Rakesh Roshan
+ * @author Arun Bose S
  */
 @Component
 public class DemoNormalizerImpl implements DemoNormalizer {

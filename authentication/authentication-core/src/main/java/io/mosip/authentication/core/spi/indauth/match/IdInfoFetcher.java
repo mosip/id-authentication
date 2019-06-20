@@ -100,9 +100,22 @@ public interface IdInfoFetcher {
 	public Optional<Integer> getMatchingThreshold(String key);
 	
 	
+	/**
+	 * Gets the demo normalizer object to normalise the 
+	 * corresponding(address/name) used for demographic authentication 
+	 * .
+	 *
+	 * @return the demo normalizer
+	 */
 	public DemoNormalizer getDemoNormalizer();
 	
 	
+	/**
+	 * Gets the bio matcher util object which holds the logic 
+	 * for matching biometric values.
+	 *
+	 * @return the bio matcher util
+	 */
 	public BioMatcherUtil getBioMatcherUtil() ;
 	
 	

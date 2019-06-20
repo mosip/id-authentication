@@ -156,7 +156,6 @@ public class MatchInputBuilder {
 				}
 			}
 			Map<String, Object> matchProperties = authType.getMatchProperties(authRequestDTO, idInfoFetcher, language);
-
 			return new MatchInput(authType, matchType, matchingStrategy, matchValue, matchProperties, language);
 		}
 	}
