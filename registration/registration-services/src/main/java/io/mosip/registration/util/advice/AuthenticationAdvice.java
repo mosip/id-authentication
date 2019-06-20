@@ -46,10 +46,10 @@ public class AuthenticationAdvice {
 	 * Validate the current user id details against the DB before proceeding the key
 	 * methods On successful validation only the method return to method handling
 	 * 
-	 * @param preAuthorizeUserId
-	 *            - the {@link PreAuthorizeUserId}
+	 * @param joinPoint
+	 * @return
 	 * @throws RegBaseCheckedException
-	 *             - generalised exception with errorCode and errorMessage
+	 * @throws Throwable
 	 */
 	@Before(value = "@annotation(preAuthorizeUserId)")
 	public void authorizeUserId(PreAuthorizeUserId preAuthorizeUserId) throws RegBaseCheckedException {
@@ -63,8 +63,7 @@ public class AuthenticationAdvice {
 
 			UserDTO userDTO = loginService.getUserDetail(securityContext.getUserId());
 
-			List<String> roleList = userDTO.getUserRole().stream().map(UserRoleDTO::getRoleCode)
-					.collect(Collectors.toList());
+			List<String> roleList = userDTO.getUserRole().stream().map(UserRoleDTO::getRoleCode).collect(Collectors.toList());
 
 			for (String role : preAuthorizeUserId.roles()) {
 				roleFound = roleList.stream().anyMatch(dbrole -> dbrole.equalsIgnoreCase(role));

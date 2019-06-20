@@ -5,14 +5,11 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,10 +45,13 @@ import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 @Service
 public class GlobalParamServiceImpl extends BaseService implements GlobalParamService {
 
+<<<<<<< HEAD
+=======
 	private static final Set<String> NON_REMOVABLE_PARAMS = new HashSet<>(
 			Arrays.asList("mosip.registration.machinecenterchanged", "mosip.registration.initial_setup",
 					"mosip.reg.db.current.version", "mosip.reg.services.version",
 					RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE));
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 	/**
 	 * Instance of LOGGER
 	 */
@@ -159,31 +159,30 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 					List<GlobalParam> globalParamList = globalParamDAO.getAllEntries();
 
 					for (GlobalParam globalParam : globalParamList) {
-						if (!NON_REMOVABLE_PARAMS.contains(globalParam.getGlobalParamId().getCode())) {
-							/* Check in map, if exists, update it and remove from map */
-							GlobalParamId globalParamId = globalParam.getGlobalParamId();
 
-							if (globalParamMap.get(globalParamId.getCode()) != null) {
+						/* Check in map, if exists, update it and remove from map */
+						GlobalParamId globalParamId = globalParam.getGlobalParamId();
 
-								/* update (Local already exists) but val change */
-								if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
-										|| !(globalParam.getIsActive().booleanValue())) {
-									String val = globalParamMap.get(globalParamId.getCode()).trim();
-									updateVal(globalParam, val);
+						if (globalParamMap.get(globalParamId.getCode()) != null) {
 
-									/* Add in application map */
-									updateApplicationMap(globalParamId.getCode(), val);
+							/* update (Local already exists) but val change */
+							if (!globalParamMap.get(globalParamId.getCode()).trim().equals(globalParam.getVal())
+									|| !(globalParam.getIsActive().booleanValue())) {
+								String val = globalParamMap.get(globalParamId.getCode()).trim();
+								updateVal(globalParam, val);
 
-									isToBeRestarted = isPropertyRequireRestart(globalParamId.getCode());
-								}
+								/* Add in application map */
+								updateApplicationMap(globalParamId.getCode(), val);
+
+								isToBeRestarted = isPropertyRequireRestart(globalParamId.getCode());
 							}
-							/* Set is deleted true as removed from server */
-							else {
-								updateIsDeleted(globalParam);
-								ApplicationContext.removeGlobalConfigValueOf(globalParamId.getCode());
-							}
-							globalParamMap.remove(globalParamId.getCode());
 						}
+						/* Set is deleted true as removed from server */
+						else {
+							updateIsDeleted(globalParam);
+							ApplicationContext.removeGlobalConfigValueOf(globalParamId.getCode());
+						}
+						globalParamMap.remove(globalParamId.getCode());
 					}
 
 					for (Entry<String, String> key : globalParamMap.entrySet()) {
@@ -263,14 +262,14 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	 * updateSoftwareUpdateStatus(boolean)
 	 */
 	@Override
-	public ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable, Timestamp timestamp) {
+	public ResponseDTO updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp) {
 
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"Updating the SoftwareUpdate flag started.");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(isUpdateAvailable, timestamp);
+		GlobalParam globalParam = globalParamDAO.updateSoftwareUpdateStatus(isUpdateAvailable,timestamp);
 
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 		if (globalParam.getVal().equalsIgnoreCase(RegistrationConstants.ENABLE)) {
@@ -332,7 +331,11 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	private void updateApplicationMap(String code, String val) {
 		ApplicationContext.setGlobalConfigValueOf(code, val);
+<<<<<<< HEAD
+		getBaseGlobalMap().put(code, val);
+=======
 		// getBaseGlobalMap().put(code, val);
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
 
 	}
 }

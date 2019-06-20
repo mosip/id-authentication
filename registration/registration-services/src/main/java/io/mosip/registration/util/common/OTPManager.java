@@ -1,6 +1,7 @@
 package io.mosip.registration.util.common;
 
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,7 +21,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.AuthNRequestDTO;
 import io.mosip.registration.dto.AuthNSendOTPDTO;
-import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
@@ -81,6 +81,7 @@ public class OTPManager extends BaseService {
 
 		// Create Response to return to UI layer
 		ResponseDTO response = new ResponseDTO();
+		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 
 		try {
 			/* Check Network Connectivity */
@@ -103,6 +104,7 @@ public class OTPManager extends BaseService {
 				otpGeneratorRequestDto.setKey(userId);
 
 				// obtain otpGeneratorResponseDto from serviceDelegateUtil
+				@SuppressWarnings("unchecked")
 				HashMap<String, Object> responseMap = (HashMap<String, Object>) serviceDelegateUtil.post("send_otp",
 						authNRequestDTO, RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (responseMap.get("response") != null) {
@@ -185,13 +187,13 @@ public class OTPManager extends BaseService {
 	 *            the user entered OTP
 	 * @return the {@link AuthTokenDTO} object.
 	 */
-	public AuthTokenDTO validateOTP(String userId, String otp) {
+	public ResponseDTO validateOTP(String userId, String otp) {
 
 		LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validate OTP Started");
 
-		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-		
+		ResponseDTO responseDTO = new ResponseDTO();
+
 		try {
 			/* Check Network Connectivity */
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -203,23 +205,30 @@ public class OTPManager extends BaseService {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
 				loginUserDTO.setUserId(userId);
 				loginUserDTO.setOtp(otp);
-				
-				LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, "Validate OTP ended");				
 
 				// Obtain otpValidatorResponseDto from service delegate util
-				authTokenDTO = serviceDelegateUtil.getAuthToken(LoginMode.OTP);
-			} 
+				serviceDelegateUtil.getAuthToken(LoginMode.OTP);
+				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+				successResponseDTO.setCode("Validation Successful");
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
+				setSuccessResponse(responseDTO, null, null);
+			} else {
+				setErrorResponse(responseDTO, RegistrationConstants.CONNECTION_ERROR, null);
+			}
 		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| RegBaseUncheckedException exception) {
-			
-			authTokenDTO = null;
 
 			LOGGER.error(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
+			setErrorResponse(responseDTO, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE, null);
+
 		}
-		return authTokenDTO;
+
+		LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validate OTP ended");
+
+		return responseDTO;
 	}
 }

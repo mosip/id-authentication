@@ -11,7 +11,7 @@ public @interface PreAuthorizeUserId {
 	/**
 	 * List of the roles which needs to accessed for method
 	 * 
-	 * @return String[] - the roles
+	 * @return
 	 */
 	public String[] roles() default {""};
 	

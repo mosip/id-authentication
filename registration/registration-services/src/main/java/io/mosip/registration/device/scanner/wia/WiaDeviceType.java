@@ -1,5 +1,7 @@
 package io.mosip.registration.device.scanner.wia  ;
 
+import com4j.*;
+
 /**
  * <p>
  * The WiaDeviceType enumeration specifies the type of device attached to a user's computer. Use the Type property on the DeviceInfo object or the Device object to obtain these values from the device.

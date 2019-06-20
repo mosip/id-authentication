@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +12,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -28,8 +25,6 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.constants.MosipBioDeviceConstants;
-import io.mosip.registration.mdm.dto.CaptureResponsBioDataDto;
-import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
 import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.dto.DeviceDiscoveryResponsetDto;
 import io.mosip.registration.mdm.util.MdmRequestResponseBuilder;
@@ -109,10 +104,6 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 		try {
 			mosipBioCaptureResponseDto = mapper.readValue(mapper.writeValueAsString(mosipBioCaptureResponseMap),
 					CaptureResponseDto.class);
-
-			/* Decode the bio response */
-			decodeBiometrics(mapper, mosipBioCaptureResponseDto);
-
 			auditFactory.audit(AuditEvent.MDM_CAPTURE_SUCCESS, Components.MDM_CAPTURE_SUCESS,
 					RegistrationConstants.APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
@@ -127,39 +118,6 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 		return mosipBioCaptureResponseDto;
 
-	}
-
-	protected void decodeBiometrics(ObjectMapper mapper, CaptureResponseDto mosipBioCaptureResponseDto)
-			throws IOException, JsonParseException, JsonMappingException {
-		if (null != mosipBioCaptureResponseDto) {
-			mosipBioCaptureResponseDto.setSlapImage(mosipBioCaptureResponseDto.getSlapImage() != null
-					? Base64.getDecoder().decode(mosipBioCaptureResponseDto.getSlapImage())
-					: null);
-			if (mosipBioCaptureResponseDto.getMosipBioDeviceDataResponses() != null) {
-
-				for (CaptureResponseBioDto captureResponseBioDto : mosipBioCaptureResponseDto
-						.getMosipBioDeviceDataResponses()) {
-					if (null != captureResponseBioDto) {
-						String bioJson = new String(Base64.getDecoder().decode(captureResponseBioDto.getCaptureBioData()));
-						if (null != bioJson) {
-							CaptureResponsBioDataDto captureResponsBioDataDto = mapper.readValue(bioJson,
-									CaptureResponsBioDataDto.class);
-							if (null != captureResponsBioDataDto) {
-								if (null != captureResponsBioDataDto.getBioExtract())
-									captureResponsBioDataDto.setBioExtract(
-											Base64.getDecoder().decode(captureResponsBioDataDto.getBioExtract()));
-								if (null != captureResponsBioDataDto.getBioValue())
-									captureResponsBioDataDto.setBioValue(
-											Base64.getDecoder().decode(captureResponsBioDataDto.getBioValue()));
-								captureResponseBioDto.setCaptureResponseData(captureResponsBioDataDto);
-							}
-
-						}
-					}
-
-				}
-			}
-		}
 	}
 
 	/*

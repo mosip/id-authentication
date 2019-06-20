@@ -6,6 +6,7 @@ import static org.mockito.Mockito.doNothing;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,24 +15,18 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.impl.UserOnboardDAOImpl;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
@@ -56,8 +51,11 @@ import io.mosip.registration.repositories.UserMachineMappingRepository;
  *
  * @since 1.0.0
  */
+<<<<<<< HEAD
+=======
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SessionContext.class, ApplicationContext.class })
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 public class UserOnBoardDAOImlpTest {
 
 	@Rule
@@ -77,6 +75,7 @@ public class UserOnBoardDAOImlpTest {
 
 	@InjectMocks
 	private UserOnboardDAOImpl userOnboardDAOImpl;
+<<<<<<< HEAD
 	
 	@Before
 	public void initialize() throws Exception {
@@ -88,6 +87,13 @@ public class UserOnBoardDAOImlpTest {
 		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
 		
 		
+=======
+
+	@BeforeClass
+	public static void beforeClass() throws URISyntaxException {
+
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.USER_STATION_ID, "1947");
 		appMap.put(RegistrationConstants.USER_CENTER_ID, "1947");
@@ -197,6 +203,8 @@ public class UserOnBoardDAOImlpTest {
 
 		biometricDTO.setOperatorBiometricDTO(info);
 
+		UserMachineMapping user = new UserMachineMapping();
+
 		Mockito.when(userBiometricRepository.saveAll(bioMetricsList)).thenReturn(bioMetricsList);
 		doNothing().when(userBiometricRepository).deleteByUserBiometricIdUsrId(Mockito.anyString());
 
@@ -208,10 +216,13 @@ public class UserOnBoardDAOImlpTest {
 	public void savetest() {
 		UserMachineMapping machineMapping = new UserMachineMapping();
 		Mockito.when(userMachineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
+<<<<<<< HEAD
 		userOnboardDAOImpl.save();
+=======
+		Assert.assertSame(userOnboardDAOImpl.save(), RegistrationConstants.SUCCESS);
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test(expected = RuntimeException.class)
 	public void saveFailuretest() {
 

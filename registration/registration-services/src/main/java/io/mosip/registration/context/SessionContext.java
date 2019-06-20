@@ -1,22 +1,13 @@
 package io.mosip.registration.context;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.context.ApplicationContext;
-
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.config.AppConfig;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.LoginMode;
 import io.mosip.registration.constants.ProcessNames;
@@ -41,26 +32,11 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
  *
  */
 public class SessionContext {
-	
-	/**
-	 * Instance of {@link Logger}
-	 */
-	private static final Logger LOGGER = AppConfig.getLogger(SessionContext.class);
-	
-	private static ApplicationContext applicationContext;
-	
-	public static void setApplicationContext(ApplicationContext applicationContext) {
-		SessionContext.applicationContext = applicationContext;
-	}
-	
+
 	/**
 	 * instance of sessionContext
 	 */
 	private static SessionContext sessionContext;
-	
-	private static List<String> authModes = new ArrayList<>();
-	
-	private static List<String> validAuthModes = new ArrayList<>();
 
 	/**
 	 * constructor of sessionContext
@@ -85,10 +61,14 @@ public class SessionContext {
 	 * @return sessionContext
 	 */
 	public static SessionContext getInstance() {
-		if(null != authModes && null != validAuthModes && authModes.containsAll(validAuthModes)) {
+		if (sessionContext == null) {
+			sessionContext = new SessionContext();
+			sessionContext.setId(UUID.randomUUID());
+			sessionContext.setMapObject(new HashMap<>());
+			userContext = sessionContext.new UserContext();
+			sessionContext.authTokenDTO = new AuthTokenDTO();
 			return sessionContext;
 		} else {
-			sessionContext = null;
 			return sessionContext;
 		}
 	}
@@ -110,15 +90,10 @@ public class SessionContext {
 	 * 
 	 * @return boolean
 	 */
-	public static boolean create(UserDTO userDTO, String loginMethod, boolean isInitialSetUp, boolean isUserNewToMachine, AuthenticationValidatorDTO authenticationValidatorDTO){
-		
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Entering into creating Session Context");
-		
-		LoginService loginService = applicationContext.getBean(LoginService.class);
-		
-		Set<String> roleList = new LinkedHashSet<>();
-		if(null != userDTO) {
+	public static SessionContext create(UserDTO  userDTO){
+		if (userDTO != null) {
+			List<String> roleList = new ArrayList<>();
+
 			userDTO.getUserRole().forEach(roleCode -> {
 				if (roleCode.isActive()) {
 					roleList.add(String.valueOf(roleCode.getRoleCode()));
@@ -447,8 +422,7 @@ public class SessionContext {
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER, false);
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
 		} else {
-			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER, true);
-			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+			return sessionContext;
 		}
 	}
 
@@ -464,11 +438,10 @@ public class SessionContext {
 	/**
 	 * Return the Type casted object based on the input
 	 * 
-	 * @param map - map that contains key and values to be typecasted
-	 * @param key - input to typecast
-	 * @param returnType - the type to which the object has to be typecasted
-	 * @param <T> - Generic type
-	 * @return T - typecasted object
+	 * @param map
+	 * @param key
+	 * @param returnType
+	 * @return
 	 */
 	public static <T> T getValue(Map<String,Object> map, String key, Class<T> returnType){
 		return returnType.cast(map.get(key));
@@ -544,7 +517,7 @@ public class SessionContext {
 	 *            DTO for auth token
 	 */
 	public static void setAuthTokenDTO(AuthTokenDTO authTokenDTO) {
-		sessionContext.authTokenDTO = authTokenDTO;
+		SessionContext.getInstance().authTokenDTO = authTokenDTO;
 	}
 
 	/**
@@ -562,7 +535,7 @@ public class SessionContext {
 	 * @return userId
 	 */
 	public static String userId() {
-		if (sessionContext == null || sessionContext.getUserContext() == null || sessionContext.getUserContext().getUserId() == null) {
+		if (sessionContext == null || sessionContext.getUserContext().getUserId() == null) {
 			return RegistrationConstants.AUDIT_DEFAULT_USER;
 		} else {
 			return sessionContext.getUserContext().getUserId();
@@ -575,7 +548,7 @@ public class SessionContext {
 	 * @return userName
 	 */
 	public static String userName() {
-		if (sessionContext == null || sessionContext.getUserContext() == null || sessionContext.getUserContext().getName() == null) {
+		if (sessionContext == null || sessionContext.getUserContext().getName() == null) {
 			return RegistrationConstants.AUDIT_DEFAULT_USER;
 		} else {
 			return sessionContext.getUserContext().getName();
@@ -728,11 +701,6 @@ public class SessionContext {
 	 */
 	public static void destroySession() {
 		sessionContext = null;
-		authModes.clear();
-		validAuthModes.clear();
-		
-		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-				"Leaving Session Context");
 	}
 
 	/**
@@ -941,9 +909,10 @@ public class SessionContext {
 		}
 
 		/**
-		 * Setter for securityAuthenticationMap
+		 * Setter for userMap
 		 * 
-		 * @param securityAuthenticationMap - Security Authentication Map
+		 * @param userMap
+		 *            user map
 		 */
 		public void setSecurityAuthenticationMap(Map<String, Object> securityAuthenticationMap) {
 			this.securityAuthenticationMap = securityAuthenticationMap;

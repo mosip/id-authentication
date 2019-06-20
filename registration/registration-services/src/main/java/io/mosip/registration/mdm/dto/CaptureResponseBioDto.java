@@ -1,6 +1,5 @@
 package io.mosip.registration.mdm.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -10,11 +9,9 @@ import lombok.Setter;
 @Setter
 public class CaptureResponseBioDto {
 
-	@JsonIgnore
+	@JsonProperty("data")
 	private CaptureResponsBioDataDto captureResponseData;
 
-	@JsonProperty("data")
-	private String captureBioData;
 	private String hash;
 	private String sessionKey;
 	private String signature;
