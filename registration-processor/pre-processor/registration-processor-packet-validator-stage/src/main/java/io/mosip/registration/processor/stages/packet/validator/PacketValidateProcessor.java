@@ -481,6 +481,7 @@ public class PacketValidateProcessor {
 
 		if (RegistrationType.NEW.name().equalsIgnoreCase(registrationStatusDto.getRegistrationType())
 				&& !mandatoryValidation(registrationStatusDto)) {
+			packetValidaionFailure = "mandatory Validation failed";
 			return false;
 		}
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
