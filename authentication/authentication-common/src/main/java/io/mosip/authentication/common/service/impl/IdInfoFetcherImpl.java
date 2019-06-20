@@ -27,6 +27,8 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
+import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.IdMapping;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
@@ -69,7 +71,24 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	/** The id mapping config. */
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
+	
+	
+	@Autowired
+	private BioMatcherUtil bioMatcherUtil;
+	
+	@Autowired
+	private DemoNormalizer demoNormalizer;
+	
+	@Override
+	public DemoNormalizer getDemoNormalizer() {
+		return demoNormalizer;
+	}
 
+	@Override
+	public BioMatcherUtil getBioMatcherUtil() {
+		return bioMatcherUtil;
+	}
+	
 	/**
 	 * Fetch language code from properties
 	 *
@@ -272,5 +291,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 		}
 		return Optional.ofNullable(threshold);
 	}
+
+	
 
 }

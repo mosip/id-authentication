@@ -54,6 +54,8 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
+import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
@@ -83,6 +85,12 @@ public class DemoAuthServiceTest {
 
 	@Mock
 	private IdService<?> idInfoService;
+
+	@Mock
+	private BioMatcherUtil bioMatcherUtil;
+
+	@Mock
+	private DemoNormalizer demoNormalizer;
 
 	@Mock
 	private MasterDataManager masterDataManager;
@@ -522,6 +530,8 @@ public class DemoAuthServiceTest {
 		demoEntity.put("fullName", nameList);
 		Set<String> valueSet = new HashSet<>();
 		valueSet.add("fra");
+		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+				.thenReturn("Dinesh");
 		AuthStatusInfo authenticate = demoAuthServiceImpl.authenticate(authRequestDTO, individualId, demoEntity,
 				"1234567890");
 		assertTrue(authenticate.isStatus());
