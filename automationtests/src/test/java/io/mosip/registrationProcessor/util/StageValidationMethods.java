@@ -9,27 +9,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.dbentity.TransactionStatus;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 import io.mosip.dbaccess.RegProcTransactionDb;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
 
 public class StageValidationMethods extends BaseTestCase {
-	TokenGeneration generateToken=new TokenGeneration();
-	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	//StageValidationMethods apiRequest=new StageValidationMethods();
 	private static Logger logger = Logger.getLogger(StageValidationMethods.class);
-	RegProcApiRequests apiRequests=new RegProcApiRequests();
 	RegProcTransactionDb packetTransaction = new RegProcTransactionDb();
 	String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 	Properties prop =  new Properties();
@@ -38,20 +30,12 @@ public class StageValidationMethods extends BaseTestCase {
 	static public List<String> statusFromDb=new LinkedList<String>();
 	ApplicationLibrary applnMethods=new ApplicationLibrary();
 	EncryptData encryptData=new EncryptData();
-	String validToken="";
-	public String getToken(String tokenType) {
-		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
-		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
-		String token=generateToken.getToken(tokenEntity);
-		return token;
-		}
-	private final String encrypterURL="/v1/cryptomanager/encrypt";
+	private final String encrypterURL="https://int.mosip.io/v1/cryptomanager/encrypt";
 	@SuppressWarnings("unchecked")
 	public String syncPacket(File packet) {
-		validToken=getToken("syncTokenGenerationFilePath");
 		RegistrationPacketSyncDTO registrationPacketSyncDto=null;;
 		try {
-			registrationPacketSyncDto = encryptData.createSyncRequest(packet,"NEW");
+			registrationPacketSyncDto = encryptData.createSyncRequest(packet);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,8 +43,7 @@ public class StageValidationMethods extends BaseTestCase {
 		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 		JSONObject requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
 		String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-		Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON,validToken);
+		Response resp=applnMethods.postRequestToDecrypt(requestToEncrypt, encrypterURL);
 		String encryptedData = resp.jsonPath().get("response.data").toString();
 		LocalDateTime timeStamp=null;
 		try {
@@ -75,8 +58,8 @@ public class StageValidationMethods extends BaseTestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Response actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
-				timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
+		Response actualResponse = applnMethods.regProcSync(encryptedData,prop.getProperty("syncListApi"),center_machine_refID,
+				timeStamp.toString()+"Z");
 		int status=actualResponse.statusCode();
 		if(status==200) {
 			return "Sync Successfull";
@@ -85,7 +68,6 @@ public class StageValidationMethods extends BaseTestCase {
 		}
 	}
 	public void uploadPacket(File file) {
-		validToken=getToken("syncTokenGenerationFilePath");
 		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 		Properties prop=new Properties();
 		try {
@@ -94,7 +76,7 @@ public class StageValidationMethods extends BaseTestCase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Response response=apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
+		Response response=applnMethods.putMultipartFile(file, prop.getProperty("packetReceiverApi"));
 		logger.info("Response from packet upload :: "+ response.asString());
 	}
 	public List<String> getStatusList(String regID) {

@@ -2,11 +2,11 @@ package io.mosip.registration.test.update;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -74,7 +73,8 @@ public class SoftwareUpdateHandlerTest {
 
 	}
 
-	//@Test
+	@Ignore
+	@Test
 	public void executeSQLTestRollBack() throws Exception {
 
 		// SoftwareUpdateHandler softwareUpdateHandler =new SoftwareUpdateHandler();

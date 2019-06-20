@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeClass;
 
 import io.mosip.preregistration.service.PreRegistrationApplicationLibrary;
 import io.mosip.service.BaseTestCase;
+import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
 public class QRCodeUtil 
@@ -50,9 +51,10 @@ public class QRCodeUtil
 				}
 			}
 		}
-
-		request.put("requesttime", preregUtil.getCurrentDate());
+		
+		request.put("requesttime", PreRegistrationLibrary.getCurrentDate());
 		response = applnLib.postRequest(request, qrCode_URI);
+		
 
 		return response;
 	}

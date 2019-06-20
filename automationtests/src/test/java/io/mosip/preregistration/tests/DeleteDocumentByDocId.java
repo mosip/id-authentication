@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -130,11 +131,17 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
        // logger.info("Doc upload res::"+docUploadResponse.asString());
 		// Get PreId from Document upload response
-		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
-
+		try {
+			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception occured while uploading document ");
+		}
 		// Get docId from Document upload response
-		docId = docUploadResponse.jsonPath().get("response.docId").toString();
-		 
+		try {
+			docId = docUploadResponse.jsonPath().get("response.docId").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Document id is not present in document upload response");
+		}
 		if (testCaseName.contains("smoke")) {
 
 			// Delete All Document by Document Id
@@ -147,7 +154,12 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 
 			
 		} else if (testCaseName.contains("DeleteDocumentByDocIdByPassingInvalidDocumentId")) {
-			docId = actualRequest.get("documentId").toString();
+			try {
+				
+				docId = actualRequest.get("documentId").toString();
+			} catch (NullPointerException  e) {
+				Assert.assertTrue(false, "Document id is not present in document upload response");
+			}
 
 			parm.put("preRegistrationId", preId);
 

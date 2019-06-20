@@ -2,6 +2,5 @@
     "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withAlphabets":"",
     "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withAlphaNumeric":"", 
     "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withAlphaNumericAndSpecialCharacters":"", 
-    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withEmptyValue":"",
-    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withSpecialCharacters":"" 
+    "prereg_FetchAvailabilityDataOfRegistrationCenters_registrationCenterId_withEmptyValue":""
 }

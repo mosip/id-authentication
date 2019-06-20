@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +13,23 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import com.sun.jna.platform.win32.Sspi.TimeStamp;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
@@ -37,6 +38,8 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.impl.RegistrationApprovalServiceImpl;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class RegistrationApprovalServiceTest {
 
 	@Rule
@@ -56,14 +59,17 @@ public class RegistrationApprovalServiceTest {
 	}
 	
 	@Before
-	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
+	public void initialize() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
 		List<String> roles = new ArrayList<>();
 		roles.add("SUPERADMIN");
 		roles.add("SUPERVISOR");
-		SessionContext.getInstance().getUserContext().setUserId("mosip1214");
-		SessionContext.getInstance().getUserContext().setRoles(roles);
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip1214");
+		PowerMockito.when(SessionContext.userContext().getRoles()).thenReturn(roles);
 	}
 
 	@Test
@@ -108,8 +114,8 @@ public class RegistrationApprovalServiceTest {
 		regobject.setId("123456");
 		regobject.setClientStatusCode("A");
 		regobject.setCrBy("Mosip123");
-		regobject.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
-		regobject.setApproverRoleCode(SessionContext.getInstance().getUserContext().getRoles().get(0));
+		regobject.setUpdBy(SessionContext.userContext().getUserId());
+		regobject.setApproverRoleCode(SessionContext.userContext().getRoles().get(0));
 		regobject.setAckFilename("file1");
 
 		regobject.setUserdetail(regUserDetail);

@@ -39,7 +39,7 @@ public class MdmRequestResponseBuilder {
 	/**
 	 * Builds the capture request dto
 	 * 
-	 * @param BioDevice
+	 * @param bioDevice
 	 *            - type of device
 	 * @return captureRequestDto
 	 */
@@ -84,8 +84,8 @@ public class MdmRequestResponseBuilder {
 	
 	/**
 	 * Returns the map for captured byte
-	 * @param CaptureResponseDto
-	 * @return Map<String, byte[])
+	 * @param mosipBioCaptureResponseDto - CaptureResponseDto
+	 * @return {@link Map}
 	 */
 	public static Map<String, byte[]> parseBioCaptureResponse(CaptureResponseDto mosipBioCaptureResponseDto) {
 
@@ -117,8 +117,8 @@ public class MdmRequestResponseBuilder {
 
 	/**
 	 * Returns the map for captured byte
-	 * @param String
-	 * 			-deviceType
+	 * @param deviceType
+	 * 			- type of the device
 	 * @return DeviceDiscoveryRequestDto
 	 */
 	public static DeviceDiscoveryRequestDto buildDeviceDiscoveryRequest(String deviceType) {

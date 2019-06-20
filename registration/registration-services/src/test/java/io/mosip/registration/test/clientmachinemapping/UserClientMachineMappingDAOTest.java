@@ -17,12 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-<<<<<<< HEAD
-=======
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
->>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 
 import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
@@ -57,7 +54,7 @@ public class UserClientMachineMappingDAOTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	MachineMappingDAOImpl machineMappingDAOImpl;
+	private MachineMappingDAOImpl machineMappingDAOImpl;
 	@Mock
 	private CenterMachineRepository centerMachineRepository;
 	@Mock
@@ -178,8 +175,6 @@ public class UserClientMachineMappingDAOTest {
 		Assert.assertNotNull((machineMappingDAOImpl.getDevicesMappedToRegCenter("eng")));
 	}
 
-<<<<<<< HEAD
-=======
 	@Test
 	public void getKeyIndexByMacIdTest() {
 		MachineMaster machineMaster = PowerMockito.mock(MachineMaster.class);
@@ -202,5 +197,4 @@ public class UserClientMachineMappingDAOTest {
 
 	}
 
->>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 }

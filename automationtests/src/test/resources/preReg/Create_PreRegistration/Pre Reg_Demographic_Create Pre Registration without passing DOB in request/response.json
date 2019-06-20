@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "responsetime": "2019-06-06T11:04:12.630Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-IOV-005",
+            "message": "Missing input parameter - identity/dateOfBirth | identity/age"
+        }
+    ]
+}

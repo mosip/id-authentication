@@ -18,6 +18,10 @@ import lombok.Data;
 @Data
 public class ScreenDetailId implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1205506473293466764L;
 	@Column(name = "id")
 	private String id;
 	@Column(name = "lang_code")

@@ -121,7 +121,6 @@ public class ServiceDelegateUtil {
 			// URI creation
 			String url = getEnvironmentProperty(serviceName, RegistrationConstants.SERVICE_URL);
 
-		
 			Map<String, String> queryParams = new HashMap<>();
 			for (String key : requestParams.keySet()) {
 				if (!url.contains("{" + key + "}")) {
@@ -132,7 +131,7 @@ public class ServiceDelegateUtil {
 
 			if (hasPathParams) {
 				requestHTTPDTO.setUri(UriComponentsBuilder.fromUriString(url).build(requestParams));
-				url=requestHTTPDTO.getUri().toString();
+				url = requestHTTPDTO.getUri().toString();
 			}
 			if (!queryParams.isEmpty()) {
 				/** Set URI */
@@ -142,6 +141,8 @@ public class ServiceDelegateUtil {
 			LOGGER.debug(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME, APPLICATION_ID,
 					"set uri method called");
 
+			responseMap = restClientUtil.invoke(requestHTTPDTO);
+
 		} catch (RegBaseCheckedException baseCheckedException) {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
@@ -149,7 +150,6 @@ public class ServiceDelegateUtil {
 					baseCheckedException);
 		}
 
-		responseMap = restClientUtil.invoke(requestHTTPDTO);
 		if (isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY)) {
 			responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
 		}
@@ -192,11 +192,12 @@ public class ServiceDelegateUtil {
 			requestDto.setTriggerPoint(triggerPoint);
 			requestDto.setRequestSignRequired(
 					Boolean.valueOf(getEnvironmentProperty(serviceName, RegistrationConstants.REQUEST_SIGN_REQUIRED)));
+			responseMap = restClientUtil.invoke(requestDto);
 		} catch (RegBaseCheckedException baseCheckedException) {
 			throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DELEGATE_UTIL,
 					baseCheckedException.getMessage() + ExceptionUtils.getStackTrace(baseCheckedException));
 		}
-		responseMap = restClientUtil.invoke(requestDto);
+
 		if (isResponseValid(responseMap, RegistrationConstants.REST_RESPONSE_BODY)) {
 			responseBody = responseMap.get(RegistrationConstants.REST_RESPONSE_BODY);
 		}
@@ -209,16 +210,13 @@ public class ServiceDelegateUtil {
 	/**
 	 * Builds the request and passess it to REST client util
 	 * 
-	 * @param url
-	 *            - MDM service url
-	 * @param serviceName
-	 *            - MDM service name
-	 * @param request
-	 *            - request data
-	 * @param responseType
-	 *            - response format
-	 * @return
-	 * @throws RegBaseCheckedException
+	 * @param url          - MDM service url
+	 * @param serviceName  - MDM service name
+	 * @param request      - request data
+	 * @param responseType - response format
+	 * @return Object - response body
+	 * @throws RegBaseCheckedException - generalized exception with errorCode and
+	 *                                 errorMessage
 	 */
 	public Object invokeRestService(String url, String serviceName, Object request, Class<?> responseType)
 			throws RegBaseCheckedException {
@@ -250,18 +248,15 @@ public class ServiceDelegateUtil {
 		return responseBody;
 
 	}
-	
+
 	/**
 	 * prepares the request
 	 * 
-	 * @param requestHTTPDTO
-	 *            - holds the request data for a REST call
-	 * @param serviceName
-	 *            - service name
-	 * @param request
-	 *            - request data
-	 * @param responseType
-	 *            - response format
+	 * @param requestHTTPDTO - holds the request data for a REST call
+	 * @param serviceName    - service name
+	 * @param request        - request data
+	 * @param responseType   - response format
+	 * @param url            - the URL
 	 */
 	protected void prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object request,
 			Class<?> responseType, String url) {
@@ -284,7 +279,7 @@ public class ServiceDelegateUtil {
 		setHeaders(requestHTTPDTO.getHttpHeaders(), getEnvironmentProperty(serviceName, RegistrationConstants.HEADERS));
 		requestHTTPDTO.setAuthRequired(false);
 	}
-	
+
 	/**
 	 * Prepare GET request.
 	 *
@@ -400,14 +395,14 @@ public class ServiceDelegateUtil {
 			for (String subheader : header) {
 				if (subheader != null) {
 					headerValues = subheader.split(":");
-					if(headerValues[0].equalsIgnoreCase("timestamp")) {
+					if (headerValues[0].equalsIgnoreCase("timestamp")) {
 						headerValues[1] = DateUtils.getUTCCurrentDateTimeString();
-					} else if(headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
+					} else if (headerValues[0].equalsIgnoreCase("Center-Machine-RefId")) {
 						headerValues[1] = String
 								.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_CENTER_ID))
 								.concat(RegistrationConstants.UNDER_SCORE).concat(String
 										.valueOf(ApplicationContext.map().get(RegistrationConstants.USER_STATION_ID)));
-					} 
+					}
 					httpHeaders.add(headerValues[0], headerValues[1]);
 				}
 			}
@@ -494,7 +489,7 @@ public class ServiceDelegateUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getAuthToken(LoginMode loginMode) throws RegBaseCheckedException {
+	public AuthTokenDTO getAuthToken(LoginMode loginMode) throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Auth Token based on Login Mode");
@@ -515,7 +510,7 @@ public class ServiceDelegateUtil {
 			requestHTTPDTO.setHttpHeaders(headers);
 			requestHTTPDTO.setIsSignRequired(false);
 			requestHTTPDTO.setRequestSignRequired(false);
-			
+
 			setURI(requestHTTPDTO, requestParams, getEnvironmentProperty(
 					"auth_by_".concat(loginMode.getCode().toLowerCase()), RegistrationConstants.SERVICE_URL));
 
@@ -523,7 +518,6 @@ public class ServiceDelegateUtil {
 
 			// set simple client http request
 			setTimeout(requestHTTPDTO);
-			
 
 			responseMap = restClientUtil.invoke(requestHTTPDTO);
 
@@ -566,9 +560,17 @@ public class ServiceDelegateUtil {
 			if (loginMode.equals(LoginMode.CLIENTID)) {
 				ApplicationContext.setAuthTokenDTO(authTokenDTO);
 			} else {
-				SessionContext.setAuthTokenDTO(authTokenDTO);
+				if(null != SessionContext.getInstance()) {
+					SessionContext.setAuthTokenDTO(authTokenDTO);
+				} else {
+					return authTokenDTO;
+				}
 			}
-
+			
+			LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+					"Completed fetching Auth Token based on Login Mode");
+			
+			return authTokenDTO;
 		} catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| IOException restException) {
 			throw new RegBaseCheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
@@ -577,9 +579,6 @@ public class ServiceDelegateUtil {
 			throw new RegBaseUncheckedException(RegistrationConstants.REST_OAUTH_ERROR_CODE,
 					RegistrationConstants.REST_OAUTH_ERROR_MSG, runtimeException);
 		}
-
-		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
-				"Completed fetching Auth Token based on Login Mode");
 	}
 
 	private String getEnvironmentProperty(String serviceName, String serviceComponent) {
