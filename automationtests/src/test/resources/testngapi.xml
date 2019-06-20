@@ -150,7 +150,7 @@
 			<class name="io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord" />
 		    <class name="io.mosip.authentication.idRepository.prerequiste.UpdateVID" />
 		    <class name="io.mosip.authentication.tests.OtpGeneration" />
-			<class name="io.mosip.authentication.tests.DemographicAuthentication" /> 
+		  <!--	<class name="io.mosip.authentication.tests.DemographicAuthentication" /> 
 			 <class name="io.mosip.authentication.tests.AuthPartnerAuthentication" />
 			<class name="io.mosip.authentication.tests.OtpAuthentication" /> 
 		    <class name="io.mosip.authentication.tests.BiometricAuthentication" />
