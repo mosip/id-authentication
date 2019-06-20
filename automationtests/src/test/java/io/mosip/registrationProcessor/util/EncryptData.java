@@ -85,7 +85,7 @@ public class EncryptData {
 	System.out.println(dto.toString());
 	System.out.println(e.encryptData(dto));
 	}*/
-	public RegistrationPacketSyncDTO createSyncRequest(File f, String regType) throws ParseException {
+	public RegistrationPacketSyncDTO createSyncRequest(File f) throws ParseException {
 		String regId=f.getName().substring(0,f.getName().lastIndexOf("."));
 		HashSequenceUtil hashSeqUtil = new HashSequenceUtil();
 		String packetHash=hashSeqUtil.getPacketHashSequence(f);
@@ -94,7 +94,7 @@ public class EncryptData {
 		syncRegistrationDto.setPacketHashValue(packetHash);
 		syncRegistrationDto.setPacketSize(BigInteger.valueOf(f.length()));
 		syncRegistrationDto.setRegistrationId(regId);
-		syncRegistrationDto.setRegistrationType(regType);
+		syncRegistrationDto.setRegistrationType("NEW");
 		syncRegistrationDto.setSupervisorComment("APPROVED");
 		syncRegistrationDto.setSupervisorStatus("APPROVED");
 		List<SyncRegistrationDto> syncRegistrationList=new ArrayList<SyncRegistrationDto>();

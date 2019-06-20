@@ -1,90 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.mosip.e2etestrig</groupId>
+    <artifactId>e2etestrig</artifactId>
+    <version>0.12.2</version>
+  </parent>
   <artifactId>reg-client-automation</artifactId>
-<parent>
-		<groupId>io.mosip.registration</groupId>
-		<artifactId>registration-parent</artifactId>
-		<version>0.12.0</version>
-	</parent> 
-	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.apache.clerezza.ext/org.json.simple -->
-		<dependency>
-			<groupId>org.apache.clerezza.ext</groupId>
-			<artifactId>org.json.simple</artifactId>
-			<version>${json.clerezza.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-model</artifactId>
-			<version>${maven.model.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.relevantcodes</groupId>
-			<artifactId>extentreports</artifactId>
-			<version>${extentreports.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registration</groupId>
-			<artifactId>registration-services</artifactId>
-			<version>${registration.services.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>${json.version}</version>
-		</dependency>
-
-	</dependencies>
-
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-
-	<build>
-		<plugins>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>3.0.0-M3</version>
-				<configuration>
-					<suiteXmlFiles>
-						<suiteXmlFile>Reg-automation-service.xml</suiteXmlFile>
-					</suiteXmlFiles>
-					<outputDirectory>${basedir}/target/newsite</outputDirectory>
-
-					<parallel>methods</parallel>
-					<threadCount>10</threadCount>
-
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<inherited>true</inherited>
-				<configuration>
-					<argLine>-Dfile.encoding=UTF-8</argLine>
-					<suiteXmlFiles>
-						<suiteXmlFile>src/test/resources/Reg-automation-service.xml</suiteXmlFile>
-					</suiteXmlFiles>
-				</configuration>
-			</plugin>
-
-		</plugins>
-	</build>
-
 </project>

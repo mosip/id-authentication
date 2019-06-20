@@ -45,7 +45,9 @@ public interface GlobalParamService {
 	 * It checks the software update status flag from database and respond with 'Y' or 'N' value.
 	 * 
 	 * @param isUpdateAvailable
-	 *            update status
+	 *          - update status
+	 * @param timestamp
+	 * 			- the timestamp
 	 *
 	 * @return the response DTO
 	 * 			It contains the SuccessResponseDTO, where the flag value would be available. 

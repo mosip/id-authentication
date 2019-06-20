@@ -5,8 +5,8 @@
     "errors": [
         {
             "status": "FAILURE",
-            "errorMessage": "Invalid Time Stamp Found in RegistrationId",
-            "errorCode": "RPR-RGS-007"
+            "errorMessage": "Decryption Failed",
+            "errorCode": "RPR-RGS-028"
         }
     ]
 }

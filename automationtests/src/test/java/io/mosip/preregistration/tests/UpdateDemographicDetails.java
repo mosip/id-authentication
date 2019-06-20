@@ -163,6 +163,7 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 		authToken=lib.getToken();
 		
 	}
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

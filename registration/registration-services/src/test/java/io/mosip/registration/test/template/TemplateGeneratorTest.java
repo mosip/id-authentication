@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -29,15 +30,14 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
 import io.mosip.kernel.core.qrcodegenerator.spi.QrCodeGenerator;
 import io.mosip.kernel.qrcode.generator.zxing.constant.QrVersion;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -47,7 +47,7 @@ import io.mosip.registration.test.util.datastub.DataProvider;
 import io.mosip.registration.util.acktemplate.TemplateGenerator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ImageIO.class, ApplicationContext.class })
+@PrepareForTest({ ImageIO.class, ApplicationContext.class, SessionContext.class })
 public class TemplateGeneratorTest {
 	TemplateManagerBuilderImpl template = new TemplateManagerBuilderImpl();
 
@@ -68,7 +68,7 @@ public class TemplateGeneratorTest {
 	private RegistrationDTO registrationDTO;
 	
 	@Before
-	public void initialize() throws RegBaseCheckedException, QrcodeGenerationException, IOException {
+	public void initialize() throws Exception {
 		registrationDTO = DataProvider.getPacketDTO();
 		List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>();
 		segmentedFingerprints.add(new FingerprintDetailsDTO());
@@ -101,6 +101,17 @@ public class TemplateGeneratorTest {
 		when(ImageIO.read(
 				templateGenerator.getClass().getResourceAsStream(RegistrationConstants.TEMPLATE_THUMBS_IMAGE_PATH)))
 						.thenReturn(image);
+		
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
+		centerDetailDTO.setRegistrationCenterId("mosip");
+		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(centerDetailDTO);
+		
+		Map<String,Object> map = new LinkedHashMap<>();
+		map.put(RegistrationConstants.IS_Child, false);
+		PowerMockito.when(SessionContext.map()).thenReturn(map);
 	}
 	
 	ResourceBundle dummyResourceBundle = new ResourceBundle() {
@@ -118,11 +129,6 @@ public class TemplateGeneratorTest {
 	@Test
 	public void generateAckTemplateTest() throws IOException, URISyntaxException {
 		PowerMockito.mockStatic(ApplicationContext.class);
-
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 		SessionContext.map().put(RegistrationConstants.IS_Child, false);
 
 		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
@@ -138,11 +144,6 @@ public class TemplateGeneratorTest {
 	@Test
 	public void generatePreviewTemplateTest() throws IOException, URISyntaxException {
 		PowerMockito.mockStatic(ApplicationContext.class);
-		
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 		SessionContext.map().put(RegistrationConstants.IS_Child, false);
 		
 		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
@@ -158,11 +159,6 @@ public class TemplateGeneratorTest {
 	@Test
 	public void generateAckTemplateChildTest() throws IOException, URISyntaxException {
 		PowerMockito.mockStatic(ApplicationContext.class);
-		
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 		SessionContext.map().put(RegistrationConstants.IS_Child, true);
 
 		when(ApplicationContext.applicationLanguage()).thenReturn("eng");
@@ -178,10 +174,6 @@ public class TemplateGeneratorTest {
 	@Test
 	public void generatePreviewTemplateChildTest() throws IOException, URISyntaxException {
 		PowerMockito.mockStatic(ApplicationContext.class);
-		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
-		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
-		centerDetailDTO.setRegistrationCenterId("mosip");
-		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
 		SessionContext.map().put(RegistrationConstants.IS_Child, true);
 		
 		when(ApplicationContext.applicationLanguage()).thenReturn("eng");

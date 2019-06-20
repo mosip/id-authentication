@@ -2,12 +2,9 @@ package io.mosip.registration.test.notificationservice;
 
 import static org.mockito.Mockito.doNothing;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,11 +12,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -27,12 +28,15 @@ import io.mosip.registration.audit.AuditManagerSerivceImpl;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.Components;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.template.impl.NotificationServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ SessionContext.class })
 public class NotificationServiceTest {
 
 	@Mock
@@ -45,10 +49,13 @@ public class NotificationServiceTest {
 	private NotificationServiceImpl notificationServiceImpl;
 
 	@Before
-	public void initialize() throws IOException, URISyntaxException {
+	public void initialize() throws Exception {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(Components.class),
 				Mockito.anyString(), Mockito.anyString());
-		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
+		PowerMockito.mockStatic(SessionContext.class);
+		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
+		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
 	}
 
 	@Test

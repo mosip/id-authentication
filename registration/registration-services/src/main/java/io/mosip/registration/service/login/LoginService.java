@@ -107,13 +107,9 @@ public interface LoginService {
 	 * @param invalidLoginCount
 	 *            {@code Integer} invalid login count against which validation will be done
 	 * @param invalidLoginTime
-<<<<<<< HEAD
-	 *            invalid login time
-=======
 	 *            {@code Integer} invalid login time against which validation will be done
 	 * 
 	 * @return {@code String} returns whether validation successful or not
->>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount, int invalidLoginTime);
 
@@ -135,14 +131,10 @@ public interface LoginService {
 	 * 		<p>The failure response DTO will be formed and returned from this method.</p>
 	 * 
 	 * @param userId
-<<<<<<< HEAD
-	 *            userid
-=======
 	 *            {@code String} user-id entered by operator
 	 * 
 	 * @return {@code ResponseDTO} based on the result the response DTO will be
 	 *         formed and return to the caller.
->>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	 */
 	ResponseDTO validateUser(String userId);
 

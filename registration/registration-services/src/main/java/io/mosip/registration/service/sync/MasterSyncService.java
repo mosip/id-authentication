@@ -117,8 +117,5 @@ public interface MasterSyncService {
 	 */
 	List<BiometricAttributeDto> getBiometricType(String langCode);
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 }
