@@ -53,26 +53,25 @@ import net.lingala.zip4j.exception.ZipException;
 public class EncrypterDecrypter extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(EncrypterDecrypter.class);
 	static ApplicationLibrary applnMethods=new ApplicationLibrary();
-	RegProcApiRequests apiRequests=new RegProcApiRequests();
 	private final String decrypterURL="/v1/cryptomanager/decrypt";
 	private final String encrypterURL="/v1/cryptomanager/encrypt";
-	private String applicationId="REGISTRATION";	
-	InputStream outstream = null;
 	TokenGeneration generateToken=new TokenGeneration();
 	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	String validToken="";
+	private String applicationId="REGISTRATION";	
+	InputStream outstream = null;
+	RegProcApiRequests apiRequest=new RegProcApiRequests();
+	String token="";
+	public void generateHash(byte[] fileByte) {
+		if (fileByte != null) {
+			HMACUtils.update(fileByte);
+		}	
+	}
 	public String getToken(String tokenType) {
 		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
 		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
 		String token=generateToken.getToken(tokenEntity);
 		return token;
 		}
-	public void generateHash(byte[] fileByte) {
-		if (fileByte != null) {
-			HMACUtils.update(fileByte);
-		}	
-	}
-	
 	/**
 	 * 
 	 * @param file
@@ -83,14 +82,13 @@ public class EncrypterDecrypter extends BaseTestCase {
 	 * @throws ParseException 
 	 */
 	public File decryptFile(JSONObject decryptDto,String destinationPath,String fileName) throws IOException, ZipException, ParseException {
+		token=getToken("syncTokenGenerationFilePath");
 		logger.info(destinationPath);
 		destinationPath=destinationPath+"//TemporaryValidPackets";
 		File folder=new File(destinationPath);
 		folder.mkdirs();
 		destinationPath=destinationPath+"//"+fileName;
-		//Response response=applnMethods.postRequestToDecrypt(decryptDto, decrypterURL);
-		validToken = getToken("syncTokenGenerationFilePath");
-		Response response = apiRequests.postRequestToDecrypt(decrypterURL, decryptDto,MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, validToken);
+		Response response=apiRequest.postRequestToDecrypt(ApplnURI+decrypterURL,decryptDto,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,token);
 		JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 		JSONObject responseObject=(JSONObject) data.get("response");
 		byte[] decryptedPacket = CryptoUtil.decodeBase64(responseObject.get("data").toString());
@@ -120,14 +118,11 @@ public class EncrypterDecrypter extends BaseTestCase {
 		 ZipFile zipFile=null;
 		try {
 			zipFile = new ZipFile(destinationPath);
-			logger.info("Path : "+destinationPath);
-			logger.info("zip : "+zipFile.isValidZipFile());
 		} catch (ZipException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		 try {
-			
 			zipFile.extractAll(destinationPath.substring(0, destinationPath.lastIndexOf('.')));
 		} catch (ZipException e) {
 			// TODO Auto-generated catch block
@@ -137,6 +132,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 		 return extractedFile;
 	}
 	public void encryptFile(File f,String sourcePath,String destinationPath,String fileName) throws ZipException, FileNotFoundException, IOException {
+		String encryptingTokwn=getToken("syncTokenGenerationFilePath");
 		sourcePath=sourcePath+"//TemporaryValidPackets";
 		File folder = new File(destinationPath);
 		folder.mkdirs();
@@ -144,37 +140,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 		  File file1=new File(destinationPath+"/"+fileName+".zip");
 		  JSONObject decryptedFileBody=new JSONObject();
 		  decryptedFileBody=generateCryptographicDataEncryption(file1);
-		  logger.info("encrypt request packet  : "+decryptedFileBody);
-		  Response response=apiRequests.postRequestToDecrypt(encrypterURL, decryptedFileBody, MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,validToken);
-		  try {
-			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
-			  JSONObject responseObject=(JSONObject) data.get("response");
-			//  String encryptedPacketString= CryptoUtil.encodeBase64(data.get("data").toString().getBytes());
-			byte[] encryptedPacket = responseObject.get("data").toString().getBytes();
-			outstream = new ByteArrayInputStream(encryptedPacket); 
-			logger.info("Outstream is "+ outstream);
-			FileOutputStream fos= new FileOutputStream(destinationPath+"/"+fileName+".zip");
-			fos.write(encryptedPacket);
-			fos.close();
-			outstream.close();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		  
-		  
-	}
-	
-	public void encryptFile(File f,String sourcePath,String destinationPath,String fileName, String token) throws ZipException, FileNotFoundException, IOException {
-		sourcePath=sourcePath+"//TemporaryValidPackets";
-		File folder = new File(destinationPath);
-		folder.mkdirs();
-		 org.zeroturnaround.zip.ZipUtil.pack(new File(sourcePath+"/"+f.getName()),new File(destinationPath+"/"+fileName+".zip"));
-		  File file1=new File(destinationPath+"/"+fileName+".zip");
-		  JSONObject decryptedFileBody=new JSONObject();
-		  decryptedFileBody=generateCryptographicDataEncryption(file1);
-		  logger.info("encrypt request packet  : "+decryptedFileBody);
-		  Response response=apiRequests.postRequestToDecrypt(encrypterURL, decryptedFileBody, MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,token);
+		  Response response=apiRequest.postRequestToDecrypt(ApplnURI+encrypterURL,decryptedFileBody,MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON,encryptingTokwn);
 		  try {
 			  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 			  JSONObject responseObject=(JSONObject) data.get("response");
@@ -311,8 +277,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS");
 		InputStream encryptedPacket=null;
 		DecrypterDto decrypterDto=new DecrypterDto();
-		//String centerId=file.getName().substring(0,5);
-		String refId = file.getName().substring(0, 5)+"_"+file.getName().substring(5, 10);
+		String centerId=file.getName().substring(0,5);
 		try {
 			encryptedPacket=new FileInputStream(file);
 			byte [] fileInBytes=FileUtils.readFileToByteArray(file);
@@ -330,7 +295,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			Date currentDate=new Date();
 			LocalDateTime requestTime=LocalDateTime.ofInstant(currentDate.toInstant(), ZoneId.systemDefault());
 			decrypterDto.setApplicationId(applicationId);
-			decrypterDto.setReferenceId(refId);
+			decrypterDto.setReferenceId(centerId);
 			decrypterDto.setData(encryptedPacketString);
 			decrypterDto.setTimeStamp(ldt);
 			request.setRequesttime(requestTime);
@@ -338,8 +303,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			mapper.registerModule(new JavaTimeModule());
 			cryptographicRequest.put("applicationId", applicationId);
 			cryptographicRequest.put("data", encryptedPacketString);
-			System.out.println("encrypter request data : "+encryptedPacketString);
-			cryptographicRequest.put("referenceId", refId);
+			cryptographicRequest.put("referenceId", centerId);
 			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
 			encryptRequest.put("id","");
 			encryptRequest.put("metadata","");
@@ -440,7 +404,7 @@ public class EncrypterDecrypter extends BaseTestCase {
 			}
 		}
 	}
-		/*@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 		public JSONObject generateCryptographicDataEncryption(JSONObject requestJson) throws IOException {
 			JSONObject encryptRequest=new JSONObject();
 			CryptomanagerDto request=new CryptomanagerDto();
@@ -492,17 +456,16 @@ public class EncrypterDecrypter extends BaseTestCase {
 				e.printStackTrace();
 			}
 			return encryptRequest;
-		}*/
+		}
 		
-		/*public Map<String,Object> encryptJson(JSONObject  requestJson) throws IOException {
+		public Map<String,Object> encryptJson(JSONObject  requestJson) throws IOException {
 			String encryptedPacket =null;
 			String responseTime = null;
 			Map<String,Object> demo = new HashMap<>();
 			logger.info("requestJson : "+requestJson);
 			  JSONObject decryptedFileBody=new JSONObject();
 			  decryptedFileBody=generateCryptographicDataEncryption(requestJson);
-			  Response response=apiRequests.postRequestToDecrypt(encrypterURL, decryptedFileBody, MediaType.APPLICATION_JSON,
-					  MediaType.APPLICATION_JSON, validToken);
+			  Response response=applnMethods.postRequestToDecrypt(decryptedFileBody, encrypterURL);
 			  try {
 				  JSONObject data= (JSONObject) new JSONParser().parse(response.asString());
 				  JSONObject responseObject=(JSONObject) data.get("response");
@@ -520,18 +483,6 @@ public class EncrypterDecrypter extends BaseTestCase {
 			}
 			return demo;
 			  
-		}*/
-	@Test
-	public void getpackts() throws IOException, ZipException, ParseException {
-		EncrypterDecrypter encryptDecrypt=new EncrypterDecrypter();
-		File file=new File("D:\\sprint_10\\mosip\\automationtests\\src\\test\\resources\\regProc\\Packets\\ValidPackets\\packteForInvalidPackets");
-		File[] listOfPackets=file.listFiles();
-		for(File f:listOfPackets) {
-			if(f.getName().contains(".zip")) {
-			JSONObject jsonObject = encryptDecrypt.generateCryptographicData(f);
-			encryptDecrypt.decryptFile(jsonObject, "src/test/resources/regProc/Packets/ValidPackets/packteForInvalidPackets", f.getName());
-			}
 		}
-		
-	}
+
 }

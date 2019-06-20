@@ -1,31 +1,25 @@
 package io.mosip.registrationProcessor.tests;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
-import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -39,18 +33,12 @@ import org.testng.internal.TestResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
-import io.mosip.dbdto.RegistrationPacketSyncDTO;
-import io.mosip.dbentity.TokenGenerationEntity;
-import io.mosip.registrationProcessor.util.EncryptData;
-import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.registrationProcessor.util.RegProcTokenGenerate;
-import io.mosip.registrationProcessor.util.StageValidationMethods;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
-import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 
 /**
@@ -73,7 +61,6 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	Response actualResponse = null;
 	JSONObject expectedResponse = null;
 	String dest = "";
-	String testSuite = null;
 	static String folderPath = "regProc/PacketReceiver";
 	static String outputFile = "PacketReceiverOutput.json";
 	static String requestKeyFile = "PacketReceiverRequest.json";
@@ -82,24 +69,6 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	RegProcTokenGenerate tokenGenearte=new RegProcTokenGenerate();
 	String token="";
 	Properties prop =  new Properties();
-	RegProcApiRequests apiRequests=new RegProcApiRequests();
-
-	TokenGeneration generateToken=new TokenGeneration();
-	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
-	String validToken="";
-
-
-	/**
-	 * This method is used for generating token
-	 * @param tokenType
-	 * @return token
-	 */
-	public String getToken(String tokenType) {
-		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
-		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
-		String token=generateToken.getToken(tokenEntity);
-		return token;
-	}
 
 	/**
 	 * This method is used for reading the test data based on the test case name passed
@@ -108,9 +77,10 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 * @return object[][]
 	 * @throws Exception
 	 */
-	@DataProvider(name = "packetReceiver")
+	@DataProvider(name = "PacketReceiver")
 	public Object[][] readData(ITestContext context){
-		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String testParam = context.getCurrentXmlTest().getParameter("testType");
 		testLevel=System.getProperty("env.testLevel");
 		Object[][] readFolder = null;
 		try {
@@ -126,10 +96,14 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
 		}catch (IOException | ParseException|IllegalArgumentException|NullPointerException e) {
-			Assert.assertTrue(false, "not able to read the folder in PacketReceiver class in readData method: "+ e.getCause());		}
+			logger.error("Exception occurred in Packet Receiver class in readData method"+e);
+		}
 		return readFolder;
 	}
-
+@BeforeClass
+public void getToken() {
+	token=tokenGenearte.getRegProcAuthToken();
+}
 	/**
 	 * This method is used for generating actual response and comparing it with expected response
 	 * along with db check and audit log check
@@ -137,9 +111,9 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 * @param i
 	 * @param object
 	 */
-	@Test(dataProvider="packetReceiver")
+	@Test(dataProvider="PacketReceiver")
 	public void packetReceiver(String testSuite, Integer i, JSONObject object){
-
+		
 		File file = null;
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
@@ -147,11 +121,6 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 		File folder = new File(configPath);
 		File[] listOfFolders = folder.listFiles();
 		JSONObject objectData = new JSONObject();
-
-		EncryptData encryptData=new EncryptData();
-		String regId = null;
-		JSONObject requestToEncrypt = null;
-		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
 
 		try {
 			JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);	
@@ -168,157 +137,86 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 					if (listOfFolders[j].getName().equals(object.get("testCaseName").toString())) {
 						logger.info("Testcase name is" + listOfFolders[j].getName());
 						File[] listOfFiles = listOfFolders[j].listFiles();
-						for (File f : listOfFiles) 
+						for (File f : listOfFiles) {
 							if (f.getName().toLowerCase().contains("request")) {
 								objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 								file=new File(f.getParent()+"/"+objectData.get("path"));
 								rId = file.getName().substring(0, file.getName().length()-4);
 							}
+						}
 					}
 				}
 			}
-
 
 
 			//generation of actual response
-			actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
-
-			String message = null;
-			boolean uploaded = false;
-			Response syncResponse = null;
-			if(actualResponse.asString().contains("errors")) {
-				List<Map<String,String>> error = actualResponse.jsonPath().get("errors");
-				for(Map<String,String> err : error){
-					message = err.get("message").toString();
-				}
-				logger.info("message : "+message);
-				if(message.matches("The request received is a duplicate request to upload a Packet") 
-						&& object.get("testCaseName").toString().matches("PacketReceiver_smoke")) {
-					logger.info("Inside duplicate message block ========================");
-					uploaded = true;
-					finalStatus = "Pass";
-					softAssert.assertAll();
-					object.put("status", finalStatus);
-					arr.add(object);
-				}else if(message.matches("Registration packet is not in Sync with Sync table")) {
-					try {
-						registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
-
-						regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
-						requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
-
-						String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-						String encrypterURL = "/v1/cryptomanager/encrypt";
-						Response resp=apiRequests.postRequestToDecrypt(encrypterURL ,requestToEncrypt,MediaType.APPLICATION_JSON,
-								MediaType.APPLICATION_JSON,validToken);
-						String encryptedData = resp.jsonPath().get("response.data").toString();
-						LocalDateTime timeStamp = encryptData.getTime(regId);
-
-						syncResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
-								timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
-
-						if(syncResponse.toString().contains("response")) {
-							actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);		
-						}
-
-					} catch (java.text.ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-
-
-
+			actualResponse = applicationLibrary.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"));
 
 			//Asserting actual and expected response
-			//		status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-			//	Assert.assertTrue(status, "object are not equal");
-			if(!uploaded) {
-				status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-				Assert.assertTrue(status, "object are not equal");
-				if (status) {
-					boolean isError = expectedResponse.containsKey("errors");
-					logger.info("isError ========= : "+isError);
+			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+			if (status) {
+				boolean isError = expectedResponse.containsKey("errors");
+				logger.info("isError ========= : "+isError);
 
-					if(!isError){
-						String actualStatus = null;
-						String expectedStatus = null;
-						Map<String,String> response = actualResponse.jsonPath().get("response"); 
-						JSONObject expected = (JSONObject) expectedResponse.get("response");
-
-						//extracting status from the expected response
-						expectedStatus = expected.get("status").toString().trim();
-
+				if(!isError){
+					String actualStatus = null;
+					String expectedStatus = null;
+					List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
+					JSONArray expected = (JSONArray) expectedResponse.get("response");
+					Iterator<Object> iterator = expected.iterator();
+					//extracting status from the expected response
+					while(iterator.hasNext()){
+						JSONObject jsonObject = (JSONObject) iterator.next();
+						expectedStatus = jsonObject.get("status").toString().trim();
+					}
 
 
-						for(Map.Entry<String,String> res: response.entrySet()){
-							if(res.getKey().equals("status"))
-								actualStatus =  res.getValue().toString();
-							if (expectedStatus.matches(actualStatus)){
-								logger.info("STATUS MATCHED....");
-								finalStatus = "Pass";
-								softAssert.assertAll();
-								object.put("status", finalStatus);
-								arr.add(object);
-							} 
+					for(Map<String,String> res : response){
+						actualStatus=res.get("status").toString();
+						if (expectedStatus.matches(actualStatus)){
+							logger.info("STATUS MATCHED....");
+							finalStatus = "Pass";
+							softAssert.assertAll();
+							object.put("status", finalStatus);
+							arr.add(object);
+						} 
+					}
+
+				}else{
+					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
+					String expectedErrorCode = null;
+					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
+					for(Map<String,String> err : error){
+						String errorCode = err.get("errorCode").toString();
+						Iterator<Object> iterator1 = expectedError.iterator();
+						// extracting error code from expected response
+						while(iterator1.hasNext()){
+							JSONObject jsonObject = (JSONObject) iterator1.next();
+							expectedErrorCode = jsonObject.get("errorCode").toString().trim();
 						}
-
-					}else{
-
-						JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
-						String expectedErrorCode = null;
-						List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
-						for(Map<String,String> err : error){
-							String errorCode = err.get("errorCode").toString();
-							Iterator<Object> iterator1 = expectedError.iterator();
-							// extracting error code from expected response
-							while(iterator1.hasNext()){
-								JSONObject jsonObject = (JSONObject) iterator1.next();
-								expectedErrorCode = jsonObject.get("errorCode").toString().trim();
-							}
-							if(expectedErrorCode.matches(errorCode)){
-								finalStatus = "Pass";
-								softAssert.assertAll();
-								object.put("status", finalStatus);
-								arr.add(object);
-							}
+						if(expectedErrorCode.matches(errorCode)){
+							finalStatus = "Pass";
+							softAssert.assertAll();
+							object.put("status", finalStatus);
+							arr.add(object);
 						}
 					}
-				}else{
-					finalStatus="Fail";
 				}
+			}else{
+				finalStatus="Fail";
 			}
-
-			boolean setFinalStatus=false;
-			if(finalStatus.equals("Fail"))
-				setFinalStatus=false;
-			else if(finalStatus.equals("Pass"))
-				setFinalStatus=true;
-			Verify.verify(setFinalStatus);
-			softAssert.assertAll();
+			/*boolean setFinalStatus=false;
+	        if(finalStatus.equals("Fail"))
+	              setFinalStatus=false;
+	        else if(finalStatus.equals("Pass"))
+	              setFinalStatus=true;
+	        Verify.verify(setFinalStatus);
+	        softAssert.assertAll();*/
 
 		} catch (IOException | ParseException e) {
-			Assert.assertTrue(false, "not able to execute packetInfo method : "+ e.getCause());
+			logger.error("Exception occcurred in Packet Receiver class in packetReceiver method "+e);
 		}
 	}
-
-
-	/*
-	@Test
-	public void packetReceiverForSmoke() throws FileNotFoundException, IOException, ParseException {
-		testSuite = "regProc/PacketReceiver/PacketReceiver_smoke";
-		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
-		prop.load(new FileReader(new File(propertyFilePath)));
-		//JSONObject createRequest = Res.createRequest(testSuite);
-		File file = ResponseRequestMapper.mapCreateRequest(testSuite);	
-		//logger.info("actualRequest : "+actualRequest);
-
-		actualResponse = apiRequests.regProcPacketUpload(file, prop.getProperty("packetReceiverApi"),validToken);
-		logger.info("actualResponse : "+actualResponse);
-
-
-	}*/
 
 	/**
 	 * This method is used for fetching test case name
@@ -327,10 +225,9 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
-		validToken=getToken("syncTokenGenerationFilePath");
+	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		JSONObject object = (JSONObject) testdata[2];
-		String apiName="packetReceiver";
+String apiName="packetReceiver";
 		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}
 
@@ -353,10 +250,9 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			f.set(baseTestMethod, PacketReceiver.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in PacketReceiver class in setResultTestName "+e);
-			Reporter.log("Exception : " + e.getMessage());
 		}
-
-
+		
+		
 	}
 
 	/**

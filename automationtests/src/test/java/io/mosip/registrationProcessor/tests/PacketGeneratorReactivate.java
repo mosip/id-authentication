@@ -68,7 +68,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	  */
 	 @DataProvider(name = "ActivateUin")
 	 public Object[][] readData(ITestContext context){
-	 	 String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
+	 	 String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
 	 	 String testParam = context.getCurrentXmlTest().getParameter("testType");
 	 	 Object[][] readFolder = null;
 	 	 try {
@@ -140,7 +140,7 @@ public class PacketGeneratorReactivate extends  BaseTestCase implements ITest {
 	  * @param ctx
 	  */
 	 @BeforeMethod(alwaysRun=true)
-	 public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
+	 public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 	 	 JSONObject object = (JSONObject) testdata[2];
 	 	 String apiName="PacketGenerator";
 	 	testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();

@@ -31,7 +31,7 @@ public class ResponseRequestMapper {
 							JSONObject objectData = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
 							return objectData;
 						}
-					}
+				 	}
 				}
 			}
 		}
@@ -76,48 +76,6 @@ public class ResponseRequestMapper {
 						}
 					}
 				}
-			}
-		}
-		return null;
-	}
-	public static File mapCreateRequest(String testSuite) {
-		File requestFile = null;
-		// testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		/**
-		 * Reading request body from configpath
-		 */
-		requestFile = getRequest(testSuite);
-		//createRequest.put("requesttime", getCurrentDate());
-		return requestFile;
-	}
-
-	public static File getRequest(String testSuite) {
-		JSONObject request = null;
-		/**
-		 * Reading request body from configpath
-		 */
-		String configPath = System.getProperty("user.dir") + "/src/test/resources/" + testSuite;
-		File folders = new File(configPath);
-		File[] listOfFiles = folders.listFiles();
-		FileReader fileReader = null;
-		for (File f : listOfFiles) {
-			if (f.getName().contains(".zip")) {
-
-				/*try {
-					fileReader = new FileReader(f.getPath());
-					request = (JSONObject) new JSONParser().parse(fileReader);
-				} catch (Exception e) {
-					logger.error(e.getMessage());
-				} finally {
-					try {
-						fileReader.close();
-					} catch (IOException e) {
-						logger.info(e.getMessage());
-					}
-				}
-
-			}*/
-				return f;
 			}
 		}
 		return null;

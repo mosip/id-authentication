@@ -117,7 +117,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 			/* REST call to get Pre Registartion Id's */
 			LinkedHashMap<String, Object> response = (LinkedHashMap<String, Object>) serviceDelegateUtil
-					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO,syncJobId);
+					.post(RegistrationConstants.GET_PRE_REGISTRATION_IDS, preRegistrationDataSyncDTO, syncJobId);
 			TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>> ref = new TypeReference<MainResponseDTO<LinkedHashMap<String, Object>>>() {
 			};
 			MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO = new ObjectMapper()
@@ -217,14 +217,14 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Gets the pre registration.
 	 *
-	 * @param responseDTO 
-	 * 				the response DTO
-	 * @param preRegistrationId 
-	 * 				the pre registration id
-	 * @param syncJobId 
-	 * 				the sync job id
-	 * @param lastUpdatedTimeStamp 
-	 * 				the last updated time stamp
+	 * @param responseDTO
+	 *            the response DTO
+	 * @param preRegistrationId
+	 *            the pre registration id
+	 * @param syncJobId
+	 *            the sync job id
+	 * @param lastUpdatedTimeStamp
+	 *            the last updated time stamp
 	 * @return the pre registration
 	 */
 	@SuppressWarnings("unchecked")
@@ -379,10 +379,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Checks if is packet not available.
 	 *
-	 * @param preRegistration 
-	 * 				the pre registration
-	 * @param isOnline 
-	 * 				the is online
+	 * @param preRegistration
+	 *            the pre registration
+	 * @param isOnline
+	 *            the is online
 	 * @return true, if is packet not available
 	 */
 	private boolean isPacketNotAvailable(PreRegistrationList preRegistration, boolean isOnline) {
@@ -392,10 +392,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Checks if is packet from local.
 	 *
-	 * @param preRegistration 
-	 * 				the pre registration
-	 * @param decryptedPacket 
-	 * 				the decrypted packet
+	 * @param preRegistration
+	 *            the pre registration
+	 * @param decryptedPacket
+	 *            the decrypted packet
 	 * @return true, if is packet from local
 	 */
 	private boolean isPacketFromLocal(PreRegistrationList preRegistration, byte[] decryptedPacket) {
@@ -405,8 +405,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Checks if is packet updated in server.
 	 *
-	 * @param preRegistration 
-	 * 				the pre registration
+	 * @param preRegistration
+	 *            the pre registration
 	 * @return true, if is packet updated in server
 	 */
 	private boolean isPacketUpdatedInServer(PreRegistrationList preRegistration) {
@@ -416,12 +416,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Checks if is fetch to be triggered.
 	 *
-	 * @param isOnline 
-	 * 				the is online
-	 * @param isUpdated 
-	 * 				the is updated
-	 * @param isJob 
-	 * 				the is job
+	 * @param isOnline
+	 *            the is online
+	 * @param isUpdated
+	 *            the is updated
+	 * @param isJob
+	 *            the is job
 	 * @return true, if is fetch to be triggered
 	 */
 	private boolean isFetchToBeTriggered(boolean isOnline, boolean isUpdated, boolean isJob) {
@@ -431,8 +431,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Gets the trigger point.
 	 *
-	 * @param isJob 
-	 * 				the is job
+	 * @param isJob
+	 *            the is job
 	 * @return the trigger point
 	 */
 	private String getTriggerPoint(boolean isJob) {
@@ -442,8 +442,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Checks if is response not empty.
 	 *
-	 * @param mainResponseDTO 
-	 * 				the main response DTO
+	 * @param mainResponseDTO
+	 *            the main response DTO
 	 * @return true, if is response not empty
 	 */
 	private boolean isResponseNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
@@ -453,8 +453,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Checks if is packet not empty.
 	 *
-	 * @param mainResponseDTO 
-	 * 				the main response DTO
+	 * @param mainResponseDTO
+	 *            the main response DTO
 	 * @return true, if is packet not empty
 	 */
 	private boolean isPacketNotEmpty(MainResponseDTO<LinkedHashMap<String, Object>> mainResponseDTO) {
@@ -464,12 +464,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Sets the packet to response.
 	 *
-	 * @param responseDTO 
-	 * 				the response DTO
-	 * @param decryptedPacket 
-	 * 				the decrypted packet
-	 * @param preRegistrationId 
-	 * 				the pre registration id
+	 * @param responseDTO
+	 *            the response DTO
+	 * @param decryptedPacket
+	 *            the decrypted packet
+	 * @param preRegistrationId
+	 *            the pre registration id
 	 */
 	@SuppressWarnings("unused")
 	private void setPacketToResponse(ResponseDTO responseDTO, byte[] decryptedPacket, String preRegistrationId) {
@@ -528,15 +528,16 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Gets the to date.
 	 *
-	 * @param reqTime 
-	 * 				the req time
+	 * @param reqTime
+	 *            the req time
 	 * @return to date
 	 */
 	private String getToDate(Timestamp reqTime) {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(reqTime);
-		cal.add(Calendar.DATE, Integer.parseInt(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_DAYS_LIMIT))));
+		cal.add(Calendar.DATE,
+				Integer.parseInt(String.valueOf(getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DAYS_LIMIT))));
 
 		/** To-Date */
 		return formatDate(cal);
@@ -546,8 +547,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Format date.
 	 *
-	 * @param cal 
-	 * 				the cal
+	 * @param cal
+	 *            the cal
 	 * @return the string
 	 */
 	private String formatDate(Calendar cal) {
@@ -561,8 +562,8 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Gets the from date.
 	 *
-	 * @param reqTime 
-	 * 				the req time
+	 * @param reqTime
+	 *            the req time
 	 * @return the from date
 	 */
 	private String getFromDate(Timestamp reqTime) {
@@ -576,12 +577,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Prepare pre registration.
 	 *
-	 * @param syncTransaction 
-	 * 				the sync transaction
-	 * @param preRegistrationDTO 
-	 * 				the pre registration DTO
-	 * @param lastUpdatedTimeStamp 
-	 * 				the last updated time stamp
+	 * @param syncTransaction
+	 *            the sync transaction
+	 * @param preRegistrationDTO
+	 *            the pre registration DTO
+	 * @param lastUpdatedTimeStamp
+	 *            the last updated time stamp
 	 * @return the pre registration list
 	 */
 	private PreRegistrationList preparePreRegistration(SyncTransaction syncTransaction,
@@ -609,8 +610,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#fetchAndDeleteRecords()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
+	 * fetchAndDeleteRecords()
 	 */
 	public synchronized ResponseDTO fetchAndDeleteRecords() {
 
@@ -620,32 +624,34 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				"Fetching the records started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		if(getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS)!=null) {
-		
-		// Set the Date 15 days before the current date
-		Calendar startCal = Calendar.getInstance();
-		startCal.add(Calendar.DATE,
-				-(Integer.parseInt(getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS))));
+		if (getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS) != null) {
 
-		Date startDate = Date.from(startCal.toInstant());
+			// Set the Date 15 days before the current date
+			Calendar startCal = Calendar.getInstance();
+			startCal.add(Calendar.DATE, -(Integer
+					.parseInt(getGlobalConfigValueOf(RegistrationConstants.PRE_REG_DELETION_CONFIGURED_DAYS))));
 
-		// fetch the records that needs to be deleted
-		List<PreRegistrationList> preRegList = preRegistrationDAO.fetchRecordsToBeDeleted(startDate);
-		
+			Date startDate = Date.from(startCal.toInstant());
 
-		LOGGER.info(
-				"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
-				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Fetching the records ended");
+			// fetch the records that needs to be deleted
+			List<PreRegistrationList> preRegList = preRegistrationDAO.fetchRecordsToBeDeleted(startDate);
 
-		deletePreRegRecords(responseDTO, preRegList);
+			LOGGER.info(
+					"REGISTRATION - PRE_REGISTRATION_DATA_DELETION_RECORD_FETCH_ENDED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					"Fetching the records ended");
+
+			deletePreRegRecords(responseDTO, preRegList);
 		}
 
 		return responseDTO;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#deletePreRegRecords(io.mosip.registration.dto.ResponseDTO, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
+	 * deletePreRegRecords(io.mosip.registration.dto.ResponseDTO, java.util.List)
 	 */
 	public void deletePreRegRecords(ResponseDTO responseDTO, final List<PreRegistrationList> preRegList) {
 		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_DELETION_STARTED - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
@@ -687,10 +693,10 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	/**
 	 * Delete records.
 	 *
-	 * @param responseDTO 
-	 * 				the response DTO
-	 * @param preRegList 
-	 * 				the pre reg list
+	 * @param responseDTO
+	 *            the response DTO
+	 * @param preRegList
+	 *            the pre reg list
 	 * @return the response DTO
 	 */
 	private ResponseDTO deleteRecords(ResponseDTO responseDTO, List<PreRegistrationList> preRegList) {
@@ -721,9 +727,12 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		return responseDTO;
 	}
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#getPreRegistrationRecordForDeletion(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#
+	 * getPreRegistrationRecordForDeletion(java.lang.String)
 	 */
 	public PreRegistrationList getPreRegistrationRecordForDeletion(String preRegistrationId) {
 		LOGGER.info(

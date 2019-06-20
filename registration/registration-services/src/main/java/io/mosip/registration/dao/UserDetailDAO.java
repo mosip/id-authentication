@@ -61,7 +61,7 @@ public interface UserDetailDAO {
 	 *            the user id
 	 * @param bioType
 	 *            the bio type
-	 * @param bioSubType
+	 * @param subType
 	 *            the bio subtype
 	 * @return the user specific bio details
 	 * 

@@ -1,7 +1,6 @@
 package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
 import java.util.Date;

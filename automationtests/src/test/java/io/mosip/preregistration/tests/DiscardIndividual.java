@@ -42,7 +42,7 @@ import com.google.common.base.Verify;
 
 import io.mosip.dbHealthcheck.DBHealthCheck;
 import io.mosip.dbaccess.PreRegDbread;
-import io.mosip.registrationProcessor.tests.IntegrationScenarios;
+
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertPreReg;
 import io.mosip.service.AssertResponses;

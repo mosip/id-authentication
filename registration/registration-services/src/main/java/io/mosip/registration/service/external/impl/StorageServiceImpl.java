@@ -8,7 +8,6 @@ import static io.mosip.registration.constants.RegistrationConstants.ZIP_FILE_EXT
 import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
