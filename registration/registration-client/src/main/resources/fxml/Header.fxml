@@ -10,9 +10,8 @@
 <GridPane fx:id="headerParent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="1000.0" styleClass="headerParentBorder" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.HeaderController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="70.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="15.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -23,21 +22,20 @@
             <Image url="@../images/logo-final-small.png" />
          </image>
       </ImageView>
-      <GridPane styleClass="headerDetails" GridPane.columnIndex="2">
+      <GridPane styleClass="headerDetails" GridPane.columnIndex="1">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="3.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="3.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="16.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="16.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <GridPane>
+            <GridPane alignment="CENTER_LEFT" GridPane.halignment="LEFT">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -45,7 +43,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label fx:id="registrationOfficerName" graphicTextGap="10.0" text="%roname" GridPane.halignment="CENTER">
+                  <Label fx:id="registrationOfficerName" graphicTextGap="10.0" text="%roname" GridPane.halignment="LEFT">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -53,10 +51,13 @@
                            </image>
                         </ImageView>
                      </graphic>
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
                   </Label>
                </children>
             </GridPane>
-            <GridPane prefHeight="30.0" prefWidth="81.0" GridPane.columnIndex="2">
+            <GridPane alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="81.0" GridPane.columnIndex="2">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -64,7 +65,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label fx:id="registrationOfficeLocation" graphicTextGap="10.0" text="%rooffice" GridPane.halignment="CENTER">
+                  <Label fx:id="registrationOfficeLocation" graphicTextGap="10.0" text="%rooffice" GridPane.halignment="LEFT">
                      <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -75,7 +76,7 @@
                   </Label>
                </children>
             </GridPane>
-            <GridPane styleClass="registrationOfficerIdPane" GridPane.columnIndex="4">
+            <GridPane styleClass="registrationOfficerIdPane" GridPane.columnIndex="3">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -100,7 +101,7 @@
                   <Insets bottom="2.5" top="2.5" />
                </GridPane.margin>
             </GridPane>
-            <GridPane fx:id="online" styleClass="internetModePane" GridPane.columnIndex="6">
+            <GridPane fx:id="online" styleClass="internetModePane" GridPane.columnIndex="5">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -125,7 +126,7 @@
                   <Insets bottom="2.5" right="5.0" top="2.5" />
                </GridPane.margin>
             </GridPane>
-            <GridPane fx:id="offline" styleClass="registrationOfficerIdPane" GridPane.columnIndex="6">
+            <GridPane fx:id="offline" styleClass="registrationOfficerIdPane" GridPane.columnIndex="5">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -163,16 +164,15 @@
             </GridPane>
          </children>
       </GridPane>
-      <GridPane GridPane.columnIndex="3">
+      <GridPane GridPane.columnIndex="2">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <MenuBar fx:id="menu" styleClass="menuBar" GridPane.columnIndex="1">
+            <MenuBar fx:id="menu" styleClass="menuBar">
                <menus>
                   <Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
                      <graphic>
