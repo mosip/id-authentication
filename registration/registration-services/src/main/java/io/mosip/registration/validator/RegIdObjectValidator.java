@@ -40,7 +40,7 @@ public class RegIdObjectValidator {
 	@Autowired
 	@Qualifier("pattern")
 	private IdObjectValidator idOjectPatternvalidator;
-	
+
 	@Autowired
 	private RegIdObjectMasterDataValidator regIdObjectMasterDataValidator;
 
@@ -78,14 +78,14 @@ public class RegIdObjectValidator {
 				if (idOjectPatternvalidator.validateIdObject(idObject, operationType)) {
 					LOGGER.info(LoggerConstants.ID_OBJECT_PATTERN_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 							"ID object pattern validation is successful");
-					if (regIdObjectMasterDataValidator.validateIdObject(idObject, operationType)) {
+					/*if (regIdObjectMasterDataValidator.validateIdObject(idObject, operationType)) {
 						LOGGER.info(LoggerConstants.ID_OBJECT_PATTERN_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 								"ID object master data validation is successful");
 					} else {
 						throw new RegBaseCheckedException(
 								RegistrationExceptionConstants.ID_OBJECT_MASTER_DATA_VALIDATOR.getErrorCode(),
 								RegistrationExceptionConstants.ID_OBJECT_MASTER_DATA_VALIDATOR.getErrorMessage());
-					}
+					}*/
 				} else {
 					throw new RegBaseCheckedException(
 							RegistrationExceptionConstants.ID_OBJECT_PATTERN_VALIDATOR.getErrorCode(),

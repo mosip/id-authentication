@@ -29,6 +29,7 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.cryptosignature.constant.SigningDataErrorCode;
 
+
 @RestControllerAdvice
 public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrapper<?>> {
 
@@ -77,16 +78,16 @@ public class ResponseBodyAdviceConfig implements ResponseBodyAdvice<ResponseWrap
 			mosipLogger.error("", "", "", e.getMessage());
 		}
 		if (body != null) {
-			/*try {
+			try {
 				String timestamp = DateUtils.getUTCCurrentDateTimeString();
 				body.setResponsetime(DateUtils.convertUTCToLocalDateTime(timestamp));
-				SignatureResponse cryptoManagerResponseDto = signatureUtil
-						.sign(objectMapper.writeValueAsString(body), timestamp);
-				response.getHeaders().add("Response-Signature", cryptoManagerResponseDto.getData());
+				SignatureResponse cryptoManagerResponseDto = signatureUtil.sign(objectMapper.writeValueAsString(body),
+						timestamp);
+				response.getHeaders().add("response-signature", cryptoManagerResponseDto.getData());
 			} catch (JsonProcessingException e) {
 				throw new ParseResponseException(SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode(),
 						SigningDataErrorCode.RESPONSE_PARSE_EXCEPTION.getErrorCode());
-			}*/
+			}
 		}
 
 		return body;

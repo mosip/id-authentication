@@ -1,6 +1,7 @@
 package io.mosip.registration.util.common;
 
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,7 +21,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.AuthNRequestDTO;
 import io.mosip.registration.dto.AuthNSendOTPDTO;
-import io.mosip.registration.dto.AuthTokenDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDTO;
@@ -46,8 +46,27 @@ public class OTPManager extends BaseService {
 	private static final Logger LOGGER = AppConfig.getLogger(OTPManager.class);
 
 	/**
-	 * Get OTP for the User from Kernel's AuthN Web-Service. If application is
-	 * offline, web-service will not invoked.
+	 * This method is used to get the OTP for the User from Kernel's AuthN Web-Service. 
+	 * 
+	 * <p>Sends the username to the OTP service to get the OTP. Based on the response received,
+	 * appropriate {@link ResponseDTO} is created</p>
+	 * 
+	 * <p>If application is offline, web-service will not invoked and {@link ErrorResponseDTO} 
+	 * error response is returned.</p>
+	 * 
+	 * <p>
+	 * Returns the {@link ResponseDTO} object.
+	 * </p>
+	 * 
+	 * <p>
+	 * If OTP is fetched successfully and sent to the user,
+	 * {@link SuccessResponseDTO} will be set in {@link ResponseDTO} object
+	 * </p>
+	 * 
+	 * <p>
+	 * If any exception occurs, {@link ErrorResponseDTO} will be set in
+	 * {@link ResponseDTO} object
+	 * </p>
 	 * 
 	 * @param userId
 	 *            the user id of the user for whom OTP has to be requested
@@ -62,13 +81,15 @@ public class OTPManager extends BaseService {
 
 		// Create Response to return to UI layer
 		ResponseDTO response = new ResponseDTO();
+		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
 
 		try {
 			/* Check Network Connectivity */
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				AuthNRequestDTO authNRequestDTO = new AuthNRequestDTO();
 				AuthNSendOTPDTO authNSendOTPDTO = new AuthNSendOTPDTO();
-				authNSendOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+				authNSendOTPDTO.setAppId(
+						String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 				authNSendOTPDTO.setContext(RegistrationConstants.REGISTRATION_CONTEXT);
 				authNSendOTPDTO.setLangCode(RegistrationConstants.ENGLISH_LANG_CODE);
 				authNSendOTPDTO.setOtpChannel(Arrays.asList(
@@ -83,6 +104,7 @@ public class OTPManager extends BaseService {
 				otpGeneratorRequestDto.setKey(userId);
 
 				// obtain otpGeneratorResponseDto from serviceDelegateUtil
+				@SuppressWarnings("unchecked")
 				HashMap<String, Object> responseMap = (HashMap<String, Object>) serviceDelegateUtil.post("send_otp",
 						authNRequestDTO, RegistrationConstants.JOB_TRIGGER_POINT_USER);
 				if (responseMap.get("response") != null) {
@@ -140,23 +162,38 @@ public class OTPManager extends BaseService {
 	}
 
 	/**
-	 * Validates the entered OTP against the user through Kernel's AuthN
-	 * Web-Service. If application is offline, web-service will not invoked.
+	 * This method is used to validate the entered OTP against the user through Kernel's AuthN
+	 * Web-Service. Based on the response received, appropriate {@link AuthTokenDTO} is created
+	 * 
+	 * <p>
+	 * Returns the {@link AuthTokenDTO} object.
+	 * </p>
+	 * 
+	 * <p>If application is offline, web-service will not invoked and empty {@link AuthTokenDTO} 
+	 * object is returned.</p>
+	 * 
+	 * <p>
+	 * If OTP is validated successfully, the token response upon invoking the rest API 
+	 * will be set to the {@link AuthTokenDTO} object.
+	 * </p>
+	 * 
+	 * <p>
+	 * If any exception occurs, the {@link AuthTokenDTO} will be set to null.
+	 * </p>
 	 * 
 	 * @param userId
 	 *            the user id of the user to be validated against
 	 * @param otp
 	 *            the user entered OTP
-	 * @return the {@link ResponseDTO} object. Sends {@link SuccessResponseDTO} if
-	 *         OTP is sent to the user, else {@link ErrorResponseDTO}
+	 * @return the {@link AuthTokenDTO} object.
 	 */
-	public AuthTokenDTO validateOTP(String userId, String otp) {
+	public ResponseDTO validateOTP(String userId, String otp) {
 
 		LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validate OTP Started");
 
-		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-		
+		ResponseDTO responseDTO = new ResponseDTO();
+
 		try {
 			/* Check Network Connectivity */
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
@@ -168,23 +205,30 @@ public class OTPManager extends BaseService {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
 				loginUserDTO.setUserId(userId);
 				loginUserDTO.setOtp(otp);
-				
-				LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, "Validate OTP ended");				
 
 				// Obtain otpValidatorResponseDto from service delegate util
-				authTokenDTO = serviceDelegateUtil.getAuthToken(LoginMode.OTP);
-			} 
+				serviceDelegateUtil.getAuthToken(LoginMode.OTP);
+				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+				successResponseDTO.setCode("Validation Successful");
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
+				setSuccessResponse(responseDTO, null, null);
+			} else {
+				setErrorResponse(responseDTO, RegistrationConstants.CONNECTION_ERROR, null);
+			}
 		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| RegBaseUncheckedException exception) {
-			
-			authTokenDTO = null;
 
 			LOGGER.error(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
+			setErrorResponse(responseDTO, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE, null);
+
 		}
-		return authTokenDTO;
+
+		LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validate OTP ended");
+
+		return responseDTO;
 	}
 }

@@ -12,7 +12,10 @@ import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.dto.mastersync.ReasonListDto;
 
 /**
- * Interface to sync master data from server to client
+ * It makes call to the external 'MASTER Sync' services to download the master data which are relevant to center specific by passing the 
+ * center id or mac address or machine id. Once download the data, it stores the information into the DB for further processing.  
+ * If center remapping found from the sync response object, it invokes this 'CenterMachineReMapService' object to initiate the center remapping related activities.   
+ * During the process, the required informations are updated into the audit table for further tracking.  
  * 
  * @author Sreekar Chukka
  * @since 1.0.0
@@ -21,20 +24,37 @@ import io.mosip.registration.dto.mastersync.ReasonListDto;
 public interface MasterSyncService {
 
 	/**
-	 * Gets the master sync.
+	 * It invokes the Master Sync service to download the required information from external services if the system is online.  
+	 * Once download, the data would be updated into the DB for further process.  
 	 *
 	 * @param masterSyncDetails the master sync details
-	 * @param triggerPoint the trigger point
-	 * @return the master sync
+	 * @param triggerPoint from where the call has been initiated [Either : user or system]  
+	 * @return success or failure status as Response DTO. 
 	 */
 	ResponseDTO getMasterSync(String masterSyncDetails,String triggerPoint);
 
 	/**
-	 * Find location by hierarchy code.
+	 * It invokes the external 'Master Sync' service to download the required center specific information from MOSIP server if the system is online.  
+	 * Once download, the data would be updated into the DB for further process.  
+	 *
+	 * @param masterSyncDetails
+	 *            the master sync details
+	 * @param triggerPoint
+	 *            from where the call has been initiated [Either : user or system] 
+	 * @param keyIndex
+	 *            This is the key index provided by the MOSIP server post submission of local TPM public key. Based on this key the MOSIP server would identify the 
+	 *            client and send the sync response accordingly. 
+	 * @return the master sync
+	 * 			  Success or failure status is wrapped in ResponseDTO. 
+	 */
+	ResponseDTO getMasterSync(String masterSyncDetails, String triggerPoint, String keyIndex);
+
+	/**
+	 * Find location or region by hierarchy code.   
 	 *
 	 * @param hierarchyCode the hierarchy code
 	 * @param langCode      the lang code
-	 * @return the list
+	 * @return the list holds the Location data to be displayed in the UI.  
 	 */
 	List<LocationDto> findLocationByHierarchyCode(String hierarchyCode, String langCode);
 
@@ -43,12 +63,12 @@ public interface MasterSyncService {
 	 *
 	 * @param code the code
 	 * @param langCode the lang code
-	 * @return the list
+	 * @return the list holds the Province data to be displayed in the UI.  
 	 */
 	List<LocationDto> findProvianceByHierarchyCode(String code,String langCode);
 	
 	/**
-	 * Gets the all reasons.
+	 * Gets all the reasons for rejection that to be selected during EOD approval process.
 	 *
 	 * @param langCode the lang code
 	 * @return the all reasons
@@ -56,7 +76,7 @@ public interface MasterSyncService {
 	List<ReasonListDto> getAllReasonsList(String langCode);
 	
 	/**
-	 * Gets the all black listed words.
+	 * Gets all the black listed words that shouldn't be allowed while capturing demographic information from user. 
 	 *
 	 * @param langCode the lang code
 	 * @return the all black listed words
@@ -64,7 +84,7 @@ public interface MasterSyncService {
 	List<BlacklistedWordsDto> getAllBlackListedWords(String langCode);
 	
 	/**
-	 * Gets all the document categories.
+	 * Gets all the document categories from db that to be displayed in the UI dropdown.
 	 *
 	 * @param docCode the doc code
 	 * @param langCode the lang code
@@ -73,7 +93,7 @@ public interface MasterSyncService {
 	List<DocumentCategoryDto> getDocumentCategories(String docCode,String langCode);
 	
 	/**
-	 * Gets the gender dtls.
+	 * Gets the gender details.
 	 *
 	 * @param langCode the lang code
 	 * @return the gender dtls
@@ -97,17 +117,8 @@ public interface MasterSyncService {
 	 */
 	List<BiometricAttributeDto> getBiometricType(String langCode);
 
-	/**
-	 * Gets the master sync.
-	 *
-	 * @param masterSyncDetails
-	 *            the master sync details
-	 * @param triggerPoint
-	 *            the trigger point
-	 * @param keyIndex
-	 *            the key index for sync'ing the master data
-	 * @return the master sync
-	 */
-	ResponseDTO getMasterSync(String masterSyncDetails, String triggerPoint, String keyIndex);
+<<<<<<< HEAD
+=======
 
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 }

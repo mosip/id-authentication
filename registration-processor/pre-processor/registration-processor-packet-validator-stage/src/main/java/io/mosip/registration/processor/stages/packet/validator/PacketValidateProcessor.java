@@ -456,7 +456,8 @@ public class PacketValidateProcessor {
 				||RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
 				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
 
-			if (!ifUinIDRepo(String.valueOf(uin))) {
+			if (!uinPresentInIdRepo(String.valueOf(uin))) {
+				packetValidaionFailure = "uin is not present in idrepo";
 				return false;
 			}
 		}
@@ -468,11 +469,11 @@ public class PacketValidateProcessor {
 
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
 		// Sync list table
-		return !validateRegIdAndTypeFromSyncTable(metadataList);
+		return validateRegIdAndTypeFromSyncTable(metadataList);
 	}
 
-	private boolean ifUinIDRepo(String uin) throws ApisResourceAccessException, IOException {
-		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) == null;
+	private boolean uinPresentInIdRepo(String uin) throws ApisResourceAccessException, IOException {
+		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) != null;
 
 	}
 

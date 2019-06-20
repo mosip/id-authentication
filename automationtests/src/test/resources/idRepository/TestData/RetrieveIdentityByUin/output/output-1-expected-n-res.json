@@ -1,0 +1,13 @@
+{
+    "id": "mosip.vid.read",
+    "version": "v1",
+    "responsetime": "2019-05-29T10:36:52.892Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "IDR-VID-001",
+            "message": "VID is DEACTIVATED"
+        }
+    ]
+}

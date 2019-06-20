@@ -43,10 +43,11 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 
 /**
- * {@code SyncStatusValidatorServiceImpl} is the sync status validate service
- * class which validates all the sync happened,count of packets on machine,geo
- * location of system,etc... are within the configured limits before going to
- * new registration/update UIN.
+ * It does the pre check before doing registration to ensure that the application can capture the Registration detail from individual. If the pre check
+ * fails, then don't allow the application to capture the detail from individual.  Post completion of the respective sync process only 
+ * the application can be used for Registration process. 
+ * 
+ * This would be called prior to New/ Update/ Lost UIN process. 
  *
  * @author Chukka Sreekar
  * @author Mahesh Kumar
@@ -455,6 +456,10 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		return jobsMap;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.SyncStatusValidatorService#isToBeForceUpdate()
+	 */
 	@Override
 	public boolean isToBeForceUpdate() {
 		GlobalParamId globalParamId = new GlobalParamId();

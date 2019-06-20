@@ -519,58 +519,10 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 				templateFileFormatRepository.saveAll(masterTemplateFileDtoEntity);
 			}
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Template details syncing....");
-			if (null != masterTemplateDto && !masterTemplateDto.isEmpty()) {
-				List<Template> templetList = new ArrayList<>();
-				masterTemplateDto.forEach(templet -> {
+			
+			templateDetailsSync(masterTemplateDto);
+			templateTypeDetailsSync(masterTemplateTypeDto);
 
-					Template templete = new Template();
-					templete.setId(templet.getId());
-					templete.setFileFormatCode(templet.getFileFormatCode());
-					templete.setFileTxt(templet.getFileText());
-					templete.setDescr(templet.getDescription());
-					templete.setActive(templet.getIsActive());
-					templete.setName(templet.getName());
-					templete.setModuleName(templet.getModuleName());
-					templete.setTemplateTypCode(templet.getTemplateTypeCode());
-					templete.setModel(templet.getModel());
-					templete.setModuleId(templet.getModuleId());
-					templete.setLangCode(templet.getLangCode());
-					if (SessionContext.isSessionContextAvailable()) {
-						templete.setCrBy(SessionContext.userContext().getUserId());
-					} else {
-						templete.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-					}
-					templete.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					templetList.add(templete);
-				});
-
-				templateRepository.saveAll(templetList);
-			}
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Template Type details syncing....");
-			if (null != masterTemplateTypeDto && !masterTemplateTypeDto.isEmpty()) {
-				List<TemplateType> masterTemplateTypeDtoEntity = new ArrayList<>();
-				masterTemplateTypeDto.forEach(templateType -> {
-					TemplateType tempType = new TemplateType();
-					TemplateEmbeddedKeyCommonFields commnFields = new TemplateEmbeddedKeyCommonFields();
-					commnFields.setCode(templateType.getCode());
-					commnFields.setLangCode(templateType.getLangCode());
-					tempType.setPkTmpltCode(commnFields);
-					tempType.setActive(templateType.getIsActive());
-					tempType.setDescr(templateType.getDescription());
-					if (SessionContext.isSessionContextAvailable()) {
-						tempType.setCrBy(SessionContext.userContext().getUserId());
-					} else {
-						tempType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-					}
-					tempType.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					masterTemplateTypeDtoEntity.add(tempType);
-				});
-
-				templateTypeRepository.saveAll(masterTemplateTypeDtoEntity);
-			}
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Title details syncing....");
 			List<Title> masterTitleDtoEntity = MetaDataUtils.setCreateMetaData(masterTitleDto, Title.class);
@@ -588,70 +540,8 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					IndividualType.class);
 			individualTypeRepository.saveAll(masterIndividualType);
 
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Registration Center details syncing....");
-			if (null != registrationCenter && !registrationCenter.isEmpty()) {
-				List<RegistrationCenter> regCentr = new ArrayList<>();
-				registrationCenter.forEach(regCenter -> {
-					RegistrationCenter regCen = new RegistrationCenter();
-					RegistartionCenterId cenId = new RegistartionCenterId();
-					cenId.setId(regCenter.getId());
-					cenId.setLangCode(regCenter.getLangCode());
-					regCen.setRegistartionCenterId(cenId);
-					regCen.setAddrLine1(regCenter.getAddressLine1());
-					regCen.setAddrLine2(regCenter.getAddressLine2());
-					regCen.setAddrLine3(regCenter.getAddressLine3());
-					regCen.setCenterName(regCenter.getName());
-					regCen.setCenterStartTime(Time.valueOf(regCenter.getCenterStartTime()));
-					regCen.setCenterEndTime(Time.valueOf(regCenter.getCenterEndTime()));
-					regCen.setCntrTypCode(regCenter.getCenterTypeCode());
-					regCen.setContactPerson(regCenter.getContactPerson());
-					regCen.setContactPhone(regCenter.getContactPhone());
-					regCen.setHolidayLocCode(regCenter.getHolidayLocationCode());
-					regCen.setLatitude(regCenter.getLatitude());
-					regCen.setLongitude(regCenter.getLongitude());
-					regCen.setLunchStartTime(Time.valueOf(regCenter.getLunchStartTime()));
-					regCen.setLunchEndTime(Time.valueOf(regCenter.getLunchEndTime()));
-					regCen.setWorkingHours(regCenter.getWorkingHours());
-					regCen.setLocationCode(regCenter.getLocationCode());
-					regCen.setNumberOfKiosks(regCenter.getNumberOfKiosks().intValue());
-					regCen.setPerKioskProcessTime(Time.valueOf(regCenter.getPerKioskProcessTime()));
-					regCen.setTimeZone(regCenter.getTimeZone());
-					if (SessionContext.isSessionContextAvailable()) {
-						regCen.setCrBy(SessionContext.userContext().getUserId());
-					} else {
-						regCen.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-					}
-					regCen.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					regCen.setIsActive(regCenter.getIsActive());
-					regCentr.add(regCen);
-				});
-
-				registrationCenterRepository.saveAll(regCentr);
-
-			}
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Registration Center Type details syncing....");
-			if (null != registrationCenterType && !registrationCenterType.isEmpty()) {
-				List<RegistrationCenterType> regCenterType = new ArrayList<>();
-				registrationCenterType.forEach(centerType -> {
-
-					RegistrationCenterType regCentrType = new RegistrationCenterType();
-					regCentrType.setCode(centerType.getCode());
-					regCentrType.setName(centerType.getName());
-					regCentrType.setDescr(centerType.getDescr());
-					regCentrType.setLangCode(centerType.getLangCode());
-					regCentrType.setIsActive(centerType.getIsActive());
-					if (SessionContext.isSessionContextAvailable()) {
-						regCentrType.setCrBy(SessionContext.userContext().getUserId());
-					} else {
-						regCentrType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-					}
-					regCentrType.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					regCenterType.add(regCentrType);
-				});
-				registrationCenterTypeRepository.saveAll(regCenterType);
-			}
+			registrationCenterDetailsSync(registrationCenter);
+			registrationCenterTypeDetailsSync(registrationCenterType);
 			
 			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Center Device details syncing....");
@@ -659,74 +549,11 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 					.setCreateMetaData(registrationCenterDevices, RegCenterDevice.class);
 			registrationCenterDeviceRepository.saveAll(masterRegCenterDeviceEntity);
 
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Registration Center Machine Device details syncing....");
-			if (null != registrationCenterMachineDevices && !registrationCenterMachineDevices.isEmpty()) {
-				List<RegCentreMachineDevice> masterRegCenterMachineDeviceEntity = new ArrayList<>();
-				registrationCenterMachineDevices.forEach(centerMachDev -> {
-					RegCentreMachineDevice regMachDev = new RegCentreMachineDevice();
-					RegCentreMachineDeviceId regMachDevId = new RegCentreMachineDeviceId();
-					regMachDevId.setDeviceId(centerMachDev.getDeviceId());
-					regMachDevId.setMachineId(centerMachDev.getMachineId());
-					regMachDevId.setRegCentreId(centerMachDev.getRegCenterId());
-					regMachDev.setRegCentreMachineDeviceId(regMachDevId);
-					regMachDev.setIsActive(centerMachDev.getIsActive());
-					if (SessionContext.isSessionContextAvailable()) {
-						regMachDev.setCrBy(SessionContext.userContext().getUserId());
-					} else {
-						regMachDev.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-					}
-					regMachDev.setLangCode(centerMachDev.getLangCode());
-					regMachDev.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					masterRegCenterMachineDeviceEntity.add(regMachDev);
-				});
-				registrationCenterMachineDeviceRepository.saveAll(masterRegCenterMachineDeviceEntity);
-			}
+			registrationCenterMachineDeviceDetailsSync(registrationCenterMachineDevices);
 			
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Registration Center user details syncing....");
-			if (null != registrationCenterUsers && !registrationCenterUsers.isEmpty()) {
-			List<RegCenterUser> masterRegCenterUserEntity = new ArrayList<>();
-			registrationCenterUsers.forEach(centerUser -> {
-				RegCenterUser centerUsr = new RegCenterUser();
-				RegCenterUserId userIdMapping = new RegCenterUserId();
-				centerUsr.setIsActive(centerUser.getIsActive());
-				if (SessionContext.isSessionContextAvailable()) {
-					centerUsr.setCrBy(SessionContext.userContext().getUserId());
-				} else {
-					centerUsr.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-				}
-				centerUsr.setLangCode("eng");
-				centerUsr.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				userIdMapping.setRegcntrId(centerUser.getRegCenterId());
-				userIdMapping.setUsrId(centerUser.getUserId());
-				centerUsr.setRegCenterUserId(userIdMapping);
-				masterRegCenterUserEntity.add(centerUsr);
-			});
-			registrationCenterUserRepository.saveAll(masterRegCenterUserEntity);
-			}
-			LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
-					"Center Machine Mapping details syncing....");
-			if (null != registrationCenterMachines && !registrationCenterMachines.isEmpty()) {
-				List<CenterMachine> masterRegCenterMachineEntity = new ArrayList<>();
-				registrationCenterMachines.forEach(centerMachine -> {
-					CenterMachine centerMachn = new CenterMachine();
-					CenterMachineId centerMachnId = new CenterMachineId();
-					centerMachnId.setCentreId(centerMachine.getRegCenterId());
-					centerMachnId.setId(centerMachine.getMachineId());
-					centerMachn.setCenterMachineId(centerMachnId);
-					centerMachn.setIsActive(centerMachine.getIsActive());
-					if (SessionContext.isSessionContextAvailable()) {
-						centerMachn.setCrBy(SessionContext.userContext().getUserId());
-					} else {
-						centerMachn.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-					}
-					centerMachn.setLangCode(centerMachine.getLangCode());
-					centerMachn.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-					masterRegCenterMachineEntity.add(centerMachn);
-				});
-				centerMachineRepository.saveAll(masterRegCenterMachineEntity);
-			}
+			registrationCenterUserDetailsSync(registrationCenterUsers);
+			centerMachineMappingDetailsSync(registrationCenterMachines);
+		
 			List<ValidDocument> masterValidDocumentsEntity = MetaDataUtils.setCreateMetaData(masterValidDocuments,
 					ValidDocument.class);
 			validDocumentRepository.saveAll(masterValidDocumentsEntity);
@@ -795,6 +622,252 @@ public class MasterSyncDaoImpl implements MasterSyncDao {
 
 		return sucessResponse;
 
+	}
+
+	/**
+	 * Center machine mapping details sync.
+	 *
+	 * @param registrationCenterMachines 
+	 * 				the registration center machine DTO list.
+	 */
+	private void centerMachineMappingDetailsSync(List<RegistrationCenterMachineDto> registrationCenterMachines) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Center Machine Mapping details syncing....");
+		if (null != registrationCenterMachines && !registrationCenterMachines.isEmpty()) {
+			List<CenterMachine> masterRegCenterMachineEntity = new ArrayList<>();
+			registrationCenterMachines.forEach(centerMachine -> {
+				CenterMachine centerMachn = new CenterMachine();
+				CenterMachineId centerMachnId = new CenterMachineId();
+				centerMachnId.setCentreId(centerMachine.getRegCenterId());
+				centerMachnId.setId(centerMachine.getMachineId());
+				centerMachn.setCenterMachineId(centerMachnId);
+				centerMachn.setIsActive(centerMachine.getIsActive());
+				if (SessionContext.isSessionContextAvailable()) {
+					centerMachn.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					centerMachn.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
+				centerMachn.setLangCode(centerMachine.getLangCode());
+				centerMachn.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				masterRegCenterMachineEntity.add(centerMachn);
+			});
+			centerMachineRepository.saveAll(masterRegCenterMachineEntity);
+		}
+	}
+
+	/**
+	 * Registration center user details sync.
+	 *
+	 * @param registrationCenterUsers 
+	 * 				the registration center user DTO list.
+	 */
+	private void registrationCenterUserDetailsSync(List<RegistrationCenterUserDto> registrationCenterUsers) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Registration Center user details syncing....");
+		if (null != registrationCenterUsers && !registrationCenterUsers.isEmpty()) {
+		List<RegCenterUser> masterRegCenterUserEntity = new ArrayList<>();
+		registrationCenterUsers.forEach(centerUser -> {
+			RegCenterUser centerUsr = new RegCenterUser();
+			RegCenterUserId userIdMapping = new RegCenterUserId();
+			centerUsr.setIsActive(centerUser.getIsActive());
+			if (SessionContext.isSessionContextAvailable()) {
+				centerUsr.setCrBy(SessionContext.userContext().getUserId());
+			} else {
+				centerUsr.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			}
+			centerUsr.setLangCode("eng");
+			centerUsr.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+			userIdMapping.setRegcntrId(centerUser.getRegCenterId());
+			userIdMapping.setUsrId(centerUser.getUserId());
+			centerUsr.setRegCenterUserId(userIdMapping);
+			masterRegCenterUserEntity.add(centerUsr);
+		});
+		registrationCenterUserRepository.saveAll(masterRegCenterUserEntity);
+		}
+	}
+
+	/**
+	 * Registration center machine device details sync.
+	 *
+	 * @param registrationCenterMachineDevices 
+	 * 				the registration center machine device DTO list.
+	 */
+	private void registrationCenterMachineDeviceDetailsSync(List<RegistrationCenterMachineDeviceDto> registrationCenterMachineDevices) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Registration Center Machine Device details syncing....");
+		if (null != registrationCenterMachineDevices && !registrationCenterMachineDevices.isEmpty()) {
+			List<RegCentreMachineDevice> masterRegCenterMachineDeviceEntity = new ArrayList<>();
+			registrationCenterMachineDevices.forEach(centerMachDev -> {
+				RegCentreMachineDevice regMachDev = new RegCentreMachineDevice();
+				RegCentreMachineDeviceId regMachDevId = new RegCentreMachineDeviceId();
+				regMachDevId.setDeviceId(centerMachDev.getDeviceId());
+				regMachDevId.setMachineId(centerMachDev.getMachineId());
+				regMachDevId.setRegCentreId(centerMachDev.getRegCenterId());
+				regMachDev.setRegCentreMachineDeviceId(regMachDevId);
+				regMachDev.setIsActive(centerMachDev.getIsActive());
+				if (SessionContext.isSessionContextAvailable()) {
+					regMachDev.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					regMachDev.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
+				regMachDev.setLangCode(centerMachDev.getLangCode());
+				regMachDev.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				masterRegCenterMachineDeviceEntity.add(regMachDev);
+			});
+			registrationCenterMachineDeviceRepository.saveAll(masterRegCenterMachineDeviceEntity);
+		}
+	}
+
+	/**
+	 * Registration center type details sync.
+	 *
+	 * @param registrationCenterType 
+	 * 				the registration center type DTO list.
+	 */
+	private void registrationCenterTypeDetailsSync(List<RegistrationCenterTypeDto> registrationCenterType) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Registration Center Type details syncing....");
+		if (null != registrationCenterType && !registrationCenterType.isEmpty()) {
+			List<RegistrationCenterType> regCenterType = new ArrayList<>();
+			registrationCenterType.forEach(centerType -> {
+
+				RegistrationCenterType regCentrType = new RegistrationCenterType();
+				regCentrType.setCode(centerType.getCode());
+				regCentrType.setName(centerType.getName());
+				regCentrType.setDescr(centerType.getDescr());
+				regCentrType.setLangCode(centerType.getLangCode());
+				regCentrType.setIsActive(centerType.getIsActive());
+				if (SessionContext.isSessionContextAvailable()) {
+					regCentrType.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					regCentrType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
+				regCentrType.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				regCenterType.add(regCentrType);
+			});
+			registrationCenterTypeRepository.saveAll(regCenterType);
+		}
+	}
+
+	/**
+	 * Registration center details sync.
+	 *
+	 * @param registrationCenter 
+	 * 				the registration center DTO list.
+	 */
+	private void registrationCenterDetailsSync(List<RegistrationCenterDto> registrationCenter) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Registration Center details syncing....");
+		if (null != registrationCenter && !registrationCenter.isEmpty()) {
+			List<RegistrationCenter> regCentr = new ArrayList<>();
+			registrationCenter.forEach(regCenter -> {
+				RegistrationCenter regCen = new RegistrationCenter();
+				RegistartionCenterId cenId = new RegistartionCenterId();
+				cenId.setId(regCenter.getId());
+				cenId.setLangCode(regCenter.getLangCode());
+				regCen.setRegistartionCenterId(cenId);
+				regCen.setAddrLine1(regCenter.getAddressLine1());
+				regCen.setAddrLine2(regCenter.getAddressLine2());
+				regCen.setAddrLine3(regCenter.getAddressLine3());
+				regCen.setCenterName(regCenter.getName());
+				regCen.setCenterStartTime(Time.valueOf(regCenter.getCenterStartTime()));
+				regCen.setCenterEndTime(Time.valueOf(regCenter.getCenterEndTime()));
+				regCen.setCntrTypCode(regCenter.getCenterTypeCode());
+				regCen.setContactPerson(regCenter.getContactPerson());
+				regCen.setContactPhone(regCenter.getContactPhone());
+				regCen.setHolidayLocCode(regCenter.getHolidayLocationCode());
+				regCen.setLatitude(regCenter.getLatitude());
+				regCen.setLongitude(regCenter.getLongitude());
+				regCen.setLunchStartTime(Time.valueOf(regCenter.getLunchStartTime()));
+				regCen.setLunchEndTime(Time.valueOf(regCenter.getLunchEndTime()));
+				regCen.setWorkingHours(regCenter.getWorkingHours());
+				regCen.setLocationCode(regCenter.getLocationCode());
+				regCen.setNumberOfKiosks(regCenter.getNumberOfKiosks().intValue());
+				regCen.setPerKioskProcessTime(Time.valueOf(regCenter.getPerKioskProcessTime()));
+				regCen.setTimeZone(regCenter.getTimeZone());
+				if (SessionContext.isSessionContextAvailable()) {
+					regCen.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					regCen.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
+				regCen.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				regCen.setIsActive(regCenter.getIsActive());
+				regCentr.add(regCen);
+			});
+
+			registrationCenterRepository.saveAll(regCentr);
+
+		}
+	}
+
+	/**
+	 * Template type details sync.
+	 *
+	 * @param masterTemplateTypeDto 
+	 * 				the master template type DTO list.
+	 */
+	private void templateTypeDetailsSync(List<TemplateTypeDto> masterTemplateTypeDto) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Template Type details syncing....");
+		if (null != masterTemplateTypeDto && !masterTemplateTypeDto.isEmpty()) {
+			List<TemplateType> masterTemplateTypeDtoEntity = new ArrayList<>();
+			masterTemplateTypeDto.forEach(templateType -> {
+				TemplateType tempType = new TemplateType();
+				TemplateEmbeddedKeyCommonFields commnFields = new TemplateEmbeddedKeyCommonFields();
+				commnFields.setCode(templateType.getCode());
+				commnFields.setLangCode(templateType.getLangCode());
+				tempType.setPkTmpltCode(commnFields);
+				tempType.setActive(templateType.getIsActive());
+				tempType.setDescr(templateType.getDescription());
+				if (SessionContext.isSessionContextAvailable()) {
+					tempType.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					tempType.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
+				tempType.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				masterTemplateTypeDtoEntity.add(tempType);
+			});
+
+			templateTypeRepository.saveAll(masterTemplateTypeDtoEntity);
+		}
+	}
+
+	/**
+	 * Template details sync.
+	 *
+	 * @param masterTemplateDto 
+	 * 				the master template DTO list.
+	 */
+	private void templateDetailsSync(List<TemplateDto> masterTemplateDto) {
+		LOGGER.info(RegistrationConstants.MASTER_SYNC_JOD_DETAILS, APPLICATION_NAME, APPLICATION_ID,
+				"Template details syncing....");
+		if (null != masterTemplateDto && !masterTemplateDto.isEmpty()) {
+			List<Template> templetList = new ArrayList<>();
+			masterTemplateDto.forEach(templet -> {
+
+				Template templete = new Template();
+				templete.setId(templet.getId());
+				templete.setFileFormatCode(templet.getFileFormatCode());
+				templete.setFileTxt(templet.getFileText());
+				templete.setDescr(templet.getDescription());
+				templete.setActive(templet.getIsActive());
+				templete.setName(templet.getName());
+				templete.setModuleName(templet.getModuleName());
+				templete.setTemplateTypCode(templet.getTemplateTypeCode());
+				templete.setModel(templet.getModel());
+				templete.setModuleId(templet.getModuleId());
+				templete.setLangCode(templet.getLangCode());
+				if (SessionContext.isSessionContextAvailable()) {
+					templete.setCrBy(SessionContext.userContext().getUserId());
+				} else {
+					templete.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				}
+				templete.setCrDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+				templetList.add(templete);
+			});
+
+			templateRepository.saveAll(templetList);
+		}
 	}
 
 	/*

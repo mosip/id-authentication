@@ -72,8 +72,7 @@ public class RegistrationConstants {
 	public static final String MDM_VERSION="0.1";
 	
 	public static final String IRIS_PANE = "irisPane";
-	public static final String IRIS_IMAGE_LOCAL="/images/leftEye.png";
-	public static final String IRIS_IMAGE_LOCAL_RIGHT="/images/rightEye.png";
+	public static final String IRIS_IMAGE_LOCAL="/images/scanned-iris.png";
 	public static final String IRIS_SINGLE = "IRIS_SINGLE";
 	public static final String IRIS_DOUBLE = "IRIS_DOUBLE";
 	public static final String FINGERPRINT_CAPTURE = "fingerPrintCapture";
@@ -160,6 +159,7 @@ public class RegistrationConstants {
 	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
 	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
 	public static final String ROLES_LIST = "roleList";
+	public static final String USER_NAME_VALIDATION = "USER_NAME_VALIDATION"; 
 
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";
@@ -610,6 +610,7 @@ public class RegistrationConstants {
 	public static final String LIST_ITEM_CLOSING_TAG = "</span></li><br/>";
 	public static final String SPLIT_DELIMITOR = "\\.";
 	public static final String TEMPLATE_GUIDELINES = "Guidelines";
+	public static final String TEMPLATE_IS_UIN_UPDATE = "IsUINUpdate";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
@@ -1218,7 +1219,7 @@ public class RegistrationConstants {
 	public static final String AUTH_AUTHORIZATION = "Authorization";
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
-	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
+	public static final String REGISTRATION_CLIENT = "mosip.registration.app.id";
 	public static final String REGISTRATION_CONTEXT = "auth-otp";
 	public static final String COOKIE = "Cookie";
 	public static final String ENGLISH_LANG_CODE = "eng";
@@ -1357,8 +1358,7 @@ public class RegistrationConstants {
 	public static final String KER = "SIGN";
 	public static final String DTAE_MONTH_YEAR_REGEX = "dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage|ageField";
 
-	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
-	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
+	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";	
 
 	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
@@ -1369,7 +1369,7 @@ public class RegistrationConstants {
 
 	// TPM
 	public static final byte[] NULL_VECTOR = new byte[0];
-	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.reg.db.key";
 	
 	//SQL Execution
 	public static final String SQL_EXECUTION_SUCCESS = "SQL EXECUTION SUCCESS";
@@ -1384,11 +1384,12 @@ public class RegistrationConstants {
 	public static final String EXPIRY_AT="expiryAt";
 	public static final String SERVICE_NAME="policysync";
 	
-	public static final String IDA_REFERENCE_ID = "INTERNAL";
+	
+	public static final String IDA_REFERENCE_ID = "PARTNER";
 	public static final String PUBLIC_KEY_IDA_REST = "ida_key";
 	public static final String ON_BOARD_IDA_VALIDATION = "ida_auth";
 	public static final String ID = "id";
-	public static final String IDENTITY  = "mosip.identity.auth.internal";
+	public static final String IDENTITY  = "mosip.identity.auth";
 	public static final String VERSION  = "version";
 	public static final String REQUEST_TIME = "requestTime";
 	public static final String TRANSACTION_ID = "transactionID";
@@ -1416,16 +1417,6 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_FINGER_ID="FMR";
 	public static final String ON_BOARD_COGENT="cogent";
 
-	public static final String STUB_FACE="Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA";
-	
-	// TPM Public Key Sync
-	public static final String RESPONSE = "response";
-	public static final String ERROR_CODE = "errorCode";
-	public static final String MESSAGE_CODE = "message";
-	public static final String TPM_PUBLIC_KEY_SYNC_SERVICE_NAME = "tpm_public_key";
-	public static final String TPM_AVAILABILITY = "is_tpm_available";
-	public static final String SERIAL_NUMBER = "serialnumber";
-	
 	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
 
 		{
@@ -1449,6 +1440,7 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_FACE="FACE";
 	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
 	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
+	public static final String REG_HEALTH_CHECK_URL_PROPERTY= "mosip.reg.healthcheck.url";
 	
 	public static final int DAYS = 31;
 	public static final int MONTH = 12;

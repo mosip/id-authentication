@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.8</version>
+		<version>0.12.10</version>
 	</parent>
 
 
@@ -124,7 +124,7 @@
 	</properties>
 
 	<modules>
-		<module>kernel-core</module>
+	        <module>kernel-core</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-auth-adapter</module>
 		<module>kernel-dataaccess-hibernate</module>
@@ -160,7 +160,6 @@
 		<module>kernel-crypto-signature</module>
 		<module>kernel-idobjectvalidator</module>
 		<module>kernel-bioapi-provider</module>
-
 		<module>kernel-uingenerator-service</module>
 		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>

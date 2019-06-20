@@ -6,4 +6,67 @@
     <version>0.12.2</version>
   </parent>
   <artifactId>reg-proc-automation</artifactId>
+
+  <dependencies>
+  <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-annotations</artifactId>
+   <version>${jackson.annotation.version}</version>
+</dependency>
+  <dependency>
+    <groupId>com.googlecode.json-simple</groupId>
+    <artifactId>json-simple</artifactId>
+    <version>${json.version}</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-core</artifactId>
+    <version>${jackson.core.version}</version>
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+    <version>${jackson.datatype.version}</version>
+</dependency>
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>${commons.codec.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>${commons.io.version}</version>
+</dependency>
+
+  <dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured</artifactId>
+    <version>${rest.assured.version}</version>
+    
+</dependency>
+  <dependency>
+    <groupId>javax.ws.rs</groupId>
+    <artifactId>javax.ws.rs-api</artifactId>
+    <version>${java.ws.rs.version}</version>
+</dependency>
+  <dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>${hibernate.version}</version>
+</dependency>
+  
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+  </dependencies>
+  <properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
 </project>

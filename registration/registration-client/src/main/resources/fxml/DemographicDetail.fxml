@@ -61,7 +61,7 @@
 											<children>
 												<ScrollPane fx:id="parentScrollPane" prefHeight="${scrollParentPane.height}" prefWidth="${scrollParentPane.width}">
 													<content>
-														<AnchorPane fx:id="keyboardPane" styleClass="paneAtDisplayDemoGraphic">
+														<AnchorPane fx:id="keyboardPane" styleClass="paneAtDisplayDemoGraphic" maxHeight="200">
 															<children>
 																<FlowPane fx:id="parentFlowPane" prefWidth="${scrollParentPane.width}" styleClass="paneAtDisplayDemoGraphic">
 																	<children>
@@ -1262,7 +1262,7 @@
 					<children>
 						<GridPane fx:id="backButton" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
 							<children>
-								<Button minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="%back" GridPane.valignment="TOP">
+								<Button minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#back" styleClass="backButton" text="%back" GridPane.valignment="TOP" visible="false">
 									<graphic>
 										<ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
 											<image>

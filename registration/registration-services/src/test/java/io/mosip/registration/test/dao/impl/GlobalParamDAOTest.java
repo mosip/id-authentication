@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.AssertTrue;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +42,7 @@ public class GlobalParamDAOTest {
 	public void getGlobalParamsTest() {
 		List<GlobalParamName> params = new ArrayList<>(); 
 		
-		Mockito.when(globalParamRepository.findByIsActiveTrue()).thenReturn(params);
+		Mockito.when(globalParamRepository.findByIsActiveTrueAndValIsNotNull()).thenReturn(params);
 		Map<String,Object> globalParamMap = new LinkedHashMap<>();
 		assertEquals(globalParamMap, globalContextParamDAOImpl.getGlobalParams());
 	}

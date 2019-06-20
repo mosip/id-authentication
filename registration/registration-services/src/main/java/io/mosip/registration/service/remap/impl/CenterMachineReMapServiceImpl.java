@@ -3,6 +3,7 @@ package io.mosip.registration.service.remap.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -47,7 +48,8 @@ import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
- * Class to handles all the operations when the machine is rempaped
+ * Class {@code CenterMachineReMapServiceImpl} to handles all the operations
+ * when the machine is rempaped
  * 
  * @author balamurugan.ramamoorthy
  * @author Brahmananda Reddy
@@ -82,7 +84,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 	@Autowired
 	private AuditManagerService auditFactory;
-	
+
 	@Autowired
 	private GlobalParamService globalParamService;
 
@@ -91,7 +93,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * handleReMapProcess()
 	 */
 	@Override
@@ -133,7 +135,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			handleReMapProcess(i);
 		}
 	}
-	
+
 	/**
 	 * disable all sync jobs
 	 */
@@ -219,7 +221,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * isPacketsPendingForProcessing()
 	 */
 	@Override
@@ -232,7 +234,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * isPacketsPendingForEOD()
 	 */
 	@Override
@@ -259,7 +261,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * isMachineRemapped()
 	 */
 	@Override
@@ -288,8 +290,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			if (isNotNullNotEmpty(preRegistrationLists)) {
 				preRegistrationDataSyncDAO.deleteAll(preRegistrationLists);
 			}
-			FileUtils.deleteDirectory(
-					FileUtils.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
+			FileUtils.deleteDirectory(FileUtils
+					.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,

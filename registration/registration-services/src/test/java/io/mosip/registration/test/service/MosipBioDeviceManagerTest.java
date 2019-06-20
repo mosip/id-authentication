@@ -1,7 +1,6 @@
 package io.mosip.registration.test.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,14 +16,12 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditManagerService;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.dto.BioDevice;
-import io.mosip.registration.mdm.dto.CaptureResponsBioDataDto;
-import io.mosip.registration.mdm.dto.CaptureResponseBioDto;
-import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.mdm.integrator.IMosipBioDeviceIntegrator;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -250,14 +247,19 @@ public class MosipBioDeviceManagerTest {
 
 	}
 
+<<<<<<< HEAD
+	//@Test
+=======
 	@Test(expected = NullPointerException.class)
+>>>>>>> 5aaf99b205fef882a905d8281eff1e30fc011d34
 	public void scan() throws RegBaseCheckedException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
 		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
 		mosipBioDeviceManager.scan("deviceType");
 	}
-	@Test(expected=RegBaseCheckedException.class)
+
+	@Test(expected = RegBaseCheckedException.class)
 	public void scan1() throws RegBaseCheckedException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
@@ -265,6 +267,8 @@ public class MosipBioDeviceManagerTest {
 		mosipBioDeviceManager.scan("deviceTyp");
 	}
 
+<<<<<<< HEAD
+=======
 	@Test
 	public void getSingleBioExtract() {
 		CaptureResponseDto captureResponseDto = new CaptureResponseDto();
@@ -290,4 +294,18 @@ public class MosipBioDeviceManagerTest {
 		mosipBioDeviceManager.deRegister("deviceType");
 	}
 
+<<<<<<< HEAD
+	@Test
+	public void getBioDeviceTest() {
+		mosipBioDeviceManager.getBioDevice("type", "modality");
+	}
+
+	@Test
+	public void registerTest() {
+		mosipBioDeviceManager.register();
+	}
+
+=======
+>>>>>>> 55442bec8b0b7257e86524eff51c77f99a33dc9f
+>>>>>>> origin/0.12.0_AutomationTest_RegProc
 }

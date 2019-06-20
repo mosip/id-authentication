@@ -17,7 +17,7 @@ private String scaledScore;
 private String internalScore;
 private Analytics[] analytics;
 public Analytics[] getAnalytics() {
-	return Arrays.copyOf(analytics, analytics.length);
+	return analytics;
 }
 
 public void setAnalytics(Analytics[] analytics) {

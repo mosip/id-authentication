@@ -140,7 +140,7 @@ public class BaseTestCase{
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {
-			buildNumber=getBuildTag();
+			//buildNumber=getBuildTag();
 			logger.info("Test Framework for Mosip api Initialized");
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
 			initialize();
@@ -156,20 +156,22 @@ public class BaseTestCase{
 			extent.setSystemInfo("Build Number", buildNumber);
 			extent.attachReporter(htmlReporter);
 
-			
-			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
-			htmlReporter.config().setReportName("Mosip Automation Report");
-			htmlReporter.config().setTheme(Theme.STANDARD);
-			/*TokenGeneration generateToken = new TokenGeneration();
-			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
-			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
-			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
-			regProcAuthToken = generateToken.getToken(tokenEntity);
-			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
-			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
-			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
-			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);*/
 
+				
+				htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
+				htmlReporter.config().setReportName("Mosip Automation Report");
+				htmlReporter.config().setTheme(Theme.STANDARD);
+				/*TokenGeneration generateToken = new TokenGeneration();
+				TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
+				String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
+				tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+				regProcAuthToken = generateToken.getToken(tokenEntity);
+				TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
+				String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
+				adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
+				adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);*/
+
+			
 		
 		} // End suiteSetup
 
@@ -275,7 +277,7 @@ public class BaseTestCase{
 			        
 			        
 		}
-		
+	/*	
 		public String getBuildTag() {
 			MavenXpp3Reader reader = new MavenXpp3Reader();
 	        Model model=null;
@@ -291,7 +293,7 @@ public class BaseTestCase{
 			return model.getParent().getVersion();
 
 			
-		}
+		}*/
 
 	}
 

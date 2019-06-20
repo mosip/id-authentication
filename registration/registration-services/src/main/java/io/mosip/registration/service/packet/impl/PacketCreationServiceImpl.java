@@ -37,6 +37,7 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
@@ -76,7 +77,8 @@ import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
- * Class for creating the Resident Registration as zip file
+ * Implementation class of {@link PacketCreationService} for creating the
+ * Resident Registration as zip file
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -120,7 +122,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
 			//validate the input against the schema, mandatory, pattern and master data. if any error then stop the rest of the process
 			//and display error message to the user.
-			if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
+			if (registrationCategory != null && !registrationCategory.equals(RegistrationConstants.EMPTY)) {
 
 				idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
 						registrationCategory);
@@ -146,8 +148,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			cbeffInBytes = registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace();
 			if (cbeffInBytes != null) {
-				if (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-						.equals(RegistrationConstants.ENABLE)) {
+				if (registrationDTO.isUpdateUINChild()) {
 					filesGeneratedForPacket.put(RegistrationConstants.PARENT
 							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
 				} else {
@@ -297,8 +298,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					.getFace();
 			if (cbeffInBytes != null) {
 				if (registrationDTO.isUpdateUINNonBiometric()
-						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-								.equals(RegistrationConstants.ENABLE)) {
+						&& !registrationDTO.isUpdateUINChild()) {
 					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
 							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
 				} else {

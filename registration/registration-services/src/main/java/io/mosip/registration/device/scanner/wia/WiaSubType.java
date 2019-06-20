@@ -1,5 +1,7 @@
 package io.mosip.registration.device.scanner.wia  ;
 
+import com4j.*;
+
 /**
  * <p>
  * The WiaSubType enumeration specifies more detail about the property value. Use the SubType property on the Property object to obtain these values for the property.

@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.booking.codes.RequestCodes;
@@ -251,8 +253,9 @@ public class BookingService {
 	/**
 	 * 
 	 * @param registrationBookingEntity
+	 * @throws JsonProcessingException 
 	 */
-	public void sendNotification(RegistrationBookingEntity registrationBookingEntity) {
+	public void sendNotification(RegistrationBookingEntity registrationBookingEntity) throws JsonProcessingException {
 		log.info("sessionId", "idType", "id", "In sendNotification method of Booking Service");
 		NotificationDTO notification = new NotificationDTO();
 		notification.setAppointmentDate(registrationBookingEntity.getRegDate().toString());
