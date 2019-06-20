@@ -44,7 +44,7 @@ public enum FullAddressMatchingStrategy implements TextMatchingStrategy {
 			    String langCode=(String)langObject;
 				String refInfoName = demoNormalizer.normalizeAddress((String) reqInfo,langCode);
 				String entityInfoName = demoNormalizer.normalizeAddress((String) entityInfo,langCode);
-				return DemoMatcherUtil.doExactMatch(refInfoName, entityInfoName);
+				return DemoMatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 			}
 			else
 				return 0;

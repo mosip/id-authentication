@@ -8,22 +8,24 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.factory.IDAMappingFactory;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
-import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -38,8 +40,16 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 		IDAMappingFactory.class })
 public class FullAddressMatchingStrategyTest {
 
-	@Mock
-	private DemoNormalizer demoNormalizer;
+	@InjectMocks
+	private DemoNormalizerImpl demoNormalizer;
+
+	@Autowired
+	private Environment environment;
+
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(demoNormalizer, "environment", environment);
+	}
 
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
@@ -86,11 +96,27 @@ public class FullAddressMatchingStrategyTest {
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("demoNormalizer", demoNormalizer);
 		valueMap.put("langCode", "fra");
-		Mockito.when(demoNormalizer.normalizeAddress(Mockito.any(), Mockito.any())).thenReturn(expected);
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		int value = matchFunction.match("a k Chowdary Beach view colony apt 12 main st TamilNadu 560055", expected,
 				valueMap);
 		assertEquals(100, value);
+	}
+
+	/**
+	 * 
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 */
+	@Test
+	public void TestExactMatchingStrategywithInvalidValues() throws IdAuthenticationBusinessException {
+		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("langCode", "eng");
+		matchProperties.put("demoNormalizer", demoNormalizer);
+		matchProperties.put("languageType", LanguageType.PRIMARY_LANG);
+		int value = matchFunction.match("test", "2", matchProperties);
+		assertEquals(0, value);
+
 	}
 
 	/**
@@ -248,10 +274,24 @@ public class FullAddressMatchingStrategyTest {
 		valueMap.put("demoNormalizer", demoNormalizer);
 		valueMap.put("langCode", "fra");
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
-		Mockito.when(demoNormalizer.normalizeAddress(Mockito.any(), Mockito.any()))
-				.thenReturn("no IdentityValue1 second street chennai");
 		int value = matchFunction.match("street chennai", "no IdentityValue1 second street chennai", valueMap);
-		assertEquals(100, value);
+		assertEquals(40, value);
+	}
+
+	@Test
+	public void TestExactmatchwithoutDemoNormalizer() throws IdAuthenticationBusinessException {
+		Map<String, Object> valueMap = new HashMap<>();
+		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.match("street chennai", "street chennai", valueMap);
+		assertEquals(0, value);
+	}
+
+	@Test
+	public void TestPartialmatchwithoutDemoNormalizer() throws IdAuthenticationBusinessException {
+		Map<String, Object> valueMap = new HashMap<>();
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		int value = matchFunction.match("street chennai", "chennai", valueMap);
+		assertEquals(0, value);
 	}
 
 	/**
@@ -332,7 +372,6 @@ public class FullAddressMatchingStrategyTest {
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("demoNormalizer", demoNormalizer);
 		valueMap.put("language", "arabic");
-		Mockito.when(demoNormalizer.normalizeAddress(Mockito.any(), Mockito.any())).thenReturn("arabic");
 		int value = matchFunction.match("mos", "arabic", valueMap);
 		assertEquals(0, value);
 	}
@@ -357,5 +396,16 @@ public class FullAddressMatchingStrategyTest {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		int value = matchFunction.match(5, 3, matchProperties);
 		assertEquals(0, value);
+	}
+
+	@Test
+	public void TestValidPhenoticsMatchValue() throws IdAuthenticationBusinessException {
+		Map<String, Object> matchProperties = new HashMap<>();
+		matchProperties.put("demoNormalizer", demoNormalizer);
+		matchProperties.put("langCode", "fra");
+		matchProperties.put("language", "arabic");
+		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.match("dinesh", "Thinesh", matchProperties);
+		assertEquals(20, value);
 	}
 }

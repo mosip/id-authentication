@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
@@ -54,7 +55,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		IdInfoHelper.class, CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, IdAuthExceptionHandler.class, AuthRequestValidator.class, PinValidatorImpl.class,IdObjectPatternValidator.class,
-		BioMatcherUtil.class, BioApiImpl.class })
+		BioMatcherUtil.class, BioApiImpl.class,DemoNormalizerImpl.class })
 public class OtpApplication {
 
 	/**
