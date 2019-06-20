@@ -38,16 +38,17 @@ public class AssertResponses {
 		Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
 		Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
 		logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
-		try {
-			Assert.assertTrue(obj1.equals(obj2));
-			logger.info("both object are equal");
-		} catch (AssertionError e) {
-			Assert.assertTrue(false, "Response Data Mismatch Failure  : "+com.google.common.collect.Maps.difference(firstMap, secondMap));
-			return false;
-		}
-		softAssert.assertAll();
-		return true;
-		
+
+			try {
+				Assert.assertTrue(obj1.equals(obj2));
+				logger.info("both object are equal");
+			} catch (AssertionError e) {
+				Assert.assertTrue(false, "Response Data Mismatch Failure  : "+com.google.common.collect.Maps.difference(firstMap, secondMap));
+				return false;
+			}
+			softAssert.assertAll();
+			return true;
+
 	}
 
 	@SuppressWarnings("serial")
@@ -136,6 +137,7 @@ public class AssertResponses {
 			}
 		}
 	}
+	
 
 	@SuppressWarnings({ "rawtypes", "unused", "unchecked" })
 	private static void recursiveArray(JSONArray parsebleArray, List innerKeys) {

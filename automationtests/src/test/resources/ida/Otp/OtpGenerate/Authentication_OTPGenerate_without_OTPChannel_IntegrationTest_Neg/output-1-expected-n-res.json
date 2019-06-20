@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-008",
+      "errorMessage": "OTP Notification Channel not provided"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "1711477035",
+  "version": "1.0"
+}

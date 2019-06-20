@@ -1,0 +1,12 @@
+{
+  "id": "",
+  "individualId": "5912479046",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-20T13:09:58.058+05:30",
+  "transactionID": "1677113632",
+  "version": "1.0"
+}

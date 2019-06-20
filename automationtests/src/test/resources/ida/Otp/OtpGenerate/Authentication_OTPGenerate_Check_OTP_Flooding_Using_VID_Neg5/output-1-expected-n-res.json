@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-001",
+      "errorMessage": "Innumerous OTP requests received"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "4111175805",
+  "version": "1.0"
+}

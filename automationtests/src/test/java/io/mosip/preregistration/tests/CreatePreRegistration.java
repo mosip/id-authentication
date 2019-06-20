@@ -1,4 +1,3 @@
-
 package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
@@ -69,7 +68,7 @@ public SoftAssert softAssert = new SoftAssert();
 	private static  String preReg_URI;
 	public String dest = "";
 	public String configPaths = "";
-	public String folderPath = "preReg\\Create_PreRegistration";
+	public String folderPath = "preReg//Create_PreRegistration";
 	public String outputFile = "Create_PreRegistrationOutput.json";
 	public String requestKeyFile = "Create_PreRegistrationRequest.json";
 
@@ -87,12 +86,17 @@ public SoftAssert softAssert = new SoftAssert();
 	 * @throws IOException
 	 * @throws ParseException
 	 */
+	
+	
+	
+	
+	
 	@DataProvider(name = "createPreReg")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
 		
-		switch ("smokeAndRegression") {
+		switch (testLevel) {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -200,8 +204,12 @@ public SoftAssert softAssert = new SoftAssert();
 		 */
 
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
+		
+	}
+	@BeforeClass
+	public void getToken()
+	{
 		authToken = lib.getToken();
-
 	}
 
 	@Override

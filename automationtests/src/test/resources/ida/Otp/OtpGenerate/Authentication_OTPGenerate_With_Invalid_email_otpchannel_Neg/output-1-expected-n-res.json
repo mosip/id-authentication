@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "$REGEXP:Invalid Input Parameter - otpChannel.*$"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "6327848583",
+  "version": "1.0"
+}
