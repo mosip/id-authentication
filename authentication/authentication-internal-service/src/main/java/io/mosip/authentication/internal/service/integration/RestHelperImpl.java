@@ -1,4 +1,4 @@
-package io.mosip.authentication.internal.service.integarion;
+package io.mosip.authentication.internal.service.integration;
 
 import java.io.IOException;
 import java.time.Duration;
