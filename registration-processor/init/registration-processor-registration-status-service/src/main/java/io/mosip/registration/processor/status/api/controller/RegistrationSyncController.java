@@ -78,9 +78,8 @@ public class RegistrationSyncController {
 	@Autowired
 	private DigitalSignatureUtility digitalSignatureUtility;
 
-
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
-	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.sync.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
@@ -112,9 +111,10 @@ public class RegistrationSyncController {
 					env.getProperty(REG_SYNC_SERVICE_ID), syncResponseList)) {
 				syncResponseList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
 			}
-			if(isEnabled) {
+			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildRegistrationSyncResponse(syncResponseList)));
+				headers.add(RESPONSE_SIGNATURE,
+						digitalSignatureUtility.getDigitalSignature(buildRegistrationSyncResponse(syncResponseList)));
 				return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
 			}
 
