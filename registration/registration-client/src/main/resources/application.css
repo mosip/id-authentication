@@ -1154,7 +1154,7 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
-#saveToDevice, #formValidationButton{
+#saveToDevice, #formValidationButton,#uploadBtn{
 	-fx-background-color : #FF4081;
 }
 /*Upload Packet page design ends */
