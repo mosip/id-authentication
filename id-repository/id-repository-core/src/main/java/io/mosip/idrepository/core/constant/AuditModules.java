@@ -8,7 +8,7 @@ package io.mosip.idrepository.core.constant;
  */
 public enum AuditModules {
 	
-	ID_REPO_CORE_SERVICE("IDR-IDS"),
+	ID_REPO_IDENTITY_SERVICE("IDR-IDS"),
 	
 	ID_REPO_VID_SERVICE("IDR-VID");
 	
