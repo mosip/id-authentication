@@ -26,18 +26,28 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
+	/** The local env. */
 	@Value("${application.env.local:false}")
 	private Boolean localEnv;
 
+	/** The swagger url. */
 	@Value("${swagger.base-url:#{null}}")
 	private String swaggerUrl;
 
+	/** The server port. */
 	@Value("${server.port:8080}")
 	private int serverPort;
 
+	/** The proto. */
 	String proto = "http";
+	
+	/** The host. */
 	String host = "localhost";
+	
+	/** The port. */
 	int port = -1;
+	
+	/** The host with port. */
 	String hostWithPort = "localhost:8080";
 
 	/**
@@ -49,6 +59,12 @@ public class SwaggerConfig {
 		return new ApiInfoBuilder().title("Id Repository Identity Service").description("Id Repository Identity Service").build();
 	}
 
+	/**
+	 * Api.
+	 *
+	 * @return the docket
+	 * @throws MalformedURLException the malformed URL exception
+	 */
 	@Bean
 	public Docket api() throws MalformedURLException {
 		boolean targetSwagger = false;
@@ -78,6 +94,11 @@ public class SwaggerConfig {
 		return docket;
 	}
 
+	/**
+	 * Protocols.
+	 *
+	 * @return the sets the
+	 */
 	private Set<String> protocols() {
 		Set<String> protocols = new HashSet<>();
 		protocols.add(proto);

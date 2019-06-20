@@ -5,13 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class Documents.
+ * The Class DocumentsDTO - contains fields for documents data in request or
+ * response.
  *
  * @author Manoj SP
- */
-
-/**
- * Instantiates a new documents.
  */
 @Data
 @NoArgsConstructor

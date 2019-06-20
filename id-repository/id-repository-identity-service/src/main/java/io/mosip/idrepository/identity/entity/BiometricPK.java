@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class BiometricPK.
+ * The Class BiometricPK - composite key for Biometric table.
  *
  * @author Manoj SP
  */

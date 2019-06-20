@@ -12,8 +12,8 @@ import org.springframework.util.MultiValueMap;
 import lombok.Data;
 
 /**
- * Rest Request Object which is provided as input to RestUtil for HTTP Request
- * and response
+ * Rest Request Object which is provided as input to RestHelper for HTTP/HTTPS Request
+ * and response.
  * 
  * @author Manoj SP
  *
