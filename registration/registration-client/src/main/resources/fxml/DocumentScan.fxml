@@ -203,7 +203,7 @@
                                                    <children>
                                                       <GridPane fx:id="biometricExceptionReqPane">
                                                          <children>
-                                                            <Label fx:id="biometricExceptionReq" styleClass="biometricEceptionLabel" text="%biometricexceptionrequired" />
+                                                            <Label fx:id="biometricExceptionReq" styleClass="demoGraphicFieldLabel" text="%biometricexceptionrequired" />
                                                          </children>
                                                          <columnConstraints>
                                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -214,14 +214,14 @@
                                                       </GridPane>
                                                       <HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0" GridPane.columnIndex="1">
                                                          <children>
-                                                            <Label styleClass="uinUpdateLabelsTypeTwo" text="%no" />
+                                                            <Label styleClass="demoGraphicFieldLabel" text="%no" />
                                                             <AnchorPane>
                                                                <children>
                                                                   <Label id="toggleLabel1" fx:id="bioExceptionToggleLabel1" layoutY="0.0" styleClass="toggleButton" text="" />
                                                                   <Label id="toggleLabel2" fx:id="bioExceptionToggleLabel2" layoutX="0.0" layoutY="2.0" styleClass="toggleButton" text="" />
                                                                </children>
                                                             </AnchorPane>
-                                                            <Label styleClass="uinUpdateLabelsTypeTwo" text="%yes" />
+                                                            <Label styleClass="demoGraphicFieldLabel" text="%yes" />
                                                          </children>
                                                       </HBox>
                                                    </children>
