@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -134,6 +137,9 @@ public class BookingServiceUtil {
 
 	@Value("${notification.url}")
 	private String notificationResourseurl;
+	
+	@Value("${preregistration.country.specific.zoneId}")
+	private String specificZoneId;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -385,10 +391,12 @@ public class BookingServiceUtil {
 	}
 
 	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
-		LocalDateTime current = LocalDateTime.now();
+		
+		ZonedDateTime currentTime = ZonedDateTime.now();
+		LocalDateTime requestTimeCountrySpecific=currentTime.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDateTime();
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForCancle method of Booking Service for current Date Time- " + current);
-		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+				"In timeSpanCheckForCancle method of Booking Service for request Date Time- " + requestTimeCountrySpecific);
+		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForCancel)
 			return true;
 		else
@@ -396,11 +404,13 @@ public class BookingServiceUtil {
 					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 	}
 
-	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
-		LocalDateTime current = LocalDateTime.now();
+	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime,Date requestTime) {
+		
+		LocalDateTime requestTimeCountrySpecific=requestTime.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDateTime();
+		
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForRebook method of Booking Service for current Date Time- " + current);
-		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+				"In timeSpanCheckForRebook method of Booking Service for request Date Time- " + requestTimeCountrySpecific);
+		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForRebook)
 			return true;
 		else
@@ -408,6 +418,7 @@ public class BookingServiceUtil {
 					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 
 	}
+	
 
 	/**
 	 * This method will do booking time slots.

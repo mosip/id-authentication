@@ -386,7 +386,7 @@ public class BookingService {
 										"In bookAppointment method of Booking Service for booking Date Time- "
 												+ bookedDateTime);
 								/* Time span check for re-book */
-								serviceUtil.timeSpanCheckForRebook(bookedDateTime);
+								serviceUtil.timeSpanCheckForRebook(bookedDateTime,bookingRequestDTOs.getRequesttime());
 
 								/* Deleting old booking */
 								deleteOldBooking(preRegistrationId);
@@ -513,7 +513,7 @@ public class BookingService {
 											"In bookMultiAppointment method of Booking Service for booking Date Time- "
 													+ bookedDateTime);
 									/* Time span check for re-book */
-									serviceUtil.timeSpanCheckForRebook(bookedDateTime);
+									serviceUtil.timeSpanCheckForRebook(bookedDateTime,bookingRequestDTOs.getRequesttime());
 
 									/* Deleting old booking */
 									deleteOldBooking(bookingRequestDTO.getPreRegistrationId());

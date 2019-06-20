@@ -273,6 +273,7 @@ img {
   }
   .container {
     flex-wrap: wrap;
+    margin-bottom: 68px;
   }
   .centers-wrapper {
     width: 90%;

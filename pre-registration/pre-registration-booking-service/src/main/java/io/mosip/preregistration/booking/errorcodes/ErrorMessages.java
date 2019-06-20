@@ -66,7 +66,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
-	APPOINTMENT_BOOKING_FAILED("Appointment booking failed"),
+	APPOINTMENT_BOOKING_FAILED("Appointment booking/re-booking cannot be done"),
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
