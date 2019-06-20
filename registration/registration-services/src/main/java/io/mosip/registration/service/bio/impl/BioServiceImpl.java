@@ -83,11 +83,11 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * String)
 	 */
 	@Override
-	public boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException {
+	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId) throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
 
-		boolean fingerPrintStatus = false;
+		AuthenticationValidatorDTO authenticationValidatorDTO=null;
 		if (isMdmEnabled()) {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGER_SINGLE);
 			isoTemplate = mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
@@ -97,25 +97,30 @@ public class BioServiceImpl extends BaseService implements BioService {
 		}
 
 		if (isoTemplate == null) {
-			return false;
+			return null;
 		} else {
 			LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 					"Calling for finger print validation through authService");
 
-			AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
+			authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
 			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 			fingerprintDetailsDTO.setFingerPrint(isoTemplate);
+			fingerprintDetailsDTO.setFingerType("index");
 			fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 			authenticationValidatorDTO.setUserId(userId);
 			authenticationValidatorDTO.setAuthValidationType(RegistrationConstants.VALIDATION_TYPE_FP_SINGLE);
-			fingerPrintStatus = authService.authValidator(RegistrationConstants.FINGERPRINT,
-					authenticationValidatorDTO);
+			validateFingerPrint(authenticationValidatorDTO);
 		}
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "End FingerPrint validator");
 
-		return fingerPrintStatus;
+		return authenticationValidatorDTO;
+	}
+
+	public boolean validateFingerPrint(AuthenticationValidatorDTO authenticationValidatorDTO) {
+		return authService.authValidator(RegistrationConstants.FINGERPRINT,
+				authenticationValidatorDTO);
 	}
 
 	/*
@@ -125,7 +130,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * io.mosip.registration.service.bio.BioService#validateIris(java.lang.String)
 	 */
 	@Override
-	public boolean validateIris(String userId) throws RegBaseCheckedException, IOException {
+	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId) throws RegBaseCheckedException, IOException {
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Scanning Iris");
 
@@ -138,7 +143,11 @@ public class BioServiceImpl extends BaseService implements BioService {
 		authenticationValidatorDTO.setIrisDetails(irisDetailsDTOs);
 
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Iris scan done");
+		return authenticationValidatorDTO;
+		
+	}
 
+	public boolean validateIris(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		return authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 	}
 
@@ -514,13 +523,21 @@ public class BioServiceImpl extends BaseService implements BioService {
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Iris");
 
 		byte[] capturedByte = null;
+		BufferedImage bufferedImage=null;
 
 		if (isMdmEnabled()) {
 			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.IRIS_SINGLE);
 			capturedByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
+			return capturedByte;
 		} else
-			capturedByte = IOUtils
-					.toByteArray(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
+			bufferedImage = ImageIO
+					.read(this.getClass().getResourceAsStream(RegistrationConstants.IRIS_IMAGE_LOCAL));
+		
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		ImageIO.write(bufferedImage, RegistrationConstants.IMAGE_FORMAT_PNG, byteArrayOutputStream);
+
+		capturedByte = byteArrayOutputStream.toByteArray();
+
 		return capturedByte;
 	}
 
@@ -531,18 +548,20 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * io.mosip.registration.service.bio.BioService#validateFace(java.lang.String)
 	 */
 	@Override
-	public boolean validateFace(String userId) {
+	public boolean validateFace(AuthenticationValidatorDTO authenticationValidatorDTO) {
 
-		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Scanning Face");
+		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Authenticating face");
+
+		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
+	}
+
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId) {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
 		faceDetailsDTO.setFace(captureFace());
 		authenticationValidatorDTO.setUserId(userId);
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
-
-		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Face scan done");
-
-		return authService.authValidator(RegistrationConstants.FACE, authenticationValidatorDTO);
+		return authenticationValidatorDTO;
 	}
 
 	/*
@@ -750,6 +769,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		userIrisDetails.forEach(
 				irisEach -> irisDetailsDTO.setIrisType(irisEach.getUserBiometricId().getBioAttributeCode() + ".jpg"));
+		
 		return userIrisDetails.stream()
 				.anyMatch(iris -> Arrays.equals(irisDetailsDTO.getIris(), iris.getBioIsoImage()));
 	}

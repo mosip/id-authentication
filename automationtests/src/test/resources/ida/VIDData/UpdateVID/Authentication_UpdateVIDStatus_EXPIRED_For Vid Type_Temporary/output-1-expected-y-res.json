@@ -1,0 +1,10 @@
+{
+  "errors": [],
+  "id": "mosip.vid.update",
+  "response": {
+    "VID": "$IGNORE$",
+    "vidStatus": "EXPIRED"
+  },
+  "responsetime": "$IGNORE$",
+  "version": "$IGNORE$"
+}

@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-001",
+      "errorMessage": "Request to be received at MOSIP within 30 minutes"
+    }
+  ],
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

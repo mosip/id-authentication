@@ -36,5 +36,12 @@ public class GlobalParam extends RegistrationCommonFields {
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
-
+	
+	/**
+	 * @param updDtimes the updDtimes to set
+	 */
+	@Override
+	public void setUpdDtimes(Timestamp updDtimes) {
+		this.updDtimes = updDtimes;
+	}
 }

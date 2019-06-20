@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "actionMessage": "Please retry with correct VID",
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "$RANDOM:N:10$",
+  "version": "1.0"
+}

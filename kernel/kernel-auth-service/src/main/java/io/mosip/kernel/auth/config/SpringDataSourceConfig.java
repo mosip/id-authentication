@@ -15,7 +15,8 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * @author Ramadurai Pandian
+ * @author Ramadurai Saravana Pandian
+ * @author Raj Jha 
  *
  */
 @Configuration

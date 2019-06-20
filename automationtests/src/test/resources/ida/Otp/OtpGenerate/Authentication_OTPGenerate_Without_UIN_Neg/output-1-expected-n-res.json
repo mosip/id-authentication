@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "2851575223",
+  "version": "1.0"
+}

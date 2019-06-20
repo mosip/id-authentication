@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-BIA-006",
+      "errorMessage": "$REGEXP:Biometric data.*not available in database$"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "6886085434",
+  "version": "1.0"
+}

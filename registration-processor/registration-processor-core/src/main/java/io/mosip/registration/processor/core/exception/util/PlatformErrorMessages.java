@@ -496,6 +496,8 @@ public enum PlatformErrorMessages {
 	RPR_MVS_DECODE_EXCEPTION(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "013", "Request Decoding Exception"),
 	/** The rpr mvs no user id present. */
 	RPR_MVS_NO_USER_ID_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "014", "User Id does not exists master list"),
+	
+	RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "017", "User Id should not empty or null "),
 
 	RPR_MVS_USER_STATUS_NOT_ACTIVE(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "015", "User is not in ACTIVE status"),
 

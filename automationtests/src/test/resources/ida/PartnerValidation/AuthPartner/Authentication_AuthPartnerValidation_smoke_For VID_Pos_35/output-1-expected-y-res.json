@@ -1,0 +1,9 @@
+{
+  "response": {
+    "authStatus": true,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "1443386283",
+  "version": "1.0"
+}

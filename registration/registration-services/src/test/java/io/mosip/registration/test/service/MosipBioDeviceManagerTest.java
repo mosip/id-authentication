@@ -257,7 +257,8 @@ public class MosipBioDeviceManagerTest {
 		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
 		mosipBioDeviceManager.scan("deviceType");
 	}
-	@Test(expected=RegBaseCheckedException.class)
+
+	@Test(expected = RegBaseCheckedException.class)
 	public void scan1() throws RegBaseCheckedException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
@@ -288,6 +289,16 @@ public class MosipBioDeviceManagerTest {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
 		mosipBioDeviceManager.deRegister("deviceType");
+	}
+
+	@Test
+	public void getBioDeviceTest() {
+		mosipBioDeviceManager.getBioDevice("type", "modality");
+	}
+
+	@Test
+	public void registerTest() {
+		mosipBioDeviceManager.register();
 	}
 
 }

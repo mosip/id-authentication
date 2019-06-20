@@ -46,8 +46,27 @@ public class OTPManager extends BaseService {
 	private static final Logger LOGGER = AppConfig.getLogger(OTPManager.class);
 
 	/**
-	 * Get OTP for the User from Kernel's AuthN Web-Service. If application is
-	 * offline, web-service will not invoked.
+	 * This method is used to get the OTP for the User from Kernel's AuthN Web-Service. 
+	 * 
+	 * <p>Sends the username to the OTP service to get the OTP. Based on the response received,
+	 * appropriate {@link ResponseDTO} is created</p>
+	 * 
+	 * <p>If application is offline, web-service will not invoked and {@link ErrorResponseDTO} 
+	 * error response is returned.</p>
+	 * 
+	 * <p>
+	 * Returns the {@link ResponseDTO} object.
+	 * </p>
+	 * 
+	 * <p>
+	 * If OTP is fetched successfully and sent to the user,
+	 * {@link SuccessResponseDTO} will be set in {@link ResponseDTO} object
+	 * </p>
+	 * 
+	 * <p>
+	 * If any exception occurs, {@link ErrorResponseDTO} will be set in
+	 * {@link ResponseDTO} object
+	 * </p>
 	 * 
 	 * @param userId
 	 *            the user id of the user for whom OTP has to be requested
@@ -141,15 +160,30 @@ public class OTPManager extends BaseService {
 	}
 
 	/**
-	 * Validates the entered OTP against the user through Kernel's AuthN
-	 * Web-Service. If application is offline, web-service will not invoked.
+	 * This method is used to validate the entered OTP against the user through Kernel's AuthN
+	 * Web-Service. Based on the response received, appropriate {@link AuthTokenDTO} is created
+	 * 
+	 * <p>
+	 * Returns the {@link AuthTokenDTO} object.
+	 * </p>
+	 * 
+	 * <p>If application is offline, web-service will not invoked and empty {@link AuthTokenDTO} 
+	 * object is returned.</p>
+	 * 
+	 * <p>
+	 * If OTP is validated successfully, the token response upon invoking the rest API 
+	 * will be set to the {@link AuthTokenDTO} object.
+	 * </p>
+	 * 
+	 * <p>
+	 * If any exception occurs, the {@link AuthTokenDTO} will be set to null.
+	 * </p>
 	 * 
 	 * @param userId
 	 *            the user id of the user to be validated against
 	 * @param otp
 	 *            the user entered OTP
-	 * @return the {@link ResponseDTO} object. Sends {@link SuccessResponseDTO} if
-	 *         OTP is sent to the user, else {@link ErrorResponseDTO}
+	 * @return the {@link AuthTokenDTO} object.
 	 */
 	public AuthTokenDTO validateOTP(String userId, String otp) {
 

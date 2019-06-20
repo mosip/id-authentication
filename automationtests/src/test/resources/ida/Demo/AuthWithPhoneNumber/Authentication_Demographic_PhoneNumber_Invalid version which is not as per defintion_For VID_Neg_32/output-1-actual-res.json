@@ -1,0 +1,15 @@
+{
+  "transactionID": "1515565672",
+  "version": "1.0",
+  "id": "mosip.identity.auth",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - version"
+    }
+  ],
+  "responseTime": "2019-06-15T09:46:08.594+05:30",
+  "response": {
+    "authStatus": false
+  }
+}

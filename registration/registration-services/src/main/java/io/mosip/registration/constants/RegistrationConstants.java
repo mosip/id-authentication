@@ -160,6 +160,7 @@ public class RegistrationConstants {
 	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
 	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
 	public static final String ROLES_LIST = "roleList";
+	public static final String USER_NAME_VALIDATION = "USER_NAME_VALIDATION"; 
 
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";
@@ -1368,7 +1369,7 @@ public class RegistrationConstants {
 
 	// TPM
 	public static final byte[] NULL_VECTOR = new byte[0];
-	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.reg.db.key";
 	
 	//SQL Execution
 	public static final String SQL_EXECUTION_SUCCESS = "SQL EXECUTION SUCCESS";
@@ -1448,6 +1449,7 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_FACE="FACE";
 	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
 	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
+	public static final String REG_HEALTH_CHECK_URL_PROPERTY= "mosip.reg.healthcheck.url";
 	
 	public static final int DAYS = 31;
 	public static final int MONTH = 12;

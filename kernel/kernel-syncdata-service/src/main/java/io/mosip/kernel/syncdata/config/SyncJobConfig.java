@@ -23,6 +23,16 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.syncdata.constant.HibernatePersistenceConstant;
 
+
+/**
+ * SyncJobConfig
+ * @author Bal Vikash Sharma
+ * @author Raj Jha 
+ * @since 1.0.0
+ * 
+ *
+ */
+
 @Configuration
 @EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.syncjob.repository", entityManagerFactoryRef = "syncJobEntityManager", transactionManagerRef = "syncJobTransactionManager")
 public class SyncJobConfig {

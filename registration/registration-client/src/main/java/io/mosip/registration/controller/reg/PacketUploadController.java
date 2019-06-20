@@ -105,6 +105,9 @@ public class PacketUploadController extends BaseController implements Initializa
 	private Button saveToDevice;
 
 	@FXML
+	private Button uploadBtn;
+	
+	@FXML
 	private TextField filterField;
 
 	@FXML
@@ -509,6 +512,11 @@ public class PacketUploadController extends BaseController implements Initializa
 		
 		List<PacketStatusDTO> synchedPackets = packetSynchService.fetchPacketsToBeSynched();
 		exportCSVIcon.setDisable(synchedPackets.isEmpty());
+		filterField.setDisable(synchedPackets.isEmpty());
+		table.setDisable(synchedPackets.isEmpty());
+		saveToDevice.setVisible(!synchedPackets.isEmpty());
+		uploadBtn.setVisible(!synchedPackets.isEmpty());
+		
 		List<PacketStatusVO> packetsToBeExport = new ArrayList<>();
 		int count = 1;
 		for (PacketStatusDTO packet : synchedPackets) {

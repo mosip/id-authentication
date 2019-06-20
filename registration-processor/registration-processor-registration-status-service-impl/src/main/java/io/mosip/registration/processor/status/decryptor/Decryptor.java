@@ -115,10 +115,16 @@ public class Decryptor {
 
 			response = (ResponseWrapper<CryptomanagerResponseDto>) restClientService
 					.postApi(ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
-			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
-					CryptomanagerResponseDto.class);
-			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
-			decryptedData = new String(decryptedPacket);
+			if (response.getResponse() != null) {
+				cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
+						CryptomanagerResponseDto.class);
+				byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
+				decryptedData = new String(decryptedPacket);
+			}else {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"", IO_EXCEPTION);
+				throw new PacketDecryptionFailureException(response.getErrors().get(0).getErrorCode(),response.getErrors().get(0).getMessage());
+			}
 
 			isTransactionSuccessful = true;
 			description = DECRYPTION_SUCCESS;

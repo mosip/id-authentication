@@ -1,0 +1,66 @@
+{
+  "FACE": "Content is not allowed in prolog.",
+  "addressLine1": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "addressLine2": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "addressLine3": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "dob": [
+    {
+      "value": ""
+    }
+  ],
+  "emailId": [
+    {
+      "value": ""
+    }
+  ],
+  "gender": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "location1": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "location2": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "location3": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "name": [
+    {
+      "language": "fra",
+      "value": ""
+    }
+  ],
+  "phoneNumber": [
+    {
+      "value": ""
+    }
+  ]
+}

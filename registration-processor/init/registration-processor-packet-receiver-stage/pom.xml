@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>init</artifactId>
-		<version>0.12.8</version>
+		<version>0.12.10</version>
 	</parent>
 
 	<artifactId>registration-processor-packet-receiver-stage</artifactId>

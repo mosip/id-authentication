@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "actionMessage": "Please retry with correct VID",
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "$RANDOM:N:10$",
+  "version": "1.0"
+}

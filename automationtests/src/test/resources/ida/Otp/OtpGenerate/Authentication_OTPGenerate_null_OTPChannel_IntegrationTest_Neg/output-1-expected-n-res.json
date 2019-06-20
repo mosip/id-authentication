@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "$RANDOM:N:10$",
+  "version": "1.0"
+}

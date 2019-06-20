@@ -1,0 +1,17 @@
+{
+  "transactionID": "0558776141",
+  "version": "1.0",
+  "id": "mosip.identity.kyc",
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-004",
+      "errorMessage": "OTP is invalid",
+      "actionMessage": "Please provide correct OTP value"
+    }
+  ],
+  "responseTime": "2019-06-07T12:12:03.902+05:30",
+  "response": {
+    "kycStatus": false,
+    "staticToken": "294629624933219352046809511900343117"
+  }
+}

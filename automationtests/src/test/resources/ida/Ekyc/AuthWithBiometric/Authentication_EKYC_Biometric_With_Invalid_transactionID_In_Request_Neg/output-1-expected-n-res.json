@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "$TestData:txnID_Invalid$",
+  "version": "1.0"
+}

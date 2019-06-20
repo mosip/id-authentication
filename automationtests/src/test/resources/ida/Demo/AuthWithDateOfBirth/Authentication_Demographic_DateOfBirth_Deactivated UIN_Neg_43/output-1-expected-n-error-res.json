@@ -1,0 +1,15 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-003",
+      "errorMessage": "UIN has been deactivated"
+    }
+  ],
+  "id": "mosip.identity.auth",
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "6721160556",
+  "version": "1.0"
+}

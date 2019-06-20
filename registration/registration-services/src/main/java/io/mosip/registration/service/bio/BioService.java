@@ -3,6 +3,7 @@ package io.mosip.registration.service.bio;
 import java.io.IOException;
 import java.util.List;
 
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -33,8 +34,9 @@ public interface BioService {
 	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
 	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
-	boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException;
-
+	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId) throws RegBaseCheckedException, IOException;
+	
+	public boolean validateFingerPrint(AuthenticationValidatorDTO authenticationValidatorDTO) ;
 	/**
 	 * Validates Iris after getting the scanned data for the given user ID
 	 * 
@@ -50,8 +52,11 @@ public interface BioService {
 	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
 	 * @throws IOException             - Exception that may occur in reading the resource
 	 */
-	boolean validateIris(String userId) throws RegBaseCheckedException, IOException;
+	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId) throws RegBaseCheckedException, IOException;
 
+	public boolean validateIris(AuthenticationValidatorDTO authenticationValidatorDTO) ;
+	
+	
 	/**
 	 * Gets the finger print image as DTO from the MDM service based on the
 	 * fingerType
@@ -89,13 +94,14 @@ public interface BioService {
 	 * Validates Face after getting the scanned data
 	 * 
 	 * 
-	 * @param userId
-	 *            - the userID
+	 * @param authenticationValidatorDTO
+	 *            - the AuthenticationValidator DTO
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
 	 */
-	boolean validateFace(String userId);
+	boolean validateFace(AuthenticationValidatorDTO authenticationValidatorDTO);
 
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId);
 	/**
 	 * Gets the iris stub image as DTO.
 	 *

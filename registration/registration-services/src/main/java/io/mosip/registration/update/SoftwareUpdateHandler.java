@@ -64,9 +64,9 @@ public class SoftwareUpdateHandler extends BaseService {
 			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
-			serverRegClientURL = properties.getProperty("mosip.client.url");
-			serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
-			backUpPath = properties.getProperty("mosip.rollback.path");
+			serverRegClientURL = properties.getProperty("mosip.reg.client.url");
+			serverMosipXmlFileUrl = properties.getProperty("mosip.reg.xml.file.url");
+			backUpPath = properties.getProperty("mosip.reg.rollback.path");
 
 		} catch (IOException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,

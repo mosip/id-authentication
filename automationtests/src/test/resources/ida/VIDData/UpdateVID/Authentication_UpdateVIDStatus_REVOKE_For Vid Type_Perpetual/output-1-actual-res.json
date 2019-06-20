@@ -1,0 +1,1 @@
+{"id":"mosip.vid.update","version":"v1","responsetime":"2019-06-07T13:02:22.593Z","metadata":null,"response":{"vidStatus":"REVOKED","restoredVid":{"vidStatus":"ACTIVE","restoredVid":null,"UIN":null,"VID":5073941047293563},"UIN":null,"VID":null},"errors":[]}
