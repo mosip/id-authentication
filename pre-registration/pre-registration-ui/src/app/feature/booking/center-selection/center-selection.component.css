@@ -147,6 +147,7 @@ input[type='radio'] {
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 .center_selection-intial-recommendation-container {
