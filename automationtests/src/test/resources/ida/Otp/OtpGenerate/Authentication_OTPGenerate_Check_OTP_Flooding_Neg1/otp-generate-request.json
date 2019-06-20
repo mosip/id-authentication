@@ -1,12 +1,12 @@
 {
   "id": "mosip.identity.otp",
-  "individualId": "NoLoadedUINFound",
+  "individualId": "5703805391",
   "individualIdType": "UIN",
   "otpChannel": [
     "EMAIL",
     "PHONE"
   ],
-  "requestTime": "2019-06-15T09:35:36.036+05:30",
-  "transactionID": "8150433188",
+  "requestTime": "2019-06-20T13:09:58.058+05:30",
+  "transactionID": "6840818370",
   "version": "1.0"
 }

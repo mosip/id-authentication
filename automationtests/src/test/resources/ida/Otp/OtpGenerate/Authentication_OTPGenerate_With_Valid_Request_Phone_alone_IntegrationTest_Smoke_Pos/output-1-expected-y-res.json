@@ -5,5 +5,5 @@
   "responseTime": "$TIMESTAMP$",
   "id": "mosip.identity.otp",
   "version": "1.0",
-  "transactionID": "$RANDOM:N:10$"
+  "transactionID": "2557470813"
 }

@@ -1,5 +1,5 @@
 {
-  "requestTime": "2019-06-15T09:35:36.036+05:30",
+  "requestTime": "2019-06-20T13:09:58.058+05:30",
   "otpChannel": [
     "PHONE",
     "EMAIL"
@@ -7,5 +7,5 @@
   "id": "mosip.identity.otp",
   "version": "1.0",
   "individualIdType": "VID",
-  "transactionID": "8420041280"
+  "transactionID": "6724061114"
 }

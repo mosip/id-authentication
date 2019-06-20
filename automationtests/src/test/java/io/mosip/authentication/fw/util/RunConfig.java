@@ -507,5 +507,8 @@ public abstract class RunConfig {
 	public abstract String getUinIdentityMapper();
 	public abstract String getInternalEncryptionPath();
 	public abstract void setInternalEncryptionPath(String internalEncryptionPath);
-
+	public abstract String getValidateSignaturePath();
+	public abstract void setValidateSignaturePath(String validateSignaturePath);
+	public abstract String getEncryptionPort();
+	public abstract void setEncryptionPort(String encryptionPort);
 }

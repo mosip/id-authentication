@@ -22,6 +22,7 @@ import org.testng.internal.TestResult;
 
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.AuthenticationTestException;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.testdata.TestDataProcessor;
@@ -78,9 +79,10 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
+	 * @throws AuthenticationTestException 
 	 */
 	@Test
-	public void generateVidForUin() {
+	public void generateVidForUin() throws AuthenticationTestException {
 		String cookieValue = getAuthorizationCookie(getCookieRequestFilePathForUinGenerator(),
 				RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getClientidsecretkey(),
 				AUTHORIZATHION_COOKIENAME);
@@ -88,6 +90,7 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/uin.properties").getAbsolutePath());
 		Map<String, String> uinMap = new HashMap<String, String>();
 		Map<String, String> vidMap = new HashMap<String, String>();
+		boolean status=true;
 		for (String str : prop.stringPropertyNames()) {
 			uinMap.put(str, prop.getProperty(str));
 		}
@@ -113,11 +116,13 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 
 				String resVIDJson = postRequestAndGetResponseForVIDGeneration(reqVidJson, url,
 						AUTHORIZATHION_COOKIENAME, cookieValue);
-				if (resVIDJson.contains("VID")) {
+				if (resVIDJson.contains("\"VID\":")) {
 					String vid = JsonPrecondtion.getValueFromJson(resVIDJson, "response.VID");
 					String vidType = JsonPrecondtion.getValueFromJson(reqVidJson, "request.vidType");
 					vidMap.put(entry.getKey(), vid + "." + vidType + ".ACTIVE");
 				}
+				else
+					status=false;
 			}
 		}
 		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "ida/"
@@ -126,6 +131,8 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 		generateMappingDic(new File("./" + RunConfigUtil.objRunConfig.getSrcPath() + "idRepository/"
 				+ RunConfigUtil.objRunConfig.getTestDataFolderName() + "/RunConfig/vid.properties").getAbsolutePath(),
 				vidMap);
+		if(!status)
+			throw new AuthenticationTestException("Create VID failed. This may lead to failure for some authentication test execution");
 	}
 
 	/**

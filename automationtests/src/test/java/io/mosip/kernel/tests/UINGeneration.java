@@ -99,11 +99,12 @@ public class UINGeneration extends BaseTestCase implements ITest{
 		 for(int j=second_half.length()-1;j>=0;j--){
 			 rev_half=rev_half+second_half.charAt(j);
 		 }
+		char firstdigit= uin.charAt(0);
 		boolean isAscending = UIN_Assertions.ascendingMethod(uin);
      	boolean isDescending = UIN_Assertions.ascendingMethod(uin);
      	boolean alpanumeric = UIN_Assertions.asserUinWithPattern(uin, alphanumeric_regEx);
 		if(uin_length==10){
-        	   if(first_half.equals(second_half)){ 
+        	   if(first_half.equals(second_half) | firstdigit=='0'| firstdigit=='1'){ 
         		   setFinalStatus=false;
         	   }else {
         		   if(first_half.equals(rev_half) && isAscending && isDescending && alpanumeric){
@@ -126,7 +127,6 @@ public class UINGeneration extends BaseTestCase implements ITest{
         		 
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
-		
 }
 		@Override
 		public String getTestName() {

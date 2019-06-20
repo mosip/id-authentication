@@ -179,6 +179,33 @@ public class CommonLibrary extends BaseTestCase {
 
 		return mapProp;
 	}
+	/**
+	 * This method will check whether cookie is expired or not.
+	 * If it is expired then it will return false else it will return true
+	 * @param cookie
+	 * @return
+	 */
+	public boolean isValidCookie(String cookie) {
+		String token_base = "Mosip-Token";
+		String secret = "authjwtsecret";
+		long configCookieTime = 20;
+		Integer cookieGenerationTimeMili = null;
+		try {
+			cookieGenerationTimeMili = (Integer) Jwts.parser().setSigningKey(secret)
+						.parseClaimsJws(cookie.substring(token_base.length())).getBody().get("iat");
+		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException | NullPointerException e) {
+			logger.info(e.getMessage());
+			return false;
+		} 
+		Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) * 1000);
+		Date currentDate = new Date();
+		long intervalMin = (currentDate.getTime() - date.getTime()) / (60 * 1000) % 60;
+		
+		if(intervalMin <= configCookieTime)
+			return true;
+		else
+		return false;	
+	}
 
 	/**
 	 * @param response

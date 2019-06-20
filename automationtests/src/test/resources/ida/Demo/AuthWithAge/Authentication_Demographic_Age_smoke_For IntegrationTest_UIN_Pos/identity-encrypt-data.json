@@ -1,8 +1,0 @@
-{
-  "identityRequest": {
-    "demographics": {
-      "age": "Exceptione in fetching the data from id repo: java.text.ParseException: Unparseable date: \"\""
-    },
-    "timestamp": "2019-06-15T09:47:05.005+05:30"
-  }
-}

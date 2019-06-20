@@ -30,7 +30,12 @@ import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 
 /**
- * Class for Orika Object Mapper
+ * Customized class of Orika Object Mapper
+ * 
+ * <p>
+ * This class extends the {@link ConfigurableMapper} which converts the object
+ * from type to another based on the defined custom mapping
+ * </p>
  * 
  * @author YASWANTH S
  * @author Balaji Sridharan
@@ -44,9 +49,21 @@ public class CustomObjectMapper extends ConfigurableMapper {
 	public static final MapperFacade MAPPER_FACADE = new CustomObjectMapper();
 
 	/**
-	 * Method to configure the Orika Mapper for object conversions
+	 * Method to define the custom mapper configurations for mapping the object from
+	 * one type to another.
 	 * 
-	 * @param mapperFactory the Orika MapperFactory
+	 * <p>
+	 * This method binds the custom mappers to the Orika. This method will be
+	 * invoked automatically.
+	 * </p>
+	 * 
+	 * <p>
+	 * Adds the custom mapper configurations to input instance of
+	 * {@link MapperFactory}
+	 * </p>
+	 * 
+	 * @param mapperFactory
+	 *            the instance of the {@link MapperFactory}
 	 */
 	@Override
 	public void configure(MapperFactory mapperFactory) {

@@ -30,6 +30,7 @@ import io.mosip.authentication.fw.util.DataProviderClass;
 import io.mosip.authentication.fw.util.FileUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
+import io.mosip.authentication.fw.util.AuthenticationTestException;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
@@ -112,9 +113,10 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 
 	/**
 	 * The test update the generated UIN test data in property file
+	 * @throws AuthenticationTestException 
 	 */
 	@Test
-	public void updateUINTestData() {
+	public void updateUINTestData() throws AuthenticationTestException {
 		Object[][] object = DataProviderClass.getDataProvider(
 				RunConfigUtil.objRunConfig.getUserDirectory() + RunConfigUtil.objRunConfig.getSrcPath() + RunConfigUtil.objRunConfig.getScenarioPath(),
 				RunConfigUtil.objRunConfig.getScenarioPath(), "smokeandregression");
@@ -147,7 +149,7 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod, UpdateUinRecord.testCaseName);
+			f.set(baseTestMethod, "Update VID");
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -159,8 +161,9 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 	 * @param objTestParameters
 	 * @param testScenario
 	 * @param testcaseName
+	 * @throws AuthenticationTestException 
 	 */
-	public void updateUinRecordTest(TestParameters objTestParameters, String testScenario, String testcaseName) {
+	public void updateUinRecordTest(TestParameters objTestParameters, String testScenario, String testcaseName) throws AuthenticationTestException {
 		File testCaseName = objTestParameters.getTestCaseFile();
 		int testCaseNumber = Integer.parseInt(objTestParameters.getTestId());
 		displayLog(testCaseName, testCaseNumber);
@@ -171,19 +174,19 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 		logger.info("************* IdRepo UIN Update request ******************");
 		Reporter.log("<b><u>UIN Update request</u></b>");
 		logger.info("******Post request Json to EndPointUrl: " + IdRepoUtil.getCreateUinPath() + " *******");
-		wait(10000);
-		Assert.assertEquals(postRequestAndGenerateOuputFileForUINUpdate(testCaseName.listFiles(),
-				IdRepoUtil.getCreateUinPath(), "update", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue, 0), true);
+		wait(5000);
+		if(!postRequestAndGenerateOuputFileForUINUpdate(testCaseName.listFiles(),
+				IdRepoUtil.getCreateUinPath(), "update", "output-1-actual-res",AUTHORIZATHION_COOKIENAME,cookieValue, 0))
+			throw new AuthenticationTestException("Failed at HTTP-POST request");
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil.doOutputValidation(
 				FileUtil.getFilePath(testCaseName, "output-1-actual").toString(),
 				FileUtil.getFilePath(testCaseName, "output-1-expected").toString());
 		Reporter.log(ReportUtil.getOutputValiReport(ouputValid));
 		String uin=JsonPrecondtion.getValueFromJson(getContentFromFile(testCaseName.listFiles(),"update"), "request.identity.UIN");
 		if (OutputValidationUtil.publishOutputResult(ouputValid)) {
-			Assert.assertEquals(true, true);
 			storeUinData.put(uin, testcaseName);
 		} else
-			Assert.assertEquals(true, false);
+			throw new AuthenticationTestException("Failed at output response validation");
 	}
 
 	/**
@@ -200,4 +203,3 @@ public class UpdateUinRecord extends AuthTestsUtil implements ITest {
 		+ "/RunConfig/uin.properties").getAbsolutePath(), UinDto.getUinData());
 	}
 }
-

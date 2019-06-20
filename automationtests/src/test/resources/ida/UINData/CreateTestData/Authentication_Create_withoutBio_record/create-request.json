@@ -1,7 +1,7 @@
 {
   "request": {
     "identity": {
-      "CNIENumber": "6789545678910",
+      "CNIENumber": "6789545678909",
       "gender": [
         {
           "language": "ara",
@@ -23,26 +23,26 @@
         },
         {
           "language": "ara",
-          "value": "الرباط"
+          "value": "القنيطرة"
         },
         {
           "language": "fra",
           "value": "Kénitra"
         }
       ],
-      "postalCode": "14023",
+      "postalCode": "14080",
       "fullName": [
         {
           "language": "eng",
-          "value": "Arjun Chandra"
+          "value": "Mary Rose"
         },
         {
           "language": "ara",
-          "value": "َرجُن كهَندرَ"
+          "value": "مَري رُسِ"
         },
         {
           "language": "fra",
-          "value": "Arjun Chandra"
+          "value": "Mary Rose"
         }
       ],
       "localAdministrativeAuthority": [
@@ -59,7 +59,7 @@
           "value": "Mograne"
         }
       ],
-      "dateOfBirth": "1973/07/14",
+      "dateOfBirth": "1976/08/15",
       "individualBiometrics": {
         "format": "cbeff",
         "value": "fileReferenceID",
@@ -73,54 +73,54 @@
         },
         {
           "language": "ara",
-          "value": "الرباط"
+          "value": "القنيطرة"
         },
         {
           "language": "fra",
-          "value": "Rabat"
+          "value": "Kénitra"
         }
       ],
-      "phone": "9393356547",
+      "phone": "9363356544",
       "addressLine1": [
         {
           "language": "eng",
-          "value": "Bhaubali Street"
+          "value": "Chitti Robo Nagar"
         },
         {
           "language": "ara",
-          "value": "بهَُبَلِ سترِِت"
+          "value": "كهِتتِ رُبُ نَگَر"
         },
         {
           "language": "fra",
-          "value": "Bhaubali Street"
+          "value": "Chitti Robo Nagar"
         }
       ],
       "parentOrGuardianName": [
         {
           "language": "eng",
-          "value": "Arun Boss"
+          "value": "Chitti Robo"
         },
         {
           "language": "ara",
-          "value": "َرُن بُسس"
+          "value": "كهِتتِ رُبُ"
         },
         {
           "language": "fra",
-          "value": "Arun Boss"
+          "value": "Chitti Robo"
         }
       ],
       "addressLine2": [
         {
           "language": "eng",
-          "value": "Sravya Street House"
+          "value": "Mary Rose Street House"
         },
         {
           "language": "ara",
-          "value": "سرَڤيَ سترِِت هُُسِ"
+          "value": "مَري رُسِ سترِِت هُُسِ"
         },
         {
           "language": "fra",
-          "value": "Sravya Street House"
+          "value": "Mary Rose Street House"
         }
       ],
       "residenceStatus": "MOROCCO",
@@ -128,15 +128,15 @@
       "addressLine3": [
         {
           "language": "eng",
-          "value": "Green Land"
+          "value": "Andaman"
         },
         {
           "language": "ara",
-          "value": "گرِِن لَند"
+          "value": "َندَمَن"
         },
         {
           "language": "fra",
-          "value": "Green Land"
+          "value": "Andaman"
         }
       ],
       "region": [
@@ -154,11 +154,11 @@
         }
       ],
       "age": 18,
-      "email": "Leonamary.Susairaja@mindtree.com"
+      "email": "athila.sirajudeen@mindtree.com"
     },
-    "registrationId": "27847657360002520190615093500"
+    "registrationId": "27847657360002520190620124307"
   },
-  "requesttime": "2019-06-15T04:05:00.239Z",
+  "requesttime": "2019-06-20T07:13:07.592Z",
   "id": "mosip.id.create",
   "version": "v1"
 }

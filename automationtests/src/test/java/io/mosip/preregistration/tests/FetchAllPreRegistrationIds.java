@@ -122,8 +122,6 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 		} catch (Exception e) {
 			logger.info(e);
 		}
-		//String statusCode = Actualresponse.jsonPath().get("status").toString();
-		
 		/**
 		 * Removing dynamic element from actual and expected response
 		 */
