@@ -2,11 +2,10 @@ package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -150,11 +149,13 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	}
 
 	public byte[] getReqText() {
-		return this.reqText;
+		if(this.reqText!=null)
+			return Arrays.copyOf(this.reqText, this.reqText.length);
+		return null;
 	}
 
 	public void setReqText(byte[] reqText) {
-		this.reqText = reqText;
+		this.reqText = reqText!=null?reqText:null;
 	}
 
 	public LocalDateTime getRequestDtimes() {

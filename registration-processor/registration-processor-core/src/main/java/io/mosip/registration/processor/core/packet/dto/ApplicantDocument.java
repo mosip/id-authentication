@@ -144,7 +144,9 @@ public class ApplicantDocument {
 	 * @return the doc store
 	 */
 	public byte[] getDocStore() {
-		return docStore;
+		if(docStore!=null)
+			return Arrays.copyOf(docStore, docStore.length);
+		return null;
 	}
 
 	/**

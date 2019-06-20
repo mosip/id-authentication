@@ -2,6 +2,7 @@ package io.mosip.registration.processor.core.packet.dto.abis;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
@@ -33,6 +34,11 @@ public class AbisRequestDto implements Serializable {
 	private String reqBatchId;
 
 	private byte[] reqText;
+	public byte[] getReqText() {
+		if(reqText!=null)
+			return Arrays.copyOf(reqText, reqText.length);
+		return null;
+	}
 
 	private LocalDateTime requestDtimes;
 

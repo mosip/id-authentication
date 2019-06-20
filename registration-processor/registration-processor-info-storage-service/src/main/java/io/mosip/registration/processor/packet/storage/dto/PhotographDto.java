@@ -35,7 +35,9 @@ public class PhotographDto {
 	private byte[] imageStore;
 	
 	public byte[] getImageStore() {
-		return imageStore;
+		if(imageStore!=null)
+			return Arrays.copyOf(imageStore, imageStore.length);
+		return null;
 	}
 	public void setImageStore(byte[] imageStore) {
 		this.imageStore=imageStore!=null?imageStore:null;
@@ -51,7 +53,9 @@ public class PhotographDto {
 	private byte[] excpPhotoStore;
 	
 	public byte[] getExcpPhotoStore() {
-		return excpPhotoStore;
+		if(excpPhotoStore!=null)
+			return Arrays.copyOf(excpPhotoStore, excpPhotoStore.length);
+		return null;
 	}
 	public void setExcpPhotoStore(byte[] excpPhotoStore) {
 		this.excpPhotoStore=excpPhotoStore!=null?excpPhotoStore:null;
