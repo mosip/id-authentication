@@ -45,7 +45,7 @@ stage ('---------- mvn-clean-test ---------------') {
           recipients = "$env.AUTO_TEST_PREREG_LIST"
 emailext ( 
 	    attachmentsPattern:'**/surefire-reports/MOSIP_PreRegistrationAutoRun_TestNGReport.html',
-	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER' ${params.Environment}",
+	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER On Environment ${params.Environment} ",
 	    body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
 	    to: "ashish.rastogi@mindtree.com",
 	    from: '"Jenkins" <info@mosip.io>'
