@@ -19,7 +19,7 @@ public class SecurityPolicyController {
 	@Autowired
 	private SecurityPolicyService securityPolicyService;
 
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@GetMapping("/authfactors/{userId}")
 	public ResponseWrapper<AuthFactorsDto> getAuthenticationFactorForUser(@PathVariable("userId") String userId) {
 		ResponseWrapper<AuthFactorsDto> responseWrapper=new ResponseWrapper<>();

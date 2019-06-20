@@ -49,7 +49,7 @@ public class UsermanagementController {
 	private UsermanagementService userRegistrationService;
 
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<UserRegistrationResponseDto> register(
 			@ApiParam("Basic User Details") @RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userRegistrationRequestDto) {
@@ -59,7 +59,7 @@ public class UsermanagementController {
 	}
 
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping(value = "/rid", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<RidVerificationResponseDto> ridVerification(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<RidVerificationRequestDto> ridRequestDto) {
@@ -69,7 +69,7 @@ public class UsermanagementController {
 	}
 	
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping(value = "/password", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<UserPasswordResponseDto> addPassword(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<UserPasswordRequestDto> request) {

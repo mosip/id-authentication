@@ -43,7 +43,7 @@ public class BiometricTypeController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	public ResponseWrapper<BiometricTypeResponseDto> getAllBiometricTypes() {
 
 		ResponseWrapper<BiometricTypeResponseDto> responseWrapper = new ResponseWrapper<>();

@@ -54,7 +54,7 @@ public class BlacklistedWordsController {
 	 *            language code
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ZONAL_ADMIN','ZONAL_APPROVER')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<BlacklistedWordsResponseDto> getAllBlackListedWordByLangCode(
@@ -101,7 +101,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(
@@ -121,7 +121,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "update the blacklisted word")
@@ -134,7 +134,7 @@ public class BlacklistedWordsController {
 		return responseWrapper;
 	}
 
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping(path = "/details")
 	@ApiOperation(value = "update the blacklisted word details except word")
@@ -171,7 +171,7 @@ public class BlacklistedWordsController {
 	 * 
 	 * @return list of {@link BlacklistedWordsDto}
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the blacklisted words with additional metadata", notes = "Retrieve all the blacklisted words with metadata")

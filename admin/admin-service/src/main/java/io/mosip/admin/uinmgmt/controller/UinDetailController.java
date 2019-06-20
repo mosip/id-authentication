@@ -42,7 +42,7 @@ public class UinDetailController {
 	 * @return ResponseWrapper return complete detail of the given uin
 	 * 
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN','ID_AUTHENTICATION')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN','ID_AUTHENTICATION')")
 	@GetMapping(value = "/detail/{uin}")
 	public ResponseWrapper<UinDetailResponseDto> getUinDetailsNew(@PathVariable("uin") String uin) {
 		ResponseWrapper<UinDetailResponseDto> response = new ResponseWrapper<>();

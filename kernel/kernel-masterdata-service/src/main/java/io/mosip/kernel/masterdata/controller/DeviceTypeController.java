@@ -79,7 +79,7 @@ public class DeviceTypeController {
 	 *            the order to be used
 	 * @return the response i.e. pages containing the device types.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/devicetypes/all")
 	@ApiOperation(value = "Retrieve all the device types with additional metadata", notes = "Retrieve all the device types with additional metadata")

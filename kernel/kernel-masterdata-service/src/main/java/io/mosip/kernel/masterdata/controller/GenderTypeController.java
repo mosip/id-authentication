@@ -52,7 +52,7 @@ public class GenderTypeController {
 	 * 
 	 * @return list of all gender types
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/gendertypes")
 	public ResponseWrapper<GenderTypeResponseDto> getAllGenderType() {
@@ -68,7 +68,7 @@ public class GenderTypeController {
 	 *            the language code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION')")
 	@ResponseFilter
 	@GetMapping(value = "/gendertypes/{langcode}")
 	public ResponseWrapper<GenderTypeResponseDto> getGenderBylangCode(@PathVariable("langcode") String langCode) {
@@ -139,7 +139,7 @@ public class GenderTypeController {
 	@ResponseFilter
 	@ApiOperation(value = "validate gender name")
 	@GetMapping("/gendertypes/validate/{gendername}")
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	public ResponseWrapper<StatusResponseDto> valdiateGenderName(@PathVariable("gendername") String genderName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.validateGender(genderName));
@@ -160,7 +160,7 @@ public class GenderTypeController {
 	 * 
 	 * @return the response i.e. pages containing the data
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/gendertypes/all")
 	@ApiOperation(value = "Retrieve all the genders with additional metadata", notes = "Retrieve all the genders with the additional metadata")

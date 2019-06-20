@@ -16,7 +16,7 @@ public class MasterDataColumnController {
 	@Autowired
 	MasterDataColumnService masterdataService;
 	
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','REGISTRATION_ADMIN')")
 	@GetMapping(value = "/mastercolumns/{resource}")
 	public ResponseWrapper<MasterDataColumnDto> getMasterDataColumns(@PathVariable("resource")String resource){
 		return masterdataService.getMasterDataColumns(resource);

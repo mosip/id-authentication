@@ -52,7 +52,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/documentcategories")
 	public ResponseWrapper<DocumentCategoryResponseDto> getAllDocumentCategory() {
@@ -165,7 +165,7 @@ public class DocumentCategoryController {
 	 *            the order to be used
 	 * @return the response i.e. pages containing the document category details.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/documentcategories/all")
 	@ApiOperation(value = "Retrieve all the document category with metadata", notes = "Retrieve all the document categories")

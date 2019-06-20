@@ -107,7 +107,7 @@ public class RegistrationCenterTypeController {
 	 */
 	@GetMapping("/registrationcentertypes/all")
 	@ResponseFilter
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all the registration center types with additional metadata", notes = "Retrieve all the registration center types with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of registration center types"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving registration center types") })

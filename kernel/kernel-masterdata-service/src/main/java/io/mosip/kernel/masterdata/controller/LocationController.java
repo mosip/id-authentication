@@ -60,7 +60,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping(value = "/{langcode}")
 	public ResponseWrapper<LocationHierarchyResponseDto> getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -103,7 +103,7 @@ public class LocationController {
 	 *            hierarchy Name
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
 	public ResponseWrapper<LocationResponseDto> getLocationDataByHierarchyName(
@@ -121,7 +121,7 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
-	@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
@@ -156,7 +156,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
+	//@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
 	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationResponseDto> getImmediateChildrenByLocCodeAndLangCode(
@@ -174,7 +174,7 @@ public class LocationController {
 	 * @param locationName
 	 * @return StatusResponseCode
 	 */
-	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
+	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/validate/{locationname}")
 	public ResponseWrapper<StatusResponseDto> validateLocationName(@PathVariable("locationname") String locationName) {
@@ -198,7 +198,7 @@ public class LocationController {
 	 * 
 	 * @return the response i.e. pages containing the locations.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the location with additional metadata", notes = "Retrieve all the location with the additional metadata")

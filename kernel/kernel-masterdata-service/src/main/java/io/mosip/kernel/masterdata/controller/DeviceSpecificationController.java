@@ -63,7 +63,7 @@ public class DeviceSpecificationController {
 	 *         on given language code
 	 * 
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/devicespecifications/{langcode}")
 	@ApiOperation(value = "Retrieve all Device Specification for given Languge Code", notes = "Retrieve all DeviceSpecification for the given Languge Code")
@@ -175,7 +175,7 @@ public class DeviceSpecificationController {
 	 *            the order to be used
 	 * @return the response i.e. pages containing the device specifications.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/devicespecifications/all")
 	@ApiOperation(value = "Retrieve all the device specifications with additional metadata", notes = "Retrieve all the device specifications with additional metadata")

@@ -26,7 +26,7 @@ public class UinGenerationStatusController {
 	@Autowired
 	private UinGenerationStatusService uinGenerationStatusService;
 
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','REGISTRATION_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','REGISTRATION_ADMIN')")
 	@GetMapping(value = "/packetstatus/{rid}")
 	public ResponseWrapper<List<UinGenerationStatusDto>> getPacketStatus(@PathVariable("rid") String rid)
 			throws JsonParseException, JsonMappingException, IOException {
