@@ -1,18 +1,1 @@
-{
-  "consentObtained": true,
-  "id": "mosip.identity.auth",
-  "individualId": "NoVIDLoaded",
-  "individualIdType": "VID",
-  "request": "gplvWapVGJFcGkyrJSZENC0uvjZ8q23euYuLS4ynkKHu7rmobJVhu6smzupn2oJgr4FScth32txAy9Y1mux8TWFRhFHVu3Ev621ieCkOzuvVjbNCP3O4CFCRtgcbcCCcr8L7LUu8LDuvbiKhJi7yoKGpfwv5bJwE4_TJo3BlPR-I_Sij01qbw2ZLE1EZPn_JUw8xcziU_W5SbUzhv_pV_4ErjQofXpJwMGNP07Zt2IA",
-  "requestHMAC": "N2PtVAzFZt7q5720cUoVYZSwCUAeAahQWCf0m16BCgt8HTCqRjS7Az1h2nEoL1SH90JErpfSC7Td3O4GB95nqJ7TVe-_t69qYRa5mcc96XoUt5gr4DgGohjJPCRD2zBp",
-  "requestSessionKey": "p6aiE3VhnzuhicAq4ue9eYDkvsUNjo-e72AEHi4UB1D1PG0APB0BXU5aENUNGJ8zZz93tTCV63Vm1joX5DJMmhkT_LQuYf0v62zRoeJnxbDyqsA2r0eqX33OOQfSJeKCqwrh7LBMVOGOXLCYxVqlH0ilhr20RgFNRE7xYCy44oV8eVsTSguLkmvqjxp36n6r7ewh3N0Jpy367d21ccAyZLMKK0djZPEle739TVOsb6Uxj7FdrkdBkxtXKG5ChE4wxJT5zMF2j_I9Ml6o2OZyshjM4zlU7VDTYd8PDDSlmzBCefLCe0wYRh_ECOyx_dJxuGjQ-SDk67AdqR-tLwCmVQ",
-  "requestTime": "2019-06-15T09:36:01.001+05:30",
-  "requestedAuth": {
-    "bio": false,
-    "demo": true,
-    "otp": false,
-    "pin": false
-  },
-  "transactionID": "6683636214",
-  "version": "1.0"
-}
+{"consentObtained":true,"id":"mosip.identity.auth","individualId":"5980948690283263","individualIdType":"VID","request":"_d-7ddkpONJA7p7B5XZcrOi7oTjGfnPD14-aBpFiFaqnwJE2P1JVp4eEHETnS5yVt1BCKQ5xfSzwCOXk8x-WseHcvKYSmjrGkUFOj3-fd8-xp5bZYx0prZbcXapZOZNIeT60K3cLt4_2uSlfIdmxhG9mB1aLQzYE0iboiDCer7RfoqKbQ3Y5Gp-Oy88sj3IRS_4UQzs34fBW0WjGE6EeuoLFlEooNWwoOY2mtCxjZw4aKcZSNgpNriMq7kKw3bUcJ9nctZb9eRiCVC9Vb3csqCT4VUwkHCVSK_puEo_hBm0","requestHMAC":"-GrcZp50NJQVIChLfWnUVWEzw29Qig6ZuylT1B5TL_wz4nddXdIPZeWVXFSqZCK1_F8QvkE8znOXis06di0pZgGq85EW73ExgaMI-WHDmUD_plAm0P1ljl0BH3avZu_G","requestSessionKey":"sjX6B_L56lsnvpGi8D2O2u29h_24BzBbtCHbLo0YPI8gbfWTMSIN7VLv8_DJH2JqnnoL9MOxLaXowvMRTtaTLyG4Vu63P0Q3quPPg7VMjEORNQA_eaGulwlKYwbdvrNvCwRhI5dyeiOFV1S7WvLg_ygKI1IIkRuhZYu68B3i6F2XA0AYaaznzn07gb8IGhPXHis2MaQceZsUPpgO8Owf6x9StpRPCzErT2DlxCAz64BGlZloxX-zcaA4MBMihN9DtnKg2jO4Zx35wpcNLjlq0D1r-RsNUgo_ZDe4jxjq0kb-F0mUyIPq9dZOikDtsCr1kel_UrOZ2Jdc3ltPf19vaA","requestTime":"2019-06-20T15:24:30.030+05:30","requestedAuth":{"bio":false,"demo":true,"otp":false,"pin":false},"transactionID":"0486752510","version":"1.0"}

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * The Class IdResponseDTO.
+ * The Class IdResponseDTO - Response DTO for Id Repository Identity service.
  *
  * @author Manoj SP
  */

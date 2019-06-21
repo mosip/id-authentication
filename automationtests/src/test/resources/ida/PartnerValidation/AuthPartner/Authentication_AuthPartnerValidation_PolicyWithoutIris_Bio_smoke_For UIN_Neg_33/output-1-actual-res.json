@@ -1,0 +1,15 @@
+{
+  "transactionID": "7115685860",
+  "version": "1.0",
+  "id": "mosip.identity.auth",
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-006",
+      "errorMessage": "BIO-IIR Authentication usage not allowed as per policy"
+    }
+  ],
+  "responseTime": "2019-06-20T15:29:19.305+05:30",
+  "response": {
+    "authStatus": false
+  }
+}

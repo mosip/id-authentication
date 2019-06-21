@@ -51,7 +51,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <HBox alignment="CENTER" spacing="3.0">
+                  <HBox alignment="CENTER_LEFT" spacing="3.0" GridPane.valignment="CENTER">
                      <children>
                         <Text onMouseClicked="#goToHomePageFromRegistration" text="%home" />
                         <Text fx:id="registrationNavLabel" text="%/newregistration" />
@@ -76,7 +76,7 @@
                               <Insets />
                            </HBox.margin>
                         </Button>
-                        <Button graphicTextGap="10.0" mnemonicParsing="false" styleClass="ackBackButton" text="%downloadPDF">
+                        <Button graphicTextGap="10.0" mnemonicParsing="false" styleClass="ackBackButton" text="%downloadPDF" visible="false" managed="false">
                            <graphic>
                               <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -96,19 +96,19 @@
                         </Button>
                      </children>
                      <padding>
-                        <Insets bottom="2.0" right="30.0" top="2.0" />
+                        <Insets bottom="2.0" top="2.0" />
                      </padding>
                      <GridPane.margin>
-                        <Insets />
+                        <Insets right="60.0" />
                      </GridPane.margin>
                   </HBox>
                </children>
             </GridPane>
             <GridPane GridPane.rowIndex="2">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="326.0" minWidth="0.0" percentWidth="5.0" prefWidth="89.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="326.0" minWidth="0.0" percentWidth="10.0" prefWidth="89.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="832.0" minWidth="10.0" percentWidth="90.0" prefWidth="802.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" percentWidth="5.0" prefWidth="51.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="211.0" minWidth="10.0" percentWidth="10.0" prefWidth="51.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

@@ -50,8 +50,6 @@ public class EncryptDecrptUtil extends AuthTestsUtil{
 	}
 	
 	/**
-<<<<<<< HEAD
-=======
 	 * The method get internal auth encrypted json for identity request
 	 * 
 	 * @param filename
@@ -76,7 +74,6 @@ public class EncryptDecrptUtil extends AuthTestsUtil{
 	}
 	
 	/**
->>>>>>> origin/0.12.0_AutomationTest_Authentication
 	 * The method get encrypted json for identity request
 	 * 
 	 * @param filename
@@ -93,8 +90,6 @@ public class EncryptDecrptUtil extends AuthTestsUtil{
 			ENCRYPTION_DECRYPTION_LOGGER.error("Exception: " + e);
 			return e.toString();
 		}
-
-
 	}
 	
 	/**
@@ -115,7 +110,6 @@ public class EncryptDecrptUtil extends AuthTestsUtil{
 			return e.toString();
 		}
 	}
-
 
 	/**
 	 * The method will get encoded data from json content in file

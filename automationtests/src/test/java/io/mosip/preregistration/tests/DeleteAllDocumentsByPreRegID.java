@@ -11,12 +11,14 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -119,18 +121,22 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			// Creating the Pre-Registration Application
 			Response createApplicationResponse = preRegLib.CreatePreReg();
 
-			preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+			preId = preRegLib.getPreId(createApplicationResponse);
 
 			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
 			// Get PreId from Document upload response
-			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+			try {
+				preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+				
+			} catch (NullPointerException e) {
+				Assert.assertTrue(false, "Pre Registration Id is not present in document upload response");
+			}
+			
 
 			// Delete All Document by Pre-Registration Id
 			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId);
 			outerKeys.add("responsetime");
-
-			logger.info("Dele Doccument Response:" + delAllDocByPreIdRes.asString());
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(delAllDocByPreIdRes, Expectedresponse, outerKeys, innerKeys);
 
@@ -188,8 +194,6 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		//Delete Document By PreregistrationId Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
 		
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
 
 	}
 
@@ -213,7 +217,12 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
-	/**
+	@BeforeClass
+	public void getToken()
+	{
+		authToken = preRegLib.getToken();
+	}
+	/*
 	 * This method is used for generating output file with the test case result
 	 */
 	@AfterClass

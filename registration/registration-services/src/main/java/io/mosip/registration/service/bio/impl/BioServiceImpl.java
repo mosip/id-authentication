@@ -75,12 +75,18 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 	private byte[] isoTemplate;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Returns Authentication validator Dto that will be passed 
 	 * 
-	 * @see
-	 * io.mosip.registration.service.bio.BioService#validateFingerPrint(java.lang.
-	 * String)
+	 * <p>
+	 * The method will return fingerPrint validator Dto that will be passed to 
+	 * finger print authentication method for fingerPrint validator
+	 * </p>.
+	 *
+	 * @param userId            - the user ID
+	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
+	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
+	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
 	@Override
 	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId) throws RegBaseCheckedException, IOException {
@@ -118,16 +124,36 @@ public class BioServiceImpl extends BaseService implements BioService {
 		return authenticationValidatorDTO;
 	}
 
+	/**
+	 * Validates FingerPrint after getting the scanned data for the particular given
+	 * User id
+	 * 
+	 * <p>
+	 * The MDM service will be triggered to capture the user fingerprint which will
+	 * be validated against the stored fingerprint from the DB
+	 * </p>.
+	 *
+	 * @param authenticationValidatorDTO            - authenticationValidatorDto
+	 * @return boolean the validation result. <code>true</code> if match is found,
+	 *         else <code>false</code>
+	 */
 	public boolean validateFingerPrint(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		return authService.authValidator(RegistrationConstants.FINGERPRINT,
 				authenticationValidatorDTO);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Returns Authentication validator Dto that will be passed 
 	 * 
-	 * @see
-	 * io.mosip.registration.service.bio.BioService#validateIris(java.lang.String)
+	 * <p>
+	 * The method will return iris validator Dto that will be passed to 
+	 * finger print authentication method for iris validator
+	 * </p>.
+	 *
+	 * @param userId            - the user ID
+	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
+	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
+	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
 	@Override
 	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId) throws RegBaseCheckedException, IOException {
@@ -147,6 +173,19 @@ public class BioServiceImpl extends BaseService implements BioService {
 		
 	}
 
+	/**
+	 * Validates Iris after getting the scanned data for the given user ID
+	 * 
+	 * *
+	 * <p>
+	 * The MDM service will be triggered to capture the user Iris data which will be
+	 * validated against the stored iris from the DB through auth validator service
+	 * </p>.
+	 *
+	 * @param authenticationValidatorDTO            - authenticationValidtorDto
+	 * @return boolean the validation result. <code>true</code> if match is found,
+	 *         else <code>false</code>
+	 */
 	public boolean validateIris(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		return authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);
 	}
@@ -315,14 +354,18 @@ public class BioServiceImpl extends BaseService implements BioService {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.bio.BioService#getFingerPrintImageAsDTO(io.
-	 * mosip.registration.dto.biometric.FingerprintDetailsDTO, java.lang.String)
+	/**
+	 * Gets the finger print image as DTO from the MDM service based on the
+	 * fingerType
+	 *
+	 *
+	 * @param fpDetailsDTO
+	 *            the fp details DTO
+	 * @param fingerType
+	 *            the finger type
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
-	@Override
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
 
@@ -332,10 +375,11 @@ public class BioServiceImpl extends BaseService implements BioService {
 			getFingerPrintImageAsDTONonMdm(fpDetailsDTO, fingerType);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * checks if the MDM service is enabled
 	 * 
-	 * @see io.mosip.registration.service.bio.BioService#isMdmEnabled()
+	 * @return boolean the validation result. <code>true</code> if match is found,
+	 *         else <code>false</code>
 	 */
 	@Override
 	public boolean isMdmEnabled() {

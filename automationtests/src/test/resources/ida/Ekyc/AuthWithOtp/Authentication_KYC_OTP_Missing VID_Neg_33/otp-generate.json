@@ -1,12 +1,12 @@
 {
   "id": "mosip.identity.otp",
-  "individualId": "NoVIDLoaded",
+  "individualId": "3704308318201493",
   "individualIdType": "VID",
   "otpChannel": [
     "EMAIL",
     "PHONE"
   ],
-  "requestTime": "2019-06-15T10:17:30.030+05:30",
-  "transactionID": "3788422166",
+  "requestTime": "2019-06-20T15:29:35.035+05:30",
+  "transactionID": "4756410880",
   "version": "1.0"
 }

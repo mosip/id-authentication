@@ -20,6 +20,7 @@ import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.PinAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.match.DemoNormalizerImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
@@ -29,7 +30,7 @@ import io.mosip.authentication.common.service.integration.NotificationManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.TokenIdManager;
 import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
-import io.mosip.authentication.internal.service.integarion.RestHelperImpl;
+import io.mosip.authentication.internal.service.integration.RestHelperImpl;
 import io.mosip.kernel.bioapi.impl.BioApiImpl;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
@@ -54,7 +55,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		IdInfoHelper.class, CbeffImpl.class, IdServiceImpl.class, AuditRequestFactory.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioApiImpl.class,
-		IdObjectPatternValidator.class })
+		IdObjectPatternValidator.class,DemoNormalizerImpl.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.adapter.*" })
 public class InternalAuthenticationApplication {
 

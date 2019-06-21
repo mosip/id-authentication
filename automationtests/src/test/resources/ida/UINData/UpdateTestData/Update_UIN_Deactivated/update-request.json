@@ -1,0 +1,12 @@
+{
+  "id": "mosip.id.update",
+  "request": {
+    "identity": {
+      "UIN": 8541507312
+    },
+    "registrationId": "27847657360002520190620152425",
+    "status": "DEACTIVATED"
+  },
+  "requesttime": "2019-06-20T09:54:25.137Z",
+  "version": "v1"
+}

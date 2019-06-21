@@ -11,6 +11,6 @@
     "kycStatus": false
   },
   "responseTime": "$IGNORE$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "1340123125",
   "version": "1.0"
 }

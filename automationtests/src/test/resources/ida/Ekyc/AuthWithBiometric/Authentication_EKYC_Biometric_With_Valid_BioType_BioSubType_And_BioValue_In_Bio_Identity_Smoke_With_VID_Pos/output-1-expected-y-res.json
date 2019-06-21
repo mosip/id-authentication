@@ -3,9 +3,9 @@
   "response": {
     "identity": "$IGNORE$",
     "kycStatus": true,
-    "staticToken": "TOKENID:$VID:WHERE:UIN:WITH:EVEN$.1873299273"
+    "staticToken": "284196972895977150436391905288143260"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "3136772887",
   "version": "1.0"
 }

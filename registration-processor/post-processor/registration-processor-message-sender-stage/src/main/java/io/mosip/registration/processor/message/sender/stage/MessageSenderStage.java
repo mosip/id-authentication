@@ -165,7 +165,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
-		
+
 	}
 
 	/*
@@ -257,9 +257,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), null,
-					registrationStatusDto.getLatestTransactionTypeCode(),
-					MessageSenderConstant.LATEST_TRANSACTION_TYPE_CODE,
+					registrationStatusDto.getRegistrationId(), registrationStatusDto.getLatestRegistrationTransactionId(),
+					registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
 					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
 
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
@@ -315,7 +314,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @param allNotificationTypes
 	 *            the all notification types
 	 * @param regType
-	 * @param messageSenderDto 
+	 * @param messageSenderDto
 	 * @throws Exception
 	 *             the exception
 	 */
@@ -352,7 +351,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @param templatetype
 	 *            the new template and subject
 	 * @param regType
-	 * @param messageSenderDto 
+	 * @param messageSenderDto
 	 */
 	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType, MessageSenderDto messageSenderDto) {
 		switch (templatetype) {

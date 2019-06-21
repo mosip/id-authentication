@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>io.mosip.idrepository</groupId>
 		<artifactId>id-repository-parent</artifactId>
-		<version>0.12.10</version>
+		<version>0.12.11</version>
 	</parent>
 
 	<artifactId>id-repository-identity-service</artifactId>
 	<name>identity-service</name>
-	<description>ID-Repository service</description>
+	<description>ID-Repository Identity service</description>
 
 	<dependencies>
 		<dependency>

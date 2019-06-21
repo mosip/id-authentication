@@ -379,7 +379,7 @@ public class DocumentScanController extends BaseController {
 					}
 				});
 				hBox.getChildren().addAll(new VBox(new Label(), indicatorImage), comboBox, documentVBox, scanButton);
-				docScanVbox.getChildren().addAll(documentLabel, hBox);
+				docScanVbox.getChildren().addAll(new HBox(new Label("       "), documentLabel), hBox);
 				hBox.setId(documentCategory.getCode());
 				documentLabel.setId(documentCategory.getCode()+RegistrationConstants.LABEL);
 				comboBox.getItems().addAll(documentCategoryDtos);
@@ -492,7 +492,7 @@ public class DocumentScanController extends BaseController {
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 
 				getDocumentsMapFromSession().put(selectedDocument, documentDetailsDTO);
-				attachDocuments(documentDetailsDTO, selectedComboBox.getValue(), selectedDocVBox, byteArray);
+				attachDocuments(documentDetailsDTO, selectedComboBox.getValue(), selectedDocVBox, byteArray,true);
 
 				popupStage.close();
 
@@ -572,7 +572,7 @@ public class DocumentScanController extends BaseController {
 				DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 
 				getDocumentsMapFromSession().put(selectedDocument, documentDetailsDTO);
-				attachDocuments(documentDetailsDTO, selectedComboBox.getValue(), selectedDocVBox, byteArray);
+				attachDocuments(documentDetailsDTO, selectedComboBox.getValue(), selectedDocVBox, byteArray,false);
 
 				scannedPages.clear();
 				popupStage.close();
@@ -587,14 +587,20 @@ public class DocumentScanController extends BaseController {
 	 * This method will add Hyperlink and Image for scanned documents
 	 */
 	private void attachDocuments(DocumentDetailsDTO documentDetailsDTO, DocumentCategoryDto document, VBox vboxElement,
-			byte[] byteArray) {
+			byte[] byteArray,boolean isStubbed) {
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Attaching documemnts to Pane");
 
 		documentDetailsDTO.setDocument(byteArray);
 		documentDetailsDTO.setType(document.getName());
-		documentDetailsDTO.setFormat(getValueFromApplicationContext(RegistrationConstants.DOC_TYPE));
+		
+		String docType = getValueFromApplicationContext(RegistrationConstants.DOC_TYPE);
+		if (isStubbed) {
+			docType = RegistrationConstants.SCANNER_IMG_TYPE;
+		}
+
+		documentDetailsDTO.setFormat(docType);
 		documentDetailsDTO
 				.setValue(selectedDocument.concat(RegistrationConstants.UNDER_SCORE).concat(document.getName()));
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,

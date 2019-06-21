@@ -484,7 +484,7 @@ public class PacketValidateProcessor {
 				// Sync list table
 				return validateRegIdAndTypeFromSyncTable(metadataList,identityIteratorUtil);
 			}
-	
+
 
 	private boolean uinPresentInIdRepo(String uin) throws ApisResourceAccessException, IOException {
 		return idRepoService.findUinFromIdrepo(uin, utility.getGetRegProcessorDemographicIdentity()) != null;

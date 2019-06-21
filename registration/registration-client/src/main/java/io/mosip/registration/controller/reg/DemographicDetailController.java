@@ -675,8 +675,6 @@ public class DemographicDetailController extends BaseController {
 	private String textMaleLocalLanguage;
 	private String textFemaleLocalLanguage;
 	private String textMaleCode;
-	private String textFemaleCode;
-	private Node parentDetailNode;
 
 	/*
 	 * (non-Javadoc)
@@ -988,6 +986,10 @@ public class DemographicDetailController extends BaseController {
 
 				parentDetailPane.setManaged(false);
 				parentDetailPane.setVisible(false);
+				
+				keyboardNode.setManaged(false);
+				keyboardNode.setVisible(false);
+
 
 			});
 
@@ -1158,6 +1160,7 @@ public class DemographicDetailController extends BaseController {
 							parentRegId.clear();
 							isChild = true;
 							parentNameKeyboardImage.setDisable(!isChild);
+							keyboardNode.setManaged(!isChild);
 							validation.setChild(isChild);
 
 							if (getRegistrationDTOFromSession() != null
@@ -1192,6 +1195,8 @@ public class DemographicDetailController extends BaseController {
 		parentDetailPane.setDisable(true);
 		isChild = false;
 		validation.setChild(isChild);
+		keyboardNode.setManaged(isChild);
+		keyboardNode.setVisible(isChild);
 		parentName.clear();
 		parentNameLocalLanguage.clear();
 		parentRegId.clear();
@@ -1330,6 +1335,7 @@ public class DemographicDetailController extends BaseController {
 			VirtualKeyboard vk = VirtualKeyboard.getInstance();
 			keyboardNode = vk.view();
 			keyboardNode.setVisible(false);
+			keyboardNode.setManaged(false);
 			keyboardPane.getChildren().add(keyboardNode);
 			vk.changeControlOfKeyboard(fullNameLocalLanguage);
 			vk.changeControlOfKeyboard(addressLine1LocalLanguage);
@@ -1678,6 +1684,7 @@ public class DemographicDetailController extends BaseController {
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, false);
 
 			keyboardNode.setDisable(false);
+			keyboardNode.setManaged(false);
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
 
 			copyPrevious.setDisable(true);
@@ -1992,32 +1999,44 @@ public class DemographicDetailController extends BaseController {
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(470.00);
+				keyboardNode.setManaged(true);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(555.00);
+				keyboardNode.setManaged(true);
+
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(630.00);
+				keyboardNode.setManaged(true);
+
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(200.00);
+				keyboardNode.setManaged(true);
+
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(1110.00);
+				keyboardNode.setManaged(true);
+
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 			keyboardNode.visibleProperty().addListener((abs, old, newValue) -> {
 				if (old) {
-					keyboardPane.setPrefHeight(parentFlowPane.getHeight());
+					keyboardPane.maxHeight(parentFlowPane.getHeight());
 					fullNameLocalLanguage.requestFocus();
+				}else {
+					keyboardPane.maxHeight(200);
+					keyboardNode.setManaged(false);
 				}
 			});
 
@@ -2051,7 +2070,6 @@ public class DemographicDetailController extends BaseController {
 		if (!localAdminAuthority.getItems().isEmpty()) {
 			localAdminAuthority.getSelectionModel().select(0);
 		}
-		postalCode.setText("600111");
 		mobileNo.setText("9965625706");
 		emailId.setText("ayoub.toufiq@gmail.com");
 		cniOrPinNumber.setText("4545343123");
@@ -2142,7 +2160,7 @@ public class DemographicDetailController extends BaseController {
 			if (switchedOn.get()) {
 				isValid = validateDateOfBirth(isValid);
 			} else {
-				if (Integer.parseInt(ageField.getText()) > maxAge) {
+				if ( ageField.getText().length()>0 && Integer.parseInt(ageField.getText()) > maxAge) {
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
 					isValid = false;

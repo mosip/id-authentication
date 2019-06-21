@@ -10,6 +10,6 @@
     "authStatus": false
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "8385704821",
   "version": "1.0"
 }

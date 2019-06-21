@@ -1,1 +1,1 @@
-{"id":"mosip.vid.update","version":"v1","responsetime":"2019-06-07T13:02:20.400Z","metadata":null,"response":null,"errors":[{"errorCode":"IDR-IDC-002","message":"Invalid Input Parameter - vidStatus"}]}
+{"id":"mosip.vid.update","version":"v1","responsetime":"2019-06-20T09:54:34.570Z","metadata":null,"response":{"vidStatus":"INVALIDATED","restoredVid":null,"UIN":null,"VID":null},"errors":[]}

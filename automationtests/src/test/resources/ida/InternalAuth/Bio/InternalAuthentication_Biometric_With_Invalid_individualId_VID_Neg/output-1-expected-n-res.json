@@ -1,8 +1,8 @@
 {
   "errors": [
     {
-      "errorCode": "IDA-MLC-004",
-      "errorMessage": "Invalid VID"
+      "errorCode": "IDA-MLC-015",
+      "errorMessage": "Identity Type - VID not configured for the country"
     }
   ],
   "id": "mosip.identity.auth.internal",
@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "8306063681",
+  "transactionID": "2021431082",
   "version": "1.0"
 }

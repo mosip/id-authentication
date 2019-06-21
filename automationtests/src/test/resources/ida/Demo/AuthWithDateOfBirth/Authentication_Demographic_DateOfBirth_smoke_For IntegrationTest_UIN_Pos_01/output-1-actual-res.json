@@ -1,0 +1,10 @@
+{
+  "transactionID": "6028718572",
+  "version": "1.0",
+  "id": "mosip.identity.auth",
+  "responseTime": "2019-06-20T15:25:18.340+05:30",
+  "response": {
+    "authStatus": true,
+    "staticToken": "262959570176264433661649390051539276"
+  }
+}

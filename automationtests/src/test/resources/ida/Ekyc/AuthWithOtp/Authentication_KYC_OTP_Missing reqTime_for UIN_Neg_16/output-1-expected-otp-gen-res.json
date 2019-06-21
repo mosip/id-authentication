@@ -5,6 +5,6 @@
     "maskedMobile": "$REGEXP:XX.*XX.*$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "1248124357",
   "version": "1.0"
 }

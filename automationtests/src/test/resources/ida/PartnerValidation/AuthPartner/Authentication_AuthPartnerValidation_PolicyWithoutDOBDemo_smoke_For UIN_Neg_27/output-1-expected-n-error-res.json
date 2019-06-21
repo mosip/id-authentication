@@ -2,7 +2,7 @@
   "errors": [
     {
       "errorCode": "IDA-MPA-006",
-      "errorMessage": "DEMO-authentiation usage not allowed as per policy"
+      "errorMessage": "DEMO Authentication usage not allowed as per policy"
     }
   ],
   "response": {

@@ -51,7 +51,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	private static final Set<String> NON_REMOVABLE_PARAMS = new HashSet<>(
 			Arrays.asList("mosip.registration.machinecenterchanged", "mosip.registration.initial_setup",
 					"mosip.reg.db.current.version", "mosip.reg.services.version",
-					RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE));
+					RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE, RegistrationConstants.SERVICES_VERSION_KEY));
 	/**
 	 * Instance of LOGGER
 	 */
@@ -78,7 +78,9 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData(boolean)
+	 * 
+	 * @see io.mosip.registration.service.config.GlobalParamService#synchConfigData(
+	 * boolean)
 	 */
 	@Override
 	public ResponseDTO synchConfigData(boolean isJob) {
@@ -116,13 +118,15 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	@SuppressWarnings("unchecked")
 	private void parseToMap(HashMap<String, Object> map, HashMap<String, String> globalParamMap) {
-		for (Entry<String, Object> entry : map.entrySet()) {
-			String key = entry.getKey();
+		if (map != null) {
+			for (Entry<String, Object> entry : map.entrySet()) {
+				String key = entry.getKey();
 
-			if (entry.getValue() instanceof HashMap) {
-				parseToMap((HashMap<String, Object>) entry.getValue(), globalParamMap);
-			} else {
-				globalParamMap.put(key, String.valueOf(entry.getValue()));
+				if (entry.getValue() instanceof HashMap) {
+					parseToMap((HashMap<String, Object>) entry.getValue(), globalParamMap);
+				} else {
+					globalParamMap.put(key, String.valueOf(entry.getValue()));
+				}
 			}
 		}
 	}
@@ -137,9 +141,20 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 				@SuppressWarnings("unchecked")
 				LinkedHashMap<String, Object> globalParamJsonMap = (LinkedHashMap<String, Object>) serviceDelegateUtil
 						.get(RegistrationConstants.GET_GLOBAL_CONFIG, requestParamMap, true, triggerPoinnt);
+
+				// Check for response
 				if (null != globalParamJsonMap.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
+
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> responseMap = (HashMap<String, Object>) globalParamJsonMap
+							.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> configDetailJsonMap = (HashMap<String, Object>) responseMap
+							.get("configDetail");
+
 					HashMap<String, String> globalParamMap = new HashMap<>();
-					parseToMap(globalParamJsonMap, globalParamMap);
+
+					parseToMap(configDetailJsonMap, globalParamMap);
 
 					List<GlobalParam> globalParamList = globalParamDAO.getAllEntries();
 

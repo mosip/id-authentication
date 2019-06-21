@@ -127,6 +127,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<constraint name="uk_uin_reg_id" type="uq-constr" table="idrepo.uin">
 		<columns names="reg_id" ref-type="src-columns"/>
 	</constraint>
+	<constraint name="uk_uin_uin_hash" type="uq-constr" table="idrepo.uin">
+		<columns names="uin_hash" ref-type="src-columns"/>
+	</constraint>
 </table>
 
 <table name="uin_h">
@@ -223,7 +226,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<comment><![CDATA[Document Category Code:  Category code under which document is uploaded during the registration process for ex., POA, POI, etc. Refers to master.doc_category.code]]></comment>
 	</column>
 	<column name="doctyp_code" not-null="true">
-		<type name="character varying" length="36"/>
+		<type name="character varying" length="64"/>
 		<comment><![CDATA[Document Type Code: Document type under which document is uploaded during the registration process for ex., passport, driving license, etc. Refers to master.doc_type.code.]]></comment>
 	</column>
 	<column name="doc_id" not-null="true">
@@ -292,7 +295,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<comment><![CDATA[Document Category Code:  Category code under which document is uploaded during the registration process for ex., POA, POI, etc. Refers to master.doc_category.code]]></comment>
 	</column>
 	<column name="doctyp_code" not-null="true">
-		<type name="character varying" length="36"/>
+		<type name="character varying" length="64"/>
 		<comment><![CDATA[Document Type Code: Document type under which document is uploaded during the registration process for ex., passport, driving license, etc. Refers to master.doc_type.code.]]></comment>
 	</column>
 	<column name="eff_dtimes" not-null="true">
@@ -476,14 +479,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<columns names="uin_ref_id,bio_file_id,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
 </table>
-
-<index name="idx_uin_uin_hash" table="idrepo.uin"
-	 concurrent="false" unique="false" fast-update="false" buffering="false"
-	 index-type="btree" factor="0">
-		<idxelement use-sorting="false">
-			<column name="uin_hash"/>
-		</idxelement>
-</index>
 
 <table name="uin_hash_salt" alias="uinhs">
 	<schema name="idrepo"/>

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
@@ -87,10 +88,10 @@ public abstract class BaseIdRepoFilter implements Filter  {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		Instant requestTime = Instant.now();
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request URL: " + ((HttpServletRequest) request).getRequestURL());
+		mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_FILTER, "Request Received at: " + requestTime);
+		mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_FILTER, "Request URL: " + ((HttpServletRequest) request).getRequestURL());
 
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Request received");
+		mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_FILTER, "Request received");
 		if (shouldNotFilter((HttpServletRequest) request)) {
 			chain.doFilter(request, response);
 		} else {
@@ -102,9 +103,9 @@ public abstract class BaseIdRepoFilter implements Filter  {
 			}
 		}
 		Instant responseTime = Instant.now();
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
+		mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_FILTER, "Response sent at: " + responseTime);
 		long duration = Duration.between(requestTime, responseTime).toMillis();
-		mosipLogger.debug(uin, ID_REPO, ID_REPO_FILTER,
+		mosipLogger.debug(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_FILTER,
 				"Time taken to respond in ms: " + duration
 						+ ". Time difference between request and response in Seconds: " + ((double) duration / 1000)
 						+ " for url : " + ((HttpServletRequest) request).getRequestURL() + " method: "

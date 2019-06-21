@@ -83,7 +83,7 @@ public class RegUserMachineSyncJobTest {
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
 	@Before
-	public void intiate() throws Exception{
+	public void intiate() throws Exception {
 		syncJobList = new LinkedList<>();
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1234");
@@ -100,7 +100,7 @@ public class RegUserMachineSyncJobTest {
 		RegistrationCenterDetailDTO centerDetailDTO = new RegistrationCenterDetailDTO();
 		centerDetailDTO.setRegistrationCenterId("CNTR123");
 		PowerMockito.mockStatic(SessionContext.class);
-		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);		
+		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
 		PowerMockito.doReturn(userContext).when(SessionContext.class, "userContext");
 		PowerMockito.when(SessionContext.userContext().getRegistrationCenterDetailDTO()).thenReturn(centerDetailDTO);
 
@@ -148,7 +148,7 @@ public class RegUserMachineSyncJobTest {
 
 	}
 
-		@Test(expected = RegBaseUncheckedException.class)
+	@Test(expected = RegBaseUncheckedException.class)
 	public void executeChildJobsTest() throws JobExecutionException {
 		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1");
@@ -172,5 +172,8 @@ public class RegUserMachineSyncJobTest {
 
 	}
 
-
+	@Test
+	public void executeinternalTest1() throws JobExecutionException {
+		keyPolicySyncJob.executeInternal(context);
+	}
 }

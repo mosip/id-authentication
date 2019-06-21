@@ -198,6 +198,7 @@ mat-select:focus {
   font-size: 0.8rem;
   margin: 4px 3rem;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 .user__btn--back {

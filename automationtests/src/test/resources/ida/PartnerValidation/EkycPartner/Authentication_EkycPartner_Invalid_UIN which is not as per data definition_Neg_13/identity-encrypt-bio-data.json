@@ -1,0 +1,17 @@
+{
+  "identityRequest": {
+    "biometrics": [
+      {
+        "data": {
+          "bioSubType": "LEFT_INDEX",
+          "bioType": "FMR",
+          "bioValue": "Premature end of file.",
+          "deviceProviderID": "mantra",
+          "timestamp": "2019-06-20T15:31:09.009+05:30",
+          "transactionID": "1234567890"
+        }
+      }
+    ],
+    "timestamp": "2019-06-20T15:31:09.009+05:30"
+  }
+}

@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$TestData:indvId_invalid$",
+  "transactionID": "123",
   "version": "1.0"
 }

@@ -3,7 +3,8 @@ package io.mosip.idrepository.core.spi;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
- * The Class ShardDataSourceResolver.
+ * The Class ShardDataSourceResolver - datasource resolver to resolve which DB to
+ * use based on the shard name.
  *
  * @author Manoj SP
  */

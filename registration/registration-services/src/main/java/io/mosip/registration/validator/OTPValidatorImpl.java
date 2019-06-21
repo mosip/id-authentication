@@ -9,7 +9,7 @@ import io.mosip.registration.util.common.OTPManager;
 
 /**
  * 
- * This class is for validating OTP Authentication
+ * This class will validate the OTP entered by the user by calling the otp service  
  * 
  * @author SaravanaKumar G
  *
@@ -32,6 +32,9 @@ public class OTPValidatorImpl extends AuthenticationBaseValidator {
 		 return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.validator.AuthenticationBaseValidator#validate(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public AuthTokenDTO validate(String userId, String otp) {
 		return otpManager.validateOTP(userId, otp);

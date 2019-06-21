@@ -132,7 +132,7 @@ public class AbisMessageQueueImpl {
 				response = obj.writeValueAsString(abisInsertResponseDto);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"---response sent to abis middle ware ---" + response);
+						"---Insert response sent to abis middle ware ---" + response);
 			}
 
 			else if (id.matches(ABIS_IDENTIFY)) {
@@ -141,7 +141,7 @@ public class AbisMessageQueueImpl {
 				response = obj.writeValueAsString(identifyResponseDto);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"---response sent to abis middle ware ---" + response);
+						"---Identify response sent to abis middle ware ---" + response);
 			}
 
 			else {

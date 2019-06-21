@@ -196,6 +196,9 @@ public class DemodedupeProcessor {
 						: demographicData.getGender());
 				packetInfoManager.saveIndividualDemographicDedupeUpdatePacket(demoDedupeData, registrationId);
 				object.setIsValid(Boolean.TRUE);
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
+				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			}
 
 			registrationStatusDto

@@ -40,7 +40,7 @@ public enum PinAuthType implements AuthType {
 	OTP("otp", AuthType.setOf(PinMatchType.OTP), AuthTypeDTO::isOtp, "OTP") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+				 String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			if (authRequestDTO.getRequestedAuth().isOtp()) {
 				ValidateOtpFunction func = idInfoFetcher.getValidateOTPFunction();

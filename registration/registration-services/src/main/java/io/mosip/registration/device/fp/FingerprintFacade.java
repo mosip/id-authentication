@@ -29,7 +29,7 @@ public class FingerprintFacade {
 	}
 
 	/**
-	 * provide the minutia of a finger.
+	 * This method provides the minutia of a finger.
 	 *
 	 * @return the minutia
 	 */
@@ -39,22 +39,27 @@ public class FingerprintFacade {
 
 	private String minitia;
 
+	/**
+	 * This method gets the minitia through MDM.
+	 *
+	 * @return the minitia through MDM
+	 */
 	public String getMinitiaThroughMdm() {
 		minitia = new FingerprintTemplate().convert(this.isoTemplate).serialize();
 		return minitia;
 	}
 
 	/**
-	 * Gets the iso template.
+	 * This method gets the ISO Template.
 	 *
-	 * @return the iso template
+	 * @return the ISO template in byte array format
 	 */
 	public byte[] getIsoTemplate() {
 		return fingerprintProvider.getIsoTemplate();
 	}
 
 	/**
-	 * Gets the error message.
+	 * This method gets the error message.
 	 *
 	 * @return the error message
 	 */
@@ -63,16 +68,13 @@ public class FingerprintFacade {
 
 	}
 
-		
-
-	
 	/**
-	 * Assign all the Fingerprint providers which extends the
-	 * MosipFingerprintProvider to the list.
+	 * This method gets the Fingerprint Provider which extends the
+	 * {@link MosipFingerprintProvider} containing specified name.
 	 *
 	 * @param make
-	 *            the make
-	 * @return the fingerprint provider factory
+	 *            the name which indicates device specific implementation
+	 * @return the fingerprint provider factory containing specified name
 	 */
 
 	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
@@ -85,15 +87,14 @@ public class FingerprintFacade {
 	}
 
 	/**
-	 * Sets the fingerprint providers.
+	 * This method sets the list of available fingerprint providers.
 	 *
 	 * @param fingerprintProviders
-	 *            the new fingerprint providers
+	 *            the new list of {@link MosipFingerprintProvider}
 	 */
 	@Autowired
 	public void setFingerprintProviders(List<MosipFingerprintProvider> fingerprintProviders) {
 		this.fingerprintProviders = fingerprintProviders;
 	}
 
-	
 }

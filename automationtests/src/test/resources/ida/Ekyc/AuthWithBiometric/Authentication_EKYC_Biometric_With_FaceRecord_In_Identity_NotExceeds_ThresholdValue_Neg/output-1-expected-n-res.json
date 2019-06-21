@@ -9,9 +9,9 @@
   "id": "mosip.identity.kyc",
   "response": {
     "kycStatus": false,
-    "staticToken": "TOKENID:$UIN$.1873299273"
+    "staticToken": "273722366754388483987757306685139670"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "5072612061",
   "version": "1.0"
 }

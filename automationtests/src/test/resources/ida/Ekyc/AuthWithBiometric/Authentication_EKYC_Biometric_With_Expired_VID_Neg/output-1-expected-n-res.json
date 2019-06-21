@@ -2,7 +2,7 @@
   "errors": [
     {
       "errorCode": "IDA-MLC-005",
-      "errorMessage": "Expired VID"
+      "errorMessage": "VID is EXPIRED"
     }
   ],
   "id": "mosip.identity.kyc",
@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "8807881168",
+  "transactionID": "1314655280",
   "version": "1.0"
 }

@@ -1,8 +1,8 @@
 {
   "errors": [
     {
-      "errorCode": "IDA-MPA-006",
-      "errorMessage": "$REGEXP:.*authentiation usage not allowed as per policy$"
+      "errorCode": "IDA-MLC-011",
+      "errorMessage": "$REGEXP:Unsupported Authentication Type.*$"
     }
   ],
   "id": "mosip.identity.auth.internal",
@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "8468340038",
   "version": "1.0"
 }

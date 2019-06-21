@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * The Class ResponseDTO.
+ * The Class ResponseDTO - response DTO containing additional fields for response
+ * field in {@code IdResponseDTO}.
+ 
  *
  * @author Manoj SP
  */

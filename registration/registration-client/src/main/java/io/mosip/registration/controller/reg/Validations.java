@@ -77,7 +77,6 @@ public class Validations extends BaseController {
 			noAlert.add(RegistrationConstants.DD + RegistrationConstants.LOCAL_LANGUAGE);
 			noAlert.add(RegistrationConstants.MM + RegistrationConstants.LOCAL_LANGUAGE);
 			noAlert.add(RegistrationConstants.YYYY + RegistrationConstants.LOCAL_LANGUAGE);
-			noAlert.add(RegistrationConstants.CNI_OR_PIN);
 			validationMessage = new StringBuilder();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
@@ -507,7 +506,7 @@ public class Validations extends BaseController {
 				break;
 			case RegistrationConstants.CNI_OR_PIN:
 				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
-				validation[1] = RegistrationConstants.CNI_MANDATORY;
+				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.MOBILE_NUMBER:
 				validation[0] = getValueFromApplicationContext(RegistrationConstants.PHONE_VALIDATION_REGEX);

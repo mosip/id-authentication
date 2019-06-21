@@ -21,7 +21,7 @@ public interface GlobalParamRepository extends BaseRepository<GlobalParam, Globa
 	 *
 	 * @return list of global param name
 	 */
-	List<GlobalParamName> findByIsActiveTrue();
+	List<GlobalParamName> findByIsActiveTrueAndValIsNotNull();
 
 	GlobalParam findByName(String name);
 

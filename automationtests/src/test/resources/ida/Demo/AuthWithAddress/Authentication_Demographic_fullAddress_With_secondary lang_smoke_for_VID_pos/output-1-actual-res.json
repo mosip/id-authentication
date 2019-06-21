@@ -1,15 +1,17 @@
 {
-  "transactionID": "6683636214",
+  "transactionID": "0486752510",
   "version": "1.0",
   "id": "mosip.identity.auth",
   "errors": [
     {
-      "errorCode": "IDA-MPA-003",
-      "errorMessage": "Unable to decrypt Request"
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data fullAddress in ara did not match",
+      "actionMessage": "Please re-enter your fullAddress in ara"
     }
   ],
-  "responseTime": "2019-06-15T09:39:51.389+05:30",
+  "responseTime": "2019-06-20T15:27:36.353+05:30",
   "response": {
-    "authStatus": false
+    "authStatus": false,
+    "staticToken": "284196972895977150436391905288143260"
   }
 }

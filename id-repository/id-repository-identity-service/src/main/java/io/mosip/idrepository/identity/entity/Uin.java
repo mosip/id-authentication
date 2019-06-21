@@ -24,7 +24,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class Uin.
+ * The Class Uin -Entity class for uin table.
  *
  * @author Manoj SP
  */

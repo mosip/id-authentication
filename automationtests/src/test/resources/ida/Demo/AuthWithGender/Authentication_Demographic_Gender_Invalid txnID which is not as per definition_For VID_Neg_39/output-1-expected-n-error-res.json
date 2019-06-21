@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "A",
+  "transactionID": "^UI",
   "version": "1.0"
 }

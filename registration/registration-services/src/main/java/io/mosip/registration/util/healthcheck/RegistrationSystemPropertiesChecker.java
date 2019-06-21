@@ -1,4 +1,5 @@
 package io.mosip.registration.util.healthcheck;
+
 import static io.mosip.registration.constants.LoggerConstants.LOG_REG_MAC_ADDRESS;
 
 import java.io.BufferedReader;
@@ -22,7 +23,7 @@ import io.mosip.registration.constants.RegistrationConstants;
  * @since 1.0.0
  */
 public class RegistrationSystemPropertiesChecker {
-	
+
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationSystemPropertiesChecker.class);
 
 	private RegistrationSystemPropertiesChecker() {
@@ -30,7 +31,12 @@ public class RegistrationSystemPropertiesChecker {
 	}
 
 	/**
-	 * Get Ethernet MAC Address
+	 * This method is used to get Ethernet MAC Address.
+	 * 
+	 * <p>
+	 * Based on the Operating System, the command gets executed and the MAC Address
+	 * is fetched from the result of execution of the command.
+	 * </p>
 	 * 
 	 * @return machine ID
 	 */
@@ -68,7 +74,6 @@ public class RegistrationSystemPropertiesChecker {
 				Pattern frenchPattern = Pattern.compile(".*Adresse physique.*: (.*)");
 				Pattern arabicPattern = Pattern.compile(".*العنوان الفعلي.*: (.*)");
 
-
 				Matcher englishMatcher = englishPattern.matcher(line);
 				if (englishMatcher.matches()) {
 					windowsMachineId = englishMatcher.group(1);
@@ -80,7 +85,7 @@ public class RegistrationSystemPropertiesChecker {
 					windowsMachineId = frenchMatcher.group(1);
 					break;
 				}
-				
+
 				Matcher arabicMatcher = arabicPattern.matcher(line);
 				if (arabicMatcher.matches()) {
 					windowsMachineId = arabicMatcher.group(1);

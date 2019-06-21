@@ -38,14 +38,16 @@
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
                   </GridPane>
                </children>
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" percentHeight="95.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
          </children>
@@ -127,8 +129,11 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="5.0" styleClass="homeBox" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                <children>
-                  <Text onMouseClicked="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
-                  <Text fx:id="registrationNavlabel" styleClass="headerLabel" text="%/newregistration" />
+                  <Text onMouseClicked="#goToHomePageFromRegistration" styleClass="homeButton" text="%home">
+                     <HBox.margin>
+                        <Insets left="25.0" />
+                     </HBox.margin></Text>
+                  <Text fx:id="registrationNavlabel" text="%/newregistration" />
                </children>
             </HBox>
             <GridPane GridPane.columnIndex="1">
@@ -162,6 +167,9 @@
          <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
       </GridPane>
    </children>
 </GridPane>

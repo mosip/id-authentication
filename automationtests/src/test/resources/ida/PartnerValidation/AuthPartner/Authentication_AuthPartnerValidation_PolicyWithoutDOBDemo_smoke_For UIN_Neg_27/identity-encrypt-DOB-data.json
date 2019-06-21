@@ -3,10 +3,10 @@
     "demographics": {
       "dateOfBirth": [
         {
-          "value": "Exceptione in fetching the data from id repo: java.text.ParseException: Unparseable date: \"\""
+          "value": "1976/08/15"
         }
       ]
     },
-    "timestamp": "2019-06-15T09:48:48.048+05:30"
+    "timestamp": "2019-06-20T15:27:10.010+05:30"
   }
 }

@@ -62,7 +62,7 @@ public class PacketGeneratorController {
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
-	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";

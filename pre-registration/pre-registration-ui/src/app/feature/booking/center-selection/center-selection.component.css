@@ -147,6 +147,7 @@ input[type='radio'] {
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 .center_selection-intial-recommendation-container {
@@ -273,6 +274,7 @@ img {
   }
   .container {
     flex-wrap: wrap;
+    margin-bottom: 68px;
   }
   .centers-wrapper {
     width: 90%;

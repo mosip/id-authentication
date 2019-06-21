@@ -9,9 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
 
@@ -19,7 +24,11 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
  * 
  * @author Dinesh Karuppiah
  */
+@RunWith(SpringRunner.class)
 public class AddressMatchingStrategyTest {
+	
+	@Mock
+	DemoNormalizer demoNormalizer;
 
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
@@ -63,7 +72,11 @@ public class AddressMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.match("no 1 second street chennai", "no 1 second street chennai", null);
+		Map<String,Object> valueMap=new HashMap<>();
+		valueMap.put("demoNormalizer", demoNormalizer);
+		valueMap.put("langCode", "fra");
+		Mockito.when(demoNormalizer.normalizeAddress(Mockito.anyString(), Mockito.anyString())).thenReturn("no 1 second street chennai");
+		int value = matchFunction.match("no 1 second street chennai", "no 1 second street chennai", valueMap);
 		assertEquals(100, value);
 	}
 

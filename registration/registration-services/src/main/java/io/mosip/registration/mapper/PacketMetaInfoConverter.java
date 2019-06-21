@@ -36,8 +36,12 @@ import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.metadata.Type;
 
 /**
- * The custom Orika Mapper converter class for converting the
- * {@link RegistrationDTO} object to {@link PacketMetaInfo}
+ * This class extends the {@link CustomConverter} class provided by Orika Mapper
+ * library
+ * 
+ * <p>
+ * This class maps the {@link RegistrationDTO} object to {@link PacketMetaInfo}
+ * </p>
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -168,6 +172,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return packetMetaInfo;
 	}
 
+	/**
+	 * @param source
+	 * @param identity
+	 */
 	private void setExceptionPhotograph(RegistrationDTO source, Identity identity) {
 		boolean isIntroducerFace = (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
 				|| source.isUpdateUINNonBiometric();
@@ -187,6 +195,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				source));
 	}
 
+	/**
+	 * @param numRetry
+	 * @param photographName
+	 * @return
+	 */
 	private Photograph buildPhotograph(int numRetry, String photographName) {
 		Photograph photograph = null;
 		if (photographName != null) {
@@ -198,6 +211,12 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return photograph;
 	}
 
+	/**
+	 * @param numRetry
+	 * @param face
+	 * @param source
+	 * @return
+	 */
 	private ExceptionPhotograph buildExceptionPhotograph(int numRetry, byte[] face, RegistrationDTO source) {
 		ExceptionPhotograph exceptionPhotograph = null;
 		if (face != null) {
@@ -217,6 +236,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return exceptionPhotograph;
 	}
 
+	/**
+	 * @param demographicDTO
+	 * @return
+	 */
 	private List<Document> buildDocuments(DemographicDTO demographicDTO) {
 		List<Document> documents = new ArrayList<>();
 
@@ -230,6 +253,13 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return documents;
 	}
 
+	/**
+	 * @param documentName
+	 * @param documentType
+	 * @param documentCategory
+	 * @param documentOwner
+	 * @return
+	 */
 	private Document getDocument(String documentName, String documentType, String documentCategory,
 			String documentOwner) {
 		Document document = new Document();
@@ -241,6 +271,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return document;
 	}
 
+	/**
+	 * @param biometricDTO
+	 * @param personType
+	 * @return
+	 */
 	private BiometricDetails getBiometric(BaseDTO biometricDTO, String personType) {
 		BiometricDetails biometricDetails = null;
 		if (biometricDTO != null) {
@@ -257,6 +292,12 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return biometricDetails;
 	}
 
+	/**
+	 * @param birIndex
+	 * @param numRetry
+	 * @param forceCaptured
+	 * @return
+	 */
 	private BiometricDetails buildBiometric(String birIndex, int numRetry, boolean forceCaptured) {
 		BiometricDetails biometricDetails = new BiometricDetails();
 		biometricDetails.setBirIndex(birIndex);
@@ -266,6 +307,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return biometricDetails;
 	}
 
+	/**
+	 * @param biometricExceptionDTOs
+	 * @return
+	 */
 	private List<BiometricException> getExceptionBiometrics(List<BiometricExceptionDTO> biometricExceptionDTOs) {
 		List<BiometricException> exceptionBiometrics = new LinkedList<>();
 
@@ -281,6 +326,14 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return exceptionBiometrics;
 	}
 
+	/**
+	 * @param type
+	 * @param missingBiometric
+	 * @param exceptionType
+	 * @param reason
+	 * @param individualType
+	 * @return
+	 */
 	private BiometricException buildExceptionBiometric(String type, String missingBiometric, String exceptionType,
 			String reason, String individualType) {
 		BiometricException exceptionBiometric = new BiometricException();
@@ -292,6 +345,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return exceptionBiometric;
 	}
 
+	/**
+	 * @param registrationDTO
+	 * @return
+	 */
 	private List<FieldValue> getMetaData(RegistrationDTO registrationDTO) {
 		List<FieldValue> metaData = new LinkedList<>();
 
@@ -334,6 +391,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return metaData;
 	}
 
+	/**
+	 * @param registrationDTO
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private List<FieldValue> getOSIData(RegistrationDTO registrationDTO) {
 		List<FieldValue> osiData = new LinkedList<>();
@@ -381,6 +442,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return osiData;
 	}
 
+	/**
+	 * @param label
+	 * @param value
+	 * @return
+	 */
 	private FieldValue buildFieldValue(String label, String value) {
 		FieldValue fieldValue = new FieldValue();
 		fieldValue.setLabel(label);
@@ -388,6 +454,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return fieldValue;
 	}
 
+	/**
+	 * @param fileName
+	 * @return
+	 */
 	private String removeFileExt(String fileName) {
 		if (fileName.contains(RegistrationConstants.DOT)) {
 			fileName = fileName.substring(0, fileName.lastIndexOf(RegistrationConstants.DOT));
@@ -395,6 +465,11 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		return fileName;
 	}
 
+	/**
+	 * @param personType
+	 * @param biometricType
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private String getBIRUUID(String personType, String biometricType) {
 		return ((Map<String, String>) SessionContext.map().get(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME))

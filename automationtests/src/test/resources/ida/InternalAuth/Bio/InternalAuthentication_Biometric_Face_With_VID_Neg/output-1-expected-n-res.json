@@ -1,8 +1,8 @@
 {
   "errors": [
     {
-      "errorCode": "IDA-BIA-012",
-      "errorMessage": "Invalid userid of the individual"
+      "errorCode": "IDA-MLC-015",
+      "errorMessage": "Identity Type - VID not configured for the country"
     }
   ],
   "id": "mosip.identity.auth.internal",
@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "2221383448",
+  "transactionID": "8121448412",
   "version": "1.0"
 }
