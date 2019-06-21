@@ -48,9 +48,10 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 
 /**
- *This class will update the application based on comapring the versions of the jars from the Manifest.
- *The comparison will be done by comparing the Local Manifest and the meta-inf.xml file.
- *If there is any updation available in the jar then the new jar gets downloaded and the old gets archived.
+ * This class will update the application based on comapring the versions of the
+ * jars from the Manifest. The comparison will be done by comparing the Local
+ * Manifest and the meta-inf.xml file. If there is any updation available in the
+ * jar then the new jar gets downloaded and the old gets archived.
  * 
  * @author YASWANTH S
  *
@@ -59,8 +60,8 @@ import io.mosip.registration.service.config.GlobalParamService;
 public class SoftwareUpdateHandler extends BaseService {
 
 	/**
-	 * This constructor will read the application Property file and 
-	 * load the properties to the class level variable.
+	 * This constructor will read the application Property file and load the
+	 * properties to the class level variable.
 	 */
 	public SoftwareUpdateHandler() {
 
@@ -127,12 +128,13 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	/**
 	 * It will check whether any software updates are available or not.
-	 * <p>The check will be done by comparing the Local Manifest file version with the 
-	 * 		 version of the server meta-inf.xml file</p>
+	 * <p>
+	 * The check will be done by comparing the Local Manifest file version with the
+	 * version of the server meta-inf.xml file
+	 * </p>
 	 * 
-	 * @return Boolean 
-	 * 				true - If there is any update available.
-	 * 				false - If no updates available
+	 * @return Boolean true - If there is any update available. false - If no
+	 *         updates available
 	 */
 	public boolean hasUpdate() {
 
@@ -149,7 +151,8 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	/**
 	 * 
-	 * @return Returns the current version which is read from the server meta-inf file.
+	 * @return Returns the current version which is read from the server meta-inf
+	 *         file.
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
@@ -212,16 +215,30 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * <p> Checks whteher the update is available or not</p>
-	 * <p>If the Update is available:</p>
-	 * 		<p>If the jars needs to be added/updated in the local</p>
-	 * 			<li>Take the back-up of the current jars</li>
-	 * 			<li> Download the jars from the server and add/update it in the local</li>
-	 * 		<p>If the jars needs to be deleted in the local</p>
-	 * 			<li>Take the back-up of the current jars</li>
-	 * 			<li>Delete that particular jar from the local</li>
-	 * <p> If there is any error occurs while updation then the restoration of the jars
-	 * 		will happen by taking the back-up jars</p>
+	 * <p>
+	 * Checks whteher the update is available or not
+	 * </p>
+	 * <p>
+	 * If the Update is available:
+	 * </p>
+	 * <p>
+	 * If the jars needs to be added/updated in the local
+	 * </p>
+	 * <ul>
+	 * <li>Take the back-up of the current jars</li>
+	 * <li>Download the jars from the server and add/update it in the local</li>
+	 * </ul>
+	 * <p>
+	 * If the jars needs to be deleted in the local
+	 * </p>
+	 * <ul>
+	 * <li>Take the back-up of the current jars</li>
+	 * <li>Delete that particular jar from the local</li>
+	 * </ul>
+	 * <p>
+	 * If there is any error occurs while updation then the restoration of the jars
+	 * will happen by taking the back-up jars
+	 * </p>
 	 * 
 	 * @throws Exception
 	 *             - IOException
@@ -518,12 +535,22 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * This method will check whether any updation needs to be done in the DB structure.
-	 * <p>If there is any updates available:</p>
-	 * 		<p>Take the back-up of the current DB</p>
-	 * 		<p>Run the Update queries from the sql file, which is downloaded from the server 
-	 * 				and available in the local</p>
-	 * 	<p>If there is any error occurs during the update,then the rollback query will run from the sql file</p>
+	 * This method will check whether any updation needs to be done in the DB
+	 * structure.
+	 * <p>
+	 * If there is any updates available:
+	 * </p>
+	 * <p>
+	 * Take the back-up of the current DB
+	 * </p>
+	 * <p>
+	 * Run the Update queries from the sql file, which is downloaded from the server
+	 * and available in the local
+	 * </p>
+	 * <p>
+	 * If there is any error occurs during the update,then the rollback query will
+	 * run from the sql file
+	 * </p>
 	 * 
 	 * @param latestVersion
 	 *            latest version
@@ -678,7 +705,8 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * This method will return the checksum of the jars by reading it from the Manifest file.
+	 * This method will return the checksum of the jars by reading it from the
+	 * Manifest file.
 	 * 
 	 * @param jarName
 	 *            jarName

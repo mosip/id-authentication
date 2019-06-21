@@ -368,8 +368,10 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * @param type
-	 * @param modality
+	 * Gets the bio device.
+	 *
+	 * @param type - the type of device
+	 * @param modality - the modality
 	 */
 	public void getBioDevice(String type, String modality) {
 

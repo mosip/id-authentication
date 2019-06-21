@@ -142,10 +142,10 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	/**
 	 * Once all the jobs are completed then this method will save this transaction in the table
-	 * @param responseDTO
-	 * @param triggerPoint
-	 * @param syncJobId
-	 * @return
+	 * @param responseDTO - the {@link ResponseDTO}
+	 * @param triggerPoint - the trigger point which indicates whether manual or batch jobs
+	 * @param syncJobId - the sync job ID
+	 * @return the {@link ResponseDTO} after updating the sync transaction
 	 */
 	public synchronized ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint,
 			String syncJobId) {
