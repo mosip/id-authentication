@@ -12,17 +12,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.vertx.core.Vertx;
+import io.vertx.ext.web.Router;
 
 
 @RunWith(SpringRunner.class)
@@ -40,6 +46,14 @@ public class ExternalStageTest {
 		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,
 				MessageBusAddress toAddress) {
 		}
+		@Override
+		public Router postUrl(Vertx vertx, MessageBusAddress consumeAddress, MessageBusAddress sendAddress) {
+			return null;
+		}
+		@Override
+		public void createServer(Router router, int port) {
+
+		}
 	};
 	@Test
 	public void testDeployVerticle() {
@@ -48,6 +62,8 @@ public class ExternalStageTest {
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Mock
+	private LogDescription description;
 	
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -55,11 +71,18 @@ public class ExternalStageTest {
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	
+	@Mock
+	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
+	
+	@Mock
+	MosipRouter router;
+	
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
 	InternalRegistrationStatusDto registrationStatusDto=new InternalRegistrationStatusDto();
 	@Before
 	public void setUp() throws Exception {
+		ReflectionTestUtils.setField(externalStage, "port","8989");
 		dto.setInternalError(false);
 		dto.setIsValid(true);
 		dto.setRid("2758415120462");
@@ -69,6 +92,12 @@ public class ExternalStageTest {
 		registrationStatusDto.setRegistrationId("2758415120462");
 		registrationStatusDto.setRetryCount(0);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.doNothing().when(router).setRoute(any());
+	}
+	@Test
+	public void testStart()
+	{
+		externalStage.start();
 	}
 	
 	@Test

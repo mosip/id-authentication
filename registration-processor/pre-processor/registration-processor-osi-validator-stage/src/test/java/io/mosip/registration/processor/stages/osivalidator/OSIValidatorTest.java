@@ -532,6 +532,7 @@ public class OSIValidatorTest {
 		Mockito.when(osiUtils.getMetaDataValue(anyString(), any())).thenReturn("2015/01/01");
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
+		registrationStatusDto.setRegistrationType("NEW");
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		boolean isValid = osiValidator.isValidOSI("reg1234", registrationStatusDto);
 		assertFalse(isValid);

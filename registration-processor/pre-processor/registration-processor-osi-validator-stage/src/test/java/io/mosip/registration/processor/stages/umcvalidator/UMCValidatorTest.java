@@ -24,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
@@ -81,7 +83,7 @@ public class UMCValidatorTest {
 	/** The osi utils. */
 	@Mock
 	private OSIUtils osiUtils;
-
+	
 	Identity identity;
 
 	/** The rcm dto. */
@@ -1484,7 +1486,11 @@ public class UMCValidatorTest {
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-
+		RegistrationCenterResponseDto rcrdto=new RegistrationCenterResponseDto();
+		List<RegistrationCenterDto> dts=new ArrayList<RegistrationCenterDto>();
+		dts.add(rcdto);
+		rcrdto.setRegistrationCentersHistory(dts);
+       // Mockito.when(mapper.readValue(any(),any()))
 		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
 		FieldValue fv1 = new FieldValue();
 		fv1.setLabel("Printer");
