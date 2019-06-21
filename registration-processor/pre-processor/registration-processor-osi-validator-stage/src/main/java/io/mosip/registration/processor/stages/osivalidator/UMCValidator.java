@@ -81,8 +81,7 @@ public class UMCValidator {
 
 	private static final String IS_DEVICE_MAPPED_WITH_CENTER = "no center found for device : ";
 
-	@Autowired
-	ObjectMapper mapper;
+	ObjectMapper mapper = new ObjectMapper();
 
 	/** The identity. */
 	Identity identity;
