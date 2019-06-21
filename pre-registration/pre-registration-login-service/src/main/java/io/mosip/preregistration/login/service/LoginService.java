@@ -247,12 +247,12 @@ public class LoginService {
 		
 				if (isSuccess) {
 					setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-							" User sucessfully logged-in    ",
+							"User sucessfully logged-in",
 							AuditLogVariables.NO_ID.toString(), userid,
 							userid);
 				} else {
 					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-							" User failed to logged-in ", AuditLogVariables.NO_ID.toString(),
+							"User failed to logged-in", AuditLogVariables.NO_ID.toString(),
 							userid, userid);
 		}
 			
@@ -307,7 +307,7 @@ public class LoginService {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 			if (isSuccess) {
 				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-						"User sucessfully logged-out ",
+						"User sucessfully logged-out",
 						AuditLogVariables.NO_ID.toString(),userId,
 						userId);
 			} else {

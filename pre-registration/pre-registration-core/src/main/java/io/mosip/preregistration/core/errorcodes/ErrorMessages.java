@@ -26,8 +26,11 @@ public enum ErrorMessages {
 	INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE("Request date should be current date"),//PRG_CORE_REQ_013
 	REQUEST_DATA_NOT_VALID("Invalid request input"),//PRG_CORE_REQ_015
 	INTERNAL_SERVER_ERROR("Internal server error"),
-	INVALID_DOC_CAT_CODE("Document Catagory code is invalid"),//PRG_CORE_REQ_017
-	INVALID_DOC_TYPE_CODE("Document type code is invalid");//PRG_CORE_REQ_017
+	INVALID_DOC_CAT_CODE("Document Category code is invalid"),//PRG_CORE_REQ_017
+	INVALID_DOC_TYPE_CODE("Document type code is invalid"),
+	INVALID_DATE_TIME_FORMAT("Invalid date time format"),//PRG_CORE_REQ_017
+	FROM_DATE_GREATER_THAN_TO_DATE("From date is greater than To date");//PRG_CORE_REQ_020
+	
 	private ErrorMessages(String message) {
 		this.message = message;
 	}

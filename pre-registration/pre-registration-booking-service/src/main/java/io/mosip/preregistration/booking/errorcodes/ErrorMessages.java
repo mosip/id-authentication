@@ -58,10 +58,6 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
-	INVALID_DATE_TIME_FORMAT("Invalid date time format"),
-	/**
-	 * ErrorMessage for PRG_TRL_APP_001
-	 */
 	APPOINTMENT_CANNOT_BE_BOOKED("Appointment cannot be booked"),
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
@@ -70,7 +66,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
-	APPOINTMENT_BOOKING_FAILED("Appointment booking failed"),
+	APPOINTMENT_BOOKING_FAILED("Appointment booking/re-booking cannot be done"),
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
