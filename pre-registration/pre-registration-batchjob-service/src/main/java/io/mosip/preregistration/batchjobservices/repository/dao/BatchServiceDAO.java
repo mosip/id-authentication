@@ -30,6 +30,7 @@ import io.mosip.preregistration.batchjobservices.repository.DocumentRespository;
 import io.mosip.preregistration.batchjobservices.repository.ProcessedPreIdRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentConsumedRepository;
 import io.mosip.preregistration.batchjobservices.repository.RegAppointmentRepository;
+import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
@@ -143,11 +144,20 @@ public class BatchServiceDAO {
 	 * @param currentdate
 	 * @return List of RegistrationBookingEntity based date less then currentDate
 	 */
-	public List<RegistrationBookingEntity> getAllOldDateBooking(LocalDate currentdate) {
+	public List<RegistrationBookingEntity> getAllOldDateBooking(LocalDate currentdate,long executionDiff) {
 		List<RegistrationBookingEntity> entityList = null;
+		DemographicEntity demographicEntity;
+		int bookedCount=0;
 		try {
-			entityList = regAppointmentRepository.findByRegDateBefore(currentdate);
-			if (entityList == null ||entityList.isEmpty() )  {
+			LocalDate tillDate=LocalDate.now().minusDays(executionDiff+1);
+			entityList = regAppointmentRepository.findByRegDateBetween(currentdate,tillDate);
+			for (RegistrationBookingEntity registrationBookingEntity : entityList) {
+				demographicEntity=getApplicantDemographicDetails(registrationBookingEntity.getBookingPK().getPreregistrationId());
+				if(demographicEntity.getStatusCode().equals(StatusCodes.BOOKED.getCode())) {
+					bookedCount++;
+				}
+			}
+			if (entityList == null ||entityList.isEmpty() || bookedCount==0)  {
 				log.info("sessionId", "idType", "id", "There are currently no Pre-Registration-Ids to update status to consumed");
 				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_001.getCode(),
 						ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
