@@ -1509,14 +1509,14 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		String data = response.jsonPath().get("response.zip-bytes").toString();
 		String folder = response.jsonPath().get("response.zip-filename").toString();
 		String folderPath = systemPath+"/src/test/resources/" + "preReg" + "/" + folderName;
-		System.out.println("folder "+ folderPath);
+		System.err.println("folder "+ folderPath);
 		File f = new File(folderPath + "/" + folder);
 		f.mkdirs();
 		if(f.isDirectory())
 		{
 			System.out.println("folder exists");
 		}
-		System.out.println("create Path " +f.getPath());
+		System.err.println("create Path " +f.getPath());
 		ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(data)));
 		ZipEntry entry = null;
 		try {
@@ -1549,9 +1549,17 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		 */
 		String folder2 = "preReg";
 		String configPath =systemPath+"/src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
-		System.out.println(configPath);
+		System.err.println(configPath);
 		File folder1 = new File(configPath);
-		System.out.println("Folder Path "+folder1.getPath());
+		System.err.println("Folder Path "+folder1.getPath());
+		if(folder1.exists())
+		{
+			System.err.println("folder is exists in "+configPath);
+		}
+		else
+		{
+			System.err.println("folder notttttttt exists in "+configPath);
+		}
 		File[] listOfFiles = folder1.listFiles();
 		try {
 			for (File f1 : listOfFiles) {
@@ -1569,6 +1577,7 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		}
 		return finalResult;
 	}
+
 
 	public Map<String, Object> jsonObjectToMap(JSONObject object) {
 		Gson gson = new Gson();
