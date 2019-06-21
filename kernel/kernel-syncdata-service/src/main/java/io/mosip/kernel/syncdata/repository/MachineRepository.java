@@ -56,6 +56,6 @@ public interface MachineRepository extends JpaRepository<Machine, String> {
 	@Query("FROM Machine m WHERE m.name=?1 and (m.isDeleted is null or m.isDeleted =false) and m.isActive = true")
 	Optional<Machine> findByMachineNameActiveNondeleted(String name);
 	*/
-	@Query("From Machine m WHERE m.name=?1 and (m.isDeleted is null or m.isDeleted =false) and m.isActive = true")
+	@Query("From Machine m WHERE lower(m.name) = lower(?1)  and (m.isDeleted is null or m.isDeleted =false) and m.isActive = true")
 	List<Machine> findByMachineNameAndIsActive(String machineName);
 }

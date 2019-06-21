@@ -17,21 +17,21 @@ public interface UserDetailService {
 	/**
 	 * This method performs to invoke the user details sync operation based on the center-id, in synchronous way. 
 	 * 
-	 * The center-id will be picked up based on the mac-id of the machine. While performing the call
-	 * the online connectivity check will be performed as preliminary step to connect to the server and then sync the user details.
+	 * <p>The center-id will be picked up based on the mac-id of the machine. While performing the call
+	 * the online connectivity check will be performed as preliminary step to connect to the server and then sync the user details.</p>
 	 * 
-	 * If Online :
-	 * 		The server call performs and based on the result the return response will be formed.
+	 * <p>If Online :</p>
+	 * 		<p>The server call performs and based on the result the return response will be formed.</p>
 	 * 		
-	 * 		If Success:
-	 * 			The Response JSON string will be converted to the {@code UserDetailResponseDto} and persist to the database.
-	 * 			The success response DTO will be formed and returned from this method.
+	 * 		<p>If Success:</p>
+	 * 			<p>The Response JSON string will be converted to the {@code UserDetailResponseDto} and persist to the database.</p>
+	 * 			<p>The success response DTO will be formed and returned from this method.</p>
 	 * 		
-	 * 		If Failure:
-	 * 			The failure response DTO will be formed and returned from this method.
+	 * 		<p>If Failure:</p>
+	 * 			<p>The failure response DTO will be formed and returned from this method.</p>
 	 * 
-	 * If Offline: 
-	 * 		The failure response DTO will be formed and returned from this method.
+	 * <p>If Offline: </p>
+	 * 		<p>The failure response DTO will be formed and returned from this method.</p>
 	 * 
 	 *
 	 * @param triggerpoint  

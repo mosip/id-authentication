@@ -25,7 +25,7 @@ public class PublicKeyGenerationUtil {
 	}
 
 	/**
-	 * Generates the RAS public key form the input encoded key
+	 * Generates the RSA public key form the input encoded key
 	 * 
 	 * @param encodedKey
 	 *            the RSA encoded key. This encoded bytes have to be base64 encoded

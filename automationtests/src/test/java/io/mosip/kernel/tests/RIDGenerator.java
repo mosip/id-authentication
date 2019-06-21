@@ -187,3 +187,4 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	}
 
 }
+

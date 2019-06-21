@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "actionMessage": "Please give your biometrics again",
+      "errorCode": "IDA-BIA-001",
+      "errorMessage": "Biometric data – FID did not match"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "6781577025",
+  "version": "1.0"
+}

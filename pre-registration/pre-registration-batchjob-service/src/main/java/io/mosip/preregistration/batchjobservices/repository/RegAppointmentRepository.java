@@ -29,7 +29,7 @@ public interface RegAppointmentRepository extends BaseRepository<RegistrationBoo
 	 * @param currentdate
 	 * @return List of RegistrationBookingEntity before current date.
 	 */
-	List<RegistrationBookingEntity> findByRegDateBefore(@Param("currentDate") LocalDate currentdate);
+	List<RegistrationBookingEntity> findByRegDateBetween(LocalDate currentdate,LocalDate tillDate);
 	
 	/**
 	 * @param preRegId

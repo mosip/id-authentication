@@ -17,7 +17,8 @@
 
 				<test name="Kernel Tests">
 						 <classes>
-						   <class name="io.mosip.kernel.tests.AuditLog" /> 
+						 
+                           <class name="io.mosip.kernel.tests.AuditLog" /> 
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                            <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -43,7 +44,7 @@
                            <class name="io.mosip.kernel.tests.FetchTitle" />   
                            <class name="io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode" />   
                            <class name="io.mosip.kernel.tests.GetApplicantType" /> 
-                           <class name="io.mosip.kernel.tests.GetDeviceHistory" />
+                            <class name="io.mosip.kernel.tests.GetDeviceHistory" />
                            <class name="io.mosip.kernel.tests.GetDocTypeDocCatByLangCode" /> 
                            <class name="io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode" />
                            <class name="io.mosip.kernel.tests.GetIndividualType" />
@@ -57,17 +58,21 @@
                            <class name="io.mosip.kernel.tests.RIDGenerator" />   
                            <class name="io.mosip.kernel.tests.SmsNotification" />
                            <class name="io.mosip.kernel.tests.SyncConfigurations" />
-                           <class name="io.mosip.kernel.tests.SyncIncrementalData" /> 
-                           <class name="io.mosip.kernel.tests.UploadPublickey" />                                                                                                                                                                                                                                                                                                                                 
+                           <class name="io.mosip.kernel.tests.SyncIncrementalData" />
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithoutRegID" />    
+                           <class name="io.mosip.kernel.tests.SyncMasterDataWithRegID" />                                                                                                                                                                                                                                                                                                                                   
+                           <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndex" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId" />
-                           <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
                            <class name="io.mosip.kernel.tests.TokenIdGenerator" />
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.UINStatusCheck" /> 
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
+                           <class name="io.mosip.kernel.tests.UploadPublickey" /> 
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" />  
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />          
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />            
+
+               
                  </classes>
 				</test>  
 </suite>

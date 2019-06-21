@@ -76,11 +76,11 @@ public class IdRepoUtil extends AuthTestsUtil {
 								+ RunConfigUtil.objRunConfig.getUinIdentityMapper() + "/mapping.properties")
 										.getAbsolutePath(),
 										mappingTopass);
-				if (mapping.contains("dateOfBirth") && mapping.contains("input")) {
+				/*if (mapping.contains("dateOfBirth") && mapping.contains("input")) {
 					Date valuedate = new SimpleDateFormat("yyyy/MM/dd").parse(value);
 					SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
 					value = date.format(valuedate);
-				}
+				}*/
 				if (mapping.contains("dateOfBirth") && mapping.contains("age")) {
 					Date valuedate = new SimpleDateFormat("yyyy/MM/dd").parse(value);
 					SimpleDateFormat date = new SimpleDateFormat("dd");

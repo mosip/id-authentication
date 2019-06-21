@@ -78,7 +78,7 @@ errors:
   InvalidFirstLangForProvince:
     errorCode: IDR-IDC-002
     errorMessage: Invalid Input Parameter - identity/province/0/language
-  InvalIDCecLangForProvince:
+  InvalidSecLangForProvince:
     errorCode: IDR-IDC-002
     errorMessage: Invalid Input Parameter - identity/province/1/language
   InvalidThirdLangForProvince:
@@ -126,6 +126,12 @@ errors:
   VidMissingId:
     errorCode: IDR-IDC-001
     errorMessage: Missing Input Parameter - id
+  MissingId:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - id
+  MissingResidenceStatus:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - identity/residenceStatus
   MissingregistrationId:
     errorCode: IDR-IDC-001
     errorMessage: Missing Input Parameter - registrationId
@@ -135,3 +141,18 @@ errors:
   USEDVID:
     errorCode: IDR-VID-002
     errorMessage: USED VID
+  DeActivatedVID:
+    errorCode: IDR-VID-001
+    errorMessage: VID is DEACTIVATED
+  EXPIREDVID:
+    errorCode: IDR-VID-001
+    errorMessage: VID is EXPIRED
+  MissingUIN:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - UIN
+  MissingCNIENumber:
+    errorCode: IDR-IDC-001
+    errorMessage: Missing Input Parameter - identity/CNIENumber
+  InvalidCNIENumber:
+    errorCode: IDR-IDC-001
+    errorMessage: Invalid Input Parameter - identity/CNIENumber

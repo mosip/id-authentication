@@ -44,6 +44,7 @@ import io.mosip.idrepository.core.dto.IdRequestDTO;
 import io.mosip.idrepository.core.dto.RequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 import io.mosip.idrepository.identity.validator.IdRequestValidator;
+import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
@@ -62,6 +63,8 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @ActiveProfiles("test")
 @ConfigurationProperties("mosip.idrepo.identity")
 public class IdRequestValidatorTest {
+
+	private static final String UIN = "uin";
 
 	@InjectMocks
 	IdRequestValidator validator;
@@ -130,7 +133,7 @@ public class IdRequestValidatorTest {
 	public void testValidateRequestJsonAttributes() throws JsonParseException, JsonMappingException, IOException,
 			IdObjectValidationFailedException, IdObjectIOException {
 		when(idObjectValidator.validateIdObject(Mockito.any(), Mockito.any()))
-				.thenThrow(new IdObjectValidationFailedException("", "Invalid Request"));
+				.thenThrow(new IdObjectValidationFailedException("", "Invalid - Request"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -322,7 +325,8 @@ public class IdRequestValidatorTest {
 	public void testValidateRequestUnidentifiedJsonException() throws JsonParseException, JsonMappingException,
 			IOException, IdObjectIOException, IdObjectValidationFailedException {
 		when(idObjectValidator.validateIdObject(Mockito.any(), Mockito.any()))
-				.thenThrow(new IdObjectValidationFailedException("errorCode", "errorMessage"));
+				.thenThrow(new IdObjectValidationFailedException(
+						IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(), "error - Message"));
 		Object request = mapper.readValue(
 				"{\"identity\":{\"firstName\":[{\"language\":\"AR\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
 						.getBytes(),
@@ -331,7 +335,8 @@ public class IdRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
-			assertEquals("errorMessage", error.getDefaultMessage());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "Message"),
+					error.getDefaultMessage());
 			assertEquals("request", ((FieldError) error).getField());
 		});
 	}
@@ -402,10 +407,17 @@ public class IdRequestValidatorTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Test(expected = IdRepoAppException.class)
+	@Test
 	public void testInvalidUin() throws IdRepoAppException {
-		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
+		try {
+		when(uinValidator.validateId(anyString())).thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
 		validator.validateUin("1234", "read");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN),
+					e.getErrorText());
+		}
 	}
 
 	/**
@@ -414,10 +426,18 @@ public class IdRequestValidatorTest {
 	 * @throws IdRepoAppException
 	 *             the id repo app exception
 	 */
-	@Test(expected = IdRepoAppException.class)
+	@Test
 	public void testValidateNullId() throws IdRepoAppException {
+		try {
 		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
 		validator.validateUin(null, "create");
+	} catch (IdRepoAppException e) {
+		assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+		assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+				 env.getProperty(IdRepoConstants.MOSIP_KERNEL_IDREPO_JSON_PATH.getValue()))
+				.replace(".", "/"),
+				e.getErrorText());
+	}
 	}
 
 }

@@ -1,0 +1,67 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Mary Rose Street"
+        },
+        {
+          "language": "ara",
+          "value": "مَري رُسِ سترِِت"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "MGR City House"
+        },
+        {
+          "language": "ara",
+          "value": "مگر سِتي هُُسِ"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Green Land"
+        },
+        {
+          "language": "ara",
+          "value": "گرِِن لَند"
+        }
+      ],
+      "location1": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        }
+      ],
+      "location2": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        }
+      ],
+      "location3": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:25.025+05:30"
+  }
+}

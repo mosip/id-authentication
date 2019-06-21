@@ -44,12 +44,15 @@ public class GPSFacade extends GPSBU343Connector {
 	private static final Logger LOGGER = AppConfig.getLogger(GPSFacade.class);
 
 	/**
-	 * Gets the latitudeFromGps long details from GPS device.
+	 * This method gets the latitude and longitude details from GPS device.
 	 *
-	 * @param centerLat           the center lat
-	 * @param centerLngt          the center lngt
-	 * @param gpsConnectionDevice the gps connection device
-	 * @return the latitudeFromGps long details
+	 * @param centerLat
+	 *            the center latitude
+	 * @param centerLngt
+	 *            the center longitude
+	 * @param gpsConnectionDevice
+	 *            the GPS connection device
+	 * @return the latitude and longitude details from GPS device
 	 */
 	public Map<String, Object> getLatLongDtls(double centerLat, double centerLngt, String gpsConnectionDevice) {
 
@@ -155,14 +158,18 @@ public class GPSFacade extends GPSBU343Connector {
 	}
 
 	/**
-	 * {@code actualDistance} is to calculate the distance between the given
-	 * latitudes and longitudes.
+	 * This method is used to calculate the distance between the given latitudes and
+	 * longitudes.
 	 *
-	 * @param fromlat from latitude
-	 * @param fromlng from longitude
-	 * @param tolat   to latitude
-	 * @param tolng   to longitude
-	 * @return double
+	 * @param fromlat
+	 *            from latitude
+	 * @param fromlng
+	 *            from longitude
+	 * @param tolat
+	 *            to latitude
+	 * @param tolng
+	 *            to longitude
+	 * @return the distance between given latitudes and longitudes
 	 */
 	private double actualDistance(BigDecimal fromlat, BigDecimal fromlng, double centerLat, double centerLngt) {
 
@@ -188,11 +195,13 @@ public class GPSFacade extends GPSBU343Connector {
 	}
 
 	/**
-	 * Gets the latitudeFromGps long.
+	 * This method gets the geo location.
 	 *
-	 * @param gpsData the gps data
-	 * @return the latitudeFromGps long
+	 * @param gpsData
+	 *            - the GPS data
+	 * @return the {@link GPSPosition}
 	 * @throws RegBaseCheckedException
+	 *             - the exception class that handles all the checked exceptions
 	 */
 	private GPSPosition getGPRMCLatLong(String[] gpsData) throws RegBaseCheckedException {
 
@@ -226,6 +235,11 @@ public class GPSFacade extends GPSBU343Connector {
 
 	}
 
+	/**
+	 * This method sets the GPS connections list.
+	 *
+	 * @param gpsConnectionsList the list of {@link MosipGPSProvider}
+	 */
 	@Autowired
 	public void setGpsConnectionsList(List<MosipGPSProvider> gpsConnectionsList) {
 		this.gpsConnectionsList = gpsConnectionsList;

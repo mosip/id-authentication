@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - version"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "3566031023",
+  "version": "1.0"
+}

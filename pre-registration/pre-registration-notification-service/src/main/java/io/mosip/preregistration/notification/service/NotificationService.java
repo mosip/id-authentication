@@ -177,11 +177,20 @@ public class NotificationService {
 			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO), requiredRequestMap)) {
 				notificationDtoValidation(notificationDto);
 				if (notificationDto.isAdditionalRecipient()) {
-					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()&& ValidationUtil.phoneValidator(notificationDto.getMobNum())) {
-						notificationUtil.notify(RequestCodes.SMS.getCode(), notificationDto, langCode, file);
+					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()) {
+						if( ValidationUtil.phoneValidator(notificationDto.getMobNum())) {
+							notificationUtil.notify(RequestCodes.SMS.getCode(), notificationDto, langCode, file);
+						}else {
+							throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_007.getCode(),ErrorMessages.PHONE_VALIDATION_EXCEPTION.getMessage(), response);
+						}
 					}
-					if (notificationDto.getEmailID() != null && !notificationDto.getEmailID().isEmpty() && ValidationUtil.emailValidator(notificationDto.getEmailID())) {
-						notificationUtil.notify(RequestCodes.EMAIL.getCode(), notificationDto, langCode, file);
+					if (notificationDto.getEmailID() != null && !notificationDto.getEmailID().isEmpty()) {
+						if(ValidationUtil.emailValidator(notificationDto.getEmailID())) {
+							notificationUtil.notify(RequestCodes.EMAIL.getCode(), notificationDto, langCode, file);
+						}else {
+							throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_006.getCode(),ErrorMessages.EMAIL_VALIDATION_EXCEPTION.getMessage(), response);
+						
+						}
 					}
 					if ((notificationDto.getEmailID() == null || notificationDto.getEmailID().isEmpty()||!ValidationUtil.emailValidator(notificationDto.getEmailID()))
 							&& (notificationDto.getMobNum() == null || notificationDto.getMobNum().isEmpty()||!ValidationUtil.phoneValidator(notificationDto.getMobNum()))) {
@@ -210,7 +219,7 @@ public class NotificationService {
 						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Failed to trigger notification to the user ", AuditLogVariables.NO_ID.toString(),
+						"Failed to trigger notification to the user", AuditLogVariables.NO_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}

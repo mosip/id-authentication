@@ -43,7 +43,7 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 
 /**
- * It does the pre registration check to ensure that the application can capture the Registration detail from individual. If the pre registration check
+ * It does the pre check before doing registration to ensure that the application can capture the Registration detail from individual. If the pre check
  * fails, then don't allow the application to capture the detail from individual.  Post completion of the respective sync process only 
  * the application can be used for Registration process. 
  * 

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +33,6 @@ public class RegistrationSyncRequestValidator {
 	/** The Constant VER. */
 	private static final String VER = "version";
 
-	/** The Constant verPattern. */
-	private static final Pattern verPattern = Pattern.compile("^[0-9](\\.\\d{1,1})?$");
-
 	/** The Constant DATETIME_TIMEZONE. */
 	private static final String DATETIME_TIMEZONE = "mosip.registration.processor.timezone";
 
@@ -54,6 +50,8 @@ public class RegistrationSyncRequestValidator {
 
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
+
+	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.sync.version";
 
 	/** The env. */
 	@Autowired
@@ -130,6 +128,7 @@ public class RegistrationSyncRequestValidator {
 	 * @throws RegStatusValidationException
 	 */
 	private boolean validateVersion(String ver, List<SyncResponseDto> syncResponseList) {
+		String version = env.getProperty(REG_SYNC_APPLICATION_VERSION);
 		if (Objects.isNull(ver)) {
 
 			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
@@ -141,7 +140,7 @@ public class RegistrationSyncRequestValidator {
 			syncResponseList.add(syncResponseFailureDto);
 			return false;
 
-		} else if ((!verPattern.matcher(ver).matches())) {
+		} else if (!version.equals(ver)) {
 
 			SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
 

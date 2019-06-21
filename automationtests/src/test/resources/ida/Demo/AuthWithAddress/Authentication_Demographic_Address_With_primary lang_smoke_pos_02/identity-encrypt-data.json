@@ -1,0 +1,43 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "location1": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        }
+      ],
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Magarpata City"
+        }
+      ],
+      "location2": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Mary Rose Street House"
+        }
+      ],
+      "location3": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Bangalore"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:22.022+05:30"
+  }
+}

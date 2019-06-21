@@ -189,7 +189,6 @@ public class OutputValidationUtil extends AuthTestsUtil{
 					String keyword = expEntry.getValue().toString();
 					String content = actual.get(expEntry.getKey());
 					String expKeyword = keyword.substring(keyword.lastIndexOf("->") + 2, keyword.length());
-
 					String actKeyword = expKeyword.replace("expected", "actual");	
 					Map<String,Object> actualMap=JsonPrecondtion.jsonToMap(new JSONObject(JsonPrecondtion.getJsonInOrder(EncryptDecrptUtil.getDecyptFromStr(content))));
 					Map<String,Object> expMap=null;

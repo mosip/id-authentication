@@ -252,7 +252,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       const data = {
         case: 'CONFIRMATION',
         title:'',
-        message: this.secondaryLanguagelabels.deletedApplicant1[0] + ' ' + this.getNames() + ' ' + this.secondaryLanguagelabels.deletedApplicant1[1] + '?',
+        message: this.secondaryLanguagelabels.deletedApplicant1[0] + ' "' + this.getNames() + ' ".' + this.secondaryLanguagelabels.deletedApplicant1[1] + '?',
         yesButtonText: this.secondaryLanguagelabels.yesButtonText,
         noButtonText:  this.secondaryLanguagelabels.noButtonText
       };

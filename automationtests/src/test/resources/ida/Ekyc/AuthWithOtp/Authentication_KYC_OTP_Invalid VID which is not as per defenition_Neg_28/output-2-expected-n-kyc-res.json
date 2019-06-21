@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "actionMessage": "$IGNORE$",
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "3674064103",
+  "version": "1.0"
+}

@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class UinBiometricHistory.
+ * The Class UinBiometricHistory - Entity class for uin_biometric_h table.
  *
  * @author Manoj SP
  */

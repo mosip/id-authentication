@@ -18,6 +18,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -93,7 +94,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "TriggerNotification")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch (testLevel) {
+		switch ("smokeAndRegression") {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -261,9 +262,6 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 
 		String source = "src/test/resources/" + folderPath + "/";
 		CommonLibrary.backUpFiles(source, folderPath);
-
-		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
-		preIds.add(preId);
 	}
 
 	/**
@@ -301,6 +299,11 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 		//Trigger Notification Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_NotifyURI");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
+		
+	}
+	@BeforeClass
+	public void getToken()
+	{
 		authToken = preRegLib.getToken();
 	}
 

@@ -8,7 +8,7 @@ import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.id.GlobalParamId;
 
 /**
- * DAO class for GlobalParam
+ * This class is used to fetch/save/update the Global Parameter.
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -17,14 +17,14 @@ import io.mosip.registration.entity.id.GlobalParamId;
 public interface GlobalParamDAO {
 
 	/**
-	 * This method is used to get the global params
+	 * This method is used to get the global parameters
 	 * 
-	 * @return Map of global params
+	 * @return Map of global parameters
 	 */
 	Map<String, Object> getGlobalParams();
 
 	/**
-	 * This method saves the list of globalparam
+	 * This method is used to save all the list of global parameters
 	 * 
 	 * @param list
 	 *            list of global params
@@ -33,7 +33,7 @@ public interface GlobalParamDAO {
 	void saveAll(List<GlobalParam> list);
 
 	/**
-	 * This method is used to get the globalparam
+	 * This method is used to get the global parameters by {@link GlobalParamId}.
 	 * 
 	 * @param globalParamId
 	 *            is a primary key
@@ -43,34 +43,37 @@ public interface GlobalParamDAO {
 	GlobalParam get(GlobalParamId globalParamId);
 
 	/**
-	 * Get All Global params
+	 * This method is used to get all the global parameters which are passed as parameter.
 	 * 
 	 * @param names
-	 *            global param names
-	 * @return list of global params
+	 *            global parameter names
+	 * @return list of global parameters
 	 */
 	List<GlobalParam> getAll(List<String> names);
 
 	/**
+	 * This method is used to get all the global parameters
 	 * 
 	 * @return list of global params
 	 */
 	List<GlobalParam> getAllEntries();
 
 	/**
-	 * Update software update status.
+	 * This method is used to update software update status flag and the time when the software 
+	 * update was available in global param table if software update available.
 	 *
 	 * @param isUpdateAvailable
-	 *            the status
-	 * @param timestamp - the timestamp
-	 * @return the global param
+	 *              the status that need to be updated.
+	 * @param timestamp 
+	 * 				the timestamp
+	 * @return the global param after updating the flag in the table
 	 */
 	GlobalParam updateSoftwareUpdateStatus(boolean isUpdateAvailable,Timestamp timestamp);
 	
 	/**
-	 * Update Global Param
-	 * @param globalParam to be updated
-	 * @return global Param
+	 * This method is used to update particular global param.
+	 * @param globalParam that needs to be updated
+	 * @return global Param after updating the flag in the table
 	 */
 	GlobalParam update(GlobalParam globalParam);
 

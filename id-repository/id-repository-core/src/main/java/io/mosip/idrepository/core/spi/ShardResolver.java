@@ -3,7 +3,8 @@ package io.mosip.idrepository.core.spi;
 import io.mosip.idrepository.core.exception.IdRepoAppException;
 
 /**
- * The Interface ShardResolver.
+ * The Interface ShardResolver - resolver to resolve which DB to use based on
+ * the input id.
  *
  * @author Manoj SP
  */

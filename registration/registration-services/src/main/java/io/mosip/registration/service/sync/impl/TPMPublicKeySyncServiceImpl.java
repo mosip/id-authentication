@@ -62,7 +62,7 @@ public class TPMPublicKeySyncServiceImpl implements TPMPublicKeySyncService {
 			tpmKeyUploadRequest.setVersion(RegistrationConstants.VER);
 			tpmKeyUploadRequest.setRequesttime(DateUtils.getUTCCurrentDateTime());
 			PublicKeyUploadRequestDTO publicKeyUploadRequestDTO = new PublicKeyUploadRequestDTO();
-			publicKeyUploadRequestDTO.setMachineName(InetAddress.getLocalHost().getHostName().toLowerCase());
+			publicKeyUploadRequestDTO.setMachineName(InetAddress.getLocalHost().getHostName());
 			publicKeyUploadRequestDTO.setPublicKey(CryptoUtil.encodeBase64(TPMUtil.getSigningPublicPart()));
 			tpmKeyUploadRequest.setRequest(publicKeyUploadRequestDTO);
 

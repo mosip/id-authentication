@@ -11,7 +11,9 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.spi.bioauth.CbeffDocType;;
+import io.mosip.authentication.core.spi.bioauth.CbeffDocType;
+import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
+import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;;
 
 /**
  * The IdInfoFetcher interface that provides the helper methods invoked by the
@@ -96,5 +98,27 @@ public interface IdInfoFetcher {
 	 * @return the matching threshold
 	 */
 	public Optional<Integer> getMatchingThreshold(String key);
+	
+	
+	/**
+	 * Gets the demo normalizer object to normalise the 
+	 * corresponding(address/name) used for demographic authentication 
+	 * .
+	 *
+	 * @return the demo normalizer
+	 */
+	public DemoNormalizer getDemoNormalizer();
+	
+	
+	/**
+	 * Gets the bio matcher util object which holds the logic 
+	 * for matching biometric values.
+	 *
+	 * @return the bio matcher util
+	 */
+	public BioMatcherUtil getBioMatcherUtil() ;
+	
+	
+	
 
 }

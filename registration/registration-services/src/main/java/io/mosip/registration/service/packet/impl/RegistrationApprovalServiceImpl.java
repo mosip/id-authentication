@@ -15,6 +15,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.AuditReferenceIdTypes;
 import io.mosip.registration.constants.Components;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -25,10 +26,10 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
 
 /**
- * {@code RegistrationApprovalServiceImpl} is the registration approval service
- * class
+ * Implementation class of {@link RegistrationApprovalService} interface
  *
  * @author Mahesh Kumar
+ * @since 1.0.0
  */
 @Service
 public class RegistrationApprovalServiceImpl extends BaseService implements RegistrationApprovalService {
@@ -56,8 +57,9 @@ public class RegistrationApprovalServiceImpl extends BaseService implements Regi
 	 * @see io.mosip.registration.service.RegistrationApprovalService#
 	 * getEnrollmentByStatus(java.lang.String)
 	 */
+	@Override
 	public List<RegistrationApprovalDTO> getEnrollmentByStatus(String status) {
-		LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LoggerConstants.LOG_GET_REGISTER_PKT, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Packets list by status started");
 		auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -66,7 +68,7 @@ public class RegistrationApprovalServiceImpl extends BaseService implements Regi
 		try {
 			List<Registration> details = registrationDAO.getEnrollmentByStatus(status);
 
-			LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.info(LoggerConstants.LOG_GET_REGISTER_PKT, APPLICATION_NAME, APPLICATION_ID,
 					"Packet  list has been fetched");
 			auditFactory.audit(AuditEvent.PACKET_RETRIVE, Components.PACKET_RETRIVE,
 					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -76,7 +78,7 @@ public class RegistrationApprovalServiceImpl extends BaseService implements Regi
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());
 		}
-		LOGGER.info("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info(LoggerConstants.LOG_GET_REGISTER_PKT, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Packets list by status ended");
 		return list;
 	}
@@ -89,9 +91,11 @@ public class RegistrationApprovalServiceImpl extends BaseService implements Regi
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
 	 * java.lang.String)
 	 */
+	@Override
 	public Registration updateRegistration(String registrationID, String statusComments, String clientStatusCode) {
 
-		LOGGER.info("REGISTRATION - PACKET - UPDATE", APPLICATION_NAME, APPLICATION_ID, "Updating status of Packet");
+		LOGGER.info(LoggerConstants.LOG_UPADTE_REGISTER_PKT, APPLICATION_NAME, APPLICATION_ID,
+				"Updating status of Packet");
 		auditFactory.audit(AuditEvent.PACKET_UPDATE, Components.PACKET_UPDATE, SessionContext.userContext().getUserId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 

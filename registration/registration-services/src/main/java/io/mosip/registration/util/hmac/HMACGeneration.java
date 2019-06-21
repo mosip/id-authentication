@@ -15,6 +15,14 @@ import io.mosip.registration.dto.json.metadata.HashSequence;
 /**
  * Hash generation for packet DTO
  * 
+ * Hash-based Message Authentication Code is a specific type of message
+ * authentication code (MAC) involving a cryptographic hash function and a
+ * secret cryptographic key.
+ * 
+ * The cryptographic strength of the HMAC depends upon the cryptographic
+ * strength of the underlying hash function, the size of its hash output, and
+ * the size and quality of the key
+ * 
  * @author YASWANTH S
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -40,7 +48,7 @@ public class HMACGeneration {
 	 */
 	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO, final Map<String, byte[]> filesGeneratedForPacket,
 			HashSequence sequence) {
-		// generates packet biometric hash which may includes applicant and introducer
+		// generates packet biometric hash which may include applicant and introducer
 		if (registrationDTO.getBiometricDTO() != null) {
 			generateHash(filesGeneratedForPacket.get(RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME),
 					RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME,
@@ -96,13 +104,16 @@ public class HMACGeneration {
 	}
 
 	/**
-	 * Generates the HMAC for the files that are part of Packet OSI Data
+	 * Generates the HMAC for the files that are part of Packet OSI Data. Which
+	 * consists of Officer Bio, Supervisor Bio and AuditJson File
+	 * 
+	 * This also generates hash for Packet introducer exception photo
 	 * 
 	 * @param generatedFilesForPacket
 	 *            contains the files that has to be hashed
 	 * @param osiDataHashSequence
 	 *            stores the file hashing order
-	 * @return the HMAC data as {@link String}
+	 * @return the HMAC data as byte array
 	 */
 	public static byte[] generatePacketOSIHash(final Map<String, byte[]> generatedFilesForPacket,
 			List<String> osiDataHashSequence) {

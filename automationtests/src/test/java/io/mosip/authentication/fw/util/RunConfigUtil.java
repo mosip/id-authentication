@@ -185,7 +185,7 @@ public class RunConfigUtil {
 		Object[] randomKeys = VidDto.getVid().values().toArray();
 		for (int i = 0; i < randomKeys.length; i++) {
 			String uin = getRandomUINKey();
-			if (VidDto.getVid().get(uin).contains("ACTIVE") && VidDto.getVid().get(uin).contains("Perpetual")) {
+			if (VidDto.getVid().get(uin).contains(".ACTIVE") && VidDto.getVid().get(uin).contains(".Perpetual")) {
 				return VidDto.getVid().get(uin).toString().split(Pattern.quote("."))[0];
 			}
 		}
@@ -326,13 +326,15 @@ public class RunConfigUtil {
 		while (count > 0) {
 			Object[] randomKeys = VidDto.getVid().values().toArray();
 			Object key = randomKeys[new Random().nextInt(randomKeys.length)];
-			if (testCaseName.contains("Temporary") && key.toString().contains("Temporary")) {
+			if (testCaseName.contains("Temporary") && key.toString().contains("Temporary") && key.toString().contains(".ACTIVE")) {
 				count++;
 				return key.toString();
-			} else if (testCaseName.contains("Perpetual") && key.toString().contains("Perpetual")) {
+			} else if (testCaseName.contains("Perpetual") && key.toString().contains("Perpetual") && key.toString().contains(".ACTIVE")) {
 				count++;
-				return key.toString();
-			}else if (testCaseName.contains("Deactivated") && (key.toString().contains("Temporary") || key.toString().contains("Perpetual"))) {
+				getUinPropertyValue(getUinPropertyPath());
+				if(UinDto.getUinData().get(getUinForVid(key.toString().split(Pattern.quote("."))[0])).contains("valid"))
+					return key.toString();
+			}else if (testCaseName.contains("Deactivated") && key.toString().contains("Perpetual") && key.toString().contains(".ACTIVE")) {
 				count++;
 				return key.toString();
 			}
@@ -381,6 +383,5 @@ public class RunConfigUtil {
 	
 	public static String getLinuxMavenEnvVariableKey() {
 		return AuthTestsUtil.getPropertyFromFilePath(new File("./src/test/resources/ida/TestData/RunConfig/envRunConfig.properties").getAbsolutePath()).get("linuxMavenEnvVarKey").toString();
-
 	}
 }

@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID"
+    }
+  ],
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "6505152600",
+  "version": "1.0"
+}

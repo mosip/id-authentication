@@ -16,7 +16,7 @@ import io.mosip.registration.service.operator.impl.UserMachineMappingServiceImpl
 
 /**
  * This is a job to sync the user mapping
- * @author Sreekar Chukka
+ * @author Brahmananda Reddy
  *
  * @since 1.0.0
  */
@@ -42,7 +42,7 @@ public class RegUserMappingSyncJob extends BaseJob {
 
 		return responseDTO;
 	}
-
+  
 	@Override
 	public void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		

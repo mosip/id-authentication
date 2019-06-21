@@ -160,3 +160,4 @@ public class GetDeviceHistory extends BaseTestCase implements ITest{
 			}
 		}  
 }
+

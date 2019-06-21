@@ -2,6 +2,7 @@ package io.mosip.idrepository.core.builder;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Component;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
 import io.mosip.idrepository.core.constant.IdRepoConstants;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -19,12 +22,16 @@ import io.mosip.kernel.core.util.DateUtils;
 import lombok.NoArgsConstructor;
 
 /**
- * A factory for creating and building AuditRequest objects from
- * audit.properties
+ * A builder for creating and building AuditRequest objects from
+ * properties.
  *
  * @author Manoj SP
  */
 @Component
+
+/**
+ * Instantiates a new audit request builder.
+ */
 @NoArgsConstructor
 public class AuditRequestBuilder {
 
@@ -36,15 +43,16 @@ public class AuditRequestBuilder {
 	private Environment env;
 
 	/**
-	 * Builds the request.
+	 * Builds the audit request for audit service.
 	 *
 	 * @param module the module
 	 * @param event  the event
 	 * @param id     the id
+	 * @param idType the id type
 	 * @param desc   the desc
 	 * @return the audit request dto
 	 */
-	public RequestWrapper<AuditRequestDTO> buildRequest(AuditModules module, AuditEvents event, String id,
+	public RequestWrapper<AuditRequestDTO> buildRequest(AuditModules module, AuditEvents event, String id, IdType idType,
 			String desc) {
 		RequestWrapper<AuditRequestDTO> request = new RequestWrapper<>();
 		AuditRequestDTO auditRequest = new AuditRequestDTO();
@@ -56,7 +64,7 @@ public class AuditRequestBuilder {
 			hostName = inetAddress.getHostName();
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {
-			mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(),
+			mosipLogger.error(IdRepoSecurityManager.getUser(), "AuditRequestFactory", ex.getClass().getName(),
 					"Exception : " + ExceptionUtils.getStackTrace(ex));
 			hostName = env.getProperty("audit.defaultHostName");
 			hostAddress = env.getProperty("audit.defaultHostAddress");
@@ -74,7 +82,7 @@ public class AuditRequestBuilder {
 		auditRequest.setSessionUserId("sessionUserId");
 		auditRequest.setSessionUserName("sessionUserName");
 		auditRequest.setId(id);
-		auditRequest.setIdType("UIN");
+		auditRequest.setIdType(Objects.isNull(idType) ? null : idType.getIdType());
 		auditRequest.setCreatedBy(env.getProperty("user.name"));
 		auditRequest.setModuleName(module.getModuleName());
 		auditRequest.setModuleId(module.getModuleId());

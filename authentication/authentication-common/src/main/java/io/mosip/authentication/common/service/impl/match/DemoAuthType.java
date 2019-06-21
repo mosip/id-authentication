@@ -34,12 +34,15 @@ public enum DemoAuthType implements AuthType {
 					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER),
 			AuthTypeDTO::isDemo, "Personal Identity"),
 
-	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo, "Full Address")
+	FULL_ADDRESS("fullAddress", AuthType.setOf(DemoMatchType.ADDR), AuthTypeDTO::isDemo, "Full Address");
+
 
 	/**  */
 	// @formatter:on
-	;
+	
 
+	private static final String ENGLISH = "english";
+	
 	private AuthTypeImpl authTypeImpl;
 
 	/**
@@ -65,14 +68,15 @@ public enum DemoAuthType implements AuthType {
 	 * io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher)
 	 */
 	@Override
-	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-			BioMatcherUtil bioMatcherUtil, String language) {
+	public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, 
+			IdInfoFetcher idInfoFetcher,String language) {
 		HashMap<String, Object> valuemap = new HashMap<>();
 		Optional<String> languageNameOpt = idInfoFetcher.getLanguageName(language);
-		valuemap.put("language", languageNameOpt.orElse("english"));
+		valuemap.put("language", languageNameOpt.orElse(ENGLISH));
 		valuemap.put("env", idInfoFetcher.getEnvironment());
 		valuemap.put("titlesFetcher", idInfoFetcher.getTitleFetcher());
 		valuemap.put("langCode", language);
+		valuemap.put("demoNormalizer", idInfoFetcher.getDemoNormalizer());
 		return valuemap;
 	}
 

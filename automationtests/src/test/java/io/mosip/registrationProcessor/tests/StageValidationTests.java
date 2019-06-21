@@ -76,11 +76,16 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		}
 		String validPacketPath = property.getProperty("validPacketForPacketGeneration");
 		String invalidPacketFolderPath = property.getProperty("invalidPacketFolderPath");
-	/*	e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
+		/*e.packetValidatorPropertyFileReader("packetValidator.properties", validPacketPath, invalidPacketFolderPath);
 		for (int i = 0; i < 2; i++) {
 			e.demoDedupePropertyFileReader("IDjson.properties", validPacketPath, invalidPacketFolderPath);
-		}*/
-		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);
+		}
+
+		e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);*/
+		e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,invalidPacketFolderPath);
+
+		/*e.osiValidatorPropertyFileReader("packetProperties.properties", validPacketPath, invalidPacketFolderPath);*/
+
 		try {
 			reader.close();
 		} catch (IOException e1) {
@@ -142,8 +147,26 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		return objArray;
 	}
 	
+	@DataProvider(name="updatePacket")
+	public File[] getValidPackets() {
+		
+		File file = new File(invalidPacketPath + "/UpdatePacket");
+		File[] listOfPackets = file.listFiles();
+		List<File> listOfInvalidPackets = new ArrayList<File>();
+		for (int i = 0; i < listOfPackets.length; i++) {
+			if (listOfPackets[i].isDirectory()) {
+				listOfInvalidPackets.add(listOfPackets[i]);
+			}
+		}
+		File [] objArray = new File[listOfInvalidPackets.size()];
+		for(int i=0;i< listOfInvalidPackets.size();i++){
+		    objArray[i] = listOfInvalidPackets.get(i);
+		 } 
+		return objArray;
+	}
 	
-	@Test(dataProvider = "packetValidatorStage")
+	
+/*	@Test(dataProvider = "packetValidatorStage")
 	public void packetValidatorStage(File[] listOfInvpackets) {
 
 		List<String> statusCodes = new ArrayList<String>();
@@ -184,9 +207,9 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 		//cleanUp.prepareQueryList(regID);
 		regID="";
 	
-	}
+	}*/
 	
-	@Test(dataProvider = "osiValidatorStage")
+/*	@Test(dataProvider = "osiValidatorStage")
 	public void osiValidatorStage(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
@@ -224,8 +247,8 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	cleanUp.prepareQueryList(regID);
 	//	softAssert.assertAll();
 		regID="";
-	}
-	@Test(dataProvider = "demoDedupeStage")
+	}*/
+	/*@Test(dataProvider = "demoDedupeStage")
 	public void demoDedupeStage(File[] listOfInvpackets) {
 		List<String> statusCodes = new ArrayList<String>();
 		Properties prop = new Properties();
@@ -263,9 +286,47 @@ public class StageValidationTests extends BaseTestCase implements ITest {
 	//	cleanUp.prepareQueryList(regID);
 		softAssert.assertAll();
 		regID="";
-	}
-	
+	}*/
+	@Test(dataProvider = "updatePacket")
+	public void updatePacket(File[] listOfInvpackets) {
+		List<String> statusCodes = new ArrayList<String>();
+		Properties prop = new Properties();
 
+		/*try {
+			FileReader reader=new FileReader(new File(invalidPacketPath + "/PacketValidator/StageBits.properties"));
+			prop.load(reader);
+			reader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		/*StringBuilder stageString = new StringBuilder();
+		stageString.append(prop.getProperty("StageBits").toString());
+		userList = codeList.getStatusCodesList(stageString);
+*/		String syncStatus="";
+		/*for (File invalidPacket : listOfInvpackets) {
+			if (invalidPacket.isDirectory()) {
+				for (File packet : invalidPacket.listFiles()) {
+					syncStatus=scenario.syncPacket(packet);
+					if(syncStatus.equals("Sync Successfull")) {
+						scenario.uploadPacket(packet);
+					}
+					break;
+				}
+			}
+		}*/
+		/*dbList=scenario.getStatusCodeListFromDb(statusCodes);
+		logger.info("User list :: "+ userList);
+		logger.info("Db list :: "+ dbList);
+		softAssert.assertTrue(userList.equals(dbList));
+		
+		userList.clear();
+		dbList.clear();
+	//	cleanUp.prepareQueryList(regID);
+		softAssert.assertAll();
+		regID="";*/
+	
+	}
 
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {

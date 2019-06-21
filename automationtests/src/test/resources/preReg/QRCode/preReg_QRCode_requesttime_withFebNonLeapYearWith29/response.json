@@ -1,10 +1,12 @@
 {
-   "id": "mosip.pre-registration.notification.qrCode",
-   "version": "1.0",
-   "responsetime": "2019-04-21T13:34:36.737Z",
-   "response": null,
-   "errors": [   {
-      "errorCode": "PRG_PAM_CORE_001",
-      "message": "Request id is invalid"
-   }]
+    "id": "mosip.pre-registration.qrcode.generate",
+    "version": "1.0",
+    "responsetime": "2019-06-19T06:40:21.821Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_CORE_REQ_013",
+            "message": "Request date should be current date"
+        }
+    ]
 }

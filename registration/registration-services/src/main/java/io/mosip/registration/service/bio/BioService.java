@@ -3,6 +3,7 @@ package io.mosip.registration.service.bio;
 import java.io.IOException;
 import java.util.List;
 
+import io.mosip.registration.dto.AuthenticationValidatorDTO;
 import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -19,6 +20,21 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 public interface BioService {
 
 	/**
+	 * Returns Authentication validator Dto that will be passed 
+	 * 
+	 * <p>
+	 * The method will return fingerPrint validator Dto that will be passed to 
+	 * finger print authentication method for fingerPrint validator
+	 * </p>.
+	 *
+	 * @param userId            - the user ID
+	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
+	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
+	 * @throws IOException             - Exception that may occur while reading the resource
+	 */
+	public AuthenticationValidatorDTO getFingerPrintAuthenticationDto(String userId) throws RegBaseCheckedException, IOException;
+
+	/**
 	 * Validates FingerPrint after getting the scanned data for the particular given
 	 * User id
 	 * 
@@ -27,13 +43,26 @@ public interface BioService {
 	 * be validated against the stored fingerprint from the DB
 	 * </p>.
 	 *
-	 * @param userId            - the user ID
+	 * @param authenticationValidatorDTO            - authenticationValidatorDto
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
+	 */
+	public boolean validateFingerPrint(AuthenticationValidatorDTO authenticationValidatorDTO) ;
+	
+	/**
+	 * Returns Authentication validator Dto that will be passed 
+	 * 
+	 * <p>
+	 * The method will return iris validator Dto that will be passed to 
+	 * finger print authentication method for iris validator
+	 * </p>.
+	 *
+	 * @param userId            - the user ID
+	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
 	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
 	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
-	boolean validateFingerPrint(String userId) throws RegBaseCheckedException, IOException;
+	public AuthenticationValidatorDTO getIrisAuthenticationDto(String userId) throws RegBaseCheckedException, IOException;
 
 	/**
 	 * Validates Iris after getting the scanned data for the given user ID
@@ -44,14 +73,13 @@ public interface BioService {
 	 * validated against the stored iris from the DB through auth validator service
 	 * </p>.
 	 *
-	 * @param userId            - the user ID
+	 * @param authenticationValidatorDTO            - authenticationValidtorDto
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
-	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
-	 * @throws IOException             - Exception that may occur in reading the resource
 	 */
-	boolean validateIris(String userId) throws RegBaseCheckedException, IOException;
-
+	public boolean validateIris(AuthenticationValidatorDTO authenticationValidatorDTO) ;
+	
+	
 	/**
 	 * Gets the finger print image as DTO from the MDM service based on the
 	 * fingerType
@@ -89,13 +117,25 @@ public interface BioService {
 	 * Validates Face after getting the scanned data
 	 * 
 	 * 
-	 * @param userId
-	 *            - the userID
+	 * @param authenticationValidatorDTO
+	 *            - the AuthenticationValidator DTO
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
 	 */
-	boolean validateFace(String userId);
+	boolean validateFace(AuthenticationValidatorDTO authenticationValidatorDTO);
 
+	/**
+	 * Returns Authentication validator Dto that will be passed 
+	 * 
+	 * <p>
+	 * The method will return face validator Dto that will be passed to 
+	 * finger print authentication method for face validator
+	 * </p>.
+	 *
+	 * @param userId            - the user ID
+	 * @return AuthenticationValidatorDTO - authenticationValidatorDto
+	 */
+	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId);
 	/**
 	 * Gets the iris stub image as DTO.
 	 *

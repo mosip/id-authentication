@@ -46,8 +46,10 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
@@ -94,6 +96,27 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
+	 * This method generates the Registration Preview / Acknowledgement page by
+	 * mapping all the applicant details including demographic details, documents,
+	 * biometrics and photos that are captured as a part of registration to the
+	 * place-holders given in the html template.
+	 * 
+	 * <p>
+	 * Returns the {@link ResponseDTO} object.
+	 * </p>
+	 * 
+	 * <p>
+	 * If all the data is mapped successfully to the html template,
+	 * {@link SuccessResponseDTO} will be set in {@link ResponseDTO} object. The
+	 * generated template is stored in the success response which will be used
+	 * further to display the Registration Preview / Acknowledgement.
+	 * </p>
+	 * 
+	 * <p>
+	 * If any exception occurs, {@link ErrorResponseDTO} will be set in
+	 * {@link ResponseDTO} object
+	 * </p>
+	 * 
 	 * @param templateText
 	 *            - string which contains the data of template that is used to
 	 *            generate acknowledgement
@@ -105,8 +128,9 @@ public class TemplateGenerator extends BaseService {
 	 * @param templateType
 	 *            - The type of template that is required (like
 	 *            email/sms/acknowledgement)
-	 * @return writer - After mapping all the fields into the template, it is
-	 *         written into a StringWriter and returned
+	 * @return {@link ResponseDTO} which specifies either success response or error
+	 *         response after the generation of Registration Preview /
+	 *         Acknowledgement
 	 */
 	public ResponseDTO generateTemplate(String templateText, RegistrationDTO registration,
 			TemplateManagerBuilder templateManagerBuilder, String templateType) {
@@ -830,14 +854,22 @@ public class TemplateGenerator extends BaseService {
 
 		templateValues.put(RegistrationConstants.TEMPLATE_ACKNOWLEDGEMENT,
 				RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-		templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_USER_LANG_LABEL,
-				applicationLanguageProperties.getString("preRegistrationId"));
-		templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL,
-				localProperties.getString("preRegistrationId"));
-		if (registration.getPreRegistrationId() != null && !registration.getPreRegistrationId().isEmpty()) {
-			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, registration.getPreRegistrationId());
+		if (registration.getSelectionListDTO() != null) {
+			templateValues.put(RegistrationConstants.TEMPLATE_IS_UIN_UPDATE,
+					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
+			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_USER_LANG_LABEL, RegistrationConstants.EMPTY);
+			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL, RegistrationConstants.EMPTY);
+			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, RegistrationConstants.EMPTY);
 		} else {
-			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, "-");
+			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_USER_LANG_LABEL,
+					applicationLanguageProperties.getString("preRegistrationId"));
+			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL,
+					localProperties.getString("preRegistrationId"));
+			if (registration.getPreRegistrationId() != null && !registration.getPreRegistrationId().isEmpty()) {
+				templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, registration.getPreRegistrationId());
+			} else {
+				templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID, "-");
+			}
 		}
 
 		templateValues.put(RegistrationConstants.TEMPLATE_MODIFY, applicationLanguageProperties.getString("modify"));
@@ -1268,6 +1300,19 @@ public class TemplateGenerator extends BaseService {
 	}
 
 	/**
+	 * This method generates the content that will be sent to the applicant via
+	 * email/SMS after a successful registration.
+	 * 
+	 * <p>
+	 * The details that are required to be attached in the email/SMS will be mapped
+	 * to the place-holders given in the HTML template and then, the template is
+	 * build.
+	 * </p>
+	 * 
+	 * <p>
+	 * Returns the generated content in string format.
+	 * </p>
+	 * 
 	 * @param templateText
 	 *            - string which contains the data of template that is used to
 	 *            generate notification
@@ -1471,7 +1516,8 @@ public class TemplateGenerator extends BaseService {
 
 		Map<String, Integer> exceptionCountMap = new HashMap<>();
 		List<BiometricExceptionDTO> biometricExceptionDTOs;
-		if ((registration.getSelectionListDTO() == null && (boolean) SessionContext.map().get(RegistrationConstants.IS_Child))
+		if ((registration.getSelectionListDTO() == null
+				&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child))
 				|| (registration.getSelectionListDTO() != null
 						&& registration.getSelectionListDTO().isParentOrGuardianDetails())) {
 			biometricExceptionDTOs = registration.getBiometricDTO().getIntroducerBiometricDTO()

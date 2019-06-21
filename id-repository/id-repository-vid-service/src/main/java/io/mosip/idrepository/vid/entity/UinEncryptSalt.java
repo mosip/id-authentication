@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * The Class UinEncryptSalt
  * 
  * @author Prem Kumar
  *
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(schema = "idmap")
 public class UinEncryptSalt {
-	
+
 	/** The Id value */
 	@Id
 	private int id;

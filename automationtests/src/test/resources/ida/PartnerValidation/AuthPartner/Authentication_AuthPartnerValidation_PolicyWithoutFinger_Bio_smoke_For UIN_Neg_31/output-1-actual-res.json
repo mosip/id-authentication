@@ -1,0 +1,15 @@
+{
+  "transactionID": "3130104427",
+  "version": "1.0",
+  "id": "mosip.identity.auth",
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-006",
+      "errorMessage": "BIO-FMR Authentication usage not allowed as per policy"
+    }
+  ],
+  "responseTime": "2019-06-20T15:29:17.026+05:30",
+  "response": {
+    "authStatus": false
+  }
+}

@@ -162,7 +162,7 @@ public void setResultTestName(ITestResult result, Method method) {
 		BaseTestMethod bm = (BaseTestMethod) result.getMethod();
 		Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
 		f.setAccessible(true);
-		f.set(bm, "preReg_Demogarphic_" + method.getName());
+		f.set(bm, "preReg_Authentication_" + method.getName());
 	} catch (Exception ex) {
 		Reporter.log("ex" + ex.getMessage());
 	}

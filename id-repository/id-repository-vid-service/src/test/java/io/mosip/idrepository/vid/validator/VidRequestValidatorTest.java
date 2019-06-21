@@ -199,6 +199,7 @@ public class VidRequestValidatorTest {
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
 		req.setRequest(request);
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test
@@ -243,6 +244,7 @@ public class VidRequestValidatorTest {
 		Mockito.when(policyProvider.getAllVidTypes()).thenReturn(value);
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test

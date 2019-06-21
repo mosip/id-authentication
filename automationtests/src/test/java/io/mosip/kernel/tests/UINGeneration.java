@@ -148,3 +148,4 @@ public class UINGeneration extends BaseTestCase implements ITest{
 			}
 		}  
 }
+

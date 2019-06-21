@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.hibernate.engine.transaction.jta.platform.internal.SynchronizationRegistryBasedSynchronizationStrategy;
+import org.testng.Assert;
 
 import io.mosip.dbaccess.PreregDB;
 import io.mosip.dbdto.Audit;
@@ -55,15 +56,25 @@ public class PreregistrationDAO
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, -1); 
+		c.add(Calendar.DATE, -2); 
 		String date = sdf.format(c.getTime());
 		String queryString="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
-		dbAccess.updateDbData(queryString, "prereg");
+		try {
+			dbAccess.updateDbData(queryString, "prereg");
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false,"Failed stabilized connection with preregdb");
+		}
+	
 	}
 	public List<String> getAuditData(String userId)
 	{
+		List<String> auditData = null;
 		String queryString = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"'";
-		List<String> auditData = dbAccess.getDbData(queryString, "audit");
+		try {
+			 auditData = dbAccess.getDbData(queryString, "audit");
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception while getting data from db");
+		}
 		return auditData;
 	}
 	public List<String> getOTP(String userId)
@@ -73,10 +84,15 @@ public class PreregistrationDAO
 		return otp;
 	}
 	public String getConsumedStatus(String PreID)
-	{
+	{  String status = null;
 		String queryString = "SELECT c.status_code FROM prereg.applicant_demographic_consumed c where c.prereg_id='" + PreID+ "'";
 		List<String> preId_status = dbAccess.getConsumedStatus(queryString, "prereg");
-		String status = preId_status.get(0).toString();
+		try {
+			 status = preId_status.get(0).toString();
+		} catch (IndexOutOfBoundsException e) {
+			Assert.assertTrue(false, "PreRegistartion id is not present in demographic_Consumed table");
+		}
+		
 		return status;
 	}
 	public String getRegCenterIdOfConsumedApplication(String PreID) {
@@ -113,7 +129,7 @@ public class PreregistrationDAO
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, 2); 
+		c.add(Calendar.DATE, 1); 
 		String date = sdf.format(c.getTime());
 		try {
 			 date1=new SimpleDateFormat("yyyy-MM-dd").parse(date);

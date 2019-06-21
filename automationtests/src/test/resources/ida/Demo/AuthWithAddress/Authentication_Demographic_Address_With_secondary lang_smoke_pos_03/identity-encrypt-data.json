@@ -1,0 +1,43 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "location1": [
+        {
+          "language": "ara",
+          "value": "الرباط"
+        }
+      ],
+      "addressLine1": [
+        {
+          "language": "ara",
+          "value": "مُُنت رَِد"
+        }
+      ],
+      "location2": [
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "ara",
+          "value": "كهِتتِ رُبُ نَگَر هُُسِ"
+        }
+      ],
+      "location3": [
+        {
+          "language": "ara",
+          "value": "الرباط"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "ara",
+          "value": "دُبَِ-٦٠٠٠٦٣"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:22.022+05:30"
+  }
+}
