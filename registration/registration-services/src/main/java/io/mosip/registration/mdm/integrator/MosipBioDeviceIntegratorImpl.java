@@ -129,6 +129,16 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 
 	}
 
+	/**
+	 * <p>After scanning the biometrics the output of the biometrics will come in the Base64 format</p>
+	 * <p>Inorder to process we need to decode the data and this method will do the decode functionality</p>
+	 * 
+	 * @param mapper
+	 * @param mosipBioCaptureResponseDto
+	 * @throws IOException
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 */
 	protected void decodeBiometrics(ObjectMapper mapper, CaptureResponseDto mosipBioCaptureResponseDto)
 			throws IOException, JsonParseException, JsonMappingException {
 		if (null != mosipBioCaptureResponseDto) {

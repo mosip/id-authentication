@@ -31,6 +31,10 @@ public class PropertiesConfig {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
+	/**
+	 * Fetch all the active global param values from the DB and set it in a map
+	 * @return Collection of Global param values
+	 */
 	public Map<String,Object> getDBProps() {
 		return jdbcTemplate.query(GLOBAL_PARAM_PROPERTIES, new ResultSetExtractor<Map<String,Object>>(){
 		    @Override

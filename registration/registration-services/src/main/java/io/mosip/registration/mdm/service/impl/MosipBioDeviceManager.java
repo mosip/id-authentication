@@ -71,6 +71,10 @@ public class MosipBioDeviceManager {
 	private static final Logger LOGGER = AppConfig.getLogger(MosipBioDeviceManager.class);
 
 	/**
+	 * This method will prepare the device registry, device registry contains all the running biometric devices
+	 * <p> In order to prepare device registry it will loop through the specified ports and identify on which port
+	 * any particular biometric device is running</p>
+	 * 
 	 * Looks for all the configured ports available and initializes all the
 	 * Biometric devices and saves it for future access
 	 * 
@@ -111,18 +115,18 @@ public class MosipBioDeviceManager {
 				"Exit init method for preparing device registery");
 	}
 
+	
 	/**
 	 * Gets the device info response.
-	 *
-	 * @param mapper 
-	 * 				the Object mapper
-	 * @param deviceInfoResponse 
-	 * 				the device info response DTO
-	 * @param port 
-	 * 				the port number
-	 * @param deviceInfoResponseDtos 
-	 * 				the list of device info response dtos
-	 * @return the device info response
+	 * 
+	 * @param mapper
+	 * @param deviceInfoResponse {@link DeviceInfoResponseData}
+	 * 				-Contains the details of a specific bio device
+	 * @param port
+	 * 				- The port in which the bio device is active
+	 * @param deviceInfoResponseDtos
+	 * 				- This list will contain the response that we receive after finding the device 
+	 * @return {@link DeviceInfoResponseData}
 	 */
 	private DeviceInfoResponseData getDeviceInfoResponse(ObjectMapper mapper, DeviceInfoResponseData deviceInfoResponse, int port,
 			List<LinkedHashMap<String, String>> deviceInfoResponseDtos) {
@@ -151,7 +155,7 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * Creation of bio device object.
+	 * This method will save the device details into the device registry
 	 *
 	 * @param deviceInfoResponse 
 	 * 				the device info response
@@ -261,10 +265,14 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * Used to get the bio raw image value from the response
+	 * This method will return the scanned biometric data
+	 * <p> When the biometric scan will happed the return will contain many detail such as 
+	 * device code, quality score this method will extract the scanned biometric from the captured
+	 * response</p>
+	 * 
 	 * 
 	 * @param captureResponseDto
-	 *            - Response object which contains the capture biometrics from MDM
+	 *            - Response Data object {@link CaptureResponseDto} which contains the captured biometrics from MDM
 	 * @return byte[] - captured bio image
 	 */
 	public byte[] getSingleBioValue(CaptureResponseDto captureResponseDto) {
@@ -281,8 +289,9 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * Used to get the bio extract value from the response
-	 * 
+	 * This method will be used to get the scanned biometric value which 
+	 * will be returned from the bio service as response
+	 *  
 	 * @param captureResponseDto
 	 *            - Response object which contains the capture biometrics from MDM
 	 * @return byte[] - captured bio extract
@@ -301,7 +310,8 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * discovers the device for the given device type
+	 * This method will loop through the specified port to find the active devices
+	 * at any instant of time
 	 * 
 	 * @param deviceType
 	 *            - type of bio device
@@ -345,7 +355,7 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * Used to remove a specific device from device registry
+	 * Used to remove any inactive devices from device registry
 	 * 
 	 * @param type
 	 *            - device type
@@ -357,6 +367,10 @@ public class MosipBioDeviceManager {
 
 	}
 
+	/**
+	 * @param type
+	 * @param modality
+	 */
 	public void getBioDevice(String type, String modality) {
 
 	}
