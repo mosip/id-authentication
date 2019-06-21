@@ -156,7 +156,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setUsrId(userDtals.getUserName());
 				usrPwd.setPwd(CryptoUtil.encodeBase64(userDtals.getUserPassword()));
 				usrPwd.setStatusCode("00");
-				usrPwd.setIsActive(true);
+				usrPwd.setIsActive(userDtls.getIsActive()!= null ? userDtls.getIsActive().booleanValue() : true);
 				usrPwd.setLangCode(ApplicationContext.applicationLanguage());
 				if (SessionContext.isSessionContextAvailable()) {
 					usrPwd.setCrBy(SessionContext.userContext().getUserId());
@@ -178,7 +178,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 					userDtls.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				userDtls.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				userDtls.setIsActive(true);
+				userDtls.setIsActive(userDtls.getIsActive()!= null ? userDtls.getIsActive().booleanValue() : true);
 				userDtls.setStatusCode("00");
 				userList.add(userDtls);
 
@@ -191,7 +191,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 			userDetailsResponse.getUserDetails().forEach(role -> {
 
 				UserRole roles = new UserRole();
-				roles.setIsActive(true);
+				roles.setIsActive(role.getIsActive()!= null ? role.getIsActive().booleanValue() : true);
 				roles.setLangCode(ApplicationContext.applicationLanguage());
 				if (SessionContext.isSessionContextAvailable()) {
 					roles.setCrBy(SessionContext.userContext().getUserId());
