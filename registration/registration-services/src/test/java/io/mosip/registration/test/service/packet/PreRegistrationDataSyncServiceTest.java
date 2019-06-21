@@ -85,6 +85,15 @@ public class PreRegistrationDataSyncServiceTest {
 
 	static Map<String, Object> preRegData = new HashMap<>();
 
+	@Before
+	public void dtoInitalization() {
+		PreRegistrationDTO preRegistrationDTO = new PreRegistrationDTO();
+		preRegistrationDTO.setPacketPath("path");
+		preRegistrationDTO.setSymmetricKey("0E8BAAEB3CED73CBC9BF4964F321824A");
+		preRegistrationDTO.setEncryptedPacket(preRegPacket);
+		preRegistrationDTO.setPreRegId("70694681371453");
+	}
+
 	@BeforeClass
 	public static void initialize() throws IOException, UnsupportedEncodingException {
 
@@ -140,6 +149,14 @@ public class PreRegistrationDataSyncServiceTest {
 		mockPreRegServices(postResponse);
 
 		mockEncryptedPacket();
+		PreRegistrationDTO preRegistrationDTO = new PreRegistrationDTO();
+		preRegistrationDTO.setPacketPath("path");
+		preRegistrationDTO.setSymmetricKey("0E8BAAEB3CED73CBC9BF4964F321824A");
+		preRegistrationDTO.setEncryptedPacket(preRegPacket);
+		preRegistrationDTO.setPreRegId("70694681371453");
+		Mockito.when(preRegZipHandlingService
+		.encryptAndSavePreRegPacket(Mockito.anyString(), Mockito.any())).thenReturn(preRegistrationDTO);
+		Mockito.when(preRegZipHandlingService.extractPreRegZipFile(Mockito.any())).thenReturn(new RegistrationDTO());
 
 		preRegistrationDataSyncServiceImpl.getPreRegistrationIds("System");
 
@@ -151,10 +168,20 @@ public class PreRegistrationDataSyncServiceTest {
 				.thenReturn(postResponse);
 		// Mockito.when(preRegistrationResponseDTO.getResponse()).thenReturn(list);
 
+		Map<String, Object> responseMap = new LinkedHashMap<>();
+		LinkedHashMap<String, Object> valuesMap = new LinkedHashMap<>();
+		valuesMap.put("pre-registration-id", "70694681371453");
+		valuesMap.put("registration-client-id", "10003");
+		valuesMap.put("appointment-date", "2019-06-16");
+		valuesMap.put("from-time-slot", "09:00");
+		valuesMap.put("to-time-slot", "09:15");
+		valuesMap.put("zip-filename", "70694681371453");
+		valuesMap.put("zip-bytes", RegistrationConstants.FACE_STUB);
+		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, valuesMap);
 		Mockito.when(preRegistrationDAO.get(Mockito.anyString())).thenReturn(new PreRegistrationList());
 		Mockito.when(
 				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
-				.thenReturn(getTestPacketData());
+				.thenReturn(responseMap);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 		Mockito.when(preRegistrationDAO.save(preRegistrationList)).thenReturn(preRegistrationList);
@@ -192,6 +219,14 @@ public class PreRegistrationDataSyncServiceTest {
 		mockData();
 
 		mockEncryptedPacket();
+		PreRegistrationDTO preRegistrationDTO = new PreRegistrationDTO();
+		preRegistrationDTO.setPacketPath("path");
+		preRegistrationDTO.setSymmetricKey("0E8BAAEB3CED73CBC9BF4964F321824A");
+		preRegistrationDTO.setEncryptedPacket(preRegPacket);
+		preRegistrationDTO.setPreRegId("70694681371453");
+		Mockito.when(preRegZipHandlingService
+		.encryptAndSavePreRegPacket(Mockito.anyString(), Mockito.any())).thenReturn(preRegistrationDTO);
+		Mockito.when(preRegZipHandlingService.extractPreRegZipFile(Mockito.any())).thenReturn(new RegistrationDTO());
 
 		ResponseDTO responseDTO = preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
 		assertNotNull(responseDTO);
@@ -199,9 +234,19 @@ public class PreRegistrationDataSyncServiceTest {
 	}
 
 	protected void mockData() throws RegBaseCheckedException, SocketTimeoutException {
+		Map<String, Object> responseMap = new LinkedHashMap<>();
+		LinkedHashMap<String, Object> valuesMap = new LinkedHashMap<>();
+		valuesMap.put("pre-registration-id", "70694681371453");
+		valuesMap.put("registration-client-id", "10003");
+		valuesMap.put("appointment-date", "2019-06-16");
+		valuesMap.put("from-time-slot", "09:00");
+		valuesMap.put("to-time-slot", "09:15");
+		valuesMap.put("zip-filename", "70694681371453");
+		valuesMap.put("zip-bytes", RegistrationConstants.FACE_STUB);
+		responseMap.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, valuesMap);
 		Mockito.when(
 				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
-				.thenReturn(getTestPacketData());
+				.thenReturn(responseMap);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
@@ -214,7 +259,7 @@ public class PreRegistrationDataSyncServiceTest {
 
 		Mockito.when(
 				serviceDelegateUtil.get(Mockito.anyString(), Mockito.any(), Mockito.anyBoolean(), Mockito.anyString()))
-				.thenReturn(getTestPacketData());
+				.thenReturn(223233223);
 		Mockito.when(syncManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())).thenReturn(syncTransaction);
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
@@ -250,7 +295,14 @@ public class PreRegistrationDataSyncServiceTest {
 		mockData();
 
 		mockEncryptedPacket();
-
+		PreRegistrationDTO preRegistrationDTO = new PreRegistrationDTO();
+		preRegistrationDTO.setPacketPath("path");
+		preRegistrationDTO.setSymmetricKey("0E8BAAEB3CED73CBC9BF4964F321824A");
+		preRegistrationDTO.setEncryptedPacket(preRegPacket);
+		preRegistrationDTO.setPreRegId("70694681371453");
+		Mockito.when(preRegZipHandlingService
+		.encryptAndSavePreRegPacket(Mockito.anyString(), Mockito.any())).thenReturn(preRegistrationDTO);
+	
 		doThrow(new RegBaseCheckedException()).when(preRegZipHandlingService).extractPreRegZipFile(Mockito.any());
 
 		preRegistrationDataSyncServiceImpl.getPreRegistration("70694681371453");
