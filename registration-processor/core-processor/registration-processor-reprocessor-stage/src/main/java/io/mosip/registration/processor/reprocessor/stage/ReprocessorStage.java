@@ -78,10 +78,6 @@ public class ReprocessorStage extends MosipVerticleManager {
 	@Value("${registration.processor.reprocess.attempt.count}")
 	private Integer reprocessCount;
 
-	/** The description. */
-	@Autowired
-	LogDescription description;
-
 	/** The is transaction successful. */
 	boolean isTransactionSuccessful;
 
@@ -191,6 +187,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		List<InternalRegistrationStatusDto> dtolist = null;
+		LogDescription description=new LogDescription();
 		List<String> statusList = new ArrayList<>();
 		statusList.add(RegistrationTransactionStatusCode.SUCCESS.toString());
 		statusList.add(RegistrationTransactionStatusCode.REPROCESS.toString());

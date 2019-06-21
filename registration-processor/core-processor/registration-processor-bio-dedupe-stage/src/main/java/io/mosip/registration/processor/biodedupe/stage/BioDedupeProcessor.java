@@ -106,10 +106,6 @@ public class BioDedupeProcessor {
 	/** The abis handler util. */
 	@Autowired
 	private ABISHandlerUtil abisHandlerUtil;
-
-	/** The log description. */
-	@Autowired
-	private LogDescription description;
 	
 	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
@@ -136,6 +132,7 @@ public class BioDedupeProcessor {
 	 * @return the message DTO
 	 */
 	public MessageDTO process(MessageDTO object, String stageName) {
+		LogDescription description = new LogDescription();
 		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		object.setIsValid(Boolean.FALSE);

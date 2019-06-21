@@ -113,10 +113,6 @@ public class DemodedupeProcessor {
 	/** The is match found. */
 	private volatile boolean isMatchFound = false;
 
-	/** The description. */
-	@Autowired
-	private LogDescription description;
-
 	/**
 	 * Process.
 	 *
@@ -125,7 +121,7 @@ public class DemodedupeProcessor {
 	 * @return the message DTO
 	 */
 	public MessageDTO process(MessageDTO object, String stageName) {
-
+		LogDescription description=new LogDescription();
 		object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		object.setIsValid(Boolean.FALSE);
@@ -164,11 +160,11 @@ public class DemodedupeProcessor {
 					bytesArray = IOUtils.toByteArray(demographicInfoStream);
 					packetInfoManager.saveDemographicInfoJson(bytesArray, registrationId,
 							packetMetaInfo.getIdentity().getMetaData());
-					duplicateDtos = performDemoDedupe(registrationStatusDto, object);
+					duplicateDtos = performDemoDedupe(registrationStatusDto, object, description);
 					if (duplicateDtos.isEmpty()) 
 						isTransactionSuccessful= true; 
 				} else if (packetStatus.equalsIgnoreCase(AbisConstant.POST_ABIS_IDENTIFICATION)) {
-					isTransactionSuccessful = processDemoDedupeRequesthandler(registrationStatusDto, object);
+					isTransactionSuccessful = processDemoDedupeRequesthandler(registrationStatusDto, object, description);
 				}
 
 			} else if (registrationStatusDto.getRegistrationType().equals(RegistrationType.UPDATE.name())
@@ -278,9 +274,10 @@ public class DemodedupeProcessor {
 	 *
 	 * @param registrationStatusDto the registration status dto
 	 * @param object the object
+	 * @param description 
 	 * @return true, if successful
 	 */
-	private List<DemographicInfoDto> performDemoDedupe(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object) {
+	private List<DemographicInfoDto> performDemoDedupe(InternalRegistrationStatusDto registrationStatusDto, MessageDTO object, LogDescription description) {
 		String registrationId = registrationStatusDto.getRegistrationId();
 		// Potential Duplicate Ids after performing demo dedupe
 		List<DemographicInfoDto> duplicateDtos = demoDedupe.performDedupe(registrationStatusDto.getRegistrationId());
@@ -331,6 +328,7 @@ public class DemodedupeProcessor {
 	 *
 	 * @param registrationStatusDto the registration status dto
 	 * @param object the object
+	 * @param description 
 	 * @return true, if successful
 	 * @throws ApisResourceAccessException the apis resource access exception
 	 * @throws IOException Signals that an I/O exception has occurred.
@@ -338,7 +336,7 @@ public class DemodedupeProcessor {
 	 * @throws PacketDecryptionFailureException 
 	 */
 	private boolean processDemoDedupeRequesthandler(InternalRegistrationStatusDto registrationStatusDto,
-			MessageDTO object) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			MessageDTO object, LogDescription description) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		boolean isTransactionSuccessful = false;
 		List<String> responsIds = new ArrayList<>();
 

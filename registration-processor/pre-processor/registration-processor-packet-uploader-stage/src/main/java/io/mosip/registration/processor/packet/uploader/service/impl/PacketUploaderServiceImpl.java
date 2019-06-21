@@ -132,10 +132,6 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	@Value("${registration.processor.max.retry}")
 	private int maxRetryCount;
 
-	/** The description. */
-	@Autowired
-	private LogDescription description;
-
 	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
 
@@ -153,7 +149,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	@Override
 	public MessageDTO validateAndUploadPacket(String registrationId, String stageName) {
 
-
+		LogDescription description = new LogDescription();
 		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 		MessageDTO messageDTO = new MessageDTO();
 		messageDTO.setInternalError(false);
@@ -182,9 +178,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 			if (encryptedByteArray != null) {
 
-				if (validateHashCode(new ByteArrayInputStream(encryptedByteArray), regEntity, registrationId, dto)) {
+				if (validateHashCode(new ByteArrayInputStream(encryptedByteArray), regEntity, registrationId, dto, description)) {
 
-					if (scanFile(new ByteArrayInputStream(encryptedByteArray), registrationId, dto)) {
+					if (scanFile(new ByteArrayInputStream(encryptedByteArray), registrationId, dto, description)) {
 							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 							dto.setRetryCount(retrycount);
 							if (retrycount < getMaxRetryCount()) {
@@ -193,7 +189,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 										"PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
 
 								messageDTO = uploadPacket(dto, new ByteArrayInputStream(encryptedByteArray), messageDTO,
-										jschConnectionDto, registrationId);
+										jschConnectionDto, registrationId, description);
 								if (messageDTO.getIsValid()) {
 									dto.setLatestTransactionStatusCode(
 											RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -326,9 +322,10 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 * @param inputStream
 	 *            the input stream
 	 * @param registrationId
+	 * @param description 
 	 * @return true, if successful
 	 */
-	private boolean scanFile(InputStream inputStream, String registrationId, InternalRegistrationStatusDto dto) {
+	private boolean scanFile(InputStream inputStream, String registrationId, InternalRegistrationStatusDto dto, LogDescription description) {
 		boolean isInputFileClean = false;
 		try {
 			isInputFileClean = virusScannerService.scanFile(inputStream);
@@ -365,10 +362,11 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 * @param inputStream
 	 *            the input stream
 	 * @param registrationId
+	 * @param description 
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean validateHashCode(InputStream inputStream, SyncRegistrationEntity regEntity, String registrationId, InternalRegistrationStatusDto dto) throws IOException {
+	private boolean validateHashCode(InputStream inputStream, SyncRegistrationEntity regEntity, String registrationId, InternalRegistrationStatusDto dto, LogDescription description) throws IOException {
 		boolean isValidHash = false;
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
 		HMACUtils.update(isbytearray);
@@ -401,6 +399,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 * @param object
 	 *            the object
 	 * @param registrationId
+	 * @param description 
 	 * @return the message DTO
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -408,7 +407,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	 * @throws SftpFileOperationException
 	 */
 	private MessageDTO uploadPacket(InternalRegistrationStatusDto dto, InputStream decryptedData, MessageDTO object,
-			SftpJschConnectionDto jschConnectionDto, String registrationId)
+			SftpJschConnectionDto jschConnectionDto, String registrationId, LogDescription description)
 			throws IOException, JschConnectionException, SftpFileOperationException {
 
 		object.setIsValid(false);

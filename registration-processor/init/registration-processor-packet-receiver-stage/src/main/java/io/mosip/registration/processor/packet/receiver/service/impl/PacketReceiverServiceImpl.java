@@ -116,8 +116,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Autowired
 	private Decryptor packetReceiverDecryptor;
 
-	@Autowired
-	LogDescription description;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -128,6 +127,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	@Override
 	public MessageDTO validatePacket(File file, String stageName) {
 
+		LogDescription description = new LogDescription();
 		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 		MessageDTO messageDTO = new MessageDTO();
 		Boolean storageFlag = false;
@@ -144,16 +144,16 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			regEntity = syncRegistrationService.findByRegistrationId(registrationId);
 			try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 				byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
-				validatePacketWithSync(regEntity, registrationId);
+				validatePacketWithSync(regEntity, registrationId, description);
 				messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
-				validateHashCode(new ByteArrayInputStream(encryptedByteArray), regEntity, registrationId);
-				validatePacketFormat(fileOriginalName, registrationId);
+				validateHashCode(new ByteArrayInputStream(encryptedByteArray), regEntity, registrationId, description);
+				validatePacketFormat(fileOriginalName, registrationId, description);
 				validatePacketSize(file.length(), regEntity, registrationId);
 				if (isDuplicatePacket(registrationId) && !isExternalStatusResend(registrationId)) {
 					throw new DuplicateUploadRequestException(
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
-				storageFlag = storePacket(stageName, regEntity, dto);
+				storageFlag = storePacket(stageName, regEntity, dto, description);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PacketReceiverServiceImpl::validatePacket()::exit");
@@ -203,8 +203,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	/**
 	 * validate packet with reg entity.
+	 * @param description 
 	 */
-	private void validatePacketWithSync(SyncRegistrationEntity regEntity, String registrationId) {
+	private void validatePacketWithSync(SyncRegistrationEntity regEntity, String registrationId, LogDescription description) {
 
 		if (regEntity == null) {
 			description.setMessage(PacketReceiverConstant.PACKETNOTSYNC_IN_PACKET_RECIVER + registrationId + "::"
@@ -224,10 +225,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the registration id
 	 * @param stageName
 	 *            the stage name
+	 * @param description 
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean storePacket(String stageName, SyncRegistrationEntity regEntity, InternalRegistrationStatusDto dto)
+	private boolean storePacket(String stageName, SyncRegistrationEntity regEntity, InternalRegistrationStatusDto dto, LogDescription description)
 			throws IOException {
 		Boolean storageFlag = false;
 		dto = registrationStatusService.getRegistrationStatus(dto.getRegistrationId());
@@ -263,10 +265,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *
 	 * @param fileOriginalName
 	 *            the file original name
+	 * @param description 
 	 * @param regId
 	 *            the reg id
 	 */
-	private void validatePacketFormat(String fileOriginalName, String registrationId) {
+	private void validatePacketFormat(String fileOriginalName, String registrationId, LogDescription description) {
 		if (!(fileOriginalName.endsWith(getExtention()))) {
 			description.setMessage(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage() + registrationId);
 
@@ -282,9 +285,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *
 	 * @param inputStream
 	 *            the input stream
+	 * @param description 
 	 */
 	private boolean scanFile(InputStream inputStream, RegistrationExceptionMapperUtil registrationExceptionMapperUtil,
-			String registrationId, InternalRegistrationStatusDto dto) {
+			String registrationId, InternalRegistrationStatusDto dto, LogDescription description) {
 		try {
 			boolean isInputFileClean = virusScannerService.scanFile(inputStream);
 			if (!isInputFileClean) {
@@ -373,10 +377,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	 *            the registration id
 	 * @param inputStream
 	 *            the input stream
+	 * @param description 
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void validateHashCode(InputStream inputStream, SyncRegistrationEntity regEntity, String registrationId)
+	private void validateHashCode(InputStream inputStream, SyncRegistrationEntity regEntity, String registrationId, LogDescription description)
 			throws IOException {
 		// TO-DO testing
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
@@ -421,6 +426,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 
 	@Override
 	public MessageDTO processPacket(File file) {
+		LogDescription description = new LogDescription();
 		MessageDTO messageDTO = new MessageDTO();
 		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 		dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
@@ -447,11 +453,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
 			scanningFlag = scanFile(new ByteArrayInputStream(encryptedByteArray), registrationExceptionMapperUtil,
-					registrationId, dto);
+					registrationId, dto, description);
 			if (scanningFlag) {
 				InputStream decryptedData = packetReceiverDecryptor
 						.decrypt(new ByteArrayInputStream(encryptedByteArray), registrationId);
-				scanningFlag = scanFile(decryptedData, registrationExceptionMapperUtil, registrationId, dto);
+				scanningFlag = scanFile(decryptedData, registrationExceptionMapperUtil, registrationId, dto, description);
 			}
 			if (scanningFlag) {
 				fileManager.put(registrationId, new ByteArrayInputStream(encryptedByteArray),

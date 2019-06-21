@@ -151,9 +151,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	/** The Constant EMAIL_TYPE. */
 	private static final String EMAIL_TYPE = "EMAIL";
 
-	@Autowired
-	LogDescription description;
-
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
@@ -168,6 +165,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
+		
 	}
 
 	/*
@@ -192,6 +190,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
 		String status;
 		MessageSenderDto messageSenderDto=new MessageSenderDto();
 		String id = object.getRid();

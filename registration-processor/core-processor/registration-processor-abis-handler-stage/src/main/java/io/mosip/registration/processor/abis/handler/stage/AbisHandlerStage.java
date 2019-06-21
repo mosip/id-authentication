@@ -87,9 +87,6 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
 	@Autowired
 	private Utilities utility;
-	
-	@Autowired
-	private LogDescription description;
 
 	/**
 	 * Deploy verticle.
@@ -109,6 +106,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
+		LogDescription description = new LogDescription();
 		object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 		Boolean isTransactionSuccessful = false;
 		String regId = object.getRid();
@@ -139,8 +137,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 				} else {
 					bioRefId = bioRefDtos.get(0).getBioRefId();
 				}
-				createInsertRequest(abisQueueDetails, transactionId, bioRefId, regId);
-				createIdentifyRequest(abisQueueDetails, transactionId, bioRefId, transactionTypeCode);
+				createInsertRequest(abisQueueDetails, transactionId, bioRefId, regId, description);
+				createIdentifyRequest(abisQueueDetails, transactionId, bioRefId, transactionTypeCode, description);
 				object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 			} else {
 				if (transactionTypeCode.equalsIgnoreCase(AbisHandlerStageConstant.DEMOGRAPHIC_VERIFICATION)) {
@@ -192,9 +190,10 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 *            the bio ref id
 	 * @param transactionTypeCode
 	 *            the transaction type code
+	 * @param description 
 	 */
 	private void createIdentifyRequest(List<AbisQueueDetails> abisQueueDetails, String transactionId, String bioRefId,
-			String transactionTypeCode) {
+			String transactionTypeCode, LogDescription description) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisHandlerStage::createIdentifyRequest()::entry");
 		String batchId = getUUID();
@@ -208,7 +207,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setReqBatchId(batchId);
 			abisRequestDto.setRefRegtrnId(transactionId);
 
-			byte[] abisIdentifyRequestBytes = getIdentifyRequestBytes(transactionId, bioRefId, transactionTypeCode, id);
+			byte[] abisIdentifyRequestBytes = getIdentifyRequestBytes(transactionId, bioRefId, transactionTypeCode, id, description);
 			abisRequestDto.setReqText(abisIdentifyRequestBytes);
 
 			abisRequestDto.setStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
@@ -234,10 +233,11 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 *            the transaction type code
 	 * @param id
 	 *            the id
+	 * @param description 
 	 * @return the identify request bytes
 	 */
 	private byte[] getIdentifyRequestBytes(String transactionId, String bioRefId, String transactionTypeCode,
-			String id) {
+			String id, LogDescription description) {
 		AbisIdentifyRequestDto abisIdentifyRequestDto = new AbisIdentifyRequestDto();
 		abisIdentifyRequestDto.setId(AbisHandlerStageConstant.MOSIP_ABIS_IDENTIFY);
 		abisIdentifyRequestDto.setVer(AbisHandlerStageConstant.VERSION);
@@ -309,9 +309,10 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 *            the bio ref id
 	 * @param regId
 	 *            the reg id
+	 * @param description 
 	 */
 	private void createInsertRequest(List<AbisQueueDetails> abisQueueDetails, String transactionId, String bioRefId,
-			String regId) {
+			String regId, LogDescription description) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisHandlerStage::createInsertRequest()::entry");
 		String batchId = getUUID();
@@ -333,7 +334,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			abisRequestDto.setReqBatchId(batchId);
 			abisRequestDto.setRefRegtrnId(transactionId);
 
-			byte[] abisInsertRequestBytes = getInsertRequestBytes(regId, id, bioRefId);
+			byte[] abisInsertRequestBytes = getInsertRequestBytes(regId, id, bioRefId, description);
 			abisRequestDto.setReqText(abisInsertRequestBytes);
 
 			abisRequestDto.setStatusCode(AbisStatusCode.IN_PROGRESS.toString());
@@ -365,9 +366,10 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	 *            the id
 	 * @param bioRefId
 	 *            the bio ref id
+	 * @param description 
 	 * @return the insert request bytes
 	 */
-	private byte[] getInsertRequestBytes(String regId, String id, String bioRefId) {
+	private byte[] getInsertRequestBytes(String regId, String id, String bioRefId, LogDescription description) {
 		AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 		abisInsertRequestDto.setId(AbisHandlerStageConstant.MOSIP_ABIS_INSERT);
 		abisInsertRequestDto.setReferenceId(bioRefId);

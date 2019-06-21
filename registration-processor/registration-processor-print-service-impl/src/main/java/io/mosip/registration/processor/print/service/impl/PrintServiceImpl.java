@@ -151,9 +151,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Autowired
 	private QrCodeGenerator<QrVersion> qrCodeGenerator;
 
-	/** The is transactional. */
-	private boolean isTransactionSuccessful = false;
-
 	/** The Constant INDIVIDUAL_BIOMETRICS. */
 	private static final String INDIVIDUAL_BIOMETRICS = "individualBiometrics";
 
@@ -176,7 +173,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String uin = null;
 		String description = null;
 		Map<String, Object> attributes = new LinkedHashMap<>();
-
+		boolean isTransactionSuccessful = false;
 		try {
 			if (idType.toString().equalsIgnoreCase(UIN)) {
 				uin = idValue;

@@ -85,9 +85,6 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The lancode length. */
 	private int LANCODE_LENGTH = 3;
 
-	@Autowired
-	LogDescription description;
-
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncRegistrationServiceImpl.class);
 
@@ -112,7 +109,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		List<SyncResponseDto> synchResponseList = new ArrayList<>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::sync()::entry");
-
+		LogDescription description=new LogDescription();
 		boolean isTransactionSuccessful = false;
 		try {
 			for (SyncRegistrationDto registrationDto : resgistrationDtos) {

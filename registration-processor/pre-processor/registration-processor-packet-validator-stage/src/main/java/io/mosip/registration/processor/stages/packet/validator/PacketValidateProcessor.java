@@ -148,10 +148,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	private IdRepoService idRepoService;
 
-	/** The description. */
-	@Autowired
-	private LogDescription description;
-
 	String packetValidaionFailure="";
 
 	private static final String INDIVIDUALBIOMETRICS = "individualBiometrics";
@@ -187,6 +183,7 @@ public class PacketValidateProcessor {
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	public MessageDTO process(MessageDTO object, String stageName) {
+		LogDescription description = new LogDescription();
 		String preRegId = null;
 		String registrationId = null;
 		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
@@ -219,7 +216,7 @@ public class PacketValidateProcessor {
 
 				preRegId = identityIteratorUtil.getFieldValue(packetMetaInfo.getIdentity().getMetaData(),
 						JsonConstant.PREREGISTRATIONID);
-				reverseDataSync(preRegId, registrationId);
+				reverseDataSync(preRegId, registrationId, description);
 
 				object.setRid(registrationStatusDto.getRegistrationId());
 				isTransactionSuccessful = true;
@@ -629,7 +626,7 @@ public class PacketValidateProcessor {
 
 	}
 
-	private void reverseDataSync(String preRegId, String registrationId) {
+	private void reverseDataSync(String preRegId, String registrationId, LogDescription description) {
 		try {
 			if (registrationId != null) {
 				isTransactionSuccessful = false;

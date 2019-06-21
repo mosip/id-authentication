@@ -121,12 +121,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetRepository;
 
-
-
-	/** The description. */
-	@Autowired
-	LogDescription description;
-
 	/** The core audit request builder. */
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
@@ -170,7 +164,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
 
 		boolean isTransactionSuccessful = false;
-
+		LogDescription description=new LogDescription();
 		List<ApplicantInfoDto> applicantInfoDtoList = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), qcUserId,
 				"PacketInfoManagerImpl::getPacketsforQCUser()::entry");
@@ -309,8 +303,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *
 	 * @param demographicJsonBytes
 	 *            the demographic json bytes
+	 * @param description 
 	 */
-	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes, String regId) {
+	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes, String regId, LogDescription description) {
 
 		String getJsonStringFromBytes = new String(demographicJsonBytes);
 		IndividualDemographicDedupe demographicData = getIdentityKeysAndFetchValuesFromJSON(getJsonStringFromBytes);
@@ -357,6 +352,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveIndividualDemographicDedupeUpdatePacket(IndividualDemographicDedupe demographicData,
 			String registrationId) {
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
+		
 		try {
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
 					.converDemographicDedupeDtoToEntity(demographicData, registrationId);
@@ -397,7 +394,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveDemographicInfoJson(byte[] bytes, String registrationId, List<FieldValue> metaData) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PacketInfoManagerImpl::saveDemographicInfoJson()::entry");
-
+		LogDescription description=new LogDescription();
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
 		if (bytes == null)
@@ -406,7 +403,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 		try {
 
-			saveIndividualDemographicDedupe(bytes, registrationId);
+			saveIndividualDemographicDedupe(bytes, registrationId, description);
 
 			isTransactionSuccessful = true;
 			description.setMessage("Demographic Json saved");
@@ -458,7 +455,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveManualAdjudicationData(List<String> uniqueMatchedRefIds, String registrationId,
 			DedupeSourceName sourceName) {
 		boolean isTransactionSuccessful = false;
-
+		LogDescription description=new LogDescription();
+		
 		try {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 					registrationId, "PacketInfoManagerImpl::saveManualAdjudicationData()::entry");
@@ -549,7 +547,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveAbisRef(RegAbisRefDto regAbisRefDto) {
 		boolean isTransactionSuccessful = false;
-
+		LogDescription description=new LogDescription();
 		String regisId = "";
 		try {
 
@@ -729,6 +727,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public void saveBioRef(RegBioRefDto regBioRefDto) {
+		LogDescription description=new LogDescription();
 		try {
 			RegBioRefEntity regBioRefEntity = PacketInfoMapper.convertBioRefDtoToEntity(regBioRefDto);
 			regBioRefRepository.save(regBioRefEntity);
@@ -751,6 +750,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	@Override
 	public void saveAbisRequest(AbisRequestDto abisRequestDto) {
+		LogDescription description=new LogDescription();
+		
 		try {
 			AbisRequestEntity abisRequestEntity = PacketInfoMapper.convertAbisRequestDtoToEntity(abisRequestDto);
 			regAbisRequestRepository.save(abisRequestEntity);
@@ -788,6 +789,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveDemoDedupePotentialData(RegDemoDedupeListDto regDemoDedupeListDto) {
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
+		
 		String regId="";
 		try {
 
@@ -916,6 +919,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveRegLostUinDet(String regId, String latestRegId) {
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
+		
 		try {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 					"PacketInfoManagerImpl::saveRegLostUinDetData()::entry");

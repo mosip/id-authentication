@@ -49,10 +49,6 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Autowired
 	private TransactionService<TransactionDto> transcationStatusService;
 
-	/** The description. */
-	@Autowired
-	LogDescription description;
-
 	/** The core audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
@@ -73,6 +69,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Override
 	public InternalRegistrationStatusDto getRegistrationStatus(String registrationId) {
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "RegistrationStatusServiceImpl::InternalRegistrationStatusDto()::entry");
 		try {
@@ -117,6 +115,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Override
 	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::addRegistrationStatus()::entry");
@@ -172,6 +171,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::updateRegistrationStatus()::entry");
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
 		String transactionId = generateId();
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 		TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
@@ -228,6 +228,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		boolean isTransactionSuccessful = false;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getByStatus()::entry");
+		LogDescription description=new LogDescription();
+
 		try {
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getEnrolmentStatusByStatusCode(status);
@@ -271,6 +273,8 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		boolean isTransactionSuccessful = false;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getByIds()::entry");
+		LogDescription description=new LogDescription();
+
 		try {
 			List<String> registrationIds = new ArrayList<>();
 
@@ -471,6 +475,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	public List<InternalRegistrationStatusDto> getUnProcessedPackets(Integer fetchSize, long elapseTime,
 			Integer reprocessCount, List<String> status) {
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getReprocessPacket()::entry");
 		try {
@@ -506,6 +511,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Override
 	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status) {
 		boolean isTransactionSuccessful = false;
+		LogDescription description=new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getUnProcessedPacketsCount()::entry");
 		try {
