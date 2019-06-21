@@ -635,7 +635,7 @@ export class DashBoardComponent implements OnInit {
     let message = this.errorLanguagelabels.error;
     this.titleOnError = this.errorLanguagelabels.errorLabel;
     if (
-      error &&
+      error && error[appConstants.ERROR] &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorLanguagelabels.tokenExpiredLogout;
