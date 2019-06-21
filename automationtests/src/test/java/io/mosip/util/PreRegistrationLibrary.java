@@ -1505,11 +1505,18 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		HashMap<String, String> expectedDemographicDetails = craeteResponse.jsonPath()
 				.get("response.demographicDetails");
 		String folderName = "PreRegDocs";
+		String systemPath= System.getProperty("user.dir");
 		String data = response.jsonPath().get("response.zip-bytes").toString();
 		String folder = response.jsonPath().get("response.zip-filename").toString();
-		String folderPath = "./src/test/resources/" + "preReg" + "/" + folderName;
+		String folderPath = systemPath+"/src/test/resources/" + "preReg" + "/" + folderName;
+		System.out.println("folder "+ folderPath);
 		File f = new File(folderPath + "/" + folder);
 		f.mkdirs();
+		if(f.isDirectory())
+		{
+			System.out.println("folder exists");
+		}
+		System.out.println("create Path " +f.getPath());
 		ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(data)));
 		ZipEntry entry = null;
 		try {
@@ -1541,8 +1548,10 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		 * Reading request body from configpath
 		 */
 		String folder2 = "preReg";
-		String configPath = "./src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
+		String configPath =systemPath+"/src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
+		System.out.println(configPath);
 		File folder1 = new File(configPath);
+		System.out.println("Folder Path "+folder1.getPath());
 		File[] listOfFiles = folder1.listFiles();
 		try {
 			for (File f1 : listOfFiles) {
@@ -1556,7 +1565,6 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		}
 		}
 		catch (NullPointerException | IOException|ParseException e) {
-			System.out.println(e.getMessage());
 			Assert.fail("File is not present at specified path ::"+configPath);
 		}
 		return finalResult;
