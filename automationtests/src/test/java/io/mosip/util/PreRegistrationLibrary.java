@@ -1578,6 +1578,7 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		return finalResult;
 	}
 
+
 	public Map<String, Object> jsonObjectToMap(JSONObject object) {
 		Gson gson = new Gson();
 		Type type = new TypeToken<Map<String, Object>>() {
