@@ -18,17 +18,25 @@ import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 /**
  * The {@code PreRegistrationDataSyncJob} is a job to sync the pre registrations
  * 
+ * <p>
  * The {@code PreRegistrationDataSyncJob} is job to sync the pre-registration
  * data from server to local.
+ * </p>
  * 
+ * <p>
  * The PreRegistration packets will be saved on configured folder (EX:
- * PreRegistartion Packet Store)
+ * PreRegistartion Packet Store).
+ * </p>
  * 
- * This Job will be automatically triggered based on sync_frequency which has
- * in local DB.
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
  * 
+ * <p>
  * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
- * AM, if it was missed on 11:00 AM, trigger on immediate application launch
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author YASWANTH S
  * @since 1.0.0

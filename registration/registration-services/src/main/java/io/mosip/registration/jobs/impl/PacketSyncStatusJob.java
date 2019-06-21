@@ -18,15 +18,21 @@ import io.mosip.registration.service.packet.RegPacketStatusService;
 /**
  * The {@code PacketSyncStatusJob} is a job to sync the packet status
  * 
+ * <p>
  * The {@code PacketSyncStatusJob} is a job which will get the status of a
  * packet (EX: PROCESSED) and update the same for associate registration in
  * local DataBase.
+ * </p>
  * 
+ * <p>
  * This Job will be automatically triggered based on sync_frequency which has in
  * local DB.
+ * </p>
  * 
+ * <p>
  * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
- * AM, if it was missed on 11:00 AM, trigger on immediate application launch
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -60,7 +66,7 @@ public class PacketSyncStatusJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			
+
 			this.jobId = loadContext(context);
 			packetStatusService = applicationContext.getBean(RegPacketStatusService.class);
 
@@ -75,8 +81,8 @@ public class PacketSyncStatusJob extends BaseJob {
 			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
 					baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
 		}

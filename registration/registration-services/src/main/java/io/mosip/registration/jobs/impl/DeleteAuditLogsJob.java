@@ -22,20 +22,28 @@ import io.mosip.registration.jobs.BaseJob;
  * The {@code DeleteAuditLogsJob} is a job to delete audit logs which extends
  * {@code BaseJob}
  * 
+ * <p>
  * The Audit logs deletion was dependent on audit_deletion_configured_days.
  * configuration parameter, and Audit logs deletion was internally deletes the
  * registration packets in local and {@link Registration} and
- * {@link RegistrationTransaction} in database
+ * {@link RegistrationTransaction} in database.
+ * </p>
  * 
+ * <p>
  * If audit_deletion_configured_days=10, then all audit logs before 10 days from
  * now where eligible to delete, and it has a internal check as the registration
  * associated with audit has to be processed, then delete.
+ * </p>
  * 
+ * <p>
  * This Job will be automatically triggered based on sync_frequency which has in
  * local DB.
+ * </p>
  * 
+ * <p>
  * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
- * AM, if it was missed on 11:00 AM, trigger on immediate application launch
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * 
  * @author Yaswanth S
