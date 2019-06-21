@@ -25,7 +25,6 @@ export class FileUploadComponent implements OnInit {
   @ViewChild('fileUpload')
   fileInputVariable: ElementRef;
   fileDocCatCode = '';
-  viewFileTrue = false;
   sortedUserFiles: any[] = [];
   applicantType: string;
   allowedFilesHtml: string = '';
@@ -510,7 +509,6 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   viewFile(fileMeta: FileModel) {
-    this.viewFileTrue = true;
     this.fileIndex = 0;
     this.disableNavigation = true;
     this.dataStroage.getFileData(fileMeta.documentId, this.users[0].preRegId).subscribe(
@@ -543,6 +541,7 @@ export class FileUploadComponent implements OnInit {
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
                 'data:image/jpeg;base64,' + this.fileByteArray
               );
+              break;
 
             case 'png':
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
@@ -582,50 +581,50 @@ export class FileUploadComponent implements OnInit {
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
-    for (let file of this.allowedFiles) {
-      // if (event.target.files[0].type === file) {
-      if (extensionRegex.test(this.fileExtension)) {
-        allowedFileUploaded = true;
+
+    // if (event.target.files[0].type === file) {
+    if (extensionRegex.test(this.fileExtension)) {
+      allowedFileUploaded = true;
+      if (
+        event.target.files[0].name.length <
+        this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
+      ) {
         if (
-          event.target.files[0].name.length <
-          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_name_lenght)
+          event.target.files[0].size <
+          this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
         ) {
-          if (
-            event.target.files[0].size <
-            this.config.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_document_alllowe_file_size)
-          ) {
-            this.getBase64(event.target.files[0]).then(data => {
-              this.fileByteArray = data;
-              switch (this.fileExtension) {
-                case 'pdf':
-                  this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
-                  break;
-                case 'jpg':
-                  this.fileByteArray = this.fileByteArray.replace('data:image/jpeg;base64,', '');
-                  break;
-                case 'png':
-                  this.fileByteArray = this.fileByteArray.replace('data:image/png;base64,', '');
-                  break;
-              }
-            });
-            this.setJsonString(event);
-            this.sendFile(event);
-          } else {
-            this.displayMessage(
-              this.fileUploadLanguagelabels.uploadDocuments.error,
-              this.fileUploadLanguagelabels.uploadDocuments.msg1
-            );
-            this.disableNavigation = false;
-          }
+          this.getBase64(event.target.files[0]).then(data => {
+            this.fileByteArray = data;
+            switch (this.fileExtension) {
+              case 'pdf':
+                this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
+                break;
+              case 'jpg':
+                this.fileByteArray = this.fileByteArray.replace('data:image/jpeg;base64,', '');
+                break;
+              case 'png':
+                this.fileByteArray = this.fileByteArray.replace('data:image/png;base64,', '');
+                break;
+            }
+          });
+          this.setJsonString(event);
+          this.sendFile(event);
         } else {
           this.displayMessage(
             this.fileUploadLanguagelabels.uploadDocuments.error,
-            this.fileUploadLanguagelabels.uploadDocuments.msg5
+            this.fileUploadLanguagelabels.uploadDocuments.msg1
           );
           this.disableNavigation = false;
         }
+      } else {
+        this.displayMessage(
+          this.fileUploadLanguagelabels.uploadDocuments.error,
+          this.fileUploadLanguagelabels.uploadDocuments.msg5
+        );
+        this.disableNavigation = false;
       }
     }
+
     if (!allowedFileUploaded) {
       this.displayMessage(
         this.fileUploadLanguagelabels.uploadDocuments.error,
@@ -930,7 +929,7 @@ export class FileUploadComponent implements OnInit {
    */
   displayMessage(title: string, message: string, error?: any) {
     if (
-      error &&
+      error && error[appConstants.ERROR] &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorlabels.tokenExpiredLogout;

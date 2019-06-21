@@ -119,7 +119,6 @@ public class DataSyncService {
 			ValidationUtil.requestValidator(dataSyncRequest);
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(dataSyncRequest), requiredRequestMap)) {
 				serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest(), responseDto);
-
 				DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
 				if (serviceUtil.isNull(dataSyncRequestDTO.getToDate())) {
 					dataSyncRequestDTO.setToDate(dataSyncRequestDTO.getFromDate());
