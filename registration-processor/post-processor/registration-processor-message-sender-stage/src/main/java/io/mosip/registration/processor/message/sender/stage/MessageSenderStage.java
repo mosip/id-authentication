@@ -162,9 +162,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Value("${server.port}")
 	private String port;
 
-	@Autowired
-	private MessageSenderDto messageSenderDto;
-
 	/**
 	 * Deploy verticle.
 	 */
@@ -196,6 +193,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
 		String status;
+		MessageSenderDto messageSenderDto=new MessageSenderDto();
 		String id = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 				"MessageSenderStage::process()::entry");
@@ -228,7 +226,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				type = map.getTemplateType(status);
 			}
 			if (type != null) {
-				setTemplateAndSubject(type, regType);
+				setTemplateAndSubject(type, regType, messageSenderDto);
 			}
 
 			Map<String, Object> attributes = new HashMap<>();
@@ -246,7 +244,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				ccEMailList = notificationEmails.split("\\|");
 			}
 
-			sendNotification(id, attributes, ccEMailList, allNotificationTypes, regType);
+			sendNotification(id, attributes, ccEMailList, allNotificationTypes, regType, messageSenderDto);
 
 			isTransactionSuccessful = true;
 			description.setMessage(MessageSenderConstant.MESSAGE_SENDER_NOTIF_SUCC + id);
@@ -318,15 +316,16 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @param allNotificationTypes
 	 *            the all notification types
 	 * @param regType
+	 * @param messageSenderDto 
 	 * @throws Exception
 	 *             the exception
 	 */
 	private void sendNotification(String id, Map<String, Object> attributes, String[] ccEMailList,
-			String[] allNotificationTypes, String regType) throws Exception {
+			String[] allNotificationTypes, String regType, MessageSenderDto messageSenderDto) throws Exception {
 		for (String notificationType : allNotificationTypes) {
 
 			if (notificationType.equalsIgnoreCase(SMS_TYPE)
-					&& isTemplateAvailable(messageSenderDto.getSmsTemplateCode().name())) {
+					&& isTemplateAvailable(messageSenderDto)) {
 
 				service.sendSmsNotification(messageSenderDto.getSmsTemplateCode().name(), id,
 						messageSenderDto.getIdType(), attributes, regType);
@@ -334,7 +333,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 						MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
 
 			} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE)
-					&& isTemplateAvailable(messageSenderDto.getEmailTemplateCode().name())) {
+					&& isTemplateAvailable(messageSenderDto)) {
 
 				service.sendEmailNotification(messageSenderDto.getEmailTemplateCode().name(), id,
 						messageSenderDto.getIdType(), attributes, ccEMailList, messageSenderDto.getSubject(), null,
@@ -354,8 +353,9 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @param templatetype
 	 *            the new template and subject
 	 * @param regType
+	 * @param messageSenderDto 
 	 */
-	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType) {
+	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType, MessageSenderDto messageSenderDto) {
 		switch (templatetype) {
 		case LOST_UIN:
 			messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_UIN_LOST_SMS);
@@ -412,7 +412,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	/**
 	 * Checks if is template available.
 	 *
-	 * @param templateCode
+	 * @param messageSenderDto
 	 *            the template code
 	 * @return true, if is template available
 	 * @throws ApisResourceAccessException
@@ -423,7 +423,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	private boolean isTemplateAvailable(String templateCode) throws ApisResourceAccessException, IOException {
+	private boolean isTemplateAvailable(MessageSenderDto messageSenderDto) throws ApisResourceAccessException, IOException {
 
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(TEMPLATES);
@@ -437,7 +437,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 		if (responseWrapper.getErrors() == null) {
 			templateResponseDto.getTemplates().forEach(dto -> {
-				if (dto.getTemplateTypeCode().equalsIgnoreCase(templateCode)) {
+				if (dto.getTemplateTypeCode().equalsIgnoreCase(messageSenderDto.getSmsTemplateCode().name())) {
 					messageSenderDto.setTemplateAvailable(true);
 				}
 			});
