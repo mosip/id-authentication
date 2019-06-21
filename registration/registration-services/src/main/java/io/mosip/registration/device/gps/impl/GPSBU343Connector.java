@@ -145,7 +145,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	}
 
 	/**
-	 * Read data from com port and process the data.
+	 * This method is used to read data from com port and process the data.
 	 *
 	 * @throws IOException                       Signals that an I/O exception has
 	 *                                           occurred.
@@ -178,9 +178,9 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 	}
 
 	/**
-	 * Serial event.
+	 * This method is serial event to read byte stream for GPS.
 	 *
-	 * @param event the event
+	 * @param event - the event
 	 */
 	public void serialEvent(SerialPortEvent event) {
 
@@ -377,7 +377,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		private String response = "";
 
 		/**
-		 * Gets the lat.
+		 * This method gets the latitude from GPS.
 		 *
 		 * @return the latitudeFromGps
 		 */
@@ -386,7 +386,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		}
 
 		/**
-		 * Sets the lat.
+		 * This method sets the latitude.
 		 *
 		 * @param lat the new lat
 		 */
@@ -395,7 +395,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		}
 
 		/**
-		 * Gets the lon.
+		 * This method gets the longitude from GPS.
 		 *
 		 * @return the longitudeFromGps
 		 */
@@ -404,7 +404,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		}
 
 		/**
-		 * Sets the lon.
+		 * This method sets the longitude.
 		 *
 		 * @param lon the new lon
 		 */
@@ -413,7 +413,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		}
 
 		/**
-		 * Gets the response.
+		 * This method gets the response.
 		 *
 		 * @return the response
 		 */
@@ -422,6 +422,8 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		}
 
 		/**
+		 * This method sets the response.
+		 * 
 		 * @param response the response to set
 		 */
 		public void setResponse(String response) {
