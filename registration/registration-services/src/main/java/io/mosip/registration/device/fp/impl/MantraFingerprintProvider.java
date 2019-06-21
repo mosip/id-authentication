@@ -45,7 +45,6 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 * <p>
 	 * Returns -2 if the device is not valid.
 	 * </p>
-	 * </p>
 	 *
 	 * @param qualityScore
 	 *            - the minimum quality score that is required

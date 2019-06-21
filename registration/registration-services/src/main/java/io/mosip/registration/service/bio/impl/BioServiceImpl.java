@@ -133,11 +133,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * be validated against the stored fingerprint from the DB
 	 * </p>.
 	 *
-	 * @param AuthenticationValidatorDTO            - authenticationValidatorDto
+	 * @param authenticationValidatorDTO            - authenticationValidatorDto
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
-	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
-	 * @throws IOException             - Exception that may occur while reading the resource
 	 */
 	public boolean validateFingerPrint(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		return authService.authValidator(RegistrationConstants.FINGERPRINT,
@@ -184,11 +182,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * validated against the stored iris from the DB through auth validator service
 	 * </p>.
 	 *
-	 * @param AuthenticationValidatorDTO            - authenticationValidtorDto
+	 * @param authenticationValidatorDTO            - authenticationValidtorDto
 	 * @return boolean the validation result. <code>true</code> if match is found,
 	 *         else <code>false</code>
-	 * @throws RegBaseCheckedException - the exception that handles all checked exceptions
-	 * @throws IOException             - Exception that may occur in reading the resource
 	 */
 	public boolean validateIris(AuthenticationValidatorDTO authenticationValidatorDTO) {
 		return authService.authValidator(RegistrationConstants.IRIS, authenticationValidatorDTO);

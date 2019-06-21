@@ -6,11 +6,12 @@ import java.util.List;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * This class will be used to fetch/Add/Update details from the
- * {@link Registration} and {@link RegistrationTransaction} tWhile creating a
+ * {@link Registration} and {@link RegistrationTransaction} while creating a
  * registration packet the respective packet data will be stored tables. It will
  * insert a record while creating a new packet. While performing EOD operation
  * this will fetch the registration data and updates the respective operation
@@ -74,7 +75,7 @@ public interface RegistrationDAO {
 	/**
 	 * <p>
 	 * It will retrieve registration records based on the status
-	 * <p>
+	 * </p>
 	 * <p>
 	 * The records will be arranged in the ascending order of the created Date time
 	 * </p>
@@ -93,15 +94,15 @@ public interface RegistrationDAO {
 	 * The records that are fetched here are based on the client status code and
 	 * server status code
 	 * </p>
-	 * <ol>
 	 * Client Status Codes
-	 * </ol>
+	 * <ol>
 	 * <li>Synced</li>
 	 * <li>Exported</li>
-	 * <ol>
-	 * Server Status Code
 	 * </ol>
+	 * Server Status Code
+	 * <ol>
 	 * <li>Resend</li>
+	 * </ol>
 	 * 
 	 * @param packetStatus the packet status
 	 * @return the list of {@link Registration} based on status
@@ -118,7 +119,7 @@ public interface RegistrationDAO {
 	 * column, incase if we tries to upload the same packet again.
 	 * </p>
 	 * 
-	 * @param packetStatus
+	 * @param packetStatus - the {@link PacketStatusDTO} to be updated
 	 * @return {@link Registration} entity
 	 */
 	Registration updateRegStatus(PacketStatusDTO packetStatus);
