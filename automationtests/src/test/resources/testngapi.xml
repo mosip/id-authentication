@@ -69,7 +69,7 @@
                            <class name="io.mosip.kernel.tests.UINStatusCheck" />  
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" /> 
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
                  </classes>
 				</test>   
            </suite>
