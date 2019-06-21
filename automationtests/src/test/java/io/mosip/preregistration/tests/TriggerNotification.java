@@ -1,6 +1,6 @@
 package io.mosip.preregistration.tests;
 
-import java.io.File;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -18,7 +18,6 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -31,9 +30,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.preregistration.util.PreRegistrationUtil;
 import io.mosip.preregistration.util.TriggerNotificationUtil;
-import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -43,7 +42,9 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
- * Test Class to perform Trigger notification related Positive and Negative test cases
+ * Test Class to perform Trigger notification related Positive and Negative test
+ * cases
+ * 
  * @author Lavanya R
  * @since 1.0.0
  */
@@ -64,8 +65,8 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	String preReg_URI;
+	String create_preReg_URI;
 	CommonLibrary commonLibrary = new CommonLibrary();
 	String dest = "";
 	String configPaths = "";
@@ -75,7 +76,16 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	String testParam = null;
 	boolean status_val = false;
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-	TriggerNotificationUtil triggerNotUtil=new TriggerNotificationUtil();
+	PreRegistrationUtil preregUtil = new PreRegistrationUtil();
+	TriggerNotificationUtil triggerNotUtil = new TriggerNotificationUtil();
+	PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
+	ApplicationLibrary appLib=new ApplicationLibrary();
+	String name;
+	String appDate;
+	String timeSlotFrom;
+	String mobNum;
+	String emailId;
+	String langCode;
 
 	public TriggerNotification() {
 
@@ -94,7 +104,7 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 	@DataProvider(name = "TriggerNotification")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
-		switch ("smokeAndRegression") {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -108,11 +118,12 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 
 	/*
 	 * Given Document Upload valid request when I Send POST request to
-	 * https://mosip.io/preregistration/v1/notification/notify Then I should get success
-	 * response with elements defined as per specifications Given Invalid
-	 * request when I send POST request to
-	 * https://mosip.io/preregistration/v1/notification/notify Then I should get Error
-	 * response along with Error Code and Error messages as per Specification
+	 * https://mosip.io/preregistration/v1/notification/notify Then I should get
+	 * success response with elements defined as per specifications Given
+	 * Invalid request when I send POST request to
+	 * https://mosip.io/preregistration/v1/notification/notify Then I should get
+	 * Error response along with Error Code and Error messages as per
+	 * Specification
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider = "TriggerNotification")
@@ -121,106 +132,134 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-
-		String testCase = object.get("testCaseName").toString();
+		JSONObject actualReq;
+		char timeVal = 0;
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-
-		if (testCaseName.contains("smoke")) {
-
-			/* Creating the Pre-Registration Application */
-			Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
-			logger.info("triggerNotifyResponsuyuyuyuyuye:"+testCaseName);
-			//Response triggerNotifyResponse = preRegLib.TriggerNotification();
-			Response triggerNotifyResponse =triggerNotUtil.TriggerNotification(testCaseName);
-			logger.info("triggerNotifyResponse:" + triggerNotifyResponse.asString());
-			//outer and inner keys which are dynamic in the actual response
-			outerKeys.add("responsetime");
-			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(triggerNotifyResponse, Expectedresponse, outerKeys, innerKeys);
-
-
-		} 
-		else if(testCaseName.contains("preReg_TriggerNotification_id"))
+		String val = null;
+		if(testCaseName.contains("true"))
 		{
-
-			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
-			testSuite = "TriggerNotification/"+testCase;
-			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			File file = new File(configPath + "/AadhaarCard_POA.pdf");
-			String value = null;
-			JSONObject object1 = null;
-			for (Object key : actualRequest.keySet()) {
-				if (key.equals("request")) {
-					object1 = (JSONObject) actualRequest.get(key);
-					value = (String) object1.get(langCodeKey);
-					actualRequest.put("requesttime", preRegLib.getCurrentDate());
-					// object.put("pre_registartion_id",responseCreate.jsonPath().get("response[0].preRegistrationId").toString());
-					// request.replace(key, object);
-					object1.remove(langCodeKey);
-				}
-			}
-
-			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
-					value);
-
-			outerKeys.add("responsetime");
-			logger.info("Response TriggerNotification_id::" + response.asString()+"Test case name:"+testCaseName);
-			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
-
+			val="true";
+		}
+		else
+		{
+			val="false";
 		}
 		
-		else if(testCaseName.contains("preReg_TriggerNotification_requesttime"))
+		actualReq= preRegUtil.requestJson("TriggerNotification/preReg_TriggerNotification_additionalRecipient_"+val+"_smoke/","request");
+		JSONObject req = preRegUtil.requestJson("TriggerNotification/preReg_TriggerNotification_additionalRecipient_"+val+"_smoke/","val");
+		
+		req.put("requesttime", preRegLib.getCurrentDate());
+		Response createApplicationResponse =appLib.postWithJson(create_preReg_URI, req, authToken);
+		
+		logger.info("createApplicationResponse::"+createApplicationResponse.asString());
+		
+		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+		langCode= createApplicationResponse.jsonPath().get("response.langCode").toString();
+		emailId=createApplicationResponse.jsonPath().get("response.demographicDetails.identity.email").toString();
+		mobNum= createApplicationResponse.jsonPath().get("response.demographicDetails.identity.phone").toString();
+		
+		/* Fetch availability[or]center details */
+		Response fetchCenter = preRegLib.FetchCentre(authToken);
+
+		logger.info("fetchCenter:"+fetchCenter.asString());
+		
+		/* Book An Appointment for the available data */
+		Response bookAppRes = preRegLib.BookAppointment(fetchCenter, preId.toString(),authToken);
+		Response fetchApp = preRegLib.FetchAppointmentDetails(preId, authToken);
+		appDate= fetchApp.jsonPath().get("response.appointment_date").toString();
+		timeSlotFrom= fetchApp.jsonPath().get("response.time_slot_from").toString();
+		
+        /** Convert 24 to 12 hour format **/
+		
+		String appTime=timeSlotFrom;
+		String[] parts = appTime.split(":");
+		int val1=Integer.parseInt(parts[0]);
+		String val2 = parts[1];
+		int res=val1-12;
+		String value;
+		if(res > 0)
 		{
-			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
-			testSuite = "TriggerNotification/"+testCase;
-			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			File file = new File(configPath + "/AadhaarCard_POA.pdf");
-			String value = null;
-			JSONObject object1 = null;
-			for (Object key : actualRequest.keySet()) {
-				if (key.equals("request")) {
-					object1 = (JSONObject) actualRequest.get(key);
-					value = (String) object1.get(langCodeKey);
-					
-					object1.remove(langCodeKey);
-				}
-			}
-
-			logger.info("Request:"+actualRequest);
-			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
-					value);
-
-			outerKeys.add("responsetime");
-			logger.info("Response requesttime::" + response.asString()+"Test case name:"+testCaseName);
-			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
-
+			
+			String s1 = String.format("%02d", res);
+			value=s1+":"+val2+" PM";
 		}
-		else if(testCaseName.contains("preReg_TriggerNotification_version"))
+		else
 		{
-			String langCodeKey = commonLibrary.fetch_IDRepo().get("langCode.key");
-			testSuite = "TriggerNotification/"+testCase;
-			String configPath = "src/test/resources/" + folder + "/" + testSuite;
-			File file = new File(configPath + "/AadhaarCard_POA.pdf");
-			String value = null;
-			JSONObject object1 = null;
-			for (Object key : actualRequest.keySet()) {
-				if (key.equals("request")) {
-					object1 = (JSONObject) actualRequest.get(key);
-					value = (String) object1.get(langCodeKey);
-					actualRequest.put("requesttime", preRegLib.getCurrentDate());
-					object1.remove(langCodeKey);
-				}
-			}
-
-			Response response = applicationLibrary.postFileAndJsonParam(preReg_URI, actualRequest, file, langCodeKey,
-					value);
-
-			outerKeys.add("responsetime");
-			logger.info("Response TriggerNotification_version::" + response.asString()+"Test case name:"+testCaseName);
-			status = AssertResponses.assertResponses(response, Expectedresponse, outerKeys, innerKeys);
-
+			String s2 =String.format("%02d", val1);
+			value=s2+":"+val2+" AM";
 		}
+		
+		
+		String[] split = testCaseName.split("_");
+		String parameter = split[2];
+		
+		switch (parameter) 
+		{
+		case "preRegistrationId":
+			
+			preId=actualRequest.get("preRegistrationId").toString();
+			
+			break;
+			
+       case "appointmentDate":
+    	   
+    	   appDate=actualRequest.get("appointmentDate").toString();
+			
+			break;
+			
+       case "appointmentTime":
+    	   
+    	   value=actualRequest.get("appointmentTime").toString();
+			
+			break;
 
+       case "mobNum":
+    	  
+    	   mobNum=actualRequest.get("mobNum").toString();
+   			
+   			break;
+   			
+   			
+       case "emailId":
+    	  
+    	   emailId=actualRequest.get("emailID").toString();
+  			
+  			break;
+  			
+       case "langcode":
+    	   
+    	   langCode=actualRequest.get("langcode").toString();
+ 			
+ 			break;
+
+		default:
+			break;
+		}
+		
+	
+
+   
+        JSONObject MobReq = preRegUtil.dynamicChangeOfRequest(actualReq, "$.request.mobNum", mobNum);
+		JSONObject emailReq = preRegUtil.dynamicChangeOfRequest(MobReq, "$.request.emailID", emailId);
+		JSONObject reqPreId = preRegUtil.dynamicChangeOfRequest(emailReq, "$.request.preRegistrationId", preId);
+		JSONObject reqAppDate =preRegUtil.dynamicChangeOfRequest(reqPreId, "$.request.appointmentDate", appDate);
+		JSONObject langCodReq = preRegUtil.dynamicChangeOfRequest(reqAppDate, "$.request.langCode", langCode);
+		actualReq=preRegUtil.dynamicChangeOfRequest(langCodReq, "$.request.appointmentTime", value);
+		
+		 
+		if (!(testCaseName.contains("requesttime"))) 
+		{
+			actualReq.put("requesttime", preRegLib.getCurrentDate());
+		}
+		
+		Actualresponse =triggerNotUtil.TriggerNotification(preReg_URI,actualReq,authToken,testCaseName);
+		logger.info("Test Case Name:"+testCaseName+"\nTrigger Notification Response:"+Actualresponse.asString());
+
+			// outer and inner keys which are dynamic in the actual response
+			outerKeys.add("responsetime");
+			// Asserting actual and expected response
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
+			
 		if (status) {
 			finalStatus = "Pass";
 			softAssert.assertAll();
@@ -260,7 +299,10 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			logger.info("Successfully updated Results to " + outputFile);
 		}
 
-		String source = "src/test/resources/" + folderPath + "/";
+
+		// Add generated PreRegistrationId to list to be Deleted from DB
+		// AfterSuite
+		preIds.add(preId);
 	}
 
 	/**
@@ -277,33 +319,33 @@ public class TriggerNotification extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			//f.set(baseTestMethod, TriggerNotification.testCaseName);
-			f.set(baseTestMethod, "Pre Reg_TriggerNotification_" +TriggerNotification.testCaseName);
+			f.set(baseTestMethod, TriggerNotification.testCaseName);
+
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
 
 	/**
-	  * This method is used for fetching test case name
-	  * @param method
-	  * @param testdata
-	  * @param ctx
-	  */
+	 * This method is used for fetching test case name
+	 * 
+	 * @param method
+	 * @param testdata
+	 * @param ctx
+	 */
 	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 
-		//Trigger Notification Resource URI
+		// Trigger Notification Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_NotifyURI");
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		if(!preRegLib.isValidToken(individualToken))
-		{
-			individualToken=preRegLib.getToken();
-		}
-		
+		create_preReg_URI =commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
+		// Fetch the generated Authorization Token by using following Kernel AuthManager APIs
+		authToken = preRegLib.getToken();
+
 	}
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

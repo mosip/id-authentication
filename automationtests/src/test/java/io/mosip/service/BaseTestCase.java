@@ -40,6 +40,7 @@ import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
 
 import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.util.PreRegistrationLibrary;
 import io.mosip.util.TokenGeneration;
 
@@ -166,6 +167,11 @@ public class BaseTestCase{
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
+			/**
+			 * This method is used by pre registration module
+			 * This will activate all in active resistration center.
+			 */
+			new PreregistrationDAO().makeAllRegistartionCenterActive();
 			/*TokenGeneration generateToken = new TokenGeneration();
 			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
 			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");

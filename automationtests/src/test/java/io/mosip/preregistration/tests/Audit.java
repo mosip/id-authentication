@@ -63,7 +63,6 @@ public class Audit extends BaseTestCase implements ITest {
 	public String folder = "preReg";
 	public ApplicationLibrary applnLib = new ApplicationLibrary();
 	public PreregistrationDAO dao = new PreregistrationDAO();
-	String cookie=null;
 
 	@BeforeClass
 	public void readPropertiesFile() {
@@ -74,27 +73,28 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForDemographicCreate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		lib.CreatePreReg(createPregRequest,cookie);
+		lib.CreatePreReg(createPregRequest, individualToken);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicCreate");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 1);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@Test
 	public void getAuditDataForDemographicDiscard() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
-		String preID =lib.getPreId(createResponse);
-		lib.discardApplication(preID,cookie);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
+		String preID = lib.getPreId(createResponse);
+		lib.discardApplication(preID, individualToken);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicDiscard");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 3);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -103,16 +103,17 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForDemographicUpdate() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createRequest = lib.createRequest(testSuite);
-		Response createRequestResponse = lib.CreatePreReg(createRequest,cookie);
+		Response createRequestResponse = lib.CreatePreReg(createRequest, individualToken);
 		String pre_registration_id = lib.getPreId(createRequestResponse);
 		JSONObject updateRequest = lib.getRequest("UpdateDemographicData/UpdateDemographicData_smoke");
 		updateRequest.put("requesttime", lib.getCurrentDate());
-		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id,cookie);
+		Response updateDemographicDetailsResponse = lib.updateDemographicDetails(updateRequest, pre_registration_id,
+				individualToken);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicUpdate");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 2);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -121,13 +122,13 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForDemographicFetchAllApplication() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createRequest = lib.createRequest(testSuite);
-		Response createRequestResponse = lib.CreatePreReg(createRequest,cookie);
-		lib.fetchAllPreRegistrationCreatedByUser(cookie);
+		Response createRequestResponse = lib.CreatePreReg(createRequest, individualToken);
+		lib.fetchAllPreRegistrationCreatedByUser(individualToken);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicFetchAllApplication");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 3);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -138,12 +139,12 @@ public class Audit extends BaseTestCase implements ITest {
 		JSONObject createRequest = lib.createRequest(testSuite);
 		createRequest.put("version", "2.0");
 		System.out.println(createRequest.toString());
-		Response createRequestResponse = lib.CreatePreReg(createRequest,cookie);
+		Response createRequestResponse = lib.CreatePreReg(createRequest, individualToken);
 		String userId = lib.userId;
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDemographicException");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 1);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -152,9 +153,9 @@ public class Audit extends BaseTestCase implements ITest {
 	public void getAuditDataForGetAvailbleSlot() {
 		String regCenterId = null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		Response fetchCenterResponse = lib.FetchCentre(cookie);
+		Response fetchCenterResponse = lib.FetchCentre(individualToken);
 		try {
-			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+			regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
 		} catch (NullPointerException e) {
 			Assert.assertTrue(false, "Exception while getting registartion center id from response");
 		}
@@ -163,7 +164,7 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		expectedRequest.put("ref_id", regCenterId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 1);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
@@ -173,13 +174,13 @@ public class Audit extends BaseTestCase implements ITest {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		String regCenterId = null;
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
 		String preID = lib.getPreId(createResponse);
-		Response fetchCenterResponse = lib.FetchCentre(cookie);
-		lib.BookAppointment(fetchCenterResponse, preID,cookie);
-		lib.CancelBookingAppointment(preID,cookie);
+		Response fetchCenterResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(fetchCenterResponse, preID, individualToken);
+		lib.CancelBookingAppointment(preID, individualToken);
 		try {
-			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+			regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
 		} catch (NullPointerException e) {
 			Assert.assertTrue(false, "Exception while getting registartion center id from response");
 		}
@@ -187,24 +188,25 @@ public class Audit extends BaseTestCase implements ITest {
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditForCancelAppointment");
 		expectedRequest.put("session_user_id", userId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 4);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getAuditDataForReBooking() {
 		String regCenterId = null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
 		String preID = lib.getPreId(createResponse);
-		Response fetchCenterResponse = lib.FetchCentre(cookie);
-		lib.BookAppointment(fetchCenterResponse, preID,cookie);
-		fetchCenterResponse = lib.FetchCentre(cookie);
-		lib.BookAppointment(fetchCenterResponse, preID,cookie);
+		Response fetchCenterResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(fetchCenterResponse, preID, individualToken);
+		fetchCenterResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(fetchCenterResponse, preID, individualToken);
 		try {
-			 regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
+			regCenterId = fetchCenterResponse.jsonPath().get("response.regCenterId").toString();
 		} catch (NullPointerException e) {
 			Assert.assertTrue(false, "Exception while getting registartion center id from response");
 		}
@@ -213,9 +215,108 @@ public class Audit extends BaseTestCase implements ITest {
 		expectedRequest.put("session_user_id", userId);
 		expectedRequest.put("ref_id", regCenterId);
 		List<String> objs = dao.getAuditData(userId);
-		JSONObject auditDatas = lib.getAuditData(objs, 5);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
+	}
+
+	@Test
+	public void getAuditDataForDocumentUpload() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse, individualToken);
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditForDocumentUpload");
+		expectedRequest.put("session_user_id", userId);
+		List<String> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+	}
+
+	@Test
+	public void getAuditDataForDocumentDeleteByDocId() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse, individualToken);
+		String docId = lib.getDocId(documentResponse);
+		lib.deleteAllDocumentByDocId(docId, preID, individualToken);
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/GetAuditDataForDeleteDocumentForDocId");
+		expectedRequest.put("session_user_id", userId);
+		List<String> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+	}
+
+	@Test
+	public void getAuditDataForRetriveDocumentByDocId() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse, individualToken);
+		String docId = lib.getDocId(documentResponse);
+		lib.getAllDocumentForDocId(preID, docId, individualToken);
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/GetAuditDataForRetriveDocumentByDocId");
+		expectedRequest.put("session_user_id", userId);
+		List<String> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+	}
+
+	@Test
+	public void getAuditDataForCopyDocument() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
+		String sourcePreID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse, individualToken);
+		createResponse = lib.CreatePreReg(createPregRequest, individualToken);
+		String destPreID = lib.getPreId(createResponse);
+		lib.copyUploadedDocuments(destPreID, sourcePreID, "POA", individualToken);
+		String userId = lib.userId;
+		JSONObject expectedRequest = lib.getRequest("Audit/getAuditDataForCopyDocument");
+		expectedRequest.put("session_user_id", userId);
+		List<String> objs = dao.getAuditData(userId);
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+	}
+
+	@Test
+	public void getAuditDataForBatchJobExpired() {
+		lib.expiredStatus();
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDataForBatchJobExpired");
+		expectedRequest.put("session_user_id", "preregadmin");
+		List<String> objs = dao.getAuditData("preregadmin");
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+
+	}
+
+	@Test
+	public void getAuditDataForBatchJobConsumed() {
+		List preRegistrationId = new ArrayList();
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest, individualToken);
+		preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse, individualToken);
+		Response avilibityResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID, individualToken);
+		preRegistrationId.add(preID);
+		lib.reverseDataSync(preRegistrationId);
+		Response consumedResponse = lib.consumedStatus();
+		JSONObject expectedRequest = lib.getRequest("Audit/AuditDataForBatchJobConsumed");
+		expectedRequest.put("session_user_id", "preregadmin");
+		List<String> objs = dao.getAuditData("preregadmin");
+		JSONObject auditDatas = lib.getAuditData(objs, 0);
+		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
+
 	}
 
 	@Override
@@ -225,12 +326,19 @@ public class Audit extends BaseTestCase implements ITest {
 	}
 
 	@BeforeMethod(alwaysRun = true)
-	public void login( Method method)
-	{
-		testCaseName="preReg_BatchJob_" + method.getName();
-		cookie=lib.getToken();
-		
+	public void login(Method method) {
+		testCaseName = "preReg_BatchJob_" + method.getName();
+		if (!lib.isValidToken(individualToken)) {
+			individualToken = lib.getToken();
+		}
+
 	}
+
+	@BeforeClass
+	public void run() {
+		individualToken = lib.getToken();
+	}
+
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {
 		try {

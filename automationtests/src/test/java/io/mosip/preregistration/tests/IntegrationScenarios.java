@@ -251,7 +251,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		response = lib.CancelBookingAppointment(preRegID,individualToken);
 		lib.compareValues(response.jsonPath().get("response.message"), "Appointment for the selected application has been successfully cancelled");
 		lib.compareValues(fetchCenterResponse.jsonPath().get("response").toString(),
-				lib.FetchCentre(regCenterId).jsonPath().get("response").toString());
+				lib.FetchCentre(regCenterId,individualToken).jsonPath().get("response").toString());
 	}
 
 	@Test(groups = { "IntegrationScenarios" })
@@ -351,14 +351,14 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 
 		// Upload first document
 		try {
-			response = lib.documentUpload(response, file1);
+			response = lib.documentUpload(response, individualToken);
 		} catch (Exception e) { // TODO Auto-generated catch block
 			logger.error(e.getMessage());
 		}
 
 		// Upload second document
 		try {
-			response = lib.documentUpload(response, file2);
+			response = lib.documentUpload(response, individualToken);
 		} catch (Exception e) { // TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -372,7 +372,6 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 			e.printStackTrace();
 		}
 	}
-
 	/**
 	 * @author Ashish Fetch Pending appointment created by(done) user
 	 */
@@ -628,7 +627,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response fetchAppointmentResponse = lib.FetchAppointmentDetails(preID,individualToken);
 		Assert.assertEquals(fetchAppointmentResponse.jsonPath().get("errors[0].message").toString(),
 				"No data found for the requested pre-registration id");
-		avilibityResponse = lib.FetchCentre(expectedRegCenterId);
+		avilibityResponse = lib.FetchCentre(expectedRegCenterId,individualToken);
 		String actualRegCenterId = avilibityResponse.jsonPath().get("response.regCenterId").toString();
 		lib.compareValues(actualRegCenterId, expectedRegCenterId);
 		String actualCenterDetails = avilibityResponse.jsonPath().get("response.centerDetails[0].timeSlots[0]")
@@ -941,7 +940,7 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		Response fetch = lib.FetchAppointmentDetails(preID,individualToken);
 		Response FetchCentreResponse1 = lib.FetchCentre(individualToken);
 		Response responsed = lib.BookAppointment(documentUpload, FetchCentreResponse1, preID,individualToken);
-		Response FetchCentreResponse2 = lib.FetchCentre(actualRegCenterId);
+		Response FetchCentreResponse2 = lib.FetchCentre(actualRegCenterId,individualToken);
 		String expectedRegCenterId = FetchCentreResponse1.jsonPath().get("response.regCenterId").toString();
 		if (!(actualRegCenterId.equals(expectedRegCenterId))) {
 			String actualCenterDetails = FetchCentreResponse.jsonPath().get("response.centerDetails").toString();
@@ -949,7 +948,6 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 			lib.compareValues(actualCenterDetails, expectedCenterDetails);
 		}
 	}
-
 	/**
 	 * @author Ashish get data for discarded application
 	 * 
