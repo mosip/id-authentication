@@ -307,6 +307,9 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			// check for insert response,if success send corresponding identify request to
 			// queue
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.INSERT.toString())) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+						"AbisMiddlewareStage::consumerListener()::Insert Response received from abis ::"
+								+ inserOrIdentifyResponse);
 				AbisInsertResponseDto abisInsertResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisInsertResponseDto.class);
 
@@ -337,13 +340,17 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			// to abis handler
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString())) {
 
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+						"AbisMiddlewareStage::consumerListener()::Identify Response received from abis ::"
+								+ inserOrIdentifyResponse);
+
 				AbisIdentifyResponseDto abisIdentifyResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisIdentifyResponseDto.class);
 				if (abisIdentifyResponseDto.getReturnValue() != 1) {
 					internalRegStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 					internalRegStatusDto
-							.setStatusComment("Insert response failed for request Id" + abisCommonRequestDto.getId());
+							.setStatusComment("Identify response failed for request Id" + abisCommonRequestDto.getId());
 					registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
 				}
 				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
@@ -593,7 +600,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			MessageDTO messageDto = new MessageDTO();
 			messageDto.setRid(regId);
 			messageDto.setReg_type(RegistrationType.valueOf(regType));
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"AbisMiddlewareStage::consumerListener()::sending to Abis handler");
 			this.send(eventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT, messageDto);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"AbisMiddlewareStage::consumerListener()::sent to Abis handler");
 		}
 
 	}
