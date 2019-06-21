@@ -191,7 +191,7 @@ errors:
     errorMessage: BIO-FMR Authentication usage not allowed as per policy
   PolicyWithoutBioFace:
     errorCode: IDA-MPA-006
-    errorMessage: BIO-FID Authentication usage not allowed as per policy
+    errorMessage: BIO-FIR Authentication usage not allowed as per policy
   PolicyWithoutBioIris:
     errorCode: IDA-MPA-006
     errorMessage: BIO-IIR Authentication usage not allowed as per policy
@@ -296,7 +296,7 @@ errors:
     errorMessage: Demographic data name in ara did not match
   Demo_NameMismatch_PriLang:
     errorCode: IDA-DEA-001
-    errorMessage: Demographic data name in eng did not match
+    errorMessage: Demographic data name in fra did not match
   UnSupportAuthType:
     errorCode: IDA-MLC-011
     errorMessage: $REGEXP:Unsupported Authentication Type.*$

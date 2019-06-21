@@ -1,0 +1,15 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - version"
+    }
+  ],
+  "id": "mosip.identity.auth",
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "3061031476",
+  "version": "1.0"
+}

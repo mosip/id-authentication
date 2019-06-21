@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - bioSubType"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "1521238546",
+  "version": "1.0"
+}

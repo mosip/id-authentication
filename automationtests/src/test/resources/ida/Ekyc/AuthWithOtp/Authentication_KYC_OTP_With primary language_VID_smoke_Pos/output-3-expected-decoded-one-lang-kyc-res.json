@@ -1,0 +1,66 @@
+{
+  "FACE": "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA",
+  "addressLine1": [
+    {
+      "language": "eng",
+      "value": "Annai Theresa Street"
+    }
+  ],
+  "addressLine2": [
+    {
+      "language": "eng",
+      "value": "Vivek Street House"
+    }
+  ],
+  "addressLine3": [
+    {
+      "language": "eng",
+      "value": "Kuwait"
+    }
+  ],
+  "dob": [
+    {
+      "value": "1967/05/12"
+    }
+  ],
+  "emailId": [
+    {
+      "value": "vignesh.vijayakumar@mindtree.com"
+    }
+  ],
+  "gender": [
+    {
+      "language": "eng",
+      "value": "Male"
+    }
+  ],
+  "location1": [
+    {
+      "language": "eng",
+      "value": "Kenitra"
+    }
+  ],
+  "location2": [
+    {
+      "language": "eng",
+      "value": "Rabat Sale Kenitra"
+    }
+  ],
+  "location3": [
+    {
+      "language": "eng",
+      "value": "Kenitra"
+    }
+  ],
+  "name": [
+    {
+      "language": "eng",
+      "value": "Automation Test"
+    }
+  ],
+  "phoneNumber": [
+    {
+      "value": "9353356543"
+    }
+  ]
+}

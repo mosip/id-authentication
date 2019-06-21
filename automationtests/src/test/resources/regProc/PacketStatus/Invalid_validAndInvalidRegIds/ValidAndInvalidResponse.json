@@ -1,9 +1,8 @@
 {
   "response": [
     {
-      "registrationId": "10011100115245020190404123845",
-      "statusCode": "PACKET_DECRYPTION_FAILED",
-      "retryCount": 4
+      "registrationId": "10002100320001320190614090820",
+      "statusCode": "REREGISTER"
     }
   ],
   "id": "mosip.registration.status",

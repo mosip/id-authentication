@@ -20,7 +20,11 @@ public enum ErrorCodes {
 	/**
 	 * CONFIG_FILE_NOT_FOUND_EXCEPTION
 	 */
-	PRG_QRC_003("PRG_QRC_003");
+	PRG_QRC_003("PRG_QRC_003"),
+	/**
+	 * INVALID_REQUESTTIME_FORMAT
+	 */
+	PRG_QRC_004("PRG_QRC_004");
 
 	/**
 	 * @param code

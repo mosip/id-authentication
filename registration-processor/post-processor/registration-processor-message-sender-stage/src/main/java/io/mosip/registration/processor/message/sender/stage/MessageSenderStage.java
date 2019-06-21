@@ -273,7 +273,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), null,
+					registrationStatusDto.getRegistrationId(), registrationStatusDto.getLatestRegistrationTransactionId(),
 					registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
 					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
 

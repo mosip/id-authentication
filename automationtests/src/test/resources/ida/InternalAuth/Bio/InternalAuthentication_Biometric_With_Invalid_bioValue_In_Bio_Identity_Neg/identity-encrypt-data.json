@@ -1,0 +1,18 @@
+{
+  "identityRequest": {
+    "biometrics": [
+      {
+        "data": {
+          "bioSubType": "FACE",
+          "bioType": "FID",
+          "bioValue": "fasjfhsahdfh8382",
+          "deviceCode": "cogent",
+          "deviceProviderID": "cogent",
+          "timestamp": "2019-06-20T15:28:47.047+05:30",
+          "transactionID": "5118566840"
+        }
+      }
+    ],
+    "timestamp": "2019-06-20T15:28:47.047+05:30"
+  }
+}

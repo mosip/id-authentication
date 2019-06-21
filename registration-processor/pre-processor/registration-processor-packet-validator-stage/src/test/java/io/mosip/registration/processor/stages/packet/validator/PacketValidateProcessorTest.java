@@ -28,6 +28,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,7 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -118,6 +120,9 @@ public class PacketValidateProcessorTest {
 
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
+	
+	@Mock
+	private IdRepoService idRepoService;
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
@@ -289,7 +294,7 @@ public class PacketValidateProcessorTest {
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
 		String test = "1234567890";
-		byte[] data = "1234567890".getBytes();
+		byte[] data = "{}".getBytes();
 		// Mockito.when(filesystemCephAdapterImpl.getFile(anyString(),
 		// anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
@@ -363,6 +368,7 @@ public class PacketValidateProcessorTest {
 
 		List<SyncRegistrationEntity> synchRecordList = new ArrayList<>();
 		synchRecordList.add(new SyncRegistrationEntity());
+		Mockito.when(idRepoService.findUinFromIdrepo(any(), any())).thenReturn(1);
 
 		Mockito.when(registrationRepositary.getSyncRecordsByRegIdAndRegType(any(), any())).thenReturn(synchRecordList);
 
@@ -375,16 +381,13 @@ public class PacketValidateProcessorTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void testStructuralValidationSuccess() throws Exception {
-
+		
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
-
 	}
 
 	@Test
-	@Ignore
 	public void testStructuralValidationForConfigValues() throws Exception {
 		when(env.getProperty(VALIDATESCHEMA)).thenReturn("false");
 		when(env.getProperty(VALIDATEFILE)).thenReturn("false");
@@ -489,7 +492,6 @@ public class PacketValidateProcessorTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void testStructuralValidationSuccessForAdult() throws Exception {
 		listAppender.start();
 
@@ -576,10 +578,9 @@ public class PacketValidateProcessorTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void testCheckSumValidationFailure() throws Exception {
 		String test = "123456789";
-		byte[] data = "1234567890".getBytes();
+		byte[] data = "{}".getBytes();
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 
@@ -655,7 +656,7 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	public void testBAseUncheckedExceptions() throws Exception {
+	public void testBAseUncheckedExceptions() throws IdObjectValidationFailedException, IdObjectIOException {
 		Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenThrow(new IdObjectValidationFailedException("", ""));
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
@@ -699,10 +700,9 @@ public class PacketValidateProcessorTest {
 	 *             the exception
 	 */
 	@Test
-	@Ignore
 	public void testCheckSumValidationFailureWithRetryCount() throws Exception {
 		String test = "123456789";
-		byte[] data = "1234567890".getBytes();
+		byte[] data = "{}".getBytes();
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 
 		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
@@ -745,7 +745,6 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	@Ignore
 	public void testPreRegIdsAreNull() {
 		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
@@ -754,7 +753,6 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	@Ignore
 	public void reverseDataSyncHttpClientErrorException() throws ApisResourceAccessException {
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
 		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
@@ -768,7 +766,6 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	@Ignore
 	public void reverseDataSyncServerErrorExceptionTest() throws ApisResourceAccessException {
 
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
@@ -784,7 +781,6 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	@Ignore
 	public void reverseDataSyncErrorTest() throws ApisResourceAccessException {
 		MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDTO = new MainResponseDTO<>();
 		ExceptionJSONInfoDTO exceptionJsonInfoDto = new ExceptionJSONInfoDTO();
@@ -806,7 +802,6 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	@Ignore
 	public void apiResourceExceptionTest() throws ApisResourceAccessException {
 		ApisResourceAccessException apisResourceAccessException = new ApisResourceAccessException(
 				"Packet Decryption failure");

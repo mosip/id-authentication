@@ -1,0 +1,11 @@
+{
+  "errors": [],
+  "id": "mosip.identity.auth",
+  "response": {
+    "authStatus": true,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "3385002618",
+  "version": "1.0"
+}

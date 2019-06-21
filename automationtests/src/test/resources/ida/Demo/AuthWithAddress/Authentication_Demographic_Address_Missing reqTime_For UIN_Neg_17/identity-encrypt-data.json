@@ -1,0 +1,67 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "MGR City"
+        },
+        {
+          "language": "ara",
+          "value": "مگر سِتي"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Mount Read House"
+        },
+        {
+          "language": "ara",
+          "value": "مُُنت رَِد هُُسِ"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Bangalore"
+        },
+        {
+          "language": "ara",
+          "value": "بَنگَلُرِ"
+        }
+      ],
+      "location1": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        }
+      ],
+      "location2": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        }
+      ],
+      "location3": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:26.026+05:30"
+  }
+}

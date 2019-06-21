@@ -1,0 +1,17 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "fullAddress": [
+        {
+          "language": "eng",
+          "value": "Chitti Robo Street Bhaubali Street House Andaman Kenitra Rabat Sale Kenitra Kenitra 14000"
+        },
+        {
+          "language": "ara",
+          "value": "14000 القنيطرة جهة الرباط سلا القنيطرة القنيطرة َندَمَن بهَُبَلِ سترِِت هُُسِ كهِتتِ رُبُ سترِِت"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:30.030+05:30"
+  }
+}

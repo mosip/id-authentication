@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "",
+  "version": "1.0"
+}

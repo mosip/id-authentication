@@ -1,0 +1,67 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Sravya Street"
+        },
+        {
+          "language": "ara",
+          "value": "سرَڤيَ سترِِت"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Dubai Cross Street"
+        },
+        {
+          "language": "ara",
+          "value": "دُبَِ كرُسس سترِِت"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Manali"
+        },
+        {
+          "language": "ara",
+          "value": "مَنَلِ"
+        }
+      ],
+      "location1": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        }
+      ],
+      "location2": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        }
+      ],
+      "location3": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:27.027+05:30"
+  }
+}

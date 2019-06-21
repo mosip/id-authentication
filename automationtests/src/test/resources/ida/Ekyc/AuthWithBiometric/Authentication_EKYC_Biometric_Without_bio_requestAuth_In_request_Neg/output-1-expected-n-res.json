@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-008",
+      "errorMessage": "No authentication type selected"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "7185828543",
+  "version": "1.0"
+}

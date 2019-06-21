@@ -12,6 +12,7 @@
       <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
         <mat-form-field class="file-upload__input">
           <mat-select
+            disableOptionCentering
             placeholder="{{ document.code }}"
             (selectionChange)="selectChange($event, i)"
             (openedChange)="openedChange($event, i)"
@@ -51,7 +52,7 @@
               </mat-select>
             </mat-form-field>
           </span>
-          <span>
+          <span *ngIf="allApplicants.length > 1">
             <mat-icon class="icon" matTooltip="{{ 'helpText.same_as' | translate }}" [inline]="true"
               >help_outline</mat-icon
             >

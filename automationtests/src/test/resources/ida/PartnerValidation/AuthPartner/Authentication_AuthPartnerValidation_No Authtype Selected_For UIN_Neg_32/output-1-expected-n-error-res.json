@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-008",
+      "errorMessage": "No authentication type selected"
+    }
+  ],
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

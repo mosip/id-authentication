@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "$REGEXP:.*Missing Input Parameter - bioValue.*$"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "5533401820",
+  "version": "1.0"
+}

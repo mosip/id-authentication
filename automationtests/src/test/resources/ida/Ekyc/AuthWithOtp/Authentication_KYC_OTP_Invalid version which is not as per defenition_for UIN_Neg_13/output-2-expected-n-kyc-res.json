@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "actionMessage": "$IGNORE$",
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - version"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false
+  },
+  "responseTime": "$IGNORE$",
+  "transactionID": "5086132346",
+  "version": "1.0"
+}

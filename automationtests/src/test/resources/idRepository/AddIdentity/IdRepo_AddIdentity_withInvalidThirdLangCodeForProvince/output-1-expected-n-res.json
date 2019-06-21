@@ -1,1 +1,1 @@
-{"errors":[{"errorCode":"IDR-IDC-002","message":"Invalid Input Parameter - identity/city/2/language"}],"id":"mosip.id.create","responsetime":"$IGNORE$","version":"$version$"}
+{"errors":[{"errorCode":"IDR-IDC-002","message":"Invalid Input Parameter - identity/province/2/language"}],"id":"mosip.id.create","responsetime":"$IGNORE$","version":"$version$"}

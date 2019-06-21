@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - requestTime"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMPZ$",
+  "transactionID": "6743184866",
+  "version": "1.0"
+}

@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - version"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "0142883231",
+  "version": "1.0"
+}

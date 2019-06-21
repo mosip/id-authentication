@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "actionMessage": "Please send the request within 30 minutes",
+      "errorCode": "IDA-MLC-001",
+      "errorMessage": "Request to be received at MOSIP within 30 minutes"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "1364863447",
+  "version": "1.0"
+}

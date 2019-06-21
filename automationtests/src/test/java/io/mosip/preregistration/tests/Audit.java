@@ -83,7 +83,7 @@ public class Audit extends BaseTestCase implements ITest {
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
-	@Test
+	/*@Test
 	public void getAuditDataForDemographicDiscard() {
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
@@ -217,7 +217,7 @@ public class Audit extends BaseTestCase implements ITest {
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 		Assert.assertTrue(result, "object are not equal");
 	}
-
+*/
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

@@ -53,9 +53,6 @@ public class PacketInfoMapper {
 	/** The Constant PRE_REGISTRATION_ID. */
 	private static final String PRE_REGISTRATION_ID = "preRegistrationId";
 
-	/** The languages. */
-	private static StringBuilder languages = new StringBuilder();
-
 	/**
 	 * Instantiates a new packet info mapper.
 	 */
@@ -117,7 +114,7 @@ public class PacketInfoMapper {
 	 *            the json node
 	 * @return the languages
 	 */
-	private static String[] getLanguages(JsonValue[] jsonNode) {
+	private static String[] getLanguages(JsonValue[] jsonNode,StringBuilder languages) {
 		if (jsonNode != null) {
 			for (int i = 0; i < jsonNode.length; i++) {
 				if (!(languages.toString().contains(jsonNode[i].getLanguage())))
@@ -145,10 +142,11 @@ public class PacketInfoMapper {
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
+		StringBuilder languages = new StringBuilder();
 		if (demoDto.getName() != null) {
-			getLanguages(demoDto.getName());
+			getLanguages(demoDto.getName(),languages);
 		}
-		String[] languageArray = getLanguages(demoDto.getGender());
+		String[] languageArray = getLanguages(demoDto.getGender(),languages);
 		for (int i = 0; i < languageArray.length; i++) {
 			entity = new IndividualDemographicDedupeEntity();
 			applicantDemographicPKEntity = new IndividualDemographicDedupePKEntity();

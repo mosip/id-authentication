@@ -1,0 +1,67 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Bhaubali Street"
+        },
+        {
+          "language": "ara",
+          "value": "بهَُبَلِ سترِِت"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Chitti Robo Road House"
+        },
+        {
+          "language": "ara",
+          "value": "كهِتتِ رُبُ رَُد هُُسِ"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Manali"
+        },
+        {
+          "language": "ara",
+          "value": "مَنَلِ"
+        }
+      ],
+      "location1": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        }
+      ],
+      "location2": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        }
+      ],
+      "location3": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:29.029+05:30"
+  }
+}

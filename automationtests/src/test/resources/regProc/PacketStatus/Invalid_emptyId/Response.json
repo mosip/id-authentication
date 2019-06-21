@@ -1,11 +1,11 @@
 {
   "errors": [
     {
-      "errorcode": "RPR-RGS-024",
+      "errorCode": "RPR-RGS-024",
       "message": "Invalid Input Parameter - id"
     },
     {
-      "errorcode": "RPR-RGS-015",
+      "errorCode": "RPR-RGS-015",
       "message": "Input Data Validation Failed"
     }
   ],
