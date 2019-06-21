@@ -16,7 +16,17 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
 /**
- * This is a job to sync the packet status
+ * The {@code PacketSyncStatusJob} is a job to sync the packet status
+ * 
+ * The {@code PacketSyncStatusJob} is a job which will get the status of a
+ * packet (EX: PROCESSED) and update the same for associate registration in
+ * local DataBase.
+ * 
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * 
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch
  * 
  * @author YASWANTH S
  * @since 1.0.0

@@ -34,9 +34,9 @@ public abstract class AuthenticationBaseValidator {
 	 * 		<p>Then it will return the {@link AuthenticationValidatorDTO} as null</p>
 	 * <p>If Offline:</p>
 	 * 	<p>Throws the corresponding error meessage</p>
-	 * @param userId
-	 * @param otp
-	 * @return
+	 * @param userId - the User ID
+	 * @param otp - the OTP to be validated
+	 * @return the {@link AuthTokenDTO} after validation
 	 */
 	public abstract AuthTokenDTO validate(String userId, String otp);
 
