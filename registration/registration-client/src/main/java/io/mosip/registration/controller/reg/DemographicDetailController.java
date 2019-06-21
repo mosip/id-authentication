@@ -2160,7 +2160,7 @@ public class DemographicDetailController extends BaseController {
 			if (switchedOn.get()) {
 				isValid = validateDateOfBirth(isValid);
 			} else {
-				if (Integer.parseInt(ageField.getText()) > maxAge) {
+				if ( ageField.getText().length()>0 && Integer.parseInt(ageField.getText()) > maxAge) {
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
 					isValid = false;

@@ -76,7 +76,7 @@
                               <Insets />
                            </HBox.margin>
                         </Button>
-                        <Button graphicTextGap="10.0" mnemonicParsing="false" styleClass="ackBackButton" text="%downloadPDF">
+                        <Button graphicTextGap="10.0" mnemonicParsing="false" styleClass="ackBackButton" text="%downloadPDF" visible="false" managed="false">
                            <graphic>
                               <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
