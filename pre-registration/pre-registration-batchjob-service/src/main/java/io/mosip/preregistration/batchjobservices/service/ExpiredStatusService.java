@@ -5,11 +5,15 @@
 package io.mosip.preregistration.batchjobservices.service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.support.CronSequenceGenerator;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -55,6 +59,9 @@ public class ExpiredStatusService {
 	@Autowired
 	AuditLogUtil auditLogUtil;
 	
+	@Value("${preregistration.job.schedule.cron.expiredStatusJob}")
+	String cronExpressionForExpiredStatus;
+	
 	public AuthUserDetails authUserDetails() {
 		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
@@ -72,8 +79,14 @@ public class ExpiredStatusService {
 		response.setVersion(versionUrl);
 		boolean isSaveSuccess=false;
 		List<RegistrationBookingEntity> bookedPreIdList = null;
+		
+		CronSequenceGenerator generator = new CronSequenceGenerator(cronExpressionForExpiredStatus);
+		Date nextExecutionDate = generator.next(new Date());
+		LocalDate nextExecutionLocalDate= nextExecutionDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		long dateDiff = ChronoUnit.DAYS.between( LocalDate.now(),nextExecutionLocalDate);
+		
 		try {
-			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate);
+			bookedPreIdList = batchServiceDAO.getAllOldDateBooking(currentDate,dateDiff);
 
 			bookedPreIdList.forEach(iterate -> {
 				String preRegId = iterate.getBookingPK().getPreregistrationId();

@@ -94,7 +94,7 @@ public class ExpiredStatusServiceTest {
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);
 		
-		Mockito.when(regAppointmentRepository.findByRegDateBefore(currentDate)).thenReturn(bookedPreIdList);
+		Mockito.when(regAppointmentRepository.findByRegDateBetween(Mockito.any(),Mockito.any())).thenReturn(bookedPreIdList);
 		Mockito.when(regAppointmentRepository.getPreRegId(bookingEntity.getBookingPK().getPreregistrationId())).thenReturn(bookingEntity);
 		//bookingEntity.setStatusCode("EXPIRED");
 		Mockito.when(regAppointmentRepository.save(bookingEntity)).thenReturn(bookingEntity);
@@ -117,12 +117,14 @@ public class ExpiredStatusServiceTest {
 		bookingEntity.setBookingPK(bookingPK);
 		bookingEntity.setRegDate(LocalDate.parse("2018-12-04"));
 		bookingEntity.setSlotFromTime(LocalTime.parse("09:00"));
+		RegistrationBookingEntity bookingEntityFail=new RegistrationBookingEntity();
+		List<RegistrationBookingEntity> bookedPreIdListFail = new ArrayList<>();
 		
 		bookedPreIdList.add(bookingEntity);
 		logger.info("demographicEntity " + demographicEntity);
 		logger.info("bookingEntity " + bookingEntity);
 		
-		Mockito.when(regAppointmentRepository.findByRegDateBefore(currentDate)).thenReturn(null);
+		Mockito.when(regAppointmentRepository.findByRegDateBetween(Mockito.any(),Mockito.any())).thenReturn(bookedPreIdListFail);
 		Mockito.when(regAppointmentRepository.getPreRegId(bookingEntity.getBookingPK().getPreregistrationId())).thenReturn(bookingEntity);
 		//bookingEntity.setStatusCode("EXPIRED");
 		Mockito.when(regAppointmentRepository.save(bookingEntity)).thenReturn(bookingEntity);
