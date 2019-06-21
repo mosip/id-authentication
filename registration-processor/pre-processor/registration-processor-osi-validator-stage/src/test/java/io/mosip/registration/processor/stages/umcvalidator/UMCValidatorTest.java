@@ -24,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
@@ -81,7 +83,7 @@ public class UMCValidatorTest {
 	/** The osi utils. */
 	@Mock
 	private OSIUtils osiUtils;
-
+	
 	Identity identity;
 
 	/** The rcm dto. */
@@ -92,17 +94,20 @@ public class UMCValidatorTest {
 
 	List<FieldValue> metaData;
 
+	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+
 	/**
 	 * Sets the up.
-	 * @throws java.io.IOException 
-	 * @throws IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
+	 * 
+	 * @throws java.io.IOException
+	 * @throws IOException
+	 * @throws ApisResourceAccessException
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Before
-	public void setUp() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
-		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
-		umcValidator.setRegistrationStatusDto(registrationStatusDto);
+	public void setUp()
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
+		// umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		rcmDto = new RegistrationCenterMachineDto();
 		regOsi = new RegOsiDto();
 		rcmDto.setIsActive(true);
@@ -171,7 +176,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCSuccessTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -181,7 +186,7 @@ public class UMCValidatorTest {
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
+		rcdto.setId("12245");
 
 		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
 		FieldValue fv1 = new FieldValue();
@@ -362,7 +367,7 @@ public class UMCValidatorTest {
 		// any(), any())).thenReturn(offrepdto).thenReturn(test)
 		// .thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
 		// UMC validation successfull;
-		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -378,7 +383,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void UMCMappingNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -433,7 +438,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mcdtosWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -449,7 +454,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void machineIdNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -500,7 +505,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -516,7 +521,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void machineNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -567,7 +572,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -583,7 +588,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
@@ -633,7 +638,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -649,7 +654,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException, JsonParseException,
@@ -708,7 +713,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -724,7 +729,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void registrationCenternotActiveTest() throws ApisResourceAccessException, JsonParseException,
@@ -775,7 +780,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -791,7 +796,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCFailureForTimestampTest() throws ApisResourceAccessException, JsonParseException,
@@ -853,7 +858,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(offrepdtoWrapper).thenThrow(apisResourceAccessException);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -869,7 +874,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCFailureForRegistrationCenterIDTest() throws ApisResourceAccessException, JsonParseException,
@@ -932,7 +937,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(offrepdtoWrapper).thenThrow(apisResourceAccessException);
 
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -948,7 +953,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCCenterIdValidationRejectedTest() throws ApisResourceAccessException, JsonParseException,
@@ -1024,7 +1029,7 @@ public class UMCValidatorTest {
 				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedto)
 				.thenReturn(registrationCenterDeviceHistoryResponseDto);
 
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -1040,7 +1045,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	@Ignore
@@ -1051,7 +1056,7 @@ public class UMCValidatorTest {
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
+		rcdto.setId("12245");
 
 		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
 		FieldValue fv1 = new FieldValue();
@@ -1129,7 +1134,7 @@ public class UMCValidatorTest {
 
 		MachineHistoryDto mcdto = new MachineHistoryDto();
 		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356"); 
+		mcdto.setId("yyeqy26356");
 
 		List<MachineHistoryDto> mcdtos = new ArrayList<>();
 		mcdtos.add(mcdto);
@@ -1186,7 +1191,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
 				.thenThrow(apisResourceAccessException);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -1202,7 +1207,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void validateDeviceFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -1289,7 +1294,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenThrow(apisResourceAccessException)
 				.thenReturn(centerDeviceHistoryResponseDto);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -1305,7 +1310,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void validateRegistrationCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -1315,7 +1320,7 @@ public class UMCValidatorTest {
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
+		rcdto.setId("12245");
 
 		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
 		FieldValue fv1 = new FieldValue();
@@ -1369,8 +1374,8 @@ public class UMCValidatorTest {
 
 		identity.setMetaData(metaData);
 		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		List<ErrorDTO> errors=new ArrayList<ErrorDTO>();
-		ErrorDTO errorDto=new ErrorDTO();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO errorDto = new ErrorDTO();
 		errorDto.setMessage("");
 		errors.add(errorDto);
 		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
@@ -1442,7 +1447,7 @@ public class UMCValidatorTest {
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
-	
+
 		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
 		centerDeviceHistoryResponseDtoWrapper.setResponse(registrationCenterDeviceHistoryResponseDto);
 		centerDeviceHistoryResponseDtoWrapper.setErrors(errors);
@@ -1451,10 +1456,10 @@ public class UMCValidatorTest {
 		identity.setMetaData(metaData);
 		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenThrow(apisResourceAccessException).thenThrow(apisResourceAccessException).thenReturn(offrepdtoWrapper)
-				.thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
+				.thenThrow(apisResourceAccessException).thenThrow(apisResourceAccessException)
+				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
 				.thenReturn(registrationCenterDeviceHistoryResponseDto);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -1470,7 +1475,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void validateMachineFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -1480,8 +1485,12 @@ public class UMCValidatorTest {
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
-
+		rcdto.setId("12245");
+		RegistrationCenterResponseDto rcrdto=new RegistrationCenterResponseDto();
+		List<RegistrationCenterDto> dts=new ArrayList<RegistrationCenterDto>();
+		dts.add(rcdto);
+		rcrdto.setRegistrationCentersHistory(dts);
+       // Mockito.when(mapper.readValue(any(),any()))
 		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
 		FieldValue fv1 = new FieldValue();
 		fv1.setLabel("Printer");
@@ -1546,8 +1555,8 @@ public class UMCValidatorTest {
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
 		rcdto.setId("12245");
-		List<ErrorDTO> errors=new ArrayList<ErrorDTO>();
-		ErrorDTO errorDto=new ErrorDTO();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO errorDto = new ErrorDTO();
 		errorDto.setMessage("");
 		errors.add(errorDto);
 		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
@@ -1602,7 +1611,7 @@ public class UMCValidatorTest {
 
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
-	
+
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
@@ -1614,9 +1623,9 @@ public class UMCValidatorTest {
 		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenThrow(apisResourceAccessException).thenReturn(regrepdtoWrapper)
-				.thenThrow(apisResourceAccessException).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
-				.thenReturn(centerDeviceHistoryResponseDtoWrapper);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+				.thenThrow(apisResourceAccessException).thenReturn(testWrapper)
+				.thenReturn(deviceHistoryResponsedtoWrapper).thenReturn(centerDeviceHistoryResponseDtoWrapper);
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -1632,7 +1641,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void validateUMCmappingFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -1642,7 +1651,7 @@ public class UMCValidatorTest {
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
+		rcdto.setId("12245");
 
 		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
 		FieldValue fv1 = new FieldValue();
@@ -1695,8 +1704,8 @@ public class UMCValidatorTest {
 		metaData.add(fv);
 
 		identity.setMetaData(metaData);
-		List<ErrorDTO> errors=new ArrayList<ErrorDTO>();
-		ErrorDTO errorDto=new ErrorDTO();
+		List<ErrorDTO> errors = new ArrayList<ErrorDTO>();
+		ErrorDTO errorDto = new ErrorDTO();
 		errorDto.setMessage("");
 		errors.add(errorDto);
 		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
@@ -1768,7 +1777,7 @@ public class UMCValidatorTest {
 
 		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
 		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
-		
+
 		registrationCenterDeviceHistoryDetails.setIsActive(true);
 		registrationCenterDeviceHistoryResponseDto
 				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
@@ -1782,7 +1791,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenThrow(apisResourceAccessException)
 				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
 				.thenReturn(centerDeviceHistoryResponseDtoWrapper);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 }

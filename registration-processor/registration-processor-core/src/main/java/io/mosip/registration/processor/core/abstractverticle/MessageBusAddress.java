@@ -19,6 +19,8 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	public static final String BUS_OUT = "bus-out";
+
 	/**
 	 * Instantiates a new message bus address.
 	 */
@@ -27,15 +29,21 @@ public class MessageBusAddress implements Serializable {
 
 	public MessageBusAddress(MessageBusAddress messageBusAddress, RegistrationType regType) {
 
-		               List<String> addressList = (List<String>)Arrays.asList(messageBusAddress.getAddress().split("-"));
+		List<String> addressList = (List<String>)Arrays.asList(messageBusAddress.getAddress().split("-"));
 
-		               ArrayList<String> modifiableArrayList = new ArrayList<String>(addressList);
+		ArrayList<String> modifiableArrayList = new ArrayList<String>(addressList);
 
-		               modifiableArrayList.add(addressList.size() - 2, regType.toString());
-		               String modifiedAddress = String.join("-", modifiableArrayList);
+		modifiableArrayList.add(addressList.size() - 2, regType.toString());
+		String modifiedAddress = null;
 
-		               this.address = modifiedAddress;
-		       }
+		if(messageBusAddress.getAddress().contains(BUS_OUT)) {
+			modifiedAddress = String.join("-", modifiableArrayList);
+		}else{
+			modifiedAddress = messageBusAddress.getAddress();
+		}
+
+		this.address = modifiedAddress;
+	}
 
 	/** The address. */
 	private String address;

@@ -7,6 +7,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,9 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
@@ -56,6 +54,7 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -70,6 +69,8 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
@@ -97,7 +98,6 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 public class PacketValidateProcessorTest {
 
 	/** The input stream. */
-	@Mock
 	private InputStream inputStream;
 
 	/** The filesystem ceph adapter impl. */
@@ -107,6 +107,12 @@ public class PacketValidateProcessorTest {
 	/** The registration status service. */
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+
+	@Mock
+	private LogDescription description;
+
+	@Mock
+	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	/** The packet info manager. */
 	@Mock
@@ -120,9 +126,6 @@ public class PacketValidateProcessorTest {
 
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
-	
-	@Mock
-	private IdRepoService idRepoService;
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
@@ -161,6 +164,9 @@ public class PacketValidateProcessorTest {
 	ABISHandlerUtil handlerUtil;
 
 	@Mock
+	private IdRepoService idRepoService;
+
+	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 
 	@Mock
@@ -182,9 +188,6 @@ public class PacketValidateProcessorTest {
 	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
 
 	StatusResponseDto statusResponseDto;
-	private static final String CONFIG_SERVER_URL = "url";
-	private String identityMappingjsonString;
-
 	private static final String PRIMARY_LANGUAGE = "mosip.primary-language";
 
 	private static final String SECONDARY_LANGUAGE = "mosip.secondary-languag";
@@ -216,6 +219,7 @@ public class PacketValidateProcessorTest {
 		list = new ArrayList<InternalRegistrationStatusDto>();
 
 		listAppender = new ListAppender<>();
+		inputStream = new FileInputStream("src\\test\\resources\\ID.json");
 
 		dto.setRid("2018701130000410092018110735");
 		dto.setReg_type(RegistrationType.valueOf("UPDATE"));
@@ -250,8 +254,6 @@ public class PacketValidateProcessorTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
 		documents.add(document);
-		// identity.setDocuments(documents);
-		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
 		FieldValueArray applicantBiometric = new FieldValueArray();
@@ -286,7 +288,6 @@ public class PacketValidateProcessorTest {
 		identity.setHashSequence2(fieldValueArrayListSequence);
 		packetMetaInfo.setIdentity(identity);
 
-		// Mockito.when(handlerUtil.getUinFromIDRepo(any())).thenReturn(1234);
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
@@ -307,20 +308,20 @@ public class PacketValidateProcessorTest {
 		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
 		listAppender.start();
 		list.add(registrationStatusDto);
+		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("Something");
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(description.getMessage()).thenReturn("hello");
 		Mockito.when(registrationStatusService.getByStatus(anyString())).thenReturn(list);
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(idRepoService.findUinFromIdrepo(any(), any())).thenReturn(65324321);
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(any(), any())).thenReturn(inputStream);
-		PowerMockito.mockStatic(IOUtils.class);
-		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
-
 		PowerMockito.mockStatic(HMACUtils.class);
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
-		// Mockito.doNothing().when(packetInfoManager).savePacketData(packetMetaInfo.getIdentity());
 		MainResponseDTO<ReverseDatasyncReponseDTO> mainResponseDTO = new MainResponseDTO<>();
 		ReverseDatasyncReponseDTO reverseDatasyncReponseDTO = new ReverseDatasyncReponseDTO();
 		reverseDatasyncReponseDTO.setAlreadyStoredPreRegIds("2");
@@ -333,7 +334,6 @@ public class PacketValidateProcessorTest {
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");
 		preRegIds.add("123456789");
-		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
@@ -347,7 +347,7 @@ public class PacketValidateProcessorTest {
 		when(env.getProperty(VALIDATEAPPLICANTDOCUMENT)).thenReturn("false");
 		when(env.getProperty(VALIDATEMASTERDATA)).thenReturn("true");
 		when(env.getProperty(VALIDATEMANDATORY)).thenReturn("false");
-		Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenReturn(true);
+		Mockito.when(idObjectValidator.validateIdObject(any(), any())).thenReturn(true);
 
 		JSONObject demographicIdentity = new JSONObject();
 		PowerMockito.when(JsonUtil.getJSONObject(any(), any())).thenReturn(demographicIdentity);
@@ -362,7 +362,6 @@ public class PacketValidateProcessorTest {
 		Mockito.when(utility.retrieveIdrepoJson(any())).thenReturn(jsonObject);
 
 		Mockito.when(utility.getDemographicIdentityJSONObject(any())).thenReturn(jsonObject);
-		// PowerMockito.mockStatic(JsonUtil.class);
 		PowerMockito.when(JsonUtil.getJSONObject(jsonObject, "individualBiometrics")).thenReturn(jsonObject);
 		Mockito.when(jsonObject.get("value")).thenReturn("applicantCBEF");
 
@@ -382,7 +381,7 @@ public class PacketValidateProcessorTest {
 	 */
 	@Test
 	public void testStructuralValidationSuccess() throws Exception {
-		
+
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 	}
@@ -400,10 +399,9 @@ public class PacketValidateProcessorTest {
 	}
 
 	@Test
-	public void testSchemaValidationFailure() throws IdObjectValidationFailedException, IdObjectIOException
-	{
+	public void testSchemaValidationFailure() throws IdObjectValidationFailedException, IdObjectIOException {
 
-		Mockito.when(idObjectValidator.validateIdObject(any(),any())).thenReturn(false);
+		Mockito.when(idObjectValidator.validateIdObject(any(), any())).thenReturn(false);
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 	}
@@ -442,7 +440,6 @@ public class PacketValidateProcessorTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(documentPob);
 		documents.add(document);
-		// identity.setDocuments(documents);
 
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -527,7 +524,6 @@ public class PacketValidateProcessorTest {
 		documents.add(documentPob);
 		documents.add(document);
 		documents.add(document2);
-		// identity.setDocuments(documents);
 		Mockito.when(documentUtility.getDocumentList(any())).thenReturn(documents);
 		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
@@ -600,7 +596,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
-		assertFalse(!messageDto.getIsValid());
+		assertFalse(messageDto.getIsValid());
 
 	}
 
@@ -623,7 +619,6 @@ public class PacketValidateProcessorTest {
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
 		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.FALSE);
-		// regTypeCheck=false;
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertFalse(messageDto.getIsValid());
 	}
@@ -722,7 +717,7 @@ public class PacketValidateProcessorTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
-		assertFalse(!messageDto.getIsValid());
+		assertFalse(messageDto.getIsValid());
 
 	}
 
@@ -746,7 +741,6 @@ public class PacketValidateProcessorTest {
 
 	@Test
 	public void testPreRegIdsAreNull() {
-		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(null);
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue(messageDto.getIsValid());
 
@@ -793,7 +787,6 @@ public class PacketValidateProcessorTest {
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");
 		preRegIds.add("123456789");
-		// Mockito.when(packetInfoManager.getRegOsiPreRegId(Matchers.any())).thenReturn(preRegIds);
 		Mockito.when(restClientService.postApi(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any(),
 				Matchers.any())).thenReturn(mainResponseDTO);
 
