@@ -476,4 +476,21 @@ public class InternalRegistrationStatusDto implements Serializable {
 		this.reProcessRetryCount = reProcessRetryCount;
 	}
 
+	@Override
+	public String toString() {
+		return "InternalRegistrationStatusDto [registrationId=" + registrationId + ", registrationType="
+				+ registrationType + ", referenceRegistrationId=" + referenceRegistrationId + ", statusCode="
+				+ statusCode + ", langCode=" + langCode + ", statusComment=" + statusComment
+				+ ", latestRegistrationTransactionId=" + latestRegistrationTransactionId + ", isActive=" + isActive
+				+ ", createdBy=" + createdBy + ", createDateTime=" + createDateTime + ", updatedBy=" + updatedBy
+				+ ", updateDateTime=" + updateDateTime + ", isDeleted=" + isDeleted + ", deletedDateTime="
+				+ deletedDateTime + ", retryCount=" + retryCount + ", applicantType=" + applicantType
+				+ ", latestTransactionTypeCode=" + latestTransactionTypeCode + ", latestTransactionStatusCode="
+				+ latestTransactionStatusCode + ", latestTransactionTimes=" + latestTransactionTimes
+				+ ", registrationStageName=" + registrationStageName + ", reProcessRetryCount=" + reProcessRetryCount
+				+ "]";
+	}
+	
+	
+
 }

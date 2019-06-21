@@ -235,7 +235,6 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 		FileUpload fileUpload = ctx.fileUploads().iterator().next();
 		FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
 				new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
-		FileUtils.forceDelete(new File(fileUpload.uploadedFileName()));
 		File file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 		return file;
 
