@@ -206,7 +206,7 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		auditFactory.audit(
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_SUBMIT_OTP : AuditEvent.REG_OPERATOR_AUTH_SUBMIT_OTP,
-				Components.REG_OS_AUTH, otpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH, otpUserId.getText().isEmpty() ? "NA" : otpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
@@ -252,7 +252,7 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		auditFactory.audit(
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_PASSWORD : AuditEvent.REG_OPERATOR_AUTH_PASSWORD,
-				Components.REG_OS_AUTH, username.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH, username.getText().isEmpty() ? "NA" : username.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		String status = RegistrationConstants.EMPTY;
 		if (isSupervisor) {
@@ -311,7 +311,7 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		auditFactory.audit(
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_FINGERPRINT : AuditEvent.REG_OPERATOR_AUTH_FINGERPRINT,
-				Components.REG_OS_AUTH, fpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH, fpUserId.getText().isEmpty() ? "NA" : fpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Fingerprint for Fingerprint based Authentication");
@@ -359,7 +359,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void validateIris() {
 
 		auditFactory.audit(isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_IRIS : AuditEvent.REG_OPERATOR_AUTH_IRIS,
-				Components.REG_OS_AUTH, irisUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH, irisUserId.getText().isEmpty() ? "NA" : irisUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Iris for Iris based Authentication");
@@ -407,7 +407,7 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void validateFace() {
 
 		auditFactory.audit(isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_FACE : AuditEvent.REG_OPERATOR_AUTH_FACE,
-				Components.REG_OS_AUTH, faceUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH, faceUserId.getText().isEmpty() ? "NA" : faceUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Face for Face based Authentication");
