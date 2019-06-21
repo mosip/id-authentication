@@ -230,7 +230,7 @@ export class CenterSelectionComponent implements OnInit {
     }
   }
   displayMessageError(title: string, message: string , error: any) {
-    if(error && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
+    if(error && error[appConstants.ERROR] && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
     {
         message = this.errorlabels.tokenExpiredLogout;
         title = '';
