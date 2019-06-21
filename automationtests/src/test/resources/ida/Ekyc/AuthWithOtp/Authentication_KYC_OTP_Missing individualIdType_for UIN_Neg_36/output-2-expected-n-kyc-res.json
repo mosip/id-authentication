@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "actionMessage": "$IGNORE$",
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false
+  },
+  "responseTime": "$IGNORE$",
+  "transactionID": "8862737383",
+  "version": "1.0"
+}

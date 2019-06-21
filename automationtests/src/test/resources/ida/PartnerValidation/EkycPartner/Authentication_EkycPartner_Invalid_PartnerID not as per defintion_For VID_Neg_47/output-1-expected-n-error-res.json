@@ -1,0 +1,15 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-009",
+      "errorMessage": "Partner is not registered"
+    }
+  ],
+  "response": {
+    "identity": "$IGNORE$",
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

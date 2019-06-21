@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-006",
+      "errorMessage": "OTP Authentication usage not allowed as per policy"
+    }
+  ],
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

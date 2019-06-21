@@ -1,0 +1,13 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "fullAddress": [
+        {
+          "language": "eng",
+          "value": "14000 Chitti Robo Street Sravya Street House Chennai Rabat Rabat Sale Kenitra Rabat"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:30.030+05:30"
+  }
+}

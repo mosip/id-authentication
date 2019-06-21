@@ -1,0 +1,10 @@
+{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1127461263",
+  "responseTime": "2019-06-20T15:31:37.424+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6545",
+    "maskedEmail": "XXgXXsXXvXXaXXkXXaX@mindtree.com"
+  }
+}

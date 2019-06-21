@@ -1,0 +1,18 @@
+{
+  "identityRequest": {
+    "biometrics": [
+      {
+        "data": {
+          "bioSubType": "LEFT_INDEX",
+          "bioType": "FMR",
+          "bioValue": "fgiuagiuefdiaidiufiuaiyi872186768767186836bhh",
+          "deviceCode": "cogent",
+          "deviceProviderID": "cogent",
+          "timestamp": "2019-06-20T15:28:59.059+05:30"
+        }
+      }
+    ],
+    "timestamp": "2019-06-20T15:28:59.059+05:30",
+    "transactionID": "7870556503"
+  }
+}

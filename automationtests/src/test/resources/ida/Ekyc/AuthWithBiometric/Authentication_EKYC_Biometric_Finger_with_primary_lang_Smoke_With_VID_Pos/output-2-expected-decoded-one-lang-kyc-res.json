@@ -1,0 +1,66 @@
+{
+  "FACE": "Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA",
+  "addressLine1": [
+    {
+      "language": "eng",
+      "value": "Chitti Robo Nagar"
+    }
+  ],
+  "addressLine2": [
+    {
+      "language": "eng",
+      "value": "Mary Rose Street House"
+    }
+  ],
+  "addressLine3": [
+    {
+      "language": "eng",
+      "value": "Sentinal Island"
+    }
+  ],
+  "dob": [
+    {
+      "value": "1990/12/19"
+    }
+  ],
+  "emailId": [
+    {
+      "value": "athila.sirajudeen@mindtree.com"
+    }
+  ],
+  "gender": [
+    {
+      "language": "eng",
+      "value": "Male"
+    }
+  ],
+  "location1": [
+    {
+      "language": "eng",
+      "value": "Rabat"
+    }
+  ],
+  "location2": [
+    {
+      "language": "eng",
+      "value": "Rabat Sale Kenitra"
+    }
+  ],
+  "location3": [
+    {
+      "language": "eng",
+      "value": "Rabat"
+    }
+  ],
+  "name": [
+    {
+      "language": "eng",
+      "value": "Dinesh Pudukottai"
+    }
+  ],
+  "phoneNumber": [
+    {
+      "value": "9103356548"
+    }
+  ]
+}

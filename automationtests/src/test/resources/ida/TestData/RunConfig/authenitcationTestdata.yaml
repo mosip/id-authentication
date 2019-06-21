@@ -126,11 +126,11 @@ female_gender_code_valid:
       - FLE
 other_gender_code_valid:
       - OTH
-male_gender_english_valid:
+male_gender_primary_valid:
       - Male
-female_gender_english_valid:
+female_gender_primary_valid:
       - Female
-other_gender_english_valid:
+other_gender_primary_valid:
       - Others
 male_gender_french_valid:
       - Mâle

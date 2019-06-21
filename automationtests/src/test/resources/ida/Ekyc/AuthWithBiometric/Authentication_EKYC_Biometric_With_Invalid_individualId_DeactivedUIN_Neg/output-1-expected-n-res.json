@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "actionMessage": "Your UIN status is not active",
+      "errorCode": "IDA-MLC-003",
+      "errorMessage": "UIN has been deactivated"
+    }
+  ],
+  "id": "mosip.identity.kyc",
+  "response": {
+    "kycStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "6554630357",
+  "version": "1.0"
+}

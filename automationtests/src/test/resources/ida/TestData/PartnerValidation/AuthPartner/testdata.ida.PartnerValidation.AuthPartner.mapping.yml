@@ -1186,7 +1186,7 @@ testdata:
       AuthReq.bio: BOOLEAN:true
     input.identity-encrypt-bio-data:
       identityReq.bioSubType: Right
-      identityReq.bioType: IIR
+      identityReq.bioType: Iris
       identityReq.bioValue: $idrepo~$input.auth-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Iris'][Subtype='Right']//following::BDB$
     output.output-1-expected-n-error-res:
       output.1.response.n.err.status: BOOLEAN:false

@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-010",
+      "errorMessage": "MISP and Partner not mapped"
+    }
+  ],
+  "response": {
+    "authStatus": false
+  },
+  "responseTime": "$TIMESTAMP$",
+  "version": "1.0"
+}

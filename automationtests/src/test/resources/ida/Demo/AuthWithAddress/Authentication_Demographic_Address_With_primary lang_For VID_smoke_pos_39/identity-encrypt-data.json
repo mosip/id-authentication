@@ -1,0 +1,43 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "location1": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        }
+      ],
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Mount Read"
+        }
+      ],
+      "location2": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Vivek Street House"
+        }
+      ],
+      "location3": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Pacific Ocean"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:29.029+05:30"
+  }
+}

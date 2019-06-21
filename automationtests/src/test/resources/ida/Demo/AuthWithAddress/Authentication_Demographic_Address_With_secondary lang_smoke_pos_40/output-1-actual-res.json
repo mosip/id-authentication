@@ -1,0 +1,42 @@
+{
+  "transactionID": "0578101028",
+  "version": "1.0",
+  "id": "mosip.identity.auth",
+  "errors": [
+    {
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data address line item(s) in ara did not match",
+      "actionMessage": "Please re-enter your address line item(s) in ara"
+    },
+    {
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data address line item(s) in ara did not match",
+      "actionMessage": "Please re-enter your address line item(s) in ara"
+    },
+    {
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data address line item(s) in ara did not match",
+      "actionMessage": "Please re-enter your address line item(s) in ara"
+    },
+    {
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data location1 in ara did not match",
+      "actionMessage": "Please re-enter your location1 in ara"
+    },
+    {
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data location2 in ara did not match",
+      "actionMessage": "Please re-enter your location2 in ara"
+    },
+    {
+      "errorCode": "IDA-DEA-001",
+      "errorMessage": "Demographic data location3 in ara did not match",
+      "actionMessage": "Please re-enter your location3 in ara"
+    }
+  ],
+  "responseTime": "2019-06-20T15:27:04.204+05:30",
+  "response": {
+    "authStatus": false,
+    "staticToken": "362429973268728248124777167171672684"
+  }
+}

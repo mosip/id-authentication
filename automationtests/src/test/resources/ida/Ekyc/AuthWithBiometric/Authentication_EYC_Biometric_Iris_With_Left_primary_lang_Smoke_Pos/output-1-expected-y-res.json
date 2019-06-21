@@ -1,0 +1,11 @@
+{
+  "id": "mosip.identity.kyc",
+  "response": {
+    "identity": "$DECODE$-\u003eoutput-2-expected-decoded-one-lang-kyc-res.json",
+    "kycStatus": true,
+    "staticToken": "TOKENID:4054793518.1873299273"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "8531856546",
+  "version": "1.0"
+}

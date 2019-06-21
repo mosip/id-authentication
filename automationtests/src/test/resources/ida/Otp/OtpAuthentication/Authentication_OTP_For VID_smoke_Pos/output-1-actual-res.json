@@ -1,0 +1,12 @@
+{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "3385002618",
+  "responseTime": "2019-06-20T15:29:39.996+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-001",
+      "errorMessage": "Innumerous OTP requests received"
+    }
+  ]
+}

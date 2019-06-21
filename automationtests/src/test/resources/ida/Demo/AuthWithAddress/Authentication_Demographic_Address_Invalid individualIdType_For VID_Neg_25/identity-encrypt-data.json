@@ -1,0 +1,67 @@
+{
+  "identityRequest": {
+    "demographics": {
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Ramanujan IT Park"
+        },
+        {
+          "language": "ara",
+          "value": "رَمَنُجَن ِت پَرك"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Annai Illam"
+        },
+        {
+          "language": "ara",
+          "value": "َننَِ ِللَم"
+        }
+      ],
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Everest"
+        },
+        {
+          "language": "ara",
+          "value": "ِڤِرِست"
+        }
+      ],
+      "location1": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        }
+      ],
+      "location2": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        }
+      ],
+      "location3": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        }
+      ]
+    },
+    "timestamp": "2019-06-20T15:24:27.027+05:30"
+  }
+}

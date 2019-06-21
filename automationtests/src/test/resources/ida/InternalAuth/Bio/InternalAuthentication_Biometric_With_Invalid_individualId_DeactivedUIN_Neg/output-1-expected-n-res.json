@@ -1,0 +1,17 @@
+{
+  "errors": [
+    {
+      "actionMessage": "Your UIN status is not active",
+      "errorCode": "IDA-MLC-003",
+      "errorMessage": "UIN has been deactivated"
+    }
+  ],
+  "id": "mosip.identity.auth.internal",
+  "response": {
+    "authStatus": false,
+    "staticToken": "$IGNORE$"
+  },
+  "responseTime": "$TIMESTAMP$",
+  "transactionID": "5507287413",
+  "version": "1.0"
+}
