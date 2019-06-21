@@ -33,23 +33,23 @@ MOS-25825|Enhancement|Demo normalization externalization for multiple languages
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
-ID Repository|ID Repository Identity Service|0.12.8|Get Identity for UIN, Get Identity for RID
-ID Repository|ID Repository VID Service|0.12.8|Get UIN for VID
-Kernel|Kernel-Audit Service|0.12.8| 
-Kernel|Kernel OTP Validator Service|0.12.8|
-Kernel|Kernel AuthManager Service|0.12.8|Send OTP, Get RID for UserID, Authenticate with ClientId-SecretKey, Validate Token
-Kernel|Mail Notification Service|0.12.8|
-Kernel|SMS Notification Service|0.12.8|
-Kernel|Master Data Service|0.12.8|Titles, Gender, Templates
-Kernel|Kernel Crypto Manager service|0.12.7|Encrypt, Decrypt
-Kernel|Kernel Crypto Signature|0.12.8|Sign
-Kernel|Kernel UIN Validator|0.12.8|Java API
-Kernel|Kernel VID Validator|0.12.8|Java API
-Kernel|Kernel Pin Validator|0.12.8|Java API
-Kernel|ID Object Validator|0.12.8|Java API
-Kernel|Kernel ID Generator – Token ID|0.12.8|Java API
-Kernel|Kernel Crypto JCE|0.12.8|Java API - Encryptor
-Kernel|Kernel Bio API Provider|0.12.8|Java API - Mock BioAPI provider
+ID Repository|ID Repository Identity Service|0.12.10|Get Identity for UIN, Get Identity for RID
+ID Repository|ID Repository VID Service|0.12.10|Get UIN for VID
+Kernel|Kernel-Audit Service|0.12.10| 
+Kernel|Kernel OTP Validator Service|0.12.10|
+Kernel|Kernel AuthManager Service|0.12.10|Send OTP, Get RID for UserID, Authenticate with ClientId-SecretKey, Validate Token
+Kernel|Mail Notification Service|0.12.10|
+Kernel|SMS Notification Service|0.12.10|
+Kernel|Master Data Service|0.12.10|Titles, Gender, Templates
+Kernel|Kernel Crypto Manager service|0.12.10|Encrypt, Decrypt
+Kernel|Kernel Crypto Signature|0.12.10|Sign
+Kernel|Kernel UIN Validator|0.12.10|Java API
+Kernel|Kernel VID Validator|0.12.10|Java API
+Kernel|Kernel Pin Validator|0.12.10|Java API
+Kernel|ID Object Validator|0.12.10|Java API
+Kernel|Kernel ID Generator – Token ID|0.12.10|Java API
+Kernel|Kernel Crypto JCE|0.12.10|Java API - Encryptor
+Kernel|Kernel Bio API Provider|0.12.10|Java API - Mock BioAPI provider
 
 ### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
