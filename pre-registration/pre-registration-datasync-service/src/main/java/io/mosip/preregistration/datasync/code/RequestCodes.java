@@ -13,21 +13,10 @@ package io.mosip.preregistration.datasync.code;
  *
  */
 public enum RequestCodes {
-	ID("id"), 
-	VER("ver"), 
-	REQ_TIME("reqTime"), 
-	REQUEST("request"), 
 	PRE_REGISTARTION_ID("preRegistrationId"), 
-	CREATED_BY("createdBy"), 
-	CREATED_DATE_TIME("createdDatetime"), 
-	UPDATED_BY("updatedBy"), 
-	UPDATED_DATE_TIME("updatedDatetime"), 
-	STATUS_CODE("statusCode"), 
-	LANG_CODE("langCode"), 
-	REGISTARTION_CLIENT_ID("regClientId"), 
+	REGISTARTION_CLIENT_ID("registrationCenterId"), 
 	FROM_DATE("fromDate"), 
 	TO_DATE("toDate"), 
-	USER_ID("userId"),
 	IDENTITY("identity"),
 	POA("POA"),
 	POI("POI"),

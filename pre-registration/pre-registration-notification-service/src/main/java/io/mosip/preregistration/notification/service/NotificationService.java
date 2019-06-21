@@ -210,7 +210,7 @@ public class NotificationService {
 						authUserDetails().getUsername());
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Failed to trigger notification to the user ", AuditLogVariables.NO_ID.toString(),
+						"Failed to trigger notification to the user", AuditLogVariables.NO_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername());
 			}
 		}
