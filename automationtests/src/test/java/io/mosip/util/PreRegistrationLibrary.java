@@ -1507,7 +1507,7 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		String folderName = "PreRegDocs";
 		String data = response.jsonPath().get("response.zip-bytes").toString();
 		String folder = response.jsonPath().get("response.zip-filename").toString();
-		String folderPath = "src/test/resources/" + "preReg" + "/" + folderName;
+		String folderPath = "./src/test/resources/" + "preReg" + "/" + folderName;
 		File f = new File(folderPath + "/" + folder);
 		f.mkdirs();
 		ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(data)));
@@ -1541,7 +1541,7 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		 * Reading request body from configpath
 		 */
 		String folder2 = "preReg";
-		String configPath = System.getProperty("user.dir")+"/src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
+		String configPath = "./src/test/resources/" + folder2 + "/" + "PreRegDocs" + "/" + PrID;
 		File folder1 = new File(configPath);
 		File[] listOfFiles = folder1.listFiles();
 		try {
@@ -1556,6 +1556,7 @@ Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) 
 		}
 		}
 		catch (NullPointerException | IOException|ParseException e) {
+			System.out.println(e.getMessage());
 			Assert.fail("File is not present at specified path ::"+configPath);
 		}
 		return finalResult;

@@ -128,6 +128,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 			lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 			Response retrivePreRegistrationDataresponse = lib.retrivePreRegistrationData(preID);
 			status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataresponse,preID , createResponse);
+			System.err.println(status);
 		} else {
 			try {
 				Actualresponse = appLib.getWithPathParam(preReg_URI, actualRequest,regClientToken);
