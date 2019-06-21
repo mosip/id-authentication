@@ -8,7 +8,7 @@ import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
- * This DAO interface updates the mapping of users and devices to the
+ * This class is used to update the mapping of users and devices to the
  * Registration Center Machine
  * 
  * @author YASWANTH S
@@ -19,27 +19,28 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 public interface MachineMappingDAO {
 
 	/**
-	 * Get Station ID by using mac address
+	 * This method is used to get station id by using mac address
 	 * 
 	 * @param MacAddress
-	 *            machine address
+	 *            machine mac address
 	 * @return station ID
 	 * @throws RegBaseCheckedException Registration Base Checked Exception
 	 */
 	String getStationID(String MacAddress) throws RegBaseCheckedException;
 	
 	/**
-	 * Method to check the device is valid
+	 * This method is used to check the validity of the device.
 	 * 
 	 * @param deviceType
 	 *            device type
 	 * @param serialNo
-	 *            serial number
+	 *            serial number of the device
 	 * @return It returns true when record found for the device else false
 	 */
 	boolean isValidDevice(DeviceTypes deviceType, String serialNo);
 
 	/**
+	 * This method is used to get the user mapping details that are mapped to the given machine id.
 	 * 
 	 * @param machineId
 	 *            machine ID
@@ -48,7 +49,7 @@ public interface MachineMappingDAO {
 	List<UserMachineMapping> getUserMappingDetails(String machineId);
 
 	/**
-	 * Fetches all the devices mapped to the registration center based on the
+	 * This method is udes to fetches all the devices mapped to the registration center based on the
 	 * language code
 	 * 
 	 * @param langCode
@@ -57,14 +58,15 @@ public interface MachineMappingDAO {
 	 */
 	List<RegDeviceMaster> getDevicesMappedToRegCenter(String langCode);
 
-	/**Find whether the user exists or not
-	 * @param userId userId
+	/**This method is used to find whether the user exists or not
+	 * @param userId 
+	 * 			userId
 	 * @return is exists or not
 	 */
 	boolean isExists(String userId);
 
 	/**
-	 * Get the key index of the Machine based on MAC Id
+	 * This method is used to get the key index of the Machine based on MAC Id
 	 * 
 	 * @param macId
 	 *            the MAC Id of the machine
