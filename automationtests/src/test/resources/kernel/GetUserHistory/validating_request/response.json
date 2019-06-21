@@ -1,7 +1,7 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-06-06T12:59:24.405Z",
+  "responsetime": "2019-06-17T06:49:06.914Z",
   "metadata": null,
   "response": {
     "userResponseDto": [
@@ -9,7 +9,7 @@
         "id": "110007",
         "langCode": "eng",
         "uin": "5804057178",
-        "name": "Taleev",
+        "name": "MOSIP User 1",
         "email": "leia.white@xyz.com",
         "mobile": "899884346",
         "statusCode": "ACT",
