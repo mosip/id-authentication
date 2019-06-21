@@ -241,6 +241,7 @@
 			**/registration/processor/packet/storage/mapper/PacketInfoMapper.java,
 			**/registration/processor/packet/storage/dao/PacketInfoDao.java,
 			**/registration/processor/packet/uploader/constants/*.java,
+			**/registration/processor/packet/manager/constant/*.java,
 			**/registration/processor/print/exception/PrintGlobalExceptionHandler.java,
 			**/registration/processor/packet/receiver/constants/*.java,
 			**/registration/processor/print/service/exception/*.java,
