@@ -127,9 +127,6 @@ public class PacketValidateProcessorTest {
 	@Mock
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
-	@Mock
-	private IdRepoService idRepoService;
-
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
 

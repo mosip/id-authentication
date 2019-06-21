@@ -441,9 +441,10 @@ public class MessageNotificationServiceImpl
 				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 		String email = regProcessorIdentityJson.getIdentity().getEmail().getValue();
 		String phone = regProcessorIdentityJson.getIdentity().getPhone().getValue();
-
-		emailId = new StringBuilder(JsonUtil.getJSONValue(demographicIdentity, email));
-		phoneNumber = new StringBuilder(JsonUtil.getJSONValue(demographicIdentity, phone));
+		
+		emailId.append(JsonUtil.getJSONValue(demographicIdentity, email).toString());
+		phoneNumber.append(JsonUtil.getJSONValue(demographicIdentity, phone).toString());
+		
 	}
 
 }
