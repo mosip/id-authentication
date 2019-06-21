@@ -2,15 +2,15 @@
   "errors": [
     {
       "errorCode": "IDA-DEA-001",
-      "errorMessage": "Demographic data name in fra did not match"
+      "errorMessage": "Demographic data name in eng did not match"
     }
   ],
   "id": "mosip.identity.auth",
   "response": {
     "authStatus": false,
-    "staticToken": "TOKENID:NoVIDLoaded.1873299273"
+    "staticToken": "TOKENID:4073190625128160.1873299273"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "8837407158",
+  "transactionID": "7165176288",
   "version": "1.0"
 }

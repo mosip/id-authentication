@@ -379,7 +379,7 @@ public class DocumentScanController extends BaseController {
 					}
 				});
 				hBox.getChildren().addAll(new VBox(new Label(), indicatorImage), comboBox, documentVBox, scanButton);
-				docScanVbox.getChildren().addAll(documentLabel, hBox);
+				docScanVbox.getChildren().addAll(new HBox(new Label("       "), documentLabel), hBox);
 				hBox.setId(documentCategory.getCode());
 				documentLabel.setId(documentCategory.getCode()+RegistrationConstants.LABEL);
 				comboBox.getItems().addAll(documentCategoryDtos);

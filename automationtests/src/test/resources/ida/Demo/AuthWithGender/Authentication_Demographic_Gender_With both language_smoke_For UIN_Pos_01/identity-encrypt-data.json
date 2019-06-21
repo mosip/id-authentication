@@ -4,14 +4,14 @@
       "gender": [
         {
           "language": "ara",
-          "value": ""
+          "value": "الذكر"
         },
         {
-          "language": "fra",
-          "value": ""
+          "language": "eng",
+          "value": "Male"
         }
       ]
     },
-    "timestamp": "2019-06-15T09:37:54.054+05:30"
+    "timestamp": "2019-06-20T15:23:47.047+05:30"
   }
 }

@@ -1,18 +1,1 @@
-{
-  "consentObtained": true,
-  "id": "mosip.identity.auth",
-  "individualId": "NoVIDLoaded",
-  "individualIdType": "VID",
-  "request": "gplvWapVGJFcGkyrJSZENC0uvjZ8q23euYuLS4ynkKHu7rmobJVhu6smzupn2oJgr4FScth32txAy9Y1mux8TWFRhFHVu3Ev621ieCkOzuvVjbNCP3O4CFCRtgcbcCCcr8L7LUu8LDuvbiKhJi7yoKGpfwv5bJwE4_TJo3BlPR-I_Sij01qbw2ZLE1EZPn_JUw8xcziU_W5SbUzhv_pV_4ErjQofXpJwMGNP07Zt2IA",
-  "requestHMAC": "N2PtVAzFZt7q5720cUoVYZSwCUAeAahQWCf0m16BCgt8HTCqRjS7Az1h2nEoL1SH90JErpfSC7Td3O4GB95nqJ7TVe-_t69qYRa5mcc96XoUt5gr4DgGohjJPCRD2zBp",
-  "requestSessionKey": "p6aiE3VhnzuhicAq4ue9eYDkvsUNjo-e72AEHi4UB1D1PG0APB0BXU5aENUNGJ8zZz93tTCV63Vm1joX5DJMmhkT_LQuYf0v62zRoeJnxbDyqsA2r0eqX33OOQfSJeKCqwrh7LBMVOGOXLCYxVqlH0ilhr20RgFNRE7xYCy44oV8eVsTSguLkmvqjxp36n6r7ewh3N0Jpy367d21ccAyZLMKK0djZPEle739TVOsb6Uxj7FdrkdBkxtXKG5ChE4wxJT5zMF2j_I9Ml6o2OZyshjM4zlU7VDTYd8PDDSlmzBCefLCe0wYRh_ECOyx_dJxuGjQ-SDk67AdqR-tLwCmVQ",
-  "requestTime": "2019-06-15T09:35:59.059+05:30",
-  "requestedAuth": {
-    "bio": false,
-    "demo": true,
-    "otp": false,
-    "pin": false
-  },
-  "transactionID": "1618436643",
-  "version": "1.0"
-}
+{"consentObtained":true,"id":"mosip.identity.auth","individualId":"5487105327836039","individualIdType":"VID","request":"NIrSpJW-rs7Epkb0P4ezW-z5dPqhKKDqq9NYln298g-bwd1tcPiQF41LwHdc9zIqwZCqVTsOCKmjB57mtLdT_zcuQVRS7721yES-g-Y5_wW1NgfwYpaAx0w4w1RbegODW-i1huSlwkVST2yF368M7q4T-nMsF3ynUi2SaP-KRB1HdxdONcjlLjSxDYSn_4Z2fG2kNoiAHQ1x0MThjLIF08upysHf4lvFCecGBe-FNxQHsO88otx2YCvYwI_A7Z9ro71Ebs5rovpHz4e7cHERtsmg7bt03Yea8xa4ndgeuvX9nY9kdNAaYuunkEJRLhv_lnwHTAjxuyCTPGJQhblJi1obb7fX8HIKI5v77Vd8UeROVZ7oq26Rou1vBMyqKxFJvPa8bDXy8Cd2EnF3C9WfBXgIp5G0aISkj37SDhcS6AIE3mpWJ13UyWiyaeOEnK961_RI8dY3VXFZlI7G3JJA5MaWsz5FJpEI4iGDta5MWfOxDdmqRkgcrvr4PVfENcz4F_Nc0dbQh7jwfhxVJgwwTp27XoG5zNaksGUCS7ULJvt1M28Hy8NFN02s5UeH2LIg","requestHMAC":"XrFXNIpBhtAOH4FRZUxao7ZjuedW5GJoI2aBRnfCXIEpHfjsAMBUMpYo0HZA6bT65jK5sRCo_TckTJNCAW0qw1KW2e28rCcIX2HBXzLPYtN8Sx_HMeKcTQOIbFa_zH5n","requestSessionKey":"TZf4nBBsW5MxiEhWn7Lj2XPVkJ2tkD6dtWCx5FYuCToLbX3CNSK_bxigk47B9BnPc1PHPzdClOyl1QxPxz9D4JwfbKqSWCClnRgCBLzky0Sra_U1XPoFaahYb6AH48ys2I-As6EVOXvS-Mu3kSVbTRqsH7F6N5R8J65_Pr2YKWhFGmNAGxsnh_4vqlxVHcVSjjJryDDVT0guLNDoRP6vPUWPF25GCPz4mhT-nDH0WxnjMjt5HkirVj_LPvtwfFbxMX_7vCmvAbVqJnqw3-MT74EQ1qJ5gmRzzRcpdwoP8cMQN1_ONHJkYkCxg1c6udqDwQE9hWguUE2vj6tsAU8KuA","requestTime":"2019-06-20T15:24:29.029+05:30","requestedAuth":{"bio":false,"demo":true,"otp":false,"pin":false},"transactionID":"0578101028","version":"1.0"}

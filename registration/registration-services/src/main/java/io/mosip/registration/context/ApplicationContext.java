@@ -10,8 +10,13 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuthTokenDTO;
 
+
 /**
- * The Class ApplicationContext.
+ * This class will load all the property files as bundles
+ * All application level details will be loaded in a map
+ * 
+ * @author Taleev Aalam
+ *
  */
 public class ApplicationContext {
 
@@ -90,8 +95,16 @@ public class ApplicationContext {
 		return applicationLanguagevalidationBundle;
 	}
 
+	
 	/**
-	 * Loading resource bundle.
+	 * here we will load the property files such as labels, messages and validation.
+	 * <p>If we get primary and secondary languages</P>
+	 * 			<p>Based on those languages these property files will be loaded.</p>
+	 * <p>If we dont get primary and secondary languages</p>
+	 * 			<p>Then the primary language will be English and the Secondary language will be 
+	 * 				Arabic by default and the property files will be loaded based on that</p>
+	 * 
+	 * 
 	 */
 	public void loadResourceBundle() {
 		try {

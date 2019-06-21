@@ -34,7 +34,9 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
- * Class for SessionContext details
+ *This class will handle the creation of Session context, Security Context and User Context.
+ *This will handle authentication of all the login methods.
+ *
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -80,7 +82,8 @@ public class SessionContext {
 	private AuthTokenDTO authTokenDTO;
 
 	/**
-	 * making sessionContext as singleton
+	 * This method will make the Session context class as singleton and 
+	 * returns the instance of the Session context if available or else it will return null
 	 * 
 	 * @return sessionContext
 	 */
@@ -95,6 +98,10 @@ public class SessionContext {
 	
 	/**
 	 * creating sessionContext and validating login
+	 * <p>If Authentication Success: </p>
+	 *		<p>Returns true and Creation of Session context, Security Context and User Context will happen</p>
+	 *<p>If Authentication fails:</p>
+	 *		<p>Returns false and Creation of Session context, Security Context and User Context will not happen</p>
 	 * 
 	 * @param userDTO
 	 *            - UserInfo to create session which contains user id, user name,
@@ -108,7 +115,8 @@ public class SessionContext {
 	 * @param authenticationValidatorDTO
 	 *            - Authentication validator should contain user id, pwd, otp
 	 * 
-	 * @return boolean
+	 * @return boolean 
+	 * 			   - Returns whether the Session context is getting created or not.
 	 */
 	public static boolean create(UserDTO userDTO, String loginMethod, boolean isInitialSetUp, boolean isUserNewToMachine, AuthenticationValidatorDTO authenticationValidatorDTO){
 		

@@ -13,6 +13,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITest;
@@ -134,10 +135,15 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
 
 		// Get PreId from Document upload response
-		preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
-
+		try {
+			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+			
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false, "Exception occured while uploading document");
+		}
+		
 		// Get docId from Document upload response
-		docId = docUploadResponse.jsonPath().get("response.docId").toString();
+		docId = preRegLib.getDocId(docUploadResponse);
 
 		if (testCaseName.contains("smoke")) {
 
@@ -156,7 +162,6 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			String preRegURL = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURL, parm);
-			logger.info("Get All Doc By Doc Id:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
 			boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
 			
 			//outerKeys.add("responsetime");
@@ -169,7 +174,6 @@ public class GetAllDocumentForDocId extends BaseTestCase implements ITest {
 			String preRegURI = preReg_URI + docId;
 
 			Actualresponse = applicationLibrary.getRequestPathAndQueryParam(preRegURI, parm);
-			logger.info("Get All Doc By Doc Id PreId:"+Actualresponse.asString()+"Test Case Name::"+testCaseName);
 			//boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
 			
 			outerKeys.add("responsetime");

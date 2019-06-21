@@ -2,7 +2,7 @@
   "errors": [
     {
       "errorCode": "IDA-MPA-006",
-      "errorMessage": "OTP-authentiation usage not allowed as per policy"
+      "errorMessage": "OTP Authentication usage not allowed as per policy"
     }
   ],
   "response": {

@@ -2,7 +2,7 @@
   "errors": [
     {
       "errorCode": "IDA-MPA-006",
-      "errorMessage": "Finger-authentiation usage not allowed as per policy"
+      "errorMessage": "BIO-FMR Authentication usage not allowed as per policy"
     }
   ],
   "id": "mosip.identity.kyc",
@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "3766283586",
   "version": "1.0"
 }

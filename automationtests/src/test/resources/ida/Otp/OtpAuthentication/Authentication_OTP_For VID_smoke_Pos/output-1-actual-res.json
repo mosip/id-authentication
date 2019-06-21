@@ -1,13 +1,12 @@
 {
   "id": "mosip.identity.otp",
   "version": "1.0",
-  "transactionID": "7704775066",
-  "responseTime": "2019-06-15T09:54:01.164+05:30",
+  "transactionID": "3385002618",
+  "responseTime": "2019-06-20T15:29:39.996+05:30",
   "errors": [
     {
-      "errorCode": "IDA-MLC-004",
-      "errorMessage": "Invalid VID",
-      "actionMessage": "Please retry with correct VID"
+      "errorCode": "IDA-OTA-001",
+      "errorMessage": "Innumerous OTP requests received"
     }
   ]
 }

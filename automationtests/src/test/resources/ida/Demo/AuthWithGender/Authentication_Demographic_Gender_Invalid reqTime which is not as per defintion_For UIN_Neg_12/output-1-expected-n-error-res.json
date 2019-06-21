@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMPZ$",
-  "transactionID": "$RANDOM:N:10$",
+  "transactionID": "8122768541",
   "version": "1.0"
 }

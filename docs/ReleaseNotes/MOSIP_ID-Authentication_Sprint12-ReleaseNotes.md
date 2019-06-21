@@ -7,11 +7,11 @@
 |         |          |
 |----------|----------|
 SubmittedBy|Loganathan Sekar
-Date Raised | 17-JUNE-2019
+Date Raised | 20-JUNE-2019
 Impact of Release|NA
 Implementation Start Date |28-MAY-2019
 Implementation end date	|07-JUN-2019
-Jenkins Build #	|Min Version : 1612
+Jenkins Build #	|Min Version : 1654
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 90%
 Role/Job Title|Technical Lead
@@ -28,7 +28,7 @@ MOS-15815|Integration|Tech Story - Authentication & Authorization
 MOS-24075|New|As the MOSIP system - IDA, I should be able to integrate with VID service
 MOS-23068|New|Integrate with Audit changes/OTP Request/auth changes
 MOS-24076|New|Integrate with BioAPI, Integrate with IdObjectValidator
-
+MOS-25825|Enhancement|Demo normalization externalization for multiple languages
 
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module|Component|Version|Description (If any)

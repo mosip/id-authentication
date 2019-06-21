@@ -51,7 +51,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	private static final Set<String> NON_REMOVABLE_PARAMS = new HashSet<>(
 			Arrays.asList("mosip.registration.machinecenterchanged", "mosip.registration.initial_setup",
 					"mosip.reg.db.current.version", "mosip.reg.services.version",
-					RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE));
+					RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE, RegistrationConstants.SERVICES_VERSION_KEY));
 	/**
 	 * Instance of LOGGER
 	 */
@@ -118,7 +118,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 
 	@SuppressWarnings("unchecked")
 	private void parseToMap(HashMap<String, Object> map, HashMap<String, String> globalParamMap) {
-		if(map!=null) {
+		if (map != null) {
 			for (Entry<String, Object> entry : map.entrySet()) {
 				String key = entry.getKey();
 
@@ -153,7 +153,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 							.get("configDetail");
 
 					HashMap<String, String> globalParamMap = new HashMap<>();
-					
+
 					parseToMap(configDetailJsonMap, globalParamMap);
 
 					List<GlobalParam> globalParamList = globalParamDAO.getAllEntries();

@@ -2,10 +2,10 @@
   "errors": [
     {
       "errorCode": "IDA-MLC-005",
-      "errorMessage": "Expired VID"
+      "errorMessage": "VID is EXPIRED"
     }
   ],
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "5403325708",
+  "transactionID": "6617021068",
   "version": "1.0"
 }

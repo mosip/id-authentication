@@ -6,27 +6,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
+
+import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.json.JSONString;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -36,26 +33,22 @@ import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
-import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.RegProcDataRead;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
+import io.mosip.dbentity.TokenGenerationEntity;
 import io.mosip.registrationProcessor.util.EncryptData;
-import io.mosip.registrationProcessor.util.HashSequenceUtil;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
-import io.mosip.util.EncrypterDecrypter;
 import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
+import io.mosip.util.TokenGeneration;
 import io.restassured.response.Response;
 
 /**
@@ -87,8 +80,27 @@ public class Sync extends BaseTestCase implements ITest {
 	static String description="";
 	static String apiName="SyncApi";
 	static String moduleName="RegProc";
-
 	CommonLibrary common=new CommonLibrary();
+	
+	RegProcApiRequests apiRequests=new RegProcApiRequests();
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	String validToken="";
+	
+	/**
+	 * This method is used for creating token
+	 * 
+	 * @param tokenType
+	 * @return token
+	 */
+	public String getToken(String tokenType) { String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+		}
+	
+	
+	
 	/**
 	 *This method is used for reading the test data based on the test case name passed
 	 *
@@ -98,10 +110,9 @@ public class Sync extends BaseTestCase implements ITest {
 	@DataProvider(name = "syncPacket")
 	public  Object[][] readData(ITestContext context){ 
 		Object[][] readFolder = null;
-		String propertyFilePath=System.getProperty("user.dir")+"\\"+"src\\config\\RegistrationProcessorApi.properties";
+		String propertyFilePath=System.getProperty("user.dir")+"/"+"src/config/registrationProcessorAPI.properties";
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
-			String testParam = context.getCurrentXmlTest().getParameter("testType");
 			testLevel=System.getProperty("env.testLevel");
 			switch (testLevel) {
 			case "smoke":
@@ -114,7 +125,7 @@ public class Sync extends BaseTestCase implements ITest {
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
 		}catch(IOException | ParseException |NullPointerException e){
-			logger.error("Exception occurred in Sync class in readData method "+e);
+			Assert.assertTrue(false, "not able to read the folder in Sync class in readData method: "+ e.getCause());
 		}
 		return readFolder;
 	}
@@ -142,7 +153,7 @@ public class Sync extends BaseTestCase implements ITest {
 		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
 		try{
 			if(file!=null){
-				registrationPacketSyncDto=encryptData.createSyncRequest(file);
+				registrationPacketSyncDto=encryptData.createSyncRequest(file,"UPDATE");
 
 				regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
 
@@ -163,7 +174,8 @@ public class Sync extends BaseTestCase implements ITest {
 
 
 			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-			Response resp=applicationLibrary.postRequestToDecrypt(requestToEncrypt, encrypterURL);
+			Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON,validToken);
 			String encryptedData = resp.jsonPath().get("response.data").toString();
 			LocalDateTime timeStamp = encryptData.getTime(regId);
 
@@ -172,8 +184,9 @@ public class Sync extends BaseTestCase implements ITest {
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 			// Actual response generation
-			actualResponse = applicationLibrary.regProcSync(encryptedData,prop.getProperty("syncListApi"),center_machine_refID,
-					timeStamp.toString()+"Z");
+			logger.info("sync API url : "+prop.getProperty("syncListApi"));
+			actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
+					timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
@@ -183,7 +196,8 @@ public class Sync extends BaseTestCase implements ITest {
 
 			//Assertion of actual and expected response
 			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-
+			Assert.assertTrue(status, "object are not equal");
+			
 			logger.info("Status after assertion : "+status);
 
 			if (status) {
@@ -268,7 +282,7 @@ public class Sync extends BaseTestCase implements ITest {
 			softAssert.assertAll();
 
 		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
-			logger.error("Exception occurred in Sync class in sync method "+e);
+			Assert.assertTrue(false, "not able to execute sync method : "+ e.getCause());
 
 		}
 	}  
@@ -281,7 +295,8 @@ public class Sync extends BaseTestCase implements ITest {
 	 * @param ctx
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx){
+		validToken=getToken("syncTokenGenerationFilePath");
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName =moduleName+"_"+apiName+"_"+ object.get("testCaseName").toString();
 	}
@@ -305,28 +320,8 @@ public class Sync extends BaseTestCase implements ITest {
 			f.set(baseTestMethod, Sync.testCaseName);
 		} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 			logger.error("Exception occurred in Sync class in setResultTestName method "+e);
+			Reporter.log("Exception : " + e.getMessage());
 		}
-
-
-		/*		if(result.getStatus()==ITestResult.SUCCESS) {
-				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
-				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
-				test.log(Status.PASS, m);
-				test.log(Status.PASS, m1);
-			}
-
-			if(result.getStatus()==ITestResult.FAILURE) {
-				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
-				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
-				test.log(Status.FAIL, m);
-				test.log(Status.FAIL, m1);
-			}
-			if(result.getStatus()==ITestResult.SKIP) {
-				Markup m=MarkupHelper.createCodeBlock("Request Body is  :"+System.lineSeparator()+actualRequest.toJSONString());
-				Markup m1=MarkupHelper.createCodeBlock("Expected Response Body is  :"+System.lineSeparator()+expectedResponse.toJSONString());
-				test.log(Status.SKIP, m);
-				test.log(Status.SKIP, m1);
-			}*/
 	}
 
 	/**

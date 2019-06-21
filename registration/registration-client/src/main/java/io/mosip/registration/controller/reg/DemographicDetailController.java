@@ -675,8 +675,6 @@ public class DemographicDetailController extends BaseController {
 	private String textMaleLocalLanguage;
 	private String textFemaleLocalLanguage;
 	private String textMaleCode;
-	private String textFemaleCode;
-	private Node parentDetailNode;
 
 	/*
 	 * (non-Javadoc)
@@ -2072,7 +2070,6 @@ public class DemographicDetailController extends BaseController {
 		if (!localAdminAuthority.getItems().isEmpty()) {
 			localAdminAuthority.getSelectionModel().select(0);
 		}
-		postalCode.setText("600111");
 		mobileNo.setText("9965625706");
 		emailId.setText("ayoub.toufiq@gmail.com");
 		cniOrPinNumber.setText("4545343123");

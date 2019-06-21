@@ -12,27 +12,13 @@ import io.mosip.kernel.logger.logback.factory.Logfactory;
  */
 public final class IdRepoLogger {
 
-	private static String uin;
-	
-	private static String rid;
-	 
-	private static String vid;
-
-	public static String getVid() {
-		return vid;
-	}
-
-	public static void setVid(String vid) {
-		IdRepoLogger.vid = vid;
-	}
-
 	private static RollingFileAppender mosipRollingFileAppender;
 
 	static {
 		mosipRollingFileAppender = new RollingFileAppender();
 		mosipRollingFileAppender.setAppend(true);
 		mosipRollingFileAppender.setAppenderName("fileappender");
-		mosipRollingFileAppender.setFileName("logs/id-repo-identity.log");
+		mosipRollingFileAppender.setFileName("logs/id-repo.log");
 		mosipRollingFileAppender.setFileNamePattern("logs/id-repo-%d{yyyy-MM-dd}-%i.log");
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setMaxFileSize("1mb");
@@ -41,26 +27,10 @@ public final class IdRepoLogger {
 		mosipRollingFileAppender.setTotalCap("10mb");
 	}
 
-	public static String getUin() {
-		return uin;
-	}
-
-	public static void setUin(String uin) {
-		IdRepoLogger.uin = uin;
-	}
-
 	/**
 	 * Instantiates a new id repo logger.
 	 */
 	private IdRepoLogger() {
-	}
-
-	public static String getRid() {
-		return rid;
-	}
-
-	public static void setRid(String rid) {
-		IdRepoLogger.rid = rid;
 	}
 
 	/**

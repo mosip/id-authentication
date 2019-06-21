@@ -2,9 +2,9 @@
   "id": "mosip.identity.auth",
   "response": {
     "authStatus": true,
-    "staticToken": "TOKENID:NoVIDLoaded.1873299273"
+    "staticToken": "362429973268728248124777167171672684"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "2720545421",
+  "transactionID": "3172778634",
   "version": "1.0"
 }

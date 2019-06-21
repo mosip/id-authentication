@@ -12,6 +12,15 @@ import java.util.List;
  */
 public class PacketUtil {
 
+	/**
+	 * This method takes the list of packets that are in file format as an input and
+	 * returns the list of names of those packets by splitting the file names using
+	 * the dot as delimiter.
+	 *
+	 * @param packets
+	 *            - the list of packets in file format
+	 * @return the list of file names of the packet
+	 */
 	public List<String> getPacketNames(List<File> packets) {
 		List<String> packetNames = new ArrayList<>();
 		for (File packet : packets) {

@@ -5,7 +5,8 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * The Class ResponseDTO.
+ * The Class BaseRequestResponseDTO - base class containing fields for Id
+ * repository request and response.
  *
  * @author Manoj SP
  */
@@ -18,5 +19,6 @@ public class BaseRequestResponseDTO {
 	/** The identity. */
 	private Object identity;
 
+	/** The documents. */
 	private List<DocumentsDTO> documents;
 }

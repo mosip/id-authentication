@@ -1,8 +1,8 @@
 {
   "errors": [
     {
-      "errorCode": "IDA-BIA-012",
-      "errorMessage": "Invalid userid of the individual"
+      "errorCode": "IDA-MLC-018",
+      "errorMessage": "USERID not available in database"
     }
   ],
   "id": "mosip.identity.auth.internal",
@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "6286232174",
+  "transactionID": "6480070748",
   "version": "1.0"
 }

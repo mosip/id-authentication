@@ -13,6 +13,7 @@ public class IdRepoAppException extends BaseCheckedException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6748760277721155095L;
 
+	/** The operation. */
 	private String operation;
 
 	/**
@@ -67,6 +68,7 @@ public class IdRepoAppException extends BaseCheckedException {
 	 *
 	 * @param errorCode    the error code
 	 * @param errorMessage the error message
+	 * @param operation the operation
 	 */
 	public IdRepoAppException(String errorCode, String errorMessage, String operation) {
 		super(errorCode, errorMessage);
@@ -79,6 +81,7 @@ public class IdRepoAppException extends BaseCheckedException {
 	 * @param errorCode    the error code
 	 * @param errorMessage the error message
 	 * @param rootCause    the root cause
+	 * @param operation the operation
 	 */
 	public IdRepoAppException(String errorCode, String errorMessage, Throwable rootCause, String operation) {
 		super(errorCode, errorMessage, rootCause);
@@ -89,6 +92,7 @@ public class IdRepoAppException extends BaseCheckedException {
 	 * Instantiates a new id repo app exception.
 	 *
 	 * @param exceptionConstant the exception constant
+	 * @param operation the operation
 	 */
 	public IdRepoAppException(IdRepoErrorConstants exceptionConstant, String operation) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
@@ -100,12 +104,18 @@ public class IdRepoAppException extends BaseCheckedException {
 	 *
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause         the root cause
+	 * @param operation the operation
 	 */
 	public IdRepoAppException(IdRepoErrorConstants exceptionConstant, Throwable rootCause, String operation) {
 		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
 		this.operation = operation;
 	}
 
+	/**
+	 * Gets the operation.
+	 *
+	 * @return the operation
+	 */
 	public String getOperation() {
 		return operation;
 	}

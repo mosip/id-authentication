@@ -159,11 +159,10 @@ public class UpdateDemographicDetails extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun = true)
 	public void login( Method method)
 	{
-		testCaseName="preReg_Demogarphic_" + method.getName();
+		testCaseName="preReg_Demographic_" + method.getName();
 		authToken=lib.getToken();
 		
 	}
-
 	@Override
 	public String getTestName() {
 		return this.testCaseName;

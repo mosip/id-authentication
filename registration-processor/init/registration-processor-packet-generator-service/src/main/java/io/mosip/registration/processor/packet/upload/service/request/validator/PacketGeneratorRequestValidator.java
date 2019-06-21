@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.packet.service.exception.PacketGeneratorValidationException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PacketGeneratorRequestValidator.
  * 
@@ -30,9 +28,6 @@ public class PacketGeneratorRequestValidator {
 
 	/** The Constant VER. */
 	private static final String VER = "version";
-
-	/** The Constant verPattern. */
-	private static final Pattern verPattern = Pattern.compile("^[0-9](\\.\\d{1,1})?$");
 
 	/** The Constant DATETIME_TIMEZONE. */
 	private static final String DATETIME_TIMEZONE = "mosip.registration.processor.timezone";
@@ -52,6 +47,11 @@ public class PacketGeneratorRequestValidator {
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
 
+	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
+
+	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
+	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -68,7 +68,7 @@ public class PacketGeneratorRequestValidator {
 	 *             the packet generator validation exception
 	 */
 	public void validate(PacketGeneratorRequestDto request) throws PacketGeneratorValidationException {
-		id.put("status", "mosip.registration.packetgenerator");
+		id.put("status", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
 		validateReqTime(request.getRequesttime());
 		validateId(request.getId());
 		validateVersion(request.getVersion());
@@ -109,13 +109,14 @@ public class PacketGeneratorRequestValidator {
 	 *             the packet generator validation exception
 	 */
 	private void validateVersion(String ver) throws PacketGeneratorValidationException {
+		String version = env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION);
 		PacketGeneratorValidationException exception = new PacketGeneratorValidationException();
 		if (Objects.isNull(ver)) {
 			throw new PacketGeneratorValidationException(
 					PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), VER), exception);
 
-		} else if ((!verPattern.matcher(ver).matches())) {
+		} else if (!version.equals(ver)) {
 			throw new PacketGeneratorValidationException(
 					PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), VER), exception);

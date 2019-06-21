@@ -1,18 +1,1 @@
-{
-  "consentObtained": true,
-  "id": "mosip.identity.auth",
-  "individualId": "NoVIDLoaded",
-  "individualIdType": "VID",
-  "request": "wB6n9jA-jZ0NPJQjkyPyugYWzk4fJvgHnP8OKVu4urfnjdrT1O3hycb9HncVXMmgrmgbXwBAX-01RgHyB-EJJN9Ahk_u0JZTKiZfXLnmQI6lBjpruG-L2dJyfR0vAMt3Yb0W8BcNd1i2wMpAcu8tpm-aXz79nnh68_a3HdSM84799kopLW26pFo_iQzqNT0VuOg1OBEjtkb92NsCt-391v20UjRyIr1hIETHReOjCjI",
-  "requestHMAC": "EF4F5925A684CE1CE6D8F6E5C3385C641B06800AAE213C9F55696015FF7D8CFC",
-  "requestSessionKey": "P08GxfMz0Gb4ucxGbHsmhZYSQuDQ6-AyWs7fbpeYhOyAeMlF7MTfvRydmoj_cWGYIEUgp0__mlmlymxYXgEAX2scU9L-kEJ4G05re0h3HFEhjkthhDMmZVWiIF1f7aihNMVbw-quFAvpeY7weIEqmGHT1Q9ZvK3DCn9EX4nCEA8RpLDVg729Af5AxRjQjpcegKy4fvJYNsyLoJ5Lh0Aty8dD1lrNPjSuxxZNGxACcVXtbkdoJZQxBe0TtsAOeRt7fndehBRWsz4k1HbtelzVt0OU1M9ZdA6A2VVpT551GcUGXAGjLk5iz2wfuZ-YdaYISUsXA4SkEtusEBf2Iep7ig",
-  "requestTime": "2019-06-15T09:47:05.005+05:30",
-  "requestedAuth": {
-    "bio": false,
-    "demo": true,
-    "otp": false,
-    "pin": false
-  },
-  "transactionID": "1504668360",
-  "version": "1.0"
-}
+{"consentObtained":true,"id":"mosip.identity.auth","individualId":"3704308318201493","individualIdType":"VID","request":"bp7otB4JuLXEovWSry3d6dcSZw_IYdYNzkOzSetuMg7RHyCQdZMvfzxpARbTPJ9QP6EX9Hp-htv_Jyfc8JVlLrMzgTB1IlToWEcB-yLSjWHC_X9u4g2aPpcvS3XZ0FOh","requestHMAC":"u-vu8KZJmaSxRimrg6FLFW8iuWVW3pK4G7UD97gPcOU6oEoP9utQgGCw3bB5DONb-q9XDaXAUmwT0yGBKPCnWEeNa9qfeVnzrGhtYQ_MbAICCNv4fXhjw2jAkMsQxcFi","requestSessionKey":"ruYAo2JtJ1dXkjEp_tl4VksO3PTUxPUbh98QxJQtNU1Eje7pNDF5X6EGUVWUBOJAgaJO2o4D4Wj8T60FvWnKDqh5YI_Iv4-OtL1fXMXm9v4DT0GQSOdhIAiiy8oIWCl23C-oEHzAEDAes5G0_h7gFlqAUwt7UhUtCE3moPCmPHLyMMhG4a5bIZFKe7LaJiXDG9Qpz3Zin9knS6VPbq61KuASBfUSUT6uBfLc7lg3KsXbCWhgCCGRoxiFuTsltRe6nlvoO58UDJOmKdpkFe9K-UUm-MkSUypVE5fM8nBLIrJ84-1vuKHiYflDQ0qxY0AygDp57HYWnRbosHBqnaqzZQ","requestTime":"2019-06-20T15:26:41.041+05:30","requestedAuth":{"bio":false,"demo":true,"otp":false,"pin":false},"transactionID":"3342617448","version":"1.0"}

@@ -3,9 +3,9 @@
   "response": {
     "identity": "$DECODE$-\u003eoutput-2-expected-decoded-two-lang-kyc-res.json",
     "kycStatus": true,
-    "staticToken": "TOKENID:NoVIDLoaded.1873299273"
+    "staticToken": "TOKENID:2945287097698538.1873299273"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "1573826358",
+  "transactionID": "3113663084",
   "version": "1.0"
 }

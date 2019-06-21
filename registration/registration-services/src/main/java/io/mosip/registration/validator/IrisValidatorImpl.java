@@ -19,7 +19,8 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.service.bio.BioService;
 
 /**
- * This class is for validating Iris Authentication
+ * This class will take the Iris details from the DB and validate against the captured Iris.
+ * <p>The validation will be happen by calling the corresponding method in the bioservice</p>
  * 
  * @author Sravya Surampalli
  * @since 1.0.0 
@@ -35,8 +36,9 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 	@Autowired
 	private BioService BioService;
 
-	/**
-	 * Validate the Iris with the AuthenticationValidatorDTO as input
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.validator.AuthenticationBaseValidator#validate(io.mosip.registration.dto.AuthenticationValidatorDTO)
 	 */
 	@Override
 	public boolean validate(AuthenticationValidatorDTO authenticationValidatorDTO) {
@@ -53,6 +55,9 @@ public class IrisValidatorImpl extends AuthenticationBaseValidator{
 		return BioService.validateIrisAgainstDb(authenticationValidatorDTO.getIrisDetails().get(RegistrationConstants.PARAM_ZERO), userIrisDetails);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.validator.AuthenticationBaseValidator#validate(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public AuthTokenDTO validate(String userId, String otp) {
 		return null;

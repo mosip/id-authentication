@@ -1,7 +1,7 @@
 {
   "consentObtained": true,
   "id": "mosip.identity.auth",
-  "individualId": "NoVIDLoaded",
+  "individualId": "3970214890710375",
   "individualIdType": "VID",
   "request": "gplvWapVGJFcGkyrJSZENC0uvjZ8q23euYuLS4ynkKHu7rmobJVhu6smzupn2oJgr4FScth32txAy9Y1mux8TWFRhFHVu3Ev621ieCkOzuvVjbNCP3O4CFCRtgcbcCCcr8L7LUu8LDuvbiKhJi7yoKGpfwv5bJwE4_TJo3BlPR-I_Sij01qbw2ZLE1EZPn_JUw8xcziU_W5SbUzhv_pV_4ErjQofXpJwMGNP07Zt2IA",
   "requestHMAC": "N2PtVAzFZt7q5720cUoVYZSwCUAeAahQWCf0m16BCgt8HTCqRjS7Az1h2nEoL1SH90JErpfSC7Td3O4GB95nqJ7TVe-_t69qYRa5mcc96XoUt5gr4DgGohjJPCRD2zBp",
@@ -13,6 +13,6 @@
     "otp": false,
     "pin": false
   },
-  "transactionID": "1272481131",
+  "transactionID": "6747305007",
   "version": "1.0"
 }

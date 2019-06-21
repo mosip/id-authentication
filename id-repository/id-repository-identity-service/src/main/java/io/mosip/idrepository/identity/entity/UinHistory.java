@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class Uin.
+ * The Class UinHistory - Entity class for uin_h table.
  *
  * @author Manoj SP
  */
@@ -29,10 +29,33 @@ import lombok.Setter;
 @IdClass(HistoryPK.class)
 public class UinHistory {
 	
+	/**
+	 * Instantiates a new uin history.
+	 */
 	public UinHistory() {
 		
 	}
 
+	/**
+	 * Instantiates a new uin history.
+	 *
+	 * @param uinRefId the uin ref id
+	 * @param effectiveDateTime the effective date time
+	 * @param uin the uin
+	 * @param uinHash the uin hash
+	 * @param uinData the uin data
+	 * @param uinDataHash the uin data hash
+	 * @param regId the reg id
+	 * @param bioRefId the bio ref id
+	 * @param statusCode the status code
+	 * @param langCode the lang code
+	 * @param createdBy the created by
+	 * @param createdDateTime the created date time
+	 * @param updatedBy the updated by
+	 * @param updatedDateTime the updated date time
+	 * @param isDeleted the is deleted
+	 * @param deletedDateTime the deleted date time
+	 */
 	public UinHistory(String uinRefId, LocalDateTime effectiveDateTime, String uin, String uinHash, byte[] uinData,
 			String uinDataHash, String regId, String bioRefId, String statusCode, String langCode, String createdBy,
 			LocalDateTime createdDateTime, String updatedBy, LocalDateTime updatedDateTime, Boolean isDeleted,
@@ -68,6 +91,7 @@ public class UinHistory {
 	/** The uin. */
 	private String uin;
 	
+	/** The uin hash. */
 	private String uinHash;
 
 	/** The uin data. */
@@ -84,6 +108,7 @@ public class UinHistory {
 	/** The reg id. */
 	private String regId;
 	
+	/** The bio ref id. */
 	private String bioRefId;
 
 	/** The status code. */

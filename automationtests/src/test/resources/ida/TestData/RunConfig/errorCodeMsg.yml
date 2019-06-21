@@ -14,11 +14,11 @@ errors:
     actionMessage: Please retry with correct VID
   ExpiredVID:
     errorCode: IDA-MLC-005
-    errorMessage: Expired VID
+    errorMessage: VID is EXPIRED
     actionMessage: Please regenerate VID and try again
   RevokedVID:
     errorCode: IDA-MLC-005
-    errorMessage: Revoked VID
+    errorMessage: VID is REVOKED
     actionMessage: Please regenerate VID and try again
   DeactivatedVID:
     errorCode: IDA-MLC-005
@@ -26,7 +26,7 @@ errors:
     actionMessage: Please regenerate VID and try again
   InactiveVID:
     errorCode: IDA-MLC-005
-    errorMessage: Inactive VID
+    errorMessage: VID is INVALIDATED
     actionMessage: Please regenerate VID and try again
   RequestTimeGT24HR:
     errorCode: IDA-MLC-001
@@ -47,6 +47,9 @@ errors:
   InvalidId:
     errorCode: IDA-MLC-009
     errorMessage: Invalid Input Parameter - id 
+  InvalidBioType:
+    errorCode: IDA-MLC-009
+    errorMessage: $REGEXP:Invalid Input Parameter - bioType.*$ 
   InvalidindividualIdType:
     errorCode: IDA-MLC-009
     errorMessage: Invalid Input Parameter - individualIdType 
@@ -58,7 +61,7 @@ errors:
     errorMessage: Invalid Input Parameter - requestTime 
   InvalidDOB:
     errorCode: IDA-MLC-009
-    errorMessage: Invalid Input Parameter - dob  
+    errorMessage: Invalid Input Parameter - dateOfBirth
   InvalidtransactionID:
     errorCode: IDA-MLC-009
     errorMessage: Invalid Input Parameter - transactionID
@@ -103,16 +106,16 @@ errors:
     errorMessage: No authentication type selected 
   PolicyWithoutBioFinger:
     errorCode: IDA-MPA-006
-    errorMessage: Finger-authentiation usage not allowed as per policy
+    errorMessage: BIO-FMR Authentication usage not allowed as per policy
   PolicyWithoutBioIris:
     errorCode: IDA-MPA-006
-    errorMessage: Iris-authentiation usage not allowed as per policy
+    errorMessage: BIO-IIR Authentication usage not allowed as per policy
   PolicyWithoutDemo:
     errorCode: IDA-MPA-006
-    errorMessage: DEMO-authentiation usage not allowed as per policy 
+    errorMessage: DEMO Authentication usage not allowed as per policy 
   PolicyWithoutOTP:
     errorCode: IDA-MPA-006
-    errorMessage: OTP-authentiation usage not allowed as per policy 
+    errorMessage: OTP Authentication usage not allowed as per policy 
   PIDMISPNotMapped:
     errorCode: IDA-MPA-010
     errorMessage: MISP and Partner not mapped
@@ -181,17 +184,17 @@ errors:
     errorCode: IDA-BIA-003
     errorMessage: Number of FMR should not exceed 2
   IrisExceed2:
-    errorCode: IDA-BIA-007
-    errorMessage: Duplicate Irises in request
+    errorCode: IDA-BIA-008
+    errorMessage: Number of IIR should not exceed 2
   PolicyWithoutBioFinger:
     errorCode: IDA-MPA-006
-    errorMessage: Finger-authentiation usage not allowed as per policy
+    errorMessage: BIO-FMR Authentication usage not allowed as per policy
   PolicyWithoutBioFace:
     errorCode: IDA-MPA-006
-    errorMessage: Face-authentiation usage not allowed as per policy
+    errorMessage: BIO-FIR Authentication usage not allowed as per policy
   PolicyWithoutBioIris:
     errorCode: IDA-MPA-006
-    errorMessage: Iris-authentiation usage not allowed as per policy
+    errorMessage: BIO-IIR Authentication usage not allowed as per policy
   MissingBioSubtype:
     errorCode: IDA-MLC-006
     errorMessage: Missing Input Parameter - bioSubType
@@ -248,6 +251,10 @@ errors:
     errorCode: IDA-DEA-001
     errorMessage: Demographic data age did not match
     actionMessage: Please re-enter your age
+  DobMismatch:
+    errorCode: IDA-DEA-001
+    errorMessage: Demographic data dob did not match
+    actionMessage: Please re-enter your dob
   InvalidOTPChannel:
     errorCode: IDA-MLC-009
     errorMessage: $REGEXP:Invalid Input Parameter - otpChannel.*$
@@ -265,11 +272,11 @@ errors:
     errorMessage: OTP has expired
   DemoAuthTypeForInternal:
     errorCode: IDA-MPA-006
-    errorMessage: demo-authentiation usage not allowed as per policy
+    errorMessage: DEMO Authentication usage not allowed as per policy
     actionMessage: Please use other Authentication Types in the request
   OtherAuthTypeForInternal:
     errorCode: IDA-MPA-006
-    errorMessage: $REGEXP:.*authentiation usage not allowed as per policy$
+    errorMessage: $REGEXP:.*Authentication usage not allowed as per policy$
     actionMessage: Please use other Authentication Types in the request
   InvalidSecLang:
     errorCode: IDA-DEA-002
@@ -281,6 +288,9 @@ errors:
   InvalidUserId:
     errorCode: IDA-BIA-012
     errorMessage: Invalid userid of the individual
+  UserIDNotInDB:
+    errorCode: IDA-MLC-018
+    errorMessage: USERID not available in database
   Demo_NameMismatch_SecLang:
     errorCode: IDA-DEA-001
     errorMessage: Demographic data name in ara did not match
@@ -289,6 +299,9 @@ errors:
     errorMessage: Demographic data name in fra did not match
   UnSupportAuthType:
     errorCode: IDA-MLC-011
-    errorMessgae: $REGEXP:Unsupported Authentication Type.*$
+    errorMessage: $REGEXP:Unsupported Authentication Type.*$
+  InternalBioVIDNotAllowed:
+    errorCode: IDA-MLC-015
+    errorMessage: Identity Type - VID not configured for the country
   
   

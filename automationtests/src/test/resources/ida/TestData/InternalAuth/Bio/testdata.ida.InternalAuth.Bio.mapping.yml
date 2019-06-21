@@ -3,7 +3,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -42,7 +42,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -81,7 +81,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -143,7 +143,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -167,7 +167,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -191,7 +191,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-exceed-1-face-data:
@@ -221,7 +221,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.bio: $TestData:boolean_false$
@@ -248,7 +248,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$HOUR-24
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -272,7 +272,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$HOUR-30
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -296,7 +296,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.bio: $TestData:boolean_false$
@@ -323,7 +323,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
       AuthReq.bio: $TestData:invalid$
@@ -347,7 +347,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Vid_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -365,15 +365,14 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
-      output.1.response.error.actionMessage: $errors:InvalidVID:actionMessage$
+      output.1.response.error.errorCode: $errors:InternalBioVIDNotAllowed:errorCode$
+      output.1.response.error.errorMessage: $errors:InternalBioVIDNotAllowed:errorMessage$
       
   InternalAuthentication_Biometric_Without_Version_In_Request_Neg:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -399,7 +398,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -424,7 +423,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -449,7 +448,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -474,7 +473,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -501,7 +500,7 @@ testdata:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.id: $REMOVE$
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -551,7 +550,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $REMOVE$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -576,7 +575,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $REMOVE$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -601,7 +600,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -627,7 +626,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -652,7 +651,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $REMOVE$
@@ -677,7 +676,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -703,7 +702,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -728,7 +727,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -746,8 +745,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:OtherAuthTypeForInternal:errorCode$
-      output.1.response.error.errorMessage: $errors:OtherAuthTypeForInternal:errorMessage$
+      output.1.response.error.errorCode: $errors:UnSupportAuthType:errorCode$
+      output.1.response.error.errorMessage: $errors:UnSupportAuthType:errorMessage$
       
   InternalAuthentication_Biometric_With_Invalid_bioValue_In_Bio_Identity_Neg:
     #endpoint.url:
@@ -779,7 +778,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -805,7 +804,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -832,7 +831,7 @@ testdata:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.id: $TestData:id_auth_invalid$
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -900,8 +899,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidVID:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidVID:errorMessage$
+      output.1.response.error.errorCode: $errors:InternalBioVIDNotAllowed:errorCode$
+      output.1.response.error.errorMessage: $errors:InternalBioVIDNotAllowed:errorMessage$
   
   InternalAuthentication_Biometric_With_Invalid_individualId_DeactivedUIN_Neg:
     #endpoint.url:
@@ -932,7 +931,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:invalid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -957,7 +956,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TestData:timestamp_invalid$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -982,7 +981,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1007,7 +1006,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $TestData:txnID_Invalid$
@@ -1032,7 +1031,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1058,7 +1057,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1083,7 +1082,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1108,7 +1107,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1133,7 +1132,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1160,7 +1159,7 @@ testdata:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
       AuthReq.id: ''
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1210,7 +1209,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: ''
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1235,7 +1234,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: ''
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1260,7 +1259,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1285,7 +1284,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1310,7 +1309,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: ''
@@ -1335,7 +1334,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
     input.identity-encrypt-data:
@@ -1400,7 +1399,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1426,7 +1425,7 @@ testdata:
     #endpoint.url:
       ##partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:EVEN$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1468,8 +1467,8 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidUserId:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidUserId:errorMessage$
+      output.1.response.error.errorCode: $errors:UserIDNotInDB:errorCode$
+      output.1.response.error.errorMessage: $errors:UserIDNotInDB:errorMessage$
       
   InternalAuthentication_Biometric_Face_With_VID_Neg:
     input.bio-auth-request:
@@ -1490,5 +1489,5 @@ testdata:
       output.1.response.status: $TestData:auth_Fail_status$
       output.1.response.responseTime: $TIMESTAMP$
       output.1.response.transactionID: $input.bio-auth-request:AuthReq.transactionID$
-      output.1.response.error.errorCode: $errors:InvalidUserId:errorCode$
-      output.1.response.error.errorMessage: $errors:InvalidUserId:errorMessage$
+      output.1.response.error.errorCode: $errors:InternalBioVIDNotAllowed:errorCode$
+      output.1.response.error.errorMessage: $errors:InternalBioVIDNotAllowed:errorMessage$

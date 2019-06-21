@@ -1,6 +1,6 @@
 {
   "identityRequest": {
-    "otp": "select otp from kernel.otp_transaction where id like \u0027%$UIN$%\u0027:5",
-    "timestamp": "2019-06-16T09:53:56.056+05:30"
+    "otp": "select otp from kernel.otp_transaction where id like \u0027%5617698153%\u0027:5",
+    "timestamp": "2019-06-21T15:29:25.025+05:30"
   }
 }

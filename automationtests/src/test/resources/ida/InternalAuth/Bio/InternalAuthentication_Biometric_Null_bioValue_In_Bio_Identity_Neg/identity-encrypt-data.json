@@ -3,16 +3,16 @@
     "biometrics": [
       {
         "data": {
-          "bioSubType": "UNKNOWN",
+          "bioSubType": "FACE",
           "bioType": "FID",
           "bioValue": "",
           "deviceCode": "cogent",
           "deviceProviderID": "cogent",
-          "timestamp": "2019-06-15T10:10:25.025+05:30",
-          "transactionID": "$RANDOM:N:10$"
+          "timestamp": "2019-06-20T15:28:48.048+05:30",
+          "transactionID": "5884660303"
         }
       }
     ],
-    "timestamp": "2019-06-15T10:10:25.025+05:30"
+    "timestamp": "2019-06-20T15:28:48.048+05:30"
   }
 }

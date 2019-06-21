@@ -11,6 +11,6 @@
     "staticToken": "$IGNORE$"
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "$TestData:txnID_Invalid$",
+  "transactionID": "123456789^",
   "version": "1.0"
 }

@@ -1,8 +1,8 @@
 {
   "identityRequest": {
     "demographics": {
-      "dob": "Exceptione in fetching the data from id repo: java.text.ParseException: Unparseable date: \"\""
+      "dob": "1967/05/12"
     },
-    "timestamp": "2019-06-15T09:39:52.052+05:30"
+    "timestamp": "2019-06-20T15:22:45.045+05:30"
   }
 }

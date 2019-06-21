@@ -28,15 +28,11 @@ public class AuditValidation {
 	 * @param listOfFiles
 	 * @param keywordToFind
 	 * @return Map, Output Validation report
-<<<<<<< HEAD
-	 */
-	public static Map<String, List<OutputValidationDto>> verifyAuditTxn(File[] listOfFiles, String keywordToFind){
-		/*
 	 * @throws IOException 
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
 	 */
-
+	public static Map<String, List<OutputValidationDto>> verifyAuditTxn(File[] listOfFiles, String keywordToFind){
 		auth_txn_file = FileUtil.getFileFromList(listOfFiles, keywordToFind);
 		Map<String, String> exp = AuthTestsUtil.getPropertyAsMap(auth_txn_file.getAbsolutePath());
 		Map<String, String> act = DbConnection.getDataForQuery(
@@ -53,12 +49,9 @@ public class AuditValidation {
 	 * @param listOfFiles
 	 * @param keywordToFind
 	 * @return Map, Output Validation report
-<<<<<<< HEAD
-=======
 	 * @throws IOException 
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
->>>>>>> origin/0.12.0_AutomationTest_Authentication
 	 */
 	public static Map<String, List<OutputValidationDto>> verifyAuditLog(File[] listOfFiles, String keywordToFind) {
 		audit_log_file = FileUtil.getFileFromList(listOfFiles, keywordToFind);

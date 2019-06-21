@@ -4,14 +4,14 @@
       {
         "data": {
           "bioType": "FMR",
-          "bioSubType": "UNKNOWN",
+          "bioSubType": "LEFT_INDEX",
           "deviceCode": "cogent",
           "deviceProviderID": "cogent",
-          "timestamp": "2019-06-15T10:13:57.057+05:30"
+          "timestamp": "2019-06-20T15:28:55.055+05:30"
         }
       }
     ],
-    "transactionID": "$RANDOM:N:10$",
-    "timestamp": "2019-06-15T10:13:57.057+05:30"
+    "transactionID": "5533401820",
+    "timestamp": "2019-06-20T15:28:55.055+05:30"
   }
 }

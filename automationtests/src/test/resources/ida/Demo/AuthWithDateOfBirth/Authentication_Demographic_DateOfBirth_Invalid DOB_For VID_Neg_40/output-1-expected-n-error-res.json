@@ -2,7 +2,7 @@
   "errors": [
     {
       "errorCode": "IDA-MLC-009",
-      "errorMessage": "Invalid Input Parameter - dob"
+      "errorMessage": "Invalid Input Parameter - dateOfBirth"
     }
   ],
   "id": "mosip.identity.auth",
@@ -10,6 +10,6 @@
     "authStatus": false
   },
   "responseTime": "$TIMESTAMP$",
-  "transactionID": "2000117218",
+  "transactionID": "6548061703",
   "version": "1.0"
 }

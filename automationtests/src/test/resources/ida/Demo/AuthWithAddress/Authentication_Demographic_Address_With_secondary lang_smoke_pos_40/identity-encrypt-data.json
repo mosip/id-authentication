@@ -4,40 +4,40 @@
       "location1": [
         {
           "language": "ara",
-          "value": ""
+          "value": "الرباط"
         }
       ],
       "addressLine1": [
         {
           "language": "ara",
-          "value": ""
+          "value": "مگر سِتي"
         }
       ],
       "location2": [
         {
           "language": "ara",
-          "value": ""
+          "value": "جهة الرباط سلا القنيطرة"
         }
       ],
       "addressLine2": [
         {
           "language": "ara",
-          "value": ""
+          "value": "مُُنت رَِد هُُسِ"
         }
       ],
       "location3": [
         {
           "language": "ara",
-          "value": ""
+          "value": "القنيطرة"
         }
       ],
       "addressLine3": [
         {
           "language": "ara",
-          "value": ""
+          "value": "بَنگَلُرِ"
         }
       ]
     },
-    "timestamp": "2019-06-15T09:35:59.059+05:30"
+    "timestamp": "2019-06-20T15:24:29.029+05:30"
   }
 }

@@ -79,7 +79,7 @@ public class GlobalParamServiceTest {
 	}
 
 	@Test
-	public void syncConfigDataTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
+	public void syncConfigDataTestError() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
@@ -117,13 +117,17 @@ public class GlobalParamServiceTest {
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		HashMap<String, Object> globalParamJsonMap = new LinkedHashMap<>();
+		HashMap<String, Object> globalParamJsonMap1 = new LinkedHashMap<>();
+		globalParamJsonMap1.put("Retry", 3);
+		globalParamJsonMap1.put("threshold", 3);
 
-		globalParamJsonMap.put("kernel", "5");
+		globalParamJsonMap1.put("kernel", "5");
 		HashMap<String, Object> globalParamJsonMap2 = new LinkedHashMap<>();
 		globalParamJsonMap2.put("loginSequence1", "OTP");
 		globalParamJsonMap.put("response", globalParamJsonMap2);
-
+        globalParamJsonMap2.put("configDetail",globalParamJsonMap1);
 		globalParamJsonMap.put("map", globalParamJsonMap2);
+		
 
 		Mockito.when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap(), Mockito.anyBoolean(),
 				Mockito.anyString())).thenReturn(globalParamJsonMap);
@@ -136,7 +140,7 @@ public class GlobalParamServiceTest {
 		GlobalParam globalParam = new GlobalParam();
 		globalParam.setVal("2");
 		GlobalParamId globalParamId = new GlobalParamId();
-		globalParamId.setCode("kernel");
+		globalParamId.setCode("Retry");
 		globalParam.setGlobalParamId(globalParamId);
 		globalParamList.add(globalParam);
 		Mockito.when(globalParamDAOImpl.getAllEntries()).thenReturn(globalParamList);

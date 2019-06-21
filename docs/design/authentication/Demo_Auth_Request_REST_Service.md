@@ -63,6 +63,39 @@ The below class diagram shows relationship between all the classes which are req
 **2.2. Sequence Diagram:**   
 ![Demo Auth Sequence Diagram](_images/Demo_Auth_Sequence_Diagram.PNG)
 
+**2.3. Demographic Data Normalization** 
+<br>
+For authentication based on name/address values, normalization will be performed on both name/address from the request and their respective values in the database. The normalization rules are made configurable for multiple languages. 
+
+Below is the description of the demographic data normalization in configuration.
+1. Demograpic Name/Address data Normalization uses Java Regular Expressions and their replacement values from the configurations.
+2. The `ida.norm.sep` property defines the separator to be used in the configuration, and its default value is set to '='. This configuration should be defined befor all other demographic data normalization configuration.
+For example, `ida.norm.sep==`
+3. The format for the configuration is: 
+
+````
+ida.demo.<name/address/common>.normalization.regex.<languageCode/any>[<sequential index starting from 0>]=<reqular expression>${ida.norm.sep}<replacement string>
+`````
+
+For example,
+````
+ida.demo.address.normalization.regex.eng[0]=[CcSsDdWwHh]/[Oo]
+ida.demo.address.normalization.regex.eng[1]=[aA][pP][aA][rR][tT][mM][eE][nN][tT]${ida.norm.sep}apt 
+ida.demo.address.normalization.regex.eng[2]=[sS][tT][rR][eE][eE][tT]${ida.norm.sep}st
+
+ida.demo.name.normalization.regex.eng[0]=(M|m)(rs?)(.)
+ida.demo.name.normalization.regex.eng[1]=(D|d)(r)(.)
+
+ida.demo.common.normalization.regex.any[0]=[\\.|,|\\-|\\*|\\(|\\)|\\[|\\]|`|\\'|/|\\|#|\"]
+````
+
+4. In the above configuration format, if only `<reqular expression>` term is provided and if the term `${ida.norm.sep}<replacement string>` is not provided, that regular expression will be replaced with empty string, means it will be removed.
+5. The index sequence for one type of configuration should not break in the middle, otherwise normalization properties will not be read for that type further.
+6. The **common** normalization attributes will be replaced at the end after replacing all other attributes.
+
+**Note:** For name value normalization we additionally perform Gender Title normalization, where we obtain the title values for the particular language and remove them from the name value.
+
+
 **3. Proxy Implementations -**   
 Below are the proxy implementations used in ID-Authentication:
 - ***MISP verification*** - Mocked the verification of MISP by using mocked *License Key*.
