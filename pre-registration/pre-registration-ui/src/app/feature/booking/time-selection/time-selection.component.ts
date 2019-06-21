@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-
+import smoothscroll from 'smoothscroll-polyfill';
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
 import { DataStorageService } from 'src/app/core/services/data-storage.service';
@@ -54,7 +54,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private configService: ConfigService
   ) {
-    // smoothscroll.polyfill();
+    smoothscroll.polyfill();
     this.translate.use(localStorage.getItem('langCode'));
   }
 
@@ -77,10 +77,12 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   public scrollRight(): void {
-    // this.widgetsContent.nativeElement.scrollBy({
-    //   left: this.widgetsContent.nativeElement.scrollLeft + 100,
-    //   behavior: 'smooth'
-    // });
+    // for edge browser
+    this.widgetsContent.nativeElement.scrollBy({
+      left: this.widgetsContent.nativeElement.scrollLeft + 100,
+      behavior: 'smooth'
+    });
+    // for chrome browser
     this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft + 100,
       behavior: 'smooth'
@@ -88,10 +90,12 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   public scrollLeft(): void {
-    // this.widgetsContent.nativeElement.scrollBy({
-    //   left: this.widgetsContent.nativeElement.scrollLeft - 100,
-    //   behavior: 'smooth'
-    // });
+    // for edge browser
+    this.widgetsContent.nativeElement.scrollBy({
+      left: this.widgetsContent.nativeElement.scrollLeft - 100,
+      behavior: 'smooth'
+    });
+    //for chrome browser
     this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft - 100,
       behavior: 'smooth'
@@ -192,11 +196,11 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
         if (response['response']) {
           this.formatJson(response['response'].centerDetails);
         } else if (response[appConstants.NESTED_ERROR]) {
-          this.displayMessage('Error', this.errorlabels.error , '');
+          this.displayMessage('Error', this.errorlabels.error, '');
         }
       },
-      (error) => {
-        this.displayMessage('Error', this.errorlabels.error , error);
+      error => {
+        this.displayMessage('Error', this.errorlabels.error, error);
       }
     );
   }
@@ -211,7 +215,6 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   getNames(): string {
-
     const x = [];
 
     this.deletedNames.forEach(name => {
@@ -248,21 +251,26 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       bookingRequest: this.bookingDataList
     };
     const request = new RequestModel(appConstants.IDS.booking, obj);
-    if(this.deletedNames.length!==0){
+    if (this.deletedNames.length !== 0) {
       const data = {
         case: 'CONFIRMATION',
-        title:'',
-        message: this.secondaryLanguagelabels.deletedApplicant1[0] + ' "' + this.getNames() + ' ".' + this.secondaryLanguagelabels.deletedApplicant1[1] + '?',
+        title: '',
+        message:
+          this.secondaryLanguagelabels.deletedApplicant1[0] +
+          ' ' +
+          this.getNames() +
+          ' ' +
+          this.secondaryLanguagelabels.deletedApplicant1[1] +
+          '?',
         yesButtonText: this.secondaryLanguagelabels.yesButtonText,
-        noButtonText:  this.secondaryLanguagelabels.noButtonText
+        noButtonText: this.secondaryLanguagelabels.noButtonText
       };
-      const dialogRef = this.dialog
-      .open(DialougComponent, {
+      const dialogRef = this.dialog.open(DialougComponent, {
         width: '350px',
         data: data,
         disableClose: true
-      })
-       dialogRef.afterClosed().subscribe(selectedOption => {
+      });
+      dialogRef.afterClosed().subscribe(selectedOption => {
         if (selectedOption) {
           this.bookingOperation(request);
         } else {
@@ -270,14 +278,12 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
           return;
         }
       });
-    }
-    else {
+    } else {
       this.bookingOperation(request);
     }
-
   }
 
-  bookingOperation(request){
+  bookingOperation(request) {
     this.dataService.makeBooking(request).subscribe(
       response => {
         if (!response['errors']) {
@@ -306,21 +312,23 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
               this.router.navigateByUrl(url);
             });
         } else {
-          this.displayMessage('Error', this.errorlabels.error , '');
+          this.displayMessage('Error', this.errorlabels.error, '');
         }
       },
-      (error) => {
-        this.displayMessage('Error', this.errorlabels.error , error);
+      error => {
+        this.displayMessage('Error', this.errorlabels.error, error);
       }
     );
   }
 
-  displayMessage(title: string, message: string , error: any) {
+  displayMessage(title: string, message: string, error: any) {
     this.disableContinueButton = false;
-    if(error && (error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired))
-    {
-        message = this.errorlabels.tokenExpiredLogout;
-        title = '';
+    if (
+      error &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+    ) {
+      message = this.errorlabels.tokenExpiredLogout;
+      title = '';
     }
     const messageObj = {
       case: 'MESSAGE',
@@ -355,7 +363,6 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (!this.bookingService.getSendNotification())
-      this.reloadData();
+    if (!this.bookingService.getSendNotification()) this.reloadData();
   }
 }
