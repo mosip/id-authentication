@@ -147,7 +147,8 @@ MOS-23221|Closed|Yes
 MOS-22802|Closed|Yes
 
 ### 1.7 IVV Defects WIP list :
-Defect JIRA ID
+Defect JIRA ID|
+---------------|
 MOS-26150|
 MOS-26092|
 MOS-26086|
