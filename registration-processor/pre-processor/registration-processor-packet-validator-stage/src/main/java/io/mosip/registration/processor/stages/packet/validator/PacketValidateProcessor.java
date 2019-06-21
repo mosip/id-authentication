@@ -152,8 +152,6 @@ public class PacketValidateProcessor {
 	@Autowired
 	private LogDescription description;
 
-	private JSONObject demographicIdentity;
-
 	String packetValidaionFailure="";
 
 	private static final String INDIVIDUALBIOMETRICS = "individualBiometrics";
@@ -423,6 +421,7 @@ public class PacketValidateProcessor {
 		JSONObject idObject=mapper.readValue(bytearray, JSONObject.class);
 		Identity identity = packetMetaInfo.getIdentity();
 		Long uin = null;
+		JSONObject demographicIdentity= null;
 		if (!schemaValidation(idObject, registrationStatusDto)) {
 			return false;
 		}
@@ -433,7 +432,7 @@ public class PacketValidateProcessor {
 		if (!checkSumValidation(identity, registrationStatusDto))
 			return false;
 
-		if (!individualBiometricsValidation(registrationStatusDto))
+		if (!individualBiometricsValidation(registrationStatusDto, demographicIdentity))
 			return false;
 
 		List<FieldValue> metadataList = identity.getMetaData();
@@ -462,7 +461,7 @@ public class PacketValidateProcessor {
 			}
 
 		} else {
-			if (!activateDeactivatePacketValidation()) {
+			if (!activateDeactivatePacketValidation(demographicIdentity)) {
 				packetValidaionFailure = "activate/deactivate packet validation failed ";
 				return false;
 			}
@@ -569,13 +568,13 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean activateDeactivatePacketValidation() {
+	private boolean activateDeactivatePacketValidation(JSONObject demographicIdentity) {
 		String[] activateDeactivate = "UIN,IDSchemaVersion".split(",");
 		return CollectionUtils.isEqualCollection(demographicIdentity.keySet(), Arrays.asList(activateDeactivate));
 
 	}
 
-	private boolean individualBiometricsValidation(InternalRegistrationStatusDto registrationStatusDto) throws RegistrationProcessorCheckedException {
+	private boolean individualBiometricsValidation(InternalRegistrationStatusDto registrationStatusDto, JSONObject demographicIdentity) throws RegistrationProcessorCheckedException {
 		try {
 			String registrationId = registrationStatusDto.getRegistrationId();
 			demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);

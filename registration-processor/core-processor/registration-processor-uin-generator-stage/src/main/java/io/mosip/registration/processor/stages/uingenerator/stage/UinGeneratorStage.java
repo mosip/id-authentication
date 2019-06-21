@@ -151,10 +151,6 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	/** The reg processor identity json. */
-	@Autowired
-	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
 	/** The utility. */
 	@Autowired
 	private Utilities utility;
@@ -162,9 +158,6 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	/** The description. */
 	@Autowired
 	private LogDescription description;
-
-	/** The is transaction successful. */
-	private boolean isTransactionSuccessful = false;
 
 	@Autowired
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
@@ -182,7 +175,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	@SuppressWarnings("unchecked")
 	@Override
 	public MessageDTO process(MessageDTO object) {
-
+		boolean isTransactionSuccessful = Boolean.FALSE;
 		object.setMessageBusAddress(MessageBusAddress.UIN_GENERATION_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
 		object.setIsValid(true);
@@ -264,14 +257,14 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 							"is :" + idResponseDTO.toString());
 				} else {
 					if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(object.getReg_type().toString())) {
-						idResponseDTO = reActivateUin(idResponseDTO, registrationId, uinFieldCheck, object, demographicIdentity);
+						isTransactionSuccessful = reActivateUin(idResponseDTO, registrationId, uinFieldCheck, object, demographicIdentity);
 					} else if ((RegistrationType.DEACTIVATED.toString())
 							.equalsIgnoreCase(object.getReg_type().toString())) {
 						idResponseDTO = deactivateUin(registrationId, uinFieldCheck, object, demographicIdentity);
 					} else if (RegistrationType.UPDATE.toString().equalsIgnoreCase(object.getReg_type().toString())
 							|| (RegistrationType.RES_UPDATE.toString()
 									.equalsIgnoreCase(object.getReg_type().toString()))) {
-						idResponseDTO = uinUpdate(registrationId, uinFieldCheck, object, demographicIdentity);
+						isTransactionSuccessful = uinUpdate(registrationId, uinFieldCheck, object, demographicIdentity);
 					}
 				}
 
@@ -328,9 +321,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			description.setMessage("Internal error occurred in UINGenerator stage while processing registrationId "
 					+ registrationId + ex.getMessage());
 		} finally {
-			if(registrationStatusDto.getStatusComment() != null)
+			if(description.getStatusComment() != null)
 				registrationStatusDto.setStatusComment(description.getStatusComment());
-			if(registrationStatusDto.getLatestTransactionStatusCode() != null)
+			if(description.getTransactionStatusCode() != null)
 				registrationStatusDto.setLatestTransactionStatusCode(description.getTransactionStatusCode());
 
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
@@ -437,7 +430,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		List<Documents> applicantDocuments = new ArrayList<>();
 
 		JSONObject idJSON = getDemoIdentity(regId);
-		regProcessorIdentityJson = getMappeedJSONIdentity();
+		RegistrationProcessorIdentity regProcessorIdentityJson = getMappeedJSONIdentity();
 		String proofOfAddressLabel = regProcessorIdentityJson.getIdentity().getPoa().getValue();
 		String proofOfDateOfBirthLabel = regProcessorIdentityJson.getIdentity().getPob().getValue();
 		String proofOfIdentityLabel = regProcessorIdentityJson.getIdentity().getPoi().getValue();
@@ -499,9 +492,10 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 * @throws io.mosip.kernel.core.exception.IOException 
 	 * @throws PacketDecryptionFailureException 
 	 */
-	private IdResponseDTO uinUpdate(String regId, Long uin, MessageDTO object, JSONObject demographicIdentity)
+	private boolean uinUpdate(String regId, Long uin, MessageDTO object, JSONObject demographicIdentity)
 			throws ApisResourceAccessException, IOException, RegistrationProcessorCheckedException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		IdResponseDTO result;
+		boolean isTransactionSuccessful = Boolean.FALSE;
 		List<Documents> documentInfo = utility.getAllDocumentsByRegId(regId);
 		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, documentInfo, demographicIdentity);
 		if (result != null && result.getResponse() != null) {
@@ -524,7 +518,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					: UINConstants.NULL_IDREPO_RESPONSE);
 			object.setIsValid(Boolean.FALSE);
 		}
-		return result;
+		return isTransactionSuccessful;
 	}
 
 	/**
@@ -583,10 +577,11 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private IdResponseDTO reActivateUin(IdResponseDTO idResponseDTO, String regId, Long uin, MessageDTO object, JSONObject demographicIdentity) throws ApisResourceAccessException {
+	private boolean reActivateUin(IdResponseDTO idResponseDTO, String regId, Long uin, MessageDTO object, JSONObject demographicIdentity) throws ApisResourceAccessException {
 		IdResponseDTO result = getIdRepoDataByUIN(uin, regId);
 		List<String> pathsegments = new ArrayList<>();
 		RequestDto requestDto = new RequestDto();
+		boolean isTransactionSuccessful = Boolean.FALSE;
 
 		if (result != null && result.getResponse() != null) {
 
@@ -596,7 +591,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				description.setStatusComment(UinStatusMessage.UIN_UPDATION_ALREADY_ACTIVATED + " for registration Id:  " + regId);
 				description.setMessage(UinStatusMessage.UIN_UPDATION_ALREADY_ACTIVATED + " for registration Id:  " + regId);
 				object.setIsValid(Boolean.FALSE);
-				return result;
+				return isTransactionSuccessful;
 
 			} else {
 
@@ -653,7 +648,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 		}
 
-		return result;
+		return isTransactionSuccessful;
 	}
 
 	/**
@@ -831,6 +826,13 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT);
+		MessageDTO obj = new MessageDTO();
+		obj.setReg_type(io.mosip.registration.processor.core.constant.RegistrationType.NEW);
+		obj.setRid("10006100410000320190619232449");
+		obj.setIsValid(Boolean.FALSE);
+		obj.setInternalError(Boolean.FALSE);
+		obj.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
+		process(obj);
 	}
 
 	@Override
@@ -838,6 +840,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.UIN_GENERATION_BUS_IN,
 				MessageBusAddress.UIN_GENERATION_BUS_OUT));
 		this.createServer(router.getRouter(), Integer.parseInt(port));
+		
 	}
 
 	private RegistrationProcessorIdentity getMappeedJSONIdentity() throws IOException {
