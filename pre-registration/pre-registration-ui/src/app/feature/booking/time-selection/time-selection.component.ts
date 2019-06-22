@@ -257,9 +257,9 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
         title: '',
         message:
           this.secondaryLanguagelabels.deletedApplicant1[0] +
-          ' ' +
+          ' - "' +
           this.getNames() +
-          ' ' +
+          ' ". ' +
           this.secondaryLanguagelabels.deletedApplicant1[1] +
           '?',
         yesButtonText: this.secondaryLanguagelabels.yesButtonText,

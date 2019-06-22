@@ -229,7 +229,7 @@ public class PacketValidateProcessorTest {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("ID.json").getFile());
 		inputStream = new FileInputStream(file);
-	
+
 		dto.setRid("2018701130000410092018110735");
 		dto.setReg_type(RegistrationType.valueOf("UPDATE"));
 
