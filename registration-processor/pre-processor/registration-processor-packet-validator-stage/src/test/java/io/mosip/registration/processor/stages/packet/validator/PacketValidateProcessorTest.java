@@ -225,6 +225,7 @@ public class PacketValidateProcessorTest {
 		list = new ArrayList<InternalRegistrationStatusDto>();
 
 		listAppender = new ListAppender<>();
+		
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("ID.json").getFile());
 		inputStream = new FileInputStream(file);
