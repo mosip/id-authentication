@@ -91,7 +91,7 @@ public class ResponseSignatureAdvice {
 	 */
 	@SuppressWarnings("unchecked")
 	@AfterReturning(pointcut = "execution(* io.mosip.registration.util.restclient.RestClientUtil.invoke(..))", returning = "result")
-	public Map<String, Object> responseSignatureValidation(JoinPoint joinPoint, Object result)
+	public synchronized Map<String, Object> responseSignatureValidation(JoinPoint joinPoint, Object result)
 			throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,

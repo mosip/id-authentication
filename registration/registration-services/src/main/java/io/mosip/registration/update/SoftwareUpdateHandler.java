@@ -65,10 +65,9 @@ public class SoftwareUpdateHandler extends BaseService {
 	 */
 	public SoftwareUpdateHandler() {
 
-		try {
-			String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		propsFilePath = new File(System.getProperty("user.dir")) + props;
 
-			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		try (FileInputStream fileInputStream = new FileInputStream(propsFilePath)) {
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
 			serverRegClientURL = properties.getProperty("mosip.reg.client.url");
@@ -82,6 +81,8 @@ public class SoftwareUpdateHandler extends BaseService {
 		}
 	}
 
+	private String propsFilePath;
+	private static String props = "/props/mosip-application.properties";
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
@@ -605,6 +606,8 @@ public class SoftwareUpdateHandler extends BaseService {
 		// Update global param with current version
 		globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
 
+		addProperties(latestVersion);
+
 		setSuccessResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_SUCCESS, null);
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
@@ -739,5 +742,36 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		// checksum (content-type)
 		return checksum;
+	}
+
+	private void addProperties(String version) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Started updating version property in mosip-application.properties");
+
+
+		try {
+			Properties properties = new Properties();
+			properties.load(new FileInputStream(propsFilePath));
+
+			properties.setProperty("mosip.reg.version", version);
+
+			// update mosip-Version in mosip-application.properties file
+			try (FileOutputStream outputStream = new FileOutputStream(propsFilePath)) {
+
+				properties.store(outputStream, version);
+			}
+
+		} catch (IOException ioException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+		}
+		
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Completed updating version property in mosip-application.properties");
+
+
 	}
 }
