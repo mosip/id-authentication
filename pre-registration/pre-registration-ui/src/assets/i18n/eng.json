@@ -489,8 +489,8 @@
       "title_failure": "Failure",
       "msg_failure": "Appointment Booking Failed",
       "deletedApplicant1": [
-        "The Following User has not been selected any time slot",
-        "Do you want to continue Booking"
+        "You have not selected any time slot for following user",
+        "Do you wish to continue booking"
       ],
       "yesButtonText": "Yes",
       "noButtonText": "No"

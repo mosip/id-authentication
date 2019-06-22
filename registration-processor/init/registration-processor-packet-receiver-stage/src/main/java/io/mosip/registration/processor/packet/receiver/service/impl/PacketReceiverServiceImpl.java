@@ -428,8 +428,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 	public MessageDTO processPacket(File file) {
 		LogDescription description = new LogDescription();
 		MessageDTO messageDTO = new MessageDTO();
-		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
-		dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
 		RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
 		messageDTO.setInternalError(false);
 		messageDTO.setIsValid(false);
@@ -439,16 +437,11 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		SyncRegistrationEntity regEntity;
 		String fileOriginalName = file.getName();
 		registrationId = fileOriginalName.split("\\.")[0];
+		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus(registrationId);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::processPacket()::entry");
 		messageDTO.setRid(registrationId);
 		regEntity = syncRegistrationService.findByRegistrationId(registrationId);
-		dto.setRegistrationId(registrationId);
-		dto.setRegistrationType(regEntity.getRegistrationType());
-		dto.setLangCode("eng");
-		dto.setIsActive(true);
-		dto.setIsDeleted(false);
-		dto.setCreatedBy(USER);
 		messageDTO.setReg_type(RegistrationType.valueOf(regEntity.getRegistrationType()));
 		try (InputStream encryptedInputStream = FileUtils.newInputStream(file.getAbsolutePath())) {
 			byte[] encryptedByteArray = IOUtils.toByteArray(encryptedInputStream);
