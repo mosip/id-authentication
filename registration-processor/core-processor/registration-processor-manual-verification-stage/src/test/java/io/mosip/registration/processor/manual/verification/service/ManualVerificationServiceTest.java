@@ -185,6 +185,30 @@ public class ManualVerificationServiceTest {
 
 	}
 
+	@Test(expected=UserIDNotPresentException.class)
+	public void assignStatusMethodNullIdCheck() throws JsonParseException, JsonMappingException, java.io.IOException {
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
+				.thenReturn(entitiesTemp);
+		Mockito.when(basePacketRepository.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
+		dto.setMatchType("DEMO");
+		dto.setUserId(null);
+
+		userResponseDTO.setStatusCode("ACT");
+		userResponseDto.add(userResponseDTO);
+		userResponseDTOWrapper.setUserResponseDto(userResponseDto);
+		Mockito.when(mapper.readValue(anyString(),any(Class.class))).thenReturn(userResponseDTOWrapper);
+		responseWrapper.setResponse(userResponseDTOWrapper);
+		try {
+			Mockito.doReturn(responseWrapper).when(restClientService).getApi(any(), any(), any(), any(), any());
+		} catch (ApisResourceAccessException e) {
+			e.printStackTrace();
+		}
+
+		manualAdjudicationService.assignApplicant(dto);
+	}
+	
+	
+	
 	@Test
 	public void assignStatusMethodNullEntityCheck() throws JsonParseException, JsonMappingException, java.io.IOException {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
@@ -260,6 +284,15 @@ public class ManualVerificationServiceTest {
 		}
 		manualAdjudicationService.assignApplicant(dto);
 	}
+	
+	@Test(expected = UserIDNotPresentException.class)
+	public void ApisResourceAccessExceptionTest() throws ApisResourceAccessException {
+		dto.setUserId("dummyID");
+		dto.setMatchType("DEMO");
+			Mockito.doThrow(ApisResourceAccessException.class).when(restClientService).getApi(any(), any(), any(), any(), any());
+		
+		manualAdjudicationService.assignApplicant(dto);
+	}
 
 	@Test
 	public void TablenotAccessibleExceptionTest() throws Exception {
@@ -319,7 +352,7 @@ public class ManualVerificationServiceTest {
 
 	}
 
-	@Ignore
+	
 	@Test
 	public void updatePacketStatusApprovalMethodCheck() {
 		Mockito.when(basePacketRepository.getSingleAssignedRecord(anyString(), anyString(), anyString(), anyString()))
