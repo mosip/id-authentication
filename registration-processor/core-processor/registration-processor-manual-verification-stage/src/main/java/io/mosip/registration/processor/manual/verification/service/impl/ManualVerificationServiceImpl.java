@@ -45,6 +45,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.manual.verification.constants.ManualVerificationConstants;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -105,9 +106,11 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	private ObjectMapper mapper = new ObjectMapper();
+	@Autowired
+	private ObjectMapper mapper;
 
-	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
+	@Autowired
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil;
 
 	/*
 	 * * (non-Javadoc)
@@ -304,14 +307,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 
 				isTransactionSuccessful = true;
-				description = "Manual verification approved for registration id : " + registrationId;
+				description = ManualVerificationConstants.VERIFICATION_APPROVED + registrationId;
 			} else {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.MANUAL_VERFICATION_PACKET_REJECTED);
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
-				description = "Manual verification rejected for registration id : " + registrationId;
+				description = ManualVerificationConstants.VERIFICATION_REJECTED + registrationId;
 			}
 			ManualVerificationEntity maVerificationEntity = basePacketRepository.update(manualVerificationEntity);
 			manualVerificationDTO.setStatusCode(maVerificationEntity.getStatusCode());
@@ -325,7 +328,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 
-			description = "TablenotAccessibleException in Manual verification for registrationId: " + registrationId
+			description = ManualVerificationConstants.TABLE_NOT_ACCESSIBLE + registrationId
 					+ "::" + e.getMessage();
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -386,10 +389,10 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		ResponseWrapper<UserResponseDTOWrapper> responseWrapper;
 		UserResponseDTOWrapper userResponseDTOWrapper;
 		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add("users");
+		pathSegments.add(ManualVerificationConstants.USERS);
 		pathSegments.add(dto.getUserId());
 		Date date = Calendar.getInstance().getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.000'Z'");
+		DateFormat dateFormat = new SimpleDateFormat(ManualVerificationConstants.TIME_FORMAT);
 		String effectiveDate = dateFormat.format(date);
 		// pathSegments.add("2019-05-16T06:12:52.994Z");
 		pathSegments.add(effectiveDate);
@@ -400,7 +403,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			if (responseWrapper.getResponse() != null) {
 				userResponseDTOWrapper = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 						UserResponseDTOWrapper.class);
-				if (!userResponseDTOWrapper.getUserResponseDto().get(0).getStatusCode().equals("ACT")) {
+				if (!userResponseDTOWrapper.getUserResponseDto().get(0).getStatusCode().equals(ManualVerificationConstants.ACT)) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), null,
 							PlatformErrorMessages.RPR_MVS_USER_STATUS_NOT_ACTIVE.getCode(),
 							PlatformErrorMessages.RPR_MVS_USER_STATUS_NOT_ACTIVE.getMessage() + dto.getUserId());

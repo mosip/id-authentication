@@ -357,18 +357,16 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-		} finally {
-
-			if (channel != null)
-				channel.disconnect();
-			if (session != null)
-				session.disconnect();
 		}
 		return bytedata;
 
 	}
 
 	public ChannelSftp getSftpConnection(SftpJschConnectionDto sftpConnectionDto) throws JschConnectionException {
+
+		if (channelSftp != null && channelSftp.isConnected()) {
+			return channelSftp;
+		}
 
 		try {
 
@@ -437,12 +435,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			}
 
-		} finally {
-			if (channel != null)
-				channel.disconnect();
-			if (session != null)
-				session.disconnect();
-
 		}
 		return status;
 	}
@@ -488,17 +480,21 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			}
 
-		} finally {
-			if (channel != null)
-				channel.disconnect();
-			if (session != null)
-				session.disconnect();
-
 		}
 		return status;
 	}
 
-	public String getExtension() {
+    @Override
+    public void disconnectSftp() {
+        if (channelSftp != null && channelSftp.isConnected()) {
+            channelSftp.disconnect();
+        }
+        if (session != null) {
+			session.disconnect();
+		}
+    }
+
+    public String getExtension() {
 		return extension;
 	}
 

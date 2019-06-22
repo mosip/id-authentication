@@ -127,7 +127,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	private CbeffUtil cbeffUtil;
 
 	/** The registration status mapper util. */
-	private RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
+	@Autowired
+	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(QualityCheckerStage.class);

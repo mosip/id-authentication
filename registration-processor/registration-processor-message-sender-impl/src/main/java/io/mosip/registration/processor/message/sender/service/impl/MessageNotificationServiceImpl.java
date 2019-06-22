@@ -114,16 +114,12 @@ public class MessageNotificationServiceImpl
 	@Autowired
 	private RestApiClient resclient;
 
-	/** The email id. */
-	private String emailId;
-
-	/** The phone number. */
-	private String phoneNumber;
-
 	private static final String SMS_SERVICE_ID = "mosip.registration.processor.sms.id";
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	private ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	/*
 	 * (non-Javadoc)
@@ -135,23 +131,27 @@ public class MessageNotificationServiceImpl
 	 */
 	@Override
 	public SmsResponseDto sendSmsNotification(String templateTypeCode, String id, IdType idType,
-			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SmsResponseDto response = null;
 		SmsRequestDto smsDto = new SmsRequestDto();
 		RequestWrapper<SmsRequestDto> requestWrapper = new RequestWrapper<>();
 		ResponseWrapper<?> responseWrapper;
 
+		StringBuilder emailId = new StringBuilder();
+		StringBuilder phoneNumber = new StringBuilder();
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
 				"MessageNotificationServiceImpl::sendSmsNotification()::entry");
 		try {
-			setAttributes(id, idType, attributes, regType);
+			setAttributes(id, idType, attributes, regType, phoneNumber, emailId);
 			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 			String artifact = IOUtils.toString(in, ENCODING);
 
-			if (phoneNumber == null || phoneNumber.isEmpty()) {
+			if (phoneNumber == null || phoneNumber.length() == 0) {
 				throw new PhoneNumberNotFoundException(PlatformErrorMessages.RPR_SMS_PHONE_NUMBER_NOT_FOUND.getCode());
 			}
-			smsDto.setNumber(phoneNumber);
+			smsDto.setNumber(phoneNumber.toString());
 			smsDto.setMessage(artifact);
 
 			requestWrapper.setId(env.getProperty(SMS_SERVICE_ID));
@@ -192,18 +192,20 @@ public class MessageNotificationServiceImpl
 			Map<String, Object> attributes, String[] mailCc, String subject, MultipartFile[] attachment, String regType)
 			throws Exception {
 		ResponseDto response = null;
+		StringBuilder emailId = new StringBuilder();
+		StringBuilder phoneNumber = new StringBuilder();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
 				"MessageNotificationServiceImpl::sendEmailNotification()::entry");
 		try {
-			setAttributes(id, idType, attributes, regType);
+			setAttributes(id, idType, attributes, regType, phoneNumber, emailId);
 
 			InputStream in = templateGenerator.getTemplate(templateTypeCode, attributes, langCode);
 			String artifact = IOUtils.toString(in, ENCODING);
 
-			if (emailId == null || emailId.isEmpty()) {
+			if (emailId == null || emailId.length() == 0) {
 				throw new EmailIdNotFoundException(PlatformErrorMessages.RPR_EML_EMAILID_NOT_FOUND.getCode());
 			}
-			String[] mailTo = { emailId };
+			String[] mailTo = { emailId.toString() };
 
 			response = sendEmail(mailTo, mailCc, subject, artifact, attachment);
 
@@ -287,12 +289,13 @@ public class MessageNotificationServiceImpl
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 * @throws ApisResourceAccessException
-	 * @throws io.mosip.kernel.core.exception.IOException 
-	 * @throws PacketDecryptionFailureException 
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 * @throws IdRepoAppException
 	 */
-	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType)
-			throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+	private Map<String, Object> setAttributes(String id, IdType idType, Map<String, Object> attributes, String regType,
+			StringBuilder phoneNumber, StringBuilder emailId) throws IOException, ApisResourceAccessException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		InputStream demographicInfoStream = null;
 		Long uin = 0l;
 		if (idType.toString().equalsIgnoreCase(UIN)) {
@@ -311,9 +314,9 @@ public class MessageNotificationServiceImpl
 				|| regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())
 				|| regType.equalsIgnoreCase(RegistrationType.UPDATE.name())
 				|| regType.equalsIgnoreCase(RegistrationType.RES_UPDATE.name())) {
-			setAttributesFromIdRepo(uin, attributes, regType);
+			setAttributesFromIdRepo(uin, attributes, regType, phoneNumber, emailId);
 		} else {
-			setAttributes(demographicInfo, attributes, regType);
+			setAttributes(demographicInfo, attributes, regType, phoneNumber, emailId);
 		}
 
 		return attributes;
@@ -333,8 +336,8 @@ public class MessageNotificationServiceImpl
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("rawtypes")
-	private Map<String, Object> setAttributesFromIdRepo(Long uin, Map<String, Object> attributes, String regType)
-			throws IOException {
+	private Map<String, Object> setAttributesFromIdRepo(Long uin, Map<String, Object> attributes, String regType,
+			StringBuilder phoneNumber, StringBuilder emailId) throws IOException {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(uin.toString());
 		IdResponseDTO response = null;
@@ -350,7 +353,7 @@ public class MessageNotificationServiceImpl
 			}
 
 			String jsonString = new JSONObject((Map) response.getResponse().getIdentity()).toString();
-			setAttributes(jsonString, attributes, regType);
+			setAttributes(jsonString, attributes, regType, phoneNumber, emailId);
 
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -376,8 +379,8 @@ public class MessageNotificationServiceImpl
 	 *             Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> setAttributes(String idJsonString, Map<String, Object> attribute, String regType)
-			throws IOException {
+	private Map<String, Object> setAttributes(String idJsonString, Map<String, Object> attribute, String regType,
+			StringBuilder phoneNumber, StringBuilder emailId) throws IOException {
 		JSONObject demographicIdentity = null;
 
 		if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())
@@ -415,7 +418,7 @@ public class MessageNotificationServiceImpl
 			}
 		}
 
-		setEmailAndPhone(demographicIdentity);
+		setEmailAndPhone(demographicIdentity, phoneNumber, emailId);
 
 		return attribute;
 	}
@@ -428,7 +431,8 @@ public class MessageNotificationServiceImpl
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private void setEmailAndPhone(JSONObject demographicIdentity) throws IOException {
+	private void setEmailAndPhone(JSONObject demographicIdentity, StringBuilder phoneNumber, StringBuilder emailId)
+			throws IOException {
 
 		String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
 				utility.getGetRegProcessorIdentityJson());
@@ -437,9 +441,10 @@ public class MessageNotificationServiceImpl
 				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 		String email = regProcessorIdentityJson.getIdentity().getEmail().getValue();
 		String phone = regProcessorIdentityJson.getIdentity().getPhone().getValue();
-
-		emailId = JsonUtil.getJSONValue(demographicIdentity, email);
-		phoneNumber = JsonUtil.getJSONValue(demographicIdentity, phone);
+		
+		emailId.append(JsonUtil.getJSONValue(demographicIdentity, email).toString());
+		phoneNumber.append(JsonUtil.getJSONValue(demographicIdentity, phone).toString());
+		
 	}
 
 }
