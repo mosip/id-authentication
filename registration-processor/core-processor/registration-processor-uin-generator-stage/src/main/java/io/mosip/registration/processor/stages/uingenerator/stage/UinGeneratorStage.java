@@ -249,6 +249,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 								statusComment + "  :  " + idres);
+						object.setIsValid(false);
 					}
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString() + registrationId, "Response from IdRepo API",

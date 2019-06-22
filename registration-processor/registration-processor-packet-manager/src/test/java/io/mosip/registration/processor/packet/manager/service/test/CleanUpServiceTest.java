@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -79,7 +78,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test
-	// @Ignore
 	public void cleanUpFileSuccessCheck() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -92,7 +90,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test
-	// @Ignore
 	public void cleanUpFileIOExceptionTest() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -105,7 +102,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test(expected = FileNotFoundInDestinationException.class)
-	// @Ignore
 	public void cleanUpFileDestinationFailureCheck() throws IOException {
 
 		String fileName = "Destination.zip";
@@ -116,7 +112,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test(expected = FileNotFoundInSourceException.class)
-	// @Ignore
 	public void cleanUpFileSourceFailureCheck() throws IOException {
 
 		String fileName = "1002.zip";
@@ -130,7 +125,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test
-	// @Ignore
 	public void cleanUpFileChildSuccessCheck() throws IOException {
 		String childFileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(childFileName);
@@ -147,7 +141,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test(expected = FileNotFoundInDestinationException.class)
-	// @Ignore
 	public void cleanUpFileChildDestinationFailureCheck() throws IOException {
 
 		String fileName = "Destination.zip";
@@ -159,7 +152,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test(expected = FileNotFoundInSourceException.class)
-	// @Ignore
 	public void cleanUpFileChildSourceFailureCheck() throws IOException {
 
 		String fileName = "1002.zip";
@@ -171,7 +163,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test
-	// @Ignore
 	public void deleteSuccess() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -187,7 +178,6 @@ public class CleanUpServiceTest {
 		assertEquals("Deleted file", false, exists);
 	}
 
-	// @Ignore
 	@Test(expected = FileNotFoundInSourceException.class)
 	public void deleteFailureTest() throws FileNotFoundException, IOException {
 		String fileName = "1002.zip";
@@ -198,7 +188,6 @@ public class CleanUpServiceTest {
 	}
 
 	@Test
-	// @Ignore
 	public void copyTest() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
@@ -208,11 +197,10 @@ public class CleanUpServiceTest {
 	}
 
 	@Test
-	// @Ignore
 	public void getFileTest() throws FileNotFoundException, IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		File file = FileUtils.getFile(DirectoryPathDto.ARCHIVE_LOCATION.toString(), fileName );
+		File file = FileUtils.getFile(DirectoryPathDto.ARCHIVE_LOCATION.toString(), fileName);
 		File getFile = fileManager.getFile(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertEquals(file.getName().trim(), getFile.getName().trim());
 	}

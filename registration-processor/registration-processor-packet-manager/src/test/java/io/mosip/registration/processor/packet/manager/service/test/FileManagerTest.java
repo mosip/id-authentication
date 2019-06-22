@@ -11,13 +11,11 @@ import java.io.InputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -26,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -62,10 +59,6 @@ public class FileManagerTest {
 	@Mock
 	private SftpJschConnectionDto sftpDto = new SftpJschConnectionDto();
 
-	@InjectMocks
-	private FileManager<DirectoryPathDto, InputStream> fileManager = new FileManagerImpl();
-	
-	
 	/** The virus scan enc. */
 	@Value("${ARCHIVE_LOCATION}")
 	private String ARCHIVE_LOCATION;
@@ -78,12 +71,10 @@ public class FileManagerTest {
 	private String extention;
 
 	@Mock
-	private ChannelSftp sftp; // = new ChannelSftp();
+	private ChannelSftp sftp;
 
 	@Mock
 	private Session session;
-
-	private Channel channel;
 
 	JSch jSch = new JSch();
 
@@ -130,28 +121,26 @@ public class FileManagerTest {
 	public void getPutAndIfFileExistsAndCopyMethodCheck() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
-		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
+		impl.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
+		boolean exists = impl.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertTrue(exists);
-		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE);
-		boolean fileExists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		impl.copy(fileNameWithoutExtn, DirectoryPathDto.ARCHIVE_LOCATION, DirectoryPathDto.LANDING_ZONE);
+		boolean fileExists = impl.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
 		assertTrue(fileExists);
 	}
 
 	@Test
-	@Ignore
 	public void testFilemanagerGetFile() throws IOException {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
-		File f = fileManager.getFile(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
+		impl.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.ARCHIVE_LOCATION);
+		File f = impl.getFile(DirectoryPathDto.ARCHIVE_LOCATION, fileNameWithoutExtn);
 		assertEquals(f.getName(), newFile.getName());
 
 	}
 
 	@Test
-	// @Ignore
 	public void testGetFileByteArray() throws Exception {
 		File newFile = new File("Abc.zip");
 		String fileName = newFile.getName();

@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyByte;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -92,7 +95,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class PacketValidatorStageTest.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class, Utilities.class, MasterDataValidation.class })
+@PrepareForTest({ JsonUtil.class, IOUtils.class, HMACUtils.class, Utilities.class, MasterDataValidation.class, MessageDigest.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 @TestPropertySource(locations = "classpath:application.properties")
 public class PacketValidateProcessorTest {
@@ -186,6 +189,8 @@ public class PacketValidateProcessorTest {
 
 	@Mock
 	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
+	
+	@Mock private MessageDigest messageDigestMock;
 
 	StatusResponseDto statusResponseDto;
 	private static final String PRIMARY_LANGUAGE = "mosip.primary-language";
@@ -294,7 +299,7 @@ public class PacketValidateProcessorTest {
 				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 
-		String test = "1234567890";
+		String test = "{}";
 		byte[] data = "{}".getBytes();
 		// Mockito.when(filesystemCephAdapterImpl.getFile(anyString(),
 		// anyString())).thenReturn(inputStream);
@@ -370,6 +375,27 @@ public class PacketValidateProcessorTest {
 		Mockito.when(idRepoService.findUinFromIdrepo(any(), any())).thenReturn(1);
 
 		Mockito.when(registrationRepositary.getSyncRecordsByRegIdAndRegType(any(), any())).thenReturn(synchRecordList);
+		
+		//String test = "{}";
+		//byte[] data = "{}".getBytes();
+
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
+
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
+		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(test.getBytes());
+
+		//MessageDigest.isEqual(generatedHash, );
+		
+		PowerMockito.mockStatic(HMACUtils.class);
+		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
+		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
 	}
 
@@ -381,7 +407,11 @@ public class PacketValidateProcessorTest {
 	 */
 	@Test
 	public void testStructuralValidationSuccess() throws Exception {
-
+		
+		//PowerMockito.mockStatic(MessageDigest.class);
+		//PowerMockito.when(MessageDigest.isEqual(any(), any())).thenReturn(Boolean.TRUE);
+		//PowerMockito.when(MessageDigest.class, "isEqual", any(), any()).thenReturn(true);
+		
 		MessageDTO messageDto = packetValidateProcessor.process(dto, stageName);
 		assertTrue("Test for successful Structural Validation", messageDto.getIsValid());
 	}
