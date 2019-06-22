@@ -108,15 +108,23 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 			switch (step) {
 			case 1:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 1  disableAllSyncJobs started");
 				disableAllSyncJobs();
 				break;
 			case 2:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 2  syncAndUploadAllPendingPackets started");
 				syncAndUploadAllPendingPackets();
 				break;
 			case 3:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 3  deleteRegAndPreRegPackets started");
 				deleteRegAndPreRegPackets();
 				break;
 			case 4:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 4  cleanUpCenterSpecificData started");
 				cleanUpCenterSpecificData();
 				break;
 			default:
@@ -154,16 +162,21 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 					/* sync packet status from server to Reg client */
 					packetStatusService.packetSyncStatus(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"packetSyncStatus completed");
 					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_STATUS_SYNCHED, "REGISTRATION",
 							AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 					/* sync and upload the reg packets to server */
-					packetSynchService.packetSync(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-
+					packetSynchService.syncAllPackets();
+					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"syncAllPackets completed");
 					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_SYNCHED, "REGISTRATION",
 							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 					packetUploadService.uploadAllSyncedPackets();
+					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"uploadAllSyncedPackets completed");
 					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKETS_UPLOADED, "REGISTRATION",
 							AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 

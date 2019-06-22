@@ -910,19 +910,13 @@ public class BaseController {
 			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override
 				public void handle(WorkerStateEvent t) {
-					service.reset();
-					disableHomePage(false);
-					packetHandlerController.getProgressIndicator().setVisible(false);
-
-					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
-						generateAlert(RegistrationConstants.ALERT_INFORMATION,
-								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
-						headerController.logoutCleanUp();
-					} else {
-						generateAlert(RegistrationConstants.ALERT_INFORMATION,
-								RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
-					}
-
+					handleRemapResponse();
+				}
+			});
+			service.setOnFailed(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent t) {
+					handleRemapResponse();
 				}
 			});
 
@@ -930,6 +924,21 @@ public class BaseController {
 		return isRemapped;
 	}
 
+	private void handleRemapResponse() {
+		service.reset();
+		disableHomePage(false);
+		packetHandlerController.getProgressIndicator().setVisible(false);
+
+		if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION,
+					RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+			headerController.logoutCleanUp();
+		} else {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION,
+					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+		}
+	}
+	
 	private void disableHomePage(boolean isDisabled) {
 		GridPane HomePageRoot = null;
 		try {
@@ -957,7 +966,8 @@ public class BaseController {
 						centerMachineReMapService.handleReMapProcess(i);
 						this.updateProgress(i, 4);
 					}
-
+					LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"center remap process completed");
 					return null;
 				}
 			};
