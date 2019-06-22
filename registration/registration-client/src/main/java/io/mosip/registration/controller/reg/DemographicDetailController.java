@@ -632,6 +632,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private GridPane localAddressPane;
 	@FXML
+	private GridPane preRegParentPane;
+	@FXML
 	private VBox applicationemailIdPane;
 	@FXML
 	private VBox applicationCniOrPinNumberPane;
@@ -733,6 +735,8 @@ public class DemographicDetailController extends BaseController {
 			genderSettings();
 			if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 					.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				preRegParentPane.setVisible(false);
+				preRegParentPane.setManaged(false);
 				national.getStyleClass().addAll("residence", "button");
 				nationalLocalLanguage.getStyleClass().addAll("residence", "button");
 				residence.setText(RegistrationConstants.EMPTY);
