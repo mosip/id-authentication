@@ -289,7 +289,7 @@ public class ManualVerificationServiceTest {
 	public void ApisResourceAccessExceptionTest() throws ApisResourceAccessException {
 		dto.setUserId("dummyID");
 		dto.setMatchType("DEMO");
-			Mockito.doThrow(ApisResourceAccessException.class).when(restClientService).getApi(any(), any(), any(), any(), any());
+		Mockito.doThrow(ApisResourceAccessException.class).when(restClientService).getApi(any(), any(), any(), any(), any());
 		
 		manualAdjudicationService.assignApplicant(dto);
 	}
