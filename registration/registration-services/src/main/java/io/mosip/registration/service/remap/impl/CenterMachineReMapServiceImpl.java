@@ -208,7 +208,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 		if (!isPacketsPendingForProcessing()) {
 			/* clean up all the pre reg data and previous center data */
 			cleanUpRemappedMachineData();
-
+			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+					"Step 1  Remap table clean up Completed");
 			auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CLEAN_UP, "REGISTRATION",
 					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 			/*
@@ -226,6 +227,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 				}
 
 				updateAllSyncJobs(true);
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 1  Enabled all sync jobs after remap success");
 			}
 		}
 	}
@@ -304,6 +307,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			}
 			FileUtils.deleteDirectory(FileUtils
 					.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
+			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+					"Step 1  Deleted all the pre reg packets due to remap");
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
