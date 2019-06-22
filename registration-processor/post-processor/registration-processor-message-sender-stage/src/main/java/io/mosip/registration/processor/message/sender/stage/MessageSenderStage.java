@@ -356,8 +356,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType, MessageSenderDto messageSenderDto) {
 		switch (templatetype) {
 		case LOST_UIN:
-			messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_UIN_LOST_SMS);
-			messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_UIN_LOST_EMAIL);
+			messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_LOST_UIN_SMS);
+			messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_LOST_UIN_EMAIL);
 			messageSenderDto.setIdType(IdType.UIN);
 			messageSenderDto.setSubject(uinGeneratedSubject);
 			break;

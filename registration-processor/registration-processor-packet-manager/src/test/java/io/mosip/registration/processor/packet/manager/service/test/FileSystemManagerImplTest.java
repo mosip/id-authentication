@@ -12,7 +12,6 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -20,22 +19,15 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
-import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
-import io.mosip.registration.processor.packet.manager.PacketManagerBootApplication;
 import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import io.mosip.registration.processor.packet.manager.service.impl.FileSystemManagerImpl;
-import io.mosip.registration.processor.packet.manager.utils.ZipUtils;
 
 /**
  * FileSystemManagerImpl test
@@ -54,7 +46,7 @@ public class FileSystemManagerImplTest {
 
 	@InjectMocks
 	private FileSystemManagerImpl packetManager;
-	
+
 	private InputStream zipFile;
 
 	@Rule
@@ -62,7 +54,7 @@ public class FileSystemManagerImplTest {
 
 	@Before
 	public void setUp() {
-		zipFile = this.getClass().getClassLoader().getResourceAsStream("12345678901234567890.zip");
+		zipFile = this.getClass().getClassLoader().getResourceAsStream("10006100060000320190524042803.zip");
 	}
 
 	@Test
@@ -88,26 +80,25 @@ public class FileSystemManagerImplTest {
 	}
 
 	@Test
-	@Ignore
 	public void getFileSuccess() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException,
 			io.mosip.kernel.core.exception.IOException {
 		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
 		when(fsAdapter.getPacket(Mockito.anyString())).thenReturn(inputStream);
-		when(decryptorImpl.decrypt(any(), anyString())).thenReturn(inputStream);
-		when(ZipUtils.unzipAndGetFile(any(), any())).thenReturn(inputStream);
-		InputStream result = packetManager.getFile("12345678901234567890", "DEMOGRAPHIC/ID");
+		when(decryptorImpl.decrypt(any(), anyString())).thenReturn(zipFile);
+		InputStream result = packetManager.getFile("10006100060000320190524042803",
+				"10006100060000320190524042803/DEMOGRAPHIC/ID");
 		assertNotNull(result);
 
 	}
 
 	@Test
-	@Ignore
 	public void isFileExistSuccess() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException,
 			io.mosip.kernel.core.exception.IOException {
 		InputStream inputStream = IOUtils.toInputStream("DATA", "UTF-8");
 		when(fsAdapter.getPacket(Mockito.anyString())).thenReturn(inputStream);
 		when(decryptorImpl.decrypt(any(), anyString())).thenReturn(zipFile);
-		boolean result = packetManager.checkFileExistence("12345678901234567890", "DEMOGRAPHIC/ID");
+		boolean result = packetManager.checkFileExistence("10006100060000320190524042803",
+				"10006100060000320190524042803/Demographic/ID");
 		assertTrue(result);
 
 	}
