@@ -1048,7 +1048,6 @@ public class UMCValidatorTest {
 	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
-	@Ignore
 	public void validateDeviceMappedWithCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
 			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
 		identity = new Identity();
@@ -1186,6 +1185,7 @@ public class UMCValidatorTest {
 
 		identity = new Identity();
 		identity.setMetaData(metaData);
+		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
 		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)

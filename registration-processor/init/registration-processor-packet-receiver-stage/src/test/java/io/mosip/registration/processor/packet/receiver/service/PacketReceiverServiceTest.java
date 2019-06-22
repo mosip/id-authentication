@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
@@ -36,7 +35,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -81,7 +79,7 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
 @RefreshScope
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ IOUtils.class, HMACUtils.class })
+@PrepareForTest({ IOUtils.class, HMACUtils.class, org.h2.store.fs.FileUtils.class })
 public class PacketReceiverServiceTest {
 
 	private static final String fileExtension = ".zip";
@@ -332,20 +330,15 @@ public class PacketReceiverServiceTest {
 	}
 
 	@Test(expected = PacketReceiverAppException.class)
-	@Ignore
-	public void testIoException() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException {
+	public void testIoException() throws Exception {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
-		// Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(),
-		// any());
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
-		// Mockito.when(decryptor.decrypt(any(InputStream.class),any())).thenReturn(is);
-		// Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
 		File mockedFile = Mockito.mock(File.class);
 		Mockito.when(mockedFile.getName()).thenReturn("Abc.txt");
 		Mockito.when(mockedFile.exists()).thenReturn(Boolean.TRUE);
-		// Mockito.when(mockedFile.getAbsolutePath()).thenThrow(new IOException());
-		Mockito.doThrow(new IOException()).when(mockedFile.getAbsolutePath());
+		PowerMockito.mockStatic(org.h2.store.fs.FileUtils.class);
+		PowerMockito.when(org.h2.store.fs.FileUtils.class, "newInputStream" , any()).thenThrow(new IOException());
 		MessageDTO result = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		assertFalse(result.getIsValid());
