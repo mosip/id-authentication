@@ -629,9 +629,18 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
+		pwdBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(false);
+		fingerprintBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
+		faceBasedLogin.setVisible(false);
 		errorPane.setVisible(true);
+		errorPane.setDisable(false);
 		errorText1.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1);
+		errorText1.setVisible(true);
 		errorText2.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+		errorText1.setVisible(true);
+
 		if (isSupervisor) {
 			errorLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 		}
