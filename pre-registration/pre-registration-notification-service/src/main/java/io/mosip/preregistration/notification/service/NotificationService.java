@@ -137,6 +137,9 @@ public class NotificationService {
 	 */
 	@Autowired
 	private AuditLogUtil auditLogUtil;
+	
+	@Autowired
+	private ValidationUtil validationUtil;
 
 	@PostConstruct
 	public void setupBookingService() {
@@ -174,7 +177,7 @@ public class NotificationService {
 			response.setId(notificationReqDTO.getId());
 			response.setVersion(notificationReqDTO.getVersion());
 			NotificationDTO notificationDto = notificationReqDTO.getRequest();
-			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO), requiredRequestMap)) {
+			if (ValidationUtil.requestValidator(serviceUtil.createRequestMap(notificationReqDTO), requiredRequestMap)&&validationUtil.langvalidation(langCode)) {
 				notificationDtoValidation(notificationDto);
 				if (notificationDto.isAdditionalRecipient()) {
 					if (notificationDto.getMobNum() != null && !notificationDto.getMobNum().isEmpty()) {
@@ -310,17 +313,33 @@ public class NotificationService {
 			String time = LocalTime
 					.parse(bookingDTO.getSlotFromTime().toString(), DateTimeFormatter.ofPattern("HH:mm"))
 					.format(DateTimeFormatter.ofPattern("hh:mm a")); 
+			if(dto.getAppointmentDate()!=null && !dto.getAppointmentDate().trim().equals("")) {
 			if (bookingDTO.getRegDate().equals(dto.getAppointmentDate())) {
+				if(dto.getAppointmentTime()!=null&&!dto.getAppointmentTime().trim().equals("")) {
+				
 				if (!time.equals(dto.getAppointmentTime())) {
 					throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_010.getCode(),
 							ErrorMessages.APPOINTMENT_TIME_NOT_CORRECT.getMessage(), response);
 				}
-			} else {
+			}
+				else {
+					throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
+							ErrorMessages.INCORRECT_MANDATORY_FIELDS.getMessage(),response);
+				}
+			}
+				
+				else {
 				throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_009.getCode(),
 						ErrorMessages.APPOINTMENT_DATE_NOT_CORRECT.getMessage(), response);
 			}
+				
 		}
 		
+		else {
+			throw new MandatoryFieldException(ErrorCodes.PRG_PAM_ACK_002.getCode(),
+					ErrorMessages.INCORRECT_MANDATORY_FIELDS.getMessage(),response);
+		}
+		}
 	}
 
 	/**

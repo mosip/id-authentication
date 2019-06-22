@@ -111,6 +111,7 @@ input[type='radio'] {
 
 .container {
   display: flex;
+  margin-bottom:68px;
 }
 
 .user-back-btn {
