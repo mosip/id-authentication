@@ -45,7 +45,7 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 
 	@Override
 	public boolean isWebcamConnected() {
-		return (webcam != null) ? true : false;
+		return webcam != null;
 	}
 
 	@Override
@@ -98,6 +98,6 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 	@Override
 	public void close() {
 		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "closing the webcam");
-		webcam.close();
+		//webcam.close();
 	}
 }
