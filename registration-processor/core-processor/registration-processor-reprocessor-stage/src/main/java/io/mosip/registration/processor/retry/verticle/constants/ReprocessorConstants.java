@@ -14,7 +14,7 @@ public class ReprocessorConstants {
 	public static final String SECONDS = "seconds";
 	public static final String MINUTES = "minutes";
 	public static final String HOURS = "hours";
-	public static final String DAY_OF_MONTH = "day of month";
+	public static final String DAY_OF_MONTH = "days of month";
 	public static final String MONTHS = "months";
 	public static final String DAYS_OF_WEEK = "days of week";
 	public static final String TYPE_VALUE = "registration.processor.reprocess.type";

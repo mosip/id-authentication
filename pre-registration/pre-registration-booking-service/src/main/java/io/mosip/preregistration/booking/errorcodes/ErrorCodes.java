@@ -48,7 +48,8 @@ public enum ErrorCodes {
 	PRG_BOOK_RCI_032("PRG_BOOK_RCI_032"),// BOOKING_NOT_FOUND_FOR_THE_DATE_RANGE
 	PRG_PAM_APP_005("PRG_PAM_APP_005"), // failed to update in demographic entity
 	PRG_BOOK_RCI_033("PRG_BOOK_RCI_033"),// notification failed exception
-	PRG_BOOK_RCI_034("PRG_BOOK_RCI_034");
+	PRG_BOOK_RCI_034("PRG_BOOK_RCI_034"),
+	PRG_BOOK_RCI_035("PRG_BOOK_RCI_035");// reg center id not found
 	
 
 	/**
