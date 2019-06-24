@@ -40,6 +40,7 @@ import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
 import io.mosip.registration.controller.reg.HeaderController;
+import io.mosip.registration.controller.reg.HomeController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationPreviewController;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -81,7 +82,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -151,7 +151,11 @@ public class BaseController {
 	
 	@Autowired
 	private WebCameraController webCameraController;
+	
+	@Autowired
+	private HomeController homeController;
 
+	
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
@@ -907,22 +911,45 @@ public class BaseController {
 			message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
-			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
-
 			disableHomePage(true);
+			
+			Service<String> service = new Service<String>() {
+				@Override
+				protected Task<String> createTask() {
+					return new Task<String>() {
+
+						@Override
+						protected String call() {
+
+							packetHandlerController.getProgressIndicator().setVisible(true);
+							
+							
+							for (int i = 1; i <= 4; i++) {
+								/* starts the remap process */
+								centerMachineReMapService.handleReMapProcess(i);
+								this.updateProgress(i, 4);
+							}
+							LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+									"center remap process completed");
+							return null;
+						}
+					};
+				}
+			};
+			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
 
 			service.restart();
 
 			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override
 				public void handle(WorkerStateEvent t) {
-					handleRemapResponse();
+					handleRemapResponse(service);
 				}
 			});
 			service.setOnFailed(new EventHandler<WorkerStateEvent>() {
 				@Override
 				public void handle(WorkerStateEvent t) {
-					handleRemapResponse();
+					handleRemapResponse(service);
 				}
 			});
 
@@ -930,7 +957,7 @@ public class BaseController {
 		return isRemapped;
 	}
 
-	private void handleRemapResponse() {
+	private void handleRemapResponse(Service<String> service) {
 		service.reset();
 		disableHomePage(false);
 		packetHandlerController.getProgressIndicator().setVisible(false);
@@ -946,39 +973,11 @@ public class BaseController {
 	}
 	
 	private void disableHomePage(boolean isDisabled) {
-		GridPane HomePageRoot = null;
-		try {
-			HomePageRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
-		} catch (IOException ioException) {
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
-		}
-
-		HomePageRoot.setDisable(isDisabled);
+		if (null != homeController.getMainBox())
+			homeController.getMainBox().setDisable(isDisabled);
 
 	}
-
-	Service<String> service = new Service<String>() {
-		@Override
-		protected Task<String> createTask() {
-			return new Task<String>() {
-
-				@Override
-				protected String call() {
-
-					packetHandlerController.getProgressIndicator().setVisible(true);
-					for (int i = 1; i <= 4; i++) {
-						/* starts the remap process */
-						centerMachineReMapService.handleReMapProcess(i);
-						this.updateProgress(i, 4);
-					}
-					LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-							"center remap process completed");
-					return null;
-				}
-			};
-		}
-	};
 
 	/**
 	 * Checks if is packets pending for EOD.
