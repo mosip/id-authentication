@@ -1,9 +1,0 @@
-{
-  "id": "mosip.identity.auth",
-  "response": {
-    "authStatus": true
-  },
-  "responseTime": "$TIMESTAMP$",
-  "transactionID": "5118441072",
-  "version": "1.0"
-}

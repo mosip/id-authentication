@@ -15,14 +15,14 @@
 
 		regression smokeAndRegression -->
 		
-	  	 	 <test name="Kernel Tests">
+	  	 	  <test name="Kernel Tests">
 						 <classes>
 
                            <class name="io.mosip.kernel.tests.AuditLog" />   
                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                           <class name="io.mosip.kernel.tests.EmailNotification" />
                           <class name="io.mosip.kernel.tests.EncrptionDecryption" />
-                       <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
+                          <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAuthType" />
                            <class name="io.mosip.kernel.tests.FetchBlackListedWord" />
                            <class name="io.mosip.kernel.tests.FetchDevice" />
@@ -74,16 +74,14 @@
                  </classes>
 				</test>  
 
-
+<!--
  		   <test name="PreReg Tests">
 		<classes>
 
 		 <class name="io.mosip.preregistration.tests.Audit" />
-		
+	
 		<class name="io.mosip.preregistration.tests.BatchJob" />
 		
-			<class name="io.mosip.preregistration.tests.BatchJob" />	
-			
 			<class name="io.mosip.preregistration.tests.BookingAppointment" />
 			 <class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
 			<class name="io.mosip.preregistration.tests.CopyUploadedDocument" />
@@ -118,7 +116,7 @@
 
 	
 
- 	 <test name="RegistrationProcessor Tests">
+ 	  <test name="RegistrationProcessor Tests">
 		<classes>
 
 		   <class name="io.mosip.registrationProcessor.tests.SecurityTests" />
@@ -161,6 +159,6 @@
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
 			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />  
 		</classes>
-	</test>     
+	</test>      -->
 
 </suite>
