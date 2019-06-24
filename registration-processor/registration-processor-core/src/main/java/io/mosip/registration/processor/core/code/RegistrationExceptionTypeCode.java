@@ -187,6 +187,9 @@ public enum RegistrationExceptionTypeCode {
 	/** The base unchecked exception. */
 	BASE_UNCHECKED_EXCEPTION,
 
+	/** The base checked exception. */
+	BASE_CHECKED_EXCEPTION,
+
 	/** The external integration failed. */
 	EXTERNAL_INTEGRATION_FAILED,
 
