@@ -493,8 +493,8 @@
       "title_failure": "Échec",
       "msg_failure": "Rendez-vous de réservation a échoué",
       "deletedApplicant1": [
-        "L'utilisateur suivant n'a été sélectionné dans aucune plage horaire",
-        "Voulez-vous continuer la réservation"
+        "Vous n'avez sélectionné aucune plage horaire pour l'utilisateur suivant",
+        "Voulez-vous continuer à réserver"
       ],
       "yesButtonText": "Oui",
       "noButtonText": "Non"

@@ -8,6 +8,7 @@ import static org.mockito.Matchers.anyByte;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -224,7 +225,10 @@ public class PacketValidateProcessorTest {
 		list = new ArrayList<InternalRegistrationStatusDto>();
 
 		listAppender = new ListAppender<>();
-		inputStream = new FileInputStream("src\\test\\resources\\ID.json");
+		
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("ID.json").getFile());
+		inputStream = new FileInputStream(file);
 
 		dto.setRid("2018701130000410092018110735");
 		dto.setReg_type(RegistrationType.valueOf("UPDATE"));

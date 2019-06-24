@@ -505,6 +505,8 @@ public enum PlatformErrorMessages {
 
 	/** The rpr mvs no match type present. */
 	RPR_MVS_NO_MATCH_TYPE_PRESENT(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "015", "Match Type is Invalid"),
+	
+	RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL(PlatformConstants.RPR_MANUAL_VERIFICATION_MODULE + "016", "Reg Id should not be null or empty"),
 
 	/** The rpr tem not found. */
 	// Registration processor Message sender Exception error code
