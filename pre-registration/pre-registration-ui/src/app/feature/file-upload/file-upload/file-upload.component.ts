@@ -794,7 +794,8 @@ export class FileUploadComponent implements OnInit {
       this.users[this.step].files.documentsMetaData.push(this.userFile[0]);
     }
     this.userFile = [];
-    this.registration.updateUser(this.step, this.users[this.step]);
+    //this.registration.updateUser(this.step, this.users[this.step]);
+    this.registration.updateUser(this.registration.getUsers().length - 1, this.users[this.step]);
   }
 
   openFile() {
