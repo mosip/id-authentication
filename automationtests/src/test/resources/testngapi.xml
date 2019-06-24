@@ -12,7 +12,7 @@
 	</listeners>
 
 		
-	<!--  	 	  <test name="Kernel Tests">
+		 	  <test name="Kernel Tests">
 						 <classes>
 						   <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -68,8 +68,7 @@
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />   
                  </classes>
-				</test>  -->
-
+				</test>  
 
  		   <test name="PreReg Tests">
 		<classes>
