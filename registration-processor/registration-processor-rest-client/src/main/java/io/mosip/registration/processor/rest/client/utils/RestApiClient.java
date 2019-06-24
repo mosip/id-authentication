@@ -25,6 +25,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
@@ -303,7 +304,13 @@ public class RestApiClient {
 			post.setEntity(postingString);
 			post.setHeader("Content-type", "application/json");
 			HttpResponse response = httpClient.execute(post);
+			org.apache.http.HttpEntity entity = response.getEntity();
+			String responseBody = EntityUtils.toString(entity,"UTF-8");
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), "Resonse body=> "+responseBody);
 			Header[] cookie = response.getHeaders("Set-Cookie");
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), "Cookie => "+cookie);
 			if (cookie.length == 0)
 				throw new TokenGenerationFailedException();
 			String token = response.getHeaders("Set-Cookie")[0].getValue();
