@@ -54,7 +54,7 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 
 	@Override
 	public boolean isWebcamConnected() {
-		return webcam.isOpen();
+		return webcam != null ? webcam.isOpen() : false;
 	}
 
 	@Override
@@ -107,7 +107,10 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 	@Override
 	public void close() {
 		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "closing the webcam");
-		jPanelWindow = null;
-		webcam.close();
+
+		if (webcam != null && webcam.isOpen()) {
+			jPanelWindow = null;
+			webcam.close();
+		}
 	}
 }
