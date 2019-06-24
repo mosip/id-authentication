@@ -178,7 +178,7 @@
          <children>
             <MenuBar fx:id="menu" styleClass="menuBar" GridPane.columnIndex="1">
                <menus>
-                  <Menu fx:id="homeSelectionMenu" mnemonicParsing="false">
+                  <Menu fx:id="homeSelectionMenu" mnemonicParsing="false" onAction="#closeOperations">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
