@@ -4,13 +4,14 @@ import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorE
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED;
 import static io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.CNIE_NUMBER_REGEX;
+import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.DOB_FORMAT;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_CNIE_NUMBER_PATH;
 import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.IDENTITY_DOB_PATH;
-import static io.mosip.kernel.idobjectvalidator.constant.IdObjectValidatorConstant.DOB_FORMAT;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
@@ -80,6 +82,7 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 						ID_OBJECT_VALIDATION_FAILED, errorList);
 			}
 		} catch (JsonProcessingException e) {
+			ExceptionUtils.logRootCause(e);
 			throw new IdObjectIOException(ID_OBJECT_PARSING_FAILED, e);
 		}
 	}
@@ -154,14 +157,19 @@ public class IdObjectPatternValidator implements IdObjectValidator {
 		String data = jsonPath.read(identity,
 				Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
 		try {
-			if (Objects.nonNull(data) && LocalDate.parse(data, DateTimeFormatter.ofPattern(DOB_FORMAT.getValue()))
-					.isAfter(DateUtils.getUTCCurrentDateTime().toLocalDate())) {
+			if (Objects.nonNull(data)
+					&& LocalDate
+							.parse(data,
+									DateTimeFormatter.ofPattern(DOB_FORMAT.getValue())
+											.withResolverStyle(ResolverStyle.STRICT))
+							.isAfter(DateUtils.getUTCCurrentDateTime().toLocalDate())) {
 				String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
 						convertToPath(String.valueOf(pathList.get(0))));
 				errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));
 				errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(), errorMessage));
 			}
 		} catch (DateTimeParseException e) {
+			ExceptionUtils.logRootCause(e);
 			String errorMessage = String.format(INVALID_INPUT_PARAMETER.getMessage(),
 					convertToPath(String.valueOf(pathList.get(0))));
 			errorList.removeIf(serviceError -> serviceError.getMessage().equals(errorMessage));

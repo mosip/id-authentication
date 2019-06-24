@@ -35,6 +35,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorDocumentMapping;
@@ -157,6 +158,7 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 						IdObjectValidatorErrorConstant.ID_OBJECT_VALIDATION_FAILED, errorList);
 			}
 		} catch (JsonProcessingException e) {
+			ExceptionUtils.logRootCause(e);
 			throw new IdObjectIOException(IdObjectValidatorErrorConstant.ID_OBJECT_PARSING_FAILED, e);
 		}
 	}
