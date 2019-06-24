@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
@@ -128,23 +127,26 @@ public class RegIdObjectValidator {
 
 	}
 
-	private boolean ageValidation(Object identityObject,IdObjectValidatorSupportedOperations operationType) throws JsonProcessingException {
+	private boolean ageValidation(Object identityObject, IdObjectValidatorSupportedOperations operationType)
+			throws JsonProcessingException {
 		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Completed validating age from global param starting");
 		int maxAge = Integer.parseInt(
 				ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.MAX_AGE).toString());
 
-		String identityString = new ObjectMapper().writeValueAsString(identityObject);
+		String identityString = mapper.writeValueAsString(identityObject);
 		JsonParser jsonParser = new JsonParser();
 
 		JsonElement jsonElement = jsonParser.parse(identityString);
-		if (jsonElement.isJsonObject() && jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("age") != null) {
+		if (jsonElement.isJsonObject()
+				&& jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("age") != null) {
 			return maxAge >= jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("age").getAsInt();
-		} else if(operationType.equals(IdObjectValidatorSupportedOperations.UPDATE_UIN) || 
-				operationType.equals(IdObjectValidatorSupportedOperations.LOST_UIN)){
+		} else if (operationType.equals(IdObjectValidatorSupportedOperations.UPDATE_UIN)
+				|| operationType.equals(IdObjectValidatorSupportedOperations.LOST_UIN)
+				|| jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("dateOfBirth") != null) {
 			return true;
 		}
-		
+
 		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Completed validating age from global param ending ");
 		return false;
