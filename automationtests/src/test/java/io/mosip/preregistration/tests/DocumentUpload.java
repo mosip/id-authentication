@@ -93,7 +93,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
-		switch ("smokeAndRegression") {
+		switch (testLevel) {
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
 
@@ -122,12 +122,12 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
+		Response createApplicationResponse = preRegLib.CreatePreReg(authToken);
 		String preRegIdCreateAPI = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		if (testCaseName.contains("smoke")) {
 			// Document Upload for created application
-			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preRegIdCreateAPI);
+			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse, preRegIdCreateAPI,null,authToken);
 			logger.info("res::" + docUploadResponse.asString());
 			// PreId of Uploaded document
 			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
@@ -235,7 +235,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		}
 
 		String source = "src/test/resources/" + folderPath + "/";
-		CommonLibrary.backUpFiles(source, folderPath);
+		
 
 		// Add generated PreRegistrationId to list to be Deleted from DB  AfterSuite
 		// preIds.add(preId);

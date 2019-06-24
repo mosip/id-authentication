@@ -32,8 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
-
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.preregistration.util.BookingUtil;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -78,8 +77,9 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 	String folderPath = "preReg/FetchAppointmentDetails";
 	String outputFile = "FetchAppointmentDetailsOutput.json";
 	String requestKeyFile = "FetchAppointmentDetailsRequest.json";
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	BookingUtil bookingUtil = new BookingUtil();
 	Object[][] readFolder = null;
 
 	/**
@@ -126,21 +126,21 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
+		Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		if (testCase.contains("smoke")) {
 
 			// Fetch availability[or]center details
-			Response fetchCenter = preRegLib.FetchCentre();
+			Response fetchCenter = preRegLib.FetchCentre(individualToken);
 
 			// Book An Appointment for the available data
-			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString(),individualToken);
 			logger.info("bookAppointmentResponse:"+bookAppointmentResponse.asString());
 			// Fetch Appointment Details
-			Response fetchAppointmentDetailsResponse = preRegLib.FetchAppointmentDetails(preId);
+			Actualresponse = bookingUtil.FetchAppointmentDetails(preId,individualToken);
              
-			logger.info("fetchAppointmentDetailsResponse:"+fetchAppointmentDetailsResponse.asString());
+			logger.info("fetchAppointmentDetailsResponse:"+Actualresponse.asString());
 			
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
@@ -149,9 +149,7 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 			innerKeys.add("time_slot_from");
 			innerKeys.add("time_slot_to");
 
-			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(fetchAppointmentDetailsResponse, Expectedresponse, outerKeys,
-					innerKeys);
+			
 
 		}
 
@@ -166,17 +164,19 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 				preId = actualRequest.get("preRegistrationId").toString();
 			}
 		
-			String fetchAppPreRegURI = preReg_URI + preId;
-			Actualresponse = applicationLibrary.getRequestWithoutBody(fetchAppPreRegURI);
+			Actualresponse =bookingUtil.FetchAppointmentDetails(preId,individualToken);
+			
 			logger.info("Status Code::" + testCase + "Fetch App Det:" + Actualresponse.asString());
 			
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
-			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
-
+			
 		}
 
+		//Asserting actual and expected response
+		status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys,
+				innerKeys);
+		
 		if (status) {
 			finalStatus = "Pass";
 			softAssert.assertAll();
@@ -211,7 +211,10 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FecthAppointmentDetailsURI");
 		
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		if(!preRegLib.isValidToken(individualToken))
+		{
+			individualToken=preRegLib.getToken();
+		}
 	}
 
 	
@@ -229,9 +232,8 @@ public class FetchAppointmentDetails extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			//f.set(baseTestMethod, FetchAppointmentDetails.testCaseName);
-			f.set(baseTestMethod, "Pre Reg_FetchAppointmentDetails_"+FetchAppointmentDetails.testCaseName);
-		} catch (Exception e) {
+			f.set(baseTestMethod, FetchAppointmentDetails.testCaseName);
+			} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}

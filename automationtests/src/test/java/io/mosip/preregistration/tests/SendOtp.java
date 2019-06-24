@@ -138,8 +138,6 @@ public class SendOtp extends BaseTestCase implements ITest {
 	public void login( Method method)
 	{
 		testCaseName="preReg_Authentication_" + method.getName();
-		authToken=lib.getToken();
-		
 	}
 
 	@AfterMethod
@@ -152,7 +150,6 @@ public class SendOtp extends BaseTestCase implements ITest {
 		} catch (Exception ex) {
 			Reporter.log("ex" + ex.getMessage());
 		}
-		lib.logOut();
 	}
 
 }

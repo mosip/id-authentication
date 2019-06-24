@@ -70,15 +70,15 @@ public class BatchJob extends BaseTestCase implements ITest {
 		String statusCode=null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
+		Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
 		String preID = lib.getPreId(createResponse);
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response documentResponse = lib.documentUpload(createResponse,individualToken);
+		Response avilibityResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 		dao.setDate(preID);
 		lib.expiredStatus();
-		lib.FetchAppointmentDetails(preID);
-		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
+		lib.FetchAppointmentDetails(preID,individualToken);
+		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID,individualToken);
 		try {
 			 statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
 			
@@ -100,11 +100,11 @@ public class BatchJob extends BaseTestCase implements ITest {
 		List preRegistrationId = new ArrayList();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
+		Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
 		preID=lib.getPreId(createResponse);
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response documentResponse = lib.documentUpload(createResponse,individualToken);
+		Response avilibityResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 		preRegistrationId.add(preID);
 		lib.reverseDataSync(preRegistrationId);
 		Response consumedResponse = lib.consumedStatus();
@@ -114,7 +114,7 @@ public class BatchJob extends BaseTestCase implements ITest {
 			Assert.assertTrue(false,"Exception while getting message from consumed API");
 		}
 		lib.compareValues(message, "Demographic status to consumed updated successfully");
-		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
+		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID,individualToken);
 		message =lib.getErrorMessage(getPreRegistrationDataResponse);
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
@@ -131,7 +131,10 @@ public class BatchJob extends BaseTestCase implements ITest {
 	@BeforeClass
 	public void getToken()
 	{
-		authToken=lib.getToken();
+		if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
 	}
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {
