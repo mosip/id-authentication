@@ -146,11 +146,11 @@ public class BaseTestCase{
 			initialize();
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 
-
+/*
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 			AuthTestsUtil.wakeDemoApp();
-
+*/
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);

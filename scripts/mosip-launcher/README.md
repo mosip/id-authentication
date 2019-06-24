@@ -57,7 +57,9 @@ Once everything is successful, files will be generated at /usr/local directory c
 Devops info file will be named /usr/local/devops-box-information.txt
 Deployments info file will be named /usr/local/deployments-box-information-<env-name>.txt
 
-After the setup you will see init-all-modules pipeline in jenkins that has been setup, trigger it aganinst any environment by choosing from dropdown, and it will deploy all the k8 and non k8 services.
+**After the setup you will see init-all-modules pipeline in jenkins that has been setup, trigger it aganinst any environment by choosing from dropdown, and it will deploy all the k8 and non k8 services.**
+
+If you already have DevOps setup ready and you have to setup only deployments infra and CI/CD, you can comment out ` - import_playbook: ./setup-devops/setup-devops.yml` from `scripts/mosip-launcher/ansible-playbooks/complete-setup.yml` file, but be informed, this script will ask you information about your DevOps setup and also you have to take care of plugins you need to install and permissions needed for Jenkinsfile etc. (you can get this information from scripts/mosip-launcher/helm-charts/jenkins/values.yaml file ) in your DevOps setup.
 
 ## Authors
   This Module is authored by [Swati Kp](https://github.com/Swatikp) and [Ajit Singh](https://github.com/as-ajitsingh)

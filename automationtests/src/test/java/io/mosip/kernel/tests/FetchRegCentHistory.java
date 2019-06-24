@@ -1,4 +1,3 @@
-
 package io.mosip.kernel.tests;
 
 import java.io.IOException;
