@@ -25,7 +25,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * The class BaseJob was a quartzJobBean which gives the information of job and
- * its functionalities
+ * its functionalities.This class will get all the active jobids and run that particular jobs
+ * by calling that services.
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -39,7 +40,7 @@ public abstract class BaseJob extends QuartzJobBean {
 	protected ApplicationContext applicationContext = null;
 
 	/**
-	 * Autowires job manager for to get Job id functionality
+	 * Autowires job manager to get Job id functionality
 	 */
 	@Autowired
 	protected JobManager jobManager;
@@ -89,7 +90,8 @@ public abstract class BaseJob extends QuartzJobBean {
 	public abstract ResponseDTO executeJob(String triggerPoint, String jobId);
 
 	/**
-	 * Job Execution process
+	 * If there is any job called by the currently running job then this 
+	 * method will gets called to finish the child jobs first
 	 * 
 	 * @param currentJobID
 	 *            current job executing
@@ -138,6 +140,13 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	}
 
+	/**
+	 * Once all the jobs are completed then this method will save this transaction in the table
+	 * @param responseDTO - the {@link ResponseDTO}
+	 * @param triggerPoint - the trigger point which indicates whether manual or batch jobs
+	 * @param syncJobId - the sync job ID
+	 * @return the {@link ResponseDTO} after updating the sync transaction
+	 */
 	public synchronized ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint,
 			String syncJobId) {
 

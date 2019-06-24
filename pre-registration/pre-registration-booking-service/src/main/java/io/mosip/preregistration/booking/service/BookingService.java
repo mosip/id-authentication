@@ -40,6 +40,7 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AvailablityNotFoundException;
+import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.util.BookingExceptionCatcher;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
 import io.mosip.preregistration.booking.service.util.BookingLock;
@@ -815,6 +816,13 @@ public class BookingService {
 		response.setId(idUrlCheckSlotAvailability);
 		response.setVersion(versionUrl);
 		try {
+			List<RegistrationCenterDto> regCenter = serviceUtil.getRegCenterMasterData();
+			Boolean isValidRegCenter = regCenter.stream().anyMatch(iterate->iterate.getId().contains(bookingRequestDTO.getRegistrationCenterId()));
+			
+			if (!isValidRegCenter) {
+				throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_035.getCode(), ErrorMessages.REG_CENTER_ID_NOT_FOUND.getMessage());
+			}
+																								
 			bookingDAO.findRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
 			AvailibityEntity entity = bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(
 					LocalTime.parse(bookingRequestDTO.getSlotFromTime()),

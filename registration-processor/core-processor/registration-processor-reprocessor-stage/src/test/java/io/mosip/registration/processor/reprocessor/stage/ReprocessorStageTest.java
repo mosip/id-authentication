@@ -29,6 +29,7 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -63,23 +64,30 @@ public class ReprocessorStageTest {
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Mock
+	private LogDescription description;
+
 	@Before
 	public void setup() throws Exception {
-		ReflectionTestUtils.setField(reprocessorStage, "fetchSize", 2);
-		ReflectionTestUtils.setField(reprocessorStage, "elapseTime", 21600);
-		ReflectionTestUtils.setField(reprocessorStage, "reprocessCount", 3);
-		Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
-		auditLog.setAccessible(true);
-		@SuppressWarnings("unchecked")
-		RegistrationProcessorRestClientService<Object> mockObj = Mockito
-				.mock(RegistrationProcessorRestClientService.class);
-		auditLog.set(auditLogRequestBuilder, mockObj);
-		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(auditResponseDto);
-		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
-				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
-				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
+		 Mockito.doNothing().when(description).setCode(Mockito.anyString());
+		 Mockito.doNothing().when(description).setMessage(Mockito.anyString());
+		 Mockito.when(description.getCode()).thenReturn("CODE");
+		 Mockito.when(description.getMessage()).thenReturn("MESSAGE");
+		 ReflectionTestUtils.setField(reprocessorStage, "fetchSize", 2);
+         ReflectionTestUtils.setField(reprocessorStage, "elapseTime", 21600);
+         ReflectionTestUtils.setField(reprocessorStage, "reprocessCount", 3);
+         Field auditLog = AuditLogRequestBuilder.class.getDeclaredField("registrationProcessorRestService");
+         auditLog.setAccessible(true);
+         @SuppressWarnings("unchecked")
+         RegistrationProcessorRestClientService<Object> mockObj = Mockito
+                                     .mock(RegistrationProcessorRestClientService.class);
+         auditLog.set(auditLogRequestBuilder, mockObj);
+         AuditResponseDto auditResponseDto = new AuditResponseDto();
+         ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
+         responseWrapper.setResponse(auditResponseDto);
+         Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
+                                      "test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
+                                      EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
 	}
 
 	@Test
@@ -90,8 +98,7 @@ public class ReprocessorStageTest {
 
 		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
 		registrationStatusDto.setRegistrationStageName("PacketValidatorStage");
-
-		registrationStatusDto.setRegistrationType("NEW");
+		registrationStatusDto.setReProcessRetryCount(0);
 		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 		dtolist.add(registrationStatusDto);
 		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();

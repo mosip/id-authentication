@@ -250,9 +250,9 @@ public class Validations extends BaseController {
 				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
-						return s.equals("demoGraphicTextField");
+						return s.equals(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 					});
-					node.getStyleClass().add("demoGraphicTextFieldFocused");
+					node.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 				}
 			} else if (inputText.matches(regex)) {
 				isInputValid = validateBlackListedWords(parentPane, node, id, blackListedWords, showAlert,
@@ -266,9 +266,9 @@ public class Validations extends BaseController {
 				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
-						return s.equals("demoGraphicTextField");
+						return s.equals(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 					});
-					node.getStyleClass().add("demoGraphicTextFieldFocused");
+					node.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 				}
 			}
 		} catch (RuntimeException runtimeException) {
@@ -407,7 +407,9 @@ public class Validations extends BaseController {
 
 					LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 							invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
+					uinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 					uinId.requestFocus();
+
 				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() == null && !regId.isDisabled()) {
@@ -420,7 +422,9 @@ public class Validations extends BaseController {
 								false);
 						LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
+						regId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 						regId.requestFocus();
+
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);

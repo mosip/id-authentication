@@ -7,6 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
@@ -17,6 +23,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
@@ -40,6 +47,9 @@ public class RegIdObjectValidator {
 	@Autowired
 	@Qualifier("pattern")
 	private IdObjectValidator idOjectPatternvalidator;
+	
+	@Autowired
+	private ObjectMapper mapper;
 	
 	@Autowired
 	private RegIdObjectMasterDataValidator regIdObjectMasterDataValidator;
@@ -70,12 +80,10 @@ public class RegIdObjectValidator {
 				operationType = IdObjectValidatorSupportedOperations.CHILD_REGISTRATION;
 			}
 			
-			
-			
 			if (idObjectValidator.validateIdObject(idObject, operationType)) {
 				LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 						"ID object shema validation is successful");
-				if (idOjectPatternvalidator.validateIdObject(idObject, operationType)) {
+				if (idOjectPatternvalidator.validateIdObject(idObject, operationType) && ageValidation(idObject)) {
 					LOGGER.info(LoggerConstants.ID_OBJECT_PATTERN_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 							"ID object pattern validation is successful");
 					if (regIdObjectMasterDataValidator.validateIdObject(idObject, operationType)) {
@@ -100,6 +108,11 @@ public class RegIdObjectValidator {
 			LOGGER.error(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(idObjectValidatorException));
 			throw idObjectValidatorException;
+		} catch (JsonProcessingException  jsonProcessingException) {
+			LOGGER.error(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+					ExceptionUtils.getStackTrace(jsonProcessingException));
+			throw new RegBaseCheckedException("REG-PAV-001", "Registrtaion Pattern Validator for age", 
+					jsonProcessingException);
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(runtimeException));
@@ -108,6 +121,25 @@ public class RegIdObjectValidator {
 		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
 				"Completed validating schema of Identity Object");
 
+	}
+	
+	private boolean ageValidation(Object identityObject) throws JsonProcessingException {
+		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Completed validating age from global param starting");
+		int maxAge = Integer.parseInt(
+				ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.MAX_AGE).toString());
+
+		String identityString = new ObjectMapper().writeValueAsString(identityObject);
+		JsonParser jsonParser = new JsonParser();
+
+		JsonElement jsonElement = jsonParser.parse(identityString);
+		if (jsonElement.isJsonObject()) {
+			return maxAge >= jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("age").getAsInt();
+		}
+		
+		LOGGER.info(LoggerConstants.ID_OBJECT_SCHEMA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
+				"Completed validating age from global param ending ");
+		return false;
 	}
 
 }

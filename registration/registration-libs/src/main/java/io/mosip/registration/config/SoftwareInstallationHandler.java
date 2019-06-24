@@ -20,13 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.springframework.stereotype.Component;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
@@ -76,36 +70,7 @@ public class SoftwareInstallationHandler {
 
 	private String mosip = "mosip";
 
-	private String versionTag = "version";
-
-	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
-
-		if (latestVersion == null) {
-			try {
-				// Get latest version using meta-inf.xml
-				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder db = documentBuilderFactory.newDocumentBuilder();
-
-				/*
-				 * URL url = new URL(getInputStreamOf(serverMosipXmlFileUrl)); URLConnection con
-				 * = url.openConnection(); con.setConnectTimeout(10000);
-				 */
-				org.w3c.dom.Document metaInfXmlDocument = db.parse(getInputStreamOf(serverMosipXmlFileUrl));
-
-				NodeList list = metaInfXmlDocument.getDocumentElement().getElementsByTagName(versionTag);
-				if (list != null && list.getLength() > 0) {
-					NodeList subList = list.item(0).getChildNodes();
-
-					if (subList != null && subList.getLength() > 0) {
-						// Latest Version
-						setLatestVersion(subList.item(0).getNodeValue());
-					}
-				}
-			} catch (NoRouteToHostException noRouteToHostException) {
-				System.out.println("Error in connection");
-				throw noRouteToHostException;
-			}
-		}
+	private String getLatestVersion() {
 
 		return latestVersion;
 	}
@@ -121,8 +86,7 @@ public class SoftwareInstallationHandler {
 		return currentVersion;
 	}
 
-	public void installJars()
-			throws IOException, ParserConfigurationException, SAXException, io.mosip.kernel.core.exception.IOException {
+	public void installJars() throws IOException, io.mosip.kernel.core.exception.IOException {
 
 		// Get Latest Version
 		getLatestVersion();
@@ -269,7 +233,7 @@ public class SoftwareInstallationHandler {
 		return localManifest;
 	}
 
-	private Manifest getServerManifest() throws IOException, ParserConfigurationException, SAXException {
+	private Manifest getServerManifest() throws IOException {
 
 		// Get latest Manifest from server
 

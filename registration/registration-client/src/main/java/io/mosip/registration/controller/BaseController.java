@@ -36,6 +36,7 @@ import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
+import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
 import io.mosip.registration.controller.reg.HeaderController;
@@ -147,6 +148,9 @@ public class BaseController {
 
 	@Autowired
 	private HeaderController headerController;
+	
+	@Autowired
+	private WebCameraController webCameraController;
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
@@ -381,6 +385,7 @@ public class BaseController {
 	 * Opens the home page screen.
 	 */
 	public void goToHomePage() {
+		webCameraController.closeWebcam();
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -418,6 +423,7 @@ public class BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
+		webCameraController.closeWebcam();
 		clearRegistrationData();
 		clearOnboardData();
 		goToHomePage();

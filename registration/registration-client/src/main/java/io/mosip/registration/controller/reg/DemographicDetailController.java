@@ -632,6 +632,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private GridPane localAddressPane;
 	@FXML
+	private GridPane preRegParentPane;
+	@FXML
 	private VBox applicationemailIdPane;
 	@FXML
 	private VBox applicationCniOrPinNumberPane;
@@ -733,6 +735,8 @@ public class DemographicDetailController extends BaseController {
 			genderSettings();
 			if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 					.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				preRegParentPane.setVisible(false);
+				preRegParentPane.setManaged(false);
 				national.getStyleClass().addAll("residence", "button");
 				nationalLocalLanguage.getStyleClass().addAll("residence", "button");
 				residence.setText(RegistrationConstants.EMPTY);
@@ -906,9 +910,24 @@ public class DemographicDetailController extends BaseController {
 					parentUinIdLocalLanguageMessage.setVisible(false);
 
 				}
+				
+				parentRegId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				parentRegId.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+
+				parentUinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				parentUinId.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				
+				parentRegIdLabel.setVisible(false);
+				parentRegId.setPromptText(parentRegIdLabel.getText());
+
+				parentUinIdLabel.setVisible(false);
+				parentUinId.setPromptText(parentUinIdLabel.getText());
+
+
 
 			});
 
+			
 			uinRidToggleLabel1
 					.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
 			uinRidToggleLabel2
@@ -959,7 +978,17 @@ public class DemographicDetailController extends BaseController {
 				dd.clear();
 				mm.clear();
 				yyyy.clear();
+				dd.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				dd.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				mm.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				mm.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				yyyy.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				yyyy.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				ageField.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				ageField.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 
+
+				
 				ddLocalLanguage.clear();
 				mmLocalLanguage.clear();
 				yyyyLocalLanguage.clear();

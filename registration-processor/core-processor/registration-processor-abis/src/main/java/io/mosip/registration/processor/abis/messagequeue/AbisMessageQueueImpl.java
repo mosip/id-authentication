@@ -62,12 +62,6 @@ public class AbisMessageQueueImpl {
 	/** The Constant ID. */
 	private static final String ID = "id";
 
-	/** The abis insert request dto. */
-	AbisInsertRequestDto abisInsertRequestDto;
-
-	/** The identify request dto. */
-	AbisIdentifyRequestDto identifyRequestDto;
-
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisMessageQueueImpl.class);
 
@@ -133,7 +127,7 @@ public class AbisMessageQueueImpl {
 			ObjectMapper obj = new ObjectMapper();
 			String id = (String) object.get(ID);
 			if (id.matches(ABIS_INSERT)) {
-				abisInsertRequestDto = JsonUtil.objectMapperReadValue(request, AbisInsertRequestDto.class);
+				AbisInsertRequestDto abisInsertRequestDto = JsonUtil.objectMapperReadValue(request, AbisInsertRequestDto.class);
 				AbisInsertResponseDto abisInsertResponseDto = abisService.insert(abisInsertRequestDto);
 				response = obj.writeValueAsString(abisInsertResponseDto);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
@@ -142,7 +136,7 @@ public class AbisMessageQueueImpl {
 			}
 
 			else if (id.matches(ABIS_IDENTIFY)) {
-				identifyRequestDto = JsonUtil.objectMapperReadValue(request, AbisIdentifyRequestDto.class);
+				AbisIdentifyRequestDto identifyRequestDto = JsonUtil.objectMapperReadValue(request, AbisIdentifyRequestDto.class);
 				AbisIdentifyResponseDto identifyResponseDto = abisService.identify(identifyRequestDto);
 				response = obj.writeValueAsString(identifyResponseDto);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),

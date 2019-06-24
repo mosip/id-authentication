@@ -71,8 +71,6 @@ public class AbisServiceImpl implements AbisService {
 	private static Set<String> storedRefId = new HashSet<>();
 	
 	private static Set<String> actualStoredRefId = new HashSet<>();
-	
-	private String identifyReqId;
 
 	/** The Constant TESTFINGERPRINT. */
 	@Value("${TESTFINGERPRINT}")
@@ -211,7 +209,7 @@ public class AbisServiceImpl implements AbisService {
 				"AbisServiceImpl::performDedupe()::entry");
 
 		AbisIdentifyResponseDto response = new AbisIdentifyResponseDto();
-		identifyReqId = identifyRequest.getReferenceId();
+		String identifyReqId = identifyRequest.getReferenceId();
 		if (storedRefId.size() < 1000)
 			storedRefId.add(identifyReqId);
 
@@ -240,7 +238,7 @@ public class AbisServiceImpl implements AbisService {
 				response.setReturnValue(1);
 
 				if (duplicate) {
-					addCandidateList(identifyRequest, response);
+					addCandidateList(identifyReqId, identifyRequest, response);
 				}
 			} else {
 				response.setReturnValue(2);
@@ -275,7 +273,7 @@ public class AbisServiceImpl implements AbisService {
 		return response;
 	}
 
-	private synchronized void addCandidateList(AbisIdentifyRequestDto identifyRequest,
+	private synchronized void addCandidateList(String identifyReqId, AbisIdentifyRequestDto identifyRequest,
 			AbisIdentifyResponseDto response) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisServiceImpl::addCandidateList()::Entry");

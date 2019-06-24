@@ -684,7 +684,7 @@
 																				</GridPane>
 																			</children>
 																		</GridPane>
-																		<GridPane fx:id="addressParentPane" prefHeight="650.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="addressParentPane" prefHeight="550.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane fx:id="applicatoinAddressPane">
 																					<children>
@@ -1006,7 +1006,7 @@
 																				<RowConstraints minHeight="10.0" percentHeight="100.0" prefHeight="30.0" vgrow="SOMETIMES" />
 																			</rowConstraints>
 																		</GridPane>
-                                                      <GridPane fx:id="parentDetailPane" prefHeight="200.0" prefWidth="${scrollParentPane.width}" visible="false">
+                                                      <GridPane fx:id="parentDetailPane" prefHeight="150.0" prefWidth="${scrollParentPane.width}" visible="false">
                                                          <children>
                                                             <GridPane fx:id="childParentDetail">
                                                                <children>

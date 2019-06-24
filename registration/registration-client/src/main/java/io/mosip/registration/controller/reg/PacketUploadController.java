@@ -349,7 +349,9 @@ public class PacketUploadController extends BaseController implements Initializa
 						});
 						packetUploadService.updateStatus(packetsToBeExport);
 						progressIndicator.setVisible(false);
-						displayStatus(populateTableData(tableMap));
+						if(!tableMap.isEmpty()) {
+							displayStatus(populateTableData(tableMap));
+						}
 					} else {
 						loadInitialPage();
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,

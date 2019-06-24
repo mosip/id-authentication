@@ -40,7 +40,7 @@ public interface JobConfigurationService {
 	ResponseDTO stopScheduler();
 
 	/**
-	 * To fetch the details of currently running job details
+	 * To fetch the details of currently running job
 	 * 
 	 * @return list of job names currently executing if success
 	 */

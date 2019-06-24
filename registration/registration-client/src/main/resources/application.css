@@ -1762,4 +1762,15 @@ Working on new Css by taleev
 	-fx-text-fill:White;
 	-fx-font-weight: bold;
 	}
+.authenticationErrorMsg{
+	-fx-font-size: 12.0px;
+}	
+.authenticationErrorMsgTitle{
+	-fx-font-size: 16.0px;
+	-fx-text-fill: #175768;
+}
+.authenticationPageTitle{
+	-fx-font-size: 18.0px;
+	-fx-text-fill: white;
+}
 
