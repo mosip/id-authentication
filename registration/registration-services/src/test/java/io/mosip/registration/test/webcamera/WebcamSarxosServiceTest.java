@@ -57,6 +57,7 @@ public class WebcamSarxosServiceTest {
 	
 	@Test
 	public void testIsWebcamConnected() {
+		when(webcam.isOpen()).thenReturn(true);
 		assertThat(webcamSarxosServiceImpl.isWebcamConnected(), is(true));
 	}
 	
