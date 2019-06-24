@@ -55,7 +55,6 @@ public class CheckSumGeneration {
 	 * @return the byte[]
 	 */
 	public byte[] generateIdentityHash(List<FieldValueArray> hashSequence, String registrationId) {
-        System.out.println("generateIdentityHash entry for " + registrationId);
 	    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         for (FieldValueArray fieldValueArray : hashSequence) {
@@ -74,7 +73,7 @@ public class CheckSumGeneration {
 			}
 		}
         byte[] dataByte = HMACUtils.generateHash(outputStream.toByteArray());
-        System.out.println("generateIdentityHash exit for " + registrationId);
+
 		return HMACUtils.digestAsPlainText(dataByte).getBytes();
 
 	}
