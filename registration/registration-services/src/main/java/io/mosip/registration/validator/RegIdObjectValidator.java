@@ -129,7 +129,7 @@ public class RegIdObjectValidator {
 		int maxAge = Integer.parseInt(
 				ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.MAX_AGE).toString());
 
-		String identityString = new ObjectMapper().writeValueAsString(identityObject);
+		String identityString =mapper.writeValueAsString(identityObject);
 		JsonParser jsonParser = new JsonParser();
 
 		JsonElement jsonElement = jsonParser.parse(identityString);
