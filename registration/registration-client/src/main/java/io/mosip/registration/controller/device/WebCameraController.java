@@ -86,10 +86,9 @@ public class WebCameraController extends BaseController implements Initializable
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Connecting to the webcam");
 
-		photoProvider = photoCaptureFacade.getPhotoProviderFactory(getValueFromApplicationContext(RegistrationConstants.WEBCAM_LIBRARY_NAME));
-		if (photoProvider.isWebcamConnected()) {
-			photoProvider.close();
-		}
+		photoProvider = photoCaptureFacade
+				.getPhotoProviderFactory(getValueFromApplicationContext(RegistrationConstants.WEBCAM_LIBRARY_NAME));
+
 		photoProvider.connect(480, 480);
 		return photoProvider.isWebcamConnected();
 	}
@@ -121,10 +120,15 @@ public class WebCameraController extends BaseController implements Initializable
 	@FXML
 	public void closeWindow(ActionEvent event) {
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"closing the webcam window");
-
-		photoProvider.close();
+				"closing the webcam window");		
+		if (capturedImage != null) {
+			capturedImage.flush();
+		}
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
+	}
+	
+	public void closeWebcam() {
+		photoProvider.close();
 	}
 }

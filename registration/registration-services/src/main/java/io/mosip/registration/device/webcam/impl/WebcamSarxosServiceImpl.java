@@ -34,10 +34,19 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 
 	private Webcam webcam;
 
+	private JPanel jPanelWindow;
+
 	@Override
 	public JPanel getCameraPanel() {
+		if (jPanelWindow == null) {
+			getJPanel();
+		}
+		return jPanelWindow;
+	}
+
+	private JPanel getJPanel() {
 		WebcamPanel cameraPanel = new WebcamPanel(webcam);
-		JPanel jPanelWindow = new JPanel();
+		jPanelWindow = new JPanel();
 		jPanelWindow.add(cameraPanel);
 		jPanelWindow.setVisible(true);
 		return jPanelWindow;
@@ -45,7 +54,7 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 
 	@Override
 	public boolean isWebcamConnected() {
-		return webcam != null;
+		return webcam.isOpen();
 	}
 
 	@Override
@@ -98,6 +107,7 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 	@Override
 	public void close() {
 		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "closing the webcam");
-		//webcam.close();
+		jPanelWindow = null;
+		webcam.close();
 	}
 }
