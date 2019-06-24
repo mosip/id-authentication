@@ -418,48 +418,55 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * io.mosip.registration.service.config.JobConfigurationService#executeJob(java.
 	 * lang.String, java.lang.String)
 	 */
-	@Override
-	public ResponseDTO executeJob(String jobId, String triggerPoint) {
 
-		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Execute job started");
-		ResponseDTO responseDTO = null;
-		try {
+	 public ResponseDTO executeJob(String jobId, String triggerPoint) {
 
-			SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
+			LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Execute job started");
+			ResponseDTO responseDTO = null;
+			try {
 
-			if (syncJobDef != null && syncJobDef.getApiName() != null) {
-				// Get Job using application context and api name
-				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
+				SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
 
-				BaseJob.removeCompletedJobInMap(jobId);
+				if (syncJobDef != null && syncJobDef.getApiName() != null) {
+					// Get Job using application context and api name
+					baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
-				// Job Invocation
-				responseDTO = baseJob.executeJob(triggerPoint, jobId);
+					BaseJob.removeCompletedJobInMap(jobId);
 
-				if (responseDTO.getSuccessResponseDTO() != null) {
-					baseJob.setApplicationContext(applicationContext);
+					// Job Invocation
+					responseDTO = baseJob.executeJob(triggerPoint, jobId);
 
-					/* Execute all its child jobs */
-					baseJob.executeChildJob(jobId, syncJobMap);
+					if (responseDTO.getSuccessResponseDTO() != null) {
+						baseJob.setApplicationContext(applicationContext);
+
+						/* Execute all its child jobs */
+						baseJob.executeChildJob(jobId, syncJobMap);
+					} else {
+						/* Child Job's check */
+						syncJobMap.forEach((jobIdForChild, childJob) -> {
+							if (childJob.getParentSyncJobId() != null && childJob.getParentSyncJobId().equals(jobId)) {
+								baseJob.addToCompletedJobMap(jobIdForChild, RegistrationConstants.JOB_EXECUTION_FAILURE);
+							}
+						});
+					}
+				} else {
+					responseDTO = new ResponseDTO();
+					setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 				}
-			} else {
+
+			} catch (RuntimeException runtimeException) {
+				LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID,
+						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
 				responseDTO = new ResponseDTO();
 				setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
 			}
-
-		} catch (RuntimeException runtimeException) {
-			LOGGER.error(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID,
-					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-
-			responseDTO = new ResponseDTO();
-			setErrorResponse(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE, null);
+			LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Execute job ended");
+			return responseDTO;
 		}
-		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Execute job ended");
-		return responseDTO;
-	}
 
 	/*
 	 * (non-Javadoc)
