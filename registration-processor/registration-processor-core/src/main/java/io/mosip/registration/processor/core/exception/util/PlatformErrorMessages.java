@@ -288,6 +288,8 @@ public enum PlatformErrorMessages {
 			"Not able to access the API resource"),
 	/** The rpr pvm base unchecked exception. */
 	RPR_PVM_BASE_UNCHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "007", "Schema Validation Failed"),
+	
+	RPR_PVM_BASE_CHECKED_EXCEPTION(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "013", "Schema Validation Failed"),
 
 	/** The rpr pvm mandatory field missing. */
 	RPR_PVM_MANDATORY_FIELD_MISSING(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "010",
@@ -297,7 +299,7 @@ public enum PlatformErrorMessages {
 			"Registration ID or Type are not Matched in Sync table"),
 
 	/** The rpr pvm invalid uin. */
-	RPR_PVM_INVALID_UIN(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "011", "Invalid UIN"),
+	RPR_PVM_INVALID_UIN(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "012", "Invalid UIN"),
 
 	/** The rpr pvm document type invalid. */
 	RPR_PVM_DOCUMENT_TYPE_INVALID(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "008",
