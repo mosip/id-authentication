@@ -25,14 +25,8 @@ public class SearchFilter {
 
 	private String value;
 
-	private String fromName;
-
 	private String fromValue;
 
-	private String toName;
-
 	private String toValue;
-
-	private String langCode;
 
 }

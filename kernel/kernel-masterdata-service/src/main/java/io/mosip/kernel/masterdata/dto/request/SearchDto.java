@@ -27,4 +27,6 @@ public class SearchDto {
 
 	@NotNull
 	private Pagination pagination;
+
+	private String languageCode;
 }
