@@ -17,12 +17,11 @@
 		
 	  	 	  <test name="Kernel Tests">
 						 <classes>
-
-                           <class name="io.mosip.kernel.tests.AuditLog" />   
-                          <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
-                          <class name="io.mosip.kernel.tests.EmailNotification" />
-                          <class name="io.mosip.kernel.tests.EncrptionDecryption" />
-                          <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
+						   <class name="io.mosip.kernel.tests.AuditLog" />   
+                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
+                           <class name="io.mosip.kernel.tests.EmailNotification" />
+                           <class name="io.mosip.kernel.tests.EncrptionDecryption" />
+                           <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAuthType" />
                            <class name="io.mosip.kernel.tests.FetchBlackListedWord" />
                            <class name="io.mosip.kernel.tests.FetchDevice" />
@@ -61,6 +60,7 @@
                            <class name="io.mosip.kernel.tests.RIDGenerator" />   
                            <class name="io.mosip.kernel.tests.SmsNotification" />
                            <class name="io.mosip.kernel.tests.SyncConfigurations" />
+                           <class name="io.mosip.kernel.tests.UploadPublickey" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndex" />
                            <class name="io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId" />
                            <class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" />
@@ -68,13 +68,12 @@
                            <class name="io.mosip.kernel.tests.UINGeneration" />
                            <class name="io.mosip.kernel.tests.UINStatusCheck" />  
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
-                           <class name="io.mosip.kernel.tests.UploadPublickey" />
-                           <class name="io.mosip.kernel.tests.ValidateGenderByName" />
-                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
+                           <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
+                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />   
                  </classes>
 				</test>  
 
-<!--
+
  		   <test name="PreReg Tests">
 		<classes>
 
@@ -123,7 +122,7 @@
                     <class name="io.mosip.registrationProcessor.tests.Sync" />
                     <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
                   <class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
-                     <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
+                  <!--    <class name="io.mosip.registrationProcessor.tests.StageValidationTests" /> -->
                     <class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
                     <class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
                     <class name="io.mosip.registrationProcessor.tests.Assignment" />
@@ -159,6 +158,6 @@
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
 			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />  
 		</classes>
-	</test>      -->
+	</test>     
 
 </suite>

@@ -1,11 +1,8 @@
 package io.mosip.kernel.util;
 
-import java.io.File;
-import java.io.FileReader;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
