@@ -826,5 +826,4 @@ public class FaceCaptureController extends BaseController implements Initializab
 			saveBiometricDetailsBtn.setDisable(true);
 		}
 	}
-
 }
