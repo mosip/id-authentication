@@ -170,7 +170,9 @@ public enum ErrorMessages {
 	
 	NOTIFICATION_CALL_FAILED("Notification service call failed"),
 	
-	JSON_PROCESSING_EXCEPTION("Json processing exception");
+	JSON_PROCESSING_EXCEPTION("Json processing exception"),
+	
+	REG_CENTER_ID_NOT_FOUND("Registration center id not found");
 	/**
 	 * @param code
 	 */
