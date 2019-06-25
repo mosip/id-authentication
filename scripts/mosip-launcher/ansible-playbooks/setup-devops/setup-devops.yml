@@ -256,7 +256,7 @@
       
   - name: "Waiting for Docker Registry to come up"
     uri:
-      url: "https://{{ output_domain_name | json_query('stdout')  }}/docker-registry/v2/"
+      url: "https://{{ output_domain_name | json_query('stdout')  }}/v2/"
       status_code: 200
       user: "{{ docker_registry_username }}"
       password: "{{ docker_registry_password }}"
@@ -267,7 +267,7 @@
 
   - name: Log into private registry that we deployed earlier and force re-authorization
     docker_login:
-      registry: "{{ output_domain_name | json_query('stdout')  }}/docker-registry"
+      registry: "{{ output_domain_name | json_query('stdout')  }}"
       username: "{{ docker_registry_username }}"
       password: "{{ docker_registry_password }}"
       reauthorize: yes
@@ -275,7 +275,7 @@
   - name: Build jenkins slave jnlp custom image and push it to a private repo ..This may take some time
     docker_image:
       path: ../configurations/jenkins-slave-config/
-      name: "{{ output_domain_name | json_query('stdout')  }}/docker-registry/{{ jenkins_agent_jnlp_custom_image_name }}"
+      name: "{{ output_domain_name | json_query('stdout')  }}/{{ jenkins_agent_jnlp_custom_image_name }}"
       tag: "{{ jenkins_agent_jnlp_custom_image_tag }}"
       push: yes
 
@@ -293,12 +293,12 @@
         domain_name: "{{ output_domain_name | json_query('stdout')  }}"
         scm_username: "{{ scm_username }}"
         scm_repo_url: "{{ scm_repo_url }}"
-        docker_registry_url: "https://{{ output_domain_name | json_query('stdout')  }}/docker-registry"
+        docker_registry_url: "https://{{ output_domain_name | json_query('stdout')  }}"
         scm_repo_branch: "{{ scm_repo_branch }}"
         docker_registry_username: "{{ docker_registry_username }}"
         docker_registry_password: "{{ docker_registry_password }}"
         docker_registry_image_pull_secret: "{{ docker_registry_image_pull_secret_name }}"
-        jenkins_agent_jnlp_custom_image_name: "{{ output_domain_name | json_query('stdout')  }}/docker-registry/{{ jenkins_agent_jnlp_custom_image_name }}"
+        jenkins_agent_jnlp_custom_image_name: "{{ output_domain_name | json_query('stdout')  }}/{{ jenkins_agent_jnlp_custom_image_name }}"
         jenkins_agent_jnlp_custom_image_tag: "{{ jenkins_agent_jnlp_custom_image_tag }}"
         jenkins_admin_password: "{{ jenkins_admin_password }}"
         key_file: "~/.ssh/id_rsa"

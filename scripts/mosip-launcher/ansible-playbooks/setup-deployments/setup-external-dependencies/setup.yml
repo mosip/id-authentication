@@ -57,7 +57,7 @@
         msg: "\nAdd this SSH Key to your SCM Provider Account- \n\n{{ output_ssh_public_key_generate | json_query('stdout')  }}"
     - pause:
         prompt: "Make sure you have pasted the public key to your SCM provider account! Press return to continue."
-        
+
     - pause:
         prompt: "Enter Docker registry url, to connect keymanager vms/ dmz vms to registry"
       register: docker_registry_address
@@ -113,7 +113,7 @@
   
     - name: Make docker registry url persistant
       set_fact:
-          docker_registry_url: "{{ hostvars['localhost']['devops_cluster_dns'] | replace('https://','') }}/docker-registry"
+          docker_registry_url: "{{ hostvars['localhost']['devops_cluster_dns'] | replace('https://','') }}"
       when: devops_cluster_dns is defined
 
     - name: Make SCM URL persistant
