@@ -100,6 +100,8 @@ public class JobConfigurationServiceTest {
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
+
+
 	@Before
 	public void intiate() {
 		syncJobList = new LinkedList<>();
@@ -365,9 +367,10 @@ public class JobConfigurationServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		initiateJobTest();
-
+		
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(responseDTO);
+
 
 		Assert.assertNotNull(jobConfigurationService.executeAllJobs());
 	}
@@ -375,5 +378,27 @@ public class JobConfigurationServiceTest {
 	@Test
 	public void getRestartTimeTest() {
 		Assert.assertNotNull(jobConfigurationService.getRestartTime().getSuccessResponseDTO());
+	}
+	
+	@Test
+	public void getActiveJobTest() {
+		Assert.assertNotNull(jobConfigurationService.getActiveSyncJobMap());
+	}@Test
+	public void getOfflineJobsTest() {
+		Assert.assertNotNull(jobConfigurationService.getOfflineJobs());
+	}@Test
+	public void getUnTaggedJobsTest() {
+		Assert.assertNotNull(jobConfigurationService.getUnTaggedJobs());
+	}
+	
+	@Test
+	public void startSchedulerExcepTest() {
+		
+		Mockito.doThrow(RuntimeException.class).when(schedulerFactoryBean).start();
+		
+		Assert.assertNotNull(jobConfigurationService.startScheduler().getErrorResponseDTOs());
+		
+		
+		Assert.assertNotNull(jobConfigurationService.getUnTaggedJobs());
 	}
 }
