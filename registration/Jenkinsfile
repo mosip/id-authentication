@@ -43,19 +43,19 @@ node {
   "files": [
     {
       "pattern": "${branch}/registration/registration-client/target/*.zip",
-      "target": "libs-release/io/mosip/registration/registration-client/${version}/"
+      "target": "libs-release-local/io/mosip/registration/registration-client/${version}/"
     },
     {
       "pattern": "${branch}/registration/registration-client/target/MANIFEST.MF",
-      "target": "libs-release/io/mosip/registration/registration-client/${version}/"
+      "target": "libs-release-local/io/mosip/registration/registration-client/${version}/"
     },
     {
       "pattern": "${branch}/registration/registration-client/target/lib/*.jar",
-      "target": "libs-release/io/mosip/registration/registration-client/${version}/lib/"
+      "target": "libs-release-local/io/mosip/registration/registration-client/${version}/lib/"
     },
     {
       "pattern": "${branch}/registration/registration-client/target/lib/*.dll",
-      "target": "libs-release/io/mosip/registration/registration-client/${version}/lib/"
+      "target": "libs-release-local/io/mosip/registration/registration-client/${version}/lib/"
     }
  ]
  }"""
