@@ -264,7 +264,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 						.post(SERVICE_NAME, packetStatusReaderDTO, triggerPoint);
 				List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) packetStatusResponse
 						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
-				if (!registrations.isEmpty()) {
+				if (registrations != null && !registrations.isEmpty()) {
 					/* update the status of packets after sync with server */
 					try {
 						updatePacketIdsByServerStatus(registrations);
