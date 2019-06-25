@@ -225,6 +225,7 @@ mat-keyboard-container mat-keyboard-key .mat-keyboard-key {
 
 .ol-viewport{
   overflow: visible !important;
+  min-height: 275px !important;
 }
 
 .ol-overlaycontainer-stopevent{
