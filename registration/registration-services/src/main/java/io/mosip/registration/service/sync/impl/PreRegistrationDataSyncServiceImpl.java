@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -181,19 +182,34 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	 */
 	private void getPreRegistrationPackets(String syncJobId, ResponseDTO responseDTO, Map<String, String> preRegIds) {
 		ExecutorService executorServiceForPreReg = Executors.newFixedThreadPool(5);
-		
-		/* Get Packets Using pre registration ID's */
-		for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
-			executorServiceForPreReg.execute(
-					new Runnable() {
-							public void run() {
-									preRegDetail.setValue(preRegDetail.getValue().contains("Z") ? preRegDetail.getValue() : preRegDetail.getValue() + "Z");
-				
-									getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId, Timestamp.from(Instant.parse(preRegDetail.getValue())));
-							}
-					}
-			);
+		try {
+			LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					"Fetching Pre-Registration ID's in parallel mode started");
+			/* Get Packets Using pre registration ID's */
+			for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
+				executorServiceForPreReg.execute(
+						new Runnable() {
+								public void run() {
+										preRegDetail.setValue(preRegDetail.getValue().contains("Z") ? preRegDetail.getValue() : preRegDetail.getValue() + "Z");
+					
+										getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId, Timestamp.from(Instant.parse(preRegDetail.getValue())));
+								}
+						}
+				);
+			}
+			
+			executorServiceForPreReg.shutdown();
+			
+			executorServiceForPreReg.awaitTermination(500, TimeUnit.SECONDS);
+		} catch (Exception interruptedException) {
+			LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					"Error Fetching Pre-Registration ID's in parallel mode " + interruptedException);
 		}
+		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
+				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				"Fetching Pre-Registration ID's in parallel mode completed");
 	}
 
 	/*
