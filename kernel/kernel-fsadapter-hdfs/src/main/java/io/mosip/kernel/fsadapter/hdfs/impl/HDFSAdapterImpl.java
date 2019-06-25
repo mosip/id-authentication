@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -157,11 +158,13 @@ public class HDFSAdapterImpl implements FileSystemAdapter {
 		try {
 			Path inFile = getHadoopPath(id, id);
 			if (!fs.exists(inFile)) {
+				LOGGER.error("Packet "+ id + " doesnot exist in filesystem {} ", HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
 				throw new FSAdapterException(HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorCode(),
 						HDFSAdapterErrorCode.FILE_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 			return fs.open(inFile);
 		} catch (IOException e) {
+			LOGGER.error("Packet "+ id + " io exceptio occuered", ExceptionUtils.getStackTrace(e));
 			throw new FSAdapterException(HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorCode(),
 					HDFSAdapterErrorCode.HDFS_ADAPTER_EXCEPTION.getErrorMessage(), e);
 		}

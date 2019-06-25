@@ -1,5 +1,6 @@
 package io.mosip.preregistration.tests;
 
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -36,7 +37,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
+
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -74,8 +76,9 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	String outputFile = "CopyUploadedDocumentRequestOutput.json";
 	String requestKeyFile = "CopyUploadedDocumentRequest.json";
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
+	ApplicationLibrary appLib  =new ApplicationLibrary();
 	CommonLibrary commonLibrary = new CommonLibrary();
-	ApplicationLibrary appLibrary = new ApplicationLibrary();
+
 	String preReg_URI;
 	HashMap<String, String> parm = new HashMap<>();
 
@@ -104,15 +107,17 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		}
 	}
 
-	
+
 	/*
 	 * Given Copy Document Upload valid request when I Send PUT request to
-	 * https://mosip.io/preregistration/v1/documents/:preRegistrationId?catCode=:doc_cat_code&sourcePreId=:preRegistrationId
-	 *  Then I should get success
-	 * response with elements defined as per specifications Given Invalid
-	 * request when I send PUT request to
-	 * https://mosip.io/preregistration/v1/documents/:preRegistrationId?catCode=:doc_cat_code&sourcePreId=:preRegistrationId Then I should get Error
-	 * response along with Error Code and Error messages as per Specification
+	 * https://mosip.io/preregistration/v1/documents/:preRegistrationId?catCode=:
+	 * doc_cat_code&sourcePreId=:preRegistrationId Then I should get success
+	 * response with elements defined as per specifications Given Invalid request
+	 * when I send PUT request to
+	 * https://mosip.io/preregistration/v1/documents/:preRegistrationId?catCode=:
+	 * doc_cat_code&sourcePreId=:preRegistrationId Then I should get Error response
+	 * along with Error Code and Error messages as per Specification
+
 	 * 
 	 */
 	@Test(dataProvider = "CopyUploadedDocument")
@@ -120,8 +125,10 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
-		String srcPreID=null;
-		String docCatCode=null;
+
+		String srcPreID = null;
+		String docCatCode = null;
+
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -130,41 +137,49 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		String name = null;
 		if (testCaseName.contains("smoke")) {
 			val = testCaseName;
-			
+
 		} else {
 			String[] parts = testCaseName.split("_");
 			val = parts[0];
 			name = parts[1];
 		}
 
-		String testCaseValue=val+"_"+name;
+
+		String testCaseValue = val + "_" + name;
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
+		Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 		preId = preRegLib.getPreId(createApplicationResponse);
 		// Document Upload for created application
-		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId,individualToken);
+
 		// PreId of Uploaded document
 		try {
-			 srcPreID = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
-			 docCatCode = docUploadResponse.jsonPath().get("response.docCatCode").toString();
+			srcPreID = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+			docCatCode = docUploadResponse.jsonPath().get("response.docCatCode").toString();
 		} catch (NullPointerException e) {
-			Assert.assertTrue(false, "Exception while fetching document cat code from response");
+			Assert.assertTrue(false, "Exception while fetching document cat code from response"+e.getMessage());
 		}
 		// Creating the Pre-Registration Application for Destination PreId
-		Response createApplicationRes = preRegLib.CreatePreReg();
+
+		Response createApplicationRes = preRegLib.CreatePreReg(individualToken);
+
 		String destPreId = preRegLib.getPreId(createApplicationRes);
 		switch (val) {
 		case "CopyUploadedDocument_smoke":
 
 			// Copy uploaded document from Source PreId to Destination PreId
 
-			Response copyDocresponse = preRegLib.copyUploadedDocuments(destPreId, srcPreID, docCatCode);
+
+			Response copyDocresponse = preRegLib.copyUploadedDocuments(destPreId, srcPreID, docCatCode,individualToken);
+
 			logger.info("Copy Uploadede Doc:" + copyDocresponse.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			innerKeys.add("docId");
-			
-			//Asserting actual and expected response
+
+
+			// Asserting actual and expected response
+
 			status = AssertResponses.assertResponses(copyDocresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
@@ -172,14 +187,17 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 
 			// Copy uploaded document from Source PreId to Destination PreId
 
-			Response copyDocrespons = preRegLib.copyUploadedDocuments(destPreId, srcPreID, docCatCode);
+
+			Response copyDocrespons = preRegLib.copyUploadedDocuments(destPreId, srcPreID, docCatCode,individualToken);
+
 			logger.info("Copy Uploadede Doc POA :" + copyDocrespons.asString());
 			outerKeys.add("responsetime");
 			innerKeys.add("preRegistrationId");
 			innerKeys.add("docId");
-			
-			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(copyDocrespons, Expectedresponse, outerKeys, innerKeys);
+
+
+			// Asserting actual and expected response
+		status = AssertResponses.assertResponses(copyDocrespons, Expectedresponse, outerKeys, innerKeys);
 
 			break;
 		case "CopyUploadedDocumentByPassingInvalidCatCode":
@@ -189,11 +207,12 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			HashMap<String, String> parmInvalidCatCode = new HashMap<>();
 			parmInvalidCatCode.put("catCode", docCatCode);
 			parmInvalidCatCode.put("sourcePreId", srcPreID);
-			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URI1, parmInvalidCatCode);
-			logger.info("CopyUploadedDocumentByPassingInvalidCatCode:" + Actualresponse.asString()+"Test casename:"+testCaseName);
+			Actualresponse = appLib.putWithQueryParams(preReg_URI1, parmInvalidCatCode,individualToken);
+			logger.info("CopyUploadedDocumentByPassingInvalidCatCode:" + Actualresponse.asString() + "Test casename:"
+					+ testCaseName);
 			outerKeys.add("responsetime");
-			
-			//Asserting actual and expected response
+
+			// Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
@@ -204,34 +223,33 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			HashMap<String, String> parmInvalidDestId = new HashMap<>();
 			parmInvalidDestId.put("catCode", docCatCode);
 			parmInvalidDestId.put("sourcePreId", srcPreID);
-			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URI2, parmInvalidDestId);
-			logger.info("CopyUploadedDocumentByPassingInvalidDestinationPreId:" + Actualresponse.asString()+"Test casename:"+testCaseName);
-			
-			if(name.contains("Empty"))
-			{
+			Actualresponse = appLib.putWithQueryParams(preReg_URI2, parmInvalidDestId,individualToken);
+			logger.info("CopyUploadedDocumentByPassingInvalidDestinationPreId:" + Actualresponse.asString()
+					+ "Test casename:" + testCaseName);
+
+			if (name.contains("Empty")) {
 				outerKeys.add("timestamp");
-			}
-			else
-			{
+			} else {
 				outerKeys.add("responsetime");
 			}
-			//Asserting actual and expected response
+			// Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
 		case "CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded":
 
-			Response createApplicationResNoDocUpload = preRegLib.CreatePreReg();
+			Response createApplicationResNoDocUpload = preRegLib.CreatePreReg(individualToken);
 			srcPreID = createApplicationResNoDocUpload.jsonPath().get("response.preRegistrationId").toString();
-			//srcPreID = actualRequest.get("sourcePrId").toString();
+			// srcPreID = actualRequest.get("sourcePrId").toString();
 			String preReg_URINoDocUpload = preReg_URI + destPreId;
-			HashMap<String, String> parmNoDocUpload= new HashMap<>();
+			HashMap<String, String> parmNoDocUpload = new HashMap<>();
 			parmNoDocUpload.put("catCode", docCatCode);
 			parmNoDocUpload.put("sourcePreId", srcPreID);
-			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URINoDocUpload, parmNoDocUpload);
-			logger.info("CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded:" + Actualresponse.asString()+"Test casename:"+testCaseName);
+			Actualresponse = appLib.putWithQueryParams(preReg_URINoDocUpload, parmNoDocUpload,individualToken);
+			logger.info("CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded:" + Actualresponse.asString()
+					+ "Test casename:" + testCaseName);
 			outerKeys.add("responsetime");
-			//Asserting actual and expected response
+			// Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 			break;
 		case "CopyUploadedDocumentByPassingInvalidSourcePreId":
@@ -240,30 +258,29 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			HashMap<String, String> parmInvalidSrcId = new HashMap<>();
 			parmInvalidSrcId.put("catCode", docCatCode);
 			parmInvalidSrcId.put("sourcePreId", srcPreID);
-			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URI3, parmInvalidSrcId);
-			logger.info("CopyUploadedDocumentByPassingInvalidSourcePreId:" + Actualresponse.asString()+"Test casename:"+testCaseName);
+			Actualresponse = appLib.putWithQueryParams(preReg_URI3, parmInvalidSrcId,individualToken);
+			logger.info("CopyUploadedDocumentByPassingInvalidSourcePreId:" + Actualresponse.asString()
+					+ "Test casename:" + testCaseName);
 			outerKeys.add("responsetime");
-			//Asserting actual and expected response
+			// Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 			break;
 		case "CopyUploadedDocumentByPassingDestPreIdForWhichPOADocAlreadyExists":
 
-			//srcPreID = actualRequest.get("sourcePrId").toString();
+			// srcPreID = actualRequest.get("sourcePrId").toString();
 			String preReg_URI4 = preReg_URI + destPreId;
 			HashMap<String, String> parmInvalidSrcPreId = new HashMap<>();
 			parmInvalidSrcPreId.put("catCode", docCatCode);
 			parmInvalidSrcPreId.put("sourcePreId", srcPreID);
-			Actualresponse = appLibrary.put_Request_pathAndMultipleQueryParam(preReg_URI4, parmInvalidSrcPreId);
-			logger.info("CopyUploadedDocumentByPassingDestPreIdForWhichPOADocAlreadyExists:" + Actualresponse.asString()+"Test casename:"+testCaseName);
+			Actualresponse = appLib.putWithQueryParams(preReg_URI4, parmInvalidSrcPreId,individualToken);
+			logger.info("CopyUploadedDocumentByPassingDestPreIdForWhichPOADocAlreadyExists:" + Actualresponse.asString()
+					+ "Test casename:" + testCaseName);
 			outerKeys.add("responsetime");
-			
-			//Asserting actual and expected response
+
+			// Asserting actual and expected response
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 			break;
-			
-			
-			
 
 		default:
 
@@ -282,7 +299,7 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 		} else {
 			finalStatus = "Fail";
 		}
-		
+
 		boolean setFinalStatus = false;
 		if (finalStatus.equals("Fail"))
 			setFinalStatus = false;
@@ -294,22 +311,26 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	}
 
 	/**
-	  * This method is used for fetching test case name
-	  * @param method
-	  * @param testdata
-	  * @param ctx
-	  */
+	 * This method is used for fetching test case name
+	 * 
+	 * @param method
+	 * @param testdata
+	 * @param ctx
+	 */
 	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 
 		testCaseName = object.get("testCaseName").toString();
 
-		//Copy Uploaded document Resource URI
+		// Copy Uploaded document Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CopyDocumentsURI");
-		
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+
+		// Fetch the generated Authorization Token by using following Kernel AuthManager
+		// APIs
+		if (!preRegLib.isValidToken(individualToken)) {
+			individualToken = preRegLib.getToken();
+		}
 	}
 
 	/**
@@ -326,8 +347,8 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			//f.set(baseTestMethod, CopyUploadedDocument.testCaseName);
-			f.set(baseTestMethod, "Pre Reg_CopyDocument_" +CopyUploadedDocument.testCaseName);
+			// f.set(baseTestMethod, CopyUploadedDocument.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_CopyDocument_" + CopyUploadedDocument.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -354,4 +375,3 @@ public class CopyUploadedDocument extends BaseTestCase implements ITest {
 	}
 
 }
-

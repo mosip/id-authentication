@@ -41,7 +41,7 @@ import com.google.common.base.Verify;
 
 import io.mosip.dbHealthcheck.DBHealthCheck;
 import io.mosip.dbaccess.PreRegDbread;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertPreReg;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -64,7 +64,7 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 	public ObjectMapper mapper = new ObjectMapper();
 	public Response Actualresponse = null;
 	public JSONObject Expectedresponse = null;
-	private ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	ApplicationLibrary appLib =new ApplicationLibrary();
 	private String preReg_URI;
 	public String dest = "";
 	public String configPaths="";
@@ -121,16 +121,17 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 		if (testCaseName.toLowerCase().contains("smoke")) {
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = lib.createRequest(testSuite);
-			Response createResponse = lib.CreatePreReg(createPregRequest);
+			Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
 			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-			Response documentResponse = lib.documentUpload(createResponse);
-			Response avilibityResponse = lib.FetchCentre();
-			lib.BookAppointment(documentResponse, avilibityResponse, preID);
+			Response documentResponse = lib.documentUpload(createResponse,individualToken);
+			Response avilibityResponse = lib.FetchCentre(individualToken);
+			lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 			Response retrivePreRegistrationDataresponse = lib.retrivePreRegistrationData(preID);
 			status = lib.validateRetrivePreRegistrationData(retrivePreRegistrationDataresponse,preID , createResponse);
+			System.err.println(status);
 		} else {
 			try {
-				Actualresponse = applicationLibrary.getRequestDataSync(preReg_URI, actualRequest);
+				Actualresponse = appLib.getWithPathParam(preReg_URI, actualRequest,regClientToken);
 
 			} catch (Exception e) {
 				logger.info(e);
@@ -190,7 +191,10 @@ public class RetrivePreRegistration extends BaseTestCase implements ITest {
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		authToken=lib.getToken();
+		if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
 	}
 
 	@Override
