@@ -27,8 +27,8 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * The class BaseJob was a quartzJobBean which gives the information of job and
- * its functionalities.This class will get all the active jobids and run that particular jobs
- * by calling that services.
+ * its functionalities.This class will get all the active jobids and run that
+ * particular jobs by calling that services.
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -60,10 +60,10 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	protected ResponseDTO responseDTO;
 
-	private static  Map<String,String> completedJobMap = new HashMap<>();
-	
-	public static List<String> successJob=new ArrayList<String>();
-	
+	private static Map<String, String> completedJobMap = new HashMap<>();
+
+	public static List<String> successJob = new ArrayList<String>();
+
 	/**
 	 * LOGGER for logging
 	 */
@@ -93,8 +93,8 @@ public abstract class BaseJob extends QuartzJobBean {
 	public abstract ResponseDTO executeJob(String triggerPoint, String jobId);
 
 	/**
-	 * If there is any job called by the currently running job then this 
-	 * method will gets called to finish the child jobs first
+	 * If there is any job called by the currently running job then this method will
+	 * gets called to finish the child jobs first
 	 * 
 	 * @param currentJobID
 	 *            current job executing
@@ -116,7 +116,7 @@ public abstract class BaseJob extends QuartzJobBean {
 					BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(childJob.getApiName());
 
 					removeCompletedJobInMap(childJob.getId());
-					
+
 					/* Response of parentBaseJob */
 					ResponseDTO childJobResponseDTO = parentBaseJob
 							.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM, childJob.getId());
@@ -144,61 +144,42 @@ public abstract class BaseJob extends QuartzJobBean {
 	}
 
 	/**
-	 * Once all the jobs are completed then this method will save this transaction in the table
-	 * @param responseDTO - the {@link ResponseDTO}
-	 * @param triggerPoint - the trigger point which indicates whether manual or batch jobs
-	 * @param syncJobId - the sync job ID
+	 * Once all the jobs are completed then this method will save this transaction
+	 * in the table
+	 * 
+	 * @param responseDTO
+	 *            - the {@link ResponseDTO}
+	 * @param triggerPoint
+	 *            - the trigger point which indicates whether manual or batch jobs
+	 * @param syncJobId
+	 *            - the sync job ID
 	 * @return the {@link ResponseDTO} after updating the sync transaction
 	 */
-	public synchronized ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint,
-			String syncJobId) {
+	public synchronized void syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint, String syncJobId) {
 
+		String status = (responseDTO != null && responseDTO.getSuccessResponseDTO() != null)
+				? RegistrationConstants.JOB_EXECUTION_SUCCESS
+				: RegistrationConstants.JOB_EXECUTION_FAILURE;
 		try {
-			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
 
-				/* Insert Sync Transaction of executed with Success */
-				SyncTransaction syncTransaction = syncManager.createSyncTransaction(
-						RegistrationConstants.JOB_EXECUTION_SUCCESS, RegistrationConstants.JOB_EXECUTION_SUCCESS,
-						triggerPoint, syncJobId);
+			addToCompletedJobMap(syncJobId, status);
 
-				addToCompletedJobMap(syncJobId, RegistrationConstants.JOB_EXECUTION_SUCCESS);
+			/* Insert Sync Transaction of executed with Success/failure */
+			SyncTransaction syncTransaction = syncManager.createSyncTransaction(status, status, triggerPoint,
+					syncJobId);
+
+			if (RegistrationConstants.JOB_EXECUTION_SUCCESS.equals(status)) {
 				/* Insert Sync Control transaction */
 				syncManager.createSyncControlTransaction(syncTransaction);
-
-				Map<String, Object> attributes = new WeakHashMap<>();
-				attributes.put(RegistrationConstants.SYNC_TRANSACTION, syncTransaction);
-
-				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				successResponseDTO.setOtherAttributes(attributes);
-
-			} else {
-
-				/* Insert Sync Transaction of executed with failure */
-				syncManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILURE,
-						RegistrationConstants.JOB_EXECUTION_FAILURE, triggerPoint, syncJobId);
-				addToCompletedJobMap(syncJobId, RegistrationConstants.JOB_EXECUTION_FAILURE);
 			}
+
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
 			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
-			if (responseDTO == null) {
-				responseDTO = new ResponseDTO();
-			}
-			LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
-
-			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setInfoType(RegistrationConstants.ERROR);
-			errorResponseDTO.setMessage(regBaseUncheckedException.getMessage());
-
-			errorResponseDTOs.add(errorResponseDTO);
-
-			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 
 		}
-
-		return responseDTO;
 
 	}
 
@@ -246,9 +227,9 @@ public abstract class BaseJob extends QuartzJobBean {
 
 		/* Get Current JobId */
 		String currentJobId = jobManager.getJobId(context);
-		
+
 		removeCompletedJobInMap(currentJobId);
-			
+
 		return currentJobId;
 
 	}
@@ -258,22 +239,23 @@ public abstract class BaseJob extends QuartzJobBean {
 			this.applicationContext = applicationContext;
 		}
 	}
-	
-	public void addToCompletedJobMap(String jobId,String status) {
+
+	public void addToCompletedJobMap(String jobId, String status) {
 		completedJobMap.put(jobId, status);
-		if(status.contains("success")) {
+		if (status.contains("success")) {
 			successJob.add(jobId);
 		}
 	}
-	
-	public static Map<String,String> getCompletedJobMap(){
+
+	public static Map<String, String> getCompletedJobMap() {
 		return completedJobMap;
 	}
-	public static void clearCompletedJobMap(){
+
+	public static void clearCompletedJobMap() {
 		completedJobMap.clear();
 	}
-	
-	public static void removeCompletedJobInMap(String jobId){
+
+	public static void removeCompletedJobInMap(String jobId) {
 		completedJobMap.remove(jobId);
 	}
 
