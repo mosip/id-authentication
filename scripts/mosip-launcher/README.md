@@ -7,7 +7,7 @@ This project(and readme) is in progress and will be updated frequently.
 This will enable the one-click deployment of MOSIP.
 
 ## Pre-requisite
-* RHEL7.5 with Ansible 2.7.9
+* RHEL7.6 with Ansible 2.7.9
 * Make sure you have forked/mirrored mosip repository and mosip-configuration repository, and created a same branch in both the repositories, because the code that will be deployed will be looking for configuration from same named branch. Lets say, if you have created a new branch named `mydevbranch` in mosip repository, create a branch named `mydevbranch` in mosip-configuration also.
 
 ## Usage

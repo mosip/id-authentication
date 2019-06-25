@@ -73,7 +73,7 @@
   
     - name: Make docker registry url persistant
       set_fact:
-          docker_registry_url: "{{ hostvars['localhost']['devops_cluster_dns'] | replace('https://','') }}/docker-registry"
+          docker_registry_url: "{{ hostvars['localhost']['devops_cluster_dns'] | replace('https://','') }}"
       when: devops_cluster_dns is defined
 
     - name: Make jenkins_username persistant

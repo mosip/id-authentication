@@ -43,7 +43,7 @@ public class QRcodeExceptionCatcher {
 					((InvalidRequestParameterException) ex).getErrorText(),mainResponseDto);
 		}
 		 else if (ex instanceof ParseException) {
-throw new InvalidRequestParameterException(ErrorCodes.PRG_QRC_004.getCode(), ErrorMessages.INVALID_REQUESTTIME_FORMAT.getCode(), mainResponseDto);
+			 throw new InvalidRequestParameterException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_017.getCode(), io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), mainResponseDto);
 			}
 }
 		

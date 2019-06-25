@@ -156,10 +156,10 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
-	
+
 	@Mock
 	private LogDescription description;
-	
+
 	/** The byte array. */
 	byte[] byteArray = null;
 

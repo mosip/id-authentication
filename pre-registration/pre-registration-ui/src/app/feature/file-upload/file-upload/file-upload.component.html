@@ -2,10 +2,10 @@
 <div class="file-upload">
   <div class="file-uploaad__header">{{ 'documents.title_document' | translate }}</div>
   <div class="file-upload__message">
-    {{ 'documents.text_filetype' | translate }} &nbsp;{{ allowedFilesHtml }} &nbsp;{{
+    {{ 'documents.text_filetype' | translate }} : {{ allowedFilesHtml }} &nbsp;{{
       'documents.text_filesize' | translate
     }}
-    &nbsp; {{ allowedFileSize }}
+    : {{ allowedFileSize }}
   </div>
   <div class="file-upload__body">
     <div class="file-upload__body__1">
@@ -80,7 +80,7 @@
       ></iframe>
 
       <img
-        *ngIf="fileExtension == 'jpg'"
+        *ngIf="fileExtension == 'jpg' || fileExtension == 'jpeg'"
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/jpeg;Base64,"

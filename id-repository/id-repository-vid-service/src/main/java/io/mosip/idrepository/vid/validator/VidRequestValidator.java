@@ -104,7 +104,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 		if (Objects.nonNull(requestId)) {
 			if (!errors.hasErrors() && requestId.equals(id.get(CREATE))) {
 				validateVidType(request.getRequest().getVidType(), errors);
-				validateUin(request.getRequest().getUin().toString(), errors);
+				validateUin(request.getRequest().getUin(), errors);
 			}
 
 			if (!errors.hasErrors() && request.getId().equals(id.get(UPDATE))) {
@@ -138,7 +138,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 	 * @param uin the uin
 	 * @param errors the errors
 	 */
-	private void validateUin(String uin, Errors errors) {
+	private void validateUin(Long uin, Errors errors) {
 		if (Objects.isNull(uin)) {
 			mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateUin",
 					"\n" + "uin is null");
@@ -146,7 +146,7 @@ public class VidRequestValidator extends BaseIdRepoValidator implements Validato
 					String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), UIN));
 		} else {
 			try {
-				uinValidator.validateId(uin);
+				uinValidator.validateId(uin.toString());
 			} catch (InvalidIDException e) {
 				mosipLogger.error(IdRepoSecurityManager.getUser(), VID_REQUEST_VALIDATOR, "validateUin",
 						"\n" + ExceptionUtils.getStackTrace(e));

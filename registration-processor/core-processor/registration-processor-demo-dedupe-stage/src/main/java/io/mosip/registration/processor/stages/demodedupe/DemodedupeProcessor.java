@@ -251,7 +251,7 @@ public class DemodedupeProcessor {
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
                 description.setMessage(DemoDedupeConstants.NO_DATA_IN_DEMO);
-                regProcLogger.error(DemoDedupeConstants.NO_DATA_IN_DEMO, "", "", "");
+                regProcLogger.error(DemoDedupeConstants.NO_DATA_IN_DEMO, "", "", ExceptionUtils.getStackTrace(e));
                 object.setIsValid(Boolean.FALSE);
                 object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
                 object.setInternalError(Boolean.TRUE);

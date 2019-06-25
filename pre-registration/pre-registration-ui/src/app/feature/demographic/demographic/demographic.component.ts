@@ -24,7 +24,8 @@ import { FilesModel } from 'src/app/shared/models/demographic-model/files.model'
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
 import { RouterExtService } from 'src/app/shared/router/router-ext.service';
 import { LogService } from 'src/app/shared/logger/log.service';
-import { HttpResponse } from '@angular/common/http';
+import LanguageFactory from 'src/assets/i18n';
+// import { ErrorService } from 'src/app/shared/error/error.service';
 
 /**
  * @description This component takes care of the demographic page.
@@ -181,7 +182,8 @@ export class DemographicComponent implements OnInit {
     private matKeyboardService: MatKeyboardService,
     private routerService: RouterExtService,
     private loggerService: LogService
-  ) {
+  ) // private errorService: ErrorService
+  {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
   }
@@ -198,9 +200,16 @@ export class DemographicComponent implements OnInit {
     await this.getPrimaryLabels();
     await this.getConsentMessage();
     this.initForm();
-    this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
-      this.secondaryLanguagelabels = response['demographic'];
-    });
+
+    // don't delete it ///////////////////////
+    // this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
+    //   this.secondaryLanguagelabels = response['demographic'];
+    // });
+    /////////////////////////////////////////////////////////
+    let factory = new LanguageFactory(this.secondaryLang);
+    let response = factory.getCurrentlanguage();
+    this.secondaryLanguagelabels = response['demographic'];
+
     let previousURL = this.routerService.getPreviousUrl();
     if (!this.dataModification) {
       if (
@@ -237,13 +246,17 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   private getPrimaryLabels() {
-    return new Promise(resolve => {
-      this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
-        this.demographiclabels = response['demographic'];
-        this.errorlabels = response['error'];
-        resolve(true);
-      });
-    });
+    // return new Promise(resolve => {
+    //   this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
+    //     this.demographiclabels = response['demographic'];
+    //     this.errorlabels = response['error'];
+    //     resolve(true);
+    //   });
+    // });
+    let factory = new LanguageFactory(this.primaryLang);
+    let response = factory.getCurrentlanguage();
+    this.demographiclabels = response['demographic'];
+    this.errorlabels = response['error'];
   }
 
   private getConsentMessage() {
@@ -1052,6 +1065,7 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   onSubmission() {
+    this.loggerService.info('regService.getUsers', this.regService.getUsers());
     this.checked = true;
     this.dataUploadComplete = true;
     let url = '';
@@ -1192,8 +1206,11 @@ export class DemographicComponent implements OnInit {
     this.dataUploadComplete = true;
     this.hasError = true;
     this.titleOnError = this.errorlabels.errorLabel;
+    // this.errorService.onError(this.titleOnError, message, error, this.errorlabels);
+
     if (
-      error && error[appConstants.ERROR] &&
+      error &&
+      error[appConstants.ERROR] &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorlabels.tokenExpiredLogout;
