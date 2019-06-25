@@ -1,0 +1,10 @@
+{
+	"ref_id": "NO_ID",
+	"log_desc": "Updated the expired status & the expired PreRegistration ids successfully saved in the database",
+	"event_id": "PRE_413",
+	"event_type": "BUSINESS",
+	"session_user_id": "preregadmin",
+	"event_name": "EXPIREDSTATUS",
+	"module_name": "EXPIRED_BATCH_SERVICE",
+	"ref_id_type": "PRE_REGISTRATION_ID"
+}

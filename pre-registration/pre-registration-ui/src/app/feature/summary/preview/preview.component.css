@@ -130,6 +130,7 @@
   font-size: 0.8rem;
   margin: 4px 2rem;
   cursor: pointer;
+  text-transform: uppercase;
 }
 .user-book_later-btn {
   background-color: #ffffff;
@@ -155,6 +156,7 @@
   font-size: 0.8rem;
   margin: 4px 3rem !important;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 .center-selection__button-container {

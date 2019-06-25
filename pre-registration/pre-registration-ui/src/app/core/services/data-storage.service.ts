@@ -6,7 +6,6 @@ import { AppConfigService } from '../../app-config.service';
 import { Applicant } from '../../shared/models/dashboard-model/dashboard.modal';
 import { ConfigService } from './config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
-import { of } from 'rxjs';
 
 /**
  * @description This class is responsible for sending or receiving data to the service.
@@ -39,51 +38,6 @@ export class DataStorageService {
   getUsers(userId: string) {
     let url = this.BASE_URL + this.PRE_REG_URL + appConstants.APPEND_URL.applicants;
     return this.httpClient.get<Applicant[]>(url);
-    // let obj = {
-    //   id: 'mosip.pre-registration.demographic.retrieve.basic',
-    //   version: '1.0',
-    //   responsetime: '2019-05-20T07:10:24.850Z',
-    //   response: {
-    //     basicDetails: [
-    //       {
-    //         preRegistrationId: '32042841521591',
-    //         statusCode: 'Pending_Appointment',
-    //         demographicMetadata: {
-    //           fullname: [
-    //             {
-    //               language: 'fra',
-    //               value: 'Rakesh P'
-    //             },
-    //             {
-    //               language: 'ara',
-    //               value: 'سهَسهَنك '
-    //             }
-    //           ],
-    //           postalCode: '56059',
-    //           proofOfAddress: {
-    //             docId: '97d252c7-7aea-11e9-a0d7-071c4b8ebbdf',
-    //             docName: 'IdCard.pdf',
-    //             docCatCode: 'POA',
-    //             docTypCode: 'address',
-    //             docFileFormat: 'pdf'
-    //           }
-    //         },
-    //         bookingMetadata: {
-    //           appointment_date: '2019-05-22',
-    //           registration_center_id: '10001',
-    //           time_slot_from: '09:00',
-    //           time_slot_to: '09:15'
-    //         }
-    //       }
-    //     ],
-
-    //     totalRecords: '2',
-    //     noOfRecords: '0',
-    //     pageIndex: '0'
-    //   },
-    //   errors: null
-    // };
-    // return of(obj);
   }
 
   /**

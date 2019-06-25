@@ -122,12 +122,50 @@ public interface FileManager<D, F> {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public File getFile(D workingDirectory, String fileName) throws IOException;
-	
+
+	/**
+	 * Get the file from working directory
+	 *
+	 * @param workingDirectory
+	 * @param fileName
+	 * @param sftpConnectionDto
+	 * @return
+	 * @throws JschConnectionException
+	 * @throws SftpFileOperationException
+	 */
 	public byte[] getFile(D workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)throws  JschConnectionException, SftpFileOperationException;
-	
+
+	/**
+	 * Copy file from one directory to another
+	 *
+	 * @param fileName
+	 * @param sourceWorkingDirectory
+	 * @param destinationWorkingDirectory
+	 * @param sftpConnectionDto
+	 * @return
+	 * @throws IOException
+	 * @throws JschConnectionException
+	 * @throws SftpFileOperationException
+	 */
 	public boolean copy(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException, JschConnectionException, SftpFileOperationException ;
 
+	/**
+	 * Cleanup a file from a working directory
+	 *
+	 * @param fileName
+	 * @param sourceWorkingDirectory
+	 * @param destinationWorkingDirectory
+	 * @param sftpConnectionDto
+	 * @return
+	 * @throws IOException
+	 * @throws JschConnectionException
+	 * @throws SftpFileOperationException
+	 */
 	public boolean cleanUp(String fileName, D sourceWorkingDirectory, D destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto) throws IOException, JschConnectionException, SftpFileOperationException ;
 
+	/**
+	 * Disconnect the sftp connection used to get file from LANDING_ZONE.
+	 */
+	public void disconnectSftp();
 
 }

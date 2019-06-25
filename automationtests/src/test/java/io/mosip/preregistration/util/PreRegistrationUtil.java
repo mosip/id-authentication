@@ -74,6 +74,32 @@ public class PreRegistrationUtil
 		return mapProp;
 
 	}
+	/*
+	 * Generic method to fetch the dynamic request json
+	 * 
+	 */
+
+	public JSONObject requestJson(String filepath,String reqName) {
+
+		String configPath = "src/test/resources/" + folder + "/" + filepath;
+		File folder = new File(configPath);
+		File[] listOfFiles = folder.listFiles();
+logger.info("configPath:"+configPath);
+		for (File f : listOfFiles) {
+			if (f.getName().toLowerCase().contains(reqName)) {
+				try {
+					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				} catch (IOException | ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+
+		return request;
+
+	}
 	
 	
 	/**

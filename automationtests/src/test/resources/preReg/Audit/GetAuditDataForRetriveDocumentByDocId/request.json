@@ -1,0 +1,10 @@
+{
+	"ref_id": "MULTIPLE_ID",
+	"log_desc": "Retrieval of document is successfull",
+	"event_id": "PRE_401",
+	"event_type": "BUSINESS",
+	"session_user_id": "9930875851",
+	"event_name": "RETRIEVE",
+	"module_name": "DOCUMENT_SERVICE",
+	"ref_id_type": "PRE_REGISTRATION_ID"
+}

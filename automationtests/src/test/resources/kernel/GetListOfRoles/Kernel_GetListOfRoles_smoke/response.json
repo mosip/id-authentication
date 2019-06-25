@@ -1,10 +1,10 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-05-29T12:01:46.995Z",
+  "responsetime": "2019-06-21T08:52:03.991Z",
   "metadata": null,
   "response": {
-    "lastSyncTime": "2019-05-29T12:01:45.972Z",
+    "lastSyncTime": "2019-06-21T08:52:03.982Z",
     "roles": [
       {
         "roleId": "CENTRAL_APPROVER",
@@ -80,6 +80,21 @@
         "roleId": "ZONAL_ADMIN",
         "roleName": "ZONAL_ADMIN",
         "roleDescription": "Zonal admin"
+      },
+      {
+        "roleId": "offline_access",
+        "roleName": "offline_access",
+        "roleDescription": "test"
+      },
+      {
+        "roleId": "uma_authorization",
+        "roleName": "uma_authorization",
+        "roleDescription": "added"
+      },
+      {
+        "roleId": "ROLE_TEST",
+        "roleName": "ROLE_TEST",
+        "roleDescription": "test role"
       },
       {
         "roleId": "SUPERADMIN",

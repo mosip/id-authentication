@@ -71,6 +71,7 @@ public class RegistrationStatusController {
 	@Autowired
 	private Environment env;
 
+
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;
 

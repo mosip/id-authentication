@@ -493,8 +493,8 @@
       "title_failure": "Échec",
       "msg_failure": "Rendez-vous de réservation a échoué",
       "deletedApplicant1": [
-        "L'utilisateur suivant n'a été sélectionné dans aucune plage horaire",
-        "Voulez-vous continuer la réservation"
+        "Vous n'avez sélectionné aucune plage horaire pour l'utilisateur suivant",
+        "Voulez-vous continuer à réserver"
       ],
       "yesButtonText": "Oui",
       "noButtonText": "Non"
@@ -574,13 +574,14 @@
   },
   "error": {
     "error": "Une erreur technique s'est produite et l'opération ne peut pas être terminée. Aucune donnée fournie ne peut être sauvegardée",
-    "button_ok": "OK",
+    "button_ok": "D'accord",
     "postalCode": "Le code PIN entré est invalide",
     "email": "Le courriel entré est invalide",
     "phone": "Le téléphone entré est invalide",
     "dateOfBirth": "Date de naissance entrée est invalide",
     "CNIENumber": "Le numéro CNIE entré est invalide",
-    "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité."
+    "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité.",
+    "errorLabel":"ERREUR"
   },
   "residentTypesMapping": {
     "NFR": "Nationale",

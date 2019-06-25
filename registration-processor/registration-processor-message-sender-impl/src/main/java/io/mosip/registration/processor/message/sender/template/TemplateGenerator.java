@@ -66,7 +66,8 @@ public class TemplateGenerator {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
-	private ObjectMapper mapper=new ObjectMapper();
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * Gets the template.

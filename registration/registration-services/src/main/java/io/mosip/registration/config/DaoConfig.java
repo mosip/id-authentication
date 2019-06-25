@@ -123,7 +123,7 @@ public class DaoConfig extends HibernateDaoConfig {
 	/**
 	 * setting profile for spring properties
 	 * 
-	 * @return
+	 * @return the {@link PropertyPlaceholderConfigurer} after setting the properties
 	 */
 	@Bean
 	@Lazy(false)

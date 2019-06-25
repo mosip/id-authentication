@@ -59,12 +59,6 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeServiceImpl.class);
 
-	/** The abis insert request dto. */
-	private AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
-
-	/** The identify request dto. */
-	private AbisIdentifyRequestDto identifyRequestDto = new AbisIdentifyRequestDto();
-
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -96,9 +90,6 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	@Autowired
 	private PacketManager filesystemCephAdapterImpl;
 
-	/** The identity iterator util. */
-	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-
 	private static final String ABIS_INSERT = "mosip.abis.insert";
 
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
@@ -117,6 +108,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		String insertStatus = "failure";
 		String requestId = uuidGenerator();
 		String referenceId = uuidGenerator();
+
+		AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 		abisInsertRequestDto.setId(ABIS_INSERT);
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
@@ -191,6 +184,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		String referenceId = packetInfoManager.getReferenceIdByRid(registrationId).get(0);
 
+		AbisIdentifyRequestDto identifyRequestDto = new AbisIdentifyRequestDto();
 		identifyRequestDto.setId(ABIS_IDENTIFY);
 		identifyRequestDto.setVer("1.0");
 		identifyRequestDto.setRequestId(requestId);
@@ -287,6 +281,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 					PacketMetaInfo.class);
 
 			List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence1();
+
+			IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 			List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence,
 					JsonConstant.APPLICANTBIOMETRICSEQUENCE);
 			if (hashList != null)

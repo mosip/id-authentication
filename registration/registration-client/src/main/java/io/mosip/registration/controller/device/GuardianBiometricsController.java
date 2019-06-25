@@ -155,6 +155,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 	@Autowired
 	private MasterSyncService masterSync;
 	
+	@Autowired
+	private WebCameraController webCameraController;
+	
 	private String bioValue;
 	
 	private FXUtils fxUtils;
@@ -350,6 +353,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Navigates to previous section");
+		
+		webCameraController.closeWebcam();
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, false);
@@ -379,6 +384,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Navigates to next section");
 
+		webCameraController.closeWebcam();
+		
 		if (isChild()) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, false);
 			if (!RegistrationConstants.DISABLE

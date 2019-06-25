@@ -26,10 +26,10 @@ public class DemoDedupeConfig {
 	public DemodedupeProcessor getDemodedupeProcessor() {
 		return new DemodedupeProcessor();
 	}
-	
-	     @Bean
-	     public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
-	             return new RegistrationProcessorRestClientServiceImpl();
-	     }
+
+	@Bean
+	public RegistrationProcessorRestClientService<Object> getRegistrationProcessorRestClientService() {
+		return new RegistrationProcessorRestClientServiceImpl();
+	}
 
 }

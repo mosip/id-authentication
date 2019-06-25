@@ -1,9 +1,0 @@
-{
-  "response": {
-    "maskedEmail": "$REGEXP:XX.*XX.*$"
-  },
-  "responseTime": "$TIMESTAMP$",
-  "id": "mosip.identity.otp",
-  "version": "1.0",
-  "transactionID": "8017254817"
-}

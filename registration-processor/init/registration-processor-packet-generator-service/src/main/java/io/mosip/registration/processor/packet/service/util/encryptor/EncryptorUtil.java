@@ -84,7 +84,6 @@ public class EncryptorUtil {
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
-	private ObjectMapper mapper=new ObjectMapper();
 
 	/**
 	 * Encrypt uin update packet.
@@ -198,7 +197,7 @@ public class EncryptorUtil {
 		pathsegments.add(APPLICATION_ID);
 		ResponseWrapper<?> responseWrapper;
 		PublicKeyResponseDto publicKeyResponsedto=null;
-
+		 ObjectMapper mapper=new ObjectMapper();
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
 		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), PublicKeyResponseDto.class);

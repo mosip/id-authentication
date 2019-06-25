@@ -3,6 +3,11 @@ FROM openjdk:8
 #Uncomment below and Comment above line(i.e. FROM openjdk:8) for OS specific (e.g. Alpine OS ) docker base image
 #FROM openjdk:8-jdk-alpine
 
+# setting labels for extra properties needed for this Docker image, so that it can be used at run time with docker inspect
+LABEL network=host
+LABEL privileged=true
+LABEL zone_env=dmz 
+
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label
 
@@ -27,8 +32,6 @@ ENV spring_config_label_env=${spring_config_label}
 # environment variable to pass spring configuration url, at docker runtime
 ENV spring_config_url_env=${spring_config_url}
 
-# change volume to whichever storage directory you want to use for this container.
-VOLUME /home/logs
 
 # copying shaded jar into docker image
 COPY ./target/registration-processor-common-camel-bridge-*.jar registration-processor-common-camel-bridge.jar

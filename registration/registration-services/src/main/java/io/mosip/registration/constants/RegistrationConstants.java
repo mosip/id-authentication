@@ -437,6 +437,8 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL = "PreRegIDSecLabel";
 	public static final String TEMPLATE_PRE_REG_ID = "PreRegID";
 	public static final String TEMPLATE_DEMO_INFO = "DemographicInfo";
+	public static final String DEMOGRAPHIC_TEXTFIELD_FOCUSED = "demoGraphicTextFieldFocused";
+	public static final String DEMOGRAPHIC_TEXTFIELD = "demoGraphicTextField";
 	public static final String TEMPLATE_FULL_NAME_USER_LANG_LABEL = "FullNamePrimLabel";
 	public static final String TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL = "FullNameSecLabel";
 	public static final String TEMPLATE_FULL_NAME = "FullName";
@@ -743,11 +745,12 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_READER_RESPONSE = "response";
 	public static final String PACKET_STATUS_READER_REGISTRATION_ID = "registrationId";
 	public static final String PACKET_STATUS_READER_STATUS_CODE = "statusCode";
-	public static final String PACKET_STATUS_CODE_PROCESSED = "processed";
+	public static final String PACKET_STATUS_CODE_PROCESSED = "PROCESSED";
 	public static final String PACKET_STATUS_CODE_PROCESSING = "PROCESSING";
-	public static final String PACKET_STATUS_CODE_REREGISTER = "RE-REGISTER";
+	public static final String PACKET_STATUS_CODE_REREGISTER = "REREGISTER";
+	public static final String PACKET_STATUS_CODE_REJECTED = "REJECTED";
 	public static final List<String> PACKET_STATUS_CODES_FOR_REMAPDELETE = Arrays.asList(PACKET_STATUS_CODE_REREGISTER,
-			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED);
+			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED,PACKET_STATUS_CODE_REJECTED);
 	public static final String MACHINE_CENTER_REMAP_FLAG = "mosip.registration.machinecenterchanged";
 	public static final String MACHINE_CENTER_REMAP_MSG = "Machine Center Remap process started";
 	public static final String PACKET_STATUS_READER_ID = "mosip.registration.status";
@@ -1416,6 +1419,8 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_IRIS_ID="IIR";
 	public static final String ON_BOARD_FINGER_ID="FMR";
 	public static final String ON_BOARD_COGENT="cogent";
+	public static final String AGE_IDENTITY="identity";
+	public static final String DATE_OF_BIRTH = "dateOfBirth";
 
 	public static final String STUB_FACE="Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA";
 	

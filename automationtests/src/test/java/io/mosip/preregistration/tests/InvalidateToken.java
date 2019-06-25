@@ -40,20 +40,33 @@ public class InvalidateToken extends BaseTestCase implements ITest {
 	 */
 	@Test
 	public void invalidateToken() {
-		Response invalidateTokenResponse = lib.logOut();
+		String cookie = lib.getToken();
+		Response invalidateTokenResponse = lib.logOut(cookie);
 		String message = invalidateTokenResponse.jsonPath().get("response.message").toString();
 		lib.compareValues(message, "Token has been invalidated successfully");
-		Response createPreRegResponse = lib.CreatePreReg();
+		Response createPreRegResponse = lib.CreatePreReg(cookie);
 		String errorCode = createPreRegResponse.jsonPath().get("errors[0].errorCode").toString();
 		String errorMessage = createPreRegResponse.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(errorCode, "KER-ATH-401");
 		lib.compareValues(errorMessage, "Invalid Token");
 		
 	}
+	@Test
+	public void invalidateInactiveToken()
+	{
+		String cookie = lib.getToken();
+		Response invalidateTokenResponse = lib.logOut(cookie);
+		String message = invalidateTokenResponse.jsonPath().get("response.message").toString();
+		lib.compareValues(message, "Token has been invalidated successfully");
+		invalidateTokenResponse = lib.logOut(cookie);
+		String errorCode = lib.getErrorCode(invalidateTokenResponse);
+		message=lib.getErrorMessage(invalidateTokenResponse);
+		lib.compareValues(message, "Token is not present in datastore,Please try with new token");
+		lib.compareValues(errorCode, "KER-ATH-008");
+	}
 	@BeforeMethod(alwaysRun=true)
 	public void login( Method method)
 	{
-		authToken=lib.getToken();
 		testCaseName="preReg_Authentication_" + method.getName();
 	}
 	@Override

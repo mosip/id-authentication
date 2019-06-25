@@ -1,7 +1,7 @@
 {
   "id": null,
   "version": null,
-  "responsetime": "2019-04-10T12:53:50.412Z",
+  "responsetime": "2019-06-13T08:22:54.362Z",
   "metadata": null,
   "response": {
     "templates": [
@@ -46,5 +46,5 @@
       }
     ]
   },
-  "errors": []
+  "errors": null
 }

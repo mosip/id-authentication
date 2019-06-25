@@ -29,6 +29,7 @@ import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.idvalidator.rid.constant.RidExceptionProperty;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.decryptor.Decryptor;
@@ -96,6 +97,9 @@ public class SyncRegistrationServiceTest {
 
 	@Mock
 	Environment env;
+	
+	@Mock
+	LogDescription description;
 
 	/**
 	 * Setup.
@@ -114,7 +118,8 @@ public class SyncRegistrationServiceTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
 		entities = new ArrayList<>();
-
+		Mockito.doNothing().when(description).setMessage(any());
+		
 		syncRegistrationDto = new SyncRegistrationDto();
 
 		syncRegistrationDto.setRegistrationId("27847657360002520181208183052");

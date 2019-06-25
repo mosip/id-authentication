@@ -61,7 +61,7 @@ public abstract class DocumentScannerService implements IMosipDocumentScannerSer
 	 * @param bufferedImage
 	 *            - holds the scanned image from the scanner
 	 * @return byte[] - scanned document Content
-	 * @throws IOException - holds the ioexcepion
+	 * @throws IOException - holds the IOExcepion
 	 */
 	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
 		byte[] imageInByte;

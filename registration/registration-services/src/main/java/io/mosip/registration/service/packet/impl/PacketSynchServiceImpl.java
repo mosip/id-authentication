@@ -288,14 +288,23 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		return packetSync(packetsToBeSynched);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.service.sync.PacketSynchService#syncAllPackets()
 	 */
 	@Override
 	public void syncAllPackets() throws RegBaseCheckedException {
-		List<PacketStatusDTO> packetsToBeSynched = fetchPacketsToBeSynched();
-		packetSync(packetsToBeSynched);
-
+		List<PacketStatusDTO> idsToBeSynched = new ArrayList<>();
+		List<Registration> packetsToBeSynched = syncRegistrationDAO.fetchPacketsToUpload(
+				RegistrationConstants.PACKET_STATUS_UPLOAD, RegistrationConstants.SERVER_STATUS_RESEND);
+		if (null != packetsToBeSynched && !packetsToBeSynched.isEmpty()) {
+			for (Registration registration : packetsToBeSynched) {
+				idsToBeSynched.add(packetStatusDtoPreperation(registration));
+			}
+		}
+		if (!idsToBeSynched.isEmpty())
+			packetSync(idsToBeSynched);
 	}
 
 	/*

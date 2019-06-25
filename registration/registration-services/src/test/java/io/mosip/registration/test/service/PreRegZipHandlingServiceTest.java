@@ -112,17 +112,6 @@ public class PreRegZipHandlingServiceTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void extractPreRegZipFileTestFail() throws Exception {
-		doThrow(new RegBaseCheckedException("errorCode", "errorMessage")).when(idObjectValidator)
-				.validateIdObject(Mockito.any(), Mockito.any());
-		Mockito.when(documentTypeDAO.getDocTypeByName(Mockito.anyString())).thenReturn(new ArrayList<>());
-
-		RegistrationDTO registrationDTO = preRegZipHandlingServiceImpl.extractPreRegZipFile(preRegPacket);
-
-		assertNotNull(registrationDTO);
-	}
-
-	@Test(expected = RegBaseCheckedException.class)
 	public void extractPreRegZipFileTestNegative() throws Exception {
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {

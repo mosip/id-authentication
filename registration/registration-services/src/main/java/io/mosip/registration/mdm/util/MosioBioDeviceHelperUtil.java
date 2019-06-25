@@ -2,6 +2,12 @@ package io.mosip.registration.mdm.util;
 
 import java.util.Collection;
 
+/**
+ * 
+ * This is the helper class for the MosiopBioDeviceManager
+ * @author Balamurugan
+ *
+ */
 public class MosioBioDeviceHelperUtil {
 
 	/**

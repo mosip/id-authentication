@@ -10,7 +10,7 @@ package io.mosip.registration.dao;
 public interface ScreenAuthorizationDetails {
 	
 	/**
-	 * To fetch only selected columns from Embeddable
+	 * To fetch only selected columns from ScreenAuthorization table
 	 *
 	 * @return {@link ScreenAuthorization}
 	 */
