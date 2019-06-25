@@ -35,6 +35,29 @@
       register: scm_config_branch
       when: scm_branch is not defined
 
+    - name: Generate ssh key for SCM Provider
+      command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+      args:
+        creates: ~/.ssh/id_rsa
+
+    - name: Getting private ssh key for SCM Provider
+      command: cat ~/.ssh/id_rsa
+      register: output_ssh_private_key_generate
+      
+    - name: Printing Private SSH Key
+      debug: 
+        msg: "{{ output_ssh_private_key_generate | json_query('stdout')  }}"
+
+    - name: Getting public ssh key for SCM
+      command: cat ~/.ssh/id_rsa.pub
+      register: output_ssh_public_key_generate
+      
+    - name: Printing Public SSH Key
+      debug: 
+        msg: "\nAdd this SSH Key to your SCM Provider Account- \n\n{{ output_ssh_public_key_generate | json_query('stdout')  }}"
+    - pause:
+        prompt: "Make sure you have pasted the public key to your SCM provider account! Press return to continue."
+        
     - pause:
         prompt: "Enter Docker registry url, to connect keymanager vms/ dmz vms to registry"
       register: docker_registry_address
@@ -66,6 +89,7 @@
 
 
   tasks:
+
 
     - name: Make application name persistant
       set_fact:
