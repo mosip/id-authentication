@@ -58,6 +58,19 @@
     - pause:
         prompt: "Make sure you have pasted the public key to your SCM provider account! Press return to continue."
 
+    - name: Creating knownhost file
+      file:
+        path:  ~/.ssh/known_hosts
+        state: touch
+
+    - name: Adding git providers to known hosts
+      run_once: true
+      shell: |
+        # If you are using SCM providers other than github, gitlab and bitbucket, add them here
+        ssh-keyscan -H  'github.com' >> ~/.ssh/known_hosts
+        ssh-keyscan -H  'gitlab.com' >> ~/.ssh/known_hosts
+        ssh-keyscan -H  'bitbucket.org' >> ~/.ssh/known_hosts
+
     - pause:
         prompt: "Enter Docker registry url, to connect keymanager vms/ dmz vms to registry"
       register: docker_registry_address
