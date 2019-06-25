@@ -46,9 +46,7 @@ After installation of Ansible on RHEL based system,  clone this project and navi
 
 **RUN THE SCRIPTS USING ROOT USER**
 
-5. Run `ansible-playbook ansible-playbooks/setup-workstation.yml` to make host machine ready for further process. This step will install __Terraform__, __GIT__, __Kubectl__,  __pip__,  __pipmodules__ and __helm__
-
-6. Once the above changes are done, run `ansible-playbook ansible-playbooks/complete-setup.yml`. This will create and configure the entire setup for you, including devops and deployments box.
+5. Once the above changes are done, run `ansible-playbook ansible-playbooks/complete-setup.yml`. This will create and configure the entire setup for you, including devops and deployments box.
 
 **IMPORTANT NOTE**
 If you want to setup the entire script again for some other setup, please clone a fresh copy of files from github, because the scripts will detect that you want to change previous configuration and will start deleting previously created and configured infrastructure.
