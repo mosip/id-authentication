@@ -1,9 +1,0 @@
-{
-  "id": "mosip.id.create",
-  "response": {
-    "entity": "$IGNORE$",
-    "status": "ACTIVATED"
-  },
-  "responsetime": "$IGNORE$",
-  "version": "v1"
-}

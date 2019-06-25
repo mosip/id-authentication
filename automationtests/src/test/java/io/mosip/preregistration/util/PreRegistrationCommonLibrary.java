@@ -15,7 +15,7 @@ public class PreRegistrationCommonLibrary extends BaseTestCase
 	
 	public Response postRequest(String url, Object body, String contentHeader, String acceptHeader) {
 
-		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", individualToken);
 
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().body(body)
 				.contentType(contentHeader).accept(acceptHeader).log().all().when().post(url).then().log().all()
@@ -39,7 +39,7 @@ public class PreRegistrationCommonLibrary extends BaseTestCase
 		 * Fetch to get the param name to be passed in the request
 		 */
 
-		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", individualToken);
 		String Notification_request = preregUtil.fetchPreregProp().get("req.notify");
 		getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart("attachment", file)
 				.formParam(Notification_request, body).formParam(langCodeKey, value).contentType(contentHeader).expect()
@@ -53,7 +53,7 @@ public class PreRegistrationCommonLibrary extends BaseTestCase
 	
 	/*public Response post_RequestWithoutBody(String url, String contentHeader, String acceptHeader) {
 
-		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", individualToken);
 
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().contentType(contentHeader)
 				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
@@ -65,7 +65,7 @@ public class PreRegistrationCommonLibrary extends BaseTestCase
 	public Response getRequestWithoutParm(String url) {
 		logger.info("REST-ASSURED: Sending a GET request to " + url);
 
-		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", individualToken);
 		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().log().all().when().get(url)
 				.then().log().all().extract().response();
 		// log then response
@@ -85,7 +85,7 @@ public class PreRegistrationCommonLibrary extends BaseTestCase
 		 * Fetch to get the param name to be passed in the request
 		 */
 
-		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", individualToken);
 		String Notification_request = preregUtil.fetchPreregProp().get("req.notify");
 		logger.info("REST:ASSURED: The responsNotification_request:" + Notification_request);
 		getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart("attachment", file)

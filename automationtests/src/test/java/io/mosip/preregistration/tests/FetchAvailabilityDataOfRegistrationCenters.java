@@ -34,8 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
+import io.mosip.preregistration.util.BookingUtil;
 import io.mosip.preregistration.util.PreRegistrationUtil;
-import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -73,9 +73,11 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 	String requestKeyFile = "FetchAvailabilityDataOfRegcentersRequest.json";
 	CommonLibrary commonLibrary = new CommonLibrary();
 	String preReg_URI;
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
     PreRegistrationUtil preRegUtil=new PreRegistrationUtil();
+    BookingUtil bookingUtil = new BookingUtil();
+    
+    
 	// implement,IInvokedMethodListener
 	public FetchAvailabilityDataOfRegistrationCenters() {
 
@@ -121,23 +123,23 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 
-		if (testCaseName.contains("smoke")) {
-
-			Response fetchCenter = preRegLib.FetchCentre();
-			logger.info("Fetch Book App:" + fetchCenter.asString());
+		if (testCaseName.contains("smoke")) {			
+			Actualresponse = bookingUtil.FetchCentre("null",individualToken);
+			logger.info("Fetch Book App:" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
 			innerKeys.add("regCenterId");
 			innerKeys.add("centerDetails");
 			//Asserting actual and expected response
-			status = AssertResponses.assertResponses(fetchCenter, Expectedresponse, outerKeys, innerKeys);
+			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 
 		}
 
 		else {
 			String regCenterid = actualRequest.get("registrationCenterId").toString();
-			String preRegURI = preReg_URI + regCenterid;
-			Actualresponse = applicationLibrary.getRequestWithoutParm(preRegURI);
+			
+			Actualresponse = bookingUtil.FetchCentre(regCenterid,individualToken);
+			
 			logger.info("Fetch Book App:" + Actualresponse.asString());
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
@@ -178,7 +180,10 @@ public class FetchAvailabilityDataOfRegistrationCenters extends BaseTestCase imp
 		
 		preReg_URI = preRegUtil.fetchPreregProp().get("preReg_FetchCenterIDURI");
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		if(!preRegLib.isValidToken(individualToken))
+		{
+			individualToken=preRegLib.getToken();
+		}
 	}
 
 	/**

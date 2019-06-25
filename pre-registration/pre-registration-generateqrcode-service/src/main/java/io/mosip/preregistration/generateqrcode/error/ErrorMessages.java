@@ -21,7 +21,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_QRC_004
 	 */
-	INVALID_REQUESTTIME_FORMAT("Invalid request time formate");
+	INVALID_REQUESTTIME_FORMAT("Invalid request time format");
 	
 	private ErrorMessages(String code) {
 		this.code = code;

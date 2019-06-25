@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -255,7 +256,7 @@ public class BookingServiceTest {
 		statusDTOB.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> resp = new ArrayList<>();
-
+		mapper.setTimeZone(TimeZone.getDefault());
 		resp.add(statusDTOA);
 		resp.add(statusDTOB);
 		responseDto.setResponse(resp);

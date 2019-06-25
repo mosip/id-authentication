@@ -1,10 +1,1 @@
-{
-   "id": "mosip.pre-registration.notification.qrCode",
-   "version": "1.0",
-   "responsetime": "2019-04-21T13:34:36.737Z",
-   "response": null,
-   "errors": [   {
-      "errorCode": "PRG_PAM_CORE_003",
-      "message": "Request timestamp is invalid"
-   }]
-}
+{"id":"mosip.pre-registration.notification.notify","version":"1.0","responsetime":"2019-06-21T12:56:02.543Z","response":null,"errors":[{"errorCode":"PRG_PAM_ACK_013","message":"Invalid requesttime format"}]}

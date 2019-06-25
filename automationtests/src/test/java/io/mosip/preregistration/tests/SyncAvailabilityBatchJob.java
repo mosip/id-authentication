@@ -45,11 +45,11 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		lib.syncAvailability();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
+		Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
 		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre("10001");
-		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response documentResponse = lib.documentUpload(createResponse,individualToken);
+		Response avilibityResponse = lib.FetchCentre("10001", individualToken);
+		Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 		lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),
 				"Appointment booked successfully");
 		dao.makeregistartionCenterDeActive("10001");
@@ -69,11 +69,11 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 			Assert.assertTrue(false, "error while fetching availibility data for booking");
 		}
 
-		Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+		Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID,individualToken);
 		try {
 			lib.compareValues(appointmentDetailsResponse.jsonPath().get("errors[0].message").toString(),
 					"Booking data not found");
-			Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
+			Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID,individualToken);
 			lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString(),
 					"Pending_Appointment");
 			dao.makeregistartionCenterActive("10001");
@@ -93,18 +93,18 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 			lib.syncAvailability();
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = lib.createRequest(testSuite);
-			Response createResponse = lib.CreatePreReg(createPregRequest);
+			Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
 			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-			Response documentResponse = lib.documentUpload(createResponse);
-			Response avilibityResponse = lib.FetchCentre("10001");
-			Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+			Response documentResponse = lib.documentUpload(createResponse,individualToken);
+			Response avilibityResponse = lib.FetchCentre("10001",individualToken);
+			Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 			lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),"Appointment booked successfully");
 			dao.makeregistartionCenterDeActive("10001");
 			Response syncAvailabilityResponse = lib.syncAvailability();
 			lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-			Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID);
+			Response appointmentDetailsResponse = lib.FetchAppointmentDetails(preID,individualToken);
 			lib.compareValues(appointmentDetailsResponse.jsonPath().get("errors[0].message").toString(), "Booking data not found");
-			Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
+			Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID,individualToken);
 			lib.compareValues(getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString(), "Pending_Appointment");
 			dao.makeregistartionCenterActive("10001");
 			syncAvailabilityResponse = lib.syncAvailability();
@@ -119,16 +119,16 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 		try {
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = lib.createRequest(testSuite);
-			Response createResponse = lib.CreatePreReg(createPregRequest);
+			Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
 			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-			Response documentResponse = lib.documentUpload(createResponse);
-			Response avilibityResponse = lib.FetchCentre("10001");
-			Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID);
+			Response documentResponse = lib.documentUpload(createResponse,individualToken);
+			Response avilibityResponse = lib.FetchCentre("10001",individualToken);
+			Response bookingResponse = lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 			lib.compareValues(bookingResponse.jsonPath().get("response.bookingMessage").toString(),"Appointment booked successfully");
 			Date date = dao.MakeDayAsHoliday();
 			Response syncAvailabilityResponse = lib.syncAvailability();
 			lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
-			Response fetchAppointmentDetailsresponse = lib.FetchAppointmentDetails(preID);
+			Response fetchAppointmentDetailsresponse = lib.FetchAppointmentDetails(preID,individualToken);
 			dao.updateHoliday(date);
 			syncAvailabilityResponse = lib.syncAvailability();
 			lib.compareValues(syncAvailabilityResponse.jsonPath().get("response").toString(),"MASTER_DATA_SYNCED_SUCCESSFULLY");
@@ -156,7 +156,10 @@ public class SyncAvailabilityBatchJob extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void login( Method method)
 	{
-		authToken=lib.getToken();
+		if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
 		testCaseName="preReg_syncAvaibility_BatchJob_" + method.getName();
 	}
 
