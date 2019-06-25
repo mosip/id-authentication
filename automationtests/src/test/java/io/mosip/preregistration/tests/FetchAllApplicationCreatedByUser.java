@@ -65,10 +65,11 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
 
 	@Test
 	public void fetchAllAplicationCreatedByUser() {
+		String cookie = lib.getToken();
 		JSONObject actualRequest;
 		actualRequest = lib.createRequest("Create_PreRegistration/createPreRegistration_smoke");
-		Response createResponse = lib.CreatePreReg(actualRequest);
-		Actualresponse = lib.fetchAllPreRegistrationCreatedByUser();
+		Response createResponse = lib.CreatePreReg(actualRequest,cookie);
+		Actualresponse = lib.fetchAllPreRegistrationCreatedByUser(cookie);
 		String expectedResult = createResponse.jsonPath().get("response.preRegistrationId").toString();
 		String actualResult = Actualresponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString();
 		lib.compareValues(actualResult, expectedResult);
@@ -83,13 +84,13 @@ public class FetchAllApplicationCreatedByUser extends BaseTestCase implements IT
 		} catch (Exception ex) {
 			Reporter.log("ex" + ex.getMessage());
 		}
-		lib.logOut();
 	}
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method) {
 		testCaseName="preReg_BatchJob_" + method.getName();
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllApplicationCreatedByUserURI");
-		authToken = lib.getToken();
+	
+			
 	}
 
 	@Override

@@ -75,10 +75,10 @@ public class Translitration extends BaseTestCase implements ITest {
 		String fromLang="fra";
 		String from_value = "اسلمى";
 		translitrationRequest=lib.translitrationRequest(testSuite, toLang, from_value, fromLang);
-		Response translitrationResponse = lib.translitration(translitrationRequest);
+		Response translitrationResponse = lib.translitration(translitrationRequest,individualToken);
 		String to_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
 		translitrationRequest=lib.translitrationRequest(testSuite, fromLang, to_field_value,toLang );
-		translitrationResponse=lib.translitration(translitrationRequest);
+		translitrationResponse=lib.translitration(translitrationRequest,individualToken);
 		String expectedto_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
 		lib.compareValues(from_value, expectedto_field_value);
 	}
@@ -90,10 +90,10 @@ public class Translitration extends BaseTestCase implements ITest {
 		String toLang="ara";
 		String from_value = "assurance mensuelle";
 		translitrationRequest=lib.translitrationRequest(testSuite,fromLang, from_value, toLang);
-		Response translitrationResponse = lib.translitration(translitrationRequest);
+		Response translitrationResponse = lib.translitration(translitrationRequest,individualToken);
 		String to_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
 		translitrationRequest=lib.translitrationRequest(testSuite, toLang, to_field_value,fromLang );
-		translitrationResponse=lib.translitration(translitrationRequest);
+		translitrationResponse=lib.translitration(translitrationRequest,individualToken);
 		String expectedto_field_value = translitrationResponse.jsonPath().get("response.to_field_value").toString();
 		lib.compareValues(expectedto_field_value, from_value);
 	}
@@ -107,7 +107,10 @@ public class Translitration extends BaseTestCase implements ITest {
 	public void login( Method method)
 	{
 		testCaseName="preReg_Translitration_" + method.getName();
-		authToken=lib.getToken();
+		if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
 		
 	}	
 
@@ -121,7 +124,6 @@ public class Translitration extends BaseTestCase implements ITest {
 		} catch (Exception ex) {
 			Reporter.log("ex" + ex.getMessage());
 		}
-		lib.logOut();
 	}
 
 }

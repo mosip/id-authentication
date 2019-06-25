@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 
 import io.mosip.service.BaseTestCase;
 import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.CommonLibrary;
 import io.restassured.response.Response;
 
 public class ApplicationLibrary extends BaseTestCase {
@@ -129,6 +130,12 @@ public class ApplicationLibrary extends BaseTestCase {
 	// get congig properties
 	public Response getConfigProperties(String Resource_URI) {
 		return commonLibrary.getConfigProperties(Resource_URI);
+	}
+	public Response deleteWithoutParams(String endpoint, String cookie) {
+		return commonLibrary.deleteWithoutParams(ApplnURI + endpoint, cookie);
+	}
+	public Response putFileAndJson(String Resource_Uri,Object body,File file,String cookie) {
+		return commonLibrary.Post_JSONwithFile(body, file, ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA,cookie);
 	}
 	
 }

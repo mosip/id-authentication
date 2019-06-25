@@ -3,6 +3,7 @@ package io.mosip.kernel.util;
 import static io.restassured.RestAssured.given;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -101,7 +102,6 @@ public class CommonLibrary extends BaseTestCase {
 
 		/*final File jarFile = new File(
 				TestNgApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-
 		if (jarFile.isFile()) { // Run with JAR file
 			JarFile jar = null;
 			try {
@@ -887,4 +887,38 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
 		return getResponse;
 	}
+	
+	/**
+	 * @param url
+	 * @param pathParams
+	 * @param cookie
+	 * @return this method is for delete request with authorization(cookie)
+	 */
+	public Response deleteWithoutParams(String url, String cookie) {
+		logger.info("REST-ASSURED: Sending a DELETE request to   " + url);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().log()
+				.all().when().delete(url).then().log().all().extract().response();
+		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
+		return getResponse;
+	}
+	
+	public Response Post_JSONwithFile(Object body, File file, String url, String contentHeader,String cookie) {
+		Response getResponse = null;
+		/*
+		 * Fetch to get the param name to be passed in the request
+		 */
+
+		String Document_request = readProperty("IDRepo").get("req.Documentrequest");
+
+		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
+		getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart("file", file)
+				.formParam(Document_request, body).contentType(contentHeader).expect().when().post(url);
+		logger.info("REST:ASSURED: The response from request is:" + getResponse.asString());
+		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
+		return getResponse;
+	}
+	
+	
 }

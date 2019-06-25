@@ -38,7 +38,7 @@ import com.google.common.base.Verify;
 
 import io.mosip.dbHealthcheck.DBHealthCheck;
 import io.mosip.dbaccess.PreRegDbread;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertPreReg;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -49,10 +49,9 @@ import io.mosip.util.ReadFolder;
 import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
-
 /**
-* @author Ashish Rastogi
-*/
+ * @author Ashish Rastogi
+ */
 public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	public String preId = "";
 	public SoftAssert softAssert = new SoftAssert();
@@ -64,8 +63,8 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	public Response Actualresponse = null;
 	public JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	private static String preReg_URI ;
+	ApplicationLibrary appLib = new ApplicationLibrary();
+	private static String preReg_URI;
 	public String dest = "";
 	public String configPaths = "";
 	public String folderPath = "preReg/Fetch_the_status_of_a_application";
@@ -76,10 +75,11 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	FetchTheStatusOfApplication() {
 		super();
 	}
+
 	private static CommonLibrary commonLibrary = new CommonLibrary();
-	
+
 	static PreRegistrationLibrary preLab = new PreRegistrationLibrary();
-	
+
 	/**
 	 * Data Prividers to read the input json files from the folders
 	 * 
@@ -119,16 +119,14 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
-			Response createPreRegResponse = preLab.CreatePreReg();
-			String preRegistrationId = (createPreRegResponse.jsonPath().get("response.preRegistrationId"))
-					.toString();
-			Actualresponse = preLab.getPreRegistrationStatus(preRegistrationId);
-				preId = (Actualresponse.jsonPath().get("response.preRegistartionId")).toString();
-				if(preId.equals(Actualresponse.jsonPath().get("response.preRegistartionId").toString()) )
-			status = true;
-		}
-		else {
-			Actualresponse = applicationLibrary.getRequestParm(preReg_URI,actualRequest);
+			Response createPreRegResponse = preLab.CreatePreReg(individualToken);
+			String preRegistrationId = (createPreRegResponse.jsonPath().get("response.preRegistrationId")).toString();
+			Actualresponse = preLab.getPreRegistrationStatus(preRegistrationId, individualToken);
+			preId = (Actualresponse.jsonPath().get("response.preRegistartionId")).toString();
+			if (preId.equals(Actualresponse.jsonPath().get("response.preRegistartionId").toString()))
+				status = true;
+		} else {
+			Actualresponse = appLib.getWithPathParam(preReg_URI, actualRequest, individualToken);
 
 			outerKeys.add("responsetime");
 			outerKeys.add("timestamp");
@@ -160,13 +158,13 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 	 */
 	@AfterClass
 	public void updateOutput() throws IOException {
-		String configPath =  "src/test/resources/preReg/Create_PreRegistration/Create_PreRegistrationOutput.json";
+		String configPath = "src/test/resources/preReg/Create_PreRegistration/Create_PreRegistrationOutput.json";
 		try (FileWriter file = new FileWriter(configPath)) {
 			file.write(arr.toString());
 			logger.info(
 					"Successfully updated Results to Create_PreRegistrationOutput.json file.......................!!");
 		}
-		//CommonLibrary.backUpFiles(configPaths, dest);
+		// CommonLibrary.backUpFiles(configPaths, dest);
 	}
 
 	@AfterMethod(alwaysRun = true)
@@ -178,20 +176,22 @@ public class FetchTheStatusOfApplication extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			f.set(baseTestMethod,"Pre Reg_Demographic_"+ FetchTheStatusOfApplication.testCaseName);
+			f.set(baseTestMethod, "Pre Reg_Demographic_" + FetchTheStatusOfApplication.testCaseName);
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		lib.logOut();
+
 	}
 
 	@BeforeMethod(alwaysRun = true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
-		
-         preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchStatusOfApplicationURI");
-         authToken = lib.getToken();
+
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchStatusOfApplicationURI");
+		if (!lib.isValidToken(individualToken)) {
+			individualToken = lib.getToken();
+		}
 	}
 
 	@Override
