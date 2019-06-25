@@ -12,7 +12,7 @@
 	</listeners>
 
 		
-		 	  <test name="Kernel Tests">
+	<!--	 	  <test name="Kernel Tests">
 						 <classes>
 						   <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -100,12 +100,12 @@
                      <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
                      <class name="io.mosip.preregistration.tests.SendOtp" />
                      <class name="io.mosip.preregistration.tests.Translitration" />
-                     <!-- <class name="io.mosip.preregistration.tests.TriggerNotification" />  -->
+                      <class name="io.mosip.preregistration.tests.TriggerNotification" />  
                      <class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
                      <class name="io.mosip.preregistration.tests.ValidateOtp" />  
               </classes>
 
-		</test>   
+		</test>   -->
 
 	 <test name="AuthenticationTest">
 		<classes>
@@ -129,14 +129,14 @@
 		</classes>
 	</test>    
 
- 	  <test name="RegistrationProcessor Tests">
+ 	<!--  <test name="RegistrationProcessor Tests">
 		<classes>
 
 		   <class name="io.mosip.registrationProcessor.tests.SecurityTests" />
                     <class name="io.mosip.registrationProcessor.tests.Sync" />
                     <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
                   <class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
-                   <!--   <class name="io.mosip.registrationProcessor.tests.StageValidationTests" /> -->
+                      <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
                     <class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
                     <class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
                     <class name="io.mosip.registrationProcessor.tests.Assignment" />
@@ -148,7 +148,7 @@
 
 
 		</classes>
-	</test>    
+	</test>    -->
 
 
 
