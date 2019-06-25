@@ -80,7 +80,7 @@
       ></iframe>
 
       <img
-        *ngIf="fileExtension == 'jpg' || 'jpeg'"
+        *ngIf="fileExtension == 'jpg' || fileExtension == 'jpeg'"
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/jpeg;Base64,"
