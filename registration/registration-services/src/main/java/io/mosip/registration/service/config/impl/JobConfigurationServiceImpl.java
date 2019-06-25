@@ -714,15 +714,18 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 						? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
 						: RegistrationConstants.JOB_TRIGGER_POINT_USER;
 
-				// Execute Job
-				ResponseDTO jobResponse = executeJob(syncJob.getKey(), triggerPoint);
+				executeJob(syncJob.getKey(), triggerPoint);
 
-				if (jobResponse.getErrorResponseDTOs() != null) {
-					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
-				} 
 			}
 		}
-		
+
+		/* Child Job's check */
+		BaseJob.getCompletedJobMap().forEach((jobId, status) -> {
+			if (!status.equalsIgnoreCase(RegistrationConstants.JOB_EXECUTION_SUCCESS)) {
+				failureJobs.add(syncActiveJobMap.get(jobId).getName());
+			}
+		});
+
 		if (!isEmpty(failureJobs)) {
 			setErrorResponse(responseDTO, failureJobs.toString().replace("[", "").replace("]", ""), null);
 		}
