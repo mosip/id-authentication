@@ -12,7 +12,7 @@
 	</listeners>
 
 		
-	<!--	 	  <test name="Kernel Tests">
+		 	  <test name="Kernel Tests">
 						 <classes>
 						   <class name="io.mosip.kernel.tests.AuditLog" />   
                            <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
@@ -68,13 +68,13 @@
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                            <class name="io.mosip.kernel.tests.ValidateLocationByName" />   
                  </classes>
-				</test>  -->
+				</test> 
 
  		   <test name="PreReg Tests">
 		<classes>
 			 <class name="io.mosip.preregistration.tests.TriggerNotification" />  
 
-	<!--	    <class name="io.mosip.preregistration.tests.BatchJob" />
+		    <class name="io.mosip.preregistration.tests.BatchJob" />
                      <class name="io.mosip.preregistration.tests.Audit" />
                      <class name="io.mosip.preregistration.tests.BookingAppointment" />
                      <class name="io.mosip.preregistration.tests.CancelAnBookedAppointment" />
@@ -101,14 +101,14 @@
                      <class name="io.mosip.preregistration.tests.RetrivePreRegistration" />
                      <class name="io.mosip.preregistration.tests.SendOtp" />
                      <class name="io.mosip.preregistration.tests.Translitration" />
-                      <class name="io.mosip.preregistration.tests.TriggerNotification" />  
+                  <!--    <class name="io.mosip.preregistration.tests.TriggerNotification" />  -->
                      <class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
-                     <class name="io.mosip.preregistration.tests.ValidateOtp" />   -->
+                     <class name="io.mosip.preregistration.tests.ValidateOtp" />   
               </classes>
 
 		</test>  
 
-	<!-- <test name="AuthenticationTest">
+	 <test name="AuthenticationTest">
 		<classes>
 		<class name="io.mosip.authentication.tests.OtpGeneration" />
 	 	   	<class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" />
@@ -124,9 +124,9 @@
 		   <class name="io.mosip.authentication.tests.EkycWithBiometricAuthentication" />	
 			<class name="io.mosip.authentication.tests.EkycWithOtpAuthentication" />  	
 		    <class name="io.mosip.authentication.tests.EkycPartnerAuthentication" />
-			<class name="io.mosip.authentication.idRepository.tests.AddIdentity" />
+		<!--	<class name="io.mosip.authentication.idRepository.tests.AddIdentity" />
 			<class name="io.mosip.authentication.idRepository.tests.CreateVid" />
-			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />  
+			<class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />  -->
 		</classes>
 	</test>    
 
@@ -137,7 +137,7 @@
                     <class name="io.mosip.registrationProcessor.tests.Sync" />
                     <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
                   <class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
-                      <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
+                <!--      <class name="io.mosip.registrationProcessor.tests.StageValidationTests" /> -->
                     <class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
                     <class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
                     <class name="io.mosip.registrationProcessor.tests.Assignment" />
@@ -149,7 +149,7 @@
 
 
 		</classes>
-	</test>    -->
+	</test>    
 
 
 
