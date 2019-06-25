@@ -20,6 +20,8 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { LogService } from 'src/app/shared/logger/log.service';
+import LanguageFactory from 'src/assets/i18n';
+// import { ErrorService } from 'src/app/shared/error/error.service';
 
 /**
  * @description This is the dashbaord component which displays all the users linked to the login id
@@ -79,7 +81,8 @@ export class DashBoardComponent implements OnInit {
     private translate: TranslateService,
     private configService: ConfigService,
     private loggerService: LogService
-  ) {
+  ) // private errorService: ErrorService
+  {
     this.translate.use(this.primaryLangCode);
     localStorage.setItem('modifyDocument', 'false');
   }
@@ -102,9 +105,12 @@ export class DashBoardComponent implements OnInit {
       this.autoLogout.continueWatching();
     }
 
-    this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
-      if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
-    });
+    // this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
+    //   if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
+    // });
+    let factory = new LanguageFactory(this.primaryLangCode);
+    let response = factory.getCurrentlanguage();
+    this.secondaryLanguagelabels = response['dashboard'].discard;
     this.regService.setSameAs('');
   }
 
@@ -162,7 +168,8 @@ export class DashBoardComponent implements OnInit {
           this.onError();
         }
       },
-      () => {
+      error => {
+        this.loggerService.error('dashboard', error);
         this.onError();
         this.isFetched = true;
       },
@@ -615,12 +622,15 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private getErrorLabels() {
-    return new Promise(resolve => {
-      this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
-        this.errorLanguagelabels = response['error'];
-        resolve(true);
-      });
-    });
+    // return new Promise(resolve => {
+    //   this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
+    //     this.errorLanguagelabels = response['error'];
+    //     resolve(true);
+    //   });
+    // });
+    let factory = new LanguageFactory(this.primaryLangCode);
+    let response = factory.getCurrentlanguage();
+    this.errorLanguagelabels = response['error'];
   }
 
   /**
@@ -630,12 +640,14 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private async onError(error?: any) {
-    // if invalid token hten message = "invlaid something" else message = "regular message"
     await this.getErrorLabels();
     let message = this.errorLanguagelabels.error;
+    // this.titleOnError = this.errorLanguagelabels.errorLabel;
+    // this.errorService.onError(this.titleOnError, message, error, this.errorLanguagelabels);
     this.titleOnError = this.errorLanguagelabels.errorLabel;
     if (
-      error && error[appConstants.ERROR] &&
+      error &&
+      error[appConstants.ERROR] &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorLanguagelabels.tokenExpiredLogout;
