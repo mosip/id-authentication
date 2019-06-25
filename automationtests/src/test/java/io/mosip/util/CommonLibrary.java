@@ -492,7 +492,7 @@ public class CommonLibrary extends BaseTestCase {
 		String regClientAdminAuthToken = lib.regClientAdminToken();
 		Cookie.Builder builder = new Cookie.Builder("Authorization", regClientAdminAuthToken);
 		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(valueMap).log()
-				.all().when().get(url).then().log().all().extract().response();
+				.all().when().get(url);
 		// log then response
 		logger.info("REST-ASSURED: The response from the request is: " + getResponse.asString());
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
@@ -648,7 +648,7 @@ public class CommonLibrary extends BaseTestCase {
 
 		Cookie.Builder builder = new Cookie.Builder("Authorization", authToken);
 		getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(parm).multiPart("file", file)
-				.formParam(Document_request, body).contentType(contentHeader).expect().when().post(url);
+				.formParam(Document_request, body).contentType(contentHeader).expect().when().post(url).then().log().all().extract().response();
 		logger.info("REST:ASSURED: The response from request is:" + getResponse.asString());
 		logger.info("REST-ASSURED: the response time is: " + getResponse.time());
 		return getResponse;
@@ -962,4 +962,5 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("REST-ASSURED: The response Time is: " + postResponse.time());
 		return postResponse;
 	}
+
 }

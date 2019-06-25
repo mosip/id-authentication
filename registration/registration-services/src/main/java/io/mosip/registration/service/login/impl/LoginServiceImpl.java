@@ -49,7 +49,7 @@ import io.mosip.registration.service.sync.PublicKeySync;
 import io.mosip.registration.service.sync.TPMPublicKeySyncService;
 
 /**
- * Class for implementing login service
+ * Implementation for {@link LoginService}
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -113,10 +113,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	@Autowired
 	private TPMPublicKeySyncService tpmPublicKeySyncService;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.service.login.LoginService#getModesOfLogin()
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getModesOfLogin(java.lang.String, java.util.Set)
 	 */
 	@Override
 	public List<String> getModesOfLogin(String authType, Set<String> roleList) {
@@ -131,12 +130,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return appAuthenticationDAO.getModesOfLogin(authType, roleList);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mosip.registration.service.login.LoginService#getUserDetail(java.lang.
-	 * String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getUserDetail(java.lang.String)
 	 */
 	@Override
 	public UserDTO getUserDetail(String userId) {
@@ -152,11 +148,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return MAPPER_FACADE.map(userDetail, UserDTO.class);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.service.login.LoginService#
-	 * getRegistrationCenterDetails(java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getRegistrationCenterDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId, String langCode) {
@@ -171,11 +165,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId, langCode);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.service.login.LoginService#
-	 * getScreenAuthorizationDetails(java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#getScreenAuthorizationDetails(java.util.List)
 	 */
 	@Override
 	public AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode) {
@@ -190,11 +182,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return screenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
-	 * registration.dto.UserDTO)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#updateLoginParams(io.mosip.registration.dto.UserDTO)
 	 */
 	public void updateLoginParams(UserDTO userDTO) {
 
@@ -215,9 +205,8 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	
+	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.login.LoginService#initialSync()
 	 */
 	@Override
@@ -243,6 +232,26 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			}
 		}
 
+		performingAllSyncOperations(val, keyIndex, isInitialSetUp);
+
+		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID, "completed Initial sync");
+
+		return val;
+
+	}
+
+
+	/**
+	 * Performing all sync operations.
+	 *
+	 * @param val 
+	 * 				the List of values
+	 * @param keyIndex 
+	 * 				the key index
+	 * @param isInitialSetUp 
+	 * 				the isInitialSetUp flag
+	 */
+	private void performingAllSyncOperations(List<String> val, String keyIndex, final boolean isInitialSetUp) {
 		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
 				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		ResponseDTO responseDTO = globalParamService.synchConfigData(false);
@@ -272,19 +281,11 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		} else {
 			val.add(RegistrationConstants.SUCCESS);
 		}
-
-		LOGGER.info("REGISTRATION  - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID, "completed Initial sync");
-
-		return val;
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.service.LoginService#validateInvalidLogin(io.mosip.
-	 * registration.dto.UserDTO,java.lang.String,integer,integer)
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#validateInvalidLogin(io.mosip.registration.dto.UserDTO, java.lang.String, int, int)
 	 */
 	public String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount,
 			int invalidLoginTime) {
@@ -347,18 +348,16 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		}
 	}
 
-	/**
-	 * Validating user
-	 * 
-	 * @param userId
-	 *            userid
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.login.LoginService#validateUser(java.lang.String)
 	 */
 	public ResponseDTO validateUser(String userId) {
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		UserDTO userDTO = getUserDetail(userId);
 		if (userDTO == null) {
-			setErrorResponse(responseDTO, RegistrationConstants.USER_MACHINE_VALIDATION_MSG, null);
+			setErrorResponse(responseDTO, RegistrationConstants.USER_NAME_VALIDATION, null);
 		} else {
 			Map<String, String> centerAndMachineId = userOnboardService.getMachineCenterId();
 

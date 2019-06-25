@@ -96,10 +96,11 @@ public class PinAuthServiceImpl implements PinAuthService {
 
 	/**
 	 * getSPin method used to fetch the SPIN value of the individual's from the
-	 * database
+	 * database.
 	 *
 	 * @param uinValue the uin value
 	 * @param authReq  the match type
+	 * @param partnerId the partner id
 	 * @return the s pin
 	 */
 	public Map<String, String> getSPin(String uinValue, AuthRequestDTO authReq, String partnerId) {

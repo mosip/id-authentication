@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -68,7 +69,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	CommonLibrary commonLibrary = new CommonLibrary();
 	static String preReg_URI;
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+ApplicationLibrary appLib=new ApplicationLibrary();
 	Object[][] readFolder = null;
 	String testParam = null;
 
@@ -114,28 +115,33 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
-		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
+		preId = preRegLib.getPreId(createApplicationResponse);
 
 		
 			Response fetchCenter = null;
 
 			/* Fetch availability[or]center details */
 
-			fetchCenter = preRegLib.FetchCentre();
+			fetchCenter = preRegLib.FetchCentre(individualToken);
 			/* Book An Appointment for the available data */
-			Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString());
+			try {
+				Response bookAppointmentResponse = preRegLib.BookAppointment(fetchCenter, preId.toString(),individualToken);
+			} catch (NullPointerException e) {
+				Assert.assertTrue(false, "Exception while booking appointment"+e.getCause());
+			}
+			
 
 			if (testCaseName.contains("smoke")) {
 			
 			/* Cancel an Re-booked Appointment */
 			if (testCaseName.contains("CancelAnReBookedAppointment")) {
-				fetchCenter = preRegLib.FetchCentre();
-				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString());
+				fetchCenter = preRegLib.FetchCentre(individualToken);
+				Response rebookAppointmentRes = preRegLib.BookAppointment(fetchCenter, preId.toString(),individualToken);
 			}
 
 			/* Cancel Booked Appointment Details */
-			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId);
+			Response CancelBookingApp = preRegLib.CancelBookingAppointment(preId,individualToken);
 			logger.info("CancelBookingApp::" + CancelBookingApp.asString());
 			List<? extends Object> val = preRegLib.preregFetchPreregDetails(preId);
 			logger.info("Vall" + val);
@@ -168,7 +174,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 			}
             logger.info("Pre Reg URI::"+preReg_URI);
 			preRegURI = preReg_URI + preId;
-			Actualresponse = applicationLibrary.putRequest_WithoutBody(preRegURI);
+			Actualresponse = appLib.putWithoutData(preRegURI,individualToken);
             logger.info("Test Case name:"+testCaseName+"Actual res:"+Actualresponse.asString());
 			// outer and inner keys which are dynamic in the actual response
 			outerKeys.add("responsetime");
@@ -212,7 +218,10 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CancelAppointmentURI");
 		// Fetch the generated Authorization Token by using following Kernel
 		// AuthManager APIs
-		authToken = preRegLib.getToken();
+		if(!preRegLib.isValidToken(individualToken))
+		{
+			individualToken=preRegLib.getToken();
+		}
 	}
 
 	/**
@@ -255,8 +264,7 @@ public class CancelAnBookedAppointment extends BaseTestCase implements ITest {
 		}
 
 		// Add generated PreRegistrationId to list to be Deleted from DB
-		// AfterSuite
-		preIds.add(preId);
+		
 	}
 
 	@Override

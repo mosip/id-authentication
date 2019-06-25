@@ -5,8 +5,8 @@
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_DATA_SYNC_010",
-            "message": "requested date is invalid"
+            "errorCode": "PRG_CORE_REQ_019",
+            "message": "Invalid date time format"
         }
     ]
 }

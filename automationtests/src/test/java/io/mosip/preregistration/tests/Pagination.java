@@ -40,6 +40,7 @@ import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
+import io.mosip.util.Cookie;
 import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
 
@@ -59,32 +60,121 @@ public class Pagination extends BaseTestCase implements ITest {
 	protected static String testCaseName = "";
 	public String folder = "preReg";
 	public ApplicationLibrary applnLib = new ApplicationLibrary();
-	public PreregistrationDAO dao=new PreregistrationDAO();
+	public PreregistrationDAO dao = new PreregistrationDAO();
+	String cookie=null;
 
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		authToken = lib.getToken();
 	}
+
 	/**
-	 * Batch job service for expired application
+	 * 
+	 *  Script for pagination service
+	 *  Here we need to pass page index it will return number of application are there in that page
+	 *  page index is start from 0.
 	 */
 	@Test
-	public void pagination_Smoke()
+	public void pagination_Smoke() {
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse,cookie);
+		Response avilibityResponse = lib.FetchCentre(cookie);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID,cookie);
+		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID,cookie);
+		Response paginationResponse = lib.pagination("0",cookie);
+		try {
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(), preID);
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].bookingMetadata").toString(), fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].demographicMetadata.proofOfAddress.documentId").toString(), documentResponse.jsonPath().get("response.docId").toString());
+		} catch (NullPointerException e) {
+			Assert.fail("Exception occured while fetching data from pagination response");		}
+
+	}
+	@Test
+	public void pagination_invalidIndex()
 	{
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
+		Response paginationResponse = lib.pagination("abc",cookie);
+		String errorCode = lib.getErrorCode(paginationResponse);
+		String errorMessage = lib.getErrorMessage(paginationResponse);
+		lib.compareValues(errorCode, "PRG_PAM_APP_019");
+		lib.compareValues(errorMessage, "Invalid page index value");
+	}
+	@Test
+	public void pagination_withoutPageIndexValue()
+	{
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse,cookie);
+		Response avilibityResponse = lib.FetchCentre(cookie);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID,cookie);
+		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID,cookie);
+		Response paginationResponse = lib.pagination("",cookie);
+		try {
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].preRegistrationId").toString(), preID);
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].bookingMetadata").toString(), fetchAppointmentDetailsResponse.jsonPath().get("response").toString());
+			lib.compareValues(paginationResponse.jsonPath().get("response.basicDetails[0].demographicMetadata.proofOfAddress.documentId").toString(), documentResponse.jsonPath().get("response.docId").toString());
+		} catch (NullPointerException e) {
+			Assert.fail("Exception occured while fetching data from pagination response");
+		}
+	}
+	@Test
+	public void pagination_withNullValue()
+	{
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
+		Response paginationResponse = lib.pagination("null",cookie);
+		String errorCode = lib.getErrorCode(paginationResponse);
+		String errorMessage = lib.getErrorMessage(paginationResponse);
+		lib.compareValues(errorCode, "PRG_PAM_APP_019");
+		lib.compareValues(errorMessage, "Invalid page index value");
+	}
+	@Test
+	public void pagination_noRecordPresentForThatPageRange()
+	{
+		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+		JSONObject createPregRequest = lib.createRequest(testSuite);
+		Response createResponse = lib.CreatePreReg(createPregRequest,cookie);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse,cookie);
+		Response avilibityResponse = lib.FetchCentre(cookie);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID,cookie);
+		Response fetchAppointmentDetailsResponse = lib.FetchAppointmentDetails(preID,cookie);
+		Response paginationResponse = lib.pagination("10",cookie);
+		String errorCode = lib.getErrorCode(paginationResponse);
+		String errorMessage = lib.getErrorMessage(paginationResponse);
+		lib.compareValues(errorCode, "PRG_PAM_APP_016");
+		lib.compareValues(errorMessage, "no record found for the requested page index");
 		
 	}
 
-	
+	@Test
+	public void pagination_noApplicationCreatedForThatUser()
+	{
+		Response paginationResponse = lib.pagination("0",cookie);
+		String errorCode = lib.getErrorCode(paginationResponse);
+		String errorMessage = lib.getErrorMessage(paginationResponse);
+		lib.compareValues(errorCode, "PRG_PAM_APP_005");
+		lib.compareValues(errorMessage, "No record found for the requested user id");
+	}
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 
 	}
-	@BeforeMethod(alwaysRun=true)
-	public void run()
-	{
-		
+
+	@BeforeMethod(alwaysRun = true)
+	public void run() {
+		cookie = lib.getToken();
 	}
 
 	@AfterMethod

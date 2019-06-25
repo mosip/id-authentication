@@ -12,4 +12,4 @@ ADJ_J00012,Audit Log Deletion Job,deleteAuditLogsJob,NULL,0 0 11 * * ?,NULL,eng,
 RSJ_J00014,Registration Packet Sync,registrationPacketSyncJob,NULL,0 0 11 * * ?,NULL,eng,TRUE,M1046559,now(),System,now(),FALSE,now()
 PVS_J00015,Registration Packet Virus Scan,registrationPacketVirusScanJob,NULL,0 0 11 * * ?,NULL,eng,TRUE,M1046559,now(),System,now(),FALSE,now()
 PKS_J00016,Public key Sync service,publicKeySyncJob,NULL,0 0 11 * * ?,NULL,eng,TRUE,SYSTEM,now(),System,now(),FALSE,now()
-UDS_J00017,User Salt Sync service,userSaltSyncJob,NULL,0 0 11 * * ?,NULL,eng,TRUE,SYSTEM,now(),System,now(),FALSE,now()
+UDS_J00017,User Salt Sync service,userSaltSyncJob,URS_J00007,0 0 11 * * ?,NULL,eng,TRUE,SYSTEM,now(),System,now(),FALSE,now()

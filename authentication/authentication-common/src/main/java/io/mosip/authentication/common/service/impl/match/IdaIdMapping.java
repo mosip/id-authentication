@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package io.mosip.authentication.common.service.impl.match;
 
 import java.util.Arrays;
@@ -166,21 +169,30 @@ public enum IdaIdMapping implements IdMapping {
 		return Arrays.asList(cbeffKey);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.indauth.match.IdMapping#getMappingFunction()
+	 */
 	public BiFunction<MappingConfig, MatchType, List<String>> getMappingFunction() {
 		return mappingFunction;
 	}
 
+	/**
+	 * Sets the of.
+	 *
+	 * @param idMapping the id mapping
+	 * @return the sets the
+	 */
 	public static Set<IdMapping> setOf(IdMapping... idMapping) {
 		return Stream.of(idMapping).collect(Collectors.toSet());
 
 	}
 
 	/**
-	 * Fetch Id name for Mapping
-	 * 
-	 * @param mappingName
-	 * @param mappingConfig
-	 * @return
+	 * Fetch Id name for Mapping.
+	 *
+	 * @param mappingName the mapping name
+	 * @param mappingConfig the mapping config
+	 * @return the id name for mapping
 	 */
 	public static Optional<String> getIdNameForMapping(String mappingName, MappingConfig mappingConfig) {
 		return Stream.of(IdaIdMapping.values()).filter(mapping -> mapping.getSubIdMappings().isEmpty())

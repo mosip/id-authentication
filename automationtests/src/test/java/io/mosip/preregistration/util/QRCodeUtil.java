@@ -6,53 +6,55 @@ import java.io.FileReader;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.testng.annotations.BeforeClass;
 
-import io.mosip.preregistration.service.PreRegistrationApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
+import io.mosip.util.PreRegistrationLibrary;
 import io.restassured.response.Response;
-
+/**
+ * Util Class is to perform Generate QR code service smoke and regression test operations
+ * 
+ * @author Lavanya R
+ * @since 1.0.0
+ */
 public class QRCodeUtil 
 {
 
 	/**
 	 * Declaration of all variables
 	 **/
-	String folder = "preReg";
+	
 	String testSuite = "";
 	JSONObject request;
 	Response response;
-	PreRegistrationApplicationLibrary applnLib = new PreRegistrationApplicationLibrary();
+	ApplicationLibrary appLib = new ApplicationLibrary();
 	PreRegistrationUtil preregUtil=new PreRegistrationUtil();
+	PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	Logger logger = Logger.getLogger(BaseTestCase.class);
-	String qrCode_URI=preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
 	
+	
+
 	
 	/**
-	 * Generic method to QR Code
-	 * 
+	 * The method perform QR Code API Smoke and Regression test operation
+	 *  
+	 * @param endpoint
+	 * @param request
+	 * @param cookie
+	 * @return Response
 	 */
-
-	public Response QRCode() {
+	
+	public Response QRCode(String endpoint,JSONObject request,String cookie) {
 		
+		if(request==null)
+		{
 		testSuite =preregUtil.fetchPreregProp().get("qrCodeFilePath");
-		String configPath = "src/test/resources/" + folder + "/" + testSuite;
-         logger.info("Path val:"+configPath);
-		File folder = new File(configPath);
-		File[] listOfFiles = folder.listFiles();
-		for (File f : listOfFiles) {
-			if (f.getName().contains("request")) {
-				try {
-					request = (JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+		request=preregUtil.requestJson(testSuite);
+		request.put("requesttime", lib.getCurrentDate());
+		
 		}
-
-		request.put("requesttime", preregUtil.getCurrentDate());
-		response = applnLib.postRequest(request, qrCode_URI);
+		
+		response = appLib.postWithJson(endpoint, request, cookie);
 
 		return response;
 	}

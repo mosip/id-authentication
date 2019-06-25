@@ -31,6 +31,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.preregistration.application.exception.BookingDeletionFailedException;
+import io.mosip.preregistration.application.exception.DemographicServiceException;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.IdValidationException;
 import io.mosip.preregistration.application.exception.InvalidDateFormatException;
@@ -361,6 +362,16 @@ public class DemographicExceptionHandler {
 	public ResponseEntity<MainResponseDTO<?>> idValidationException(final IdValidationException e){
 		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
 		e.getErrorMessageList().stream().forEach(s->errorList.add(new ExceptionJSONInfoDTO(e.getErrorCode(),s)));
+		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
+		errorRes.setErrors(errorList);
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(DemographicServiceException.class)
+	public ResponseEntity<MainResponseDTO<?>> demographicServiceException(final DemographicServiceException e){
+		List<ExceptionJSONInfoDTO> errorList = new ArrayList<>();
+		e.getValidationErrorList().stream().forEach(serviceError->errorList.add(new ExceptionJSONInfoDTO(serviceError.getErrorCode(),serviceError.getMessage())));
 		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
 		errorRes.setErrors(errorList);
 		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());

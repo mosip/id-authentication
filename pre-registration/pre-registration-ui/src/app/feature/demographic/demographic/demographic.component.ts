@@ -24,6 +24,7 @@ import { FilesModel } from 'src/app/shared/models/demographic-model/files.model'
 import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-material-keyboard';
 import { RouterExtService } from 'src/app/shared/router/router-ext.service';
 import { LogService } from 'src/app/shared/logger/log.service';
+import { HttpResponse } from '@angular/common/http';
 
 /**
  * @description This component takes care of the demographic page.
@@ -100,6 +101,7 @@ export class DemographicComponent implements OnInit {
   message = {};
   config = {};
   consentMessage: any;
+  titleOnError = '';
 
   @ViewChild('dd') dd: ElementRef;
   @ViewChild('mm') mm: ElementRef;
@@ -133,7 +135,7 @@ export class DemographicComponent implements OnInit {
   formControlNames: FormControlModal = {
     fullName: 'fullName',
     gender: 'gender',
-    dateOfBirth: 'dob',
+    dateOfBirth: 'dateOfBirth',
     residenceStatus: 'residenceStatus',
     addressLine1: 'addressLine1',
     addressLine2: 'addressLine2',
@@ -144,8 +146,8 @@ export class DemographicComponent implements OnInit {
     localAdministrativeAuthority: 'localAdministrativeAuthority',
     email: 'email',
     postalCode: 'postalCode',
-    phone: 'mobilePhone',
-    CNIENumber: 'pin',
+    phone: 'phone',
+    CNIENumber: 'CNIENumber',
 
     age: 'age',
     date: 'date',
@@ -249,11 +251,11 @@ export class DemographicComponent implements OnInit {
       this.dataStorageService.getGuidelineTemplate('consent').subscribe(
         response => {
           if (!response[appConstants.NESTED_ERROR]) this.consentMessage = response['response']['templates'][0].fileText;
-          else this.onError(this.errorlabels.error);
+          else this.onError(this.errorlabels.error, '');
           resolve(true);
         },
         error => {
-          this.onError(this.errorlabels.error);
+          this.onError(this.errorlabels.error, error);
         }
       );
     });
@@ -501,7 +503,7 @@ export class DemographicComponent implements OnInit {
     } else {
       let index = 0;
       let secondaryIndex = 1;
-      console.log('user', this.user);
+      this.loggerService.info('user', this.user);
 
       if (this.user.request.demographicDetails.identity.fullName[0].language !== this.primaryLang) {
         index = 1;
@@ -550,15 +552,15 @@ export class DemographicComponent implements OnInit {
       this.dataStorageService.getGenderDetails().subscribe(
         response => {
           if (response[appConstants.NESTED_ERROR]) {
-            this.onError(this.errorlabels.error);
+            this.onError(this.errorlabels.error, '');
           } else {
             this.genders = response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.genderTypes];
             resolve(true);
           }
         },
-        () => {
+        error => {
           this.loggerService.error('Unable to fetch gender');
-          this.onError(this.errorlabels.error);
+          this.onError(this.errorlabels.error, error);
         }
       );
     });
@@ -576,16 +578,16 @@ export class DemographicComponent implements OnInit {
       this.dataStorageService.getResidentDetails().subscribe(
         response => {
           if (response[appConstants.NESTED_ERROR]) {
-            this.onError(this.errorlabels.error);
+            this.onError(this.errorlabels.error, '');
           } else {
             this.residenceStatus =
               response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.residentTypes];
             resolve(true);
           }
         },
-        () => {
+        error => {
           this.loggerService.error('Unable to fetch Resident types');
-          this.onError(this.errorlabels.error);
+          this.onError(this.errorlabels.error, error);
         }
       );
     });
@@ -715,7 +717,7 @@ export class DemographicComponent implements OnInit {
       this.dataStorageService.getLocationImmediateHierearchy(languageCode, parentLocationCode).subscribe(
         response => {
           if (response[appConstants.NESTED_ERROR]) {
-            this.onError(this.errorlabels.error);
+            this.onError(this.errorlabels.error, '');
           } else {
             response[appConstants.RESPONSE][appConstants.DEMOGRAPHIC_RESPONSE_KEYS.locations].forEach(element => {
               let codeValueModal: CodeValueModal = {
@@ -731,8 +733,8 @@ export class DemographicComponent implements OnInit {
             return resolve(true);
           }
         },
-        () => {
-          this.onError(this.errorlabels.error);
+        error => {
+          this.onError(this.errorlabels.error, error);
           this.loggerService.error('Unable to fetch Below Hierearchy');
         }
       );
@@ -898,11 +900,11 @@ export class DemographicComponent implements OnInit {
           if (!response[appConstants.NESTED_ERROR])
             this.transUserForm.controls[toControl].patchValue(response[appConstants.RESPONSE].to_field_value);
           else {
-            this.onError(this.errorlabels.error);
+            this.onError(this.errorlabels.error, '');
           }
         },
         error => {
-          this.onError(this.errorlabels.error);
+          this.onError(this.errorlabels.error, error);
           this.loggerService.error(error);
         }
       );
@@ -950,12 +952,9 @@ export class DemographicComponent implements OnInit {
               if (
                 response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.invalidPin
               ) {
-                message = this.errorlabels.invalidPin;
-                this.userForm.controls[this.formControlNames.postalCode].setErrors({
-                  incorrect: true
-                });
+                message = this.formValidation(response);
               } else message = this.errorlabels.error;
-              this.onError(message);
+              this.onError(message, '');
               return;
             } else {
               this.onModification(responseJSON);
@@ -964,7 +963,7 @@ export class DemographicComponent implements OnInit {
           },
           error => {
             this.loggerService.error(error);
-            this.onError(this.errorlabels.error);
+            this.onError(this.errorlabels.error, error);
           }
         );
       } else {
@@ -974,16 +973,14 @@ export class DemographicComponent implements OnInit {
               (response[appConstants.NESTED_ERROR] === null && response[appConstants.RESPONSE] === null) ||
               response[appConstants.NESTED_ERROR] !== null
             ) {
+              this.loggerService.error(JSON.stringify(response));
               let message = '';
               if (
                 response[appConstants.NESTED_ERROR][0][appConstants.ERROR_CODE] === appConstants.ERROR_CODES.invalidPin
               ) {
-                message = this.errorlabels.invalidPin;
-                this.userForm.controls[this.formControlNames.postalCode].setErrors({
-                  incorrect: true
-                });
+                message = this.formValidation(response);
               } else message = this.errorlabels.error;
-              this.onError(message);
+              this.onError(message, '');
               return;
             } else {
               this.onAddition(response, responseJSON);
@@ -992,11 +989,21 @@ export class DemographicComponent implements OnInit {
           },
           error => {
             this.loggerService.error(error);
-            this.onError(this.errorlabels.error);
+            this.onError(this.errorlabels.error, error);
           }
         );
       }
     }
+  }
+
+  formValidation(response: any) {
+    const str = response[appConstants.NESTED_ERROR][0]['message'];
+    const attr = str.substring(str.lastIndexOf('/') + 1);
+    let message = this.errorlabels[attr];
+    this.userForm.controls[this.formControlNames[attr]].setErrors({
+      incorrect: true
+    });
+    return message;
   }
 
   /**
@@ -1045,7 +1052,6 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   onSubmission() {
-    this.loggerService.info('codevalue', this.codeValue);
     this.checked = true;
     this.dataUploadComplete = true;
     let url = '';
@@ -1182,12 +1188,20 @@ export class DemographicComponent implements OnInit {
    * @private
    * @memberof DemographicComponent
    */
-  private onError(message: string) {
+  private onError(message: string, error: any) {
     this.dataUploadComplete = true;
     this.hasError = true;
+    this.titleOnError = this.errorlabels.errorLabel;
+    if (
+      error && error[appConstants.ERROR] &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+    ) {
+      message = this.errorlabels.tokenExpiredLogout;
+      this.titleOnError = '';
+    }
     const body = {
       case: 'ERROR',
-      title: 'ERROR',
+      title: this.titleOnError,
       message: message,
       yesButtonText: this.errorlabels.button_ok
     };
@@ -1225,6 +1239,9 @@ export class DemographicComponent implements OnInit {
       this._keyboardRef.instance.setInputInstance(el);
       this._keyboardRef.instance.attachControl(control);
     }
+  }
+  scrollUp(ele: HTMLElement) {
+    ele.scrollIntoView({ behavior: 'smooth' });
   }
 
   @HostListener('blur', ['$event'])

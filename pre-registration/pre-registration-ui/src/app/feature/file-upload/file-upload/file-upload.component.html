@@ -12,6 +12,7 @@
       <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
         <mat-form-field class="file-upload__input">
           <mat-select
+            disableOptionCentering
             placeholder="{{ document.code }}"
             (selectionChange)="selectChange($event, i)"
             (openedChange)="openedChange($event, i)"
@@ -51,7 +52,7 @@
               </mat-select>
             </mat-form-field>
           </span>
-          <span>
+          <span *ngIf="allApplicants.length > 1">
             <mat-icon class="icon" matTooltip="{{ 'helpText.same_as' | translate }}" [inline]="true"
               >help_outline</mat-icon
             >
@@ -69,7 +70,7 @@
         </div>
       </div>
     </div>
-    <div class="file-upload__body__2" *ngIf="this.users[0].files">
+    <div class="file-upload__body__2" *ngIf="this.users[0].files && fileIndex >= 0">
       <p>{{ fileName }}</p>
       <iframe
         *ngIf="fileExtension == 'pdf'"
@@ -108,7 +109,12 @@
   </div>
 </div>
 <div class="user__buttons">
-  <button class="user__btn" type="button" (click)="onBack()" [disabled]="isModify == 'true' || disableNavigation">
+  <button
+    class="user__btn user__btn--back"
+    type="button"
+    (click)="onBack()"
+    [disabled]="isModify == 'true' || disableNavigation"
+  >
     {{ 'documents.action_back' | translate }}
   </button>
   <button *ngIf="isModify == 'false'" class="user__btn" type="button" (click)="onNext()" [disabled]="disableNavigation">

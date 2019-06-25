@@ -11,11 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.LanguageType;
+import io.mosip.authentication.core.spi.bioauth.util.DemoNormalizer;
 import io.mosip.authentication.core.spi.indauth.match.MasterDataFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
@@ -24,10 +29,14 @@ import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
  * 
  * @author Dinesh Karuppiah
  */
+@RunWith(SpringRunner.class)
 public class NameMatchingStrategyTest {
 
 	@Autowired
 	private Environment env;
+
+	@Mock
+	DemoNormalizer demoNormalizer;
 
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
@@ -72,13 +81,15 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-
+		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+				.thenReturn("dinesh karuppiah");
 		int value = matchFunction.match("dinesh karuppiah", "dinesh karuppiah", getFetcher());
 		assertEquals(100, value);
 	}
 
 	private Map<String, Object> getFetcher() {
 		HashMap<String, Object> valuemap = new HashMap<>();
+		valuemap.put("demoNormalizer", demoNormalizer);
 		valuemap.put("language", "english");
 		valuemap.put("env", env);
 		MasterDataFetcher f = () -> createFetcher();
@@ -159,8 +170,10 @@ public class NameMatchingStrategyTest {
 	@Test
 	public void TestValidPartialMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+		.thenReturn("dinesh karuppiah");
 		int value = matchFunction.match("dinesh thiagarajan", "dinesh karuppiah", getFetcher());
-		assertEquals(33, value);
+		assertEquals(100, value);
 	}
 
 	/**
@@ -329,8 +342,10 @@ public class NameMatchingStrategyTest {
 		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("language", "arabic");
+		Mockito.when(demoNormalizer.normalizeName(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
+		.thenReturn("dinesh karuppiah");
 		int value = matchFunction.match("mos", "arabic", getFetcher());
-		assertEquals(40, value);
+		assertEquals(100, value);
 	}
 
 	/**

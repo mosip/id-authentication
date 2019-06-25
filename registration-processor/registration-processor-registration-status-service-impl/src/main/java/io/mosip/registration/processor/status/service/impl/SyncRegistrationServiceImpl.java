@@ -29,6 +29,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.SupervisorStatus;
@@ -84,8 +85,6 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The lancode length. */
 	private int LANCODE_LENGTH = 3;
 
-	String description = "";
-
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncRegistrationServiceImpl.class);
 
@@ -110,19 +109,19 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		List<SyncResponseDto> synchResponseList = new ArrayList<>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"SyncRegistrationServiceImpl::sync()::entry");
-
+		LogDescription description=new LogDescription();
 		boolean isTransactionSuccessful = false;
 		try {
 			for (SyncRegistrationDto registrationDto : resgistrationDtos) {
 				synchResponseList = validateSync(registrationDto, synchResponseList);
 			}
 			isTransactionSuccessful = true;
-			description = "Registartion Id's are successfully synched in Sync Registration table";
+			description.setMessage("Registartion Id's are successfully synched in Sync Registration table");
 
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", "");
 		} catch (DataAccessLayerException e) {
-			description = "DataAccessLayerException while syncing Registartion Id's" + "::" + e.getMessage();
+			description.setMessage("DataAccessLayerException while syncing Registartion Id's" + "::" + e.getMessage());
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -138,7 +137,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
 			}
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",

@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -53,10 +54,9 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.PreRegZipHandlingService;
-import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
- * This class is used to handle the pre-registration packet zip files
+ * This implementation class to handle the pre-registration data
  * 
  * @author balamurugan ramamoorthy
  * @since 1.0.0
@@ -64,9 +64,6 @@ import io.mosip.registration.validator.RegIdObjectValidator;
  */
 @Service
 public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
-
-	@Autowired
-	private RegIdObjectValidator idObjectValidator;
 
 	@Autowired
 	private KeyGenerator keyGenerator;
@@ -82,7 +79,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.external.impl.PreRegZipHandlingService#
+	 * @see io.mosip.registration.service.external.PreRegZipHandlingService#
 	 * extractPreRegZipFile(byte[])
 	 */
 	@Override
@@ -97,7 +94,7 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
 				String jsoFileName = zipEntry.getName();
 				if (jsoFileName.endsWith(".json")) {
-					bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
+					bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream, StandardCharsets.UTF_8));
 					parseDemographicJson(bufferedReader, zipEntry);
 					break;
 				} 
@@ -218,9 +215,9 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 				IndividualIdentity individualIdentity = (IndividualIdentity) JsonUtils.jsonStringToJavaObject(
 						IndividualIdentity.class, new JSONObject(jsonString.toString()).get("identity").toString());
 				getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO().setIdentity(individualIdentity);
-				idObjectValidator.validateIdObject(
+				/*idObjectValidator.validateIdObject(
 						getRegistrationDtoContent().getDemographicDTO().getDemographicInfoDTO(),
-						RegistrationConstants.PACKET_TYPE_NEW);
+						RegistrationConstants.PACKET_TYPE_NEW);*/
 
 			}
 		} catch (IOException exception) {
@@ -237,20 +234,14 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 	}
 
-	/**
-	 * This method is used to encrypt the pre registration packet and save it into
-	 * the disk
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param PreRegistrationId
-	 *            - pre registration id
-	 * @param preRegPacket
-	 *            - pre reg packet in bytes
-	 * @return PreRegistrationDTO - pre reg dto holds the pre reg data
-	 * @throws RegBaseCheckedException
-	 *             - holds the checked exceptions
+	 * @see io.mosip.registration.service.external.PreRegZipHandlingService#
+	 * encryptAndSavePreRegPacket(java.lang.String, byte[])
 	 */
 	@Override
-	public PreRegistrationDTO encryptAndSavePreRegPacket(String PreRegistrationId, byte[] preRegPacket)
+	public PreRegistrationDTO encryptAndSavePreRegPacket(String preRegistrationId, byte[] preRegPacket)
 			throws RegBaseCheckedException {
 
 		SecretKey symmetricKey = keyGenerator.getSymmetricKey();
@@ -261,37 +252,31 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 
 		LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Pre Registration packet Encrypted");
 
-		String filePath = storePreRegPacketToDisk(PreRegistrationId, encryptedData);
+		String filePath = storePreRegPacketToDisk(preRegistrationId, encryptedData);
 
 		PreRegistrationDTO preRegistrationDTO = new PreRegistrationDTO();
 		preRegistrationDTO.setPacketPath(filePath);
 		preRegistrationDTO.setSymmetricKey(Base64.getEncoder().encodeToString(symmetricKey.getEncoded()));
 		preRegistrationDTO.setEncryptedPacket(encryptedData);
-		preRegistrationDTO.setPreRegId(PreRegistrationId);
+		preRegistrationDTO.setPreRegId(preRegistrationId);
 		return preRegistrationDTO;
 
 	}
 
-	/**
-	 * This method is used to store the encrypted packet into to the configured disk
-	 * location
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param PreRegistrationId
-	 *            - pre reg id
-	 * @param encryptedPacket
-	 *            - pre reg encrypted packet in bytes
-	 * @return String - pre reg packet file path
-	 * @throws RegBaseCheckedException
-	 *             - holds the checked exceptions
+	 * @see io.mosip.registration.service.external.PreRegZipHandlingService#
+	 * storePreRegPacketToDisk(java.lang.String, byte[])
 	 */
 	@Override
-	public String storePreRegPacketToDisk(String PreRegistrationId, byte[] encryptedPacket)
+	public String storePreRegPacketToDisk(String preRegistrationId, byte[] encryptedPacket)
 			throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet
 			String filePath = String
 					.valueOf(ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION))
-					.concat(separator).concat(PreRegistrationId).concat(ZIP_FILE_EXTENSION);
+					.concat(separator).concat(preRegistrationId).concat(ZIP_FILE_EXTENSION);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(encryptedPacket),
 					FileUtils.getFile(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath)));
@@ -314,15 +299,11 @@ public class PreRegZipHandlingServiceImpl implements PreRegZipHandlingService {
 		}
 	}
 
-	/**
-	 * This method is used to decrypt the pre registration packet using the
-	 * symmetric key
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param symmetricKey
-	 *            - key to decrypt the pre reg packet
-	 * @param encryptedPacket
-	 *            - pre reg encrypted packet in bytes
-	 * @return byte[] - decrypted pre reg packet
+	 * @see io.mosip.registration.service.external.PreRegZipHandlingService#
+	 * decryptPreRegPacket(java.lang.String, byte[])
 	 */
 	@Override
 	public byte[] decryptPreRegPacket(String symmetricKey, byte[] encryptedPacket) {

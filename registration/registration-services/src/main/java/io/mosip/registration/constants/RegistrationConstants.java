@@ -160,6 +160,7 @@ public class RegistrationConstants {
 	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
 	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
 	public static final String ROLES_LIST = "roleList";
+	public static final String USER_NAME_VALIDATION = "USER_NAME_VALIDATION"; 
 
 	// FingerPrint
 	public static final String FP_DEVICE = "Mantra";
@@ -436,6 +437,8 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_PRE_REG_ID_LOCAL_LANG_LABEL = "PreRegIDSecLabel";
 	public static final String TEMPLATE_PRE_REG_ID = "PreRegID";
 	public static final String TEMPLATE_DEMO_INFO = "DemographicInfo";
+	public static final String DEMOGRAPHIC_TEXTFIELD_FOCUSED = "demoGraphicTextFieldFocused";
+	public static final String DEMOGRAPHIC_TEXTFIELD = "demoGraphicTextField";
 	public static final String TEMPLATE_FULL_NAME_USER_LANG_LABEL = "FullNamePrimLabel";
 	public static final String TEMPLATE_FULL_NAME_LOCAL_LANG_LABEL = "FullNameSecLabel";
 	public static final String TEMPLATE_FULL_NAME = "FullName";
@@ -610,6 +613,7 @@ public class RegistrationConstants {
 	public static final String LIST_ITEM_CLOSING_TAG = "</span></li><br/>";
 	public static final String SPLIT_DELIMITOR = "\\.";
 	public static final String TEMPLATE_GUIDELINES = "Guidelines";
+	public static final String TEMPLATE_IS_UIN_UPDATE = "IsUINUpdate";
 
 	public static final String MODIFY_DEMO_INFO = "modifyDemographicInfo";
 	public static final String MODIFY_DOCUMENTS = "modifyDocuments";
@@ -741,11 +745,12 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_READER_RESPONSE = "response";
 	public static final String PACKET_STATUS_READER_REGISTRATION_ID = "registrationId";
 	public static final String PACKET_STATUS_READER_STATUS_CODE = "statusCode";
-	public static final String PACKET_STATUS_CODE_PROCESSED = "processed";
+	public static final String PACKET_STATUS_CODE_PROCESSED = "PROCESSED";
 	public static final String PACKET_STATUS_CODE_PROCESSING = "PROCESSING";
-	public static final String PACKET_STATUS_CODE_REREGISTER = "RE-REGISTER";
+	public static final String PACKET_STATUS_CODE_REREGISTER = "REREGISTER";
+	public static final String PACKET_STATUS_CODE_REJECTED = "REJECTED";
 	public static final List<String> PACKET_STATUS_CODES_FOR_REMAPDELETE = Arrays.asList(PACKET_STATUS_CODE_REREGISTER,
-			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED);
+			PACKET_STATUS_CODE_PROCESSING, PACKET_STATUS_CODE_PROCESSED,PACKET_STATUS_CODE_REJECTED);
 	public static final String MACHINE_CENTER_REMAP_FLAG = "mosip.registration.machinecenterchanged";
 	public static final String MACHINE_CENTER_REMAP_MSG = "Machine Center Remap process started";
 	public static final String PACKET_STATUS_READER_ID = "mosip.registration.status";
@@ -1218,7 +1223,7 @@ public class RegistrationConstants {
 	public static final String AUTH_AUTHORIZATION = "Authorization";
 	public static final String AUTH_EXPIRES = "Expires";
 	public static final String AUTH_MAX_AGE = "Max-Age";
-	public static final String REGISTRATION_CLIENT = "REGISTRATIONCLIENT";
+	public static final String REGISTRATION_CLIENT = "mosip.registration.app.id";
 	public static final String REGISTRATION_CONTEXT = "auth-otp";
 	public static final String COOKIE = "Cookie";
 	public static final String ENGLISH_LANG_CODE = "eng";
@@ -1357,8 +1362,7 @@ public class RegistrationConstants {
 	public static final String KER = "SIGN";
 	public static final String DTAE_MONTH_YEAR_REGEX = "dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage|ageField";
 
-	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";
-	public static final String UIN_UPDATE_PARENTORGUARDIAN = "parentOrGuardian";
+	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";	
 
 	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
@@ -1369,7 +1373,7 @@ public class RegistrationConstants {
 
 	// TPM
 	public static final byte[] NULL_VECTOR = new byte[0];
-	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.registration.db.key";
+	public static final String MOSIP_REGISTRATION_DB_KEY = "mosip.reg.db.key";
 	
 	//SQL Execution
 	public static final String SQL_EXECUTION_SUCCESS = "SQL EXECUTION SUCCESS";
@@ -1415,6 +1419,8 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_IRIS_ID="IIR";
 	public static final String ON_BOARD_FINGER_ID="FMR";
 	public static final String ON_BOARD_COGENT="cogent";
+	public static final String AGE_IDENTITY="identity";
+	public static final String DATE_OF_BIRTH = "dateOfBirth";
 
 	public static final String STUB_FACE="Rk1SACAyMAAAAAFcAAABPAFiAMUAxQEAAAAoNUB9AMF0V4CBAKBBPEC0AL68ZIC4AKjNZEBiAJvWXUBPANPWNUDSAK7RUIC2AQIfZEDJAPMxPEByAGwPXYCpARYPZECfAFjoZECGAEv9ZEBEAFmtV0BpAUGNXUC/AUEESUCUAVIEPEC2AVNxPICcALWuZICuALm3ZECNAJqxQ0CUAI3GQ0CXAPghV0BVAKDOZEBfAPqHXUBDAKe/ZIB9AG3xXUDPAIbZUEBcAGYhZECIASgHXYBJAGAnV0DjAR4jG0DKATqJIUCGADGSZEDSAUYGIUAxAD+nV0CXAK+oSUBoALr6Q4CSAOuKXUCiAIvNZEC9AJzQZIBNALbTXUBBAL68V0CeAHDZZECwAHPaZEBRAPwHUIBHAHW2XUDXARAUDUC4AS4HZEDXAS0CQ0CYADL4ZECsAUzuPEBkACgRZAAA";
 	
@@ -1449,5 +1455,10 @@ public class RegistrationConstants {
 	public static final String ON_BOARD_FACE="FACE";
 	public static final String USER_ON_BOARD_IDA_AUTH="mosip.registration.onboarduser_ida_auth";
 	public static final String AUTH_SERVICE_URL = "authmanager/authenticate";
+	public static final String REG_HEALTH_CHECK_URL_PROPERTY= "mosip.reg.healthcheck.url";
+	
+	public static final int DAYS = 31;
+	public static final int MONTH = 12;
+	public static final int YEAR = 3;
 
 }

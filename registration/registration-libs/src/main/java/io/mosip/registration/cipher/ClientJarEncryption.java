@@ -225,11 +225,11 @@ public class ClientJarEncryption {
 		}
 	}
 
-	private static void addProperties(File file, String version) throws FileNotFoundException, IOException {
+	private static void addProperties(File file, String version) throws IOException {
 		Properties properties = new Properties();
 		properties.load(new FileInputStream(file));
 
-		properties.setProperty("mosip.version", version);
+		properties.setProperty("mosip.reg.version", version);
 
 		// Add mosip-Version to mosip-application.properties file
 		try (FileOutputStream outputStream = new FileOutputStream(file)) {

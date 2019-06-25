@@ -77,7 +77,7 @@ section {
 .centers-wrapper {
   margin-left: 25px;
   margin-right: 2vw;
-  width: 60%;
+  width: 55%;
 }
 
 .centers-list ul {
@@ -104,13 +104,13 @@ input[type='radio'] {
 }
 
 .map {
-  width: 400px;
-  height: 700px;
+  width: 40%;
   display: flex;
 }
 
 .container {
   display: flex;
+  margin-bottom:68px;
 }
 
 .user-back-btn {
@@ -147,6 +147,7 @@ input[type='radio'] {
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 .center_selection-intial-recommendation-container {
@@ -273,6 +274,7 @@ img {
   }
   .container {
     flex-wrap: wrap;
+    margin-bottom: 68px;
   }
   .centers-wrapper {
     width: 90%;

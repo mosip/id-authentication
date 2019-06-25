@@ -78,7 +78,7 @@ public class Decrypt {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws InvalidKeySpecException the invalid key spec exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
-	 * @throws KeyManagementException 
+	 * @throws KeyManagementException the key management exception
 	 */
 	@PostMapping(path = "/authRequest/decrypt", produces = MediaType.APPLICATION_JSON_VALUE) 
 	public String decrypt(@RequestBody String data)
@@ -89,8 +89,9 @@ public class Decrypt {
 	/**
 	 * This method is used to call the kernel decrypt api for decryption.
 	 *
-	 * @param encodedKey the encoded key
+	 * @param data the data
 	 * @return the string
+	 * @throws KeyManagementException the key management exception
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -129,6 +130,11 @@ public class Decrypt {
 		return null;
 	}
 	
+	/**
+	 * Generate auth token.
+	 *
+	 * @return the string
+	 */
 	public String generateAuthToken() {
 		ObjectNode requestBody = objMapper.createObjectNode();
 		requestBody.put("clientId", env.getProperty("auth-token-generator.rest.clientId"));
@@ -149,6 +155,13 @@ public class Decrypt {
 		return "";
 	}
 	
+	/**
+	 * Creates the request.
+	 *
+	 * @param <T> the generic type
+	 * @param t the t
+	 * @return the request wrapper
+	 */
 	public static <T> RequestWrapper<T> createRequest(T t){
     	RequestWrapper<T> request = new RequestWrapper<>();
     	request.setRequest(t);

@@ -23,6 +23,15 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.syncdata.constant.HibernatePersistenceConstant;
 
+/**
+ * SyncDataConfig
+ * 
+ * @author Bal Vikash Sharma
+ * @author Raj Jha
+ * @since 1.0.0
+ * 
+ *
+ */
 @Configuration
 @EnableJpaRepositories(basePackages = "io.mosip.kernel.syncdata.repository", entityManagerFactoryRef = "syncDataEntityManager", transactionManagerRef = "syncDataTransactionManager")
 public class SyncDataConfig {

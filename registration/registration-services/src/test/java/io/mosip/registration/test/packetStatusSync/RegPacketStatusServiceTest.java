@@ -124,7 +124,71 @@ public class RegPacketStatusServiceTest {
 		packetStatusService.packetSyncStatus("System");
 
 	}
+	
+	@Test
+	public void packetSyncStatusSuccessTestWithEmptyPackets()
+			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
+		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
+		LinkedHashMap<String, String> registration = new LinkedHashMap<>();
+		registration.put("registrationId", "12345");
+		registration.put("statusCode", RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
+		registrations.add(registration);
 
+		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
+		response.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, registrations);
+
+		LinkedHashMap<String, String> registration12 = new LinkedHashMap<>();
+
+		registration12.put("registrationId", "12345");
+		registration12.put("statusCode", RegistrationConstants.PACKET_STATUS_CODE_PROCESSED + "123");
+		registrations.add(registration12);
+
+		List<Registration> list = new LinkedList<>();
+		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
+
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(), Mockito.anyString())).thenReturn(response);
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getSuccessResponseDTO());
+
+		when(packetStatusDao.update(Mockito.any())).thenThrow(RuntimeException.class);
+		packetStatusService.packetSyncStatus("System");
+	}
+
+	@Test
+	public void packetSyncStatusExceptionTest()
+			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
+		
+		List<Registration> list = new LinkedList<>();
+		Registration regis = new Registration();
+		regis.setId("12345");
+		regis.setAckFilename("..//PacketStore/02-Jan-2019/2018782130000102012019115112_Ack.png");
+		regis.setClientStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
+		list.add(regis);
+		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
+
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(), Mockito.anyString())).thenThrow(SocketTimeoutException.class);
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getErrorResponseDTOs());
+
+		packetStatusService.packetSyncStatus("System");
+	}
+	
+	@Test
+	public void packetSyncStatusRuntimeExceptionTest()
+			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
+		
+		List<Registration> list = new LinkedList<>();
+		Registration regis = new Registration();
+		regis.setId("12345");
+		regis.setAckFilename("..//PacketStore/02-Jan-2019/2018782130000102012019115112_Ack.png");
+		regis.setClientStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
+		list.add(regis);
+		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
+
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(), Mockito.anyString())).thenThrow(RuntimeException.class);
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getErrorResponseDTOs());
+
+		packetStatusService.packetSyncStatus("System");
+	}
+	
 	@Test
 	public void packetSyncStatusFailureTest()
 			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {

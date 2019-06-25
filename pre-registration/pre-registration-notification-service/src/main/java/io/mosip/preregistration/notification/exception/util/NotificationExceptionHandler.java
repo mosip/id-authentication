@@ -34,9 +34,12 @@ import io.mosip.preregistration.core.errorcodes.ErrorCodes;
 import io.mosip.preregistration.core.errorcodes.ErrorMessages;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.GenericUtil;
+import io.mosip.preregistration.notification.exception.BookingDetailsNotFoundException;
+import io.mosip.preregistration.notification.exception.DemographicDetailsNotFoundException;
 import io.mosip.preregistration.notification.exception.IllegalParamException;
 import io.mosip.preregistration.notification.exception.MandatoryFieldException;
 import io.mosip.preregistration.notification.exception.NotificationSeriveException;
+import io.mosip.preregistration.notification.exception.RestCallException;
 
 /**
  * Exception Handler for acknowledgement application.
@@ -125,6 +128,19 @@ public class NotificationExceptionHandler {
 		});
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
+	
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for RestCallException
+	 */
+	@ExceptionHandler(RestCallException.class)
+	public ResponseEntity<MainResponseDTO<?>> restCallException(final RestCallException e) {
+		return GenericUtil.errorResponse(e, e.getMainresponseDTO());
+	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
@@ -146,6 +162,42 @@ public class NotificationExceptionHandler {
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for DemographicDetailsNotFoundException
+	 */
+	
+	
+	@ExceptionHandler(DemographicDetailsNotFoundException.class)
+	public ResponseEntity<MainResponseDTO<?>> demographicDetailsNotFoundException(final DemographicDetailsNotFoundException e,WebRequest request){
+		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
+		errorRes.setErrors(e.getErrorList());
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param e
+	 *            pass the exception
+	 * @param request
+	 *            pass the request
+	 * @return response for DemographicDetailsNotFoundException
+	 */
+	
+	
+	@ExceptionHandler(BookingDetailsNotFoundException.class)
+	public ResponseEntity<MainResponseDTO<?>> bookingDetailsNotFoundException(final BookingDetailsNotFoundException e,WebRequest request){
+		MainResponseDTO<?> errorRes = e.getMainResposneDTO();
+		errorRes.setErrors(e.getErrorList());
+		errorRes.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return new ResponseEntity<>(errorRes, HttpStatus.OK);
+	}
+	
+	
 
 	@Autowired
 	private ObjectMapper objectMapper;

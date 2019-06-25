@@ -16,7 +16,9 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
- k8DevContext = 'MOSIP-Admin-Kubernetes'
+ k8DevContext = 'mosip-dev-cluster'
+ def config_url='http://104.211.212.28:51000'
+ def key_manager_vm_ip='13.71.86.138'
 
 
  stage('------- Checkout --------') {
@@ -128,8 +130,12 @@ stage('---------- SonarQube Analysis --------------') {
      Getting path of the module to be built
      */
      modulePath = locationOfDockerFiles[i].substring(2);
-     updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     
+     //kernel-keymanager-service will be deployed in another VM, not inside the cluster
+     if(!(moduleName == 'kernel-keymanager-service')){
+         updatedServices.add(moduleName)
+         updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
      /*
      Updating containersToRun List
      */
@@ -156,6 +162,7 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $registryName/$moduleName"
     }
    } 
+   
    else {
     /*
      If build paramerter is passed as Build Changes (Only changed submodules have to be built)
@@ -175,8 +182,12 @@ stage('---------- SonarQube Analysis --------------') {
      Getting path of the module to be built
      */
      modulePath = changedModulesLocation[i].substring(2);
-     updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     
+     //kernel-keymanager-service will be deployed in another VM, not inside the cluster
+     if(!(moduleName == 'kernel-keymanager-service')){
+           updatedServices.add(moduleName)
+           updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     }
      /*
      Updating containersToRun List
      */
@@ -201,7 +212,8 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
-    }
+    
+	}
    }
 
     /*
@@ -295,6 +307,19 @@ stage('---------- SonarQube Analysis --------------') {
       sh "kubectl get pods"
       sh "kubectl set env pods --all --list"
     }
+	stage('Key-Manager Deployment'){
+			 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '305c7f35-2eb5-44b4-b574-a0855ef70c26',
+usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+sh """ssh  madmin@"${key_manager_vm_ip}" /bin/bash << EOF
+sudo docker login -u "${USERNAME}" -p "${PASSWORD}"  docker-registry.mosip.io:5000 
+sudo docker ps -aq | xargs sudo docker stop | xargs sudo docker rm
+sudo docker images -q | xargs sudo docker rmi
+echo "Echoing label_env"
+echo "${branch}"
+sudo docker run -tid --ulimit memlock=-1 -p 8088:8088 -v softhsm:/softhsm -e spring_config_url_env="${config_url}" -e spring_config_label_env="${branch}" -e active_profile_env=dev --name keymanager docker-registry.mosip.io:5000/kernel-keymanager-service
+EOF"""
+		}
+	}
  }
  
    // Catching the exception for triggering email

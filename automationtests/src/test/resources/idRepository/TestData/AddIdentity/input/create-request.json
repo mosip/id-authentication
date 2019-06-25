@@ -2,8 +2,10 @@
 	"id": "mosip.id.create",
 	"request": {
 		"registrationId": "27847657360002520190205113333",
+
 		"identity": {
 			"IDSchemaVersion": 1.0,
+			"residenceStatus": "abc", 
 			"UIN": 6738521981,
 			"fullName": [
 				{
@@ -164,5 +166,5 @@
 		]
 	},
 	"requesttime": "2018-02-05T06:12:25.288Z",
-	"version": "1.0"
+	"version": "v1"
 }

@@ -35,10 +35,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.preregistration.service.PreRegistrationApplicationLibrary;
 import io.mosip.preregistration.util.PreRegistrationUtil;
 import io.mosip.preregistration.util.QRCodeUtil;
-import io.mosip.service.ApplicationLibrary;
+
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -62,7 +63,6 @@ public class QRCode extends BaseTestCase implements ITest {
 	 **/
 	Logger logger = Logger.getLogger(QRCode.class);
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
-	PreRegistrationApplicationLibrary preRegAppLib=new PreRegistrationApplicationLibrary();
 	String preId = "";
 	String docId = "";
 	SoftAssert softAssert = new SoftAssert();
@@ -73,19 +73,19 @@ public class QRCode extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	Response Actualresponse = null;
 	JSONObject Expectedresponse = null;
-    
-	//ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-	PreRegistrationUtil preregUtil=new PreRegistrationUtil();
-	QRCodeUtil qrCodeUtil=new QRCodeUtil();
+	PreRegistrationUtil preregUtil = new PreRegistrationUtil();
+	ApplicationLibrary appLib = new ApplicationLibrary();
+	PreRegistrationLibrary lib=new PreRegistrationLibrary();
+	QRCodeUtil qrCodeUtil = new QRCodeUtil();
 	HashMap<String, String> parm = new HashMap<>();
 	String dest = "";
 	String folderPath = "preReg/QRCode";
 	String outputFile = "QRCodeRequestOutput.json";
 	String requestKeyFile = "QRCodeRequest.json";
 	String preReg_URI;
-	//String preReg_URI=preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
-	//String qrCode_URI=preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
-	
+	String cond1;
+	String cond2;
+
 	// implement,IInvokedMethodListener
 	public QRCode() {
 
@@ -115,11 +115,12 @@ public class QRCode extends BaseTestCase implements ITest {
 
 	/*
 	 * Given QR Code valid request when I Send POST request to
-	 * https://mosip.io/preregistration/v1/qrCode/generate Then I should get success
-	 * response with elements defined as per specifications Given Invalid
-	 * request when I send POST request to
-	 * https://mosip.io/preregistration/v1/qrCode/generate Then I should get Error
-	 * response along with Error Code and Error messages as per Specification
+	 * https://mosip.io/preregistration/v1/qrCode/generate Then I should get
+	 * success response with elements defined as per specifications Given
+	 * Invalid request when I send POST request to
+	 * https://mosip.io/preregistration/v1/qrCode/generate Then I should get
+	 * Error response along with Error Code and Error messages as per
+	 * Specification
 	 */
 	@Test(dataProvider = "QRCode")
 	public void qrCode(String testSuite, Integer i, JSONObject object) throws Exception {
@@ -128,33 +129,22 @@ public class QRCode extends BaseTestCase implements ITest {
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
-		logger.info("TSSSSS::"+testCaseName+"PreReg URI:"+preReg_URI);
+
+		if (!(testCaseName.contains("requesttime"))) {
+			actualRequest.put("requesttime", lib.getCurrentDate());
+		}
+		// QR Code Response
+		Response qrCoderes = qrCodeUtil.QRCode(preReg_URI, actualRequest, individualToken);
 		if (testCaseName.contains("smoke")) {
-			// Get All Document For PreID
-			Response qrCoderes = qrCodeUtil.QRCode();
 			outerKeys.add("responsetime");
 			innerKeys.add("qrcode");
-			logger.info("QR Code Valid TC::" + qrCoderes.asString());
-			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
-
-		} else {
-			Response qrCodeResponse = null;
-			if(testCaseName.contains("requesttime"))
-			{
-			 qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
-			}
-			else
-			{
-				
-				actualRequest.put("requesttime", preRegLib.getCurrentDate());
-				
-				qrCodeResponse = preRegAppLib.postRequest(actualRequest, preReg_URI);
-			}
-			logger.info("QR Code Invalid TC::" + qrCodeResponse.asString()+"preRegURI:::"+preReg_URI);
-			outerKeys.add("responsetime");
-			status = AssertResponses.assertResponses(qrCodeResponse, Expectedresponse, outerKeys, innerKeys);
 		}
 
+		outerKeys.add("responsetime");
+		logger.info("QR Code Valid TC Response::" + qrCoderes.asString());
+		status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
+
+		
 		if (status) {
 			finalStatus = "Pass";
 			softAssert.assertAll();
@@ -163,32 +153,40 @@ public class QRCode extends BaseTestCase implements ITest {
 		} else {
 			finalStatus = "Fail";
 		}
+
 		boolean setFinalStatus = false;
-		if (finalStatus.equals("Fail"))
-			setFinalStatus = false;
-		else if (finalStatus.equals("Pass"))
-			setFinalStatus = true;
+		setFinalStatus = finalStatus.equals("Pass") ? true : false;
 		Verify.verify(setFinalStatus);
 		softAssert.assertAll();
 
 	}
 
 	/**
-	  * This method is used for fetching test case name
-	  * @param method
-	  * @param testdata
-	  * @param ctx
-	  */
+	 * This method is used for fetching test case name
+	 * 
+	 * @param method
+	 * @param testdata
+	 * @param ctx
+	 */
 	@BeforeMethod(alwaysRun = true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		JSONObject object = (JSONObject) testdata[2];
 
 		testCaseName = object.get("testCaseName").toString();
-		
-		//QR Code Resource URI
+
+		// QR Code Resource URI
 		preReg_URI = preregUtil.fetchPreregProp().get("preReg_QRCodeURI");
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+
+		// Fetch the generated Authorization Token by using following Kernel
+		// AuthManager APIs
+		if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
+
+		// Fetching the testcase name from the property file
+		cond1 = preregUtil.fetchPreregProp().get("smoke");
+		cond2 = preregUtil.fetchPreregProp().get("reqTime");
 	}
 
 	/**
@@ -205,8 +203,8 @@ public class QRCode extends BaseTestCase implements ITest {
 			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
-			//f.set(baseTestMethod, QRCode.testCaseName);
-			f.set(baseTestMethod, "Pre Reg_QRCode_" +QRCode.testCaseName);
+			f.set(baseTestMethod, QRCode.testCaseName);
+
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -229,9 +227,9 @@ public class QRCode extends BaseTestCase implements ITest {
 			file.write(arr.toString());
 			logger.info("Successfully updated Results to " + outputFile);
 		}
-		String source = "src/test/resources/" + folderPath + "/";
 
-		// Add generated PreRegistrationId to list to be Deleted from DB AfterSuite
+		// Add generated PreRegistrationId to list to be Deleted from DB
+		// AfterSuite
 		// preIds.add(preId);
 	}
 

@@ -4,7 +4,7 @@
 
 [Refer - Steps-to-Install-and-configuration-HDFS](https://github.com/mosip/mosip/wiki/Steps-to-Install-and-configuration-HDFS)
 
-**NOTE: Currently  hadoop security is disabled.<WIP>**
+
 
 [Api Documentation]
 
@@ -33,6 +33,9 @@ mosip.kernel.fsadapter.hdfs.kdc-domain=NODE-MASTER.EXAMPLE.COM
 #for classpath prefix classpath:mosip.keytab
 #for physical path prefix file:/home/keys/mosip.keytab
 mosip.kernel.fsadapter.hdfs.keytab-file=classpath:mosip.keytab
+
+#mosip.kernel.fsadapter.hdfs.connect.timeout=6000
+#mosip.kernel.fsadapter.hdfs.connect.max.retries.on.timeouts=10
 
 # HDFS log level. Change this to debug to see hdfs logs
 logging.level.org.apache.hadoop=warn

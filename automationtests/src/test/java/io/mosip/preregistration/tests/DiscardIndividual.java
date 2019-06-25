@@ -26,6 +26,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Parameters;
@@ -42,7 +43,8 @@ import com.google.common.base.Verify;
 import io.mosip.dbHealthcheck.DBHealthCheck;
 import io.mosip.dbaccess.PreRegDbread;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
+
 import io.mosip.service.AssertPreReg;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -65,7 +67,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+public ApplicationLibrary appLib=new ApplicationLibrary();
 	private static String preReg_URI;
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 	static String dest = "";
@@ -125,18 +127,18 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 		if (testCaseName.toLowerCase().contains("smoke")) {
 			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 			JSONObject createPregRequest = prl.createRequest(testSuite);
-			Response createPregResponse = prl.CreatePreReg(createPregRequest);
+			Response createPregResponse = prl.CreatePreReg(createPregRequest,individualToken);
 			String preReg_Id = createPregResponse.jsonPath().get("response.preRegistrationId").toString();
-			Actualresponse = prl.discardApplication(preReg_Id);
+			Actualresponse = prl.discardApplication(preReg_Id,individualToken);
 			preId = Actualresponse.jsonPath().get("response.preRegistrationId").toString();
-			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id);
+			Response getPreRegistrationDataResponse = prl.getPreRegistrationData(preReg_Id,individualToken);
 			String message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
 			prl.compareValues(message, "No data found for the requested pre-registration id");
 			Assert.assertEquals(preId, preReg_Id);
 			status = true;
 		} else {
 			outerKeys.add("responsetime");
-			Actualresponse = applicationLibrary.deleteRequestWithParm(preReg_URI, actualRequest);
+			Actualresponse = appLib.deleteWithPathParams(preReg_URI, actualRequest,individualToken);
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
 		}
 		if (status) {
@@ -170,9 +172,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 					"Successfully updated Results to Retrive_PreRegistrationOutput.json file.......................!!");
 
 		}
-		// preIds.add(preId);
 	}
-
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		try {
@@ -186,7 +186,7 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		lib.logOut();
+		
 	}
 
 	@BeforeMethod(alwaysRun = true)
@@ -194,7 +194,9 @@ public class DiscardIndividual extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DiscardApplnURI");
-		authToken = lib.getToken();
+		if (!lib.isValidToken(individualToken)) {
+			individualToken = lib.getToken();
+		}
 	}
 
 	@Override

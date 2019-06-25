@@ -11,12 +11,14 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -29,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -68,8 +70,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	String preReg_URI;
 	CommonLibrary commonLibrary = new CommonLibrary();
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-
+	ApplicationLibrary appLib=new ApplicationLibrary();
 	/* implement,IInvokedMethodListener */
 	public DeleteAllDocumentsByPreRegID() {
 
@@ -117,20 +118,24 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		if (testCaseName.contains("smoke")) {
 
 			// Creating the Pre-Registration Application
-			Response createApplicationResponse = preRegLib.CreatePreReg();
+			Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 
-			preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+			preId = preRegLib.getPreId(createApplicationResponse);
 
-			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId,individualToken);
 
 			// Get PreId from Document upload response
-			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+			try {
+				preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
+				
+			} catch (NullPointerException e) {
+				Assert.assertTrue(false, "Pre Registration Id is not present in document upload response");
+			}
+			
 
 			// Delete All Document by Pre-Registration Id
-			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId);
+			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId,individualToken);
 			outerKeys.add("responsetime");
-
-			logger.info("Dele Doccument Response:" + delAllDocByPreIdRes.asString());
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(delAllDocByPreIdRes, Expectedresponse, outerKeys, innerKeys);
 
@@ -140,7 +145,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			String preRegistrationId = actualRequest.get("preRegistrationId").toString();
 
 			String preRegURI = preReg_URI + preRegistrationId;
-			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preRegURI);
+			Actualresponse = appLib.deleteWithoutParams(preRegURI,individualToken);
 			
 			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+"Res:"+Actualresponse.asString());
 			
@@ -187,9 +192,10 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 
 		//Delete Document By PreregistrationId Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
+		if (!preRegLib.isValidToken(individualToken)) {
+			individualToken = preRegLib.getToken();
+		}
 		
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
 
 	}
 
@@ -213,7 +219,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			Reporter.log("Exception : " + e.getMessage());
 		}
 	}
-	/**
+	/*
 	 * This method is used for generating output file with the test case result
 	 */
 	@AfterClass

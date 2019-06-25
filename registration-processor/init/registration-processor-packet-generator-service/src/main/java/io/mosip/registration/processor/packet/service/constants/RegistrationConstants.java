@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-// TODO: Auto-generated Javadoc
 /**
  * Class contains the constants used in Registration application.
  *
@@ -52,9 +51,6 @@ public class RegistrationConstants {
 	/** The Constant PACKET_STORE_LOCATION. */
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
-
-	/** The Constant PACKET_STORE_DATE_FORMAT. */
-	public static final String PACKET_STORE_DATE_FORMAT = "registration.processor.packet.location.dateFormat";
 
 	/** The Constant ZIP_FILE_EXTENSION. */
 	// Packet Creation Constants

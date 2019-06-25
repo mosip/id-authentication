@@ -40,6 +40,7 @@ import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
 
 import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.util.PreRegistrationLibrary;
 import io.mosip.util.TokenGeneration;
 
@@ -65,13 +66,15 @@ public class BaseTestCase{
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	
-		
+	protected static String individualToken;
+	public String preRegAdminToken;
+	protected static String regClientToken;
+	public String regProcToken;	
 	/**
 	 * Method that will take care of framework setup
 	 */
 	// GLOBAL CLASS VARIABLES
-	private Properties prop;
+	public Properties prop;
 	public static String ApplnURI;
 	protected static String authToken;
 	public static String regProcAuthToken;
@@ -140,7 +143,12 @@ public class BaseTestCase{
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {
-			buildNumber=getBuildTag();
+
+			individualToken=null;
+			preRegAdminToken=null;
+			regClientToken=null;
+			regProcToken=null;
+			
 			logger.info("Test Framework for Mosip api Initialized");
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
 			initialize();
@@ -155,21 +163,30 @@ public class BaseTestCase{
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);
 			extent.attachReporter(htmlReporter);
-
 			
 			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 			htmlReporter.config().setReportName("Mosip Automation Report");
 			htmlReporter.config().setTheme(Theme.STANDARD);
-			/*TokenGeneration generateToken = new TokenGeneration();
-			TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
-			String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
-			tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
-			regProcAuthToken = generateToken.getToken(tokenEntity);
-			TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
-			String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
-			adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
-			adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);*/
+			/**
+			 * This method is used by pre registration module
+			 * This will activate all in active resistration center.
+			 */
+			new PreregistrationDAO().makeAllRegistartionCenterActive();
+				
+				htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
+				htmlReporter.config().setReportName("Mosip Automation Report");
+				htmlReporter.config().setTheme(Theme.STANDARD);
+				/*TokenGeneration generateToken = new TokenGeneration();
+				TokenGenerationEntity tokenEntity = new TokenGenerationEntity();
+				String tokenGenerationProperties = generateToken.readPropertyFile("syncTokenGenerationFilePath");
+				tokenEntity = generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+				regProcAuthToken = generateToken.getToken(tokenEntity);
+				TokenGenerationEntity adminTokenEntity = new TokenGenerationEntity();
+				String adminTokenGenerationProperties = generateToken.readPropertyFile("getStatusTokenGenerationFilePath");
+				adminTokenEntity = generateToken.createTokenGeneratorDto(adminTokenGenerationProperties);
+				adminRegProcAuthToken = generateToken.getToken(adminTokenEntity);*/
 
+			
 		
 		} // End suiteSetup
 
@@ -275,7 +292,7 @@ public class BaseTestCase{
 			        
 			        
 		}
-		
+	/*	
 		public String getBuildTag() {
 			MavenXpp3Reader reader = new MavenXpp3Reader();
 	        Model model=null;
@@ -291,7 +308,7 @@ public class BaseTestCase{
 			return model.getParent().getVersion();
 
 			
-		}
+		}*/
 
 	}
 

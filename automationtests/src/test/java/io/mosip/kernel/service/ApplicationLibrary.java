@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 
 import io.mosip.service.BaseTestCase;
 import io.mosip.kernel.util.CommonLibrary;
+import io.mosip.kernel.util.CommonLibrary;
 import io.restassured.response.Response;
 
 public class ApplicationLibrary extends BaseTestCase {
@@ -17,6 +18,10 @@ public class ApplicationLibrary extends BaseTestCase {
 	private static CommonLibrary commonLibrary = new CommonLibrary();
 
 	// post requests
+	public Response postWithoutJson(String endpoint, String cookie) {
+		return commonLibrary.postWithoutJson(ApplnURI + endpoint, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, cookie);
+	}
 	public Response postWithJson(String endpoint, Object body) {
 		return commonLibrary.postWithJson(ApplnURI + endpoint, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON);
@@ -56,6 +61,10 @@ public class ApplicationLibrary extends BaseTestCase {
 			String cookie) {
 		return commonLibrary.postWithQueryParams(ApplnURI + endpoint, queryparams, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, cookie);
+	}
+	public Response postWithMultiHeaders(String endpoint, Object body, HashMap<String, String> headers,
+			String contentHeader, String cookie) {
+		return commonLibrary.postWithMultiHeaders(ApplnURI + endpoint, body, headers, MediaType.APPLICATION_JSON, cookie);
 	}
 	public Response postRequestEmailNotification(String endpoint, JSONObject jsonString, String cookie) {
 		return commonLibrary.postRequestEmailNotification(ApplnURI+endpoint, jsonString, cookie);
@@ -121,6 +130,12 @@ public class ApplicationLibrary extends BaseTestCase {
 	// get congig properties
 	public Response getConfigProperties(String Resource_URI) {
 		return commonLibrary.getConfigProperties(Resource_URI);
+	}
+	public Response deleteWithoutParams(String endpoint, String cookie) {
+		return commonLibrary.deleteWithoutParams(ApplnURI + endpoint, cookie);
+	}
+	public Response putFileAndJson(String Resource_Uri,Object body,File file,String cookie) {
+		return commonLibrary.Post_JSONwithFile(body, file, ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA,cookie);
 	}
 	
 }

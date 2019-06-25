@@ -61,10 +61,6 @@ import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 @Service
 public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
-	/** The rid generator impl. */
-	@Autowired
-	private RidGenerator<String> ridGeneratorImpl;
-
 	/** The packet creation service. */
 	@Autowired
 	private PacketCreationService packetCreationService;
@@ -92,6 +88,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
+
+	@Autowired
 	private ObjectMapper mapper=new ObjectMapper();
 
 	@Autowired
@@ -367,6 +365,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		String rid=null;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		JSONObject ridJson=new JSONObject();
+		ObjectMapper mapper=new ObjectMapper();
 		try {
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "",
 					"", ResponseWrapper.class);

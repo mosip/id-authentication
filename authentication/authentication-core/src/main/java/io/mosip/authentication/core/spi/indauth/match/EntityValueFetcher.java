@@ -14,12 +14,13 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 public interface EntityValueFetcher {
 
 	/**
-	 * Fetch Entity Value
-	 * 
-	 * @param uin
-	 * @param authReq
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Fetch Entity Value.
+	 *
+	 * @param uin the uin
+	 * @param authReq the auth req
+	 * @param partnerID the partner ID
+	 * @return the map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public Map<String, String> fetch(String uin, AuthRequestDTO authReq, String partnerID)
 			throws IdAuthenticationBusinessException;

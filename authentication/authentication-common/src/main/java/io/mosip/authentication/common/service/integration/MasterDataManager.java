@@ -88,6 +88,17 @@ public class MasterDataManager {
 	 */
 	private static Logger logger = IdaLogger.getLogger(MasterDataManager.class);
 
+	/**
+	 * Fetch master data.
+	 *
+	 * @param type the type
+	 * @param params the params
+	 * @param masterDataListName the master data list name
+	 * @param keyAttribute the key attribute
+	 * @param valueAttribute the value attribute
+	 * @return the map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	@SuppressWarnings("unchecked")
 	private Map<String, Map<String, String>> fetchMasterData(RestServicesConstants type, Map<String, String> params,
 			String masterDataListName, String keyAttribute, String valueAttribute)
@@ -128,12 +139,12 @@ public class MasterDataManager {
 	}
 
 	/**
-	 * Fetch templates based on Language code and Template Name
-	 * 
-	 * @param langCode
-	 * @param templateName
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Fetch templates based on Language code and Template Name.
+	 *
+	 * @param langCode the lang code
+	 * @param templateName the template name
+	 * @return the string
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String fetchTemplate(String langCode, String templateName) throws IdAuthenticationBusinessException {
 		Map<String, String> params = new HashMap<>();
@@ -145,12 +156,11 @@ public class MasterDataManager {
 	}
 
 	/**
-	 * To fetch template from master data manager
-	 * 
-	 * @param langCode
-	 * @param templateName
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * To fetch template from master data manager.
+	 *
+	 * @param templateName the template name
+	 * @return the string
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public String fetchTemplate(String templateName) throws IdAuthenticationBusinessException {
 		Map<String, String> params = new HashMap<>();
@@ -181,34 +191,34 @@ public class MasterDataManager {
 	}
 
 	/**
-	 * To fetch titles
-	 * 
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * To fetch titles.
+	 *
+	 * @return the map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public Map<String, List<String>> fetchTitles() throws IdAuthenticationBusinessException {
 		return fetchMasterdataList(RestServicesConstants.TITLE_SERVICE, TITLE_LIST, CODE, TITLE_NAME);
 	}
 
 	/**
-	 * To fetch gender type
-	 * 
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * To fetch gender type.
+	 *
+	 * @return the map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public Map<String, List<String>> fetchGenderType() throws IdAuthenticationBusinessException {
 		return fetchMasterdataList(RestServicesConstants.GENDER_TYPE_SERVICE, GENDER_TYPE, CODE, GENDER_NAME);
 	}
 
 	/**
-	 * To fetch Master Data
-	 * 
-	 * @param type
-	 * @param masterDataName
-	 * @param keyAttribute
-	 * @param valueAttribute
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * To fetch Master Data.
+	 *
+	 * @param type the type
+	 * @param masterDataName the master data name
+	 * @param keyAttribute the key attribute
+	 * @param valueAttribute the value attribute
+	 * @return the map
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private Map<String, List<String>> fetchMasterdataList(RestServicesConstants type, String masterDataName,
 			String keyAttribute, String valueAttribute) throws IdAuthenticationBusinessException {

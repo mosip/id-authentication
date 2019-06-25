@@ -48,7 +48,10 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 
 /**
- * Update the Application
+ * This class will update the application based on comapring the versions of the
+ * jars from the Manifest. The comparison will be done by comparing the Local
+ * Manifest and the meta-inf.xml file. If there is any updation available in the
+ * jar then the new jar gets downloaded and the old gets archived.
  * 
  * @author YASWANTH S
  *
@@ -56,17 +59,20 @@ import io.mosip.registration.service.config.GlobalParamService;
 @Component
 public class SoftwareUpdateHandler extends BaseService {
 
+	/**
+	 * This constructor will read the application Property file and load the
+	 * properties to the class level variable.
+	 */
 	public SoftwareUpdateHandler() {
 
-		try {
-			String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		propsFilePath = new File(System.getProperty("user.dir")) + props;
 
-			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		try (FileInputStream fileInputStream = new FileInputStream(propsFilePath)) {
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
-			serverRegClientURL = properties.getProperty("mosip.client.url");
-			serverMosipXmlFileUrl = properties.getProperty("mosip.xml.file.url");
-			backUpPath = properties.getProperty("mosip.rollback.path");
+			serverRegClientURL = properties.getProperty("mosip.reg.client.url");
+			serverMosipXmlFileUrl = properties.getProperty("mosip.reg.xml.file.url");
+			backUpPath = properties.getProperty("mosip.reg.rollback.path");
 
 		} catch (IOException exception) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -75,6 +81,8 @@ public class SoftwareUpdateHandler extends BaseService {
 		}
 	}
 
+	private String propsFilePath;
+	private static String props = "/props/mosip-application.properties";
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
@@ -120,9 +128,14 @@ public class SoftwareUpdateHandler extends BaseService {
 	private GlobalParamService globalParamService;
 
 	/**
-	 * Check for updates
+	 * It will check whether any software updates are available or not.
+	 * <p>
+	 * The check will be done by comparing the Local Manifest file version with the
+	 * version of the server meta-inf.xml file
+	 * </p>
 	 * 
-	 * @return has update
+	 * @return Boolean true - If there is any update available. false - If no
+	 *         updates available
 	 */
 	public boolean hasUpdate() {
 
@@ -137,6 +150,14 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the current version which is read from the server meta-inf
+	 *         file.
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 */
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for latest version started");
@@ -195,7 +216,30 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * update the binaries
+	 * <p>
+	 * Checks whteher the update is available or not
+	 * </p>
+	 * <p>
+	 * If the Update is available:
+	 * </p>
+	 * <p>
+	 * If the jars needs to be added/updated in the local
+	 * </p>
+	 * <ul>
+	 * <li>Take the back-up of the current jars</li>
+	 * <li>Download the jars from the server and add/update it in the local</li>
+	 * </ul>
+	 * <p>
+	 * If the jars needs to be deleted in the local
+	 * </p>
+	 * <ul>
+	 * <li>Take the back-up of the current jars</li>
+	 * <li>Delete that particular jar from the local</li>
+	 * </ul>
+	 * <p>
+	 * If there is any error occurs while updation then the restoration of the jars
+	 * will happen by taking the back-up jars
+	 * </p>
 	 * 
 	 * @throws Exception
 	 *             - IOException
@@ -467,7 +511,8 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * Get timestamp when latest version has released
+	 * The latest version timestamp will be taken from the server meta-inf.xml file.
+	 * This timestamp will the be parsed in this method.
 	 * 
 	 * @return timestamp
 	 */
@@ -491,7 +536,22 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * Execute script files
+	 * This method will check whether any updation needs to be done in the DB
+	 * structure.
+	 * <p>
+	 * If there is any updates available:
+	 * </p>
+	 * <p>
+	 * Take the back-up of the current DB
+	 * </p>
+	 * <p>
+	 * Run the Update queries from the sql file, which is downloaded from the server
+	 * and available in the local
+	 * </p>
+	 * <p>
+	 * If there is any error occurs during the update,then the rollback query will
+	 * run from the sql file
+	 * </p>
 	 * 
 	 * @param latestVersion
 	 *            latest version
@@ -545,6 +605,8 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		// Update global param with current version
 		globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
+
+		addProperties(latestVersion);
 
 		setSuccessResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_SUCCESS, null);
 
@@ -646,7 +708,8 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * Get checksum
+	 * This method will return the checksum of the jars by reading it from the
+	 * Manifest file.
 	 * 
 	 * @param jarName
 	 *            jarName
@@ -679,5 +742,36 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		// checksum (content-type)
 		return checksum;
+	}
+
+	private void addProperties(String version) {
+		
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Started updating version property in mosip-application.properties");
+
+
+		try {
+			Properties properties = new Properties();
+			properties.load(new FileInputStream(propsFilePath));
+
+			properties.setProperty("mosip.reg.version", version);
+
+			// update mosip-Version in mosip-application.properties file
+			try (FileOutputStream outputStream = new FileOutputStream(propsFilePath)) {
+
+				properties.store(outputStream, version);
+			}
+
+		} catch (IOException ioException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+		}
+		
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Completed updating version property in mosip-application.properties");
+
+
 	}
 }

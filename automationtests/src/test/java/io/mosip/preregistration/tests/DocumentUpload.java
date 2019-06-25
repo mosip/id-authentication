@@ -18,6 +18,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -121,12 +122,12 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
+		Response createApplicationResponse = preRegLib.CreatePreReg(authToken);
 		String preRegIdCreateAPI = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		if (testCaseName.contains("smoke")) {
 			// Document Upload for created application
-			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preRegIdCreateAPI);
+			Response docUploadResponse = preRegLib.documentUpload(createApplicationResponse, preRegIdCreateAPI,null,authToken);
 			logger.info("res::" + docUploadResponse.asString());
 			// PreId of Uploaded document
 			preId = docUploadResponse.jsonPath().get("response.preRegistrationId").toString();
@@ -234,10 +235,15 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 		}
 
 		String source = "src/test/resources/" + folderPath + "/";
-		CommonLibrary.backUpFiles(source, folderPath);
+		
 
 		// Add generated PreRegistrationId to list to be Deleted from DB  AfterSuite
 		// preIds.add(preId);
+	}
+	@BeforeClass
+	public void getToken()
+	{
+		authToken=preRegLib.getToken();
 	}
 
 	/**
@@ -275,8 +281,7 @@ public class DocumentUpload extends BaseTestCase implements ITest {
 
 		//Document Upload Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DocumentUploadURI");
-		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		
 	}
 
 	@Override

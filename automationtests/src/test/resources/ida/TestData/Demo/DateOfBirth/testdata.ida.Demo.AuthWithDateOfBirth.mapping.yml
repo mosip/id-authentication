@@ -724,6 +724,43 @@ testdata:
       output.1.response.n.err.errorCode: $errors:InvalidDOB:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
+  Authentication_Demographic_DateOfBirth_Mismatch DOB_For UIN_Neg_39:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuedob: $TestData:dob_mismatch$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: $TestData:auth_Fail_status$ 
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:DobMismatch:errorMessage$
+      output.1.response.n.err.errorCode: $errors:DobMismatch:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_DateOfBirth_Mismatch DOB_For VID_Neg_39:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuedob: $TestData:dob_mismatch$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: $TestData:auth_Fail_status$ 
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:DobMismatch:errorMessage$
+      output.1.response.n.err.errorCode: $errors:DobMismatch:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
   Authentication_Demographic_DateOfBirth_Invalid DOB_For VID_Neg_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$

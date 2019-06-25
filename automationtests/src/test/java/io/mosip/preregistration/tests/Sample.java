@@ -31,12 +31,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
+import com.jayway.jsonpath.JsonPath;
 import com.mongodb.internal.thread.DaemonThreadFactory;
 
 import io.mosip.dbentity.OtpEntity;
@@ -66,12 +68,30 @@ public class Sample extends BaseTestCase implements ITest {
 	ApplicationLibrary applnLib = new ApplicationLibrary();
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
 	PreregistrationDAO dao = new PreregistrationDAO();
+	public String expectedMessageDeleteDoc = "DOCUMENT_DELETE_SUCCESSFUL";
+	public String docMissingMessage = "Documents is not found for the requested pre-registration id";
+	public String unableToFetchPreReg = "UNABLE_TO_FETCH_THE_PRE_REGISTRATION";
+	public String appointmentCanceledMessage = "APPOINTMENT_SUCCESSFULLY_CANCELED";
+	public String bookingSuccessMessage = "APPOINTMENT_SUCCESSFULLY_BOOKED";
+	public String expectedErrMessageDocGreaterThanFileSize = "DOCUMENT_EXCEEDING_PREMITTED_SIZE";
+	public String expectedErrCodeDocGreaterThanFileSize = "PRG_PAM_DOC_007";
+	public String filepathPOA = "IntegrationScenario/DocumentUpload_POA";
+	public String filepathPOB = "IntegrationScenario/DocumentUpload_POB";
+	public String filepathPOI = "IntegrationScenario/DocumentUpload_POI";
+	public String filepathDocGreaterThanFileSize = "IntegrationScenario/DocumentUploadGreaterThanFileSize";
+	public String POADocName = "AadhaarCard_POA.pdf";
+	public String POBDocName = "ProofOfBirth_POB.pdf";
+	public String POIDocName = "LicenseCertification_POI.pdf";
+	public String ExceedingSizeDocName = "ProofOfAddress.pdf";
+
+	SoftAssert soft = new SoftAssert();
 
 	@BeforeClass
 	public void readPropertiesFile() {
 		initialize();
-		//authToken=lib.getToken();
+
 	}
+
 
 	/**
 	 * Batch job service for expired application
@@ -81,22 +101,20 @@ public class Sample extends BaseTestCase implements ITest {
 	 * 
 	 */
 
-	@Test
-	public void makeRegistartionCenterInactive() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		try {
-			String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		} catch (NullPointerException e) {
-			Reporter.log("create application failed");
-		}
-		
+	@Test(groups = { "IntegrationScenarios" })
+	public void uploadMultipleDocsForSameCategory() {
+
+		dao.makeAllRegistartionCenterActive();
+		lib.FetchCentre("10001", individualToken);
 	}
+
+
 
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
-		//authToken = lib.getToken();
+		if (!lib.isValidToken(individualToken)) {
+			individualToken = lib.getToken();
+		}
 
 	}
 
@@ -108,6 +126,6 @@ public class Sample extends BaseTestCase implements ITest {
 	@AfterMethod
 	public void afterMethod(ITestResult result) {
 		System.out.println("method name:" + result.getMethod().getMethodName());
-		lib.logOut();
+
 	}
 }

@@ -105,6 +105,9 @@ public class PacketUploadController extends BaseController implements Initializa
 	private Button saveToDevice;
 
 	@FXML
+	private Button uploadBtn;
+	
+	@FXML
 	private TextField filterField;
 
 	@FXML
@@ -346,7 +349,9 @@ public class PacketUploadController extends BaseController implements Initializa
 						});
 						packetUploadService.updateStatus(packetsToBeExport);
 						progressIndicator.setVisible(false);
-						displayStatus(populateTableData(tableMap));
+						if(!tableMap.isEmpty()) {
+							displayStatus(populateTableData(tableMap));
+						}
 					} else {
 						loadInitialPage();
 						generateAlert(RegistrationConstants.ALERT_INFORMATION,
@@ -509,6 +514,11 @@ public class PacketUploadController extends BaseController implements Initializa
 		
 		List<PacketStatusDTO> synchedPackets = packetSynchService.fetchPacketsToBeSynched();
 		exportCSVIcon.setDisable(synchedPackets.isEmpty());
+		filterField.setDisable(synchedPackets.isEmpty());
+		table.setDisable(synchedPackets.isEmpty());
+		saveToDevice.setVisible(!synchedPackets.isEmpty());
+		uploadBtn.setVisible(!synchedPackets.isEmpty());
+		
 		List<PacketStatusVO> packetsToBeExport = new ArrayList<>();
 		int count = 1;
 		for (PacketStatusDTO packet : synchedPackets) {
@@ -602,10 +612,10 @@ public class PacketUploadController extends BaseController implements Initializa
 			String fileData = table.getItems().stream()
 					.map(packetVo -> packetVo.getSlno().trim().concat(RegistrationConstants.COMMA).concat("'")
 							.concat(packetVo.getFileName()).concat("'").concat(RegistrationConstants.COMMA).concat("'")
-							.concat(packetVo.getCreatedTime()))
+							.concat(packetVo.getCreatedTime()).concat("'"))
 					.collect(Collectors.joining(RegistrationConstants.NEW_LINE));
 			String headers = RegistrationUIConstants.EOD_SLNO_LABEL.concat(RegistrationConstants.COMMA)
-					.concat(RegistrationUIConstants.UPLOAD_COLUMN_HEADER_FILE).concat(RegistrationConstants.COMMA)
+					.concat(RegistrationUIConstants.PACKETUPLOAD_PACKETID_LABEL).concat(RegistrationConstants.COMMA)
 					.concat(RegistrationUIConstants.EOD_REGISTRATIONDATE_LABEL).concat(RegistrationConstants.COMMA)
 					.concat(RegistrationConstants.NEW_LINE);
 			fileData = headers + fileData;

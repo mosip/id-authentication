@@ -1,7 +1,6 @@
 package io.mosip.kernel.tests;
 
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,7 +15,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -29,11 +27,10 @@ import com.google.common.base.Verify;
 import io.mosip.kernel.util.CommonLibrary;
 import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.KernelDataBaseAccess;
+import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.kernel.service.AssertKernel;
 import io.mosip.service.BaseTestCase;
-import io.mosip.util.ReadFolder;
-import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 /**
@@ -48,7 +45,9 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(GetImmediateChildrenByLocCodeAndLangCode.class);
-	protected static String testCaseName = "";
+	protected String testCaseName = "";
+	private final String moduleName = "kernel";
+	private final String apiName = "GetImmediateChildrenByLocCodeAndLangCode";
 	private SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
@@ -56,11 +55,7 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	private AssertKernel assertKernel = new AssertKernel();
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String fetchImmediateChildLocation = props.get("fetchImmediateChildLocation");
-	private String folderPath = "kernel/GetImmediateChildrenByLocCodeAndLangCode";
-	private String outputFile = "GetImmediateChildrenByLocCodeAndLCOutput.json";
-	private String requestKeyFile = "GetImmediateChildrenByLocCodeAndLCInput.json";
 	private JSONObject Expectedresponse = null;
-	private String finalStatus = "";
 	private KernelAuthentication auth=new KernelAuthentication();
 	private String cookie;
 	private KernelDataBaseAccess kernelDB=new KernelDataBaseAccess();
@@ -68,15 +63,15 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	// Getting test case names and also auth cookie based on roles
 	@BeforeMethod(alwaysRun=true)
 	public void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
-		JSONObject object = (JSONObject) testdata[2];
-		testCaseName = object.get("testCaseName").toString();
+		String object = (String) testdata[0];
+		testCaseName = object.toString();
 		 cookie=auth.getAuthForIndividual();
 	} 
 	
 	// Data Providers to read the input json files from the folders
 	@DataProvider(name = "GetImmediateChildrenByLocCodeAndLangCode")
 	public Object[][] readData1(ITestContext context) throws Exception {
-			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, testLevel);
+			return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 	/**
 	 * @throws FileNotFoundException
@@ -88,10 +83,12 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 	 */
 	@SuppressWarnings("unchecked")
 	@Test(dataProvider="GetImmediateChildrenByLocCodeAndLangCode")
-	public void getImmediateChildrenByLocCodeAndLangCode(String testSuite, Integer i, JSONObject object) throws FileNotFoundException, IOException, ParseException
+	public void getImmediateChildrenByLocCodeAndLangCode(String testcaseName) throws FileNotFoundException, IOException, ParseException
     {
-		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		// getting request and expected response jsondata from json files.
+		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
+		JSONObject actualRequest = objectDataArray[0];
+		Expectedresponse = objectDataArray[1];
 
 		// Calling the get method 
 		Response res=applicationLibrary.getWithPathParam(fetchImmediateChildLocation, actualRequest,cookie);
@@ -114,32 +111,24 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 					long count = kernelDB.validateDBCount(queryStr,"masterdata");
 	       
 			if(count==1){
-						finalStatus ="Pass";
+				status =true;
 					}
 					else{
-		 				finalStatus ="Fail";
+						status =false;
 		 				logger.info("Location count is not equal to 1");
 					}
     	  }else
-				finalStatus = "Pass";
+    		  status = true;
 			}	
 		
 		else {
-			finalStatus="Fail";
+			status=false;
 			logger.error(res);
 		}
-		softAssert.assertAll();
-		object.put("status", finalStatus);
-		arr.add(object);
-		boolean setFinalStatus=false;
-		if(finalStatus.equals("Fail"))
-			setFinalStatus=false;
-		else if(finalStatus.equals("Pass"))
-			setFinalStatus=true;
-		Verify.verify(setFinalStatus);
+		
+		Verify.verify(status);
 		softAssert.assertAll();
 }
-		@SuppressWarnings("static-access")
 		@Override
 		public String getTestName() {
 			return this.testCaseName;
@@ -147,7 +136,6 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 		
 		@AfterMethod(alwaysRun = true)
 		public void setResultTestName(ITestResult result) {
-			
 	try {
 				Field method = TestResult.class.getDeclaredField("m_method");
 				method.setAccessible(true);
@@ -155,22 +143,10 @@ public class GetImmediateChildrenByLocCodeAndLangCode extends BaseTestCase imple
 				BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
 				Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 				f.setAccessible(true);
-
-				f.set(baseTestMethod, GetImmediateChildrenByLocCodeAndLangCode.testCaseName);
-
-				
+				f.set(baseTestMethod, testCaseName);
 			} catch (Exception e) {
 				Reporter.log("Exception : " + e.getMessage());
 			}
 		}  
-		
-		@AfterClass
-		public void updateOutput() throws IOException {
-			String configPath = "src/test/resources/kernel/GetImmediateChildrenByLocCodeAndLangCode/GetImmediateChildrenByLocCodeAndLCOutput.json";
-			try (FileWriter file = new FileWriter(configPath)) {
-				file.write(arr.toString());
-				logger.info("Successfully updated Results to GetImmediateChildrenByLocCodeAndLCOutput.json file.......................!!");
-			}
-		}
-
 }
+

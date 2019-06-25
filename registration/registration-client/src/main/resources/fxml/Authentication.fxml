@@ -28,7 +28,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label styleClass="authenticationPageTitle" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 								</Label>
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
@@ -53,9 +53,9 @@
 								</GridPane>
 							</children>
 							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -149,7 +149,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label fx:id="otpLabel" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label fx:id="otpLabel" styleClass="authenticationPageTitle" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 								</Label>
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
@@ -174,9 +174,9 @@
 								</GridPane>
 							</children>
 							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -209,7 +209,7 @@
 													<children>
 														<TextField fx:id="otpUserId" promptText="%username" styleClass="authenticationStyle" />
 														<PasswordField fx:id="otp" promptText="%enterotp" styleClass="authenticationStyle" />
-																<Button mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" fx:id="getOTP"/>
+																<Button fx:id="getOTP" mnemonicParsing="false" onAction="#generateOtp" styleClass="loginSubmitStyle" text="%getotp" />
 																<Button mnemonicParsing="false" onAction="#validateOTP" styleClass="contiuneButton" text="%submit" />
 														<Label fx:id="otpValidity" />
 													</children>
@@ -258,7 +258,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label fx:id="fpLabel" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label fx:id="fpLabel" styleClass="authenticationPageTitle" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 								</Label>
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
@@ -283,9 +283,9 @@
 								</GridPane>
 							</children>
 							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -413,7 +413,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label styleClass="authenticationPageTitle" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 								</Label>
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
@@ -438,9 +438,9 @@
 								</GridPane>
 							</children>
 							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -493,9 +493,9 @@
                                        <children>
                                           <GridPane GridPane.rowIndex="2">
                                              <children>
-                                                <ImageView fitHeight="128.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                                <ImageView fx:id="irisImageView" fitHeight="128.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                                    <image>
-                                                      <Image url="@../images/eye.png" />
+                                                      <Image url="@../images/Eye.png" />
                                                    </image>
                                                 </ImageView>
                                              </children>
@@ -545,7 +545,7 @@
 					<children>
 						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label fx:id="photoLabel" text="%photoAuthentication" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+								<Label fx:id="photoLabel" styleClass="authenticationPageTitle" text="%photoAuthentication" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<children>
 										<Hyperlink onAction="#exitWindow" GridPane.columnIndex="1">
@@ -569,9 +569,9 @@
 								</GridPane>
 							</children>
 							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -673,9 +673,9 @@
 				</GridPane>
 				<GridPane fx:id="errorPane" visible="false">
 					<children>
-						<GridPane>
+						<GridPane styleClass="documentScanHeader">
 							<children>
-								<Label text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.rowIndex="1">
+								<Label styleClass="authenticationPageTitle" text="%supervisorauthentication" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
 								</Label>
 								<GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
 									<columnConstraints>
@@ -700,9 +700,9 @@
 								</GridPane>
 							</children>
 							<columnConstraints>
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+								<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
 							</columnConstraints>
 							<rowConstraints>
 								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -730,9 +730,9 @@
 											<children>
 												<VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 													<children>
-														<Label fx:id="errorLabel" />
-														<Label fx:id="errorText1" />
-														<Label fx:id="errorText2" />
+														<Label fx:id="errorLabel" styleClass="authenticationErrorMsgTitle" />
+														<Label fx:id="errorText1" styleClass="authenticationErrorMsg" wrapText="true" />
+														<Label fx:id="errorText2" styleClass="authenticationErrorMsg" wrapText="true" />
 													</children>
 												</VBox>
 											</children>

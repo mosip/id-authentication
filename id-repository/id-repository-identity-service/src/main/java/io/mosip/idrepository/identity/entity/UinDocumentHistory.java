@@ -12,9 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class UinDocumentHistory.
+ * The Class UinDocumentHistory - Entity class for uin_document_h table.
  *
  * @author Manoj SP
  */

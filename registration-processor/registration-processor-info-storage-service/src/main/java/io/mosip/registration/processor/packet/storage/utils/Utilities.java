@@ -2,7 +2,6 @@ package io.mosip.registration.processor.packet.storage.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
@@ -114,9 +114,7 @@ public class Utilities {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	JSONObject idJson = null;
-
- 	@Autowired
+	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	private static final String INBOUNDQUEUENAME = "inboundQueueName";
@@ -127,7 +125,6 @@ public class Utilities {
 	private static final String BROKERURL = "brokerUrl";
 	private static final String TYPEOFQUEUE = "typeOfQueue";
 	private static final String NAME = "name";
-
 
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
@@ -143,10 +140,11 @@ public class Utilities {
 	 * @return
 	 * @throws IOException
 	 * @throws ApisResourceAccessException
-	 * @throws io.mosip.kernel.core.exception.IOException 
-	 * @throws PacketDecryptionFailureException 
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 */
-	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
 		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
@@ -189,9 +187,10 @@ public class Utilities {
 					pathSegments, "", "", IdResponseDTO1.class);
 			if (idResponseDto == null)
 				return null;
-			if (!idResponseDto.getErrors().isEmpty())
-				throw new IdRepoAppException(
-						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
+			if (!idResponseDto.getErrors().isEmpty()) {
+				List<ErrorDTO> error = idResponseDto.getErrors();
+				throw new IdRepoAppException(error.get(0).getMessage());
+			}
 
 			idResponseDto.getResponse().getIdentity();
 			ObjectMapper objMapper = new ObjectMapper();
@@ -268,11 +267,12 @@ public class Utilities {
 	 * @param registrationId
 	 * @return
 	 * @throws IOException
-	 * @throws io.mosip.kernel.core.exception.IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws ApisResourceAccessException
+	 * @throws PacketDecryptionFailureException
 	 */
-	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException,
+			PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -296,11 +296,12 @@ public class Utilities {
 	 * @param registrationId
 	 * @return
 	 * @throws IOException
-	 * @throws io.mosip.kernel.core.exception.IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws ApisResourceAccessException
+	 * @throws PacketDecryptionFailureException
 	 */
-	public Long getUIn(String registrationId) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+	public Long getUIn(String registrationId) throws IOException, PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
 		if (demographicIdentity == null)
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
@@ -357,52 +358,61 @@ public class Utilities {
 		return null;
 	}
 
-
-    public PacketMetaInfo getPacketMetaInfo(String registrationId) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+	public PacketMetaInfo getPacketMetaInfo(String registrationId) throws PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
 		return (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
 	}
 
-    public List<Documents> getAllDocumentsByRegId(String regId) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+	public List<Documents> getAllDocumentsByRegId(String regId) throws IOException, PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		List<Documents> applicantDocuments = new ArrayList<>();
-
- 		idJson = getDemographicIdentityJSONObject(regId);
+		JSONObject idJson = null;
+		idJson = getDemographicIdentityJSONObject(regId);
 		regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
-		String proofOfAddressLabel= regProcessorIdentityJson.getIdentity().getPoa().getValue();
-		String proofOfDateOfBirthLabel =regProcessorIdentityJson.getIdentity().getPob().getValue();
+		String proofOfAddressLabel = regProcessorIdentityJson.getIdentity().getPoa().getValue();
+		String proofOfDateOfBirthLabel = regProcessorIdentityJson.getIdentity().getPob().getValue();
 		String proofOfIdentityLabel = regProcessorIdentityJson.getIdentity().getPoi().getValue();
-		String proofOfRelationshipLabel =regProcessorIdentityJson.getIdentity().getPor().getValue();
-		String applicantBiometricLabel =regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
+		String proofOfRelationshipLabel = regProcessorIdentityJson.getIdentity().getPor().getValue();
+		String applicantBiometricLabel = regProcessorIdentityJson.getIdentity().getIndividualBiometrics().getValue();
 
- 		JSONObject proofOfAddress = JsonUtil.getJSONObject(idJson, proofOfAddressLabel);
+		JSONObject proofOfAddress = JsonUtil.getJSONObject(idJson, proofOfAddressLabel);
 		JSONObject proofOfDateOfBirth = JsonUtil.getJSONObject(idJson, proofOfDateOfBirthLabel);
 		JSONObject proofOfIdentity = JsonUtil.getJSONObject(idJson, proofOfIdentityLabel);
-		JSONObject proofOfRelationship= JsonUtil.getJSONObject(idJson, proofOfRelationshipLabel);
-		JSONObject applicantBiometric= JsonUtil.getJSONObject(idJson, applicantBiometricLabel);
-		if(proofOfAddress!=null) {
-			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfAddress,proofOfAddressLabel));
+		JSONObject proofOfRelationship = JsonUtil.getJSONObject(idJson, proofOfRelationshipLabel);
+		JSONObject applicantBiometric = JsonUtil.getJSONObject(idJson, applicantBiometricLabel);
+		if (proofOfAddress != null) {
+			applicantDocuments
+					.add(getIdDocumnet(regId, PacketFiles.DEMOGRAPHIC.name(), proofOfAddress, proofOfAddressLabel));
 		}
-		if(proofOfDateOfBirth!=null) {
-			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfDateOfBirth, proofOfDateOfBirthLabel));
+		if (proofOfDateOfBirth != null) {
+			applicantDocuments.add(
+					getIdDocumnet(regId, PacketFiles.DEMOGRAPHIC.name(), proofOfDateOfBirth, proofOfDateOfBirthLabel));
 		}
-		if(proofOfIdentity!=null) {
-			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfIdentity, proofOfIdentityLabel));
+		if (proofOfIdentity != null) {
+			applicantDocuments
+					.add(getIdDocumnet(regId, PacketFiles.DEMOGRAPHIC.name(), proofOfIdentity, proofOfIdentityLabel));
 		}
-		if(proofOfRelationship!=null) {
-			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.DEMOGRAPHIC.name(), proofOfRelationship, proofOfRelationshipLabel));
+		if (proofOfRelationship != null) {
+			applicantDocuments.add(getIdDocumnet(regId, PacketFiles.DEMOGRAPHIC.name(), proofOfRelationship,
+					proofOfRelationshipLabel));
 		}
-		if(applicantBiometric!=null) {
-			applicantDocuments.add(getIdDocumnet(regId,PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
+		if (applicantBiometric != null) {
+			applicantDocuments.add(
+					getIdDocumnet(regId, PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
 		}
 		return applicantDocuments;
 	}
 
- 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
-		Documents documentsInfoDto = new Documents();;
+	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel)
+			throws IOException, PacketDecryptionFailureException, ApisResourceAccessException,
+			io.mosip.kernel.core.exception.IOException {
+		Documents documentsInfoDto = new Documents();
+		;
 		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
 		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
 		documentsInfoDto.setCategory(idDocLabel);
-		return 	documentsInfoDto;
+		return documentsInfoDto;
 	}
 
 	private int calculateAge(String applicantDob) {

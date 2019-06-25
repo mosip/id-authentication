@@ -632,6 +632,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private GridPane localAddressPane;
 	@FXML
+	private GridPane preRegParentPane;
+	@FXML
 	private VBox applicationemailIdPane;
 	@FXML
 	private VBox applicationCniOrPinNumberPane;
@@ -675,8 +677,6 @@ public class DemographicDetailController extends BaseController {
 	private String textMaleLocalLanguage;
 	private String textFemaleLocalLanguage;
 	private String textMaleCode;
-	private String textFemaleCode;
-	private Node parentDetailNode;
 
 	/*
 	 * (non-Javadoc)
@@ -698,8 +698,7 @@ public class DemographicDetailController extends BaseController {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() == null) {
 				getRegistrationDTOFromSession().setUpdateUINNonBiometric(false);
-				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN,
-						RegistrationConstants.DISABLE);
+				getRegistrationDTOFromSession().setUpdateUINChild(false);
 			}
 			postalCode.setDisable(true);
 			validation.setChild(false);
@@ -736,6 +735,8 @@ public class DemographicDetailController extends BaseController {
 			genderSettings();
 			if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 					.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				preRegParentPane.setVisible(false);
+				preRegParentPane.setManaged(false);
 				national.getStyleClass().addAll("residence", "button");
 				nationalLocalLanguage.getStyleClass().addAll("residence", "button");
 				residence.setText(RegistrationConstants.EMPTY);
@@ -909,9 +910,24 @@ public class DemographicDetailController extends BaseController {
 					parentUinIdLocalLanguageMessage.setVisible(false);
 
 				}
+				
+				parentRegId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				parentRegId.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+
+				parentUinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				parentUinId.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				
+				parentRegIdLabel.setVisible(false);
+				parentRegId.setPromptText(parentRegIdLabel.getText());
+
+				parentUinIdLabel.setVisible(false);
+				parentUinId.setPromptText(parentUinIdLabel.getText());
+
+
 
 			});
 
+			
 			uinRidToggleLabel1
 					.setOnMouseClicked(event -> switchedOnParentUinOrRid.set(!switchedOnParentUinOrRid.get()));
 			uinRidToggleLabel2
@@ -962,7 +978,17 @@ public class DemographicDetailController extends BaseController {
 				dd.clear();
 				mm.clear();
 				yyyy.clear();
+				dd.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				dd.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				mm.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				mm.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				yyyy.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				yyyy.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				ageField.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				ageField.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 
+
+				
 				ddLocalLanguage.clear();
 				mmLocalLanguage.clear();
 				yyyyLocalLanguage.clear();
@@ -989,6 +1015,10 @@ public class DemographicDetailController extends BaseController {
 
 				parentDetailPane.setManaged(false);
 				parentDetailPane.setVisible(false);
+				
+				keyboardNode.setManaged(false);
+				keyboardNode.setVisible(false);
+
 
 			});
 
@@ -1104,80 +1134,17 @@ public class DemographicDetailController extends BaseController {
 	}
 
 	/**
-	 * To restrict the user not to enter any values other than integer values.
+	 * To restrict the user not to eavcdnter any values other than integer values.
 	 */
 	private void ageBasedOperation() {
 		try {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
-			fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false);
-			ageField.textProperty().addListener((obsValue, oldValue, newValue) -> {
-				int age = 0;
-				if (newValue.matches(RegistrationConstants.NUMBER_OR_NOTHING_REGEX)) {
-					if (newValue.matches(RegistrationConstants.NUMBER_REGEX)) {
-						if (!(Integer.parseInt(ageField.getText()) > maxAge)) {
-							age = Integer.parseInt(ageField.getText());
-							LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
-							dateOfBirth = Date
-									.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
-							if (age <= minAge) {
-								if (RegistrationConstants.DISABLE.equalsIgnoreCase(
-										getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
-										&& RegistrationConstants.DISABLE
-												.equalsIgnoreCase(getValueFromApplicationContext(
-														RegistrationConstants.IRIS_DISABLE_FLAG))) {
-									isChild = true;
-									validation.setChild(isChild);
-									generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PARENT_BIO_MSG);
-
-								} else {
-									updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
-									updatePageFlow(RegistrationConstants.FINGERPRINT_CAPTURE, false);
-									updatePageFlow(RegistrationConstants.IRIS_CAPTURE, false);
-									parentRegIdLocalLanguage.clear();
-									parentRegId.clear();
-									parentUinIdLocalLanguage.clear();
-									parentUinId.clear();
-									parentDetailPane.setManaged(true);
-									parentDetailPane.setVisible(true);
-									parentDetailPane.setDisable(false);
-									parentName.clear();
-									parentNameLocalLanguage.clear();
-									parentRegId.clear();
-									isChild = true;
-									parentNameKeyboardImage.setDisable(!isChild);
-									validation.setChild(isChild);
-									
-									if(getRegistrationDTOFromSession()!=null && getRegistrationDTOFromSession().getSelectionListDTO()!=null) {
-										enableParentUIN();
-									}
-								}
-							} else {
-								updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
-								updateBioPageFlow(RegistrationConstants.FINGERPRINT_DISABLE_FLAG,
-										RegistrationConstants.FINGERPRINT_CAPTURE);
-								updateBioPageFlow(RegistrationConstants.IRIS_DISABLE_FLAG,
-										RegistrationConstants.IRIS_CAPTURE);
-
-								parentDetailPane.setManaged(false);
-								parentDetailPane.setVisible(false);
-								parentDetailPane.setDisable(true);
-								isChild = false;
-								validation.setChild(isChild);
-								parentName.clear();
-								parentNameLocalLanguage.clear();
-								parentRegId.clear();
-								parentRegIdLocalLanguage.clear();
-								parentRegId.clear();
-								parentUinIdLocalLanguage.clear();
-								parentUinId.clear();
-							}
-						}
-					}
-				} else {
-					ageField.setText(oldValue);
+			fxUtils.validateLabelFocusOut(dobParentPane, ageField, ageFieldLocalLanguage);
+			ageField.focusedProperty().addListener((obsValue, oldValue, newValue) -> {
+				if (oldValue) {
+					ageValidation(oldValue);
 				}
-
 			});
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
@@ -1186,6 +1153,86 @@ public class DemographicDetailController extends BaseController {
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}
+	}
+
+	public void ageValidation(Boolean oldValue) {
+		int age = 0;
+		if (ageField.getText().matches(RegistrationConstants.NUMBER_OR_NOTHING_REGEX)) {
+			if (ageField.getText().matches(RegistrationConstants.NUMBER_REGEX)) {
+				if (!(Integer.parseInt(ageField.getText()) > maxAge)) {
+					age = Integer.parseInt(ageField.getText());
+					LocalDate currentYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+					dateOfBirth = Date
+							.from(currentYear.minusYears(age).atStartOfDay(ZoneId.systemDefault()).toInstant());
+					if (age <= minAge) {
+						if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+								getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+								&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+										getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+							isChild = true;
+							validation.setChild(isChild);
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PARENT_BIO_MSG);
+
+						} else {
+							updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, true);
+							updatePageFlow(RegistrationConstants.FINGERPRINT_CAPTURE, false);
+							updatePageFlow(RegistrationConstants.IRIS_CAPTURE, false);
+							parentRegIdLocalLanguage.clear();
+							parentRegId.clear();
+							parentUinIdLocalLanguage.clear();
+							parentUinId.clear();
+							parentDetailPane.setManaged(true);
+							parentDetailPane.setVisible(true);
+							parentDetailPane.setDisable(false);
+							parentName.clear();
+							parentNameLocalLanguage.clear();
+							parentRegId.clear();
+							isChild = true;
+							parentNameKeyboardImage.setDisable(!isChild);
+							keyboardNode.setManaged(!isChild);
+							validation.setChild(isChild);
+
+							if (getRegistrationDTOFromSession() != null
+									&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+								enableParentUIN();
+							}
+						}
+					} else {
+						updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
+						updateBioPageFlow(RegistrationConstants.FINGERPRINT_DISABLE_FLAG,
+								RegistrationConstants.FINGERPRINT_CAPTURE);
+						updateBioPageFlow(RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.IRIS_CAPTURE);
+
+						parentFieldValidation();
+					}
+					fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false, oldValue);
+				} else {
+					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
+					dobMessage.setVisible(true);
+					generateAlert(dobParentPane, RegistrationConstants.DOB, dobMessage.getText());
+					parentFieldValidation();
+				}
+			}
+		} else {
+			ageField.setText(RegistrationConstants.EMPTY);
+		}
+	}
+
+	private void parentFieldValidation() {
+		parentDetailPane.setManaged(false);
+		parentDetailPane.setVisible(false);
+		parentDetailPane.setDisable(true);
+		isChild = false;
+		validation.setChild(isChild);
+		keyboardNode.setManaged(isChild);
+		keyboardNode.setVisible(isChild);
+		parentName.clear();
+		parentNameLocalLanguage.clear();
+		parentRegId.clear();
+		parentRegIdLocalLanguage.clear();
+		parentRegId.clear();
+		parentUinIdLocalLanguage.clear();
+		parentUinId.clear();
 	}
 
 	/**
@@ -1317,6 +1364,7 @@ public class DemographicDetailController extends BaseController {
 			VirtualKeyboard vk = VirtualKeyboard.getInstance();
 			keyboardNode = vk.view();
 			keyboardNode.setVisible(false);
+			keyboardNode.setManaged(false);
 			keyboardPane.getChildren().add(keyboardNode);
 			vk.changeControlOfKeyboard(fullNameLocalLanguage);
 			vk.changeControlOfKeyboard(addressLine1LocalLanguage);
@@ -1570,15 +1618,16 @@ public class DemographicDetailController extends BaseController {
 								.with(identity -> identity
 										.setIndividualBiometrics(buildCBEFFDTO(isCBEFFNotAvailable(applicantBiometric),
 												RegistrationConstants.APPLICANT_BIO_CBEFF_FILE_NAME)))
-								.with(identity -> identity
-										.setParentOrGuardianBiometrics( buildCBEFFDTO(isParentORGuardian(registrationDTO, introducerBiometric),
-														RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)))
+								.with(identity -> identity.setParentOrGuardianBiometrics(
+										buildCBEFFDTO(isParentORGuardian(registrationDTO, introducerBiometric),
+												RegistrationConstants.AUTHENTICATION_BIO_CBEFF_FILE_NAME)))
 								.get()))
 				.get();
 	}
-	
-	private boolean isParentORGuardian(RegistrationDTO registrationDTO,BiometricInfoDTO introducerBiometric) {
-		return !((registrationDTO.getSelectionListDTO() !=null && registrationDTO.isUpdateUINChild() && !isCBEFFNotAvailable(introducerBiometric)) 
+
+	private boolean isParentORGuardian(RegistrationDTO registrationDTO, BiometricInfoDTO introducerBiometric) {
+		return !((registrationDTO.getSelectionListDTO() != null && registrationDTO.isUpdateUINChild()
+				&& !isCBEFFNotAvailable(introducerBiometric))
 				|| (registrationDTO.getSelectionListDTO() == null && !isCBEFFNotAvailable(introducerBiometric)));
 	}
 
@@ -1620,7 +1669,7 @@ public class DemographicDetailController extends BaseController {
 	private boolean isTextFieldNotRequired(TextField demoField) {
 		return demoField.isDisabled() || demoField.getText().isEmpty();
 	}
-	
+
 	private boolean postalCodeFieldValidation(TextField demoField) {
 		return demoField.getText().isEmpty();
 	}
@@ -1651,7 +1700,6 @@ public class DemographicDetailController extends BaseController {
 		return personBiometric.getFingerprintDetailsDTO().isEmpty() && personBiometric.getIrisDetailsDTO().isEmpty()
 				&& personBiometric.getFace().getFace() == null;
 	}
-	
 
 	/**
 	 * Method will be called for uin Update
@@ -1665,6 +1713,7 @@ public class DemographicDetailController extends BaseController {
 			SessionContext.userMap().put(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION, false);
 
 			keyboardNode.setDisable(false);
+			keyboardNode.setManaged(false);
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(true);
 
 			copyPrevious.setDisable(true);
@@ -1748,7 +1797,7 @@ public class DemographicDetailController extends BaseController {
 			localRidPane.setManaged(false);
 			localRidOrUinToggle.setVisible(false);
 			localRidOrUinToggle.setManaged(false);
-			
+
 			parentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
 			localParentDetailsHbox.setAlignment(Pos.CENTER_LEFT);
 		}
@@ -1979,32 +2028,44 @@ public class DemographicDetailController extends BaseController {
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE1)) {
 				addressLine1LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(470.00);
+				keyboardNode.setManaged(true);
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE2)) {
 				addressLine2LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(555.00);
+				keyboardNode.setManaged(true);
+
 			}
 
 			if (node.getId().equals(RegistrationConstants.ADDRESS_LINE3)) {
 				addressLine3LocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(630.00);
+				keyboardNode.setManaged(true);
+
 			}
 
 			if (node.getId().equals(RegistrationConstants.FULL_NAME)) {
 				fullNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(200.00);
+				keyboardNode.setManaged(true);
+
 			}
 
 			if (node.getId().equals(RegistrationConstants.PARENT_NAME)) {
 				parentNameLocalLanguage.requestFocus();
 				keyboardNode.setLayoutY(1110.00);
+				keyboardNode.setManaged(true);
+
 			}
 			keyboardNode.setVisible(!keyboardNode.isVisible());
 			keyboardNode.visibleProperty().addListener((abs, old, newValue) -> {
 				if (old) {
-					keyboardPane.setPrefHeight(parentFlowPane.getHeight());
+					keyboardPane.maxHeight(parentFlowPane.getHeight());
 					fullNameLocalLanguage.requestFocus();
+				}else {
+					keyboardPane.maxHeight(200);
+					keyboardNode.setManaged(false);
 				}
 			});
 
@@ -2038,7 +2099,6 @@ public class DemographicDetailController extends BaseController {
 		if (!localAdminAuthority.getItems().isEmpty()) {
 			localAdminAuthority.getSelectionModel().select(0);
 		}
-		postalCode.setText("600111");
 		mobileNo.setText("9965625706");
 		emailId.setText("ayoub.toufiq@gmail.com");
 		cniOrPinNumber.setText("4545343123");
@@ -2129,7 +2189,7 @@ public class DemographicDetailController extends BaseController {
 			if (switchedOn.get()) {
 				isValid = validateDateOfBirth(isValid);
 			} else {
-				if (Integer.parseInt(ageField.getText()) > maxAge) {
+				if ( ageField.getText().length()>0 && Integer.parseInt(ageField.getText()) > maxAge) {
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
 					isValid = false;

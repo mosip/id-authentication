@@ -1,12 +1,12 @@
 {
     "id": "mosip.pre-registration.appointment.ids",
     "version": "1.0",
-    "responsetime": "2019-06-02T12:31:32.609Z",
+    "responsetime": "2019-05-20T11:04:36.927Z",
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_BOOK_RCI_032",
-            "message": "Record not found for date range and reg center id"
+            "errorCode": "PRG_CORE_REQ_019",
+            "message": "Invalid date time format"
         }
     ]
 }

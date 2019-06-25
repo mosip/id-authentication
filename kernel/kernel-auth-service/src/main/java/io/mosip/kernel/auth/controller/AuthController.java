@@ -210,7 +210,9 @@ public class AuthController {
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
 			System.out.println("Token added in response "+authResponseDto.getToken());
+			
 		}
+		System.out.println("Token in response header :::"+res.getHeader("Set-Cookie"));
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
 	}

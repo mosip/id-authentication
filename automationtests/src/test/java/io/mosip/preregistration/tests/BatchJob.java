@@ -67,18 +67,24 @@ public class BatchJob extends BaseTestCase implements ITest {
 	 */
 	@Test
 	public void batchJobForExpiredApplication() {
+		String statusCode=null;
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
+		String preID = lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse,individualToken);
+		Response avilibityResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 		dao.setDate(preID);
 		lib.expiredStatus();
-		lib.FetchAppointmentDetails(preID);
-		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID);
-		String statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
+		lib.FetchAppointmentDetails(preID,individualToken);
+		Response getPreRegistrationStatusResponse = lib.getPreRegistrationStatus(preID,individualToken);
+		try {
+			 statusCode = getPreRegistrationStatusResponse.jsonPath().get("response.statusCode").toString();
+			
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false,"falied to get status from get preregistartion status response");
+		}
 		lib.compareValues(statusCode, "Expired");
 
 	
@@ -89,21 +95,27 @@ public class BatchJob extends BaseTestCase implements ITest {
 	 */
 	@Test
 	public void batchJobForConsumedApplication() {
+		String preID = null;
+		String message=null;
 		List preRegistrationId = new ArrayList();
 		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
 		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest);
-		String preID = createResponse.jsonPath().get("response.preRegistrationId").toString();
-		Response documentResponse = lib.documentUpload(createResponse);
-		Response avilibityResponse = lib.FetchCentre();
-		lib.BookAppointment(documentResponse, avilibityResponse, preID);
+		Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
+		preID=lib.getPreId(createResponse);
+		Response documentResponse = lib.documentUpload(createResponse,individualToken);
+		Response avilibityResponse = lib.FetchCentre(individualToken);
+		lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
 		preRegistrationId.add(preID);
 		lib.reverseDataSync(preRegistrationId);
 		Response consumedResponse = lib.consumedStatus();
-		String message = consumedResponse.jsonPath().get("response").toString();
+		try {
+			 message = consumedResponse.jsonPath().get("response").toString();
+		} catch (NullPointerException e) {
+			Assert.assertTrue(false,"Exception while getting message from consumed API");
+		}
 		lib.compareValues(message, "Demographic status to consumed updated successfully");
-		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID);
-		message = getPreRegistrationDataResponse.jsonPath().get("errors[0].message").toString();
+		Response getPreRegistrationDataResponse = lib.getPreRegistrationData(preID,individualToken);
+		message =lib.getErrorMessage(getPreRegistrationDataResponse);
 		lib.compareValues(message, "No data found for the requested pre-registration id");
 	}
 	@Override
@@ -114,8 +126,15 @@ public class BatchJob extends BaseTestCase implements ITest {
 	@BeforeMethod(alwaysRun=true)
 	public void login( Method method)
 	{
-		authToken=lib.getToken();
 		testCaseName="preReg_BatchJob_" + method.getName();
+	}
+	@BeforeClass
+	public void getToken()
+	{
+		if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
 	}
 	@AfterMethod
 	public void setResultTestName(ITestResult result, Method method) {

@@ -47,7 +47,8 @@ import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
- * Class to handles all the operations when the machine is rempaped
+ * Class {@code CenterMachineReMapServiceImpl} to handles all the operations
+ * when the machine is rempaped
  * 
  * @author balamurugan.ramamoorthy
  * @author Brahmananda Reddy
@@ -82,7 +83,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 	@Autowired
 	private AuditManagerService auditFactory;
-	
+
 	@Autowired
 	private GlobalParamService globalParamService;
 
@@ -91,7 +92,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * handleReMapProcess()
 	 */
 	@Override
@@ -107,15 +108,23 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 			switch (step) {
 			case 1:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 1  disableAllSyncJobs started");
 				disableAllSyncJobs();
 				break;
 			case 2:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 2  syncAndUploadAllPendingPackets started");
 				syncAndUploadAllPendingPackets();
 				break;
 			case 3:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 3  deleteRegAndPreRegPackets started");
 				deleteRegAndPreRegPackets();
 				break;
 			case 4:
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 4  cleanUpCenterSpecificData started");
 				cleanUpCenterSpecificData();
 				break;
 			default:
@@ -133,7 +142,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			handleReMapProcess(i);
 		}
 	}
-	
+
 	/**
 	 * disable all sync jobs
 	 */
@@ -153,16 +162,21 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 
 					/* sync packet status from server to Reg client */
 					packetStatusService.packetSyncStatus(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"packetSyncStatus completed");
 					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_STATUS_SYNCHED, "REGISTRATION",
 							AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
 					/* sync and upload the reg packets to server */
-					packetSynchService.packetSync(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-
+					packetSynchService.syncAllPackets();
+					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"syncAllPackets completed");
 					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKET_SYNCHED, "REGISTRATION",
 							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 					packetUploadService.uploadAllSyncedPackets();
+					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"uploadAllSyncedPackets completed");
 					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKETS_UPLOADED, "REGISTRATION",
 							AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
@@ -194,7 +208,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 		if (!isPacketsPendingForProcessing()) {
 			/* clean up all the pre reg data and previous center data */
 			cleanUpRemappedMachineData();
-
+			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+					"Step 1  Remap table clean up Completed");
 			auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CLEAN_UP, "REGISTRATION",
 					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 			/*
@@ -212,6 +227,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 				}
 
 				updateAllSyncJobs(true);
+				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+						"Step 1  Enabled all sync jobs after remap success");
 			}
 		}
 	}
@@ -219,7 +236,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * isPacketsPendingForProcessing()
 	 */
 	@Override
@@ -232,7 +249,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * isPacketsPendingForEOD()
 	 */
 	@Override
@@ -259,7 +276,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.CenterMachineReMapService#
+	 * @see io.mosip.registration.service.remap.CenterMachineReMapService#
 	 * isMachineRemapped()
 	 */
 	@Override
@@ -288,8 +305,10 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 			if (isNotNullNotEmpty(preRegistrationLists)) {
 				preRegistrationDataSyncDAO.deleteAll(preRegistrationLists);
 			}
-			FileUtils.deleteDirectory(
-					FileUtils.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
+			FileUtils.deleteDirectory(FileUtils
+					.getFile((String) ApplicationContext.map().get(RegistrationConstants.PRE_REG_PACKET_LOCATION)));
+			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+					"Step 1  Deleted all the pre reg packets due to remap");
 		} catch (IOException exception) {
 
 			LOGGER.error("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,

@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbHealthcheck.DBHealthCheck;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertPreReg;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -64,7 +64,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 	ObjectMapper mapper = new ObjectMapper();
 	static Response Actualresponse = null;
 	static JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+ ApplicationLibrary appLib =new ApplicationLibrary();
 	private static String preReg_URI ;
 	static String dest = "";
 	static String configPaths = "";
@@ -114,9 +114,9 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		if (testCaseName.toLowerCase().contains("smoke")) {
-			Response createResponse = lib.CreatePreReg();
+			Response createResponse = lib.CreatePreReg(individualToken);
 			preId = createResponse.jsonPath().get("response.preRegistrationId").toString();
-			Response getPreRegistrationResponse = lib.getPreRegistrationData(preId);
+			Response getPreRegistrationResponse = lib.getPreRegistrationData(preId,individualToken);
 			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response.preRegistrationId").toString(),
 					preId);
 			lib.compareValues(getPreRegistrationResponse.jsonPath().get("response.demographicDetails").toString(),
@@ -125,7 +125,7 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 
 		} else {
 			try {
-				Actualresponse = applicationLibrary.getRequestParm(preReg_URI,actualRequest);
+				Actualresponse = appLib.getWithPathParam(preReg_URI,actualRequest,individualToken);
 
 			} catch (Exception e) {
 				logger.info(e);
@@ -182,7 +182,6 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		lib.logOut();
 	}
 
 	@BeforeMethod
@@ -190,7 +189,10 @@ public class GetPreRegistartionData extends BaseTestCase implements ITest {
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		 preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchRegistrationDataURI");
-		  authToken = lib.getToken();
+		 if(!lib.isValidToken(individualToken))
+			{
+				individualToken=lib.getToken();
+			}
 	}
 
 	@Override

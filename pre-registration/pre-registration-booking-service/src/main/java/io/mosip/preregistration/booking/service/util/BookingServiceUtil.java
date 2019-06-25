@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +38,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
@@ -83,6 +88,7 @@ import io.mosip.preregistration.core.common.dto.ResponseWrapper;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * This class provides the utility methods for Booking application.
@@ -131,6 +137,9 @@ public class BookingServiceUtil {
 
 	@Value("${notification.url}")
 	private String notificationResourseurl;
+	
+	@Value("${preregistration.country.specific.zoneId}")
+	private String specificZoneId;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -382,10 +391,12 @@ public class BookingServiceUtil {
 	}
 
 	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
-		LocalDateTime current = LocalDateTime.now();
+		
+		ZonedDateTime currentTime = ZonedDateTime.now();
+		LocalDateTime requestTimeCountrySpecific=currentTime.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDateTime();
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForCancle method of Booking Service for current Date Time- " + current);
-		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+				"In timeSpanCheckForCancle method of Booking Service for request Date Time- " + requestTimeCountrySpecific);
+		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForCancel)
 			return true;
 		else
@@ -393,11 +404,13 @@ public class BookingServiceUtil {
 					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 	}
 
-	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
-		LocalDateTime current = LocalDateTime.now();
+	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime,Date requestTime) {
+		
+		LocalDateTime requestTimeCountrySpecific=requestTime.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDateTime();
+		
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForRebook method of Booking Service for current Date Time- " + current);
-		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+				"In timeSpanCheckForRebook method of Booking Service for request Date Time- " + requestTimeCountrySpecific);
+		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForRebook)
 			return true;
 		else
@@ -405,6 +418,7 @@ public class BookingServiceUtil {
 					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 
 	}
+	
 
 	/**
 	 * This method will do booking time slots.
@@ -492,7 +506,7 @@ public class BookingServiceUtil {
 			} else if (isNull(bookingRequestDTO.getRegDate())) {
 				throw new BookingDateNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_008.getCode(),
 						ErrorMessages.BOOKING_DATE_TIME_NOT_SELECTED.getMessage());
-			} else if (isNull(bookingRequestDTO.getSlotFromTime()) && isNull(bookingRequestDTO.getSlotToTime())) {
+			} else if (isNull(bookingRequestDTO.getSlotFromTime()) || isNull(bookingRequestDTO.getSlotToTime())) {
 				throw new BookingTimeSlotNotSeletectedException(ErrorCodes.PRG_BOOK_RCI_003.getCode(),
 						ErrorMessages.USER_HAS_NOT_SELECTED_TIME_SLOT.getMessage());
 			}
@@ -708,45 +722,47 @@ public class BookingServiceUtil {
 	 * @param notificationDTO
 	 * @param langCode
 	 * @return NotificationResponseDTO
+	 * @throws JsonProcessingException
 	 */
-	public void emailNotification(NotificationDTO notificationDTO, String langCode) {
+	public void emailNotification(NotificationDTO notificationDTO, String langCode) throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
 		ResponseEntity<String> resp = null;
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setTimeZone(TimeZone.getDefault());
 		try {
-		request.setRequest(notificationDTO);
-		request.setId("mosip.pre-registration.notification.notify");
-		request.setVersion("1.0");
-		request.setRequesttime(new Date());
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
-		emailMap.add("NotificationRequestDTO", request);
-		emailMap.add("langCode", langCode);
-		HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
-		log.info("sessionId", "idType", "id",
-				"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
-		resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
-		List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
-		if (!validationErrorList.isEmpty()) {
-			throw new NotificationException(validationErrorList,null);
-		} 
+			request.setRequest(notificationDTO);
+			request.setId("mosip.pre-registration.notification.notify");
+			request.setVersion("1.0");
+			request.setRequesttime(new Date());
+			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+			MultiValueMap<Object, Object> emailMap = new LinkedMultiValueMap<>();
+			emailMap.add("NotificationRequestDTO", mapper.writeValueAsString(request));
+			emailMap.add("langCode", langCode);
+			HttpEntity<MultiValueMap<Object, Object>> httpEntity = new HttpEntity<>(emailMap, headers);
+			log.info("sessionId", "idType", "id",
+					"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
+			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
+			List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
+			if (validationErrorList != null && !validationErrorList.isEmpty()) {
+				throw new NotificationException(validationErrorList, null);
+			}
 		} catch (HttpClientErrorException ex) {
 			log.error("sessionId", "idType", "id",
 					"In emailNotification method of Booking Service Util for HttpClientErrorException- "
 							+ ex.getMessage());
-			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_025.getCode(),
-					ErrorMessages.DEMOGRAPHIC_SERVICE_CALL_FAILED.getMessage());
+			throw new RestCallException(ErrorCodes.PRG_BOOK_RCI_033.getCode(),
+					ErrorMessages.NOTIFICATION_CALL_FAILED.getMessage());
 
 		}
 	}
 
 	/**
-	 * This static method is used to check whether the appointment date is valid or
-	 * not
+	 * This method is used to check whether the appointment date is valid or not
 	 * 
-	 * @param regDate
+	 * @param requestMap
 	 * @return true if the appointment date time is not older date or false if the
 	 *         appointment date is older date
 	 */
@@ -754,23 +770,61 @@ public class BookingServiceUtil {
 		try {
 			if (requestMap.get(RequestCodes.REG_DATE.getCode()) != null
 					&& !requestMap.get(RequestCodes.REG_DATE.getCode()).isEmpty()) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				sdf.setLenient(false);
+				sdf.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				if (localDate.isBefore(LocalDate.now())) {
-					throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-							ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+					throw new InvalidRequestParameterException(
+							ErrorCodes.PRG_BOOK_RCI_031.getCode(), ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()
+									+ " found for - " + requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
+							null);
 				} else if (localDate.isEqual(LocalDate.now())
 						&& (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
 								&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
 					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
 					if (localTime.isBefore(LocalTime.now())) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for - "
+										+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
+								null);
 					}
 				}
 			}
 		} catch (Exception ex) {
 			throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
-					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()+" found for preregistration id - "+requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()), null);
+					ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for preregistration id - "
+							+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
+					null);
+		}
+		return true;
+	}
+
+	/**
+	 * This method is used to validate from date and to date params
+	 * 
+	 * @param fromDate
+	 * @param toDate
+	 * @param format
+	 * @return true or false
+	 */
+	public boolean validateFromDateAndToDate(String fromDate, String toDate, String format) {
+		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
+
+		if (isNull(fromDate) || !ValidationUtil.parseDate(fromDate, format)) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
+		} else if (!isNull(toDate) && !ValidationUtil.parseDate(toDate, format)) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
+		} else if (!isNull(fromDate) && !isNull(toDate)
+				&& ((LocalDate.parse(fromDate)).isAfter(LocalDate.parse(toDate)))) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_020.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.FROM_DATE_GREATER_THAN_TO_DATE.getMessage(),
+					null);
 		}
 		return true;
 	}

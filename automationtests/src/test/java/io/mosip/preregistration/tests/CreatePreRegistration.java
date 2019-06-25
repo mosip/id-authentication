@@ -1,4 +1,5 @@
 
+
 package io.mosip.preregistration.tests;
 
 import java.io.FileWriter;
@@ -25,13 +26,12 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -64,12 +64,12 @@ public SoftAssert softAssert = new SoftAssert();
 	public ObjectMapper mapper = new ObjectMapper();
 	public Response Actualresponse = null;
 	public JSONObject Expectedresponse = null;
-	private  ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	public ApplicationLibrary appLib=new ApplicationLibrary();
 	private static  CommonLibrary commonLibrary = new CommonLibrary();
 	private static  String preReg_URI;
 	public String dest = "";
 	public String configPaths = "";
-	public String folderPath = "preReg\\Create_PreRegistration";
+	public String folderPath = "preReg//Create_PreRegistration";
 	public String outputFile = "Create_PreRegistrationOutput.json";
 	public String requestKeyFile = "Create_PreRegistrationRequest.json";
 
@@ -87,12 +87,17 @@ public SoftAssert softAssert = new SoftAssert();
 	 * @throws IOException
 	 * @throws ParseException
 	 */
+	
+	
+	
+	
+	
 	@DataProvider(name = "createPreReg")
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 		
 		
-		switch ("smokeAndRegression") {
+		switch (testLevel) {
 
 		case "smoke":
 			return ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smoke");
@@ -125,7 +130,7 @@ public SoftAssert softAssert = new SoftAssert();
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
 
-			Actualresponse = applicationLibrary.postRequest(actualRequest.toJSONString(), preReg_URI);
+			Actualresponse = appLib.postWithJson( preReg_URI,actualRequest.toJSONString(),individualToken);
 			logger.info("Actual res::"+Actualresponse.asString()+"Prereg URI:"+preReg_URI);
 		} catch (Exception e) {
 			logger.info(e);
@@ -188,11 +193,14 @@ public SoftAssert softAssert = new SoftAssert();
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-		//lib.logOut();
 	}
 
 	@BeforeMethod(alwaysRun=true)
 	public static void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
+		if(!lib.isValidToken(individualToken))
+		{
+			individualToken=lib.getToken();
+		}
 		JSONObject object = (JSONObject) testdata[2];
 		testCaseName = object.get("testCaseName").toString();
 		/*
@@ -200,14 +208,13 @@ public SoftAssert softAssert = new SoftAssert();
 		 */
 
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_CreateApplnURI");
-		authToken = lib.getToken();
-
+		
 	}
-
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 	}
+
 
 }
 

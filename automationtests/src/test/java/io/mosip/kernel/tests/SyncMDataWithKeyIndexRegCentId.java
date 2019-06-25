@@ -1,6 +1,5 @@
 package io.mosip.kernel.tests;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,7 +15,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -45,11 +43,8 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 
 	// Declaration of all variables
 	private static Logger logger = Logger.getLogger(SyncMDataWithKeyIndexRegCentId.class);
-	private final String jiraID = "MOS-8888";
 	private final String moduleName = "kernel";
 	private final String apiName = "SyncMDataWithKeyIndexRegCentId";
-	private final String requestJsonName = "SyncMDataWithKeyIndexRegCentIdRequest";
-	private final String outputJsonName = "SyncMDataWithKeyIndexRegCentIdOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String syncMdatawithRegCentIdKeyIndex = props.get("syncMdatawithRegCentIdKeyIndex").toString();
 
@@ -74,7 +69,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) throws Exception {
 		String object = (String) testdata[0];
-		testCaseName = object.toString();
+		testCaseName = moduleName+"_"+apiName+"_"+object.toString();
 		cookie=auth.getAuthForRegistrationAdmin();
 	}
 
@@ -88,7 +83,7 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 	public Object[][] readData(ITestContext context)
 			throws JsonParseException, JsonMappingException, IOException, ParseException {
 	
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 
 		/**
@@ -100,9 +95,8 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 		 */
 		@SuppressWarnings("unchecked")
 		@Test(dataProvider = "fetchData", alwaysRun = true)
-		public void syncMDataWithKeyIndexRegCentId(String testcaseName, JSONObject object){
+		public void syncMDataWithKeyIndexRegCentId(String testcaseName){
 			logger.info("Test Case Name:" + testcaseName);
-			object.put("Jira ID", jiraID);
 
 			// getting request and expected response jsondata from json files.
 			JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
@@ -114,8 +108,6 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 				regId.put("regcenterId", regcenterId);
 				objectData.remove("regcenterId");
 					response = applicationLibrary.getWithPathQueryParam(syncMdatawithRegCentIdKeyIndex, regId, objectData, cookie);
-
-		logger.info("response----"+response.asString());
 		//This method is for checking the authentication is pass or fail in rest services
 		new CommonLibrary().responseAuthValidation(response);
 		
@@ -124,17 +116,11 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 			listOfElementToRemove.add("responsetime");
 			listOfElementToRemove.add("lastSyncTime");
 			status = assertions.assertKernel(response, responseObject, listOfElementToRemove);
-		
-
 			if (!status) {
 				logger.debug(response);
-				object.put("status", "Fail");
-			} else if (status) {
-				object.put("status", "Pass");
 			}
 			Verify.verify(status);
 			softAssert.assertAll();
-			arr.add(object);
 	}
 
 	@Override
@@ -157,15 +143,4 @@ public class SyncMDataWithKeyIndexRegCentId extends BaseTestCase implements ITes
 		}
 	}
 
-	/**
-	 * this method write the output to corressponding json
-	 */
-	@AfterClass
-	public void updateOutput() throws IOException {
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
-		try (FileWriter file = new FileWriter(configPath)) {
-			file.write(arr.toString());
-			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
-		}
-	}
 }

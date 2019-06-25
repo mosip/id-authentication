@@ -1,13 +1,13 @@
 {
-    "id": null,
-    "version": null,
-    "responsetime": "2019-04-17T11:35:17.807Z",
-    "metadata": null,
-    "response": null,
+  "id": null,
+  "version": null,
+  "responsetime": "2019-06-11T06:59:58.771Z",
+  "metadata": null,
+  "response": null,
   "errors": [
     {
       "errorCode": "KER-MSD-042",
-      "errorMessage": "Registration Center not found"
+      "message": "Registration Center not found"
     }
   ]
 }

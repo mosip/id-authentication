@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
@@ -28,6 +29,7 @@ import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 
 import org.springframework.context.annotation.Primary;
 
@@ -134,5 +136,15 @@ public class CoreConfigBean {
 	@Bean
 	public DigitalSignatureUtility getDigitalSignatureUtility() {
 		return new DigitalSignatureUtility();
+	}
+	
+	@Bean
+	public LogDescription getLogDescription() {
+		return new LogDescription();
+	}
+	
+	@Bean
+	public RegistrationExceptionMapperUtil getRegistrationExceptionMapperUtil() {
+		return new RegistrationExceptionMapperUtil();
 	}
 }

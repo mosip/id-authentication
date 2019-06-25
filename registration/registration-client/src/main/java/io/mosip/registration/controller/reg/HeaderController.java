@@ -25,6 +25,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RestartController;
 import io.mosip.registration.controller.auth.LoginController;
+import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -131,6 +132,9 @@ public class HeaderController extends BaseController {
 
 	@Autowired
 	private LoginController loginController;
+
+	@Autowired
+	private WebCameraController webCameraController;
 
 	/**
 	 * Mapping Registration Officer details
@@ -259,7 +263,7 @@ public class HeaderController extends BaseController {
 						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
 		} else {
-			generateAlert(RegistrationUIConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
 	}
 
@@ -434,9 +438,8 @@ public class HeaderController extends BaseController {
 						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
 								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
 
-						ResponseDTO responseDto = jobConfigurationService.executeAllJobs();
+						return jobConfigurationService.executeAllJobs();
 
-						return responseDto;
 					}
 				};
 			}
@@ -600,5 +603,12 @@ public class HeaderController extends BaseController {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 			softwareUpdate(pane, progressIndicator, context, isPreLaunchTaskToBeStopped);
 		}
+	}
+
+	/**
+	 * This method closes the webcam, if opened, whenever the menu bar is clicked.
+	 */
+	public void closeOperations() {
+		webCameraController.closeWebcam();
 	}
 }

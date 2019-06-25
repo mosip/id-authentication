@@ -71,8 +71,8 @@ public class CryptomanagerExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> noSuchAlgorithmException(HttpServletRequest httpServletRequest,
 			final NoSuchAlgorithmException e) throws IOException {
 		ExceptionUtils.logRootCause(e);
-		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
-				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(
+				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -105,7 +105,7 @@ public class CryptomanagerExceptionHandler {
 						HttpStatus.OK),
 				HttpStatus.OK);
 	}
-	
+
 	@ExceptionHandler(DateTimeParseException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> dateTimeParseException(HttpServletRequest httpServletRequest,
 			final DateTimeParseException e) throws IOException {
@@ -202,16 +202,16 @@ public class CryptomanagerExceptionHandler {
 	public ResponseEntity<ResponseWrapper<ServiceError>> parseResponseException(HttpServletRequest httpServletRequest,
 			final ParseResponseException e) throws IOException {
 		ExceptionUtils.logRootCause(e);
-		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
-				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(
+				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
-	
+
 	@ExceptionHandler(CryptoManagerSerivceException.class)
-	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServieException(HttpServletRequest httpServletRequest,
-			final CryptoManagerSerivceException e) throws IOException {
+	public ResponseEntity<ResponseWrapper<ServiceError>> cryptoManagerServieException(
+			HttpServletRequest httpServletRequest, final CryptoManagerSerivceException e) throws IOException {
 		ExceptionUtils.logRootCause(e);
-		return new ResponseEntity<>(getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(),
-				HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(
+				getErrorResponse(httpServletRequest, e.getErrorCode(), e.getErrorText(), HttpStatus.OK), HttpStatus.OK);
 	}
 
 	@ExceptionHandler(KeymanagerServiceException.class)
@@ -220,7 +220,7 @@ public class CryptomanagerExceptionHandler {
 		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getList());
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 	private ResponseWrapper<ServiceError> setErrors(HttpServletRequest httpServletRequest) throws IOException {

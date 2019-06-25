@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.validation.Valid;
-
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
@@ -15,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.RidValidator;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.token.validation.TokenValidator;
@@ -51,15 +55,22 @@ public class PrintApiController {
 	@Autowired
 	private PrintService<Map<String, byte[]>> printservice;
 
-	/** Token validator class */
+	/**  Token validator class. */
 	@Autowired
 	TokenValidator tokenValidator;
 
+	/** The Constant ID_VALUE. */
 	private static final String ID_VALUE = "idValue";
 
+	/** The validator. */
 	@Autowired
 	private PrintServiceRequestValidator validator;
 
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder the binder
+	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
@@ -69,6 +80,7 @@ public class PrintApiController {
 	@Autowired
 	private RidValidator<String> ridValidator;
 
+	/** The uin validator impl. */
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
 
@@ -76,53 +88,66 @@ public class PrintApiController {
 	 * Gets the file.
 	 *
 	 * @param printRequest the print request DTO
+	 * @param token the token
+	 * @param errors the errors
+	 * @param printRequest
+	 *            the print request DTO
 	 * @return the file
-	 * @throws RegPrintAppException
+	 * @throws RegPrintAppException the reg print app exception
 	 */
-
-	@PostMapping(path = "/uincard", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN')")
+	@PostMapping(path = "/uincard", produces = "application/json")
 	@ApiOperation(value = "Service to get Pdf of UIN Card", response = Object.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "UIN card is successfully fetched")})
-	public ResponseEntity<Object> getFile(@Valid @RequestBody(required = true) PrintRequest printRequest,
-			@CookieValue(value = "Authorization", required = true) String token,
-										  @ApiIgnore Errors errors)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "UIN card is successfully fetched") })
+	public ResponseEntity<Object> getFile(@Valid @RequestBody PrintRequest printRequest, @ApiIgnore Errors errors)
 			throws RegPrintAppException {
 
-		tokenValidator.validate("Authorization=" + token, "uin-card");
-        validateRequest(printRequest.getRequest(), errors);
-        PrintServiceValidationUtil.validate(errors);
-        byte[] pdfbytes = printservice.getDocuments(printRequest.getRequest().getIdtype()
-                , printRequest.getRequest().getIdValue()).get("uinPdf");
+		validateRequest(printRequest.getRequest(), errors);
+		PrintServiceValidationUtil.validate(errors);
+
+		byte[] pdfbytes = printservice
+				.getDocuments(printRequest.getRequest().getIdtype(), printRequest.getRequest().getIdValue())
+				.get("uinPdf");
+
 		InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(pdfbytes));
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
-                .header("Content-Disposition", "attachment; filename=\"" +
-                        printRequest.getRequest().getIdValue() + ".pdf\"")
-                .body((Object) resource);
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))
+				.header("Content-Disposition",
+						"attachment; filename=\"" + printRequest.getRequest().getIdValue() + ".pdf\"")
+				.body((Object) resource);
 
 	}
 
+	/**
+	 * Validate request.
+	 *
+	 * @param dto the dto
+	 * @param errors the errors
+	 * @throws RegPrintAppException the reg print app exception
+	 */
 	private void validateRequest(RequestDTO dto, Errors errors ) throws RegPrintAppException{
 		if(!errors.hasErrors()) {
 			if (Objects.isNull(dto)) {
-				errors.rejectValue("request", PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
+				throw new RegPrintAppException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 						String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), "request"));
 			} else if (Objects.isNull(dto.getIdtype())) {
-				errors.rejectValue("idType", PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
+				throw new RegPrintAppException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 						String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), "idType"));
 			} else if (Objects.isNull(dto.getIdValue())) {
-				errors.rejectValue(ID_VALUE, PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
+				throw new RegPrintAppException(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 						String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), ID_VALUE));
 			} else if (dto.getIdtype().equals(IdType.RID)) {
 				try {
 					ridValidator.validateId(dto.getIdValue());
-				} catch(InvalidIDException ex){
-					throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED.getCode(), ex.getMessage());
+				} catch (InvalidIDException ex) {
+					throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED.getCode(),
+							ex.getMessage());
 				}
 			} else if (dto.getIdtype().equals(IdType.UIN)) {
 				try {
 					uinValidatorImpl.validateId(dto.getIdValue());
-				} catch(InvalidIDException ex){
-					throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED.getCode(), ex.getMessage());
+				} catch (InvalidIDException ex) {
+					throw new RegPrintAppException(PlatformErrorMessages.RPR_PRT_DATA_VALIDATION_FAILED.getCode(),
+							ex.getMessage());
 				}
 			}
 		}

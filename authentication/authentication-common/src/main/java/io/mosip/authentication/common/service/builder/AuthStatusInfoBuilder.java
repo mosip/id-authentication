@@ -71,6 +71,7 @@ public class AuthStatusInfoBuilder {
 	 * @param listMatchInputs  the list match inputs
 	 * @param listMatchOutputs the list match outputs
 	 * @param authTypes        the auth types
+	 * @param idMappingConfig the id mapping config
 	 * @return the auth status info
 	 */
 	public static AuthStatusInfo buildStatusInfo(boolean demoMatched, List<MatchInput> listMatchInputs,
@@ -86,6 +87,7 @@ public class AuthStatusInfoBuilder {
 	 *
 	 * @param listMatchOutputs  the list match outputs
 	 * @param statusInfoBuilder the status info builder
+	 * @param idaMappingConfig the ida mapping config
 	 */
 	/**
 	 * prepares the list of errors if the authentication status got failed

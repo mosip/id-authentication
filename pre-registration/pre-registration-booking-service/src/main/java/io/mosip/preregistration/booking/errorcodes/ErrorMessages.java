@@ -58,10 +58,6 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
-	INVALID_DATE_TIME_FORMAT("Invalid date time format"),
-	/**
-	 * ErrorMessage for PRG_TRL_APP_001
-	 */
 	APPOINTMENT_CANNOT_BE_BOOKED("Appointment cannot be booked"),
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
@@ -70,7 +66,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
-	APPOINTMENT_BOOKING_FAILED("Appointment booking failed"),
+	APPOINTMENT_BOOKING_FAILED("Appointment booking/re-booking cannot be done"),
 	/**
 	 * ErrorMessage for PRG_TRL_APP_001
 	 */
@@ -170,7 +166,13 @@ public enum ErrorMessages {
 	 */
 	INVALID_BOOKING_DATE_TIME("Invalid Booking Date Time"),
 	
-	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id");
+	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id"),
+	
+	NOTIFICATION_CALL_FAILED("Notification service call failed"),
+	
+	JSON_PROCESSING_EXCEPTION("Json processing exception"),
+	
+	REG_CENTER_ID_NOT_FOUND("Registration center id not found");
 	/**
 	 * @param code
 	 */

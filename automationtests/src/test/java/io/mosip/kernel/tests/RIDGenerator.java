@@ -1,13 +1,12 @@
 package io.mosip.kernel.tests;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -18,7 +17,6 @@ import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -48,11 +46,8 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	}
 
 	private static Logger logger = Logger.getLogger(RIDGenerator.class);
-	private final String jiraID = "MOS-18217";
 	private final String moduleName = "kernel";
 	private final String apiName = "RIDGenerator";
-	private final String requestJsonName = "RIDGeneratorRequest";
-	private final String outputJsonName = "RIDGeneratorOutput";
 	private final Map<String, String> props = new CommonLibrary().readProperty("Kernel");
 	private final String RIDGenerator_URI = props.get("RIDGenerator_URI").toString();
 	private final int ridGenerationCount = 5;
@@ -93,7 +88,7 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 	 */
 	@DataProvider(name = "fetchData")
 	public Object[][] readData(ITestContext context){
-		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel, requestJsonName);
+		return new TestCaseReader().readTestCases(moduleName + "/" + apiName, testLevel);
 		}
 
 		/**
@@ -107,9 +102,8 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		 */
 		@SuppressWarnings("unchecked")
 		@Test(dataProvider = "fetchData", alwaysRun = true)
-		public void ridGenerator(String testcaseName, JSONObject object) throws NumberFormatException, ParseException{
+		public void ridGenerator(String testcaseName) throws NumberFormatException, ParseException{
 			logger.info("Test Case Name:" + testcaseName);
-			object.put("Jira ID", jiraID);
 
 			// getting request and expected response jsondata from json files.
 			JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
@@ -123,12 +117,14 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		if (testcaseName.toLowerCase().contains("smoke")) {
 
 			String rid = ((JSONObject)((JSONObject) new JSONParser().parse(response.asString())).get("response")).get("rid").toString();
-			String timeStampWithHour = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()).replace(".", "").substring(0, 8);
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+			String timeStamp = simpleDateFormat.format(new Date()).substring(0, 10);
 			
 			boolean lengthValid = rid.length()==29;
 			boolean centidValid = rid.substring(0, 5).equals(objectData.get("centerid"));
 			boolean machidValid = rid.substring(5, 10).equals(objectData.get("machineid"));
-			boolean ridTimestampvalid = timeStampWithHour.equals(rid.substring(15,23));
+			boolean ridTimestampvalid = timeStamp.equals(rid.substring(15, 25));
 			boolean alphabetValid = rid.substring(10,15).matches("[0-9]+");
 			boolean sequenceValid = true;
 			
@@ -165,13 +161,9 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 
 		if (!status) {
 			logger.debug(response);
-			object.put("status", "Fail");
-		} else if (status) {
-			object.put("status", "Pass");
 		}
 		Verify.verify(status);
 		softAssert.assertAll();
-		arr.add(object);
 	}
 
 	@Override
@@ -194,15 +186,5 @@ public class RIDGenerator extends BaseTestCase implements ITest{
 		}
 	}
 
-	/**
-	 * this method write the output to corressponding json
-	 */
-	@AfterClass
-	public void updateOutput() throws IOException {
-		String configPath = "src/test/resources/" + moduleName + "/" + apiName + "/" + outputJsonName + ".json";
-		try (FileWriter file = new FileWriter(configPath)) {
-			file.write(arr.toString());
-			logger.info("Successfully updated Results to " + outputJsonName + ".json file.......................!!");
-		}
-	}
 }
+

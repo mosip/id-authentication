@@ -54,7 +54,10 @@ public enum AuthErrorCode {
 	 * Empty Cookie error
 	 */
 	TOKEN_NOTPRESENT_ERROR("KER-ATH-007", "Token is not present in cookies"),
-
+	/**
+	 * Token Datastore error
+	 */
+	TOKEN_DATASTORE_ERROR("KER-ATH-008", "Token is not present in datastore,Please try with new token"),
 	/**
 	 * Client error
 	 */

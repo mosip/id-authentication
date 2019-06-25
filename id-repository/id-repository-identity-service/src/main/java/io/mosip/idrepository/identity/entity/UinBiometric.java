@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 /**
- * The Class UinBiometric.
+ * The Class UinBiometric - Entity class for uin_biometric table.
  *
  * @author Manoj SP
  */

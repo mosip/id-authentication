@@ -1,10 +1,10 @@
 package io.mosip.kernel.bioapi.impl;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.stereotype.Component;
 
@@ -48,7 +48,7 @@ public class BioApiImpl implements IBioApi{
 					Arrays.equals(recordedValue.getBdb(), sample.getBdb())) {
 				matchingScore[count].setInternalScore(90);
 			}else {
-				matchingScore[count].setInternalScore(ThreadLocalRandom.current().nextInt(10, 50));
+				matchingScore[count].setInternalScore(new SecureRandom().nextInt(50));
 			}
 			count ++;
 		} 

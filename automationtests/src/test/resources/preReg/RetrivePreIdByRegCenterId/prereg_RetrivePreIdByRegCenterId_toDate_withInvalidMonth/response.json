@@ -1,12 +1,12 @@
 {
     "id": "mosip.pre-registration.appointment.ids",
     "version": "1.0",
-    "responsetime": "2019-05-20T11:50:53.789Z",
+    "responsetime": "2019-05-20T11:04:36.927Z",
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_BOOK_RCI_009",
-            "message": "INVALID_DATE_TIME_FORMAT"
+            "errorCode": "PRG_CORE_REQ_019",
+            "message": "Invalid date time format"
         }
     ]
 }

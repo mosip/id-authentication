@@ -37,6 +37,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 	public void readPropertiesFile() {
 		initialize();
 	}
+
 	@Test
 	public void validateOtpSendToMobileNo() {
 		testSuite = "SendOtp/SendOtpMobile";
@@ -49,10 +50,10 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		testSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, otp);
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
-		
+
 		lib.compareValues(validateOTPRes.jsonPath().get("response.message").toString(), "VALIDATION_SUCCESSFUL");
 	}
-	
+
 	@Test
 	public void validateOtpSendToEmail() {
 		testSuite = "SendOtp/SendOtpToEmail";
@@ -67,6 +68,7 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("response.message").toString(), "VALIDATION_SUCCESSFUL");
 	}
+/*
 	@Test
 	public void validateExpired() {
 		testSuite = "SendOtp/SendOtpMobile";
@@ -86,20 +88,21 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "OTP_EXPIRED");
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_LGN_013");
-	}
+	}*/
+
 	@Test
-	public void validateWithoutGeneratingOtp(){
-		
+	public void validateWithoutGeneratingOtp() {
+
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, "9804605101", "385140");
 		Response validateOTPRes = lib.validateOTP(validateOTPRequest);
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].message").toString(), "User Detail doesn't exist");
 		lib.compareValues(validateOTPRes.jsonPath().get("errors[0].errorCode").toString(), "KER-ATH-003");
 	}
-	
+
 	@Test
 	public void blockedUser() {
-		List<String> otps=new ArrayList<String>();
+		List<String> otps = new ArrayList<String>();
 		testSuite = "SendOtp/SendOtpMobile";
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
 		JSONObject sendOtpRequest = lib.otpRequest(testSuite);
@@ -108,14 +111,14 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		response = lib.generateOTP(sendOtpRequest);
 		String otp = dao.getOTP(userId).get(0);
 		JSONObject validateOTPRequest = lib.validateOTPRequest(validateTestSuite, userId, "236578");
-		for(int i=1;i<=10;i++)
-		{
+		for (int i = 1; i <= 10; i++) {
 			lib.validateOTP(validateOTPRequest);
 		}
 		Response validateOTP = lib.validateOTP(validateOTPRequest);
 		String message = validateOTP.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "USER_BLOCKED");
 	}
+
 	@Test
 	public void validateWithInvalidOtp() {
 		testSuite = "SendOtp/SendOtpMobile";
@@ -129,9 +132,10 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		String message = validateOTP.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "VALIDATION_UNSUCCESSFUL");
 	}
+
 	@Test
 	public void validateWithInvalidUserID() {
-		List<String> otps=new ArrayList<String>();
+		List<String> otps = new ArrayList<String>();
 		testSuite = "SendOtp/SendOtpMobile";
 		String validateTestSuite = "validateOTP/validateOTP_smoke";
 		JSONObject sendOtpRequest = lib.otpRequest(testSuite);
@@ -144,30 +148,30 @@ public class ValidateOtp extends BaseTestCase implements ITest {
 		String message = validateOTP.jsonPath().get("errors[0].message").toString();
 		lib.compareValues(message, "User Detail doesn't exist");
 	}
+
 	@Override
 	public String getTestName() {
 		return this.testCaseName;
 
 	}
-	@BeforeMethod(alwaysRun = true)
-	public void login( Method method)
-	{
-		testCaseName="preReg_Demogarphic_" + method.getName();
-		authToken=lib.getToken();
-		
-	}
-@AfterMethod
-public void setResultTestName(ITestResult result, Method method) {
-	try {
-		BaseTestMethod bm = (BaseTestMethod) result.getMethod();
-		Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
-		f.setAccessible(true);
-		f.set(bm, "preReg_Demogarphic_" + method.getName());
-	} catch (Exception ex) {
-		Reporter.log("ex" + ex.getMessage());
-	}
-	lib.logOut();
-}
 
+	@BeforeMethod(alwaysRun = true)
+	public void login(Method method) {
+		testCaseName = "preReg_Demogarphic_" + method.getName();
+		authToken = lib.getToken();
+
+	}
+
+	@AfterMethod
+	public void setResultTestName(ITestResult result, Method method) {
+		try {
+			BaseTestMethod bm = (BaseTestMethod) result.getMethod();
+			Field f = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+			f.setAccessible(true);
+			f.set(bm, "preReg_Authentication_" + method.getName());
+		} catch (Exception ex) {
+			Reporter.log("ex" + ex.getMessage());
+		}
+	}
 
 }

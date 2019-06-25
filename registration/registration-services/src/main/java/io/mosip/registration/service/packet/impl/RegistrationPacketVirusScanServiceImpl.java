@@ -31,7 +31,7 @@ import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
  * Implementation class for {@link RegistrationPacketVirusScanService}
  * 
  * @author saravanakumar gnanaguru
- *
+ * @since 1.0.0
  */
 @Service
 public class RegistrationPacketVirusScanServiceImpl extends BaseService implements RegistrationPacketVirusScanService {

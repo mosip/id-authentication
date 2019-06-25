@@ -45,6 +45,7 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 public class RestClientAuthAdvice {
 
 	private static final String INVALID_TOKEN_STRING = "Invalid Token";
+	private static final String TOKEN_EXPIRED = "Token expired";
 
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
@@ -90,7 +91,7 @@ public class RestClientAuthAdvice {
 			Object response = joinPoint.proceed(joinPoint.getArgs());
 
 			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-					"Adding authZ token to web service request header if required completed ---> "+ response);
+					"Adding authZ token to web service request header if required completed" + response);
 			
 			if (handleInvalidTokenFromResponse(response, joinPoint)) {
 				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
@@ -258,14 +259,15 @@ public class RestClientAuthAdvice {
 	private boolean handleInvalidTokenFromResponse(Object response, ProceedingJoinPoint joinPoint)
 			throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-				"Entering into the invlalid token check" + response);
-		if (response != null && StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING)) {
+				"Entering into the invlalid token check");
+		if (response != null && (StringUtils.containsIgnoreCase(response.toString(), TOKEN_EXPIRED) || 
+				StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING))) {
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 			getNewAuthZToken(requestHTTPDTO);
 			return true;
 		}
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-				"leaving to this invlalid token check" + response);
+				"leaving to this invlalid token check");
 		return false;
 	}
 }

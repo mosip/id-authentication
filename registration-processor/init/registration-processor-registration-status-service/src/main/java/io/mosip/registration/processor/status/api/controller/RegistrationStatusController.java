@@ -64,14 +64,13 @@ public class RegistrationStatusController {
 	TokenValidator tokenValidator;
 
 	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.processor.registration.status.id";
-	private static final String REG_STATUS_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String REG_STATUS_APPLICATION_VERSION = "mosip.registration.processor.registration.status.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 	@Autowired
 	private Environment env;
 
-	Gson gson = new GsonBuilder().create();
 
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;

@@ -1,7 +1,9 @@
 package io.mosip.registration.dao;
 
+import io.mosip.registration.entity.GlobalParam;
+
 /**
- * Interface for GlobalParam to fetch only specified columns from table
+ * This class is used to fetch only specified columns from {@link GlobalParam} table
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -10,14 +12,14 @@ package io.mosip.registration.dao;
 public interface GlobalParamName {
 
 	/**
-	 * To fetch only name column from table
+	 * This method is used to fetch only name column from {@link GlobalParam} table
 	 * 
 	 * @return name
 	 */
 	String getName();
 
 	/**
-	 * To fetch only value column from table
+	 * This method is used to fetch only value column from {@link GlobalParam} table
 	 * 
 	 * @return value
 	 */

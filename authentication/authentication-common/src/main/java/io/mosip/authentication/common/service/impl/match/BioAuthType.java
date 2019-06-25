@@ -13,7 +13,6 @@ import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.DataDTO;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.BiFunctionWithBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
@@ -33,14 +32,14 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRMIN_LEFT_MIDDLE, BioMatchType.FGRMIN_LEFT_RING, BioMatchType.FGRMIN_LEFT_LITTLE,
 					BioMatchType.FGRMIN_RIGHT_THUMB, BioMatchType.FGRMIN_RIGHT_INDEX, BioMatchType.FGRMIN_RIGHT_MIDDLE,
 					BioMatchType.FGRMIN_RIGHT_RING, BioMatchType.FGRMIN_RIGHT_LITTLE, BioMatchType.FGRMIN_UNKNOWN),
-			getFingerprint(), count -> count == 1) {
+			getFingerprint(), count -> count == 1, "bio-FMR") {
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+				 String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
+						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher.getBioMatcherUtil()::matchValue;
 						valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
@@ -57,15 +56,15 @@ public enum BioAuthType implements AuthType {
 					BioMatchType.FGRIMG_LEFT_MIDDLE, BioMatchType.FGRIMG_LEFT_RING, BioMatchType.FGRIMG_LEFT_LITTLE,
 					BioMatchType.FGRIMG_RIGHT_THUMB, BioMatchType.FGRIMG_RIGHT_INDEX, BioMatchType.FGRIMG_RIGHT_MIDDLE,
 					BioMatchType.FGRIMG_RIGHT_RING, BioMatchType.FGRIMG_RIGHT_LITTLE),
-			getFingerprint(), value -> value == 1) {
-		
+			getFingerprint(), value -> value == 1, "bio-FIR") {
+
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
+						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher.getBioMatcherUtil()::matchValue;
 						valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 						valueMap.put(BioAuthType.class.getSimpleName(), this);
 					});
@@ -77,15 +76,16 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRIMG_COMPOSITE);
 		}
 	},
-	FGR_MIN_COMPOSITE("FMR", AuthType.setOf(BioMatchType.FGRMIN_COMPOSITE), getFingerprint(), value -> value == 2) {
+	FGR_MIN_COMPOSITE("FMR", AuthType.setOf(BioMatchType.FGRMIN_COMPOSITE), getFingerprint(), value -> value == 2,
+			"bio-FMR") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+				 String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchMultiValue;
+						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher.getBioMatcherUtil()::matchMultiValue;
 						valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 					});
 			return valueMap;
@@ -103,15 +103,15 @@ public enum BioAuthType implements AuthType {
 		}
 	},
 	FGR_MIN_MULTI("FMR", AuthType.setOf(BioMatchType.FGRMIN_MULTI), getFingerprint(),
-			value -> value >= 3 && value <= 10) {
-		
+			value -> value >= 3 && value <= 10, "bio-FMR") {
+
 		@Override
-		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, 
+				IdInfoFetcher idInfoFetcher, String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchMultiValue;
+						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher.getBioMatcherUtil()::matchMultiValue;
 						valueMap.put(IdaIdMapping.FINGERPRINT.getIdname(), func);
 					});
 			return valueMap;
@@ -128,15 +128,15 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getFPValuesCountInIdentity(reqDTO, helper, BioMatchType.FGRMIN_COMPOSITE);
 		}
 	},
-	IRIS_COMP_IMG("IIR", AuthType.setOf(BioMatchType.IRIS_COMP), "Iris", value -> value == 2) {
+	IRIS_COMP_IMG("IIR", AuthType.setOf(BioMatchType.IRIS_COMP), "Iris", value -> value == 2, "bio-IIR") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchMultiValue;
+						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher.getBioMatcherUtil()::matchMultiValue;
 						valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
 					});
 			return valueMap;
@@ -155,15 +155,15 @@ public enum BioAuthType implements AuthType {
 
 	},
 	IRIS_IMG("IIR", AuthType.setOf(BioMatchType.RIGHT_IRIS, BioMatchType.LEFT_IRIS, BioMatchType.IRIS_UNKNOWN), "Iris",
-			value -> value == 1) {
+			value -> value == 1, "bio-IIR") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+				 String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
+						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher.getBioMatcherUtil()::matchValue;
 						valueMap.put(IdaIdMapping.IRIS.getIdname(), func);
 
 					});
@@ -181,15 +181,16 @@ public enum BioAuthType implements AuthType {
 			return BioAuthType.getIrisValuesCountInIdentity(reqDTO, helper);
 		}
 	},
-	FACE_IMG("FID", AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), "face", value -> value == 1) {
+	FACE_IMG("FID", AuthType.setOf(BioMatchType.FACE, BioMatchType.FACE_UNKNOWN), "face", value -> value == 1,
+			"bio-FID") {
 
 		@Override
 		public Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO, IdInfoFetcher idInfoFetcher,
-				BioMatcherUtil bioMatcherUtil, String language) {
+				String language) {
 			Map<String, Object> valueMap = new HashMap<>();
 			authRequestDTO.getRequest().getBiometrics().stream().map(BioIdentityInfoDTO::getData)
 					.filter(bioinfo -> bioinfo.getBioType().equals(this.getType())).forEach((DataDTO bioinfovalue) -> {
-						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = bioMatcherUtil::matchValue;
+						BiFunctionWithBusinessException<Map<String, String>, Map<String, String>, Double> func = idInfoFetcher.getBioMatcherUtil()::matchValue;
 						valueMap.put(IdaIdMapping.FACE.getIdname(), func);
 					});
 			return valueMap;
@@ -229,6 +230,8 @@ public enum BioAuthType implements AuthType {
 
 	private IntPredicate countPredicate;
 
+	private String configKey;
+
 	/**
 	 * Instantiates a new bio auth type.
 	 *
@@ -238,9 +241,10 @@ public enum BioAuthType implements AuthType {
 	 * @param count                the count
 	 */
 	private BioAuthType(String type, Set<MatchType> associatedMatchTypes, String displayName,
-			IntPredicate countPredicate) {
+			IntPredicate countPredicate, String configKey) {
 		authTypeImpl = new AuthTypeImpl(type, associatedMatchTypes, displayName);
 		this.countPredicate = countPredicate;
+		this.configKey = configKey;
 	}
 
 	protected abstract Long getBioIdentityValuesCount(AuthRequestDTO reqDTO, IdInfoFetcher helper);
@@ -318,9 +322,9 @@ public enum BioAuthType implements AuthType {
 	/**
 	 * This method accepts the bioType and it will return Optional of BioAuthType
 	 * only when the count is single.
-	 * 
-	 * @param type
-	 * @return
+	 *
+	 * @param type the type
+	 * @return the single bio auth type for type
 	 */
 	public static Optional<BioAuthType> getSingleBioAuthTypeForType(String type) {
 		BioAuthType[] values = BioAuthType.values();
@@ -329,9 +333,25 @@ public enum BioAuthType implements AuthType {
 			return authType.getType().equalsIgnoreCase(type) && authType.getCountPredicate().test(singleBioCount);
 		}).findAny();
 	}
+	
+	public static Optional<String> getTypeForConfigKey(String configKey) {
+		BioAuthType[] values = BioAuthType.values();
+		return Stream.of(values).filter(authtype-> authtype.getConfigKey()
+				.equalsIgnoreCase(configKey))
+				.map(BioAuthType::getType).findAny();
+	}
 
+	/**
+	 * Gets the count predicate.
+	 *
+	 * @return the count predicate
+	 */
 	public IntPredicate getCountPredicate() {
 		return countPredicate;
+	}
+
+	public String getConfigKey() {
+		return configKey;
 	}
 
 	@Override
