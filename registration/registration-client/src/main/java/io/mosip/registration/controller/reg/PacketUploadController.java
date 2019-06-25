@@ -154,7 +154,7 @@ public class PacketUploadController extends BaseController implements Initializa
 				if (!selectedPackets.isEmpty()) {
 					List<PacketStatusDTO> packetsToBeSynced = new ArrayList<>();
 					selectedPackets.forEach(packet -> {
-						if (packet.getPacketServerStatus() != null && !packet.getPacketServerStatus()
+						if (packet.getPacketServerStatus() == null || !packet.getPacketServerStatus()
 								.equalsIgnoreCase(RegistrationConstants.SERVER_STATUS_RESEND)) {
 							PacketStatusDTO packetStatusVO = new PacketStatusDTO();
 							packetStatusVO.setClientStatusComments(packet.getClientStatusComments());

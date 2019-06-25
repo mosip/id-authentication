@@ -204,7 +204,7 @@ public class HeaderController extends BaseController {
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
-
+			stopTimer();
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 
 			getScene(loginpage);
