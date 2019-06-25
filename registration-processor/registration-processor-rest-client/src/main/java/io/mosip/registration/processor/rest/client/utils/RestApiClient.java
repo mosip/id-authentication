@@ -309,11 +309,11 @@ public class RestApiClient {
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), "Resonse body=> "+responseBody);
 			Header[] cookie = response.getHeaders("Set-Cookie");
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), "Cookie => "+cookie);
 			if (cookie.length == 0)
 				throw new TokenGenerationFailedException();
 			String token = response.getHeaders("Set-Cookie")[0].getValue();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), "Cookie => "+cookie[0]);
 
 			return token.substring(0, token.indexOf(';'));
 		} catch (IOException e) {
