@@ -2,7 +2,6 @@ package io.mosip.registration.test.jobs;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -41,7 +40,6 @@ import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.GlobalParam;
 import io.mosip.registration.entity.SyncControl;
@@ -101,9 +99,6 @@ public class JobConfigurationServiceTest {
 	List<SyncJobDef> syncJobList;
 
 	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
-
-	@Mock
-	ResponseDTOForSync responseDTOForSync;
 
 	@Before
 	public void intiate() {
@@ -371,11 +366,8 @@ public class JobConfigurationServiceTest {
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		initiateJobTest();
 
-		List<String> list = new LinkedList<>();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
 		Mockito.when(packetSyncJob.executeJob(Mockito.anyString(), Mockito.anyString())).thenReturn(responseDTO);
-		Mockito.when(responseDTOForSync.getErrorJobs()).thenReturn(list);
-		Mockito.when(responseDTOForSync.getSuccessJobs()).thenReturn(list);
 
 		Assert.assertNotNull(jobConfigurationService.executeAllJobs());
 	}
