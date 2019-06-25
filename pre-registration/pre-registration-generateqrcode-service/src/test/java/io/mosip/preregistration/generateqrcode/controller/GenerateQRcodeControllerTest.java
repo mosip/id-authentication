@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.NotificationDTO;
 import io.mosip.preregistration.generateqrcode.GenerateQRcodeApplicationTests;
@@ -56,8 +57,7 @@ public class GenerateQRcodeControllerTest {
 	private NotificationDTO notificationDTO;
 
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
-	
-	MainResponseDTO<Map<String,String>> configRes = new MainResponseDTO<>();
+	MainRequestDTO<Object> requestdata=new MainRequestDTO<>();
 
 	@Before
 	public void setUp() {
@@ -81,11 +81,12 @@ public class GenerateQRcodeControllerTest {
 	@WithUserDetails("INDIVIDUAL")
 	@Test
 	public void qrCodeGenerationTest() throws Exception {
-		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
+		
+		
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
 
 		String stringjson = mapper.writeValueAsString(notificationDTO);
-		Mockito.when(service.generateQRCode(stringjson)).thenReturn(response);
+		Mockito.when(service.generateQRCode(requestdata)).thenReturn(response);
 		mockMvc.perform(post("/generate").contentType(MediaType.APPLICATION_JSON)
 				.content(stringjson)).andExpect(status().isOk());
 		
