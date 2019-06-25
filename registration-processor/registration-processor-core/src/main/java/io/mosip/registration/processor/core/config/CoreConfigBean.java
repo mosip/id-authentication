@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -75,7 +76,7 @@ public class CoreConfigBean {
 			});
 			configLoader.get();
 		} catch (Exception exception) {
-			regProcLogger.error(this.getClass().getName(), "", "", exception.getMessage());
+			regProcLogger.error(this.getClass().getName(), "", "", ExceptionUtils.getStackTrace(exception));
 		}
 		return new PropertySourcesPlaceholderConfigurer();
 	}

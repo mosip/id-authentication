@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>core-processor</artifactId>
-		<version>0.12.12</version>
+		<version>0.12.13</version>
 	</parent>
 	<artifactId>registration-processor-uin-generator-stage</artifactId>
 
