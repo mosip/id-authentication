@@ -29,7 +29,6 @@ import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -467,23 +466,25 @@ public class HeaderController extends BaseController {
 
 	}
 
-	@Autowired
-	ResponseDTOForSync responseDTOForSync;
-
 	private void progressTask() {
-		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size();
+		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size()-jobConfigurationService.getOfflineJobs().size()-jobConfigurationService.getUnTaggedJobs().size();
 		Service<String> progressTask = new Service<String>() {
 			@Override
 			protected Task<String> createTask() {
+				BaseJob.successJob.clear();
+				BaseJob.getCompletedJobMap().clear();
 				return new Task<String>() {
+					double success=0;
 					@Override
 					protected String call() {
-
-						while (responseDTOForSync.getErrorJobs().size()
-								+ responseDTOForSync.getSuccessJobs().size() != totalJobs) {
+						while (BaseJob.getCompletedJobMap().size() != totalJobs) {
+							success= BaseJob.successJob.size();
 							packetHandlerController.syncProgressBar
-									.setProgress(responseDTOForSync.getSuccessJobs().size() / totalJobs);
+									.setProgress(success / totalJobs);
 						}
+						success= BaseJob.successJob.size();
+						packetHandlerController.syncProgressBar
+						.setProgress(success / totalJobs);
 						return null;
 
 					}

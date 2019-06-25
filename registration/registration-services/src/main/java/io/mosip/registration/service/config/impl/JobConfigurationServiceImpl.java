@@ -50,7 +50,6 @@ import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
@@ -692,9 +691,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	}
 
-	@Autowired
-	ResponseDTOForSync responseDTOForSync;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -704,9 +700,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO executeAllJobs() {
 		ResponseDTO responseDTO = new ResponseDTO();
-
+		BaseJob.successJob.clear();
 		BaseJob.clearCompletedJobMap();
-
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
@@ -724,13 +719,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 				if (jobResponse.getErrorResponseDTOs() != null) {
 					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
-					responseDTOForSync.getErrorJobs().add(syncJob.getKey());
-				} else {
-					responseDTOForSync.getSuccessJobs().add(syncJob.getKey());
-				}
+				} 
 			}
 		}
-
+		
 		if (!isEmpty(failureJobs)) {
 			setErrorResponse(responseDTO, failureJobs.toString().replace("[", "").replace("]", ""), null);
 		}

@@ -1,7 +1,9 @@
 package io.mosip.registration.jobs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -60,6 +62,7 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	private static  Map<String,String> completedJobMap = new HashMap<>();
 	
+	public static List<String> successJob=new ArrayList<String>();
 	
 	/**
 	 * LOGGER for logging
@@ -258,6 +261,9 @@ public abstract class BaseJob extends QuartzJobBean {
 	
 	public void addToCompletedJobMap(String jobId,String status) {
 		completedJobMap.put(jobId, status);
+		if(status.contains("success")) {
+			successJob.add(jobId);
+		}
 	}
 	
 	public static Map<String,String> getCompletedJobMap(){
