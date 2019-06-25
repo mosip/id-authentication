@@ -736,13 +736,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			inputLangCodeList.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
 		}
-
+		//validate to check if data is received in all configured languages
 		if (!inputLangCodeList.containsAll(supLanguages)) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
-
+		//validate to check if data is received for only one registration center
 		if (new HashSet<String>(inputIdList).size() > 1) {
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
@@ -815,13 +815,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			inputLangCodeList.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
 		}
-
+        //validate to check if data is received in all configured languages
 		if (!inputLangCodeList.containsAll(supLanguages)) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
-
+		//validate to check if data is received for only one registration center
 		if (new HashSet<String>(inputIdList).size() > 1) {
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
