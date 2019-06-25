@@ -41,7 +41,6 @@ import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.idobjectvalidator.constant.IdObjectValidatorSupportedOperations;
 import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
@@ -113,7 +112,6 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				schema = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 			}
 		} catch (IOException e) {
-			ExceptionUtils.logRootCause(e);
 			throw new IdObjectIOException(SCHEMA_IO_EXCEPTION, e);
 		}
 	}
@@ -172,10 +170,8 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			}
 			return report.isSuccess();
 		} catch (IOException e) {
-			ExceptionUtils.logRootCause(e);
 			throw new IdObjectIOException(ID_OBJECT_PARSING_FAILED, e);
 		} catch (ProcessingException e) {
-			ExceptionUtils.logRootCause(e);
 			throw new IdObjectIOException(ID_OBJECT_VALIDATION_FAILED, e);
 		}
 	}
@@ -253,7 +249,6 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				// creating a JsonSchema node against which the JSON object will be validated.
 				jsonSchemaNode = JsonLoader.fromURL(new URL(configServerFileStorageURL + schemaName));
 			} catch (IOException e) {
-				ExceptionUtils.logRootCause(e);
 				throw new IdObjectIOException(SCHEMA_IO_EXCEPTION, e);
 			}
 		}
@@ -263,7 +258,6 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 			try {
 				jsonSchemaNode = JsonLoader.fromResource(PATH_SEPERATOR.getValue() + schemaName);
 			} catch (IOException e) {
-				ExceptionUtils.logRootCause(e);
 				throw new IdObjectIOException(SCHEMA_IO_EXCEPTION.getErrorCode(), SCHEMA_IO_EXCEPTION.getMessage(),
 						e.getCause());
 			}
