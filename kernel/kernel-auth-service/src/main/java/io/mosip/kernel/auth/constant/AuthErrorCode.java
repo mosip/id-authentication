@@ -92,7 +92,8 @@ public enum AuthErrorCode {
 	ROLLBACK_USER_EXCEPTION("KER-ATH-017","Exception occured while rolling back user"),
 	
 	INVALID_DN("KER-ATH-018","Exception occured while creating DN"), 
-	INVALID_REQUEST("KER-ATH-019","should not be null or empty");
+	INVALID_REQUEST("KER-ATH-019","should not be null or empty"),
+	REST_EXCEPTION("KER-ATH-020","Error occured while consuming restservice");
 	
 	
 

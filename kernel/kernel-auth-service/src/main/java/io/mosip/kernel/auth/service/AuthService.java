@@ -6,6 +6,7 @@ package io.mosip.kernel.auth.service;
 import java.util.List;
 
 import io.mosip.kernel.auth.dto.AuthNResponse;
+import io.mosip.kernel.auth.dto.AuthResponseDto;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
@@ -54,5 +55,9 @@ public interface AuthService extends AuthZService, AuthNService {
 	public UserRoleDto getUserRole(String appId, String userId) throws Exception;
 
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception;
+	
+	public MosipUserDto valdiateToken(String token);
+	
+	public AuthResponseDto logoutUser(String token);
 
 }

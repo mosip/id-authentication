@@ -8,11 +8,14 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +24,7 @@ import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
+import io.mosip.kernel.auth.dto.AuthResponseDto;
 import io.mosip.kernel.auth.dto.AuthToken;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.ClientSecret;
@@ -251,6 +255,19 @@ public class AuthController {
 		}
 		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
 		return responseWrapper;
+	}
+
+	/**
+	 * API to validate token
+	 * 
+	 * 
+	 * @return ResponseEntity with MosipUserDto
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/authorize/admin/validateToken")
+	public ResponseWrapper<MosipUserDto> validateToken(@RequestBody String token) {
+		authService.valdiateToken(token);
+		return null;
 	}
 
 	/**
@@ -491,6 +508,15 @@ public class AuthController {
 		MosipUserDto mosipUserDto = authService.getUserDetailBasedonMobileNumber(appId, mobile);
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	@DeleteMapping(value = "/logout/user")
+	public ResponseWrapper<AuthResponseDto> logoutUser(@CookieValue(value = "Authorization", required = false) String token) {
+		AuthResponseDto authResponseDto = authService.logoutUser(token);
+		ResponseWrapper<AuthResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authResponseDto);
 		return responseWrapper;
 	}
 }

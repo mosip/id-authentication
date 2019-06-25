@@ -1,22 +1,42 @@
 package io.mosip.kernel.auth.service.impl;
 
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.keycloak.KeycloakSecurityContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
+import io.mosip.kernel.auth.dto.AuthResponseDto;
 import io.mosip.kernel.auth.dto.AuthToken;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.BasicTokenDto;
@@ -46,6 +66,7 @@ import io.mosip.kernel.auth.service.TokenService;
 import io.mosip.kernel.auth.service.UinService;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * Auth Service for Authentication and Authorization
@@ -81,6 +102,13 @@ public class AuthServiceImpl implements AuthService {
 
 	@Autowired
 	MosipEnvironment mosipEnvironment;
+
+	@Autowired
+	// @Qualifier(value="keycloak")
+	private RestTemplate restTemplate;
+
+	@Value("${mosip.kernel.open-id-uri}")
+	private String openIdUrl;
 
 	/**
 	 * Method used for validating Auth token
@@ -444,13 +472,60 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception {
-           KeycloakSecurityContext keCtx=getKeycloakSecurityContext();
-           System.out.println("realm---->"+keCtx.getRealm());
+
 		return userStoreFactory.getDataStoreBasedOnApp(appId).getUserDetailBasedonMobileNumber(mobileNumber);
 	}
 
-	private KeycloakSecurityContext getKeycloakSecurityContext() {
-		return (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+	// TODO
+	@Override
+	public MosipUserDto valdiateToken(String token) {
+		DecodedJWT decodeJwt = JWT.decode(token);
+		String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtNpbpxq8l5Ej/I/OX84gXTMgYKYRW3SeDpJiq1wH/prJUOwU/fKxFVJZxwKcRmzRwrrZbK3UmIgg4hQ77/T80RnJ4OeBcr5Qmnoqm+26qhzyvVw4U71HkcpAmIZRLv3/CBM+znp9kEvT84mm/9l7etS6nXkNIFXvHPn5PXSFY9DpawS9UVrAxfplZOSUH28CsfXz2iYfBDGtvFSl+PNz3S0XBcON7HvapUjm4zcOo1/df6f9Dgk2mQ0po7zieEsZfUWmtd5DyKkX7kKNXJ6cI3KhOD5Mwj2PSFxav0Lh09tJTRm3BP0asxyALtNKuq2z0Do0ER09ICgna+F/p7MA6wIDAQAB";
+		RSAPublicKey RSAPubKey = null;
+		try {
+			RSAPubKey = (RSAPublicKey) KeyFactory.getInstance("RS512")
+					.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKey)));
+		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Algorithm algorithm = Algorithm.RSA512(RSAPubKey, null);
+		JWTVerifier verifier = JWT.require(algorithm).withIssuer("pk-signing-example").build();
+
+		return null;
+	}
+
+	Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+/*
+ * (non-Javadoc)
+ * @see io.mosip.kernel.auth.service.AuthService#logoutUser(java.lang.String)
+ */
+	@Override
+	public AuthResponseDto logoutUser(String token) {
+		Map<String, String> pathparams = new HashMap<>();
+		pathparams.put("realmId", "mosip");
+		ResponseEntity<String> response = null;
+		AuthResponseDto authResponseDto = new AuthResponseDto();
+		StringBuilder urlBuilder = new StringBuilder().append(openIdUrl).append("logout");
+		
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString())
+				.queryParam("id_token_hint", token);
+		try {
+			response = restTemplate.getForEntity(uriComponentsBuilder.buildAndExpand(pathparams).toUriString(),
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
+					AuthErrorCode.REST_EXCEPTION.getErrorMessage() + e.getResponseBodyAsString());
+		}
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+			authResponseDto.setMessage("successfully loggedout");
+			authResponseDto.setStatus("Success");
+		} else {
+			authResponseDto.setMessage("log out failed");
+			authResponseDto.setStatus("Failed");
+		}
+		return authResponseDto;
 	}
 
 }
