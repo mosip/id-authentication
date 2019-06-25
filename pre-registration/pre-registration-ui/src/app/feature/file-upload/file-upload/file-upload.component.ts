@@ -140,7 +140,6 @@ export class FileUploadComponent implements OnInit {
       this.users[0] = JSON.parse(JSON.stringify(this.registration.getUser(this.registration.getUsers().length - 1)));
       this.activeUsers = JSON.parse(JSON.stringify(this.registration.getUsers()));
     }
-
     this.loggerService.info('active users', this.activeUsers);
   }
 
