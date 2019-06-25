@@ -65,9 +65,12 @@ public class MasterdataSearchHelper {
 		TypedQuery<T> executableQuery = entityManager.createQuery(selectQuery);
 		// creating executable query from count criteria query
 		TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
-		// getting the rows count
 
-		System.out.println(executableQuery.toString());
+		System.out.println("Select Query :" + executableQuery.unwrap(org.hibernate.query.Query.class).getQueryString());
+
+		System.out.println(
+				"Count Query :" + countExecutableQuery.unwrap(org.hibernate.query.Query.class).getQueryString());
+		// getting the rows count
 		Long rows = countExecutableQuery.getSingleResult();
 		// adding pagination
 		paginationQuery(executableQuery, searchDto.getPagination());
@@ -112,7 +115,7 @@ public class MasterdataSearchHelper {
 			}
 		}
 		if ("EQUALS".equalsIgnoreCase(filter.getType())) {
-			return builder.equal(rootQuery.get(filter.getColumnName()), filter.getValue());
+			return buildPredicate(builder, rootQuery, filter.getColumnName(), filter.getValue());
 		}
 		if ("STARTSWITH".equalsIgnoreCase(filter.getType())) {
 			String value = filter.getValue();
@@ -164,7 +167,7 @@ public class MasterdataSearchHelper {
 			String toValue = filter.getToValue();
 			String fromValue = filter.getFromValue();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
-				return builder.between(rootQuery.get(columnName), DateUtils.convertUTCToLocalDateTime(fromValue),
+				return builder.between(rootQuery.get(columnName), DateUtils.parseToLocalDateTime(fromValue),
 						DateUtils.convertUTCToLocalDateTime(toValue));
 			}
 			if (Long.class.getName().equals(fieldType)) {
@@ -189,6 +192,46 @@ public class MasterdataSearchHelper {
 			throw new MasterDataServiceException("", "column name is invalid:" + filter.getColumnName());
 		}
 		return null;
+	}
+
+	private <T> Object parseDataType(Root<T> root, String column, String value) {
+		Path<Object> path = root.get(column);
+		if (path != null) {
+			Class<? extends Object> type = path.getJavaType();
+			String fieldType = type.getTypeName();
+			if (LocalDateTime.class.getName().equals(fieldType)) {
+				return DateUtils.parseToLocalDateTime(value);
+			}
+			if (Long.class.getName().equals(fieldType)) {
+				return Long.parseLong(value);
+			}
+			if (Integer.class.getName().equals(fieldType)) {
+				return Integer.parseInt(value);
+			}
+			if (Float.class.getName().equals(fieldType)) {
+				return Float.parseFloat(value);
+			}
+			if (Double.class.getName().equals(fieldType)) {
+				return Double.parseDouble(value);
+			}
+		}
+		return value;
+	}
+
+	private <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, String column, String value) {
+		Predicate predicate = null;
+		Path<Object> path = root.get(column);
+		if (path != null) {
+			Class<? extends Object> type = path.getJavaType();
+			String fieldType = type.getTypeName();
+			if (LocalDateTime.class.getName().equals(fieldType)) {
+				LocalDateTime start = DateUtils.parseToLocalDateTime(value);
+				predicate = builder.between(root.get(column), start, start.plusNanos(1000000l));
+			} else {
+				predicate = builder.equal(root.get(column), parseDataType(root, column, value));
+			}
+		}
+		return predicate;
 	}
 
 }
