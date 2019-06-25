@@ -1,6 +1,5 @@
 package io.mosip.preregistration.generateqrcode.service;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,52 +69,39 @@ public class GenerateQRcodeService {
 	 * @param data
 	 * @return
 	 */
-	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(String data) {
+	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(MainRequestDTO<Object> data) {
 		byte[] qrCode = null;
 		
 		
 		log.info("sessionId", "idType", "id",
 				"In generateQRCode service of generateQRCode ");
-		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
-		
-
-		MainRequestDTO<String> qrcodedto = new MainRequestDTO<>();
+		QRCodeResponseDTO responsedto = null;
 		
 		MainResponseDTO<QRCodeResponseDTO> response = new MainResponseDTO<>();
 		
 		response.setId(Id);
 		response.setVersion(version);
 		try {
-			JSONObject qrCodeReqData = new JSONObject(data);
-
-			qrcodedto.setId(qrCodeReqData.get("id").toString());
-			qrcodedto.setVersion(qrCodeReqData.get("version").toString());
-			qrcodedto.setRequesttime(new SimpleDateFormat(utcDateTimePattern).parse(qrCodeReqData.get("requesttime").toString()) );
-			response.setId(qrcodedto.getId());
-			response.setVersion(qrcodedto.getVersion());
-			JSONObject requestvalue=(JSONObject) qrCodeReqData.get("request");
-			if(requestvalue.length()==0) {
+			response.setId(data.getId());
+			response.setVersion(data.getVersion());
+			if(data.getRequest().toString().length()==0) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
 						ErrorMessages.INVALID_REQUEST_BODY.getMessage(), null);
-			}
-			String qrCodeData =   qrCodeReqData.get("request").toString();
-			qrcodedto.setRequest(qrCodeData);
-			
-			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(qrcodedto),requiredRequestMap)) {
-			qrCode = qrCodeGenerator.generateQrCode(qrCodeData,QrVersion.valueOf(qrversion));
-			}
-			
+			}else if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(data),requiredRequestMap)) {
+				
+			qrCode = qrCodeGenerator.generateQrCode(data.getRequest().toString(),QrVersion.valueOf(qrversion));
+			responsedto = new QRCodeResponseDTO();
 			responsedto.setQrcode(qrCode);
-
+			}
+			
+			response.setResponse(responsedto);
+			response.setResponsetime(serviceUtil.getCurrentResponseTime());
+			
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In generateQRCode service of generateQRCode "+ex.getMessage());
 			new QRcodeExceptionCatcher().handle(ex,response);
 		}
-		
-		response.setResponse(responsedto);
-		response.setResponsetime(serviceUtil.getCurrentResponseTime());
-		
 
 		return response;
 	}
