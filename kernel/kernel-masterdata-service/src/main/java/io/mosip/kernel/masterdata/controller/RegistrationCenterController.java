@@ -23,11 +23,14 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.swagger.annotations.Api;
@@ -45,6 +48,7 @@ import io.swagger.annotations.ApiParam;
  * @author Sidhant Agarwal
  * @author Srinivasan
  * @author Uday Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -317,7 +321,7 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@PostMapping("/registrationcenters/admin")
 	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto) {
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterReqAdmDto> registrationCenterDto) {
       ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(registrationCenterService.createRegistrationCenterAdmin(registrationCenterDto));
@@ -334,10 +338,10 @@ public class RegistrationCenterController {
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/registrationcenters/admin")
-	public ResponseWrapper<RegistrationCenterPostResponseDto> updateRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto) {
+	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> registrationCenterDto) {
 
-		 ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
+		 ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenterAdmin(registrationCenterDto));
 		return responseWrapper;
 	}

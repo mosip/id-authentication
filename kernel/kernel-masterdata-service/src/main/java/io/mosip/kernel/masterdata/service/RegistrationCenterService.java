@@ -7,11 +7,14 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -28,6 +31,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * @author Sidhant Agarwal
  * @author Srinivasan
  * @author Uday Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -188,14 +192,24 @@ public interface RegistrationCenterService {
 			String orderBy);
 
 	/**
-	 * This service method can be used to create registration center by Admin.
+	 * This service method can be used to create registration center by admin.
 	 * 
 	 * @param registrationCenterDto
 	 *            the input registration center dto.
-	 * @return the id response dto.
+	 * @return RegistrationCenterPostResponseDto - return the complete DTO
 	 */
-	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto);
-	
-	public RegistrationCenterPostResponseDto updateRegistrationCenterAdmin(RegistarionCenterReqDto<RegistrationCenterDto> registrationCenterDto);
+	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
+			RegistarionCenterReqDto<RegistrationCenterReqAdmDto> registrationCenterDto);
+
+	/**
+	 * This method updates the registration center by admin.
+	 * 
+	 * @param RegistarionCenterReqDto
+	 *            - the updated registration center DTO.
+	 * 
+	 * @return RegistrationCenterPutResponseDto - return the complete DTO
+	 */
+	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
+			RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> registrationCenterDto);
 
 }

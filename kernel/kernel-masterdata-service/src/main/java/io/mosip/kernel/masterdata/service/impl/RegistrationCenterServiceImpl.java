@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +15,7 @@ import java.util.TreeSet;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,11 +36,14 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -116,6 +121,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private LocationService locationService;
+
+	/**
+	 * get list of languages supported by MOSIP from configuration file
+	 */
+	@Value("#{'${mosip.supported-languages}'.split(',')}")
+	Set<String> supLanguages;
 
 	/*
 	 * (non-Javadoc)
@@ -702,35 +713,77 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	@Transactional
 	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
-			RegistarionCenterReqDto<RegistrationCenterDto> registarionCenterReqDto) {
+			RegistarionCenterReqDto<RegistrationCenterReqAdmDto> registarionCenterReqDto) {
 		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
-		RegistrationCenterHistory registrationCenterHistoryEntity = new RegistrationCenterHistory();
+		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		List<RegistrationCenter> registrationCenterList = new ArrayList<>();
-		List<RegistrationCenterExtnDto> registrationCenterDtoList = new ArrayList<>();
-			
+		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+		Set<String> inputLangCodeList = new HashSet<>();
+		List<String> inputIdList = new ArrayList<>();
+
+		for (RegistrationCenterReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+			try {
+				if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
+						&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
+					Float.parseFloat(registrationCenterDto.getLatitude());
+					Float.parseFloat(registrationCenterDto.getLongitude());
+				}
+			} catch (NullPointerException | NumberFormatException latLongParseException) {
+				throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
+						ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
+								+ ExceptionUtils.parseException(latLongParseException));
+			}
+			inputLangCodeList.add(registrationCenterDto.getLangCode());
+			inputIdList.add(registrationCenterDto.getId());
+		}
+
+		if (!inputLangCodeList.containsAll(supLanguages)) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
+		}
+
+		if (new HashSet<String>(inputIdList).size() > 1) {
+			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
+		}
+
 		try {
-			for (RegistrationCenterDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+			for (RegistrationCenterReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+				Float.parseFloat(registrationCenterDto.getLatitude());
+				Float.parseFloat(registrationCenterDto.getLongitude());
+				// creating registration center
+				RegistrationCenter registrationCenter;
 				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
 						registrationCenterEntity.getClass());
-				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+				/*
+				 * at the time of creation of new Registration Center Number of Kiosks value
+				 * will be Zero always
+				 */
+				registrationCenterEntity.setNumberOfKiosks((short) 0);
+				/*
+				 * Deactivate a Center during first time creation since there will be no
+				 * machines initially mapped to the Center
+				 */
+				registrationCenterEntity.setIsActive(false);
+				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
+				registrationCenterList.add(registrationCenter);
+
+				// creating registration center history
+				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
 						RegistrationCenterHistory.class);
 				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
 				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
-
-				RegistrationCenter registrationCenter;
-
-				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-				registrationCenterList.add(registrationCenter);
 				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
 			}
 
 		} catch (DataAccessLayerException | DataAccessException exception) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
 							+ ExceptionUtils.parseException(exception));
 		}
 
-		
 		RegistrationCenterPostResponseDto registrationCenterPostResponseDto = new RegistrationCenterPostResponseDto();
 		registrationCenterDtoList = MapperUtils.mapAll(registrationCenterList, RegistrationCenterExtnDto.class);
 		registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
@@ -738,28 +791,54 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
+	 * RegistarionCenterReqDto)
+	 */
 	@Transactional
 	@Override
-	public RegistrationCenterPostResponseDto updateRegistrationCenterAdmin(
-			RegistarionCenterReqDto<RegistrationCenterDto> registarionCenterReqDto) {
+	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
+			RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> registarionCenterReqDto) {
 		RegistrationCenter updRegistrationCenter = null;
 		RegistrationCenter updRegistrationCenterEntity = null;
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
-		List<RegistrationCenterDto> notUpdRegistrationCenterList = new ArrayList<>();
+		List<RegistrationCenterPutReqAdmDto> notUpdRegistrationCenterList = new ArrayList<>();
 		List<RegistrationCenter> updRegistrationCenterList = new ArrayList<>();
 
+		List<String> inputLangCodeList = new ArrayList<>();
+		List<String> inputIdList = new ArrayList<>();
+
+		for (RegistrationCenterPutReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+			inputLangCodeList.add(registrationCenterDto.getLangCode());
+			inputIdList.add(registrationCenterDto.getId());
+		}
+
+		if (!inputLangCodeList.containsAll(supLanguages)) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
+		}
+
+		if (new HashSet<String>(inputIdList).size() > 1) {
+			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
+		}
+
 		try {
-			for (RegistrationCenterDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+			for (RegistrationCenterPutReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
 
 				RegistrationCenter renRegistrationCenter = registrationCenterRepository
 						.findByIdAndLangCodeAndIsDeletedTrue(registrationCenterDto.getId(),
 								registrationCenterDto.getLangCode());
 				if (renRegistrationCenter != null) {
-					// updating reg center
+					// updating registration center
 					updRegistrationCenterEntity = MetaDataUtils.setUpdateMetaData(registrationCenterDto,
 							renRegistrationCenter, false);
 					updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
-					// creating reg center history
+					// creating registration center history
 					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
 					MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
 					MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
@@ -781,11 +860,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 							+ ExceptionUtils.parseException(exception));
 		}
 
-		RegistrationCenterPostResponseDto registrationCenterPostResponseDto = new RegistrationCenterPostResponseDto();
+		RegistrationCenterPutResponseDto registrationCenterPutResponseDto = new RegistrationCenterPutResponseDto();
 		registrationCenterDtoList = MapperUtils.mapAll(updRegistrationCenterList, RegistrationCenterExtnDto.class);
-		registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
-		registrationCenterPostResponseDto.setNotUpdatedRegCenters(notUpdRegistrationCenterList);
-		return registrationCenterPostResponseDto;
+		registrationCenterPutResponseDto.setRegistrationCenters(registrationCenterDtoList);
+		registrationCenterPutResponseDto.setNotUpdatedRegCenters(notUpdRegistrationCenterList);
+		return registrationCenterPutResponseDto;
 	}
 
 }
