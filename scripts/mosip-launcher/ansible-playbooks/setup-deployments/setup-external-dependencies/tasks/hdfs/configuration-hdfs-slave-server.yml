@@ -141,7 +141,7 @@
 - name: Sourcing .bashrc file
   shell: "source /home/{{ hostvars['localhost']['global_username'] }}/.bashrc"
 
-- name: Update host file for hdfs master for {{ env_name }}
+- name: Update host file for hdfs slave for {{ env_name }}
   run_once: true
   become: yes
   lineinfile:
@@ -152,7 +152,7 @@
     - "{{ hostvars['localhost']['output_private_ip_hdfs_slave_' + env_name] | json_query('stdout')}} hdfs-slave"
 
 
-- name: Update bashrc  for {{ hostvars['localhost']['global_username'] }} user for hdfs variables hdfs master for {{ env_name }}
+- name: Update bashrc  for {{ hostvars['localhost']['global_username'] }} user for hdfs variables hdfs slave for {{ env_name }}
   run_once: true
   lineinfile:
     dest: /home/{{ hostvars['localhost']['global_username'] }}/.bashrc
