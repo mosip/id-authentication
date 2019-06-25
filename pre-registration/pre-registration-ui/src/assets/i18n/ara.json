@@ -347,7 +347,7 @@
   "documents": {
     "title_document": "تحميل المستندات",
     "text_filetype": " أنواع الملفات المسموح بها",
-    "text_filesize": "حجم الملف المسموح به ",
+    "text_filesize": "وحجم الملف المسموح به",
     "action_browse": "تصفح",
     "action_back": "الى الخلف",
     "action_skip": "تخطى",
@@ -576,7 +576,7 @@
     "dateOfBirth": "تاريخ الميلاد الذي تم إدخاله غير صالح",
     "CNIENumber": "تم إدخال رقم CNIE غير صالح",
     "tokenExpiredLogout": "لقد تم تسجيل الخروج بسبب عدم النشاط.",
-    "errorLabel":"خطأ"
+    "errorLabel": "خطأ"
   },
   "residentTypesMapping": {
     "NFR": "الوطني",
