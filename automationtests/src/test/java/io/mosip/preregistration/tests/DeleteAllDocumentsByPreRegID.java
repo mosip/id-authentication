@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -70,8 +70,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	String preReg_URI;
 	CommonLibrary commonLibrary = new CommonLibrary();
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
-
+	ApplicationLibrary appLib=new ApplicationLibrary();
 	/* implement,IInvokedMethodListener */
 	public DeleteAllDocumentsByPreRegID() {
 
@@ -119,11 +118,11 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		if (testCaseName.contains("smoke")) {
 
 			// Creating the Pre-Registration Application
-			Response createApplicationResponse = preRegLib.CreatePreReg();
+			Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 
 			preId = preRegLib.getPreId(createApplicationResponse);
 
-			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+			Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId,individualToken);
 
 			// Get PreId from Document upload response
 			try {
@@ -135,7 +134,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			
 
 			// Delete All Document by Pre-Registration Id
-			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId);
+			Response delAllDocByPreIdRes = preRegLib.deleteAllDocumentByPreId(preId,individualToken);
 			outerKeys.add("responsetime");
 			//Asserting actual and expected response
 			status = AssertResponses.assertResponses(delAllDocByPreIdRes, Expectedresponse, outerKeys, innerKeys);
@@ -146,7 +145,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 			String preRegistrationId = actualRequest.get("preRegistrationId").toString();
 
 			String preRegURI = preReg_URI + preRegistrationId;
-			Actualresponse = applicationLibrary.deleteRequestWithPathParam(preRegURI);
+			Actualresponse = appLib.deleteWithoutParams(preRegURI,individualToken);
 			
 			logger.info("Delete Doc By PreId:"+"Test Case Name:"+testCaseName+"Res:"+Actualresponse.asString());
 			
@@ -193,6 +192,9 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 
 		//Delete Document By PreregistrationId Resource URI
 		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
+		if (!preRegLib.isValidToken(individualToken)) {
+			individualToken = preRegLib.getToken();
+		}
 		
 
 	}
@@ -216,11 +218,6 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
-	}
-	@BeforeClass
-	public void getToken()
-	{
-		authToken = preRegLib.getToken();
 	}
 	/*
 	 * This method is used for generating output file with the test case result

@@ -130,7 +130,7 @@ public class NotificationServiceTest {
 		File fileTest1 = new File(classLoader.getResource("pre-registration-test.json").getFile());
 		jsonObject = (JSONObject) parser.parse(new FileReader(fileTest1));
 
-		// mapper.registerModule(new JavaTimeModule());
+		mapper.setTimeZone(TimeZone.getDefault());
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
 		notificationDTO.setPreRegistrationId("20180396713560");

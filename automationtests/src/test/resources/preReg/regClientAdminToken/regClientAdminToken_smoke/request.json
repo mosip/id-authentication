@@ -3,7 +3,7 @@
   "request": {
     "appId": "registrationclient",
     "password": "mosip",
-    "userName": "registration_officer"
+    "userName": "registrationclient_test_user1"
   },
   "timestamp": "string",
   "version": "string"

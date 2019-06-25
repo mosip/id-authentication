@@ -40,6 +40,7 @@ import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
 
 import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.util.PreRegistrationLibrary;
 import io.mosip.util.TokenGeneration;
 
@@ -65,13 +66,15 @@ public class BaseTestCase{
 	public ExtentHtmlReporter htmlReporter;
 	public ExtentReports extent;
 	public ExtentTest test;
-	
-		
+	protected static String individualToken;
+	public String preRegAdminToken;
+	protected static String regClientToken;
+	public String regProcToken;	
 	/**
 	 * Method that will take care of framework setup
 	 */
 	// GLOBAL CLASS VARIABLES
-	private Properties prop;
+	public Properties prop;
 	public static String ApplnURI;
 	protected static String authToken;
 	public static String regProcAuthToken;
@@ -140,23 +143,35 @@ public class BaseTestCase{
 		 */
 		@BeforeSuite(alwaysRun = true)
 		public void suiteSetup() {
-			//buildNumber=getBuildTag();
+
+			individualToken=null;
+			preRegAdminToken=null;
+			regClientToken=null;
+			regProcToken=null;
+			
 			logger.info("Test Framework for Mosip api Initialized");
 			logger.info("Logging initialized: All logs are located at " +  "src/logs/mosip-api-test.log");
 			initialize();
 			logger.info("Done with BeforeSuite and test case setup! BEGINNING TEST EXECUTION!\n\n");
 
-/*
+
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 			AuthTestsUtil.wakeDemoApp();
-*/
+
 			htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();
 			extent.setSystemInfo("Build Number", buildNumber);
 			extent.attachReporter(htmlReporter);
-
-
+			
+			htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
+			htmlReporter.config().setReportName("Mosip Automation Report");
+			htmlReporter.config().setTheme(Theme.STANDARD);
+			/**
+			 * This method is used by pre registration module
+			 * This will activate all in active resistration center.
+			 */
+			new PreregistrationDAO().makeAllRegistartionCenterActive();
 				
 				htmlReporter.config().setDocumentTitle("MosipAutomationTesting Report");
 				htmlReporter.config().setReportName("Mosip Automation Report");

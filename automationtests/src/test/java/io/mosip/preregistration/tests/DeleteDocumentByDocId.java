@@ -32,8 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Verify;
 
 import io.mosip.dbaccess.PreRegDbread;
-
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CommonLibrary;
@@ -73,7 +72,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 	PreRegistrationLibrary preRegLib = new PreRegistrationLibrary();
 	CommonLibrary commonLibrary = new CommonLibrary();
 	String preReg_URI;
-	ApplicationLibrary applicationLibrary = new ApplicationLibrary();
+	ApplicationLibrary appLib = new ApplicationLibrary();
 	HashMap<String, String> parm = new HashMap<>();
 
 	/* implement,IInvokedMethodListener */
@@ -123,12 +122,12 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		String testCase = object.get("testCaseName").toString();
 
 		// Creating the Pre-Registration Application
-		Response createApplicationResponse = preRegLib.CreatePreReg();
+		Response createApplicationResponse = preRegLib.CreatePreReg(individualToken);
 		preId = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
 
 		// Document Upload for created application
 
-		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId);
+		Response docUploadResponse = preRegLib.documentUploadParm(createApplicationResponse, preId,individualToken);
        // logger.info("Doc upload res::"+docUploadResponse.asString());
 		// Get PreId from Document upload response
 		try {
@@ -145,7 +144,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		if (testCaseName.contains("smoke")) {
 
 			// Delete All Document by Document Id
-			Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId(docId, preId);
+			Response delAllDocByPreId = preRegLib.deleteAllDocumentByDocId(docId, preId,individualToken);
 			outerKeys.add("responsetime");
 			innerKeys.add("multipartFile");
 			  
@@ -165,7 +164,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 
 			String preRegistration_URI = preReg_URI + docId;
 
-			Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preRegistration_URI, parm);
+			Actualresponse = appLib.deleteWithQueryParams(preRegistration_URI, parm,individualToken);
 			logger.info("Delete Doc By Doc Id::"+"Test Case name::"+testCaseName+"Res::"+Actualresponse.asString());
 			
 			boolean value = testCaseName.contains("EmptyValue")?(outerKeys.add("timestamp")):outerKeys.add("responsetime");
@@ -178,7 +177,7 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 
 			preReg_URI = preReg_URI + docId;
 
-			Actualresponse = applicationLibrary.deleteRequestPathAndQueryParam(preReg_URI, parm);
+			Actualresponse = appLib.deleteWithQueryParams(preReg_URI, parm,individualToken);
 			logger.info("Delete Doc By Doc Id Act Res::"+"Test Case name::"+testCaseName+Actualresponse.asString());
 			outerKeys.add("responsetime");
 			status = AssertResponses.assertResponses(Actualresponse, Expectedresponse, outerKeys, innerKeys);
@@ -220,7 +219,9 @@ public class DeleteDocumentByDocId extends BaseTestCase implements ITest {
 		preReg_URI = commonLibrary.fetch_IDRepo().get("prereg_DeleteDocumentByDocIdURI");
 		
 		//Fetch the generated Authorization Token by using following Kernel AuthManager APIs
-		authToken = preRegLib.getToken();
+		if (!preRegLib.isValidToken(individualToken)) {
+			individualToken = preRegLib.getToken();
+		}
 
 	}
 

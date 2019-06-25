@@ -2,10 +2,12 @@ package io.mosip.preregistration.generateqrcode.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +34,11 @@ import io.mosip.preregistration.generateqrcode.exception.IllegalParamException;
 import io.mosip.preregistration.generateqrcode.service.GenerateQRcodeService;
 import io.mosip.preregistration.generateqrcode.service.util.GenerateQRcodeServiceUtil;
 
-
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes= {GenerateQRcodeApplicationTests.class})
+@SpringBootTest(classes = { GenerateQRcodeApplicationTests.class })
 
 public class GenerateQRcodeServiceTest {
 
-	
 	@Autowired
 	private GenerateQRcodeService service;
 
@@ -74,8 +74,9 @@ public class GenerateQRcodeServiceTest {
 		notificationDTO.setAppointmentTime("22:57");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
+		mapper.setTimeZone(TimeZone.getDefault());
 		qrcodedto.setRequest(notificationDTO);
-		qrcodedto.setRequesttime(df.parse(df.format(new Date())));
+		qrcodedto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -83,13 +84,12 @@ public class GenerateQRcodeServiceTest {
 		notificationResponseDTO.setMessage("Notification send successfully");
 		notificationResponseDTO.setStatus("True");
 	}
-	
-	
+
 	@Test
-public void generateQRCodeSuccessTest() throws QrcodeGenerationException, java.io.IOException {
+	public void generateQRCodeSuccessTest() throws QrcodeGenerationException, java.io.IOException {
 		String stringjson = mapper.writeValueAsString(qrcodedto);
 		byte[] qrCode = null;
-		
+
 		QRCodeResponseDTO responsedto = new QRCodeResponseDTO();
 		responsedto.setQrcode(qrCode);
 		qrCodeResponseDTO.setResponse(responsedto);
@@ -99,15 +99,15 @@ public void generateQRCodeSuccessTest() throws QrcodeGenerationException, java.i
 
 		assertEquals(qrCodeResponseDTO.getResponse(), response.getResponse());
 	}
-	
-	@Test(expected=IllegalParamException.class)
+
+	@Test(expected = IllegalParamException.class)
 	public void generateQRCodeFailureTest() throws java.io.IOException, QrcodeGenerationException {
 		String stringjson = null;
 
 		Mockito.when(qrCodeGenerator.generateQrCode(null, QrVersion.V25)).thenThrow(QrcodeGenerationException.class);
 		service.generateQRCode(stringjson);
 
-		//assertEquals(null, qrCodeResponseDTO.getResponse());
+		// assertEquals(null, qrCodeResponseDTO.getResponse());
 
 	}
 }

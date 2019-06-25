@@ -6,7 +6,7 @@
     "errors": [
         {
             "errorCode": "PRG_CORE_REQ_017",
-            "message": "Document Catagory code is invalid"
+            "message": "Document Category code is invalid"
         }
     ]
 }

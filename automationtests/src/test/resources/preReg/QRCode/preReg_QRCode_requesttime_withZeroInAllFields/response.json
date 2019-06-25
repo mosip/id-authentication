@@ -5,8 +5,8 @@
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_CORE_REQ_013",
-            "message": "Request date should be current date"
+            "errorCode": "PRG_QRC_004",
+            "message": "Invalid request time format"
         }
     ]
 }

@@ -139,11 +139,11 @@ public class RegIdObjectValidator {
 
 		JsonElement jsonElement = jsonParser.parse(identityString);
 		if (jsonElement.isJsonObject()
-				&& jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("age") != null) {
-			return maxAge >= jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("age").getAsInt();
+				&& jsonElement.getAsJsonObject().get(RegistrationConstants.AGE_IDENTITY).getAsJsonObject().get(RegistrationConstants.UIN_UPDATE_AGE) != null) {
+			return maxAge >= jsonElement.getAsJsonObject().get(RegistrationConstants.AGE_IDENTITY).getAsJsonObject().get(RegistrationConstants.UIN_UPDATE_AGE).getAsInt();
 		} else if (operationType.equals(IdObjectValidatorSupportedOperations.UPDATE_UIN)
 				|| operationType.equals(IdObjectValidatorSupportedOperations.LOST_UIN)
-				|| jsonElement.getAsJsonObject().get("identity").getAsJsonObject().get("dateOfBirth") != null) {
+				|| jsonElement.getAsJsonObject().get(RegistrationConstants.AGE_IDENTITY).getAsJsonObject().get(RegistrationConstants.DATE_OF_BIRTH) != null) {
 			return true;
 		}
 
