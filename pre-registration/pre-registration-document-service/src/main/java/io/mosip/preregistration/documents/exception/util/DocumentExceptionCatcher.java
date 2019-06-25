@@ -113,8 +113,8 @@ public class DocumentExceptionCatcher {
 			throw new EncryptionFailedException(((EncryptionFailedException) ex).getValidationErrorList(), response);
 		} else if (ex instanceof java.text.ParseException) {
 			throw new InvalidRequestParameterException(
-					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_003.getCode(),
-					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(),
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_017.getCode(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(),
 					response);
 
 		}
