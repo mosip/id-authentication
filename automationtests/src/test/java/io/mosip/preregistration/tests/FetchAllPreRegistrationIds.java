@@ -41,7 +41,7 @@ import com.google.common.base.Verify;
 
 import io.mosip.dbHealthcheck.DBHealthCheck;
 import io.mosip.dbaccess.PreRegDbread;
-import io.mosip.service.ApplicationLibrary;
+import io.mosip.kernel.service.ApplicationLibrary;
 import io.mosip.service.AssertPreReg;
 import io.mosip.service.AssertResponses;
 import io.mosip.service.BaseTestCase;
@@ -53,7 +53,8 @@ import io.mosip.util.ResponseRequestMapper;
 import io.restassured.response.Response;
 
 public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
-	
+	ApplicationLibrary appLib=new ApplicationLibrary();
+	public static PreRegistrationLibrary lib=new PreRegistrationLibrary();
 	public 	String preId="";
 	public SoftAssert softAssert=new SoftAssert();
 	protected static String testCaseName = "";
@@ -64,7 +65,6 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 	ObjectMapper mapper = new ObjectMapper();
 	public Response Actualresponse = null;
 	public JSONObject Expectedresponse = null;
-	private static ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 	private static  String preReg_URI;
 	public String dest = "";
 	public String configPaths="";
@@ -117,7 +117,7 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 		actualRequest.put("requesttime",lib.getCurrentDate());
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
-			Actualresponse = applicationLibrary.dataSyncPostRequest(actualRequest.toJSONString(), preReg_URI);
+			Actualresponse = appLib.postWithJson(preReg_URI,actualRequest.toJSONString(),regClientToken);
 			
 		} catch (Exception e) {
 			logger.info(e);
@@ -188,6 +188,10 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
           testCaseName = object.get("testCaseName").toString();
    
           preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllPreRegistrationIdsURI");
+          if(!lib.isValidToken(regClientToken))
+  		{
+        	  regClientToken=lib.regClientAdminToken();
+  		}
     }
 
 

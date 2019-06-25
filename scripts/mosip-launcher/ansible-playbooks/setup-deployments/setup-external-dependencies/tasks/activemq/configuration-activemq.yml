@@ -42,14 +42,14 @@
     state: present
 
 - name: Getting JAVA home path to set
-  shell: 'echo $(readlink -f /etc/alternatives/java) | sed "s|/bin/java||"'
   become: yes
+  shell: 'echo $(readlink -f /etc/alternatives/java) | sed "s|/bin/java||"'
   register: java_home
 
 - name: Printing output java home
   debug: msg="{{ java_home }}"
 
-- name: Update bashrc for {{ hostvars['localhost']['global_username'] }} user for hdfs master for {{ env_name }}
+- name: Update bashrc for {{ hostvars['localhost']['global_username'] }} user for activemq for {{ env_name }}
   run_once: true
   lineinfile:
     dest: /home/{{ hostvars['localhost']['global_username'] }}/.bashrc
@@ -59,8 +59,22 @@
     insertafter: EOF
     create: True
 
+
+- name: Set environment variable  JAVA_HOME
+  become: yes
+  run_once: true
+  lineinfile:
+    dest: /etc/profile
+    line: "export JAVA_HOME={{ java_home| json_query('stdout') }}"
+    state: present
+    insertafter: EOF
+
 - name: Sourcing .bashrc file
   shell: "source /home/{{ hostvars['localhost']['global_username'] }}/.bashrc"
+
+- name: Sourcing /etc/profile file
+  become: yes
+  shell: "source /etc/profile"
 
 - name: Install activemq binary
   become: yes
@@ -81,12 +95,35 @@
 - name: Make ActiveMQ binary executable
   become: yes
   shell:
-    cmd: "chmod 700 /opt/apache-activemq-5.15.0/bin/activemq"
+    cmd: "chmod 777 -R /opt/apache-activemq-5.15.0"
 
-- name: Start activemq
+- name: Make ActiveMQ binary link
   become: yes
   shell:
-    cmd: "/./opt/apache-activemq-5.15.0/bin/activemq start"
+    cmd: "ln -s /opt/apache-activemq-5.15.0 /opt/activemq"
 
-      
+- name: Creating activemq service configuration for {{ env_name }}
+  become: yes
+  template:
+    src: ../../configuration/activemq-service-configuration.j2
+    dest: /etc/systemd/system/activemq.service
+    mode: u=rw,g=rw,o=rw
+  
+- name: Make ActiveMQ binary executable
+  become: yes
+  shell:
+    cmd: systemctl daemon-reload
+
+- name: Start service for {{ env_name  }}
+  become: yes
+  service:
+    name: activemq.service
+    state: started
+    enabled: yes
+  register: output_activemq_start
+
+- name: Printing output of Active MQ start environment
+  debug: msg="{{ output_activemq_start | json_query('stdout')}}"
+
+
 

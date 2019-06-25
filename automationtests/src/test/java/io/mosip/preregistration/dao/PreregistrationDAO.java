@@ -56,7 +56,7 @@ public class PreregistrationDAO
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar c = Calendar.getInstance();
 		c.setTime(new Date()); // Now use today date.
-		c.add(Calendar.DATE, -2); 
+		c.add(Calendar.DATE, -1); 
 		String date = sdf.format(c.getTime());
 		String queryString="update prereg.reg_appointment set appointment_date='"+date+"' where prereg_id='"+preRegId+"'";
 		try {
@@ -69,7 +69,7 @@ public class PreregistrationDAO
 	public List<String> getAuditData(String userId)
 	{
 		List<String> auditData = null;
-		String queryString = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"'";
+		String queryString = "SELECT  log_desc, event_id, event_type, event_name, session_user_id,module_name,ref_id,ref_id_type FROM audit.app_audit_log Where session_user_id='"+userId+"' order by action_dtimes desc";
 		try {
 			 auditData = dbAccess.getDbData(queryString, "audit");
 		} catch (NullPointerException e) {
@@ -112,6 +112,12 @@ public class PreregistrationDAO
 		Date date = dbAccess.getHoliday(queryString, "masterdata");
 		return date;
 		 
+	}
+	public void makeAllRegistartionCenterActive()
+	{
+		String queryString="update master.registration_center set is_active= "+Boolean.TRUE+ " where is_active="+Boolean.FALSE+ "";
+		dbAccess.updateDbData(queryString, "masterdata");
+		new PreRegistrationLibrary().syncAvailability();
 	}
 	public void makeregistartionCenterActive(String registartionCenter)
 	{
