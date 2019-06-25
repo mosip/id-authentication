@@ -419,7 +419,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			for (Registration reg : packetsToBeSynched) {
 				packetDto.add(packetStatusDtoPreperation(reg));
 			}
-			ResponseDTO response = null;
+			ResponseDTO response = new ResponseDTO();
 			if (!packetDto.isEmpty()) {
 
 				for (PacketStatusDTO packetToBeSynch : packetDto) {
@@ -441,6 +441,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				response = packetSynchService.syncPacketsToServer(CryptoUtil.encodeBase64(
 						aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						triggerPoint);
+			} else {
+				response.setSuccessResponseDTO(new SuccessResponseDTO());
 			}
 			if (response != null && response.getSuccessResponseDTO() != null) {
 				for (PacketStatusDTO registration : packetDto) {
