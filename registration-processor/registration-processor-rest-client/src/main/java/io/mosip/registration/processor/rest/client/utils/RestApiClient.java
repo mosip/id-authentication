@@ -25,6 +25,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.env.Environment;
@@ -52,7 +53,7 @@ import io.mosip.registration.processor.rest.client.exception.TokenGenerationFail
 
 /**
  * The Class RestApiClient.
- * 
+ *
  * @author Rishabh Keshari
  */
 @Component
@@ -184,7 +185,7 @@ public class RestApiClient {
 	 *            the request type
 	 * @param responseClass
 	 *            the response class
-	 * @param mediaType 
+	 * @param mediaType
 	 * @return the t
 	 * @throws Exception
 	 *             the exception
@@ -243,7 +244,7 @@ public class RestApiClient {
 
 	/**
 	 * this method sets token to header of the request
-	 * 
+	 *
 	 * @param requestType
 	 * @param mediaType
 	 * @return
@@ -264,12 +265,12 @@ public class RestApiClient {
 				while(iterator.hasNext()) {
 					String key = iterator.next();
 					if(!(headers.containsKey("Content-Type") && key == "Content-Type"))
-					headers.add(key, httpHeader.get(key).get(0));
+						headers.add(key, httpHeader.get(key).get(0));
 				}
 				return new HttpEntity<Object>(httpEntity.getBody(), headers);
-				}catch(ClassCastException e) {
-					return new HttpEntity<Object>(requestType, headers);
-				}
+			}catch(ClassCastException e) {
+				return new HttpEntity<Object>(requestType, headers);
+			}
 		}
 		else
 			return new HttpEntity<Object>(headers);
@@ -277,7 +278,7 @@ public class RestApiClient {
 
 	/**
 	 * This method gets the token for the user details present in config server.
-	 * 
+	 *
 	 * @return
 	 * @throws IOException
 	 */
@@ -303,10 +304,16 @@ public class RestApiClient {
 			post.setEntity(postingString);
 			post.setHeader("Content-type", "application/json");
 			HttpResponse response = httpClient.execute(post);
+			org.apache.http.HttpEntity entity = response.getEntity();
+			String responseBody = EntityUtils.toString(entity,"UTF-8");
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), "Resonse body=> "+responseBody);
 			Header[] cookie = response.getHeaders("Set-Cookie");
 			if (cookie.length == 0)
 				throw new TokenGenerationFailedException();
 			String token = response.getHeaders("Set-Cookie")[0].getValue();
+			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+					LoggerFileConstant.APPLICATIONID.toString(), "Cookie => "+cookie[0]);
 
 			return token.substring(0, token.indexOf(';'));
 		} catch (IOException e) {
