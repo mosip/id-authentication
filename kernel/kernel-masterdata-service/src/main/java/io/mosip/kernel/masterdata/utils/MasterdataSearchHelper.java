@@ -65,11 +65,6 @@ public class MasterdataSearchHelper {
 		TypedQuery<T> executableQuery = entityManager.createQuery(selectQuery);
 		// creating executable query from count criteria query
 		TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
-
-		System.out.println("Select Query :" + executableQuery.unwrap(org.hibernate.query.Query.class).getQueryString());
-
-		System.out.println(
-				"Count Query :" + countExecutableQuery.unwrap(org.hibernate.query.Query.class).getQueryString());
 		// getting the rows count
 		Long rows = countExecutableQuery.getSingleResult();
 		// adding pagination
