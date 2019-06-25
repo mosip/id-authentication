@@ -11,7 +11,7 @@ package io.mosip.preregistration.core.errorcodes;
 public enum ErrorMessages {
 	INVALID_REQUEST_ID("Request id is invalid"), // PRG_CORE_REQ_001
 	INVALID_REQUEST_VERSION("Request version is invalid"), // PRG_CORE_REQ_002
-	INVALID_REQUEST_DATETIME("Request timestamp is invalid"), // PRG_CORE_REQ_003
+	INVALID_REQUEST_DATETIME("Invalid request time"), // PRG_CORE_REQ_003
 	INVALID_REQUEST_BODY("Request body is invalid"), // PRG_CORE_REQ_004
 	INVALID_STATUS_CODE("status code is invalid"), 
 	INVALID_LANG_CODE("Lang code is invalid"),// PRG_CORE_REQ_014
