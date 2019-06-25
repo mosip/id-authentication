@@ -110,4 +110,4 @@
   meta: reset_connection
 
 - name: Log into private registry from dmz for {{ env_name }}
-  command:  "docker login {{ hostvars['localhost']['docker_registry_url'] | replace('/docker-registry','')  }} -u={{ hostvars['localhost']['docker_registry_username'] }} -p={{ hostvars['localhost']['docker_registry_password'] }}"
+  command:  "docker login {{ hostvars['localhost']['docker_registry_url']   }} -u={{ hostvars['localhost']['docker_registry_username'] }} -p={{ hostvars['localhost']['docker_registry_password'] }}"
