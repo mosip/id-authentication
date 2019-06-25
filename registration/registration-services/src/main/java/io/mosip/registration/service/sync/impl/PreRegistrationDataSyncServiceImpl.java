@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -178,15 +180,19 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 	 * @param preRegIds   the pre-registration id's
 	 */
 	private void getPreRegistrationPackets(String syncJobId, ResponseDTO responseDTO, Map<String, String> preRegIds) {
-
+		ExecutorService executorServiceForPreReg = Executors.newFixedThreadPool(5);
+		
 		/* Get Packets Using pre registration ID's */
 		for (Entry<String, String> preRegDetail : preRegIds.entrySet()) {
-
-			if (!preRegDetail.getValue().contains("Z")) {
-				preRegDetail.setValue(preRegDetail.getValue() + "Z");
-			}
-			getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId,
-					Timestamp.from(Instant.parse(preRegDetail.getValue())));
+			executorServiceForPreReg.execute(
+					new Runnable() {
+							public void run() {
+									preRegDetail.setValue(preRegDetail.getValue().contains("Z") ? preRegDetail.getValue() : preRegDetail.getValue() + "Z");
+				
+									getPreRegistration(responseDTO, preRegDetail.getKey(), syncJobId, Timestamp.from(Instant.parse(preRegDetail.getValue())));
+							}
+					}
+			);
 		}
 	}
 
