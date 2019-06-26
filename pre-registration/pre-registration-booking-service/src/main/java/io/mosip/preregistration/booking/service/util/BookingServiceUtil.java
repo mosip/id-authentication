@@ -774,16 +774,20 @@ public class BookingServiceUtil {
 				sdf.setLenient(false);
 				sdf.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
-				if (localDate.isBefore(LocalDate.now())) {
+				Date currentDate=new Date();
+				LocalDate date=currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDate();
+				
+				if (localDate.isBefore(date)) {
 					throw new InvalidRequestParameterException(
 							ErrorCodes.PRG_BOOK_RCI_031.getCode(), ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()
 									+ " found for - " + requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
 							null);
-				} else if (localDate.isEqual(LocalDate.now())
+				} else if (localDate.isEqual(date)
 						&& (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
 								&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
 					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
-					if (localTime.isBefore(LocalTime.now())) {
+					LocalTime time= currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalTime();
+					if (localTime.isBefore(time)) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for - "
 										+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
