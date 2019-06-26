@@ -43,10 +43,10 @@
 		<class name="io.mosip.kernel.tests.SyncPublicKeyToRegClient" /> <class name="io.mosip.kernel.tests.TokenIdGenerator" 
 		/> <class name="io.mosip.kernel.tests.UINGeneration" /> <class name="io.mosip.kernel.tests.UINStatusCheck" 
 		/> <class name="io.mosip.kernel.tests.UINStatusUpdate" /> <class name="io.mosip.kernel.tests.ValidateGenderByName" 
-		/> <class name="io.mosip.kernel.tests.ValidateLocationByName" /> -->
+		/> <class name="io.mosip.kernel.tests.ValidateLocationByName" /> 
 </classes>
-</test>
-	-->
+</test> -->
+	
 
 	<test name="PreReg Tests">
 		<classes>
