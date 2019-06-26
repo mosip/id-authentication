@@ -115,7 +115,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	public GridPane uinUpdateGridPane;
-	
+
 	@FXML
 	public HBox userOnboardMessage;
 
@@ -229,7 +229,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
-			}
+		}
 	}
 
 	/**
@@ -555,30 +555,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@FXML
 	public void downloadPreRegData() {
 
-		if (isMachineRemapProcessStarted()) {
-			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		auditFactory.audit(AuditEvent.NAV_DOWNLOAD_PRE_REG_DATA, Components.NAVIGATION,
-				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data started.");
-		ResponseDTO responseDTO = preRegistrationDataSyncService
-				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-		if (responseDTO.getSuccessResponseDTO() != null) {
-			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
-
-		} else if (responseDTO.getErrorResponseDTOs() != null) {
-
-			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
-
-		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Downloading pre-registration data ended.");
-
+		headerController.downloadPreRegData(null);
 	}
 
 	/**
@@ -689,7 +666,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
-			}catch (RuntimeException runtimeException) {
+			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 			}
