@@ -232,9 +232,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 					globalParamDAO.saveAll(Arrays.asList(globalParam));
 				}
 
-				updateAllSyncJobs(true);
 				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-						"Step 1  Enabled all sync jobs after remap success");
+						"cleanUpCenterSpecificData remap successfully completed");
 			}
 		}
 	}
