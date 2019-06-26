@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.registration.processor.core.constant.HealthConstant;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -118,7 +119,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 		.putHeader("Access-Control-Allow-Origin", "*")
 		.putHeader("Access-Control-Allow-Methods","GET, POST")
 		.setStatusCode(200)
-		.end(object.toString());
+		.end(Json.encodePrettily(object));
 	};
 
 	/**
@@ -135,7 +136,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 		.putHeader("Access-Control-Allow-Origin", "*")
 		.putHeader("Access-Control-Allow-Methods","GET, POST")
 		.setStatusCode(200)
-		.end(object.toString());
+		.end(Json.encodePrettily(object));
 
 	};
 }
