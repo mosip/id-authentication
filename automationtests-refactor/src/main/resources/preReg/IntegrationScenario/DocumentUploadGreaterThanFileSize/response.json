@@ -1,0 +1,15 @@
+{
+	"err": null,
+	"status": true,
+	"resTime": "2019-01-31T04:59:52.794Z",
+	"response": [
+		{
+			"preRegistrationId": "98467083579405",
+			"documnetId": "2c9180836833c1240168a2470fe35b66",
+			"documentName": "ProofOfAddress.PDF",
+			"documentCat": "POA",
+			"documentType": "address",
+			"resMsg": "DOCUMENT_UPLOAD_SUCCESSFUL"
+		}
+	]
+}

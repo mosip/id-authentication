@@ -1,0 +1,15 @@
+{
+	"id": "mosip.pre-registration.notification.notify",
+	"version": "1.0",
+	"requesttime": "ABCD",
+	"request": {
+		"name": "Lavnaya R",
+		"preRegistrationId": "37802950913289",
+		"appointmentDate": "2019-01-22",
+		"appointmentTime": "22:57",
+		"mobNum": "9663089998",
+		"emailID": "Lavanya.Ranganathan@mindtree.com",
+		"additionalRecipient": "true",
+		"langCode": "eng"
+	}
+}

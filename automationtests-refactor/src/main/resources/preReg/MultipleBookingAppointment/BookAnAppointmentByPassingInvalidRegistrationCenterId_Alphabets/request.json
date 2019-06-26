@@ -1,0 +1,13 @@
+{
+	"id": "mosip.pre-registration.booking.book",
+	"version": "1.0",
+	"requesttime": "2019-04-22T15:31:32.957Z",
+	"request": [
+		{
+			"registration_center_id": "ABCDF",
+			"appointment_date": "2019-04-26",
+			"time_slot_from": "09:30:00",
+			"time_slot_to": "09:45:00"
+		}
+	]
+}

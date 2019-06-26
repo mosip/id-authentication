@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-06-06T11:04:17.333Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-MSD-032",
+			"message": "Machine History not found"
+		}
+	]
+}

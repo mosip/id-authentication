@@ -1,0 +1,4 @@
+testdata:
+  RetrieveIdentity_UIN_Pos:
+    input.vid:
+      uin: $UIN$

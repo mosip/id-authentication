@@ -1,0 +1,277 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-26T05:59:09.761Z",
+	"metadata": null,
+	"response": {
+		"documentcategories": [
+			{
+				"code": "POA",
+				"name": "Un justificatif de domicile",
+				"description": "Preuve dadresse",
+				"langCode": "fra",
+				"isActive": true,
+				"documenttypes": [
+					{
+						"code": "RNC",
+						"name": "Contrat de location",
+						"description": "Contrat de location dadresse",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "COR",
+						"name": "Certificat de résidence",
+						"description": "Preuve de résidence",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC001",
+						"name": "Passeport",
+						"description": "Preuve didentité",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC013",
+						"name": "Livret ou relevé bancaire",
+						"description": "Livret ou relevé bancaire",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC014",
+						"name": "Relevé de compte ou livret du Bureau de poste",
+						"description": "Relevé de compte ou livret du Bureau de poste",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC015",
+						"name": "Carte de ration",
+						"description": "Carte de ration",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC004",
+						"name": "Carte d’identification des électeurs",
+						"description": "Carte d’identification des électeurs",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC005",
+						"name": "Permis de conduire du demandeur",
+						"description": "Permis de conduire du demandeur",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC006",
+						"name": "Cartes d’identité photo émises par le gouvernement",
+						"description": "Cartes d’identité photo émises par le gouvernement",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC016",
+						"name": "PSU a émis la carte didentité de photo de service avec ladresse",
+						"description": "PSU a émis la carte d’identité de photo de service avec l’adresse",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC017",
+						"name": "Facture d’électricité précédente de 3 mois",
+						"description": "Facture d’électricité précédente de 3 mois",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC018",
+						"name": "Facture d’eau tant qu’elle n’a pas plus de 3 mois",
+						"description": "Facture d’eau tant qu’elle n’a pas plus de 3 mois",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC008",
+						"name": "Licence d’armes",
+						"description": "Licence d’armes",
+						"langCode": "fra",
+						"isActive": true
+					}
+				]
+			},
+			{
+				"code": "POI",
+				"name": "Preuve didentité",
+				"description": "Preuve didentité",
+				"langCode": "fra",
+				"isActive": true,
+				"documenttypes": [
+					{
+						"code": "CIN",
+						"name": "carte didentité",
+						"description": "Carte didentité électronique nationale marocaine",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC001",
+						"name": "Passeport",
+						"description": "Preuve didentité",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC002",
+						"name": "Carte PAN",
+						"description": "Carte PAN",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC003",
+						"name": "Soit ration ou PDS photo carte",
+						"description": "Soit ration ou PDS photo carte",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC004",
+						"name": "Carte d’identification des électeurs",
+						"description": "Carte d’identification des électeurs",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC005",
+						"name": "Permis de conduire du demandeur",
+						"description": "Permis de conduire du demandeur",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC006",
+						"name": "Cartes d’identité photo émises par le gouvernement",
+						"description": "Cartes d’identité photo émises par le gouvernement",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC007",
+						"name": "Cartes d’identité de service de photo émises par un PSU",
+						"description": "Cartes d’identité de service de photo émises par un PSU",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC008",
+						"name": "Licence d’armes",
+						"description": "Licence d’armes",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC009",
+						"name": "Photo banque carte bancaire",
+						"description": "Photo banque carte bancaire",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC010",
+						"name": "Carte de crédit photo",
+						"description": "Carte de crédit photo",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC011",
+						"name": "Carte photo du Freedom Fighter",
+						"description": "Carte photo du Freedom Fighter",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC012",
+						"name": "Certificat de mariage",
+						"description": "Certificat de mariage",
+						"langCode": "fra",
+						"isActive": true
+					}
+				]
+			},
+			{
+				"code": "POR",
+				"name": "Preuve de relation",
+				"description": "Preuve de relation de la personne",
+				"langCode": "fra",
+				"isActive": true,
+				"documenttypes": [
+					{
+						"code": "CRN",
+						"name": "Certificat de relation",
+						"description": "Preuve de relation dune personne",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC024",
+						"name": "Carte PDS",
+						"description": "Carte PDS",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC025",
+						"name": "Carte médicale délivrée par le govt de l'État",
+						"description": "Carte médicale délivrée par le gouvernement de l’État, le CGHS, l’ECHS et également l’ESIC",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC026",
+						"name": "Carte de cantine de l’armée",
+						"description": "Carte de cantine de l’armée",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC001",
+						"name": "Passeport",
+						"description": "Preuve didentité",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC027",
+						"name": "Titre de droit familial",
+						"description": "Tout document de droit de la famille délivré par un gouvernement central ou",
+						"langCode": "fra",
+						"isActive": true
+					},
+					{
+						"code": "DOC028",
+						"name": "Certificat de naissance",
+						"description": "Registraire de naissance/municipalité ou tout acte de naissance du gouvernement local",
+						"langCode": "fra",
+						"isActive": true
+					}
+				]
+			},
+			{
+				"code": "POE",
+				"name": "Preuve dexception biométrique",
+				"description": "Preuve dexception biométrique",
+				"langCode": "fra",
+				"isActive": true,
+				"documenttypes": []
+			}
+		]
+	},
+	"errors": null
+}

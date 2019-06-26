@@ -1,0 +1,13 @@
+{
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-15T10:51:44.329Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-LKM-001",
+			"message": "TSP entered is null or empty."
+		}
+	]
+}

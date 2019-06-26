@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-17T11:33:36.040Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-MSD-012",
+			"errorMessage": "Device Specification not found"
+		}
+	]
+}

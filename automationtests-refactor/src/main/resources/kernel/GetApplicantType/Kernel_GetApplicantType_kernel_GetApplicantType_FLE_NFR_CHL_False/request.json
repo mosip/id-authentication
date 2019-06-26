@@ -1,0 +1,28 @@
+{
+	"id": "getapplicanttype.code",
+	"metadata": {
+		
+	},
+	"request": {
+		"attributes": [
+			{
+				"attribute": "individualTypeCode",
+				"value": "NFR"
+			},
+			{
+				"attribute": "dateofbirth",
+				"value": "2018-01-01T10:00:00.00Z"
+			},
+			{
+				"attribute": "genderCode",
+				"value": "FLE"
+			},
+			{
+				"attribute": "biometricAvailable",
+				"value": false
+			}
+		]
+	},
+	"requesttime": "2012-03-08T11:46:12.640Z",
+	"version": "V1.0"
+}

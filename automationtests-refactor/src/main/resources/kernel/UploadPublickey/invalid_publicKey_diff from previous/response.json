@@ -1,0 +1,13 @@
+{
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-05-22T06:50:06.091Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-SNC-157",
+			"message": "A different public key already exist against the Machine Name received"
+		}
+	]
+}

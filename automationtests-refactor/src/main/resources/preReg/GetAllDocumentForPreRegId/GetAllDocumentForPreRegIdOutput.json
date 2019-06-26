@@ -1,0 +1,86 @@
+[
+	{
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "valid",
+		"jiraId": "MOS-1009",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": "valid",
+		"testType": "smoke",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "valid",
+		"testCaseName": "GetAllDocumentForPreRegId_smoke",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "valid",
+		"status": "Pass"
+	},
+	{
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "invalid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "valid",
+		"jiraId": "MOS-1003",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": "valid",
+		"testType": "regression",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "valid",
+		"testCaseName": "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "valid",
+		"status": "Pass"
+	},
+	{
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "invalid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "valid",
+		"jiraId": "MOS-1001",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": "valid",
+		"testType": "regression",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "valid",
+		"testCaseName": "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "valid",
+		"status": "Pass"
+	},
+	{
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "invalid",
+		"jiraId": "MOS-1000",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": "valid",
+		"testType": "regression",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "valid",
+		"testCaseName": "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "valid",
+		"status": "Pass"
+	},
+	{
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "valid",
+		"jiraId": "MOS-1004",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": "invalid",
+		"testType": "regression",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "valid",
+		"testCaseName": "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "valid",
+		"status": "Pass"
+	},
+	{
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "valid",
+		"jiraId": "MOS-1002",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": "valid",
+		"testType": "regression",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "invalid",
+		"testCaseName": "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "valid",
+		"status": "Pass"
+	},
+	{
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "valid",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "valid",
+		"jiraId": "MOS-1005",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": "valid",
+		"testType": "regression",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "valid",
+		"testCaseName": "GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters",
+		"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "invalid",
+		"status": "Pass"
+	}
+]

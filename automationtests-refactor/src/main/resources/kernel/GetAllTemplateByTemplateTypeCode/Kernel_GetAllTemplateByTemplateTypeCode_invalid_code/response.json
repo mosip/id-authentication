@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-10T12:54:15.081Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-MSD-046",
+			"message": "Template not found."
+		}
+	]
+}

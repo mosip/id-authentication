@@ -1,0 +1,9 @@
+{
+	"id": "mosip.vid.create",
+	"version": "v1",
+	"requesttime": "2019-04-30T06:12:25.288Z",
+	"request": {
+		"vidType": "Perpetual",
+		"UIN": 4518497159
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-22T05:02:00.781Z",
+	"metadata": null,
+	"response": {
+		"titleList": [
+			{
+				"code": "MIR",
+				"titleName": "Mr",
+				"titleDescription": "Male Title",
+				"isActive": true,
+				"langCode": "eng"
+			},
+			{
+				"code": "MRS",
+				"titleName": "Mrs",
+				"titleDescription": "Female Title",
+				"isActive": true,
+				"langCode": "eng"
+			},
+			{
+				"code": "MIS",
+				"titleName": "Miss",
+				"titleDescription": "Unmarried Female Title",
+				"isActive": true,
+				"langCode": "eng"
+			}
+		]
+	},
+	"errors": null
+}

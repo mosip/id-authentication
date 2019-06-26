@@ -1,0 +1,35 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-06-07T12:12:34.969Z",
+	"metadata": null,
+	"response": {
+		"blacklistedwords": [
+			{
+				"word": "shit",
+				"langCode": "eng",
+				"description": "Blacklisted Word",
+				"isActive": true
+			},
+			{
+				"word": "damn",
+				"langCode": "eng",
+				"description": "Blacklisted Word",
+				"isActive": true
+			},
+			{
+				"word": "nigga",
+				"langCode": "eng",
+				"description": "Blacklisted Word",
+				"isActive": true
+			},
+			{
+				"word": "dammit",
+				"langCode": "eng",
+				"description": "Blacklisted Word",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
+}

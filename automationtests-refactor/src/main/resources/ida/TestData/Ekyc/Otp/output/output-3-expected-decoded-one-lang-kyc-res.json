@@ -1,0 +1,66 @@
+{
+	"phoneNumber": [
+		{
+			"value": "9113356549"
+		}
+	],
+	"gender": [
+		{
+			"language": "fra",
+			"value": "Mâle"
+		}
+	],
+	"dob": [
+		{
+			"value": "1982/10/17"
+		}
+	],
+	"name": [
+		{
+			"language": "fra",
+			"value": "Mary Rose"
+		}
+	],
+	"location1": [
+		{
+			"language": "fra",
+			"value": "Rabat"
+		}
+	],
+	"location2": [
+		{
+			"language": "fra",
+			"value": "Rabat-Salé-Kénitra"
+		}
+	],
+	"addressLine1": [
+		{
+			"language": "fra",
+			"value": "Annai Theresa Street"
+		}
+	],
+	"emailId": [
+		{
+			"value": "Leonamary.Susairaja@mindtree.com"
+		}
+	],
+	"addressLine2": [
+		{
+			"language": "fra",
+			"value": "Mount Read House"
+		}
+	],
+	"location3": [
+		{
+			"language": "fra",
+			"value": "Kénitra"
+		}
+	],
+	"addressLine3": [
+		{
+			"language": "fra",
+			"value": "Havelock Island"
+		}
+	],
+	"FACE": "$IGNORE$"
+}

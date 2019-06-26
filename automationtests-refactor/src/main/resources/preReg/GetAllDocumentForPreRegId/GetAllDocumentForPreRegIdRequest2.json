@@ -1,0 +1,8 @@
+{
+	"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets": "",
+	"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric": "",
+	"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters": "",
+	"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue": "",
+	"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters": "",
+	"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength": ""
+}

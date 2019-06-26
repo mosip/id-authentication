@@ -1,0 +1,15 @@
+{
+	"errors": [
+		{
+			"errorCode": "RPR-RGS-023",
+			"message": "Invalid Input Parameter - requesttime"
+		},
+		{
+			"errorCode": "RPR-RGS-015",
+			"message": "Input Data Validation Failed"
+		}
+	],
+	"id": "mosip.registration.status",
+	"version": "1.0",
+	"responsetime": "2019-04-11T12:52:10.350Z"
+}

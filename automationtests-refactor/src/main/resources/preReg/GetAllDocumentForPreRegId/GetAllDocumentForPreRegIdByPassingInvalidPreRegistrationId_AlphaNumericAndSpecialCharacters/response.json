@@ -1,0 +1,12 @@
+{
+	"id": "mosip.pre-registration.document.fetch.metadata",
+	"version": "1.0",
+	"responsetime": "2019-01-16T17:31:04.021Z",
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "PRG_PAM_DOC_005",
+			"message": "Documents is not found for the requested pre-registration id"
+		}
+	]
+}

@@ -1,0 +1,52 @@
+{
+	"genderType": [
+		{
+			"code": "MLE",
+			"genderName": "Male",
+			"langCode": "eng",
+			"isActive": true
+		},
+		{
+			"code": "FLE",
+			"genderName": "Female",
+			"langCode": "eng",
+			"isActive": true
+		},
+		{
+			"code": "MLE",
+			"genderName": "ذكر",
+			"langCode": "ara",
+			"isActive": true
+		},
+		{
+			"code": "FLE",
+			"genderName": "أنثى",
+			"langCode": "ara",
+			"isActive": true
+		},
+		{
+			"code": "MLE",
+			"genderName": "Mâle",
+			"langCode": "fra",
+			"isActive": true
+		},
+		{
+			"code": "FLE",
+			"genderName": "Femelle",
+			"langCode": "fra",
+			"isActive": true
+		},
+		{
+			"code": "jklmnopqrstuvwx",
+			"genderName": "Male",
+			"langCode": "ara",
+			"isActive": true
+		},
+		{
+			"code": "TLE",
+			"genderName": "TempoMale",
+			"langCode": "eng",
+			"isActive": true
+		}
+	]
+}

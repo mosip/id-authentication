@@ -1,0 +1,16 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-05-17T12:55:13.174Z",
+	"metadata": null,
+	"response": {
+		"registrationCenterDeviceHistoryDetails": {
+			"regCenterId": "10001",
+			"deviceId": "3000021",
+			"isActive": true,
+			"langCode": "eng",
+			"effectivetimes": "2019-05-16T07:06:48.361Z"
+		}
+	},
+	"errors": null
+}

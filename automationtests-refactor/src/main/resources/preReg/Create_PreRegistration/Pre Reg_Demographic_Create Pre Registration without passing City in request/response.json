@@ -1,0 +1,13 @@
+
+{
+	"id": "mosip.pre-registration.demographic.create",
+	"version": "1.0",
+	"responsetime": "2019-06-12T07:42:51.154Z",
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-IOV-005",
+			"message": "Missing input parameter - identity/city"
+		}
+	]
+}

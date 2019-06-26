@@ -1,0 +1,12 @@
+{
+	"id": "mosip.pre-registration.notification.notify",
+	"version": "1.0",
+	"responsetime": "2019-06-21T04:52:58.397Z",
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "PRG_PAM_ACK_009",
+			"message": "Appointment date is not valid"
+		}
+	]
+}

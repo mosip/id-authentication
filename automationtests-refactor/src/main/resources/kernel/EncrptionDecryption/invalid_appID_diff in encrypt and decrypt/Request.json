@@ -1,0 +1,15 @@
+{
+	"id": "string",
+	"metadata": {
+		
+	},
+	"request": {
+		"applicationId": "REGISTRATION",
+		"data": "mosipdata",
+		"referenceId": "REF01",
+		"timeStamp": "2018-12-10T06:12:52.994Z"
+	},
+	"requesttime": "2018-12-10T06:12:52.994Z",
+	"version": "string",
+	"case": "diffAppIdToDecrypt"
+}

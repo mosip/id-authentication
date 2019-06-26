@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-05-22T10:12:04.163Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-SNC-148",
+			"message": "Mac-Address and/or Serial Number and/or key Index does not exist"
+		}
+	]
+}

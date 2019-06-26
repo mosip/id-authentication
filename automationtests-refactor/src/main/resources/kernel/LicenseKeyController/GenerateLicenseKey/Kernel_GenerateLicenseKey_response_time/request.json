@@ -1,0 +1,12 @@
+{
+	"id": "string",
+	"metadata": {
+		
+	},
+	"request": {
+		"licenseExpiryTime": "2020-02-20T10:00:00.000Z",
+		"tspId": ""
+	},
+	"requesttime": "2019-04-20T10:00:00.000Z",
+	"version": "string"
+}

@@ -1,0 +1,13 @@
+{
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-15T11:02:11.037Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-LKM-004",
+			"message": "LicenseKey Not Found."
+		}
+	]
+}

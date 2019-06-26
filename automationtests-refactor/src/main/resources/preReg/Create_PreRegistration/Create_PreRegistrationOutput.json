@@ -1,0 +1,16 @@
+[
+	{
+		"Fetch Status of the Application by giving invalid Pre Registration id in request": "valid",
+		"jiraId": "MOS-1002",
+		"testType": "smoke",
+		"testCaseName": "Fetch Status of the application_smoke",
+		"status": "Pass"
+	},
+	{
+		"Fetch Status of the Application by giving invalid Pre Registration id in request": "invalid",
+		"jiraId": "MOS-1001",
+		"testType": "regression",
+		"testCaseName": "Fetch Status of the Application by giving invalid Pre Registration id in request",
+		"status": "Pass"
+	}
+]

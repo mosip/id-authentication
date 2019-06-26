@@ -1,0 +1,13 @@
+{
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-16T12:25:20.873Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-MSD-999",
+			"message": "request[0].machineId: size must be between 1 and 10"
+		}
+	]
+}

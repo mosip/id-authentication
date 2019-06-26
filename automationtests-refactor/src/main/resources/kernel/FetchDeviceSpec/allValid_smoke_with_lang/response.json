@@ -1,0 +1,59 @@
+{
+	"devicespecifications": [
+		{
+			"id": "165",
+			"name": "Fingerprint Scanner",
+			"brand": "Safran Morpho",
+			"model": "1300 E2",
+			"deviceTypeCode": "FRS",
+			"minDriverversion": "1.12",
+			"description": "To scan fingerprint",
+			"langCode": "eng",
+			"isActive": true
+		},
+		{
+			"id": "327",
+			"name": "High Speed Dual Iris Scanner",
+			"brand": "Cogent ",
+			"model": "3M ",
+			"deviceTypeCode": "IRS",
+			"minDriverversion": "2.34",
+			"description": "To scan iris",
+			"langCode": "eng",
+			"isActive": true
+		},
+		{
+			"id": "736",
+			"name": "Webcam ",
+			"brand": "Logitech ",
+			"model": "C270 ",
+			"deviceTypeCode": "CMR",
+			"minDriverversion": "2.086",
+			"description": "To capture photo",
+			"langCode": "eng",
+			"isActive": true
+		},
+		{
+			"id": "801",
+			"name": "imageFORMULA ",
+			"brand": "Canon ",
+			"model": "DR-C130",
+			"deviceTypeCode": "SCN",
+			"minDriverversion": "1.02",
+			"description": "To scan documents",
+			"langCode": "eng",
+			"isActive": true
+		},
+		{
+			"id": "920",
+			"name": "Single Function Inkjet ",
+			"brand": "Canon ",
+			"model": "TS207 ",
+			"deviceTypeCode": "PRT",
+			"minDriverversion": "1.123",
+			"description": "To print documents",
+			"langCode": "eng",
+			"isActive": true
+		}
+	]
+}

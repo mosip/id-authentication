@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-22T05:36:53.601Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-KMS-002",
+			"message": "ApplicationId not found in Key Policy"
+		}
+	]
+}

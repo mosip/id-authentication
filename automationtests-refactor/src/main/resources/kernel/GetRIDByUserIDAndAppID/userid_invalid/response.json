@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-05-18T07:07:16.198Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-ATH-003",
+			"message": "User Detail doesn't exist"
+		}
+	]
+}

@@ -1,0 +1,26 @@
+{
+	"id": "string",
+	"metadata": {
+		
+	},
+	"request": {
+		"eventId": "string",
+		"eventName": "string",
+		"eventType": "string",
+		"actionTimeStamp": "2018-12-12T11:11:11.256Z",
+		"hostName": "string",
+		"hostIp": "string",
+		"applicationId": "",
+		"applicationName": "string",
+		"sessionUserId": "string",
+		"sessionUserName": "string",
+		"id": "string",
+		"idType": "string",
+		"createdBy": "string",
+		"moduleName": "string",
+		"moduleId": "string",
+		"description": "string"
+	},
+	"requesttime": "2018-12-12T11:11:11.256Z",
+	"version": "string"
+}

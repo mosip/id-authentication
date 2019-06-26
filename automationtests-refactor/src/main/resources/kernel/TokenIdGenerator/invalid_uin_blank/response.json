@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-25T09:09:26.452Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-TIG-010",
+			"message": "UIN and partner code cannot be empty"
+		}
+	]
+}

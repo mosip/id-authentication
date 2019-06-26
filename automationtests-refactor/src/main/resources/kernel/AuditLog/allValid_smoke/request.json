@@ -1,0 +1,26 @@
+{
+	"id": "string",
+	"metadata": {
+		
+	},
+	"request": {
+		"eventId": "btnClick_002",
+		"eventName": "btnClick",
+		"eventType": "click",
+		"actionTimeStamp": "2018-12-12T11:11:11.256Z",
+		"hostName": "RegClient_003",
+		"hostIp": "132.23.42.34",
+		"applicationId": "otpValidator_001",
+		"applicationName": "otpValidator",
+		"sessionUserId": "session_001",
+		"sessionUserName": "auditSession",
+		"id": "aud_001",
+		"idType": "audit",
+		"createdBy": "supervisor_001",
+		"moduleName": "kernel",
+		"moduleId": "kernel_otp",
+		"description": "otpValidationLog"
+	},
+	"requesttime": "2018-12-12T11:11:11.256Z",
+	"version": "string"
+}

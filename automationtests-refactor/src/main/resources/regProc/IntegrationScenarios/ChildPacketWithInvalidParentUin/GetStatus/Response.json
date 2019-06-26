@@ -1,0 +1,12 @@
+{
+	"response": [
+		{
+			"registrationId": "10031100110027020190301175942",
+			"statusCode": "PACKET_UPLOADED_TO_VIRUS_SCAN",
+			"retryCount": 0
+		}
+	],
+	"id": "mosip.registration.status",
+	"version": "1.0",
+	"responsetime": "2019-04-12T10:42:33.513Z"
+}

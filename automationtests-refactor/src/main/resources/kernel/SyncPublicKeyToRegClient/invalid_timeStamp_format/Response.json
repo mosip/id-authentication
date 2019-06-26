@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-22T05:36:53.974Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-KMS-006",
+			"message": "Text '2019/01/29' could not be parsed at index 4 timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SSSZ"
+		}
+	]
+}

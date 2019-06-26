@@ -1,0 +1,58 @@
+[
+	{
+		"testType": "smoke",
+		"testCaseName": "regProc_UpdateAddress_smoke",
+		"jiraId": "MOS-1000",
+		"UINInvalid": "valid",
+		"status": ""
+	},
+	{
+		"testType": "smoke",
+		"testCaseName": "regProc_Updatebio&fullName_smoke",
+		"jiraId": "MOS-1002",
+		"UINInvalid": "valid",
+		"status": ""
+	},
+	{
+		"testType": "smoke",
+		"testCaseName": "regProc_UpdateBio_smoke",
+		"jiraId": "MOS-1003",
+		"UINInvalid": "valid",
+		"status": ""
+	},
+	{
+		"testType": "smoke",
+		"testCaseName": "regProc_UpdateDOB_smoke",
+		"jiraId": "MOS-1004",
+		"UINInvalid": "valid",
+		"status": ""
+	},
+	{
+		"testType": "smoke",
+		"testCaseName": "regProc_UpdateEmail_smoke",
+		"jiraId": "MOS-1005",
+		"UINInvalid": "valid",
+		"status": ""
+	},
+	{
+		"testType": "smoke",
+		"testCaseName": "regProc_UpdateFullName_smoke",
+		"jiraId": "MOS-1006",
+		"UINInvalid": "valid",
+		"status": ""
+	},
+	{
+		"testType": "smoke",
+		"testCaseName": "regProc_UpdatePhone_smoke",
+		"jiraId": "MOS-1007",
+		"UINInvalid": "valid",
+		"status": ""
+	},
+	{
+		"testType": "regression",
+		"UINInvalid": "invalid",
+		"testCaseName": "regProc_UpdateAddress_UINInvalid",
+		"jiraId": "MOS-1001",
+		"status": ""
+	}
+]

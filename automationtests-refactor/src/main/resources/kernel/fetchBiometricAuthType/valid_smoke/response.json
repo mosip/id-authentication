@@ -1,0 +1,32 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-17T11:24:52.502Z",
+	"metadata": null,
+	"response": {
+		"biometrictypes": [
+			{
+				"code": "FNR",
+				"name": "Fingerprint",
+				"description": "Finger prints of the applicant",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "IRS",
+				"name": "Iris",
+				"description": "Iris of the applicant",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "PHT",
+				"name": "Photo",
+				"description": "Photo of the face of the applicant",
+				"langCode": "eng",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
+}

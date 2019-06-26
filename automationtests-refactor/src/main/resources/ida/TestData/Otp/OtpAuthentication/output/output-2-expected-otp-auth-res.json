@@ -1,0 +1,11 @@
+{
+	"transactionID": "1082668461",
+	"version": "$version$",
+	"id": "mosip.identity.auth",
+	"errors": [],
+	"responseTime": "2019-04-22T16:48:27.025+05:30",
+	"response": {
+		"authStatus": true,
+		"staticToken": "357151865649442133244057745887467435"
+	}
+}

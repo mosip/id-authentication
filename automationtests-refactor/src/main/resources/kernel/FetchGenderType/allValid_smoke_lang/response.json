@@ -1,0 +1,16 @@
+{
+	"genderType": [
+		{
+			"code": "MLE",
+			"genderName": "Male",
+			"langCode": "eng",
+			"isActive": true
+		},
+		{
+			"code": "FLE",
+			"genderName": "Female",
+			"langCode": "eng",
+			"isActive": true
+		}
+	]
+}

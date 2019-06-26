@@ -1,0 +1,13 @@
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-05-30T09:00:20.169Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "PRG_CORE_REQ_016",
+			"message": "Request method 'PUT' not supported"
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"id": "mosip.pre-registration.booking.book",
+	"version": "1.0",
+	"err": null,
+	"responsetime": "2019-04-01T07:22:13.078Z",
+	"response": [
+		{
+			"preRegistrationId": "60724608364839",
+			"deletedBy": "987654321",
+			"deletedDateTime": "2019-04-01T07:22:13.078+0000"
+		}
+	]
+}
