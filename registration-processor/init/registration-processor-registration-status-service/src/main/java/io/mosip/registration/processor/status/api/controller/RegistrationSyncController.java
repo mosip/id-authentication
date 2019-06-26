@@ -114,7 +114,7 @@ public class RegistrationSyncController {
 			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE,
-						digitalSignatureUtility.getDigitalSignature(buildRegistrationSyncResponse(syncResponseList)));
+						digitalSignatureUtility.getDigitalSignature(buildSignatureRegistrationSyncResponse(syncResponseList)));
 				return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
 			}
 
@@ -125,7 +125,46 @@ public class RegistrationSyncController {
 		}
 	}
 
-	public String buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
+	public RegSyncResponseDTO buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
+			throws JsonProcessingException {
+
+		RegSyncResponseDTO response = new RegSyncResponseDTO();
+		if (Objects.isNull(response.getId())) {
+			response.setId(env.getProperty(REG_SYNC_SERVICE_ID));
+		}
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
+		List<SyncErrorDTO> syncErrorDTOList = new ArrayList<>();
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
+		for (SyncResponseDto syncResponseDto : syncResponseDtoList) {
+			if (syncResponseDto.getStatus().equals(ResponseStatusCode.SUCCESS.toString())) {
+				syncResponseList.add(syncResponseDto);
+			} else {
+				if (syncResponseDto instanceof SyncResponseFailureDto) {
+					SyncErrDTO errors = new SyncErrDTO(((SyncResponseFailureDto) syncResponseDto).getErrorCode(),
+							((SyncResponseFailureDto) syncResponseDto).getMessage());
+					errors.setRegistrationId(((SyncResponseFailureDto) syncResponseDto).getRegistrationId());
+					errors.setStatus(syncResponseDto.getStatus());
+
+					syncErrorDTOList.add(errors);
+				} else if (syncResponseDto instanceof SyncResponseFailDto) {
+					SyncErrorDTO errors = new SyncErrorDTO(((SyncResponseFailDto) syncResponseDto).getErrorCode(),
+							((SyncResponseFailDto) syncResponseDto).getMessage());
+					errors.setStatus(syncResponseDto.getStatus());
+					syncErrorDTOList.add(errors);
+				}
+			}
+		}
+		if (!syncErrorDTOList.isEmpty()) {
+			response.setErrors(syncErrorDTOList);
+		}
+		if (!syncResponseList.isEmpty()) {
+			response.setResponse(syncResponseList);
+		}
+		return response;
+	}
+	
+	public String buildSignatureRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
 			throws JsonProcessingException {
 
 		RegSyncResponseDTO response = new RegSyncResponseDTO();
@@ -162,9 +201,7 @@ public class RegistrationSyncController {
 			response.setResponse(syncResponseList);
 		}
 		ObjectMapper objectMapper = new ObjectMapper();
-		String objectMapperResponse = null;
-		objectMapperResponse = objectMapper.writeValueAsString(response);
-		return objectMapperResponse;
+		return objectMapper.writeValueAsString(response);
 	}
 
 }
