@@ -16,7 +16,18 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.operator.UserDetailService;
 
 /**
- * This is a job to sync the user detail data
+ * This is a job to sync the user detail data.
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
+ * 
  * @author Sreekar Chukka
  *
  * @since 1.0.0
@@ -38,7 +49,8 @@ public class UserDetailServiceJob extends BaseJob {
 	/**
 	 * Execute internal.
 	 *
-	 * @param context the context
+	 * @param context
+	 *            the context
 	 */
 	/*
 	 * (non-Javadoc)
