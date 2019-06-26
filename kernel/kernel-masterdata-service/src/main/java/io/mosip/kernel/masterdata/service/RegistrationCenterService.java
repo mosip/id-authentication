@@ -163,7 +163,7 @@ public interface RegistrationCenterService {
 	 * 
 	 * @return - the id response DTO.
 	 */
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenterDto);
+	//public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenterDto);
 
 	/**
 	 * Function to fetch list of registration centers based on hierarchy level,text
@@ -211,6 +211,6 @@ public interface RegistrationCenterService {
 	 * @return RegistrationCenterPutResponseDto - return updated registration centers complete DTO
 	 */
 	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
-			RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> registrationCenterDto);
+			Set<RegistrationCenterPutReqAdmDto> registrationCenterDto);
 
 }

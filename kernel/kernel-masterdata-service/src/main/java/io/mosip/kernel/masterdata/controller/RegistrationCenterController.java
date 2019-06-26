@@ -245,7 +245,7 @@ public class RegistrationCenterController {
 	 *            the request DTO for updating registration center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	/*@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/registrationcenters")
 	public ResponseWrapper<IdAndLanguageCodeID> updateRegistrationCenter(
@@ -254,7 +254,7 @@ public class RegistrationCenterController {
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenter(registrationCenterDto));
 		return responseWrapper;
-	}
+	}*/
 
 	@ResponseFilter
 	@DeleteMapping("/registrationcenters/{registrationCenterId}")
@@ -338,12 +338,12 @@ public class RegistrationCenterController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
-	@PutMapping("/registrationcenters/admin")
+	@PutMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
 			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> reqRegistrationCenterDto) {
 
 		 ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenterAdmin(reqRegistrationCenterDto));
+		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenterAdmin(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
 }

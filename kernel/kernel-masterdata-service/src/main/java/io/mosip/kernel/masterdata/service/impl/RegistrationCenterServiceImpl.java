@@ -451,7 +451,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * updateRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
-	@Transactional
+	/*@Transactional
 	@Override
 	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenter) {
 		RegistrationCenter updRegistrationCenter = null;
@@ -484,7 +484,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
 		MapperUtils.map(updRegistrationCenter, idAndLanguageCodeID);
 		return idAndLanguageCodeID;
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -797,7 +797,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Transactional
 	@Override
 	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
-			RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> registarionCenterReqDto) {
+			Set<RegistrationCenterPutReqAdmDto> reqRegistarionCenterReqDto) {
 		RegistrationCenter updRegistrationCenter = null;
 		RegistrationCenter updRegistrationCenterEntity = null;
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
@@ -807,7 +807,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<String> inputLangCodeList = new ArrayList<>();
 		List<String> inputIdList = new ArrayList<>();
 
-		for (RegistrationCenterPutReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 			inputLangCodeList.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
 		}
@@ -824,7 +824,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		try {
-			for (RegistrationCenterPutReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
+			for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 
 				RegistrationCenter renRegistrationCenter = registrationCenterRepository
 						.findByIdAndLangCodeAndIsDeletedTrue(registrationCenterDto.getId(),
