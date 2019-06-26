@@ -200,7 +200,6 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			}
 			
 			executorServiceForPreReg.shutdown();
-			
 			executorServiceForPreReg.awaitTermination(500, TimeUnit.SECONDS);
 		} catch (Exception interruptedException) {
 			executorServiceForPreReg.shutdown();
