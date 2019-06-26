@@ -58,7 +58,7 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	private static Map<String, String> completedJobMap = new HashMap<>();
 
-	public static List<String> successJob = new ArrayList<String>();
+	public static final List<String> successJob = new ArrayList<>();
 
 	/**
 	 * LOGGER for logging
