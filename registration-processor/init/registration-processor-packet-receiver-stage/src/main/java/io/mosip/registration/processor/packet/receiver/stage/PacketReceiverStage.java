@@ -234,9 +234,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	private File getFileFromCtx(RoutingContext ctx) throws IOException {
 
 		FileUpload fileUpload = ctx.fileUploads().iterator().next();
-		FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
-				new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
-		File file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
+		FileUtils.copyFile(FileUtils.getFile(fileUpload.uploadedFileName()),
+				FileUtils.getFile(FileUtils.getFile(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
+		File file = FileUtils.getFile(FileUtils.getFile(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 		return file;
 
 	}
