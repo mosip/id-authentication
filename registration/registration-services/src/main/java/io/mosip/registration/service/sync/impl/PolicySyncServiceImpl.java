@@ -213,7 +213,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 				}
 			} else {
-				fetchPolicy();
+				setErrorResponse(responseDTO, RegistrationConstants.INVALID_KEY, null);
 			}
 		} catch (RuntimeException runtimeException) {
 

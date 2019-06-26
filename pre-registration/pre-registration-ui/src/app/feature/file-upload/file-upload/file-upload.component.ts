@@ -15,6 +15,7 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
+import { LogService } from 'src/app/shared/logger/log.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -99,7 +100,8 @@ export class FileUploadComponent implements OnInit {
     public domSanitizer: DomSanitizer,
     private bookingService: BookingService,
     private translate: TranslateService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private loggerService: LogService
   ) {
     this.initiateComponent();
   }
@@ -138,6 +140,7 @@ export class FileUploadComponent implements OnInit {
       this.users[0] = JSON.parse(JSON.stringify(this.registration.getUser(this.registration.getUsers().length - 1)));
       this.activeUsers = JSON.parse(JSON.stringify(this.registration.getUsers()));
     }
+    this.loggerService.info('active users', this.activeUsers);
   }
 
   /**
@@ -530,24 +533,25 @@ export class FileUploadComponent implements OnInit {
         }
         this.fileIndex = i;
         this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
+        this.fileExtension = this.fileExtension.toLowerCase();
+        console.log(this.fileExtension);
         if (this.fileByteArray) {
-          switch (fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1)) {
+          switch (this.fileExtension) {
             case 'pdf':
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
                 'data:application/pdf;base64,' + this.fileByteArray
               );
               break;
             case 'jpg':
+            case 'jpeg':
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
                 'data:image/jpeg;base64,' + this.fileByteArray
               );
               break;
-
             case 'png':
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
                 'data:image/png;base64,' + this.fileByteArray
               );
-
               break;
           }
         }
@@ -577,8 +581,11 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
-    const extensionRegex = new RegExp('(?:pdf|jpg|png)');
+    const extensionRegex = new RegExp('(?:pdf|jpg|png|jpeg)');
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
+    console.log(this.fileExtension);
+    this.fileExtension = this.fileExtension.toLowerCase();
+    console.log(this.fileExtension);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
 
@@ -600,6 +607,7 @@ export class FileUploadComponent implements OnInit {
                 this.fileByteArray = this.fileByteArray.replace('data:application/pdf;base64,', '');
                 break;
               case 'jpg':
+              case 'jpeg':
                 this.fileByteArray = this.fileByteArray.replace('data:image/jpeg;base64,', '');
                 break;
               case 'png':
@@ -794,7 +802,7 @@ export class FileUploadComponent implements OnInit {
       this.users[this.step].files.documentsMetaData.push(this.userFile[0]);
     }
     this.userFile = [];
-    //this.registration.updateUser(this.step, this.users[this.step]);
+    // this.registration.updateUser(this.step, this.users[this.step]);
     this.registration.updateUser(this.registration.getUsers().length - 1, this.users[this.step]);
   }
 
@@ -930,7 +938,8 @@ export class FileUploadComponent implements OnInit {
    */
   displayMessage(title: string, message: string, error?: any) {
     if (
-      error && error[appConstants.ERROR] &&
+      error &&
+      error[appConstants.ERROR] &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorlabels.tokenExpiredLogout;

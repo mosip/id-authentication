@@ -17,7 +17,17 @@ import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.JobManager;
 
 /**
- * Implementation of {@link JobManager}
+ * This job is the implementation of {@link JobManager}
+ * 
+ * <p>
+ * This will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -31,7 +41,7 @@ public class JobManagerImpl implements JobManager {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(JobManagerImpl.class);
 
-	 public synchronized String getJobId(JobExecutionContext context) {
+	public synchronized String getJobId(JobExecutionContext context) {
 
 		return getJobId(context.getJobDetail());
 	}

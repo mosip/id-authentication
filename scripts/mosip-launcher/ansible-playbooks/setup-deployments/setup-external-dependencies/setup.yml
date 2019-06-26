@@ -35,6 +35,42 @@
       register: scm_config_branch
       when: scm_branch is not defined
 
+    - name: Generate ssh key for SCM Provider
+      command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+      args:
+        creates: ~/.ssh/id_rsa
+
+    - name: Getting private ssh key for SCM Provider
+      command: cat ~/.ssh/id_rsa
+      register: output_ssh_private_key_generate
+      
+    - name: Printing Private SSH Key
+      debug: 
+        msg: "{{ output_ssh_private_key_generate | json_query('stdout')  }}"
+
+    - name: Getting public ssh key for SCM
+      command: cat ~/.ssh/id_rsa.pub
+      register: output_ssh_public_key_generate
+      
+    - name: Printing Public SSH Key
+      debug: 
+        msg: "\nAdd this SSH Key to your SCM Provider Account- \n\n{{ output_ssh_public_key_generate | json_query('stdout')  }}"
+    - pause:
+        prompt: "Make sure you have pasted the public key to your SCM provider account! Press return to continue."
+
+    - name: Creating knownhost file
+      file:
+        path:  ~/.ssh/known_hosts
+        state: touch
+
+    - name: Adding git providers to known hosts
+      run_once: true
+      shell: |
+        # If you are using SCM providers other than github, gitlab and bitbucket, add them here
+        ssh-keyscan -H  'github.com' >> ~/.ssh/known_hosts
+        ssh-keyscan -H  'gitlab.com' >> ~/.ssh/known_hosts
+        ssh-keyscan -H  'bitbucket.org' >> ~/.ssh/known_hosts
+
     - pause:
         prompt: "Enter Docker registry url, to connect keymanager vms/ dmz vms to registry"
       register: docker_registry_address
@@ -67,6 +103,7 @@
 
   tasks:
 
+
     - name: Make application name persistant
       set_fact:
         application_name: "{{ hostvars['localhost']['application']['user_input'] }}"
@@ -89,7 +126,7 @@
   
     - name: Make docker registry url persistant
       set_fact:
-          docker_registry_url: "{{ hostvars['localhost']['devops_cluster_dns'] | replace('https://','') }}/docker-registry"
+          docker_registry_url: "{{ hostvars['localhost']['devops_cluster_dns'] | replace('https://','') }}"
       when: devops_cluster_dns is defined
 
     - name: Make SCM URL persistant

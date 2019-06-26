@@ -152,7 +152,6 @@ public class SoftwareInstallationHandler {
 	private void checkJars(String version, List<String> checkableJars) throws IOException {
 		Long t1 = System.currentTimeMillis();
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
-		String errorMsg = "";
 		for (String jarFile : checkableJars) {
 
 			executorService.execute(new Runnable() {
@@ -186,6 +185,7 @@ public class SoftwareInstallationHandler {
 			executorService.shutdown();
 			executorService.awaitTermination(500, TimeUnit.SECONDS);
 		} catch (Exception exception) {
+			executorService.shutdown();
 			exception.printStackTrace();
 		}
 		Long t2 = System.currentTimeMillis() - t1;

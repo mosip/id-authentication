@@ -30,15 +30,14 @@ public class IdObjectsSchemaValidationOperationMapper {
 	
 	public IdObjectValidatorSupportedOperations getOperation(String registrationId) throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		
-		int age = utility.getApplicantAge(registrationId);
-		int ageThreshold = Integer.parseInt(ageLimit);
-		if (age < ageThreshold) {
-			return IdObjectValidatorSupportedOperations.CHILD_REGISTRATION;
-		}
-		
 		SyncRegistrationEntity regEntity=syncRegistrationService.findByRegistrationId(registrationId);
 		
 		if(regEntity.getRegistrationType().matches(SyncTypeDto.NEW.getValue())) {
+			int age = utility.getApplicantAge(registrationId);
+			int ageThreshold = Integer.parseInt(ageLimit);
+			if (age < ageThreshold) {
+				return IdObjectValidatorSupportedOperations.CHILD_REGISTRATION;
+			}
 			return IdObjectValidatorSupportedOperations.NEW_REGISTRATION;
 		}
 		else if(regEntity.getRegistrationType().matches(SyncTypeDto.LOST.getValue())) {

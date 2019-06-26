@@ -86,7 +86,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-005");
-		errorDTO.setMessage("The request received is a duplicate request to upload a Packet");
+		errorDTO.setMessage("Duplicate Request Received");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -100,7 +100,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-003");
-		errorDTO.setMessage("The Registration Packet Size is invalid");
+		errorDTO.setMessage("Invalid Packet Size");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -114,7 +114,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-002");
-		errorDTO.setMessage("The Registration Packet Size is invalid");
+		errorDTO.setMessage("Invalid Packet Size");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -128,7 +128,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-001");
-		errorDTO.setMessage("The Registration Packet Size is invalid");
+		errorDTO.setMessage("Invalid Packet Size");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -142,7 +142,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-RGS-001");
-		errorDTO.setMessage("The Registration Packet Size is invalid");
+		errorDTO.setMessage("Invalid Packet Size");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -155,7 +155,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-SYS-005");
-		errorDTO.setMessage("The Registration Packet Size is invalid");
+		errorDTO.setMessage("Invalid Packet Size");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -169,7 +169,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-SYS-001");
-		errorDTO.setMessage("The Registration Packet Size is invalid");
+		errorDTO.setMessage("Invalid Packet Size");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -183,7 +183,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-004");
-		errorDTO.setMessage("The Registration Packet Size is invalid");
+		errorDTO.setMessage("Invalid Packet Size");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -208,7 +208,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-006 ");
-		errorDTO.setMessage("Packet not avaialble");
+		errorDTO.setMessage("Packet Not Available in Request");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -222,7 +222,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-013");
-		errorDTO.setMessage("Synced packet size not same as uploaded packet");
+		errorDTO.setMessage("Packet Size is Not Matching");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -236,7 +236,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-010");
-		errorDTO.setMessage("The Registration Packet virus scan failed");
+		errorDTO.setMessage("Virus was Found in Packet");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -250,7 +250,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-009");
-		errorDTO.setMessage("The Registration Packet HashSequence is not equal as synced packet HashSequence");
+		errorDTO.setMessage("Packet HashSequence did not match");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);
@@ -264,7 +264,7 @@ public class ExceptionHandlerTest {
 		PacketReceiverResponseDTO packetReceiverResponseDTO1 = gson.fromJson(response, PacketReceiverResponseDTO.class);
 		packetReceiverResponseDTO.setResponsetime(packetReceiverResponseDTO1.getResponsetime());
 		errorDTO.setErrorCode("RPR-PKR-008");
-		errorDTO.setMessage("Virus scanner service failed");
+		errorDTO.setMessage("Virus Scan Service is Not Responding");
 		errors.add(errorDTO);
 		packetReceiverResponseDTO.setErrors(errors);
 		assertEquals(gson.toJson(packetReceiverResponseDTO), response);

@@ -30,6 +30,8 @@ public class Registration extends RegistrationCommonFields {
 	private String regType;
 	@Column(name = "REF_REG_ID")
 	private String refRegId;
+	@Column(name = "PREREG_ID")
+	private String preRegId;
 	@Column(name = "STATUS_CODE")
 	private String statusCode;
 	@Column(name = "LANG_CODE")
@@ -307,6 +309,20 @@ public class Registration extends RegistrationCommonFields {
 
 	public void setRegistrationTransaction(List<RegistrationTransaction> registrationTransaction) {
 		this.registrationTransaction = registrationTransaction;
+	}
+
+	/**
+	 * @return the preRegId
+	 */
+	public String getPreRegId() {
+		return preRegId;
+	}
+
+	/**
+	 * @param preRegId the preRegId to set
+	 */
+	public void setPreRegId(String preRegId) {
+		this.preRegId = preRegId;
 	}
 	
 	

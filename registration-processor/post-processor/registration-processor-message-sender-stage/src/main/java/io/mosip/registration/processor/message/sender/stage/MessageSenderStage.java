@@ -131,9 +131,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Value("${registration.processor.updated.subject}")
 	private String uinUpdatedSubject;
 
-	/** The Constant TEMPLATES. */
-	private static final String TEMPLATES = "templates";
-
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -165,7 +162,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consume(mosipEventBus, MessageBusAddress.MESSAGE_SENDER_BUS);
-
 	}
 
 	/*
@@ -424,11 +420,10 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	private boolean isTemplateAvailable(MessageSenderDto messageSenderDto) throws ApisResourceAccessException, IOException {
 
 		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add(TEMPLATES);
 		ResponseWrapper<?> responseWrapper;
 		TemplateResponseDto templateResponseDto = null;
 		ObjectMapper mapper = new ObjectMapper();
-		responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MASTER, pathSegments, "", "",
+		responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "", "",
 				ResponseWrapper.class);
 		templateResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 				TemplateResponseDto.class);

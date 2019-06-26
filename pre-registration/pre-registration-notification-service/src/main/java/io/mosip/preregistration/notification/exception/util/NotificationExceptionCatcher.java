@@ -84,7 +84,7 @@ public class NotificationExceptionCatcher {
 		
 		}
 		else if (ex instanceof ParseException) {
-			throw new InvalidRequestParameterException(ErrorCodes.PRG_PAM_ACK_013.getCode(), ErrorMessages.INVALID_REQUESTTIME_FORMAT.getMessage(), mainResponseDto);
+			throw new InvalidRequestParameterException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_003.getCode(), io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_REQUEST_DATETIME.getMessage(), mainResponseDto);
 
 		}
 	}

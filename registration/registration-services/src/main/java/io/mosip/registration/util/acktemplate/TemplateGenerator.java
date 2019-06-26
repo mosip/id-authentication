@@ -854,7 +854,10 @@ public class TemplateGenerator extends BaseService {
 
 		templateValues.put(RegistrationConstants.TEMPLATE_ACKNOWLEDGEMENT,
 				RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
-		if (registration.getSelectionListDTO() != null) {
+		if (registration.getSelectionListDTO() != null || (registration.getRegistrationMetaDataDTO() != null
+				&& registration.getRegistrationMetaDataDTO().getRegistrationCategory() != null
+				&& registration.getRegistrationMetaDataDTO().getRegistrationCategory()
+						.equalsIgnoreCase(RegistrationConstants.PACKET_TYPE_LOST))) {
 			templateValues.put(RegistrationConstants.TEMPLATE_IS_UIN_UPDATE,
 					RegistrationConstants.TEMPLATE_STYLE_HIDE_PROPERTY);
 			templateValues.put(RegistrationConstants.TEMPLATE_PRE_REG_ID_USER_LANG_LABEL, RegistrationConstants.EMPTY);

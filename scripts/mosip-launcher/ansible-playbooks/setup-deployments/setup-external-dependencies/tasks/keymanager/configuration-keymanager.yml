@@ -57,13 +57,13 @@
   # when: "docker_check.stdout.find('not-found') != -1"
   when: docker_version.stdout == ''
 
-- name: Install epel-release for proxy server for {{ env_name  }}
+- name: Install epel-release for keymanager for {{ env_name  }}
   become: yes
   yum:
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     state: present
 
-- name: Install se-linux for proxy server for {{ env_name  }}
+- name: Install se-linux for keymanager for {{ env_name  }}
   become: yes
   yum:
     name: http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.68-1.el7.noarch.rpm
@@ -100,5 +100,5 @@
   meta: reset_connection
 
 - name: Log into private registry from keymanager vm for {{ env_name }}
-  command:  "docker login {{ hostvars['localhost']['docker_registry_url'] | replace('/docker-registry','') }} -u={{ hostvars['localhost']['docker_registry_username'] }} -p={{ hostvars['localhost']['docker_registry_password'] }}"
+  command:  "docker login {{ hostvars['localhost']['docker_registry_url'] }} -u={{ hostvars['localhost']['docker_registry_username'] }} -p={{ hostvars['localhost']['docker_registry_password'] }}"
 

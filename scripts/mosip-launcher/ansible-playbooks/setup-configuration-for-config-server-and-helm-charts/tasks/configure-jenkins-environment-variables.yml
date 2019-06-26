@@ -65,6 +65,7 @@
     file:
       path: /tmp/known_hosts
       state: touch
+      
   - name: Adding git providers to known hosts
     shell: |
       # If you are using SCM providers other than github, gitlab and bitbucket, add them here

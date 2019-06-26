@@ -5,6 +5,6 @@ client_secret: <your_client_secret>
 subscription_id: <your_subscription_id>
 tenant_id: <your_tenant_id>
 
-
+# use only letters in environment names 
 environments:
     - dev

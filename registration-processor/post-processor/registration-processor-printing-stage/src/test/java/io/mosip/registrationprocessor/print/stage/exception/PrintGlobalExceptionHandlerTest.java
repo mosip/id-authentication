@@ -32,13 +32,13 @@ public class PrintGlobalExceptionHandlerTest {
 	public void handleTimeoutException() {
 		TimeoutException exe = new TimeoutException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-SYS-005 --> The Registration Packet Size is invalid", response);
+		assertEquals("RPR-SYS-005 --> Invalid Packet Size", response);
 	}
 	@Test
 	public void testhandleUnexpectedException() {
 		UnexpectedException exe = new UnexpectedException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_SIZE.getMessage());
 		String response = globalExceptionHandler.handler(exe);	
-		assertEquals("RPR-SYS-001 --> The Registration Packet Size is invalid", response);
+		assertEquals("RPR-SYS-001 --> Invalid Packet Size", response);
 	}
 	
 	@Test
