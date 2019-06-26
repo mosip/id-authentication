@@ -1,0 +1,13 @@
+{
+    "id": "string",
+    "version": "string",
+    "responsetime": "2019-05-31T10:11:32.434Z",
+    "metadata": null,
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-LKM-003",
+            "message": "Permission value entered is not accepted."
+        }
+    ]
+}

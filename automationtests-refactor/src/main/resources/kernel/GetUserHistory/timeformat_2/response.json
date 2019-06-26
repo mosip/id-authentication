@@ -1,0 +1,13 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-05-30T09:34:17.999Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-USR-002",
+      "message": "Invalid Date Format"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "metadata": {},
+  "request": {
+    "licenseKey": "xMGVGSregNE6e2mL",
+  "permissions": [
+    "OTP Trigger"
+  ],
+  "tspId": ""
+  },
+  "requesttime": "2019-01-20T10:00:00.000Z",
+  "version": "string"
+}
