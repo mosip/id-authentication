@@ -3,7 +3,11 @@
  */
 package io.mosip.kernel.auth.service;
 
+import java.io.IOException;
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthResponseDto;
@@ -56,7 +60,7 @@ public interface AuthService extends AuthZService, AuthNService {
 
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception;
 	
-	public MosipUserDto valdiateToken(String token);
+	public MosipUserDto valdiateToken(String token) throws JsonParseException, JsonMappingException, IOException;
 	
 	public AuthResponseDto logoutUser(String token);
 

@@ -1,5 +1,7 @@
 package io.mosip.kernel.auth.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
@@ -262,12 +266,19 @@ public class AuthController {
 	 * 
 	 * 
 	 * @return ResponseEntity with MosipUserDto
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
 	@ResponseFilter
-	@PostMapping(value = "/authorize/admin/validateToken")
-	public ResponseWrapper<MosipUserDto> validateToken(@RequestBody String token) {
-		authService.valdiateToken(token);
-		return null;
+	@GetMapping(value = "/authorize/admin/validateToken")
+	public ResponseWrapper<MosipUserDto> validateToken(
+			@CookieValue(value = "Authorization", required = true) String token)
+			throws JsonParseException, JsonMappingException, IOException {
+		MosipUserDto mosipUserDto = authService.valdiateToken(token);
+		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(mosipUserDto);
+		return responseWrapper;
 	}
 
 	/**
@@ -513,7 +524,8 @@ public class AuthController {
 
 	@ResponseFilter
 	@DeleteMapping(value = "/logout/user")
-	public ResponseWrapper<AuthResponseDto> logoutUser(@CookieValue(value = "Authorization", required = false) String token) {
+	public ResponseWrapper<AuthResponseDto> logoutUser(
+			@CookieValue(value = "Authorization", required = false) String token) {
 		AuthResponseDto authResponseDto = authService.logoutUser(token);
 		ResponseWrapper<AuthResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authResponseDto);
