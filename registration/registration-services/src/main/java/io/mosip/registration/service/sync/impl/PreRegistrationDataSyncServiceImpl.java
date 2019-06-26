@@ -203,6 +203,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 			
 			executorServiceForPreReg.awaitTermination(500, TimeUnit.SECONDS);
 		} catch (Exception interruptedException) {
+			executorServiceForPreReg.shutdown();
 			LOGGER.error("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Error Fetching Pre-Registration ID's in parallel mode " + interruptedException);
