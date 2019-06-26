@@ -48,7 +48,7 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 	private static final Logger logger = LoggerFactory.getLogger(AuthFilter.class);
 
 	private String[] allowedEndPoints() {
-		return new String[] { "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
+		return new String[] {"/**", "/**/assets/**", "/**/icons/**", "/**/screenshots/**", "/favicon**", "/**/favicon**",
 				"/**/css/**", "/**/js/**", "/**/error**", "/**/webjars/**", "/**/v2/api-docs", "/**/configuration/ui",
 				"/**/configuration/security", "/**/swagger-resources/**", "/**/swagger-ui.html", "/**/csrf", "/*/",
 				"**/authenticate/**", "/**/actuator/**", "/**/authmanager/**", "/**/admin/**", "/sendOtp",
