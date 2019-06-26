@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,7 +39,9 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -61,6 +65,7 @@ import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
@@ -638,6 +643,14 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
+	Set<RegistrationCenterReqAdmDto> requestSetLang = null;
+	Set<RegistrationCenterReqAdmDto> requestSetID = null;
+	Set<RegistrationCenterReqAdmDto> requestSetLongitudeInvalide = null;
+	RegistrationCenterReqAdmDto registrationCenterDto1  = null; 
+	RegistrationCenterReqAdmDto registrationCenterDto2  = null; 
+	RegistrationCenterReqAdmDto registrationCenterDto3  = null; 
+	RegistrationCenterReqAdmDto registrationCenterDto4  = null; 
+	
 	private void registrationCenterSetup() {
 		registrationCenter = new RegistrationCenter();
 		registrationCenter.setId("1");
@@ -645,6 +658,114 @@ public class MasterDataServiceTest {
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLangCode("ENG");
+		
+		//----
+		LocalTime centerStartTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime centerEndTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime lunchStartTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime lunchEndTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
+		
+		requestSetLang = new HashSet<>();
+		requestSetID = new HashSet<>();
+		requestSetLongitudeInvalide = new HashSet<>();
+		
+		// 1st obj
+	    registrationCenterDto1 = new RegistrationCenterReqAdmDto();
+		registrationCenterDto1.setName("TEST CENTER");
+		registrationCenterDto1.setAddressLine1("Address Line 1");
+		registrationCenterDto1.setAddressLine2("Address Line 2");
+		registrationCenterDto1.setAddressLine3("Address Line 3");
+		registrationCenterDto1.setCenterTypeCode("REG");
+		registrationCenterDto1.setContactPerson("Test");
+		registrationCenterDto1.setContactPhone("9999999999");
+		registrationCenterDto1.setHolidayLocationCode("HLC01");
+		registrationCenterDto1.setId("676");
+		registrationCenterDto1.setLangCode("eng");
+		registrationCenterDto1.setLatitude("12.9646818");
+		registrationCenterDto1.setLocationCode("10190");
+		registrationCenterDto1.setLongitude("77.70168");
+		registrationCenterDto1.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto1.setCenterStartTime(centerStartTime);
+		registrationCenterDto1.setCenterEndTime(centerEndTime);
+		registrationCenterDto1.setLunchStartTime(lunchStartTime);
+		registrationCenterDto1.setLunchEndTime(lunchEndTime);
+		registrationCenterDto1.setTimeZone("UTC");
+		registrationCenterDto1.setWorkingHours("9");
+		requestSetLang.add(registrationCenterDto1);
+		requestSetID.add(registrationCenterDto1);
+		
+		// 2nd obj
+		registrationCenterDto2 = new RegistrationCenterReqAdmDto();
+		registrationCenterDto2.setName("TEST CENTER");
+		registrationCenterDto2.setAddressLine1("Address Line 1");
+		registrationCenterDto2.setAddressLine2("Address Line 2");
+		registrationCenterDto2.setAddressLine3("Address Line 3");
+		registrationCenterDto2.setCenterTypeCode("REG");
+		registrationCenterDto2.setContactPerson("Test");
+		registrationCenterDto2.setContactPhone("9999999999");
+		registrationCenterDto2.setHolidayLocationCode("HLC01");
+		registrationCenterDto2.setId("676");
+		registrationCenterDto2.setLangCode("ara");
+		registrationCenterDto2.setLatitude("12.9646818");
+		registrationCenterDto2.setLocationCode("10190");
+		registrationCenterDto2.setLongitude("77.70168");
+		registrationCenterDto2.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto2.setCenterStartTime(centerStartTime);
+		registrationCenterDto2.setCenterEndTime(centerEndTime);
+		registrationCenterDto2.setLunchStartTime(lunchStartTime);
+		registrationCenterDto2.setLunchEndTime(lunchEndTime);
+		registrationCenterDto2.setTimeZone("UTC");
+		registrationCenterDto2.setWorkingHours("9");
+		requestSetLang.add(registrationCenterDto2);
+		requestSetID.add(registrationCenterDto2);
+
+		// 3rd obj
+		registrationCenterDto3 = new RegistrationCenterReqAdmDto();
+		registrationCenterDto3.setName("TEST CENTER");
+		registrationCenterDto3.setAddressLine1("Address Line 1");
+		registrationCenterDto3.setAddressLine2("Address Line 2");
+		registrationCenterDto3.setAddressLine3("Address Line 3");
+		registrationCenterDto3.setCenterTypeCode("REG");
+		registrationCenterDto3.setContactPerson("Test");
+		registrationCenterDto3.setContactPhone("9999999999");
+		registrationCenterDto3.setHolidayLocationCode("HLC01");
+		registrationCenterDto3.setId("6767");
+		registrationCenterDto3.setLangCode("fra");
+		registrationCenterDto3.setLatitude("12.9646818");
+		registrationCenterDto3.setLocationCode("10190");
+		registrationCenterDto3.setLongitude("77.70168");
+		registrationCenterDto3.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto3.setCenterStartTime(centerStartTime);
+		registrationCenterDto3.setCenterEndTime(centerEndTime);
+		registrationCenterDto3.setLunchStartTime(lunchStartTime);
+		registrationCenterDto3.setLunchEndTime(lunchEndTime);
+		registrationCenterDto3.setTimeZone("UTC");
+		registrationCenterDto3.setWorkingHours("9");
+		requestSetID.add(registrationCenterDto3);
+		
+		registrationCenterDto4 = new RegistrationCenterReqAdmDto();
+		registrationCenterDto4.setName("TEST CENTER");
+		registrationCenterDto4.setAddressLine1("Address Line 1");
+		registrationCenterDto4.setAddressLine2("Address Line 2");
+		registrationCenterDto4.setAddressLine3("Address Line 3");
+		registrationCenterDto4.setCenterTypeCode("REG");
+		registrationCenterDto4.setContactPerson("Test");
+		registrationCenterDto4.setContactPhone("9999999999");
+		registrationCenterDto4.setHolidayLocationCode("HLC01");
+		registrationCenterDto4.setId("676");
+		registrationCenterDto4.setLangCode("eng");
+		registrationCenterDto4.setLatitude("xxxxxx");
+		registrationCenterDto4.setLocationCode("10190");
+		registrationCenterDto4.setLongitude("77.70168");
+		registrationCenterDto4.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto4.setCenterStartTime(centerStartTime);
+		registrationCenterDto4.setCenterEndTime(centerEndTime);
+		registrationCenterDto4.setLunchStartTime(lunchStartTime);
+		registrationCenterDto4.setLunchEndTime(lunchEndTime);
+		registrationCenterDto4.setTimeZone("UTC");
+		registrationCenterDto4.setWorkingHours("9");
+		requestSetLongitudeInvalide.add(registrationCenterDto4);
 	}
 
 	private void registrationCenterMachineDeviceHistorySetup() {
@@ -1700,6 +1821,21 @@ public class MasterDataServiceTest {
 
 		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-1217:59:59.999Z");
 
+	}
+	// ---------------------------------Registration Center TestCases----------------------------------
+	@Test(expected= RequestException.class)
+	public void notAllCongfLangRegCenterCreateExcpTest() {
+		registrationCenterService.createRegistrationCenterAdmin(requestSetLang);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void invalideIDRegCenterCreateExcpTest() {
+		registrationCenterService.createRegistrationCenterAdmin(requestSetID);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void invalideLongitudeRegCenterCreateExcpTest() {
+		registrationCenterService.createRegistrationCenterAdmin(requestSetLongitudeInvalide);
 	}
 
 }

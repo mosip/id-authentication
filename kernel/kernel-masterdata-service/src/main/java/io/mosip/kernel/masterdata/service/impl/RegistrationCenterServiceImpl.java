@@ -359,7 +359,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
-	@Override
+	/*@Override
 	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto) {
 		try {
 			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
@@ -391,7 +391,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		IdResponseDto idResponseDto = new IdResponseDto();
 		idResponseDto.setId(registrationCenter.getId());
 		return idResponseDto;
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -713,31 +713,29 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	@Transactional
 	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
-			RegistarionCenterReqDto<RegistrationCenterReqAdmDto> registarionCenterReqDto) {
+			Set<RegistrationCenterReqAdmDto> reqRegistarionCenterReqDto) {
 		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		List<RegistrationCenter> registrationCenterList = new ArrayList<>();
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
-		Set<String> inputLangCodeList = new HashSet<>();
+		Set<String> inputLangCodeSet = new HashSet<>();
 		List<String> inputIdList = new ArrayList<>();
 
-		for (RegistrationCenterReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
-			try {
-				if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
-						&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
+		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+			try {	
 					Float.parseFloat(registrationCenterDto.getLatitude());
 					Float.parseFloat(registrationCenterDto.getLongitude());
-				}
-			} catch (NullPointerException | NumberFormatException latLongParseException) {
+	
+			} catch (NumberFormatException latLongParseException) {
 				throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
 						ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
 								+ ExceptionUtils.parseException(latLongParseException));
 			}
-			inputLangCodeList.add(registrationCenterDto.getLangCode());
+			inputLangCodeSet.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
 		}
 		//validate to check if data is received in all configured languages
-		if (!inputLangCodeList.containsAll(supLanguages)) {
+		if (!inputLangCodeSet.containsAll(supLanguages)) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
@@ -749,9 +747,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		try {
-			for (RegistrationCenterReqAdmDto registrationCenterDto : registarionCenterReqDto.getRequest()) {
-				Float.parseFloat(registrationCenterDto.getLatitude());
-				Float.parseFloat(registrationCenterDto.getLongitude());
+			for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 				// creating registration center
 				RegistrationCenter registrationCenter;
 				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,

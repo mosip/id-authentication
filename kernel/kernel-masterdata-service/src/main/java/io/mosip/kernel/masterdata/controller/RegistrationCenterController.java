@@ -227,7 +227,7 @@ public class RegistrationCenterController {
 	 *            the request DTO for creating registration center.
 	 * @return the response i.e. the id of the registration center created.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	/*@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
 	public ResponseWrapper<IdResponseDto> createRegistrationCenter(
@@ -236,7 +236,7 @@ public class RegistrationCenterController {
 		responseWrapper
 				.setResponse(registrationCenterService.createRegistrationCenter(registrationCenterDto.getRequest()));
 		return responseWrapper;
-	}
+	}*/
 
 	/**
 	 * This method updates registration center.
@@ -311,27 +311,28 @@ public class RegistrationCenterController {
 	}
 	
 	/**
-	 * This method creates registration center.
+	 * This method creates registration center by Admin.
 	 * 
-	 * @param registrationCenterDto
+	 * @param reqRegistrationCenterDto
 	 *            the request DTO for creating registration center.
-	 * @return the response i.e. the id of the registration center created.
+	 * @return RegistrationCenterPostResponseDto
+	 *            return the created registration center DTO.
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
-	@PostMapping("/registrationcenters/admin")
+	@PostMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterReqAdmDto> registrationCenterDto) {
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterReqAdmDto> reqRegistrationCenterDto) {
       ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
-				.setResponse(registrationCenterService.createRegistrationCenterAdmin(registrationCenterDto));
+				.setResponse(registrationCenterService.createRegistrationCenterAdmin(reqRegistrationCenterDto.getRequest()));
 		return responseWrapper;
 	}
 	
 	/**
-	 * This method updates registration center.
+	 * This method updates registration center by Admin.
 	 * 
-	 * @param registrationCenterDto
+	 * @param reqRegistrationCenterDto
 	 *            the request DTO for updating registration center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
@@ -339,10 +340,10 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@PutMapping("/registrationcenters/admin")
 	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
-			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> registrationCenterDto) {
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> reqRegistrationCenterDto) {
 
 		 ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenterAdmin(registrationCenterDto));
+		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenterAdmin(reqRegistrationCenterDto));
 		return responseWrapper;
 	}
 }

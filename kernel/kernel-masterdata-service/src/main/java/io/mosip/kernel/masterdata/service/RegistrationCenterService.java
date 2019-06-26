@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
+import java.util.Set;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.PageDto;
@@ -127,7 +128,7 @@ public interface RegistrationCenterService {
 	 *            the input registration center dto.
 	 * @return the id response dto.
 	 */
-	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto);
+	//public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto);
 
 	/**
 	 * This method would validate timestamp and id whether the given date in
@@ -194,20 +195,20 @@ public interface RegistrationCenterService {
 	/**
 	 * This service method can be used to create registration center by admin.
 	 * 
-	 * @param registrationCenterDto
-	 *            the input registration center dto.
-	 * @return RegistrationCenterPostResponseDto - return the complete DTO
+	 * @param reqRegistrationCenterDto
+	 *            -pass the set of registration center DTO to create.
+	 * @return RegistrationCenterPostResponseDto - return created registration centers complete DTO
 	 */
 	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
-			RegistarionCenterReqDto<RegistrationCenterReqAdmDto> registrationCenterDto);
+			Set<RegistrationCenterReqAdmDto> reqRegistrationCenterDto);
 
 	/**
 	 * This method updates the registration center by admin.
 	 * 
 	 * @param RegistarionCenterReqDto
-	 *            - the updated registration center DTO.
+	 *            - pass the set of registration center DTO to update.
 	 * 
-	 * @return RegistrationCenterPutResponseDto - return the complete DTO
+	 * @return RegistrationCenterPutResponseDto - return updated registration centers complete DTO
 	 */
 	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
 			RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> registrationCenterDto);
