@@ -47,7 +47,7 @@
 
     - name: Make Docker registry URL persistant
       set_fact:
-        docker_registry_url: "https://{{ devops_cluster_dns }}/docker-registry"
+        docker_registry_url: "https://{{ devops_cluster_dns }}"
       when: devops_cluster_dns is defined
 
     - name: Make Docker registry URL persistant

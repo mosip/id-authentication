@@ -21,7 +21,7 @@ public enum SecurityExceptionCodeConstant {
 	MOSIP_INVALID_KEY_EXCEPTION("KER-FSE-001",
 			"invalid Key (null key,invalid encoding, wronglength, uninitialized, etc)."),
 	MOSIP_INVALID_DATA_LENGTH_EXCEPTION("KER-FSE-02", "check input data length"),
-	MOSIP_INVALID_DATA_EXCEPTION("KER-FSE-003", "data not valid (currupted,length is not valid etc.)"),
+	MOSIP_INVALID_DATA_EXCEPTION("KER-FSE-003", "data not valid (corrupted,length is not valid etc.)"),
 	MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION("KER-FSE-004", "encrypted data is corrupted"),
 	MOSIP_INVALID_DATA_SIZE_EXCEPTION("KER-FSE-005", "ecrypted data size is not valid"),
 	MOSIP_NULL_DATA_EXCEPTION("KER-FSE-06", "data is null or length is 0"),

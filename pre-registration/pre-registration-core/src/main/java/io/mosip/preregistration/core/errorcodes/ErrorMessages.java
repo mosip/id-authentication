@@ -11,7 +11,7 @@ package io.mosip.preregistration.core.errorcodes;
 public enum ErrorMessages {
 	INVALID_REQUEST_ID("Request id is invalid"), // PRG_CORE_REQ_001
 	INVALID_REQUEST_VERSION("Request version is invalid"), // PRG_CORE_REQ_002
-	INVALID_REQUEST_DATETIME("Request timestamp is invalid"), // PRG_CORE_REQ_003
+	INVALID_REQUEST_DATETIME("Invalid request time"), // PRG_CORE_REQ_003
 	INVALID_REQUEST_BODY("Request body is invalid"), // PRG_CORE_REQ_004
 	INVALID_STATUS_CODE("status code is invalid"), 
 	INVALID_LANG_CODE("Lang code is invalid"),// PRG_CORE_REQ_014
@@ -28,7 +28,7 @@ public enum ErrorMessages {
 	INTERNAL_SERVER_ERROR("Internal server error"),
 	INVALID_DOC_CAT_CODE("Document Category code is invalid"),//PRG_CORE_REQ_017
 	INVALID_DOC_TYPE_CODE("Document type code is invalid"),
-	INVALID_DATE_TIME_FORMAT("Invalid date time format"),//PRG_CORE_REQ_017
+	INVALID_DATE_TIME_FORMAT("Invalid request time format"),//PRG_CORE_REQ_017
 	FROM_DATE_GREATER_THAN_TO_DATE("From date is greater than To date");//PRG_CORE_REQ_020
 	
 	private ErrorMessages(String message) {

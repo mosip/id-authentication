@@ -262,7 +262,7 @@ public class PacketValidateProcessor {
 			description.setCode(PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getCode());
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					description.getCode() + " -- " + registrationId,
-					PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+					PlatformErrorMessages.RPR_PVM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.TRUE);
 			object.setRid(registrationStatusDto.getRegistrationId());
@@ -335,7 +335,7 @@ public class PacketValidateProcessor {
 			description.setMessage(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage());
 			description.setCode(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getCode());
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), description.getCode() + " -- " + registrationId,
-					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e.toString());
+					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), ExceptionUtils.getStackTrace(e));
 
 		} catch (BaseCheckedException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());

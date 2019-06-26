@@ -348,7 +348,7 @@
   "documents": {
     "title_document": "Télécharger des documents",
     "text_filetype": "Type de fichier autorisé ",
-    "text_filesize": "taille de fichier autorisée",
+    "text_filesize": "et taille de fichier autorisée",
     "action_browse": "FEUILLETER",
     "action_back": "RETOUR",
     "action_skip": "SAUTER",
@@ -581,7 +581,7 @@
     "dateOfBirth": "Date de naissance entrée est invalide",
     "CNIENumber": "Le numéro CNIE entré est invalide",
     "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité.",
-    "errorLabel":"ERREUR"
+    "errorLabel": "ERREUR"
   },
   "residentTypesMapping": {
     "NFR": "Nationale",

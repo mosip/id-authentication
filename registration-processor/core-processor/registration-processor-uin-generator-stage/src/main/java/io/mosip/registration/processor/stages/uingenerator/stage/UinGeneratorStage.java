@@ -277,7 +277,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
-					PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
+					PlatformErrorMessages.RPR_UGS_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			isTransactionSuccessful = false;
 			description.setMessage("FileSytem is not accessible for packet " + registrationId + "::" + e.getMessage());
@@ -302,7 +302,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
 			object.setInternalError(Boolean.TRUE);
 			object.setIsValid(Boolean.FALSE);
 			description.setMessage("Internal error in UINGenerator stage while processing registrationId " + registrationId
