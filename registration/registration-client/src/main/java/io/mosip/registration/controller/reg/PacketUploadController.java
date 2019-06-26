@@ -254,8 +254,10 @@ public class PacketUploadController extends BaseController implements Initializa
 						progressIndicator.setVisible(true);
 						for (int i = 0; i < selectedPackets.size(); i++) {
 							PacketStatusVO synchedPacket = selectedPackets.get(i);
-							if (packetSynchService.fetchSynchedPacket(synchedPacket.getFileName())
+							if ((packetSynchService.fetchSynchedPacket(synchedPacket.getFileName())
 									|| RegistrationConstants.SERVER_STATUS_RESEND
+											.equalsIgnoreCase(synchedPacket.getPacketServerStatus()))
+									&& !RegistrationConstants.PACKET_STATUS_CODE_REREGISTER
 											.equalsIgnoreCase(synchedPacket.getPacketServerStatus())) {
 								String ackFileName = synchedPacket.getPacketPath();
 								int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
