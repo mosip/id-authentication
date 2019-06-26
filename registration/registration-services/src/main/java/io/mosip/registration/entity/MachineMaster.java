@@ -15,7 +15,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegMachineSpecId;
 
 /**
- * The Entity Class for Machine master details
+ * This Entity Class conatins list of machine related data[mac address, serial number, machine name...] 
+ * with respect to language code.
+ * The data for this table will come through sync from server master table.
  * 
  * @author Yaswanth S
  * @since 1.0.0

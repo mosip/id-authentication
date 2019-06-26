@@ -14,7 +14,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegCentreMachineDeviceId;
 
 /**
- * The Entity Class for Reg Centre Machine Device details.
+ * This Entity Class is the mapping class of center, machine and device .
+ * The data for this table will come through sync from server master table.
  *
  * @author Brahmananda Reddy
  * @since 1.0.0
