@@ -29,7 +29,6 @@ import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.dao.MasterSyncDao;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -102,13 +101,13 @@ public class HeaderController extends BaseController {
 	private Menu homeSelectionMenu;
 
 	@Autowired
-	PreRegistrationDataSyncService preRegistrationDataSyncService;
+	private PreRegistrationDataSyncService preRegistrationDataSyncService;
 
 	@Autowired
-	JobConfigurationService jobConfigurationService;
+	private JobConfigurationService jobConfigurationService;
 
 	@Autowired
-	MasterSyncService masterSyncService;
+	private MasterSyncService masterSyncService;
 
 	@Autowired
 	MasterSyncDao masterSyncDao;
@@ -205,7 +204,7 @@ public class HeaderController extends BaseController {
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
-
+			stopTimer();
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 
 			getScene(loginpage);
@@ -319,19 +318,9 @@ public class HeaderController extends BaseController {
 		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
 				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		ResponseDTO responseDTO = preRegistrationDataSyncService
-				.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-		if (responseDTO.getSuccessResponseDTO() != null) {
-			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-			generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
-
-		} else if (responseDTO.getErrorResponseDTOs() != null) {
-
-			ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
-			generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
-
-		}
+		executeDownloadPreRegDataTask(homeController.getMainBox(), packetHandlerController.getProgressIndicator());
+		
+		
 	}
 
 	public void uploadPacketToServer() {
@@ -467,23 +456,25 @@ public class HeaderController extends BaseController {
 
 	}
 
-	@Autowired
-	ResponseDTOForSync responseDTOForSync;
-
 	private void progressTask() {
-		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size();
+		double totalJobs = jobConfigurationService.getActiveSyncJobMap().size()-jobConfigurationService.getOfflineJobs().size()-jobConfigurationService.getUnTaggedJobs().size();
 		Service<String> progressTask = new Service<String>() {
 			@Override
 			protected Task<String> createTask() {
+				BaseJob.successJob.clear();
+				BaseJob.getCompletedJobMap().clear();
 				return new Task<String>() {
+					double success=0;
 					@Override
 					protected String call() {
-
-						while (responseDTOForSync.getErrorJobs().size()
-								+ responseDTOForSync.getSuccessJobs().size() != totalJobs) {
+						while (BaseJob.getCompletedJobMap().size() != totalJobs) {
+							success= BaseJob.successJob.size();
 							packetHandlerController.syncProgressBar
-									.setProgress(responseDTOForSync.getSuccessJobs().size() / totalJobs);
+									.setProgress(success / totalJobs);
 						}
+						success= BaseJob.successJob.size();
+						packetHandlerController.syncProgressBar
+						.setProgress(success / totalJobs);
 						return null;
 
 					}
@@ -557,6 +548,7 @@ public class HeaderController extends BaseController {
 
 	}
 
+
 	public void softwareUpdate(Pane pane, ProgressIndicator progressIndicator, String context,
 			boolean isPreLaunchTaskToBeStopped) {
 
@@ -610,5 +602,75 @@ public class HeaderController extends BaseController {
 	 */
 	public void closeOperations() {
 		webCameraController.closeWebcam();
+	}
+	
+	
+	public void executeDownloadPreRegDataTask(Pane pane, ProgressIndicator progressIndicator) {
+
+		progressIndicator.setVisible(true);
+		pane.setDisable(true);
+
+		/**
+		 * This anonymous service class will do the pre application launch task
+		 * progress.
+		 * 
+		 */
+		Service<ResponseDTO> taskService = new Service<ResponseDTO>() {
+			@Override
+			protected Task<ResponseDTO> createTask() {
+				return /**
+						 * @author Yaswanth S
+						 *
+						 */
+				new Task<ResponseDTO>() {
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see javafx.concurrent.Task#call()
+					 */
+					@Override
+					protected ResponseDTO call() {
+
+						LOGGER.info("REGISTRATION - HEADER_CONTROLLER - DOWNLOAD_PRE_REG_DATA_TASK",
+								APPLICATION_NAME, APPLICATION_ID, "Started pre reg download task");
+						
+						progressIndicator.setVisible(true);
+						pane.setDisable(true);
+						return  preRegistrationDataSyncService
+								.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+
+					}
+				};
+			}
+		};
+
+		progressIndicator.progressProperty().bind(taskService.progressProperty());
+		taskService.start();
+		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent workerStateEvent) {
+
+				LOGGER.info("REGISTRATION - HEADER_CONTROLLER - DOWNLOAD_PRE_REG_DATA_TASK",
+						APPLICATION_NAME, APPLICATION_ID, "Completed pre reg download task");
+				
+				pane.setDisable(false);
+				progressIndicator.setVisible(false);
+
+				ResponseDTO responseDTO = taskService.getValue();
+				
+				if (responseDTO.getSuccessResponseDTO() != null) {
+					SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
+					generateAlertLanguageSpecific(successResponseDTO.getCode(), successResponseDTO.getMessage());
+
+				} else if (responseDTO.getErrorResponseDTOs() != null) {
+
+					ErrorResponseDTO errorresponse = responseDTO.getErrorResponseDTOs().get(0);
+					generateAlertLanguageSpecific(errorresponse.getCode(), errorresponse.getMessage());
+
+				}
+			}
+
+		});
+
 	}
 }

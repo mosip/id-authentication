@@ -79,6 +79,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setCrDtime(time);
 			registration.setRegUsrId(SessionContext.userContext().getUserId());
 			registration.setApproverUsrId(SessionContext.userContext().getUserId());
+			registration.setPreRegId(registrationDTO.getPreRegistrationId());
 
 			List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
