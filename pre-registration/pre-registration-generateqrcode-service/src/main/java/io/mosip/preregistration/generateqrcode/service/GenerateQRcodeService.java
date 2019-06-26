@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,7 @@ public class GenerateQRcodeService {
 	 * @param data
 	 * @return
 	 */
-	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(MainRequestDTO<Object> data) {
+	public MainResponseDTO<QRCodeResponseDTO> generateQRCode(MainRequestDTO<JSONObject> data) {
 		byte[] qrCode = null;
 		
 		
@@ -84,7 +85,13 @@ public class GenerateQRcodeService {
 		try {
 			response.setId(data.getId());
 			response.setVersion(data.getVersion());
-			if(data.getRequest()==null||data.getRequest().toString().equals("{}")) {
+//			String requestValue= data.getRequest().toString();
+//			JSONParser parser=new JSONParser();
+//			JSONObject json=(JSONObject)parser.parse(requestValue);
+			
+		
+			
+			if(data.getRequest()==null||data.getRequest().isEmpty()) {
 				throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_004.getCode(),
 						ErrorMessages.INVALID_REQUEST_BODY.getMessage(), null);
 			}else if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(data),requiredRequestMap)) {

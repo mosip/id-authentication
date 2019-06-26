@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,7 +58,7 @@ public class GenerateQRcodeControllerTest {
 	private NotificationDTO notificationDTO;
 
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
-	MainRequestDTO<Object> requestdata=new MainRequestDTO<>();
+	MainRequestDTO<JSONObject> requestdata=new MainRequestDTO<>();
 
 	@Before
 	public void setUp() {

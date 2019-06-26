@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
@@ -61,10 +64,10 @@ public class GenerateQRcodeServiceTest {
 	MainResponseDTO<NotificationDTO> responseDTO = new MainResponseDTO<>();
 	MainResponseDTO<QRCodeResponseDTO> qrCodeResponseDTO = new MainResponseDTO<>();
 	NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
-	MainRequestDTO<Object> qrcodedto = new MainRequestDTO<>();
+	MainRequestDTO<JSONObject> qrcodedto = new MainRequestDTO<>();
 
 	@Before
-	public void beforeSet() throws ParseException {
+	public void beforeSet() throws ParseException, JsonProcessingException, org.json.simple.parser.ParseException {
 		qrcodedto.setId("mosip.pre-registration.qrcode.generate");
 		qrcodedto.setVersion("1.0");
 		notificationDTO = new NotificationDTO();
@@ -74,10 +77,15 @@ public class GenerateQRcodeServiceTest {
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
+		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
 		mapper.setTimeZone(TimeZone.getDefault());
-		qrcodedto.setRequest(notificationDTO);
+		String jsonString = mapper.writeValueAsString(notificationDTO);
+		JSONParser parser = new JSONParser();
+		JSONObject jsonObj = (JSONObject) parser.parse(jsonString);
+		
+		qrcodedto.setRequest(jsonObj);
 		qrcodedto.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		responseDTO = new MainResponseDTO<>();
 		responseDTO.setResponse(notificationDTO);
