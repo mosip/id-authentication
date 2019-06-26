@@ -22,7 +22,17 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 
 /**
  * This class includes the functionalities of what transaction table needed.,
- * like getting job details and preparation of sync transaction data
+ * like getting job details and preparation of sync transaction data.
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author YASWANTH S
  * @since 1.0.0
