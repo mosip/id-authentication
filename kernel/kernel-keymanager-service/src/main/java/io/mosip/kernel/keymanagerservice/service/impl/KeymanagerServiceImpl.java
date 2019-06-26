@@ -37,7 +37,6 @@ import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
-import io.mosip.kernel.core.keymanager.exception.NoSuchSecurityProviderException;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -614,32 +613,44 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(certificateEntry.getChain()[0].getNotBefore()));
 		expiryDateTime = getCertficateExpiryPolicy(signApplicationid, timestamp,
 				keyAliasMap.get(KeymanagerConstant.KEYALIAS), certificateEntry);
-		int tries=0;
-		while(tries<MAX_TRIES) {
-		try {
-			keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
-			Thread.sleep(1000);
-			if(keyStore.getPrivateKey(alias) !=null) {
-				LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,KeymanagerConstant.STORECERTIFICATE, 
-						"private key found in keystore safe to save in database");
-				break;
+		int tries = 0;
+		while (tries < MAX_TRIES) {
+			try {
+				keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
+				Thread.sleep(1000);
+				if (keyStore.getPrivateKey(alias) != null) {
+					LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+							KeymanagerConstant.STORECERTIFICATE,
+							"private key found in keystore safe to save in database");
+					break;
+				} else {
+					tries++;
+					logStoreSignCertificateError(tries);
 				}
-		} catch (Exception exception) {
-            tries++;
-            if(tries<MAX_TRIES) {
-            LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,KeymanagerConstant.STORECERTIFICATE, 
-					"private key not found in keystore trying again tries = "+tries);
-            }else {
-            	LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,KeymanagerConstant.STORECERTIFICATE, 
-    					"private key not found in keystore max try limit reached tries= "+tries);	
-            throw new KeyStoreException(KeymanagerErrorConstant.KEY_STORE_EXCEPTION.getErrorCode(), KeymanagerErrorConstant.KEY_STORE_EXCEPTION.getErrorMessage());
-            }
-            }
+			} catch (Exception exception) {
+				tries++;
+				logStoreSignCertificateError(tries);
+				throw new KeyStoreException(KeymanagerErrorConstant.KEY_STORE_EXCEPTION.getErrorCode(),
+						KeymanagerErrorConstant.KEY_STORE_EXCEPTION.getErrorMessage());
+			}
+
 		}
 		if (!keymanagerUtil.isValidReferenceId(certificateSignRefID)) {
 			storeKeyInAlias(signApplicationid, generationDateTime, null, alias, expiryDateTime);
 		} else {
 			storeKeyInAlias(signApplicationid, generationDateTime, certificateSignRefID, alias, expiryDateTime);
+		}
+	}
+
+	private void logStoreSignCertificateError(int tries) {
+		if (tries < MAX_TRIES) {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+					KeymanagerConstant.STORECERTIFICATE,
+					"private key not found in keystore trying again tries = " + tries);
+		} else {
+			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+					KeymanagerConstant.STORECERTIFICATE,
+					"private key not found in keystore max try limit reached tries= " + tries);
 		}
 	}
 
