@@ -1,9 +1,9 @@
 {
-  "responseTime": "2019-03-21T15:42:12.467+05:30",
-  "transactionID": "1013645414",
-  "version": "$version$",
-  "response": {
-    "authStatus": true,
-    "staticToken": "$IGNORE$"
-  }
+	"responseTime": "2019-03-21T15:42:12.467+05:30",
+	"transactionID": "1013645414",
+	"version": "$version$",
+	"response": {
+		"authStatus": true,
+		"staticToken": "$IGNORE$"
+	}
 }

@@ -1,10 +1,10 @@
 {
-"centreId":"",
-"emptyCentreId":"",
-"emptyId":"",
-"emptyRegistrationType":"",
-"emptyVersion":"",
-"requestTimeFormat":"",
-"machineId":"",
-"deactivatedUin":""
+	"centreId": "",
+	"emptyCentreId": "",
+	"emptyId": "",
+	"emptyRegistrationType": "",
+	"emptyVersion": "",
+	"requestTimeFormat": "",
+	"machineId": "",
+	"deactivatedUin": ""
 }

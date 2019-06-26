@@ -1,0 +1,12 @@
+{
+	"id": "mosip.pre-registration.document.copy",
+	"version": "1.0",
+	"responsetime": "2019-05-25T14:34:25.794Z",
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "PRG_PAM_DOC_020",
+			"message": "Demographic record failed to fetch"
+		}
+	]
+}

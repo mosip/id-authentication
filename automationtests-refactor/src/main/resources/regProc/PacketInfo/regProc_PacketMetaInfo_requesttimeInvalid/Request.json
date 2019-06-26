@@ -1,8 +1,8 @@
 {
-  "id" : "mosip.manual.verification.packetinfo",
-  "version" : "1.0",
-  "requesttime": "201968Z",
-  "request" : {
-	  "regId": "10031100114340320190321155203"
+	"id": "mosip.manual.verification.packetinfo",
+	"version": "1.0",
+	"requesttime": "201968Z",
+	"request": {
+		"regId": "10031100114340320190321155203"
 	}
 }

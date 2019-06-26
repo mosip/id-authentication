@@ -5,29 +5,26 @@
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
 	<listeners>
-		<listener class-name="io.mosip.customReport.CustomTestNGReporter" />
-	</listeners> 
+		<listener
+			class-name="io.mosip.customReport.CustomTestNGReporter" />
+	</listeners>
 
-<!-- 
-  Passing Group as parmeter unsing "testType"
-  Possible Groups are:
-  						smoke
-  						regression
-  						smokeAndRegression -->
- 
+	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
+		regression smokeAndRegression -->
 
-          		
-			<test name="RegistrationProcessor Tests">
+
+
+	<test name="RegistrationProcessor Tests">
 		<parameter name="testType" value="smokeandregression" />
 		<classes>
-			
-			<class name="io.mosip.registrationProcessor.tests.Sync" />
-			
-		</classes>
-	</test>  
 
-	
-	
-	
+			<class name="io.mosip.registrationProcessor.tests.Sync" />
+
+		</classes>
+	</test>
+
+
+
+
 </suite>
 	

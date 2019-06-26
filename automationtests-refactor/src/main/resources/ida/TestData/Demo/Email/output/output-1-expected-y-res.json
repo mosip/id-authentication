@@ -1,11 +1,11 @@
 {
-  "transactionID": "8284400485",
-  "version": "$version$",
-  "id": "mosip.identity.auth",
-  "errors": [],
-  "responseTime": "2019-04-18T20:41:27.326+05:30",
-  "response": {
-    "authStatus": true,
-    "staticToken": "283888653083333345934366346932177270"
-  }
+	"transactionID": "8284400485",
+	"version": "$version$",
+	"id": "mosip.identity.auth",
+	"errors": [],
+	"responseTime": "2019-04-18T20:41:27.326+05:30",
+	"response": {
+		"authStatus": true,
+		"staticToken": "283888653083333345934366346932177270"
+	}
 }

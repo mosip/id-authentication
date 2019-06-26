@@ -1,11 +1,11 @@
 {
-    "errors": [
-        {
-            "errorCode": "RPR-MVS-009",
-            "message": "Invalid Input Parameter - requesttime"
-        }
-    ],
-    "id": "mosip.manual.verification.demographic",
-    "version": "1.0",
-    "responsetime": "2019-05-28T10:48:35.229Z"
+	"errors": [
+		{
+			"errorCode": "RPR-MVS-009",
+			"message": "Invalid Input Parameter - requesttime"
+		}
+	],
+	"id": "mosip.manual.verification.demographic",
+	"version": "1.0",
+	"responsetime": "2019-05-28T10:48:35.229Z"
 }

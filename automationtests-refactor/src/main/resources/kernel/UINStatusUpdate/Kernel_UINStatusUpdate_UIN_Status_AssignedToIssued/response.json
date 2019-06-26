@@ -1,11 +1,13 @@
 {
-   "id": "string",
-   "version": "string",
-   "responsetime": "2019-04-30T07:10:16.917Z",
-   "metadata": null,
-   "response": null,
-   "errors": [   {
-      "errorCode": "KER-UIG-004",
-      "message": "Given UIN is not in ISSUED status"
-   }]
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-30T07:10:16.917Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-UIG-004",
+			"message": "Given UIN is not in ISSUED status"
+		}
+	]
 }

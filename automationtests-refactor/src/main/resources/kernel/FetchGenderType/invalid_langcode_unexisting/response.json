@@ -1,13 +1,13 @@
 {
-    "id": null,
-    "version": null,
-    "responsetime": "2019-04-24T11:46:17.243Z",
-    "metadata": null,
-    "response": null,
-    "errors": [
-        {
-            "errorCode": "KER-MSD-018",
-            "message": "Gender Type not found"
-        }
-    ]
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-24T11:46:17.243Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-MSD-018",
+			"message": "Gender Type not found"
+		}
+	]
 }

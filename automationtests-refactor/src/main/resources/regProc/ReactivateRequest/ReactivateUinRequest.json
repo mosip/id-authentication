@@ -1,8 +1,8 @@
 {
-"centreId":"",
-"emptyCentreId":"",
-"emptyId":"",
-"emptyRegistrationType":"",
-"emptyVersion":"",
-"requestTimeFormat":""
+	"centreId": "",
+	"emptyCentreId": "",
+	"emptyId": "",
+	"emptyRegistrationType": "",
+	"emptyVersion": "",
+	"requestTimeFormat": ""
 }

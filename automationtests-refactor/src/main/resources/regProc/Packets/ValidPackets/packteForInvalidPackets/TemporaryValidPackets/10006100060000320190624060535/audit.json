@@ -1,3823 +1,3902 @@
-[ {
-  "eventId" : "REG-EVT-110",
-  "eventName" : "PACKET_META_JSON_CREATED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 634000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000220190624052340",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet Meta-Data JSON created successfully",
-  "uuid" : "0f965f01-a95d-4d35-ab08-fba40a1c85bf",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 645000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-109",
-  "eventName" : "PACKET_HMAC_FILE_CREATED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 647000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000220190624052340",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet HMAC File created successfully",
-  "uuid" : "b581e332-e2d2-4ac5-bfc9-727423cdaac5",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 653000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-110",
-  "eventName" : "PACKET_META_JSON_CREATED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 656000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000220190624052340",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet Meta-Data JSON created successfully",
-  "uuid" : "bd5dcbee-4d26-4728-8033-ea4a119280f4",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 664000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-110",
-  "eventName" : "PACKET_META_JSON_CREATED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 723000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000220190624052340",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet Meta-Data JSON created successfully",
-  "uuid" : "ab13e50b-7989-46b2-93ef-92fdd52a1837",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 734000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-107",
-  "eventName" : "PACKET_INTERNAL_ZIP",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 739000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000220190624052340",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet internally zipped successfully",
-  "uuid" : "bab9be9d-0521-469e-b8cf-2ba3ba706ffa",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 747000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-112",
-  "eventName" : "PACKET_AES_ENCRYPTED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 858000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet AES Encryptor",
-  "moduleId" : "REG-MOD-121",
-  "description" : "Packet Encrypted Sucessfully",
-  "uuid" : "b83b67dc-6b03-478f-8565-a459444c9014",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 869000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-099",
-  "eventName" : "PACKET_ENCRYPTED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 881000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000220190624052340",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Encryptor",
-  "moduleId" : "REG-MOD-120",
-  "description" : "Packet Encrypted Sucessfully",
-  "uuid" : "dc64023d-9020-4ee8-8ce6-e74e701be59d",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 889000000,
-    "second" : 24,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-137",
-  "eventName" : "NOTIFICATION_SERVICE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 438000000,
-    "second" : 32,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Notification",
-  "moduleId" : "REG-MOD-137",
-  "description" : "Notification request status",
-  "uuid" : "141c5471-9f49-4935-bb7c-9843990037c8",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 444000000,
-    "second" : 32,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-137",
-  "eventName" : "NOTIFICATION_SERVICE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 855000000,
-    "second" : 32,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Notification",
-  "moduleId" : "REG-MOD-137",
-  "description" : "Notification request status",
-  "uuid" : "f5eb4dd9-f091-4074-a40a-7d4625d3f5f3",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 862000000,
-    "second" : 32,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-137",
-  "eventName" : "NOTIFICATION_SERVICE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 539000000,
-    "second" : 34,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Notification",
-  "moduleId" : "REG-MOD-137",
-  "description" : "Notification request status",
-  "uuid" : "48dea61e-d135-4725-828f-acfe06d1053d",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 544000000,
-    "second" : 34,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 220000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "cfedd4db-b984-47e2-bf4d-665dd64a6e28",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 226000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 240000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "e5766faa-7672-4fbf-b76a-b6ed5fb3ec46",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 250000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-021",
-  "eventName" : "NAV_HOME",
-  "eventType" : "SYSTEM",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 334000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Navigation",
-  "moduleId" : "REG-MOD-102",
-  "description" : "Navigation link: Home",
-  "uuid" : "2a14876f-b9c3-4333-b28f-91b0c2af2ecc",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 341000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-012",
-  "eventName" : "NAV_APPROVE_REG",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 291000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Navigation",
-  "moduleId" : "REG-MOD-102",
-  "description" : "Navigation link: Approve Registration",
-  "uuid" : "9dc3701f-5545-4cfc-8e46-5321ab5ac05e",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 299000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 392000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "3a09f313-b832-4698-96e1-603f81864e2c",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 400000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 410000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "b419330b-65a7-40b0-858b-11ee3931a8c9",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 417000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 436000000,
-    "second" : 58,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "4c578eb4-5472-4093-8377-90244fbd31ed",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 442000000,
-    "second" : 58,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 456000000,
-    "second" : 58,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "e74506a2-5965-4ffb-b31a-a1b32cd93530",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 463000000,
-    "second" : 58,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 25,
-    "monthValue" : 6,
-    "nano" : 469000000,
-    "second" : 58,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "64aac07d-94fc-4e5c-9496-669bb009c28d",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 55,
-    "monthValue" : 6,
-    "nano" : 475000000,
-    "second" : 58,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-067",
-  "eventName" : "REG_SUPERVISOR_AUTH_PASSWORD",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 97000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: OS Authentication",
-  "moduleId" : "REG-MOD-107",
-  "description" : "Supervisor authentication with password: Click of Submit",
-  "uuid" : "d96d9c19-1264-46c9-9501-30760db961d3",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 103000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-117",
-  "eventName" : "FETCH_USER_DETAILS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 111000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "User Detail",
-  "moduleId" : "REG-MOD-126",
-  "description" : "Fetching User Details",
-  "uuid" : "267df7c8-831e-4537-95ef-71ecee8ebab8",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 117000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-117",
-  "eventName" : "FETCH_USER_DETAILS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 126000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "User Detail",
-  "moduleId" : "REG-MOD-126",
-  "description" : "Fetching User Details",
-  "uuid" : "6455d7ba-b1f1-4552-b2ac-6020b428f842",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 134000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-126",
-  "eventName" : "PACKET_UPDATE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 146000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Update Packet",
-  "moduleId" : "REG-MOD-132",
-  "description" : "Packets which are in created state are updated",
-  "uuid" : "806190d3-3434-40bf-95e3-528b32f96f99",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 155000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 261000000,
-    "second" : 4,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "58df3755-8803-4ffb-a460-f16a1a95a7ec",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 277000000,
-    "second" : 4,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 288000000,
-    "second" : 4,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "77f0e24f-9848-401f-bfc3-abced3c7bc1f",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 294000000,
-    "second" : 4,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-093",
-  "eventName" : "SYNC_PRE_REGISTRATION_PACKET",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 44000000,
-    "second" : 7,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Server to Client Sync",
-  "moduleId" : "REG-MOD-114",
-  "description" : "Sync pre-registration data",
-  "uuid" : "9a2550da-a27e-447d-8437-fe21a7092ca2",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 50000000,
-    "second" : 7,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-014",
-  "eventName" : "NAV_UPLOAD_PACKETS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 58000000,
-    "second" : 7,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Navigation",
-  "moduleId" : "REG-MOD-102",
-  "description" : "Navigation link: Upload Packets",
-  "uuid" : "18ff99ed-7d6c-45f2-ad4e-709695fb92cd",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 66000000,
-    "second" : 7,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-079",
-  "eventName" : "UPLOAD_PACKET",
-  "eventType" : "SYSTEM",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 590000000,
-    "second" : 9,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Upload Packets",
-  "moduleId" : "REG-MOD-110",
-  "description" : "Upload packets",
-  "uuid" : "15dca3d2-3ea5-4ca2-abe1-2387a196d8a6",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 596000000,
-    "second" : 9,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-112",
-  "eventName" : "PACKET_AES_ENCRYPTED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 713000000,
-    "second" : 9,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet AES Encryptor",
-  "moduleId" : "REG-MOD-121",
-  "description" : "Packet Encrypted Sucessfully",
-  "uuid" : "e149e42b-5499-4cee-8a37-6aadbc0f5e28",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 720000000,
-    "second" : 9,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-079",
-  "eventName" : "UPLOAD_PACKET",
-  "eventType" : "SYSTEM",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 400000000,
-    "second" : 11,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Upload Packets",
-  "moduleId" : "REG-MOD-110",
-  "description" : "Upload packets",
-  "uuid" : "25e4ca2e-cb5e-4cb7-81ff-45742e80de72",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 406000000,
-    "second" : 11,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-133",
-  "eventName" : "PACKET_UPLOAD",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 26,
-    "monthValue" : 6,
-    "nano" : 411000000,
-    "second" : 11,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "packetUpload",
-  "createdBy" : "test",
-  "moduleName" : "Packet upload",
-  "moduleId" : "REG-MOD-135",
-  "description" : "Upload the local packets to the server",
-  "uuid" : "cd7e66f8-7ae1-4a68-817b-4942665b0ba5",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 10,
-    "minute" : 56,
-    "monthValue" : 6,
-    "nano" : 420000000,
-    "second" : 11,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-141",
-  "eventName" : "REFRESHED_TIMEOUT",
-  "eventType" : "SYSTEM",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 35,
-    "monthValue" : 6,
-    "nano" : 721000000,
-    "second" : 29,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "refresh timeout",
-  "moduleId" : "REG-MOD-146",
-  "description" : "The time task remainder alert",
-  "uuid" : "e08c11c6-f914-49d0-b887-a64310e305c1",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 5,
-    "monthValue" : 6,
-    "nano" : 730000000,
-    "second" : 29,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-142",
-  "eventName" : "SESSION_TIMEOUT",
-  "eventType" : "SYSTEM",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 5,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 746000000,
-    "second" : 29,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "session timeout",
-  "moduleId" : "REG-MOD-147",
-  "description" : "The time task session expires",
-  "uuid" : "305194ed-729a-421e-b446-2d1b0154cb56",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 751000000,
-    "second" : 29,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-001",
-  "eventName" : "LOGIN_AUTHENTICATE_USER_ID",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 973000000,
-    "second" : 51,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "NA",
-  "sessionUserName" : "NA",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "NA",
-  "moduleName" : "Login",
-  "moduleId" : "REG-MOD-101",
-  "description" : "Login authenticating user id: Click of Submit",
-  "uuid" : "fa39608d-e321-4948-a3ac-b04600368db5",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 69000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-117",
-  "eventName" : "FETCH_USER_DETAILS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 92000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "NA",
-  "sessionUserName" : "NA",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "NA",
-  "moduleName" : "User Detail",
-  "moduleId" : "REG-MOD-126",
-  "description" : "Fetching User Details",
-  "uuid" : "28a2c8c2-f146-4b1d-bc2d-f0c61f1e93ff",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 104000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 604000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "NA",
-  "sessionUserName" : "NA",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "NA",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "e6943ee5-8c27-4a9b-9544-0532bd0b9da2",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 616000000,
-    "second" : 52,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-002",
-  "eventName" : "LOGIN_WITH_PASSWORD",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 569000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "NA",
-  "sessionUserName" : "NA",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "NA",
-  "moduleName" : "Login",
-  "moduleId" : "REG-MOD-101",
-  "description" : "Login with password: Click of Submit",
-  "uuid" : "b46fb46c-b86d-4cdd-ba41-f92e049218a2",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 579000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-117",
-  "eventName" : "FETCH_USER_DETAILS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 582000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "NA",
-  "sessionUserName" : "NA",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "NA",
-  "moduleName" : "User Detail",
-  "moduleId" : "REG-MOD-126",
-  "description" : "Fetching User Details",
-  "uuid" : "3b56d31b-8703-4cb2-8a94-4f6e25550439",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 590000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 607000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "NA",
-  "sessionUserName" : "NA",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "NA",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "15f9907d-910f-4416-a489-1e3ad2c3c441",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 621000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-117",
-  "eventName" : "FETCH_USER_DETAILS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 630000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "NA",
-  "sessionUserName" : "NA",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "NA",
-  "moduleName" : "User Detail",
-  "moduleId" : "REG-MOD-126",
-  "description" : "Fetching User Details",
-  "uuid" : "34bcd583-7733-400a-a620-1342aebbe148",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 642000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-119",
-  "eventName" : "FETCH_CENTER_DETAILS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 660000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Center Detail",
-  "moduleId" : "REG-MOD-128",
-  "description" : "Fetching Center Details",
-  "uuid" : "01460636-363a-499c-bbfd-82d0268a8b50",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 673000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-121",
-  "eventName" : "FETCH_SCREEN_AUTH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 688000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Screen AUthorization",
-  "moduleId" : "REG-MOD-130",
-  "description" : "Fetching screens to be authorized",
-  "uuid" : "2b3b9e59-9ff7-43d4-97e1-a9b72708b4c7",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 697000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-021",
-  "eventName" : "NAV_HOME",
-  "eventType" : "SYSTEM",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 778000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Login",
-  "moduleId" : "REG-MOD-101",
-  "description" : "Navigation link: Home",
-  "uuid" : "bb5dc15b-a955-4cf5-b31f-027523f79d6c",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 794000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 901000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "f5411ed7-9fbf-4d45-a676-fe1f0091f46e",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 909000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-125",
-  "eventName" : "PACKET_RETRIVE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 919000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Retrive for Approval",
-  "moduleId" : "REG-MOD-131",
-  "description" : "Packets which are in created state for approval are retrived",
-  "uuid" : "74739e57-31ea-4bc2-b3e2-10ce2d919f85",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 927000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-021",
-  "eventName" : "NAV_HOME",
-  "eventType" : "SYSTEM",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 980000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Navigation",
-  "moduleId" : "REG-MOD-102",
-  "description" : "Navigation link: Home",
-  "uuid" : "a8c5d852-ff40-4ca1-82d8-2a7f428f3ce7",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 987000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-016",
-  "eventName" : "NAV_SYNC_DATA",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 1,
-    "monthValue" : 6,
-    "nano" : 986000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "192.168.43.242",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Navigation",
-  "moduleId" : "REG-MOD-102",
-  "description" : "Navigation link: Sync Data",
-  "uuid" : "95e48964-a163-42b8-a7d5-a74f42ef93a6",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 31,
-    "monthValue" : 6,
-    "nano" : 998000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-010",
-  "eventName" : "NAV_NEW_REG",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 5,
-    "monthValue" : 6,
-    "nano" : 37000000,
-    "second" : 35,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Navigation",
-  "moduleId" : "REG-MOD-102",
-  "description" : "Click of navigation link: New Registration",
-  "uuid" : "63824d03-abad-4907-a30a-5ce97f0ad34f",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 35,
-    "monthValue" : 6,
-    "nano" : 55000000,
-    "second" : 35,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-128",
-  "eventName" : "PENDING_PKT_COUNT_VALIDATION",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 5,
-    "monthValue" : 6,
-    "nano" : 397000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Sync service",
-  "moduleId" : "REG-MOD-133",
-  "description" : "Validating the Pending packets count",
-  "uuid" : "240dc92b-d255-47fc-a77c-933d088e2d90",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 35,
-    "monthValue" : 6,
-    "nano" : 412000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-129",
-  "eventName" : "PENDING_PKT_DURATION_VALIDATION",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 5,
-    "monthValue" : 6,
-    "nano" : 429000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Sync service",
-  "moduleId" : "REG-MOD-133",
-  "description" : "Validating the Pending packets Duration",
-  "uuid" : "e4fa096b-8fcc-4b36-abb1-be4e2c5f1d76",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 35,
-    "monthValue" : 6,
-    "nano" : 443000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-122",
-  "eventName" : "SYNC_JOB_INFO_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 5,
-    "monthValue" : 6,
-    "nano" : 546000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Sync service",
-  "moduleId" : "REG-MOD-133",
-  "description" : "SyncJobInfo containing the sync control list and yet to export packet count fetched successfully",
-  "uuid" : "0eeffdd9-405d-4b6c-8e1f-8fbe8e402e88",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 35,
-    "monthValue" : 6,
-    "nano" : 560000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-127",
-  "eventName" : "SYNC_GEO_VALIDATE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 5,
-    "monthValue" : 6,
-    "nano" : 573000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Sync service",
-  "moduleId" : "REG-MOD-133",
-  "description" : "Validating the geo information ended successfully",
-  "uuid" : "a7cfbc21-0398-4d7e-a6fa-359dcb2557bd",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 35,
-    "monthValue" : 6,
-    "nano" : 588000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-123",
-  "eventName" : "SYNC_INFO_VALIDATION",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 5,
-    "monthValue" : 6,
-    "nano" : 594000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Sync service",
-  "moduleId" : "REG-MOD-133",
-  "description" : "Validating the sync status ended successfully",
-  "uuid" : "1fbf5b11-9341-43b4-86c5-902a85c06f4e",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 35,
-    "monthValue" : 6,
-    "nano" : 609000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-139",
-  "eventName" : "SAVE_DETAIL_TO_DTO",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 662000000,
-    "second" : 43,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "UserID",
-  "createdBy" : "test",
-  "moduleName" : "Registration initialization",
-  "moduleId" : "REG-MOD-140",
-  "description" : "Saving the details to DTO",
-  "uuid" : "567f8471-d021-4823-863e-3e6734c3ce51",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 669000000,
-    "second" : 43,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-025",
-  "eventName" : "REG_DEMO_NEXT",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 809000000,
-    "second" : 43,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: DemographicsDetails",
-  "moduleId" : "REG-MOD-103",
-  "description" : "Click of Next after capturing demographic details",
-  "uuid" : "fde349f3-847b-443c-8468-636a462264da",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 823000000,
-    "second" : 43,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-026",
-  "eventName" : "REG_DOC_POA_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 890000000,
-    "second" : 48,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Documents",
-  "moduleId" : "REG-MOD-104",
-  "description" : "PoA: Click of Scan",
-  "uuid" : "d5164750-e2ef-4582-a8f4-8b42eed8170f",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 903000000,
-    "second" : 48,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-029",
-  "eventName" : "REG_DOC_POI_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 634000000,
-    "second" : 50,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Documents",
-  "moduleId" : "REG-MOD-104",
-  "description" : "PoI: Click of Scan",
-  "uuid" : "8ab03cbd-b076-4c01-a8b7-b6f06c42cffb",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 639000000,
-    "second" : 50,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-032",
-  "eventName" : "REG_DOC_POR_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 379000000,
-    "second" : 53,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Documents",
-  "moduleId" : "REG-MOD-104",
-  "description" : "PoR: Click of Scan",
-  "uuid" : "c6948bc0-58e8-42ba-805c-8bb19983ddb8",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 386000000,
-    "second" : 53,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-038",
-  "eventName" : "REG_DOC_NEXT",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 259000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Documents",
-  "moduleId" : "REG-MOD-104",
-  "description" : "Click of Next after uploading documents",
-  "uuid" : "57f1444a-2b93-4262-91c2-4866f64f36da",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 266000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-043",
-  "eventName" : "REG_BIO_LEFT_SLAP_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 707000000,
-    "second" : 56,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Fingerprints: Scan of left slap",
-  "uuid" : "1938cfb3-a48a-486a-b2c6-03057e0ca06e",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 716000000,
-    "second" : 56,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-044",
-  "eventName" : "REG_BIO_RIGHT_SLAP_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 6,
-    "monthValue" : 6,
-    "nano" : 130000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Fingerprints: Scan of right slap",
-  "uuid" : "1bbd7f77-78fb-4de4-82f6-a5cc0cf4a397",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 36,
-    "monthValue" : 6,
-    "nano" : 210000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-045",
-  "eventName" : "REG_BIO_THUMBS_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 281000000,
-    "second" : 2,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Fingerprints: Scan of thumbs",
-  "uuid" : "a3ffcd1d-cad1-46cd-b7c2-0140c4884685",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 290000000,
-    "second" : 2,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-046",
-  "eventName" : "REG_BIO_FINGERPRINT_NEXT",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 190000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Click of Next after capturing fingerprints",
-  "uuid" : "095a4cf5-89dc-45ef-8e6b-a61a5e73dacc",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 196000000,
-    "second" : 36,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-048",
-  "eventName" : "REG_BIO_IRIS_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 534000000,
-    "second" : 37,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Iris: Scan of left iris",
-  "uuid" : "1bd5fcca-8335-4a70-a3fe-8b3f2ca93ef7",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 541000000,
-    "second" : 37,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-143",
-  "eventName" : "REG_BIO_IRIS_SCAN",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 967000000,
-    "second" : 39,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Iris: Scan of right iris",
-  "uuid" : "1fa2e24e-75bf-4f7b-a9a7-a9cff5cb9ad1",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 972000000,
-    "second" : 39,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-049",
-  "eventName" : "REG_BIO_IRIS_NEXT",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 799000000,
-    "second" : 41,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Click of Next after capturing irises",
-  "uuid" : "5e71de64-a73b-4fe9-b509-a64ba76fbbd4",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 806000000,
-    "second" : 41,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-051",
-  "eventName" : "REG_BIO_FACE_CAPTURE",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 321000000,
-    "second" : 43,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Photo: Face capture",
-  "uuid" : "256a29cc-ffce-48b1-ab4d-7273ae56e980",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 326000000,
-    "second" : 43,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-052",
-  "eventName" : "REG_BIO_FACE_CAPTURE_NEXT",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 233000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Biometrics",
-  "moduleId" : "REG-MOD-105",
-  "description" : "Click of Next after capturing face photo",
-  "uuid" : "81bb65b6-e72e-48c9-b223-47d70165600a",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 239000000,
-    "second" : 54,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-139",
-  "eventName" : "SAVE_DETAIL_TO_DTO",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 405000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "UserID",
-  "createdBy" : "test",
-  "moduleName" : "Registration initialization",
-  "moduleId" : "REG-MOD-140",
-  "description" : "Saving the details to DTO",
-  "uuid" : "e23467f1-c7f2-488f-8b76-ef43e593b14c",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 417000000,
-    "second" : 55,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-057",
-  "eventName" : "REG_PREVIEW_SUBMIT",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 272000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: Preview",
-  "moduleId" : "REG-MOD-106",
-  "description" : "Submit",
-  "uuid" : "f9bb5931-e2ad-44f6-8806-60eed2292b10",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 277000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 281000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "c169d54c-46a6-4341-8808-03e4cafbc520",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 287000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 300000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "b2cfdb17-5f8c-42cb-825e-669ef33c2379",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 307000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-114",
-  "eventName" : "LOGIN_MODES_FETCH",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 7,
-    "monthValue" : 6,
-    "nano" : 311000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Login Modes",
-  "moduleId" : "REG-MOD-123",
-  "description" : "Fetching Login Modes",
-  "uuid" : "b22811ce-c076-45f5-bbf9-bb8708c2daa7",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 37,
-    "monthValue" : 6,
-    "nano" : 318000000,
-    "second" : 59,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-062",
-  "eventName" : "REG_OPERATOR_AUTH_FINGERPRINT",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 8,
-    "monthValue" : 6,
-    "nano" : 873000000,
-    "second" : 2,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "110006",
-  "idType" : "USER_ID",
-  "createdBy" : "test",
-  "moduleName" : "Registration: OS Authentication",
-  "moduleId" : "REG-MOD-107",
-  "description" : "Operator authentication with fingerprint: Capture and submit",
-  "uuid" : "90bf1f74-65ed-404c-84e6-a3e925ce8f8f",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 38,
-    "monthValue" : 6,
-    "nano" : 880000000,
-    "second" : 2,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-117",
-  "eventName" : "FETCH_USER_DETAILS",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 8,
-    "monthValue" : 6,
-    "nano" : 58000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "REGISTRATION",
-  "idType" : "APPLICATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "User Detail",
-  "moduleId" : "REG-MOD-126",
-  "description" : "Fetching User Details",
-  "uuid" : "ea99670d-c5a7-4a24-a410-9ddbc10dad22",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 38,
-    "monthValue" : 6,
-    "nano" : 68000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-109",
-  "eventName" : "PACKET_HMAC_FILE_CREATED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 8,
-    "monthValue" : 6,
-    "nano" : 715000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000320190624060535",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet HMAC File created successfully",
-  "uuid" : "8eeb3881-dfee-4f12-8ea4-fbb4adf87c16",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 38,
-    "monthValue" : 6,
-    "nano" : 722000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-109",
-  "eventName" : "PACKET_HMAC_FILE_CREATED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 8,
-    "monthValue" : 6,
-    "nano" : 747000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000320190624060535",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet HMAC File created successfully",
-  "uuid" : "94a82561-139e-47a7-a598-2318f2b286b3",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 38,
-    "monthValue" : 6,
-    "nano" : 756000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-}, {
-  "eventId" : "REG-EVT-108",
-  "eventName" : "PACKET_DEMO_JSON_CREATED",
-  "eventType" : "USER",
-  "actionTimeStamp" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 6,
-    "minute" : 8,
-    "monthValue" : 6,
-    "nano" : 764000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  },
-  "hostName" : "A1ML29006",
-  "hostIp" : "172.23.98.69",
-  "applicationId" : "REG",
-  "applicationName" : "REGISTRATION",
-  "sessionUserId" : "110006",
-  "sessionUserName" : "test",
-  "id" : "10006100060000320190624060535",
-  "idType" : "REGISTRATION_ID",
-  "createdBy" : "test",
-  "moduleName" : "Packet Creator",
-  "moduleId" : "REG-MOD-119",
-  "description" : "Packet Demographic JSON created successfully",
-  "uuid" : "13641f09-2a01-43a1-bf83-1d15fb96b83f",
-  "createdAt" : {
-    "dayOfWeek" : "MONDAY",
-    "dayOfYear" : 175,
-    "month" : "JUNE",
-    "year" : 2019,
-    "dayOfMonth" : 24,
-    "hour" : 11,
-    "minute" : 38,
-    "monthValue" : 6,
-    "nano" : 770000000,
-    "second" : 3,
-    "chronology" : {
-      "id" : "ISO",
-      "calendarType" : "iso8601"
-    }
-  }
-} ]
+[
+	{
+		"eventId": "REG-EVT-110",
+		"eventName": "PACKET_META_JSON_CREATED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 634000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000220190624052340",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet Meta-Data JSON created successfully",
+		"uuid": "0f965f01-a95d-4d35-ab08-fba40a1c85bf",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 645000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-109",
+		"eventName": "PACKET_HMAC_FILE_CREATED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 647000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000220190624052340",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet HMAC File created successfully",
+		"uuid": "b581e332-e2d2-4ac5-bfc9-727423cdaac5",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 653000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-110",
+		"eventName": "PACKET_META_JSON_CREATED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 656000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000220190624052340",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet Meta-Data JSON created successfully",
+		"uuid": "bd5dcbee-4d26-4728-8033-ea4a119280f4",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 664000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-110",
+		"eventName": "PACKET_META_JSON_CREATED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 723000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000220190624052340",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet Meta-Data JSON created successfully",
+		"uuid": "ab13e50b-7989-46b2-93ef-92fdd52a1837",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 734000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-107",
+		"eventName": "PACKET_INTERNAL_ZIP",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 739000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000220190624052340",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet internally zipped successfully",
+		"uuid": "bab9be9d-0521-469e-b8cf-2ba3ba706ffa",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 747000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-112",
+		"eventName": "PACKET_AES_ENCRYPTED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 858000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet AES Encryptor",
+		"moduleId": "REG-MOD-121",
+		"description": "Packet Encrypted Sucessfully",
+		"uuid": "b83b67dc-6b03-478f-8565-a459444c9014",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 869000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-099",
+		"eventName": "PACKET_ENCRYPTED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 881000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000220190624052340",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Encryptor",
+		"moduleId": "REG-MOD-120",
+		"description": "Packet Encrypted Sucessfully",
+		"uuid": "dc64023d-9020-4ee8-8ce6-e74e701be59d",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 889000000,
+			"second": 24,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-137",
+		"eventName": "NOTIFICATION_SERVICE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 438000000,
+			"second": 32,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Notification",
+		"moduleId": "REG-MOD-137",
+		"description": "Notification request status",
+		"uuid": "141c5471-9f49-4935-bb7c-9843990037c8",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 444000000,
+			"second": 32,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-137",
+		"eventName": "NOTIFICATION_SERVICE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 855000000,
+			"second": 32,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Notification",
+		"moduleId": "REG-MOD-137",
+		"description": "Notification request status",
+		"uuid": "f5eb4dd9-f091-4074-a40a-7d4625d3f5f3",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 862000000,
+			"second": 32,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-137",
+		"eventName": "NOTIFICATION_SERVICE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 539000000,
+			"second": 34,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Notification",
+		"moduleId": "REG-MOD-137",
+		"description": "Notification request status",
+		"uuid": "48dea61e-d135-4725-828f-acfe06d1053d",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 544000000,
+			"second": 34,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 220000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "cfedd4db-b984-47e2-bf4d-665dd64a6e28",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 226000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 240000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "e5766faa-7672-4fbf-b76a-b6ed5fb3ec46",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 250000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-021",
+		"eventName": "NAV_HOME",
+		"eventType": "SYSTEM",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 334000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Navigation",
+		"moduleId": "REG-MOD-102",
+		"description": "Navigation link: Home",
+		"uuid": "2a14876f-b9c3-4333-b28f-91b0c2af2ecc",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 341000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-012",
+		"eventName": "NAV_APPROVE_REG",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 291000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Navigation",
+		"moduleId": "REG-MOD-102",
+		"description": "Navigation link: Approve Registration",
+		"uuid": "9dc3701f-5545-4cfc-8e46-5321ab5ac05e",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 299000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 392000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "3a09f313-b832-4698-96e1-603f81864e2c",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 400000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 410000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "b419330b-65a7-40b0-858b-11ee3931a8c9",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 417000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 436000000,
+			"second": 58,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "4c578eb4-5472-4093-8377-90244fbd31ed",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 442000000,
+			"second": 58,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 456000000,
+			"second": 58,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "e74506a2-5965-4ffb-b31a-a1b32cd93530",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 463000000,
+			"second": 58,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 25,
+			"monthValue": 6,
+			"nano": 469000000,
+			"second": 58,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "64aac07d-94fc-4e5c-9496-669bb009c28d",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 55,
+			"monthValue": 6,
+			"nano": 475000000,
+			"second": 58,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-067",
+		"eventName": "REG_SUPERVISOR_AUTH_PASSWORD",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 97000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: OS Authentication",
+		"moduleId": "REG-MOD-107",
+		"description": "Supervisor authentication with password: Click of Submit",
+		"uuid": "d96d9c19-1264-46c9-9501-30760db961d3",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 103000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-117",
+		"eventName": "FETCH_USER_DETAILS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 111000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "User Detail",
+		"moduleId": "REG-MOD-126",
+		"description": "Fetching User Details",
+		"uuid": "267df7c8-831e-4537-95ef-71ecee8ebab8",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 117000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-117",
+		"eventName": "FETCH_USER_DETAILS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 126000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "User Detail",
+		"moduleId": "REG-MOD-126",
+		"description": "Fetching User Details",
+		"uuid": "6455d7ba-b1f1-4552-b2ac-6020b428f842",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 134000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-126",
+		"eventName": "PACKET_UPDATE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 146000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Update Packet",
+		"moduleId": "REG-MOD-132",
+		"description": "Packets which are in created state are updated",
+		"uuid": "806190d3-3434-40bf-95e3-528b32f96f99",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 155000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 261000000,
+			"second": 4,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "58df3755-8803-4ffb-a460-f16a1a95a7ec",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 277000000,
+			"second": 4,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 288000000,
+			"second": 4,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "77f0e24f-9848-401f-bfc3-abced3c7bc1f",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 294000000,
+			"second": 4,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-093",
+		"eventName": "SYNC_PRE_REGISTRATION_PACKET",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 44000000,
+			"second": 7,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Server to Client Sync",
+		"moduleId": "REG-MOD-114",
+		"description": "Sync pre-registration data",
+		"uuid": "9a2550da-a27e-447d-8437-fe21a7092ca2",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 50000000,
+			"second": 7,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-014",
+		"eventName": "NAV_UPLOAD_PACKETS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 58000000,
+			"second": 7,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Navigation",
+		"moduleId": "REG-MOD-102",
+		"description": "Navigation link: Upload Packets",
+		"uuid": "18ff99ed-7d6c-45f2-ad4e-709695fb92cd",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 66000000,
+			"second": 7,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-079",
+		"eventName": "UPLOAD_PACKET",
+		"eventType": "SYSTEM",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 590000000,
+			"second": 9,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Upload Packets",
+		"moduleId": "REG-MOD-110",
+		"description": "Upload packets",
+		"uuid": "15dca3d2-3ea5-4ca2-abe1-2387a196d8a6",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 596000000,
+			"second": 9,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-112",
+		"eventName": "PACKET_AES_ENCRYPTED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 713000000,
+			"second": 9,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet AES Encryptor",
+		"moduleId": "REG-MOD-121",
+		"description": "Packet Encrypted Sucessfully",
+		"uuid": "e149e42b-5499-4cee-8a37-6aadbc0f5e28",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 720000000,
+			"second": 9,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-079",
+		"eventName": "UPLOAD_PACKET",
+		"eventType": "SYSTEM",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 400000000,
+			"second": 11,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Upload Packets",
+		"moduleId": "REG-MOD-110",
+		"description": "Upload packets",
+		"uuid": "25e4ca2e-cb5e-4cb7-81ff-45742e80de72",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 406000000,
+			"second": 11,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-133",
+		"eventName": "PACKET_UPLOAD",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 26,
+			"monthValue": 6,
+			"nano": 411000000,
+			"second": 11,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "packetUpload",
+		"createdBy": "test",
+		"moduleName": "Packet upload",
+		"moduleId": "REG-MOD-135",
+		"description": "Upload the local packets to the server",
+		"uuid": "cd7e66f8-7ae1-4a68-817b-4942665b0ba5",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 10,
+			"minute": 56,
+			"monthValue": 6,
+			"nano": 420000000,
+			"second": 11,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-141",
+		"eventName": "REFRESHED_TIMEOUT",
+		"eventType": "SYSTEM",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 35,
+			"monthValue": 6,
+			"nano": 721000000,
+			"second": 29,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "refresh timeout",
+		"moduleId": "REG-MOD-146",
+		"description": "The time task remainder alert",
+		"uuid": "e08c11c6-f914-49d0-b887-a64310e305c1",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 5,
+			"monthValue": 6,
+			"nano": 730000000,
+			"second": 29,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-142",
+		"eventName": "SESSION_TIMEOUT",
+		"eventType": "SYSTEM",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 5,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 746000000,
+			"second": 29,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "session timeout",
+		"moduleId": "REG-MOD-147",
+		"description": "The time task session expires",
+		"uuid": "305194ed-729a-421e-b446-2d1b0154cb56",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 751000000,
+			"second": 29,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-001",
+		"eventName": "LOGIN_AUTHENTICATE_USER_ID",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 973000000,
+			"second": 51,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "NA",
+		"sessionUserName": "NA",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "NA",
+		"moduleName": "Login",
+		"moduleId": "REG-MOD-101",
+		"description": "Login authenticating user id: Click of Submit",
+		"uuid": "fa39608d-e321-4948-a3ac-b04600368db5",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 69000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-117",
+		"eventName": "FETCH_USER_DETAILS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 92000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "NA",
+		"sessionUserName": "NA",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "NA",
+		"moduleName": "User Detail",
+		"moduleId": "REG-MOD-126",
+		"description": "Fetching User Details",
+		"uuid": "28a2c8c2-f146-4b1d-bc2d-f0c61f1e93ff",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 104000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 604000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "NA",
+		"sessionUserName": "NA",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "NA",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "e6943ee5-8c27-4a9b-9544-0532bd0b9da2",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 616000000,
+			"second": 52,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-002",
+		"eventName": "LOGIN_WITH_PASSWORD",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 569000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "NA",
+		"sessionUserName": "NA",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "NA",
+		"moduleName": "Login",
+		"moduleId": "REG-MOD-101",
+		"description": "Login with password: Click of Submit",
+		"uuid": "b46fb46c-b86d-4cdd-ba41-f92e049218a2",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 579000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-117",
+		"eventName": "FETCH_USER_DETAILS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 582000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "NA",
+		"sessionUserName": "NA",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "NA",
+		"moduleName": "User Detail",
+		"moduleId": "REG-MOD-126",
+		"description": "Fetching User Details",
+		"uuid": "3b56d31b-8703-4cb2-8a94-4f6e25550439",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 590000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 607000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "NA",
+		"sessionUserName": "NA",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "NA",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "15f9907d-910f-4416-a489-1e3ad2c3c441",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 621000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-117",
+		"eventName": "FETCH_USER_DETAILS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 630000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "NA",
+		"sessionUserName": "NA",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "NA",
+		"moduleName": "User Detail",
+		"moduleId": "REG-MOD-126",
+		"description": "Fetching User Details",
+		"uuid": "34bcd583-7733-400a-a620-1342aebbe148",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 642000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-119",
+		"eventName": "FETCH_CENTER_DETAILS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 660000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Center Detail",
+		"moduleId": "REG-MOD-128",
+		"description": "Fetching Center Details",
+		"uuid": "01460636-363a-499c-bbfd-82d0268a8b50",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 673000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-121",
+		"eventName": "FETCH_SCREEN_AUTH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 688000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Screen AUthorization",
+		"moduleId": "REG-MOD-130",
+		"description": "Fetching screens to be authorized",
+		"uuid": "2b3b9e59-9ff7-43d4-97e1-a9b72708b4c7",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 697000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-021",
+		"eventName": "NAV_HOME",
+		"eventType": "SYSTEM",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 778000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Login",
+		"moduleId": "REG-MOD-101",
+		"description": "Navigation link: Home",
+		"uuid": "bb5dc15b-a955-4cf5-b31f-027523f79d6c",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 794000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 901000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "f5411ed7-9fbf-4d45-a676-fe1f0091f46e",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 909000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-125",
+		"eventName": "PACKET_RETRIVE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 919000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Retrive for Approval",
+		"moduleId": "REG-MOD-131",
+		"description": "Packets which are in created state for approval are retrived",
+		"uuid": "74739e57-31ea-4bc2-b3e2-10ce2d919f85",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 927000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-021",
+		"eventName": "NAV_HOME",
+		"eventType": "SYSTEM",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 980000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Navigation",
+		"moduleId": "REG-MOD-102",
+		"description": "Navigation link: Home",
+		"uuid": "a8c5d852-ff40-4ca1-82d8-2a7f428f3ce7",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 987000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-016",
+		"eventName": "NAV_SYNC_DATA",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 1,
+			"monthValue": 6,
+			"nano": 986000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "192.168.43.242",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Navigation",
+		"moduleId": "REG-MOD-102",
+		"description": "Navigation link: Sync Data",
+		"uuid": "95e48964-a163-42b8-a7d5-a74f42ef93a6",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 31,
+			"monthValue": 6,
+			"nano": 998000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-010",
+		"eventName": "NAV_NEW_REG",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 5,
+			"monthValue": 6,
+			"nano": 37000000,
+			"second": 35,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Navigation",
+		"moduleId": "REG-MOD-102",
+		"description": "Click of navigation link: New Registration",
+		"uuid": "63824d03-abad-4907-a30a-5ce97f0ad34f",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 35,
+			"monthValue": 6,
+			"nano": 55000000,
+			"second": 35,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-128",
+		"eventName": "PENDING_PKT_COUNT_VALIDATION",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 5,
+			"monthValue": 6,
+			"nano": 397000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Sync service",
+		"moduleId": "REG-MOD-133",
+		"description": "Validating the Pending packets count",
+		"uuid": "240dc92b-d255-47fc-a77c-933d088e2d90",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 35,
+			"monthValue": 6,
+			"nano": 412000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-129",
+		"eventName": "PENDING_PKT_DURATION_VALIDATION",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 5,
+			"monthValue": 6,
+			"nano": 429000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Sync service",
+		"moduleId": "REG-MOD-133",
+		"description": "Validating the Pending packets Duration",
+		"uuid": "e4fa096b-8fcc-4b36-abb1-be4e2c5f1d76",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 35,
+			"monthValue": 6,
+			"nano": 443000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-122",
+		"eventName": "SYNC_JOB_INFO_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 5,
+			"monthValue": 6,
+			"nano": 546000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Sync service",
+		"moduleId": "REG-MOD-133",
+		"description": "SyncJobInfo containing the sync control list and yet to export packet count fetched successfully",
+		"uuid": "0eeffdd9-405d-4b6c-8e1f-8fbe8e402e88",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 35,
+			"monthValue": 6,
+			"nano": 560000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-127",
+		"eventName": "SYNC_GEO_VALIDATE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 5,
+			"monthValue": 6,
+			"nano": 573000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Sync service",
+		"moduleId": "REG-MOD-133",
+		"description": "Validating the geo information ended successfully",
+		"uuid": "a7cfbc21-0398-4d7e-a6fa-359dcb2557bd",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 35,
+			"monthValue": 6,
+			"nano": 588000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-123",
+		"eventName": "SYNC_INFO_VALIDATION",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 5,
+			"monthValue": 6,
+			"nano": 594000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Sync service",
+		"moduleId": "REG-MOD-133",
+		"description": "Validating the sync status ended successfully",
+		"uuid": "1fbf5b11-9341-43b4-86c5-902a85c06f4e",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 35,
+			"monthValue": 6,
+			"nano": 609000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-139",
+		"eventName": "SAVE_DETAIL_TO_DTO",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 662000000,
+			"second": 43,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "UserID",
+		"createdBy": "test",
+		"moduleName": "Registration initialization",
+		"moduleId": "REG-MOD-140",
+		"description": "Saving the details to DTO",
+		"uuid": "567f8471-d021-4823-863e-3e6734c3ce51",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 669000000,
+			"second": 43,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-025",
+		"eventName": "REG_DEMO_NEXT",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 809000000,
+			"second": 43,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: DemographicsDetails",
+		"moduleId": "REG-MOD-103",
+		"description": "Click of Next after capturing demographic details",
+		"uuid": "fde349f3-847b-443c-8468-636a462264da",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 823000000,
+			"second": 43,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-026",
+		"eventName": "REG_DOC_POA_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 890000000,
+			"second": 48,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Documents",
+		"moduleId": "REG-MOD-104",
+		"description": "PoA: Click of Scan",
+		"uuid": "d5164750-e2ef-4582-a8f4-8b42eed8170f",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 903000000,
+			"second": 48,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-029",
+		"eventName": "REG_DOC_POI_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 634000000,
+			"second": 50,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Documents",
+		"moduleId": "REG-MOD-104",
+		"description": "PoI: Click of Scan",
+		"uuid": "8ab03cbd-b076-4c01-a8b7-b6f06c42cffb",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 639000000,
+			"second": 50,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-032",
+		"eventName": "REG_DOC_POR_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 379000000,
+			"second": 53,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Documents",
+		"moduleId": "REG-MOD-104",
+		"description": "PoR: Click of Scan",
+		"uuid": "c6948bc0-58e8-42ba-805c-8bb19983ddb8",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 386000000,
+			"second": 53,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-038",
+		"eventName": "REG_DOC_NEXT",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 259000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Documents",
+		"moduleId": "REG-MOD-104",
+		"description": "Click of Next after uploading documents",
+		"uuid": "57f1444a-2b93-4262-91c2-4866f64f36da",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 266000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-043",
+		"eventName": "REG_BIO_LEFT_SLAP_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 707000000,
+			"second": 56,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Fingerprints: Scan of left slap",
+		"uuid": "1938cfb3-a48a-486a-b2c6-03057e0ca06e",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 716000000,
+			"second": 56,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-044",
+		"eventName": "REG_BIO_RIGHT_SLAP_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 6,
+			"monthValue": 6,
+			"nano": 130000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Fingerprints: Scan of right slap",
+		"uuid": "1bbd7f77-78fb-4de4-82f6-a5cc0cf4a397",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 36,
+			"monthValue": 6,
+			"nano": 210000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-045",
+		"eventName": "REG_BIO_THUMBS_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 281000000,
+			"second": 2,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Fingerprints: Scan of thumbs",
+		"uuid": "a3ffcd1d-cad1-46cd-b7c2-0140c4884685",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 290000000,
+			"second": 2,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-046",
+		"eventName": "REG_BIO_FINGERPRINT_NEXT",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 190000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Click of Next after capturing fingerprints",
+		"uuid": "095a4cf5-89dc-45ef-8e6b-a61a5e73dacc",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 196000000,
+			"second": 36,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-048",
+		"eventName": "REG_BIO_IRIS_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 534000000,
+			"second": 37,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Iris: Scan of left iris",
+		"uuid": "1bd5fcca-8335-4a70-a3fe-8b3f2ca93ef7",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 541000000,
+			"second": 37,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-143",
+		"eventName": "REG_BIO_IRIS_SCAN",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 967000000,
+			"second": 39,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Iris: Scan of right iris",
+		"uuid": "1fa2e24e-75bf-4f7b-a9a7-a9cff5cb9ad1",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 972000000,
+			"second": 39,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-049",
+		"eventName": "REG_BIO_IRIS_NEXT",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 799000000,
+			"second": 41,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Click of Next after capturing irises",
+		"uuid": "5e71de64-a73b-4fe9-b509-a64ba76fbbd4",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 806000000,
+			"second": 41,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-051",
+		"eventName": "REG_BIO_FACE_CAPTURE",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 321000000,
+			"second": 43,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Photo: Face capture",
+		"uuid": "256a29cc-ffce-48b1-ab4d-7273ae56e980",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 326000000,
+			"second": 43,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-052",
+		"eventName": "REG_BIO_FACE_CAPTURE_NEXT",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 233000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Biometrics",
+		"moduleId": "REG-MOD-105",
+		"description": "Click of Next after capturing face photo",
+		"uuid": "81bb65b6-e72e-48c9-b223-47d70165600a",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 239000000,
+			"second": 54,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-139",
+		"eventName": "SAVE_DETAIL_TO_DTO",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 405000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "UserID",
+		"createdBy": "test",
+		"moduleName": "Registration initialization",
+		"moduleId": "REG-MOD-140",
+		"description": "Saving the details to DTO",
+		"uuid": "e23467f1-c7f2-488f-8b76-ef43e593b14c",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 417000000,
+			"second": 55,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-057",
+		"eventName": "REG_PREVIEW_SUBMIT",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 272000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: Preview",
+		"moduleId": "REG-MOD-106",
+		"description": "Submit",
+		"uuid": "f9bb5931-e2ad-44f6-8806-60eed2292b10",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 277000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 281000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "c169d54c-46a6-4341-8808-03e4cafbc520",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 287000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 300000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "b2cfdb17-5f8c-42cb-825e-669ef33c2379",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 307000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-114",
+		"eventName": "LOGIN_MODES_FETCH",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 7,
+			"monthValue": 6,
+			"nano": 311000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "Login Modes",
+		"moduleId": "REG-MOD-123",
+		"description": "Fetching Login Modes",
+		"uuid": "b22811ce-c076-45f5-bbf9-bb8708c2daa7",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 37,
+			"monthValue": 6,
+			"nano": 318000000,
+			"second": 59,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-062",
+		"eventName": "REG_OPERATOR_AUTH_FINGERPRINT",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 8,
+			"monthValue": 6,
+			"nano": 873000000,
+			"second": 2,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "110006",
+		"idType": "USER_ID",
+		"createdBy": "test",
+		"moduleName": "Registration: OS Authentication",
+		"moduleId": "REG-MOD-107",
+		"description": "Operator authentication with fingerprint: Capture and submit",
+		"uuid": "90bf1f74-65ed-404c-84e6-a3e925ce8f8f",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 38,
+			"monthValue": 6,
+			"nano": 880000000,
+			"second": 2,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-117",
+		"eventName": "FETCH_USER_DETAILS",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 8,
+			"monthValue": 6,
+			"nano": 58000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "REGISTRATION",
+		"idType": "APPLICATION_ID",
+		"createdBy": "test",
+		"moduleName": "User Detail",
+		"moduleId": "REG-MOD-126",
+		"description": "Fetching User Details",
+		"uuid": "ea99670d-c5a7-4a24-a410-9ddbc10dad22",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 38,
+			"monthValue": 6,
+			"nano": 68000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-109",
+		"eventName": "PACKET_HMAC_FILE_CREATED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 8,
+			"monthValue": 6,
+			"nano": 715000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000320190624060535",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet HMAC File created successfully",
+		"uuid": "8eeb3881-dfee-4f12-8ea4-fbb4adf87c16",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 38,
+			"monthValue": 6,
+			"nano": 722000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-109",
+		"eventName": "PACKET_HMAC_FILE_CREATED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 8,
+			"monthValue": 6,
+			"nano": 747000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000320190624060535",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet HMAC File created successfully",
+		"uuid": "94a82561-139e-47a7-a598-2318f2b286b3",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 38,
+			"monthValue": 6,
+			"nano": 756000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	},
+	{
+		"eventId": "REG-EVT-108",
+		"eventName": "PACKET_DEMO_JSON_CREATED",
+		"eventType": "USER",
+		"actionTimeStamp": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 6,
+			"minute": 8,
+			"monthValue": 6,
+			"nano": 764000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		},
+		"hostName": "A1ML29006",
+		"hostIp": "172.23.98.69",
+		"applicationId": "REG",
+		"applicationName": "REGISTRATION",
+		"sessionUserId": "110006",
+		"sessionUserName": "test",
+		"id": "10006100060000320190624060535",
+		"idType": "REGISTRATION_ID",
+		"createdBy": "test",
+		"moduleName": "Packet Creator",
+		"moduleId": "REG-MOD-119",
+		"description": "Packet Demographic JSON created successfully",
+		"uuid": "13641f09-2a01-43a1-bf83-1d15fb96b83f",
+		"createdAt": {
+			"dayOfWeek": "MONDAY",
+			"dayOfYear": 175,
+			"month": "JUNE",
+			"year": 2019,
+			"dayOfMonth": 24,
+			"hour": 11,
+			"minute": 38,
+			"monthValue": 6,
+			"nano": 770000000,
+			"second": 3,
+			"chronology": {
+				"id": "ISO",
+				"calendarType": "iso8601"
+			}
+		}
+	}
+]

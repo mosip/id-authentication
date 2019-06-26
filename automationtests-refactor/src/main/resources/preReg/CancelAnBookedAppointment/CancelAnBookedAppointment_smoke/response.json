@@ -1,0 +1,10 @@
+{
+	"id": "mosip.pre-registration.appointment.cancel",
+	"version": "1.0",
+	"responsetime": "2019-05-31T08:53:18.027Z",
+	"response": {
+		"transactionId": "88bdf154-8381-11e9-ad12-21266c35a912",
+		"message": "Appointment for the selected application has been successfully cancelled"
+	},
+	"errors": null
+}

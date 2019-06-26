@@ -1,10 +1,9 @@
 {
-"id" : "mosip.manual.verification.assignment",
-"version" : "1.0",
-"requesttime": "",
-"request" : {
-"userId": "110037",
-"matchType":"ALL"
-}
-
+	"id": "mosip.manual.verification.assignment",
+	"version": "1.0",
+	"requesttime": "",
+	"request": {
+		"userId": "110037",
+		"matchType": "ALL"
+	}
 }

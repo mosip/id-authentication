@@ -1,13 +1,13 @@
 {
-   "id": null,
-    "version": null,
-    "responsetime": "2019-04-17T11:09:04.745Z",
-    "metadata": null,
-    "response": null,
-    "errors": [
-        {
-            "errorCode": "KER-MSD-006",
-            "errorMessage": "Biometric Type not found"
-        }
-    ]
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-17T11:09:04.745Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-MSD-006",
+			"errorMessage": "Biometric Type not found"
+		}
+	]
 }

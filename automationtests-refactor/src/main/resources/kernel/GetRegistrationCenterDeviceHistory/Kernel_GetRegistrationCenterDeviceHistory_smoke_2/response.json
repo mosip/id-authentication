@@ -1,16 +1,16 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-05-31T10:06:00.692Z",
-  "metadata": null,
-  "response": {
-    "registrationCenterDeviceHistoryDetails": {
-      "regCenterId": "10001",
-      "deviceId": "3000021",
-      "isActive": true,
-      "langCode": "eng",
-      "effectivetimes": "2019-05-30T11:30:50.762Z"
-    }
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-05-31T10:06:00.692Z",
+	"metadata": null,
+	"response": {
+		"registrationCenterDeviceHistoryDetails": {
+			"regCenterId": "10001",
+			"deviceId": "3000021",
+			"isActive": true,
+			"langCode": "eng",
+			"effectivetimes": "2019-05-30T11:30:50.762Z"
+		}
+	},
+	"errors": null
 }

@@ -1,107 +1,107 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-06-21T08:52:03.991Z",
-  "metadata": null,
-  "response": {
-    "lastSyncTime": "2019-06-21T08:52:03.982Z",
-    "roles": [
-      {
-        "roleId": "CENTRAL_APPROVER",
-        "roleName": "CENTRAL_APPROVER",
-        "roleDescription": "central approver"
-      },
-      {
-        "roleId": "MISP",
-        "roleName": "MISP",
-        "roleDescription": "Trusted Service Provider"
-      },
-      {
-        "roleId": "PREREG",
-        "roleName": "PREREG",
-        "roleDescription": "Pre Reg Client Id Secret Key Role for Audit"
-      },
-      {
-        "roleId": "REGISTRATION_OPERATOR",
-        "roleName": "REGISTRATION_OPERATOR",
-        "roleDescription": "registration operator"
-      },
-      {
-        "roleId": "ZONAL_APPROVER",
-        "roleName": "ZONAL_APPROVER",
-        "roleDescription": "zonal approver"
-      },
-      {
-        "roleId": "TEST",
-        "roleName": "TEST",
-        "roleDescription": "test"
-      },
-      {
-        "roleId": "REGISTRATION_OFFICER",
-        "roleName": "REGISTRATION_OFFICER",
-        "roleDescription": "Registration officer"
-      },
-      {
-        "roleId": "ID_AUTHENTICATION",
-        "roleName": "ID_AUTHENTICATION",
-        "roleDescription": "IDA"
-      },
-      {
-        "roleId": "REGISTRATION_PROCESSOR",
-        "roleName": "REGISTRATION_PROCESSOR",
-        "roleDescription": "REG PROC"
-      },
-      {
-        "roleId": "PRE_REGISTRATION_ADMIN",
-        "roleName": "PRE_REGISTRATION_ADMIN",
-        "roleDescription": "preregistration admin"
-      },
-      {
-        "roleId": "CENTRAL_ADMIN",
-        "roleName": "CENTRAL_ADMIN",
-        "roleDescription": "central admin"
-      },
-      {
-        "roleId": "AUTH",
-        "roleName": "AUTH",
-        "roleDescription": "Auth User role"
-      },
-      {
-        "roleId": "REGISTRATION_SUPERVISOR",
-        "roleName": "REGISTRATION_SUPERVISOR",
-        "roleDescription": "Registration supervisor"
-      },
-      {
-        "roleId": "REGISTRATION_ADMIN",
-        "roleName": "REGISTRATION_ADMIN",
-        "roleDescription": "Registration administrator"
-      },
-      {
-        "roleId": "ZONAL_ADMIN",
-        "roleName": "ZONAL_ADMIN",
-        "roleDescription": "Zonal admin"
-      },
-      {
-        "roleId": "offline_access",
-        "roleName": "offline_access",
-        "roleDescription": "test"
-      },
-      {
-        "roleId": "uma_authorization",
-        "roleName": "uma_authorization",
-        "roleDescription": "added"
-      },
-      {
-        "roleId": "ROLE_TEST",
-        "roleName": "ROLE_TEST",
-        "roleDescription": "test role"
-      },
-      {
-        "roleId": "SUPERADMIN",
-        "roleName": "SUPERADMIN",
-        "roleDescription": "Super administrator"
-      }
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-06-21T08:52:03.991Z",
+	"metadata": null,
+	"response": {
+		"lastSyncTime": "2019-06-21T08:52:03.982Z",
+		"roles": [
+			{
+				"roleId": "CENTRAL_APPROVER",
+				"roleName": "CENTRAL_APPROVER",
+				"roleDescription": "central approver"
+			},
+			{
+				"roleId": "MISP",
+				"roleName": "MISP",
+				"roleDescription": "Trusted Service Provider"
+			},
+			{
+				"roleId": "PREREG",
+				"roleName": "PREREG",
+				"roleDescription": "Pre Reg Client Id Secret Key Role for Audit"
+			},
+			{
+				"roleId": "REGISTRATION_OPERATOR",
+				"roleName": "REGISTRATION_OPERATOR",
+				"roleDescription": "registration operator"
+			},
+			{
+				"roleId": "ZONAL_APPROVER",
+				"roleName": "ZONAL_APPROVER",
+				"roleDescription": "zonal approver"
+			},
+			{
+				"roleId": "TEST",
+				"roleName": "TEST",
+				"roleDescription": "test"
+			},
+			{
+				"roleId": "REGISTRATION_OFFICER",
+				"roleName": "REGISTRATION_OFFICER",
+				"roleDescription": "Registration officer"
+			},
+			{
+				"roleId": "ID_AUTHENTICATION",
+				"roleName": "ID_AUTHENTICATION",
+				"roleDescription": "IDA"
+			},
+			{
+				"roleId": "REGISTRATION_PROCESSOR",
+				"roleName": "REGISTRATION_PROCESSOR",
+				"roleDescription": "REG PROC"
+			},
+			{
+				"roleId": "PRE_REGISTRATION_ADMIN",
+				"roleName": "PRE_REGISTRATION_ADMIN",
+				"roleDescription": "preregistration admin"
+			},
+			{
+				"roleId": "CENTRAL_ADMIN",
+				"roleName": "CENTRAL_ADMIN",
+				"roleDescription": "central admin"
+			},
+			{
+				"roleId": "AUTH",
+				"roleName": "AUTH",
+				"roleDescription": "Auth User role"
+			},
+			{
+				"roleId": "REGISTRATION_SUPERVISOR",
+				"roleName": "REGISTRATION_SUPERVISOR",
+				"roleDescription": "Registration supervisor"
+			},
+			{
+				"roleId": "REGISTRATION_ADMIN",
+				"roleName": "REGISTRATION_ADMIN",
+				"roleDescription": "Registration administrator"
+			},
+			{
+				"roleId": "ZONAL_ADMIN",
+				"roleName": "ZONAL_ADMIN",
+				"roleDescription": "Zonal admin"
+			},
+			{
+				"roleId": "offline_access",
+				"roleName": "offline_access",
+				"roleDescription": "test"
+			},
+			{
+				"roleId": "uma_authorization",
+				"roleName": "uma_authorization",
+				"roleDescription": "added"
+			},
+			{
+				"roleId": "ROLE_TEST",
+				"roleName": "ROLE_TEST",
+				"roleDescription": "test role"
+			},
+			{
+				"roleId": "SUPERADMIN",
+				"roleName": "SUPERADMIN",
+				"roleDescription": "Super administrator"
+			}
+		]
+	},
+	"errors": null
 }

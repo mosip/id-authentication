@@ -1,24 +1,24 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-19T11:17:38.322Z",
-  "metadata": null,
-  "response": {
-  "templates": [
-    {
-      "id": "1148",
-      "name": "Template for OTP SMS",
-      "description": "Template for OTP SMS",
-      "fileFormatCode": "txt",
-      "model": "",
-      "fileText": "\"Dear $name, \nOTP for username $username is $otp and is valid for $validTime minutes (Generated on $date at $time hrs).\"",
-      "moduleId": "10003",
-      "moduleName": "Registration Client",
-      "templateTypeCode": "OTP-sms-template",
-      "langCode": "eng",
-      "isActive": true
-    }
-  ]
-},
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-19T11:17:38.322Z",
+	"metadata": null,
+	"response": {
+		"templates": [
+			{
+				"id": "1148",
+				"name": "Template for OTP SMS",
+				"description": "Template for OTP SMS",
+				"fileFormatCode": "txt",
+				"model": "",
+				"fileText": "\"Dear $name, \nOTP for username $username is $otp and is valid for $validTime minutes (Generated on $date at $time hrs).\"",
+				"moduleId": "10003",
+				"moduleName": "Registration Client",
+				"templateTypeCode": "OTP-sms-template",
+				"langCode": "eng",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
 }

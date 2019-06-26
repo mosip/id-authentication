@@ -1,12 +1,12 @@
 {
-	"matchedRefIdEmpty" : "",
-	"matchedRefIdInvalid" : "",
-	"matchedRefTypedEmpty" : "",
-	"matchedRefTypedInvalid" : "",
-	"mvUsrIdEmpty" : "",
+	"matchedRefIdEmpty": "",
+	"matchedRefIdInvalid": "",
+	"matchedRefTypedEmpty": "",
+	"matchedRefTypedInvalid": "",
+	"mvUsrIdEmpty": "",
 	"mvUsrIdInvalid": "",
-	"regIdEmpty" : "",
-	"regIdInvalid" : "",
-	"statusCodeEmpty" : "",
-	"statusCodeInvalid" : ""
+	"regIdEmpty": "",
+	"regIdInvalid": "",
+	"statusCodeEmpty": "",
+	"statusCodeInvalid": ""
 }

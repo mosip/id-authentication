@@ -16,58 +16,58 @@
 			"weight": 20
 		},
 		"poa": {
-			"value" : "proofOfAddress"
+			"value": "proofOfAddress"
 		},
 		"poi": {
-			"value" : "proofOfIdentity"
+			"value": "proofOfIdentity"
 		},
 		"por": {
-			"value" : "proofOfRelationship"
+			"value": "proofOfRelationship"
 		},
 		"pob": {
-			"value" : "proofOfDateOfBirth"
+			"value": "proofOfDateOfBirth"
 		},
 		"individualBiometrics": {
-			"value" : "individualBiometrics"
+			"value": "individualBiometrics"
 		},
 		"age": {
-			"value" : "age"
+			"value": "age"
 		},
 		"addressLine1": {
-			"value" : "addressLine1"
+			"value": "addressLine1"
 		},
 		"addressLine2": {
-			"value" : "addressLine2"
+			"value": "addressLine2"
 		},
 		"addressLine3": {
-			"value" : "addressLine3"
+			"value": "addressLine3"
 		},
 		"region": {
-			"value" : "region"
+			"value": "region"
 		},
 		"province": {
-			"value" : "province"
+			"value": "province"
 		},
 		"postalCode": {
-			"value" : "postalCode"
+			"value": "postalCode"
 		},
 		"phone": {
-			"value" : "phone"
+			"value": "phone"
 		},
 		"email": {
-			"value" : "email"
+			"value": "email"
 		},
 		"localAdministrativeAuthority": {
-			"value" : "localAdministrativeAuthority"
+			"value": "localAdministrativeAuthority"
 		},
 		"idschemaversion": {
-			"value" : "IDSchemaVersion"
+			"value": "IDSchemaVersion"
 		},
 		"cnienumber": {
-			"value" : "CNIENumber"
+			"value": "CNIENumber"
 		},
 		"city": {
-			"value" : "city"
+			"value": "city"
 		}
 	}
 } 

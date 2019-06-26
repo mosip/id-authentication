@@ -1,0 +1,10 @@
+{
+	"ref_id": "NO_ID",
+	"log_desc": "Pre-Registration data is sucessfully updated in the demographic table",
+	"event_id": "PRE_402",
+	"event_type": "BUSINESS",
+	"session_user_id": "9593159405",
+	"event_name": "UPDATE",
+	"module_name": "DEMOGRAPHY_SERVICE",
+	"ref_id_type": "PRE_REGISTRATION_ID"
+}

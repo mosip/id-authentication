@@ -1,0 +1,16 @@
+{
+	"id": "mosip.pre-registration.notification.notify",
+	"version": "1.0",
+	"requesttime": "2019-04-26T15:31:32.957Z",
+	"request": {
+		"name": "jagadishwari s",
+		"preRegistrationId": "38478562594318",
+		"appointmentDate": "2019-06-22",
+		"appointmentTime": "09:30 AM",
+		"mobNum": "9663089998",
+		"emailID": "lavanya.ranganathan@mindtree.com",
+		"additionalRecipient": "true",
+		"isBatch": "false",
+		"langCode": "eng"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"Update Pre Registration status from Booked to Pending_Appointment": "",
+	"Update Pre Registration Status From Booked to Consumed": "",
+	"Update Pre Registration Status From Booked to Expired": "",
+	"Update Pre Registration Status from Expired to Booked": "",
+	"Update Pre Registration Status From Expired to Pending Appointmnet": "",
+	"Update Pre Registration Status From Pending_Appointment to Booked": "",
+	"Update Pre Registration Status with invalid Pre Registration ID": "",
+	"Update Pre Registration Status With invalid Status Code": "",
+	"Update Pre Registration status without passing any value": "",
+	"Update Pre Registration Status without Pre Registration ID": "",
+	"Update Pre Registration Status without Status Code": ""
+}

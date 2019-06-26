@@ -1,0 +1,18 @@
+{
+	"CopyUploadedDocumentByPassingInvalidCatCode_AlphabetsOtherThanPOA": "",
+	"CopyUploadedDocumentByPassingInvalidCatCode_AlphaNumeric": "",
+	"CopyUploadedDocumentByPassingInvalidCatCode_AlphaNumericAndSpecialCharacters": "",
+	"CopyUploadedDocumentByPassingInvalidCatCode_EmptyValue": "",
+	"CopyUploadedDocumentByPassingInvalidCatCode_SpecialCharacters": "",
+	"CopyUploadedDocumentByPassingInvalidDestinationPreId_Alphabets": "",
+	"CopyUploadedDocumentByPassingInvalidDestinationPreId_AlphaNumeric": "",
+	"CopyUploadedDocumentByPassingInvalidDestinationPreId_AlphaNumericAndSpecialCharacters": "",
+	"CopyUploadedDocumentByPassingInvalidDestinationPreId_EmptyValue": "",
+	"CopyUploadedDocumentByPassingInvalidDestinationPreId_SpecialCharacters": "",
+	"CopyUploadedDocumentByPassingInvalidSourcePreId_Alphabets": "",
+	"CopyUploadedDocumentByPassingInvalidSourcePreId_AlphaNumeric": "",
+	"CopyUploadedDocumentByPassingInvalidSourcePreId_AlphaNumericAndSpecialCharacters": "",
+	"CopyUploadedDocumentByPassingInvalidSourcePreId_EmptyValue": "",
+	"CopyUploadedDocumentByPassingInvalidSourcePreId_SpecialCharacters": "",
+	"CopyUploadedDocumentByPassingSourcePreIdForWhichNoDocUploaded_Invalid": ""
+} 

@@ -1,8 +1,8 @@
 {
-  "emptyRegId" : "",
-  "validAndInvalidRegIds" : "20916100110014920190218154630,655665575675",
-  "registrationId" : "20916100110014920190218154630",
-  "emptyVersion":" ",
-  "emptyId" : "",
-  "emptyTimestamp" : ""
+	"emptyRegId": "",
+	"validAndInvalidRegIds": "20916100110014920190218154630,655665575675",
+	"registrationId": "20916100110014920190218154630",
+	"emptyVersion": " ",
+	"emptyId": "",
+	"emptyTimestamp": ""
 }

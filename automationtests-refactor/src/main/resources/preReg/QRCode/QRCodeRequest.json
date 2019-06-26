@@ -1,0 +1,21 @@
+{
+	"preReg_QRCode_id_withEmptyValue": "",
+	"preReg_QRCode_id_withOtherThanStandardValue": "",
+	"preReg_QRCode_requesttime_witDateLessThanCurrentDate": "",
+	"preReg_QRCode_requesttime_withAlphabets": "",
+	"preReg_QRCode_requesttime_withDateGreaterThanCurrentDate": "",
+	"preReg_QRCode_requesttime_withEmptyValue": "",
+	"preReg_QRCode_requesttime_withFebGreaterThan29": "",
+	"preReg_QRCode_requesttime_withFebNonLeapYearWith29": "",
+	"preReg_QRCode_requesttime_withInvalidDateFormat": "",
+	"preReg_QRCode_requesttime_withInvalidDateOfSlashInsteadOfHypen": "",
+	"preReg_QRCode_requesttime_withInvalidDay": "",
+	"preReg_QRCode_requesttime_withInvalidMonth": "",
+	"preReg_QRCode_requesttime_withInvalidTime": "",
+	"preReg_QRCode_requesttime_withInvalidYear": "",
+	"preReg_QRCode_requesttime_withSpaces": "",
+	"preReg_QRCode_requesttime_withSpecialCharacters": "",
+	"preReg_QRCode_requesttime_withZeroInAllFields": "",
+	"preReg_QRCode_version_withEmptyValue": "",
+	"preReg_QRCode_version_withOtherThanStandardValue": ""
+}

@@ -1,8 +1,11 @@
 {
 	"id": "getapplicanttype.code",
-	"metadata": {},
+	"metadata": {
+		
+	},
 	"request": {
-		"attributes": [{
+		"attributes": [
+			{
 				"attribute": "individualTypeCode",
 				"value": "4564"
 			},

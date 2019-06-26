@@ -1,0 +1,12 @@
+{
+	"id": "mosip.pre-registration.document.upload",
+	"version": "1.0",
+	"responsetime": "2019-05-19T16:02:02.899Z",
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "PRG_PAM_DOC_004",
+			"message": "Invalid document format supported"
+		}
+	]
+}

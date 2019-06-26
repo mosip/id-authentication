@@ -1,533 +1,699 @@
 {
-  "identity" : {
-    "biometric" : {
-      "applicant" : {
-        "leftEye" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "993b1908-dde7-46a3-a118-ff9f7e738f58"
-        },
-        "rightEye" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "7cf7fd88-8bbc-4fe1-92a1-b86eaa76dfd3"
-        },
-        "leftThumb" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "ebea4981-e43e-41e2-b086-c109bd7e72d3"
-        },
-        "rightThumb" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "3849da77-b9c2-4635-9717-de2f2fc33093"
-        },
-        "leftIndex" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "3bc7b887-c124-4092-b55e-e41830b00c3d"
-        },
-        "leftMiddle" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "6d68ebb9-8b00-41b6-a361-c4ead7591385"
-        },
-        "leftRing" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "fe9abd03-8240-47b6-a42f-bfd957427170"
-        },
-        "leftLittle" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "5062d147-999e-45d6-bfaa-7701b082f894"
-        },
-        "rightIndex" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "b6a88c77-dfdb-4466-86d7-e2f97153bcca"
-        },
-        "rightMiddle" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "ecbb7a3b-3fee-450a-a554-3c1ef2b8178d"
-        },
-        "rightRing" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "f5590759-a256-498a-b2b8-f311d5a853b2"
-        },
-        "rightLittle" : {
-          "numRetry" : 1,
-          "forceCaptured" : false,
-          "BIRIndex" : "b1de5018-f969-40d9-80e3-cb286a1ed032"
-        }
-      }
-    },
-    "exceptionBiometrics" : [ ],
-    "applicantPhotograph" : {
-      "numRetry" : 0,
-      "BIRIndex" : "c19c5310-8519-4e49-9aee-99be95e110e3"
-    },
-    "exceptionPhotograph" : null,
-    "documents" : [ ],
-    "metaData" : [ {
-      "label" : "geoLocLatitude",
-      "value" : "0.0"
-    }, {
-      "label" : "geoLoclongitude",
-      "value" : "0.0"
-    }, {
-      "label" : "registrationType",
-      "value" : "New"
-    }, {
-      "label" : "preRegistrationId",
-      "value" : null
-    }, {
-      "label" : "registrationId",
-      "value" : "10006100060000320190624060535"
-    }, {
-      "label" : "machineId",
-      "value" : "10006"
-    }, {
-      "label" : "dongleId",
-      "value" : "WT6501645780"
-    }, {
-      "label" : "macId",
-      "value" : "8C-16-45-FA-94-B7"
-    }, {
-      "label" : "centerId",
-      "value" : "10006"
-    }, {
-      "label" : "previousRID",
-      "value" : null
-    }, {
-      "label" : "introducerType",
-      "value" : null
-    }, {
-      "label" : "consentOfApplicant",
-      "value" : "Yes"
-    }, {
-      "label" : "creationDate",
-      "value" : "2019-06-24T11:38:03.883Z"
-    }, {
-      "label" : "authenticationBiometricFileName",
-      "value" : null
-    } ],
-    "osiData" : [ {
-      "label" : "officerId",
-      "value" : "110006"
-    }, {
-      "label" : "officerBiometricFileName",
-      "value" : "officer_bio_CBEFF"
-    }, {
-      "label" : "supervisorId",
-      "value" : null
-    }, {
-      "label" : "supervisorBiometricFileName",
-      "value" : null
-    }, {
-      "label" : "supervisorPassword",
-      "value" : "false"
-    }, {
-      "label" : "officerPassword",
-      "value" : "false"
-    }, {
-      "label" : "supervisorPIN",
-      "value" : null
-    }, {
-      "label" : "officerPIN",
-      "value" : null
-    }, {
-      "label" : "supervisorOTPAuthentication",
-      "value" : "false"
-    }, {
-      "label" : "officerOTPAuthentication",
-      "value" : "false"
-    } ],
-    "hashSequence1" : [ {
-      "label" : "applicantBiometricSequence",
-      "value" : [ "applicant_bio_CBEFF" ]
-    }, {
-      "label" : "introducerBiometricSequence",
-      "value" : [ ]
-    }, {
-      "label" : "applicantDemographicSequence",
-      "value" : [ "ID", "POR_Passport", "POA_Rental contract", "POI_CNIE card" ]
-    } ],
-    "hashSequence2" : [ {
-      "label" : "otherFiles",
-      "value" : [ "officer_bio_CBEFF", "audit" ]
-    } ],
-    "capturedRegisteredDevices" : [ {
-      "label" : "Finger Print Scanner",
-      "value" : "3000026"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000046"
-    }, {
-      "label" : "Camera",
-      "value" : "3000066"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000086"
-    }, {
-      "label" : "Printer",
-      "value" : "3000106"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000125"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000134"
-    }, {
-      "label" : "Camera",
-      "value" : "3000143"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000152"
-    }, {
-      "label" : "Printer",
-      "value" : "3000161"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000181"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000182"
-    }, {
-      "label" : "Camera",
-      "value" : "3000183"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000184"
-    }, {
-      "label" : "Printer",
-      "value" : "3000185"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000186"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000187"
-    }, {
-      "label" : "Camera",
-      "value" : "3000188"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000189"
-    }, {
-      "label" : "Printer",
-      "value" : "3000190"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000191"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000192"
-    }, {
-      "label" : "Camera",
-      "value" : "3000193"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000194"
-    }, {
-      "label" : "Printer",
-      "value" : "3000195"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000196"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000197"
-    }, {
-      "label" : "Camera",
-      "value" : "3000198"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000199"
-    }, {
-      "label" : "Printer",
-      "value" : "3000200"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000201"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000202"
-    }, {
-      "label" : "Camera",
-      "value" : "3000203"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000204"
-    }, {
-      "label" : "Printer",
-      "value" : "3000205"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000206"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000207"
-    }, {
-      "label" : "Camera",
-      "value" : "3000208"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000209"
-    }, {
-      "label" : "Printer",
-      "value" : "3000210"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000211"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000212"
-    }, {
-      "label" : "Camera",
-      "value" : "3000213"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000214"
-    }, {
-      "label" : "Printer",
-      "value" : "3000215"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000216"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000217"
-    }, {
-      "label" : "Camera",
-      "value" : "3000218"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000219"
-    }, {
-      "label" : "Printer",
-      "value" : "3000220"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000221"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000222"
-    }, {
-      "label" : "Camera",
-      "value" : "3000223"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000224"
-    }, {
-      "label" : "Printer",
-      "value" : "3000225"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000226"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000227"
-    }, {
-      "label" : "Camera",
-      "value" : "3000228"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000229"
-    }, {
-      "label" : "Printer",
-      "value" : "3000230"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000231"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000232"
-    }, {
-      "label" : "Camera",
-      "value" : "3000233"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000234"
-    }, {
-      "label" : "Printer",
-      "value" : "3000235"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000236"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000237"
-    }, {
-      "label" : "Camera",
-      "value" : "3000238"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000239"
-    }, {
-      "label" : "Printer",
-      "value" : "3000240"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000241"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000242"
-    }, {
-      "label" : "Camera",
-      "value" : "3000243"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000244"
-    }, {
-      "label" : "Printer",
-      "value" : "3000245"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000246"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000247"
-    }, {
-      "label" : "Camera",
-      "value" : "3000248"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000249"
-    }, {
-      "label" : "Printer",
-      "value" : "3000250"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000251"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000252"
-    }, {
-      "label" : "Camera",
-      "value" : "3000253"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000254"
-    }, {
-      "label" : "Printer",
-      "value" : "3000255"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000256"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000257"
-    }, {
-      "label" : "Camera",
-      "value" : "3000258"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000259"
-    }, {
-      "label" : "Printer",
-      "value" : "3000260"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000261"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000262"
-    }, {
-      "label" : "Camera",
-      "value" : "3000263"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000264"
-    }, {
-      "label" : "Printer",
-      "value" : "3000265"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000266"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000267"
-    }, {
-      "label" : "Camera",
-      "value" : "3000268"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000269"
-    }, {
-      "label" : "Printer",
-      "value" : "3000270"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000271"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000272"
-    }, {
-      "label" : "Camera",
-      "value" : "3000273"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000274"
-    }, {
-      "label" : "Printer",
-      "value" : "3000275"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000276"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000277"
-    }, {
-      "label" : "Camera",
-      "value" : "3000278"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000279"
-    }, {
-      "label" : "Printer",
-      "value" : "3000280"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000281"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000282"
-    }, {
-      "label" : "Camera",
-      "value" : "3000283"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000284"
-    }, {
-      "label" : "Printer",
-      "value" : "3000285"
-    }, {
-      "label" : "Finger Print Scanner",
-      "value" : "3000286"
-    }, {
-      "label" : "Iris Scanner",
-      "value" : "3000287"
-    }, {
-      "label" : "Camera",
-      "value" : "3000288"
-    }, {
-      "label" : "Document Scanner",
-      "value" : "3000289"
-    }, {
-      "label" : "Printer",
-      "value" : "3000290"
-    } ],
-    "capturedNonRegisteredDevices" : null,
-    "checkSum" : [ {
-      "label" : "mosip-client.jar",
-      "value" : "134D99F15FCBB6767F196D99F096F1D0A1D8488614A84C26B6595603DE0A12CB"
-    }, {
-      "label" : "mosip-services.jar",
-      "value" : "CDC3255112E3A603CF5B7116ECC0FBFCE6F3EEE20E77A1F9795C9A3BBDF81B9C"
-    } ],
-    "printingName" : null
-  }
+	"identity": {
+		"biometric": {
+			"applicant": {
+				"leftEye": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "993b1908-dde7-46a3-a118-ff9f7e738f58"
+				},
+				"rightEye": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "7cf7fd88-8bbc-4fe1-92a1-b86eaa76dfd3"
+				},
+				"leftThumb": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "ebea4981-e43e-41e2-b086-c109bd7e72d3"
+				},
+				"rightThumb": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "3849da77-b9c2-4635-9717-de2f2fc33093"
+				},
+				"leftIndex": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "3bc7b887-c124-4092-b55e-e41830b00c3d"
+				},
+				"leftMiddle": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "6d68ebb9-8b00-41b6-a361-c4ead7591385"
+				},
+				"leftRing": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "fe9abd03-8240-47b6-a42f-bfd957427170"
+				},
+				"leftLittle": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "5062d147-999e-45d6-bfaa-7701b082f894"
+				},
+				"rightIndex": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "b6a88c77-dfdb-4466-86d7-e2f97153bcca"
+				},
+				"rightMiddle": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "ecbb7a3b-3fee-450a-a554-3c1ef2b8178d"
+				},
+				"rightRing": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "f5590759-a256-498a-b2b8-f311d5a853b2"
+				},
+				"rightLittle": {
+					"numRetry": 1,
+					"forceCaptured": false,
+					"BIRIndex": "b1de5018-f969-40d9-80e3-cb286a1ed032"
+				}
+			}
+		},
+		"exceptionBiometrics": [],
+		"applicantPhotograph": {
+			"numRetry": 0,
+			"BIRIndex": "c19c5310-8519-4e49-9aee-99be95e110e3"
+		},
+		"exceptionPhotograph": null,
+		"documents": [],
+		"metaData": [
+			{
+				"label": "geoLocLatitude",
+				"value": "0.0"
+			},
+			{
+				"label": "geoLoclongitude",
+				"value": "0.0"
+			},
+			{
+				"label": "registrationType",
+				"value": "New"
+			},
+			{
+				"label": "preRegistrationId",
+				"value": null
+			},
+			{
+				"label": "registrationId",
+				"value": "10006100060000320190624060535"
+			},
+			{
+				"label": "machineId",
+				"value": "10006"
+			},
+			{
+				"label": "dongleId",
+				"value": "WT6501645780"
+			},
+			{
+				"label": "macId",
+				"value": "8C-16-45-FA-94-B7"
+			},
+			{
+				"label": "centerId",
+				"value": "10006"
+			},
+			{
+				"label": "previousRID",
+				"value": null
+			},
+			{
+				"label": "introducerType",
+				"value": null
+			},
+			{
+				"label": "consentOfApplicant",
+				"value": "Yes"
+			},
+			{
+				"label": "creationDate",
+				"value": "2019-06-24T11:38:03.883Z"
+			},
+			{
+				"label": "authenticationBiometricFileName",
+				"value": null
+			}
+		],
+		"osiData": [
+			{
+				"label": "officerId",
+				"value": "110006"
+			},
+			{
+				"label": "officerBiometricFileName",
+				"value": "officer_bio_CBEFF"
+			},
+			{
+				"label": "supervisorId",
+				"value": null
+			},
+			{
+				"label": "supervisorBiometricFileName",
+				"value": null
+			},
+			{
+				"label": "supervisorPassword",
+				"value": "false"
+			},
+			{
+				"label": "officerPassword",
+				"value": "false"
+			},
+			{
+				"label": "supervisorPIN",
+				"value": null
+			},
+			{
+				"label": "officerPIN",
+				"value": null
+			},
+			{
+				"label": "supervisorOTPAuthentication",
+				"value": "false"
+			},
+			{
+				"label": "officerOTPAuthentication",
+				"value": "false"
+			}
+		],
+		"hashSequence1": [
+			{
+				"label": "applicantBiometricSequence",
+				"value": [
+					"applicant_bio_CBEFF"
+				]
+			},
+			{
+				"label": "introducerBiometricSequence",
+				"value": []
+			},
+			{
+				"label": "applicantDemographicSequence",
+				"value": [
+					"ID",
+					"POR_Passport",
+					"POA_Rental contract",
+					"POI_CNIE card"
+				]
+			}
+		],
+		"hashSequence2": [
+			{
+				"label": "otherFiles",
+				"value": [
+					"officer_bio_CBEFF",
+					"audit"
+				]
+			}
+		],
+		"capturedRegisteredDevices": [
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000026"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000046"
+			},
+			{
+				"label": "Camera",
+				"value": "3000066"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000086"
+			},
+			{
+				"label": "Printer",
+				"value": "3000106"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000125"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000134"
+			},
+			{
+				"label": "Camera",
+				"value": "3000143"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000152"
+			},
+			{
+				"label": "Printer",
+				"value": "3000161"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000181"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000182"
+			},
+			{
+				"label": "Camera",
+				"value": "3000183"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000184"
+			},
+			{
+				"label": "Printer",
+				"value": "3000185"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000186"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000187"
+			},
+			{
+				"label": "Camera",
+				"value": "3000188"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000189"
+			},
+			{
+				"label": "Printer",
+				"value": "3000190"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000191"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000192"
+			},
+			{
+				"label": "Camera",
+				"value": "3000193"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000194"
+			},
+			{
+				"label": "Printer",
+				"value": "3000195"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000196"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000197"
+			},
+			{
+				"label": "Camera",
+				"value": "3000198"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000199"
+			},
+			{
+				"label": "Printer",
+				"value": "3000200"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000201"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000202"
+			},
+			{
+				"label": "Camera",
+				"value": "3000203"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000204"
+			},
+			{
+				"label": "Printer",
+				"value": "3000205"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000206"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000207"
+			},
+			{
+				"label": "Camera",
+				"value": "3000208"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000209"
+			},
+			{
+				"label": "Printer",
+				"value": "3000210"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000211"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000212"
+			},
+			{
+				"label": "Camera",
+				"value": "3000213"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000214"
+			},
+			{
+				"label": "Printer",
+				"value": "3000215"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000216"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000217"
+			},
+			{
+				"label": "Camera",
+				"value": "3000218"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000219"
+			},
+			{
+				"label": "Printer",
+				"value": "3000220"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000221"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000222"
+			},
+			{
+				"label": "Camera",
+				"value": "3000223"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000224"
+			},
+			{
+				"label": "Printer",
+				"value": "3000225"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000226"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000227"
+			},
+			{
+				"label": "Camera",
+				"value": "3000228"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000229"
+			},
+			{
+				"label": "Printer",
+				"value": "3000230"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000231"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000232"
+			},
+			{
+				"label": "Camera",
+				"value": "3000233"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000234"
+			},
+			{
+				"label": "Printer",
+				"value": "3000235"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000236"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000237"
+			},
+			{
+				"label": "Camera",
+				"value": "3000238"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000239"
+			},
+			{
+				"label": "Printer",
+				"value": "3000240"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000241"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000242"
+			},
+			{
+				"label": "Camera",
+				"value": "3000243"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000244"
+			},
+			{
+				"label": "Printer",
+				"value": "3000245"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000246"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000247"
+			},
+			{
+				"label": "Camera",
+				"value": "3000248"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000249"
+			},
+			{
+				"label": "Printer",
+				"value": "3000250"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000251"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000252"
+			},
+			{
+				"label": "Camera",
+				"value": "3000253"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000254"
+			},
+			{
+				"label": "Printer",
+				"value": "3000255"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000256"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000257"
+			},
+			{
+				"label": "Camera",
+				"value": "3000258"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000259"
+			},
+			{
+				"label": "Printer",
+				"value": "3000260"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000261"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000262"
+			},
+			{
+				"label": "Camera",
+				"value": "3000263"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000264"
+			},
+			{
+				"label": "Printer",
+				"value": "3000265"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000266"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000267"
+			},
+			{
+				"label": "Camera",
+				"value": "3000268"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000269"
+			},
+			{
+				"label": "Printer",
+				"value": "3000270"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000271"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000272"
+			},
+			{
+				"label": "Camera",
+				"value": "3000273"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000274"
+			},
+			{
+				"label": "Printer",
+				"value": "3000275"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000276"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000277"
+			},
+			{
+				"label": "Camera",
+				"value": "3000278"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000279"
+			},
+			{
+				"label": "Printer",
+				"value": "3000280"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000281"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000282"
+			},
+			{
+				"label": "Camera",
+				"value": "3000283"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000284"
+			},
+			{
+				"label": "Printer",
+				"value": "3000285"
+			},
+			{
+				"label": "Finger Print Scanner",
+				"value": "3000286"
+			},
+			{
+				"label": "Iris Scanner",
+				"value": "3000287"
+			},
+			{
+				"label": "Camera",
+				"value": "3000288"
+			},
+			{
+				"label": "Document Scanner",
+				"value": "3000289"
+			},
+			{
+				"label": "Printer",
+				"value": "3000290"
+			}
+		],
+		"capturedNonRegisteredDevices": null,
+		"checkSum": [
+			{
+				"label": "mosip-client.jar",
+				"value": "134D99F15FCBB6767F196D99F096F1D0A1D8488614A84C26B6595603DE0A12CB"
+			},
+			{
+				"label": "mosip-services.jar",
+				"value": "CDC3255112E3A603CF5B7116ECC0FBFCE6F3EEE20E77A1F9795C9A3BBDF81B9C"
+			}
+		],
+		"printingName": null
+	}
 }

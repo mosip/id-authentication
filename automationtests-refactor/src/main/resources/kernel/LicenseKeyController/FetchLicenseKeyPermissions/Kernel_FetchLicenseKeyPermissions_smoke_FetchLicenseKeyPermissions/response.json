@@ -1,12 +1,12 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-15T11:06:30.085Z",
-  "metadata": null,
-  "response": {
-    "permissions": [
-      "OTP Trigger"
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-15T11:06:30.085Z",
+	"metadata": null,
+	"response": {
+		"permissions": [
+			"OTP Trigger"
+		]
+	},
+	"errors": null
 }

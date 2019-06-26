@@ -1,10 +1,10 @@
 {
-	"idEmpty" : "",
-	"idInvalid" : "",
-	"regIdEmpty" : "",
-	"regIdNotPresent" : "",
-	"requesttimeEmpty" : "",
-	"requesttimeInvalid" : "",
-	"versionEmpty" : "",
-	"versionInvalid" : ""
+	"idEmpty": "",
+	"idInvalid": "",
+	"regIdEmpty": "",
+	"regIdNotPresent": "",
+	"requesttimeEmpty": "",
+	"requesttimeInvalid": "",
+	"versionEmpty": "",
+	"versionInvalid": ""
 }

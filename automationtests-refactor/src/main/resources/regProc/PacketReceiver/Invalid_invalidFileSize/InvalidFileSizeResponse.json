@@ -1,11 +1,11 @@
 {
-    "errors": [
-        {
-            "errorCode": "RPR-PKR-002",
-            "message": "The Registration Packet Size is invalid"
-        }
-    ],
-    "id": "mosip.registration.packet",
-    "version": "1.0",
-    "responsetime": "2019-04-11T06:55:39.948Z"
+	"errors": [
+		{
+			"errorCode": "RPR-PKR-002",
+			"message": "The Registration Packet Size is invalid"
+		}
+	],
+	"id": "mosip.registration.packet",
+	"version": "1.0",
+	"responsetime": "2019-04-11T06:55:39.948Z"
 }

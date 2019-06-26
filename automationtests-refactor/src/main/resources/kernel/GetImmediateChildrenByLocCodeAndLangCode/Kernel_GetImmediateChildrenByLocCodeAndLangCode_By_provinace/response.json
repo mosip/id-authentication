@@ -1,20 +1,20 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-16T12:36:11.858Z",
-  "metadata": null,
-  "response": {
-    "locations": [
-      {
-        "code": "RAB",
-        "name": "Rabat",
-        "hierarchyLevel": 0,
-        "hierarchyName": "City",
-        "parentLocCode": "RBT",
-        "langCode": "eng",
-        "isActive": true
-      }
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-16T12:36:11.858Z",
+	"metadata": null,
+	"response": {
+		"locations": [
+			{
+				"code": "RAB",
+				"name": "Rabat",
+				"hierarchyLevel": 0,
+				"hierarchyName": "City",
+				"parentLocCode": "RBT",
+				"langCode": "eng",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
 }

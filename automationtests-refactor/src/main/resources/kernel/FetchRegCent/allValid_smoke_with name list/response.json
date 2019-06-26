@@ -1,1 +1,35 @@
-{"id":null,"version":null,"responsetime":"2019-06-07T11:56:43.371Z","metadata":null,"response":{"registrationCenters":[{"id":"10001","name":"Center A Ben Mansour","centerTypeCode":"REG","addressLine1":"P4238","addressLine2":"Ben Mansour","addressLine3":"Morocco","latitude":"34.52117","longitude":"-6.453275","locationCode":"14022","holidayLocationCode":"KTA","contactPhone":"779517433","workingHours":"8:00:00","langCode":"eng","numberOfKiosks":3,"perKioskProcessTime":"00:15:00","centerStartTime":"09:00:00","centerEndTime":"17:00:00","timeZone":"(GTM+01:00) CENTRAL EUROPEAN TIME","contactPerson":"John Doe","lunchStartTime":"13:00:00","lunchEndTime":"14:00:00","isActive":true}]},"errors":null}
+{
+	"id": null,
+	"version": null,
+	"responsetime": "2019-06-07T11:56:43.371Z",
+	"metadata": null,
+	"response": {
+		"registrationCenters": [
+			{
+				"id": "10001",
+				"name": "Center A Ben Mansour",
+				"centerTypeCode": "REG",
+				"addressLine1": "P4238",
+				"addressLine2": "Ben Mansour",
+				"addressLine3": "Morocco",
+				"latitude": "34.52117",
+				"longitude": "-6.453275",
+				"locationCode": "14022",
+				"holidayLocationCode": "KTA",
+				"contactPhone": "779517433",
+				"workingHours": "8:00:00",
+				"langCode": "eng",
+				"numberOfKiosks": 3,
+				"perKioskProcessTime": "00:15:00",
+				"centerStartTime": "09:00:00",
+				"centerEndTime": "17:00:00",
+				"timeZone": "(GTM+01:00) CENTRAL EUROPEAN TIME",
+				"contactPerson": "John Doe",
+				"lunchStartTime": "13:00:00",
+				"lunchEndTime": "14:00:00",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
+}

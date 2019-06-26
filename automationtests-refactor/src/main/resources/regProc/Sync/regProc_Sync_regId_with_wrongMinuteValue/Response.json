@@ -1,13 +1,13 @@
 {
-    "id": "mosip.registration.sync",
-    "version": "1.0",
-    "responsetime": "2019-05-21T10:00:20.687Z",
-    "errors": [
-        {
-            "registrationId": "10011100110001920190325129310",
-            "status": "FAILURE",
-            "errorMessage": "Invalid Time Stamp Found in RegistrationId",
-            "errorCode": "RPR-RGS-007"
-        }
-    ]
+	"id": "mosip.registration.sync",
+	"version": "1.0",
+	"responsetime": "2019-05-21T10:00:20.687Z",
+	"errors": [
+		{
+			"registrationId": "10011100110001920190325129310",
+			"status": "FAILURE",
+			"errorMessage": "Invalid Time Stamp Found in RegistrationId",
+			"errorCode": "RPR-RGS-007"
+		}
+	]
 }

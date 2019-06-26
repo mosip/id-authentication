@@ -1,11 +1,11 @@
 {
-  "id": "string",
-  "version": "string",
-  "responsetime": "2019-04-11T05:16:09.355Z",
-  "metadata": null,
-  "response": {
-    "otp": "003720",
-    "status": "GENERATION_SUCCESSFUL"
-  },
-  "errors": null
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-11T05:16:09.355Z",
+	"metadata": null,
+	"response": {
+		"otp": "003720",
+		"status": "GENERATION_SUCCESSFUL"
+	},
+	"errors": null
 }

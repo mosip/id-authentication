@@ -1,6 +1,6 @@
 {
 	"id": "mosip.registration.packetgenerator",
-	"request":{
+	"request": {
 		"centerId": "10018",
 		"machineId": "10001",
 		"reason": "something",

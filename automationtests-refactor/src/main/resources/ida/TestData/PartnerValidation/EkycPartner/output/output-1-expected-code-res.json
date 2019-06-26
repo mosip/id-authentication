@@ -1,7 +1,7 @@
 {
-  "timestamp": "2019-05-21T06:36:48.832+0000",
-  "status": 404,
-  "error": "Not Found",
-  "message": "No message available",
-  "path": "/idauthentication/v1/kyc/1873299273/"
+	"timestamp": "2019-05-21T06:36:48.832+0000",
+	"status": 404,
+	"error": "Not Found",
+	"message": "No message available",
+	"path": "/idauthentication/v1/kyc/1873299273/"
 }

@@ -1,15 +1,15 @@
 {
-  "errors": [
-    {
-      "errorcode": "RPR-PGS-011",
-      "message": "Invalid Input Parameter - id"
-    },
-    {
-      "errorcode": "RPR-RGS-015",
-      "message": "Input Data Validation Failed"
-    }
-  ],
-  "id": "mosip.registration.packetgenerator",
-  "version": "1.0",
-  "responsetime": "2019-04-19T09:58:59.104Z"
+	"errors": [
+		{
+			"errorcode": "RPR-PGS-011",
+			"message": "Invalid Input Parameter - id"
+		},
+		{
+			"errorcode": "RPR-RGS-015",
+			"message": "Input Data Validation Failed"
+		}
+	],
+	"id": "mosip.registration.packetgenerator",
+	"version": "1.0",
+	"responsetime": "2019-04-19T09:58:59.104Z"
 }

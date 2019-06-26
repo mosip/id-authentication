@@ -1,19 +1,19 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-19T12:04:26.954Z",
-  "metadata": null,
-  "response": {
-    "registrationCenters": [
-      {
-        "cntrId": "10001",
-        "machineId": "10001",
-        "usrId": "110001",
-        "isActive": true,
-        "langCode": "eng",
-        "effectivetimes": "2019-04-17T07:08:40.988Z"
-      }
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-19T12:04:26.954Z",
+	"metadata": null,
+	"response": {
+		"registrationCenters": [
+			{
+				"cntrId": "10001",
+				"machineId": "10001",
+				"usrId": "110001",
+				"isActive": true,
+				"langCode": "eng",
+				"effectivetimes": "2019-04-17T07:08:40.988Z"
+			}
+		]
+	},
+	"errors": null
 }

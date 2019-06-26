@@ -1,7 +1,7 @@
 {
-    "timestamp": 1555677124449,
-    "status": 404,
-    "error": "Not Found",
-    "message": "No message available",
-    "path": "/v1/masterdata/packetrejectionreasons/eng"
+	"timestamp": 1555677124449,
+	"status": 404,
+	"error": "Not Found",
+	"message": "No message available",
+	"path": "/v1/masterdata/packetrejectionreasons/eng"
 }

@@ -1,13 +1,13 @@
 {
-  "id": "mosip.vid.create",
-  "version": "v1",
-  "responsetime": "2019-05-19T08:30:28.615Z",
-  "metadata": null,
-  "response": null,
-  "errors": [
-    {
-      "errorCode": "IDR-IDC-002",
-      "message": "Invalid Input Parameter - version"
-    }
-  ]
+	"id": "mosip.vid.create",
+	"version": "v1",
+	"responsetime": "2019-05-19T08:30:28.615Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "IDR-IDC-002",
+			"message": "Invalid Input Parameter - version"
+		}
+	]
 }

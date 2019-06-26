@@ -1,11 +1,11 @@
 
 {
-  "response": {
-    "registrationId": "10001100010001220190419054701",
-    "status": "RECEIVED",
-    "message": "Packet created and uploaded"
-  },
-  "id": "mosip.registration.packetgenerator",
-  "version": "1.0",
-  "responsetime": "2019-04-19T05:47:11.467Z"
+	"response": {
+		"registrationId": "10001100010001220190419054701",
+		"status": "RECEIVED",
+		"message": "Packet created and uploaded"
+	},
+	"id": "mosip.registration.packetgenerator",
+	"version": "1.0",
+	"responsetime": "2019-04-19T05:47:11.467Z"
 }

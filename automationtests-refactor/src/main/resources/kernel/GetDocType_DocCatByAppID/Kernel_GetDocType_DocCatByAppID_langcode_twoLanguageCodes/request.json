@@ -1,6 +1,7 @@
 {
 	"applicantId": "001",
 	"languages": [
-		 "eng","fra"
+		"eng",
+		"fra"
 	]
 }

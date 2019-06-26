@@ -1,16 +1,16 @@
 {
-  "holidays": [
-    {
-      "id": 2000004,
-      "locationCode": "KTA",
-      "holidayDate": "2019-06-05",
-      "holidayDay": "3",
-      "holidayMonth": "6",
-      "holidayYear": "2019",
-      "holidayName": "Eid al-Fitr",
-      "holidayDesc": "National Holiday",
-      "langCode": "eng",
-      "isActive": true
-    }
-  ]
+	"holidays": [
+		{
+			"id": 2000004,
+			"locationCode": "KTA",
+			"holidayDate": "2019-06-05",
+			"holidayDay": "3",
+			"holidayMonth": "6",
+			"holidayYear": "2019",
+			"holidayName": "Eid al-Fitr",
+			"holidayDesc": "National Holiday",
+			"langCode": "eng",
+			"isActive": true
+		}
+	]
 }

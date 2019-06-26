@@ -1,0 +1,10 @@
+{
+	"id": "string",
+	"request": {
+		"appId": "admin",
+		"password": "preregadmin",
+		"userName": "preregadmin"
+	},
+	"timestamp": "string",
+	"version": "string"
+}

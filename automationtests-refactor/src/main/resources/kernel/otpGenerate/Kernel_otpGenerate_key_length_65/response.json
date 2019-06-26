@@ -1,13 +1,13 @@
 {
-  "id": "string",
-  "version": "string",
-  "responsetime": "2019-04-11T05:15:39.082Z",
-  "metadata": null,
-  "response": null,
-  "errors": [
-    {
-      "errorCode": "KER-OTG-001",
-      "message": "request.key: length should be in the range of 3-64"
-    }
-  ]
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-11T05:15:39.082Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-OTG-001",
+			"message": "request.key: length should be in the range of 3-64"
+		}
+	]
 }

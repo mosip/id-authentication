@@ -1,16 +1,16 @@
 {
-  "machineHistoryDetails": [
-    {
-      "id": "10001",
-      "name": "Machine 1",
-      "serialNum": "NM5328114630",
-      "ipAddress": "192.168.0.150",
-      "macAddress": "e1:01:2b:c2:1d:b0",
-      "machineSpecId": "1001",
-      "langCode": "eng",
-      "isActive": true,
-      "effectDateTime": "2019-01-21T10:45:44.437Z",
-      "validityDateTime": null
-    }
-  ]
+	"machineHistoryDetails": [
+		{
+			"id": "10001",
+			"name": "Machine 1",
+			"serialNum": "NM5328114630",
+			"ipAddress": "192.168.0.150",
+			"macAddress": "e1:01:2b:c2:1d:b0",
+			"machineSpecId": "1001",
+			"langCode": "eng",
+			"isActive": true,
+			"effectDateTime": "2019-01-21T10:45:44.437Z",
+			"validityDateTime": null
+		}
+	]
 }

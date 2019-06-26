@@ -1,60 +1,60 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-17T12:34:02.819Z",
-  "metadata": null,
-  "response": {
-    "documents": [
-      {
-        "code": "DOC001",
-        "name": "Passport",
-        "description": "Proof of Idendity",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "CRN",
-        "name": "Certificate of Relationship",
-        "description": "Proof relationship of a person",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "DOC024",
-        "name": "PDS Card",
-        "description": "PDS Card",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "DOC025",
-        "name": "Medical card issued by the State Govt, CGHS, ECHS and ESIC",
-        "description": "Medical card issued by the State Government, CGHS, ECHS and also ESIC",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "DOC026",
-        "name": "Canteen card of the Army",
-        "description": "Canteen card of the Army",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "DOC027",
-        "name": "Family entitlement document",
-        "description": "Any family entitlement document issued by any Central or State Government",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "DOC028",
-        "name": "Birth Certificate",
-        "description": "Registrar of Birth/municipal Corporation or any local government Birth Certificate",
-        "langCode": "eng",
-        "isActive": true
-      }
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-17T12:34:02.819Z",
+	"metadata": null,
+	"response": {
+		"documents": [
+			{
+				"code": "DOC001",
+				"name": "Passport",
+				"description": "Proof of Idendity",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "CRN",
+				"name": "Certificate of Relationship",
+				"description": "Proof relationship of a person",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "DOC024",
+				"name": "PDS Card",
+				"description": "PDS Card",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "DOC025",
+				"name": "Medical card issued by the State Govt, CGHS, ECHS and ESIC",
+				"description": "Medical card issued by the State Government, CGHS, ECHS and also ESIC",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "DOC026",
+				"name": "Canteen card of the Army",
+				"description": "Canteen card of the Army",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "DOC027",
+				"name": "Family entitlement document",
+				"description": "Any family entitlement document issued by any Central or State Government",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "DOC028",
+				"name": "Birth Certificate",
+				"description": "Registrar of Birth/municipal Corporation or any local government Birth Certificate",
+				"langCode": "eng",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
 }

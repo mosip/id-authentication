@@ -1,0 +1,14 @@
+[
+	{
+		"testType": "smoke",
+		"testCaseName": "DiscardBooking_smoke",
+		"jiraId": "MOS-1002",
+		"pre_registration_id": "valid",
+		"status": ""
+	},
+	{
+		"testType": "regression",
+		"pre_registration_id": "invalid",
+		"status": ""
+	}
+]

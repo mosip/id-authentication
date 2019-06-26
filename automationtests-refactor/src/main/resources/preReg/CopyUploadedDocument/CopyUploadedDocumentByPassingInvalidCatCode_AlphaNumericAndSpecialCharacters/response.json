@@ -1,0 +1,12 @@
+{
+	"id": "mosip.pre-registration.document.copy",
+	"version": "1.0",
+	"responsetime": "2019-06-14T10:09:43.451Z",
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "PRG_CORE_REQ_017",
+			"message": "Document Category code is invalid"
+		}
+	]
+}

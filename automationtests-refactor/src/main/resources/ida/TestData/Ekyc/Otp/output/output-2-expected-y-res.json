@@ -1,11 +1,11 @@
 {
-  "transactionID": "3823370061",
-  "version": "1.0",
-  "id": "mosip.identity.kyc",
-  "responseTime": "2019-05-20T12:32:26.948+05:30",
-  "response": {
-    "kycStatus": true,
-    "staticToken": "$IGNORE$",
-    "identity": "$IGNORE$"
-  }
+	"transactionID": "3823370061",
+	"version": "1.0",
+	"id": "mosip.identity.kyc",
+	"responseTime": "2019-05-20T12:32:26.948+05:30",
+	"response": {
+		"kycStatus": true,
+		"staticToken": "$IGNORE$",
+		"identity": "$IGNORE$"
+	}
 }

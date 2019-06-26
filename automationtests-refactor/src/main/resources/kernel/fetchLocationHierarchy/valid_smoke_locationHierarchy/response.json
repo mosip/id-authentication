@@ -1,182 +1,182 @@
 {
-    "id": null,
-    "version": null,
-    "responsetime": "2019-04-24T12:37:30.195Z",
-    "metadata": null,
-    "response": {
-        "locations": [
-            {
-                "code": "14022",
-                "name": "14022",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "BNMR",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "14053",
-                "name": "14053",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "MNAS",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "14023",
-                "name": "14023",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "MOGR",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "14000",
-                "name": "14000",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "ASSM",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "14110",
-                "name": "14110",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "MEHD",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "14080",
-                "name": "14080",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "OLOJ",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "14025",
-                "name": "14025",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "SDTB",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "14050",
-                "name": "14050",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "SATZ",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10106",
-                "name": "10106",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "AGDL",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10000",
-                "name": "10000",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "QRHS",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10105",
-                "name": "10105",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "SOUS",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10112",
-                "name": "10112",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "MADI",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10104",
-                "name": "10104",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "HARD",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10036",
-                "name": "10036",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "MDDR",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10190",
-                "name": "10190",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "ELYF",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10111",
-                "name": "10111",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "BNMR",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10110",
-                "name": "10110",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "BNMR",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10113",
-                "name": "10113",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "BNMR",
-                "langCode": "fra",
-                "isActive": true
-            },
-            {
-                "code": "10114",
-                "name": "10114",
-                "hierarchyLevel": 0,
-                "hierarchyName": "code postal",
-                "parentLocCode": "BNMR",
-                "langCode": "fra",
-                "isActive": true
-            }
-        ]
-    },
-    "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-24T12:37:30.195Z",
+	"metadata": null,
+	"response": {
+		"locations": [
+			{
+				"code": "14022",
+				"name": "14022",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "BNMR",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "14053",
+				"name": "14053",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "MNAS",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "14023",
+				"name": "14023",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "MOGR",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "14000",
+				"name": "14000",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "ASSM",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "14110",
+				"name": "14110",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "MEHD",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "14080",
+				"name": "14080",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "OLOJ",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "14025",
+				"name": "14025",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "SDTB",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "14050",
+				"name": "14050",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "SATZ",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10106",
+				"name": "10106",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "AGDL",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10000",
+				"name": "10000",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "QRHS",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10105",
+				"name": "10105",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "SOUS",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10112",
+				"name": "10112",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "MADI",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10104",
+				"name": "10104",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "HARD",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10036",
+				"name": "10036",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "MDDR",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10190",
+				"name": "10190",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "ELYF",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10111",
+				"name": "10111",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "BNMR",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10110",
+				"name": "10110",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "BNMR",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10113",
+				"name": "10113",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "BNMR",
+				"langCode": "fra",
+				"isActive": true
+			},
+			{
+				"code": "10114",
+				"name": "10114",
+				"hierarchyLevel": 0,
+				"hierarchyName": "code postal",
+				"parentLocCode": "BNMR",
+				"langCode": "fra",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
 }

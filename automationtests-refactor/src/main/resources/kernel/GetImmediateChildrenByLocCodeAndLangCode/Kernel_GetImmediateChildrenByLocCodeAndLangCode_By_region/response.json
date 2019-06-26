@@ -1,29 +1,29 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-10T13:35:15.128Z",
-  "metadata": null,
-  "response": {
-    "locations": [
-      {
-        "code": "KTA",
-        "name": "Kenitra",
-        "hierarchyLevel": 0,
-        "hierarchyName": "Province",
-        "parentLocCode": "RSK",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "RBT",
-        "name": "Rabat",
-        "hierarchyLevel": 0,
-        "hierarchyName": "Province",
-        "parentLocCode": "RSK",
-        "langCode": "eng",
-        "isActive": true
-      }
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-10T13:35:15.128Z",
+	"metadata": null,
+	"response": {
+		"locations": [
+			{
+				"code": "KTA",
+				"name": "Kenitra",
+				"hierarchyLevel": 0,
+				"hierarchyName": "Province",
+				"parentLocCode": "RSK",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "RBT",
+				"name": "Rabat",
+				"hierarchyLevel": 0,
+				"hierarchyName": "Province",
+				"parentLocCode": "RSK",
+				"langCode": "eng",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
 }

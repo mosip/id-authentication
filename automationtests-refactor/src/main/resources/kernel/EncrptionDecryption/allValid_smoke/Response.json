@@ -1,10 +1,10 @@
 {
-  "id": "string",
-  "version": "string",
-  "responsetime": "2019-04-17T05:55:10.249Z",
-  "metadata": null,
-  "response": {
-  "data": "mosipdata"
-},
-  "errors": null
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-17T05:55:10.249Z",
+	"metadata": null,
+	"response": {
+		"data": "mosipdata"
+	},
+	"errors": null
 }

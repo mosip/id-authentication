@@ -1,11 +1,11 @@
 {
-    "errors": [
-        {
-            "errorCode": "RPR-MVS-008",
-            "message": "Invalid Input Parameter - version"
-        }
-    ],
-    "id": "mosip.manual.verification.assignment",
-    "version": "1.0",
-    "responsetime": "2019-05-18T07:48:28.802Z"
+	"errors": [
+		{
+			"errorCode": "RPR-MVS-008",
+			"message": "Invalid Input Parameter - version"
+		}
+	],
+	"id": "mosip.manual.verification.assignment",
+	"version": "1.0",
+	"responsetime": "2019-05-18T07:48:28.802Z"
 }

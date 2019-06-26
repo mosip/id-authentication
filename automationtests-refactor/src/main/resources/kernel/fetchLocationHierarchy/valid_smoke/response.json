@@ -1,65 +1,65 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-04-17T13:22:03.692Z",
-  "metadata": null,
-  "response": {
-    "locations": [
-      {
-        "code": "10000",
-        "name": "10000",
-        "hierarchyLevel": 0,
-        "hierarchyName": "Postal Code",
-        "parentLocCode": "QRHS",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "QRHS",
-        "name": "Quartier Hassan",
-        "hierarchyLevel": 0,
-        "hierarchyName": "Local Administrative Authority",
-        "parentLocCode": "RAB",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "RAB",
-        "name": "Rabat",
-        "hierarchyLevel": 0,
-        "hierarchyName": "City",
-        "parentLocCode": "RBT",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "RBT",
-        "name": "Rabat",
-        "hierarchyLevel": 0,
-        "hierarchyName": "Province",
-        "parentLocCode": "RSK",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "RSK",
-        "name": "Rabat Sale Kenitra",
-        "hierarchyLevel": 0,
-        "hierarchyName": "Region",
-        "parentLocCode": "MOR",
-        "langCode": "eng",
-        "isActive": true
-      },
-      {
-        "code": "MOR",
-        "name": "Morocco",
-        "hierarchyLevel": 0,
-        "hierarchyName": "Country",
-        "parentLocCode": null,
-        "langCode": "eng",
-        "isActive": true
-      }
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-04-17T13:22:03.692Z",
+	"metadata": null,
+	"response": {
+		"locations": [
+			{
+				"code": "10000",
+				"name": "10000",
+				"hierarchyLevel": 0,
+				"hierarchyName": "Postal Code",
+				"parentLocCode": "QRHS",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "QRHS",
+				"name": "Quartier Hassan",
+				"hierarchyLevel": 0,
+				"hierarchyName": "Local Administrative Authority",
+				"parentLocCode": "RAB",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "RAB",
+				"name": "Rabat",
+				"hierarchyLevel": 0,
+				"hierarchyName": "City",
+				"parentLocCode": "RBT",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "RBT",
+				"name": "Rabat",
+				"hierarchyLevel": 0,
+				"hierarchyName": "Province",
+				"parentLocCode": "RSK",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "RSK",
+				"name": "Rabat Sale Kenitra",
+				"hierarchyLevel": 0,
+				"hierarchyName": "Region",
+				"parentLocCode": "MOR",
+				"langCode": "eng",
+				"isActive": true
+			},
+			{
+				"code": "MOR",
+				"name": "Morocco",
+				"hierarchyLevel": 0,
+				"hierarchyName": "Country",
+				"parentLocCode": null,
+				"langCode": "eng",
+				"isActive": true
+			}
+		]
+	},
+	"errors": null
 }

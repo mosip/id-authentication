@@ -1,23 +1,23 @@
 {
-  "id": null,
-  "version": null,
-  "responsetime": "2019-06-17T06:43:38.751Z",
-  "metadata": null,
-  "response": {
-    "deviceHistoryDetails": [
-      {
-        "id": "3000021",
-        "name": "Dummy Finger Print Scanner 1",
-        "serialNum": "SZ5912878988",
-        "ipAddress": null,
-        "macAddress": "85-BB-97-4B-14-05",
-        "deviceSpecId": "165",
-        "langCode": "eng",
-        "isActive": true,
-        "effectDateTime": "2019-06-14T12:41:13.097Z",
-        "validityDateTime": null
-      }
-    ]
-  },
-  "errors": null
+	"id": null,
+	"version": null,
+	"responsetime": "2019-06-17T06:43:38.751Z",
+	"metadata": null,
+	"response": {
+		"deviceHistoryDetails": [
+			{
+				"id": "3000021",
+				"name": "Dummy Finger Print Scanner 1",
+				"serialNum": "SZ5912878988",
+				"ipAddress": null,
+				"macAddress": "85-BB-97-4B-14-05",
+				"deviceSpecId": "165",
+				"langCode": "eng",
+				"isActive": true,
+				"effectDateTime": "2019-06-14T12:41:13.097Z",
+				"validityDateTime": null
+			}
+		]
+	},
+	"errors": null
 }

@@ -1,11 +1,11 @@
 {
-    "response": [
-        {
-            "registrationId": "10002100320001320190614090820",
-            "statusCode": "REREGISTER"
-        }
-    ],
-    "id": "mosip.registration.status",
-    "version": "1.0",
-    "responsetime": "2019-06-14T09:36:03.129Z"
+	"response": [
+		{
+			"registrationId": "10002100320001320190614090820",
+			"statusCode": "REREGISTER"
+		}
+	],
+	"id": "mosip.registration.status",
+	"version": "1.0",
+	"responsetime": "2019-06-14T09:36:03.129Z"
 }

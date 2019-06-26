@@ -28,6 +28,8 @@ public class ExtractResource {
 	public static void extractResourceFromJar() {
 		getListOfFilesFromJarAndCopyToExternalResource("ida/");
 		getListOfFilesFromJarAndCopyToExternalResource("kernel/");
+		getListOfFilesFromJarAndCopyToExternalResource("regProc/");
+		getListOfFilesFromJarAndCopyToExternalResource("preReg/");
 		getListOfFilesFromJarAndCopyToExternalResource("config/");
 		getListOfFilesFromJarAndCopyToExternalResource("customize-emailable-report-template.html");
 		getListOfFilesFromJarAndCopyToExternalResource("testngapi.xml");

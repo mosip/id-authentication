@@ -1,13 +1,13 @@
 {
-  "id": "string",
-  "version": "string",
-  "responsetime": "2019-04-25T07:14:30.893Z",
-  "metadata": null,
-  "response": null,
-  "errors": [
-    {
-      "errorCode": "KER-NOS-002",
-      "message": "Contact number cannot contains alphabet,special character or less than or more than 10 digits"
-    }
-  ]
+	"id": "string",
+	"version": "string",
+	"responsetime": "2019-04-25T07:14:30.893Z",
+	"metadata": null,
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "KER-NOS-002",
+			"message": "Contact number cannot contains alphabet,special character or less than or more than 10 digits"
+		}
+	]
 }

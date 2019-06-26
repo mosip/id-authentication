@@ -1,0 +1,12 @@
+{
+	"id": "mosip.pre-registration.document.copy",
+	"version": "1.0",
+	"responsetime": "2019-05-22T07:12:26.261Z",
+	"response": null,
+	"errors": [
+		{
+			"errorCode": "PRG_PAM_APP_005",
+			"message": "No data found for the requested pre-registration id"
+		}
+	]
+}

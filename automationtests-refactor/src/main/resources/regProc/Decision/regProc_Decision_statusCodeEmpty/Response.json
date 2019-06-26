@@ -1,11 +1,11 @@
 {
-    "errors": [
-        {
-            "errorCode": "RPR-MVS-003",
-            "message": "Invalid status update"
-        }
-    ],
-    "id": "mosip.manual.verification.decision",
-    "version": "1.0",
-    "responsetime": "2019-05-18T10:18:42.202Z"
+	"errors": [
+		{
+			"errorCode": "RPR-MVS-003",
+			"message": "Invalid status update"
+		}
+	],
+	"id": "mosip.manual.verification.decision",
+	"version": "1.0",
+	"responsetime": "2019-05-18T10:18:42.202Z"
 }

@@ -1,6 +1,8 @@
 {
-  "response": {},
-  "id": "mosip.registration.packetgenerator",
-  "version": "1.0",
-  "responsetime": "2019-04-19T09:54:48.851Z"
+	"response": {
+		
+	},
+	"id": "mosip.registration.packetgenerator",
+	"version": "1.0",
+	"responsetime": "2019-04-19T09:54:48.851Z"
 }

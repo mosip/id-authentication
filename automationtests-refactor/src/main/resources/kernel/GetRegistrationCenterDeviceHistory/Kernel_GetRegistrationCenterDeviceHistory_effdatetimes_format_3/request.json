@@ -1,5 +1,5 @@
 {
-  "regcenterid":"10001",
-  "deviceid":"string",
-  "effdatetimes":"2019-02-12T10:20:00.000"
+	"regcenterid": "10001",
+	"deviceid": "string",
+	"effdatetimes": "2019-02-12T10:20:00.000"
 }
