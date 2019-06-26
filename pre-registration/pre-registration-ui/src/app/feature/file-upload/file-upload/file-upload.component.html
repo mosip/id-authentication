@@ -73,20 +73,20 @@
     <div class="file-upload__body__2" *ngIf="this.users[0].files && fileIndex >= 0">
       <p>{{ fileName }}</p>
       <iframe
-        *ngIf="fileExtension == 'pdf'"
+        *ngIf="fileExtension == 'pdf' || fileExtension == 'PDF'"
         class="file-uplaoad__body__2__preview"
         [attr.src]="fileUrl"
         type="application/pdf;Base64,"
       ></iframe>
 
       <img
-        *ngIf="fileExtension == 'jpg' || fileExtension == 'jpeg'"
+        *ngIf="fileExtension == 'jpg' || fileExtension == 'jpeg' || fileExtension == 'JPG' || fileExtension == 'JPEG'"
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/jpeg;Base64,"
       />
       <img
-        *ngIf="fileExtension == 'png'"
+        *ngIf="fileExtension == 'png' || fileExtension == 'PNG' "
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/png;Base64,"
