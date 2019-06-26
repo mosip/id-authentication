@@ -47,9 +47,6 @@ public class TemplateGenerator {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(TemplateGenerator.class);
 
-	/** The Constant TEMPLATES. */
-	private static final String TEMPLATES = "templates";
-
 	/** The resource loader. */
 	private String resourceLoader = "classpath";
 
@@ -92,10 +89,9 @@ public class TemplateGenerator {
 
 		try {
 			List<String> pathSegments = new ArrayList<>();
-			pathSegments.add(TEMPLATES);
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
-			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MASTER, pathSegments, "","", ResponseWrapper.class);
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "","", ResponseWrapper.class);
 			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
 			InputStream fileTextStream = null;
 			if (template != null) {
