@@ -1,6 +1,6 @@
 node {
 
- def branch = 'qa_jarapproach'
+ def branch = env.NEXT_BRANCH_NAME
  def projectToBuild = 'automationtests-refactor'
  stage('------- Checkout --------') {
   // Checkout only automation tests Module
