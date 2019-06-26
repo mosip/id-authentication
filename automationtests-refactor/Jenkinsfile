@@ -36,7 +36,7 @@ stage ('---------- mvn-clean-test ---------------') {
    allowMissing: false, 
    alwaysLinkToLastBuild: false, 
    keepAll: true, 
-   reportDir: branch+"/"+projectToBuild+"/target/testng-report", 
+   reportDir: branch+"/"+projectToBuild+"/testng-report", 
    reportFiles: 'MOSIP_ModuleLevelAutoRun_TestNGReport.html', 
    reportName: 'HTML Report'
 ])
