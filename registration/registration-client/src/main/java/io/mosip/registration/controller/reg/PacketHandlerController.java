@@ -243,7 +243,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 			return;
 		}
-		if (isKeyValid()) {
+		ResponseDTO keyResponse = isKeyValid();
+		if (null != keyResponse.getSuccessResponseDTO()) {
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
 			try {
 				auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
@@ -310,7 +311,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 				return;
 			}
-			if (isKeyValid()) {
+			ResponseDTO keyResponse = isKeyValid();
+			if (null != keyResponse.getSuccessResponseDTO()) {
 				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 						"Creating of Registration for lost UIN Starting.");
 				try {
@@ -492,7 +494,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 			return;
 		}
-		if (isKeyValid()) {
+		ResponseDTO keyResponse = isKeyValid();
+		if (null != keyResponse.getSuccessResponseDTO()) {
 
 			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
 			try {
@@ -757,8 +760,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException
-	 *             the reg base checked exception
+	 * @throws RegBaseCheckedException the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");
@@ -777,9 +779,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet ended");
 	}
 
-	private boolean isKeyValid() {
+	private ResponseDTO isKeyValid() {
 
-		return policySyncService.checkKeyValidation().getSuccessResponseDTO() != null;
+		return policySyncService.checkKeyValidation();
 
 	}
 
