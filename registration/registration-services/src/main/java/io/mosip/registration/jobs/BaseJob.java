@@ -2,10 +2,8 @@ package io.mosip.registration.jobs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -18,9 +16,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -153,7 +149,6 @@ public abstract class BaseJob extends QuartzJobBean {
 	 *            - the trigger point which indicates whether manual or batch jobs
 	 * @param syncJobId
 	 *            - the sync job ID
-	 * @return the {@link ResponseDTO} after updating the sync transaction
 	 */
 	public synchronized void syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint, String syncJobId) {
 
