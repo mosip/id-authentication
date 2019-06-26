@@ -185,6 +185,7 @@ public class SoftwareInstallationHandler {
 			executorService.shutdown();
 			executorService.awaitTermination(500, TimeUnit.SECONDS);
 		} catch (Exception exception) {
+			executorService.shutdown();
 			exception.printStackTrace();
 		}
 		Long t2 = System.currentTimeMillis() - t1;
