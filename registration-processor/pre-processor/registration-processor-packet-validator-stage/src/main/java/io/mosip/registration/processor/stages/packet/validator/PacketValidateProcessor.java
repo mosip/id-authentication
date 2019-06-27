@@ -669,7 +669,7 @@ public class PacketValidateProcessor {
 					description.setMessage(PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage()
 							+ " null response from rest client ");
 				} else {
-					packetValidationDto.setTransactionSuccessful(false);
+					packetValidationDto.setTransactionSuccessful(true);
 					regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							PlatformErrorMessages.REVERSE_DATA_SYNC_SUCCESS.getMessage(), "");
 				}
