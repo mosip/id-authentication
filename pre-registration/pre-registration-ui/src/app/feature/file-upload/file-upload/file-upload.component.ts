@@ -534,7 +534,6 @@ export class FileUploadComponent implements OnInit {
         this.fileIndex = i;
         this.fileExtension = fileMeta.docName.substring(fileMeta.docName.indexOf('.') + 1);
         this.fileExtension = this.fileExtension.toLowerCase();
-        console.log(this.fileExtension);
         if (this.fileByteArray) {
           switch (this.fileExtension) {
             case 'pdf':
@@ -583,9 +582,7 @@ export class FileUploadComponent implements OnInit {
   handleFileInput(event) {
     const extensionRegex = new RegExp('(?:pdf|jpg|png|jpeg)');
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
-    console.log(this.fileExtension);
     this.fileExtension = this.fileExtension.toLowerCase();
-    console.log(this.fileExtension);
     let allowedFileUploaded: Boolean = false;
     this.disableNavigation = true;
 
