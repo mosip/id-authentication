@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.12.13</version>
+		<version>0.12.14</version>
 	</parent>
 
 	<artifactId>registration-processor-rest-client</artifactId>
