@@ -226,5 +226,6 @@ Re-RegistrationServiceImpl.java  
 
 **DTO**: RegistrationApprovalDTO.java
 
-![Sequence and Class Diagram: for pending approval / action and
-Re-Registration case] (_images/reg_eod_process_class_seq_diagram.png)
+**Sequence and Class Diagram**
+
+![EOD Process ](_images/reg_eod_process_class_seq_diagram.png)
