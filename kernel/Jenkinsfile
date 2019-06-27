@@ -16,7 +16,7 @@ node {
  updatedDockerImages = []
  containersToRun = ''
  containersNames = ''
- k8DevContext = 'mosip-dev-cluster'
+ k8DevContext = 'MOSIP-Admin-Kubernetes'
  def config_url='http://104.211.212.28:51000'
  def key_manager_vm_ip='13.71.86.138'
 
