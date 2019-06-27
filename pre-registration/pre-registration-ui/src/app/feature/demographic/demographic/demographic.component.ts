@@ -181,9 +181,8 @@ export class DemographicComponent implements OnInit {
     private dialog: MatDialog,
     private matKeyboardService: MatKeyboardService,
     private routerService: RouterExtService,
-    private loggerService: LogService
-  ) // private errorService: ErrorService
-  {
+    private loggerService: LogService // private errorService: ErrorService
+  ) {
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
   }
@@ -201,11 +200,6 @@ export class DemographicComponent implements OnInit {
     await this.getConsentMessage();
     this.initForm();
 
-    // don't delete it ///////////////////////
-    // this.dataStorageService.getSecondaryLanguageLabels(this.secondaryLang).subscribe(response => {
-    //   this.secondaryLanguagelabels = response['demographic'];
-    // });
-    /////////////////////////////////////////////////////////
     let factory = new LanguageFactory(this.secondaryLang);
     let response = factory.getCurrentlanguage();
     this.secondaryLanguagelabels = response['demographic'];
@@ -246,13 +240,6 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   private getPrimaryLabels() {
-    // return new Promise(resolve => {
-    //   this.dataStorageService.getSecondaryLanguageLabels(this.primaryLang).subscribe(response => {
-    //     this.demographiclabels = response['demographic'];
-    //     this.errorlabels = response['error'];
-    //     resolve(true);
-    //   });
-    // });
     let factory = new LanguageFactory(this.primaryLang);
     let response = factory.getCurrentlanguage();
     this.demographiclabels = response['demographic'];
