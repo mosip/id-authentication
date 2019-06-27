@@ -581,6 +581,7 @@
     "dateOfBirth": "Date de naissance entrée est invalide",
     "CNIENumber": "Le numéro CNIE entré est invalide",
     "tokenExpiredLogout": "Vous avez été déconnecté pour cause d'inactivité.",
+    "slotNotAvailable": "La réservation / re-réservation de rendez-vous ne peut être effectuée car le créneau demandé n'est pas disponible. Veuillez sélectionner un autre emplacement ou réessayer plus tard",
     "errorLabel": "ERREUR"
   },
   "residentTypesMapping": {

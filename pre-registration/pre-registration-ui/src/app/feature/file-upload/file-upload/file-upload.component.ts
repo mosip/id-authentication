@@ -526,7 +526,7 @@ export class FileUploadComponent implements OnInit {
         this.fileDocCatCode = fileMeta.docCatCode;
         let i = 0;
         for (let x of this.users[0].files.documentsMetaData) {
-          if (this.fileName === x.docName) {
+          if (this.fileName === x.docName && this.fileDocCatCode === x.docCatCode) {
             break;
           }
           i++;

@@ -577,6 +577,7 @@
     "dateOfBirth": "Entered date of birth is invalid",
     "CNIENumber": "Entered CNIE Number is invalid",
     "tokenExpiredLogout": "You have been LoggedOut due to inactivity.",
+    "slotNotAvailable": "Appointment booking/re-booking cannot be done as the requested slot is not available. Please select another slot or try again later",
     "errorLabel": "ERROR"
   },
   "residentTypesMapping": {
