@@ -1,8 +1,0 @@
-[
-	{
-		"jiraId": "MOS-1002",
-		"testType": "smoke",
-		"testCaseName": "SynMasterData_smoke",
-		"status": "Pass"
-	}
-]

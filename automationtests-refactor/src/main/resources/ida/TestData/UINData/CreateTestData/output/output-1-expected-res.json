@@ -1,9 +1,0 @@
-{
-	"id": "mosip.id.create",
-	"version": "$IGNORE$",
-	"responsetime": "2019-02-05T10:06:11.525Z",
-	"response": {
-		"status": "ACTIVATED",
-		"entity": "https://int.mosip.io/idrepository/v1/identity/uin/4105968507"
-	}
-}

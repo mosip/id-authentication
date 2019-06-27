@@ -1,9 +1,0 @@
-{
-	"id": "mosip.pre-registration.document.delete",
-	"version": "1.0",
-	"responsetime": "2019-05-25T10:47:29.103Z",
-	"response": {
-		"message": "All documents assosiated with requested pre-registration id deleted sucessfully"
-	},
-	"errors": null
-}
