@@ -31,6 +31,17 @@ MOS-25680|New|UI Enhancement - Padding & Alignment Fixes of current implemented 
 2. Please make sure all required kernel service and external depency setup is done.
 https://github.com/mosip/mosip/wiki/Kernel-Dependencies
 
+3. Kernel KeyManager Auto Deployment (Non K8 cluster) - https://github.com/mosip/mosip/wiki/Getting-Started#67-steps-to-install-kernel-key-manager-service
+
+4. HDFS security configuration - https://github.com/mosip/mosip/wiki/Steps-to-Install-and-configuration-HDFS
+
+If security is not configured keep authentication-enabled false in application properties.
+mosip.kernel.fsadapter.hdfs.authentication-enabled=false
+
+Make user in all module specific properties hdfs.user-name is configured as per your hdfs cluster users. 
+For ex. pre-registration-qa.properties mosip.kernel.fsadapter.hdfs.user-name=prereg  NOT   prereg-qa 
+Same for registration-processor-qa.properties and id-repository-qa.properties
+
 
 #### 1.5 Deployment
 
@@ -145,3 +156,16 @@ MOS-25556|Closed|Yes
 MOS-25549|Closed|Yes
 MOS-25546|Closed|Yes
 MOS-25535|Closed|Yes
+
+### 1.8 Known Defects list : Fixed and will be available in code drop 12.14
+Defect JIRA ID|Status
+---------------|-------------
+MOS-26396|Fixed
+MOS-26383|Fixed
+MOS-26382|Fixed
+MOS-26381|Fixed
+MOS-26372|Fixed
+MOS-26371|Fixed
+MOS-26260|Fixed
+MOS-26259|Fixed
+MOS-26081|Fixed
