@@ -24,14 +24,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 /**
  * Generating dynamic query for masterdata based on the search filters.
@@ -41,16 +43,9 @@ import io.mosip.kernel.masterdata.entity.BaseEntity;
  */
 @Repository
 public class MasterdataSearchHelper {
-
-	private static final String NULLENTITY_MSG = "entity must not be empty";
-	private static final String INVALID_COLUMN = "Invalid column : %s";
-	private static final String LANGCODE_COLUMN_NAME = "langCode";
-	private static final String HELPER_ERROR_CODE = "KER-MSD-XXX";
-	private static final String INVALID_PAGINATION_VALUE = "invalid pagination page:%d and size:%d";
-	private static final String FILTER_TYPE_NOT_AVAILABLE = "Filter type is missing";
-	private static final String MISSING_FILTER_COLUMN = "Filter column is missing";
-	private static final String INVALID_BETWEEN_VALUES = "Invalid fromValue or toValue values";
-
+	private final static String LANGCODE_COLUMN_NAME = "langCode";
+	private final static String ENTITY_IS_NULL = "enitity is null";
+	private final static String NO_SPECIAL_CHAR_REGEX = "[^\\w\\s]";
 	/**
 	 * Instance of {@link EntityManager}
 	 */
@@ -68,7 +63,7 @@ public class MasterdataSearchHelper {
 	 */
 	@Transactional(readOnly = true)
 	public <T extends BaseEntity> Page<T> searchMasterdata(Class<T> entity, SearchDto searchDto) {
-		Objects.requireNonNull(entity, NULLENTITY_MSG);
+		Objects.requireNonNull(entity, ENTITY_IS_NULL);
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<T> selectQuery = criteriaBuilder.createQuery(entity);
 		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
@@ -88,6 +83,13 @@ public class MasterdataSearchHelper {
 		TypedQuery<T> executableQuery = entityManager.createQuery(selectQuery);
 		// creating executable query from count criteria query
 		TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
+
+		String query1 = entityManager.createQuery(selectQuery).unwrap(org.hibernate.query.Query.class).getQueryString();
+		String query2 = entityManager.createQuery(countQuery).unwrap(org.hibernate.query.Query.class).getQueryString();
+
+		System.out.println("select query :" + query1);
+		System.out.println("count query :" + query2);
+
 		// getting the rows count
 		Long rows = countExecutableQuery.getSingleResult();
 		// adding pagination
@@ -119,7 +121,7 @@ public class MasterdataSearchHelper {
 			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, String langCode) {
 		List<Predicate> predicates = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
-			predicates = filters.parallelStream().filter(this::validateFilters).map(i -> buildFilters(builder, root, i))
+			predicates = filters.stream().filter(this::validateFilters).map(i -> buildFilters(builder, root, i))
 					.filter(Objects::nonNull).collect(Collectors.toList());
 		}
 		Predicate langCodePredicate = setLangCode(builder, root, langCode);
@@ -147,29 +149,27 @@ public class MasterdataSearchHelper {
 	private <T> Predicate buildFilters(CriteriaBuilder builder, Root<T> root, SearchFilter filter) {
 		String columnName = filter.getColumnName();
 		String value = filter.getValue();
-		String filterType = filter.getValue();
-		if ("IN".equalsIgnoreCase(filterType)) {
-			String replacedValue = value.replaceAll("[^\\w\\s]", "").toLowerCase();
+		String filterType = filter.getType();
+		if (FilterTypeEnum.CONTAINS.name().equalsIgnoreCase(filterType)) {
+			String replacedValue = value.replaceAll(NO_SPECIAL_CHAR_REGEX, "").toLowerCase();
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
 			if (value.startsWith("*") && value.endsWith("*")) {
 				return builder.like(lowerCase, "%" + replacedValue + "%");
 			} else if (value.startsWith("*")) {
 				return builder.like(lowerCase, "%" + replacedValue);
-			} else if (value.endsWith("*")) {
-				return builder.like(lowerCase, replacedValue + "%");
 			} else {
 				return builder.like(lowerCase, "%" + replacedValue + "%");
 			}
 		}
-		if ("EQUALS".equalsIgnoreCase(filterType)) {
+		if (FilterTypeEnum.EQUALS.name().equalsIgnoreCase(filterType)) {
 			return buildPredicate(builder, root, columnName, value);
 		}
-		if ("STARTSWITH".equalsIgnoreCase(filterType)) {
-			String replacedValue = value.replaceAll("[^\\w\\s]", "").toLowerCase();
+		if (FilterTypeEnum.STARTSWITH.name().equalsIgnoreCase(filterType)) {
+			String replacedValue = value.replaceAll(NO_SPECIAL_CHAR_REGEX, "").toLowerCase();
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
 			return builder.like(lowerCase, replacedValue + "%");
 		}
-		if ("BETWEEN".equalsIgnoreCase(filterType)) {
+		if (FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filterType)) {
 			return setBetweenValue(builder, root, filter);
 		}
 		return null;
@@ -210,12 +210,16 @@ public class MasterdataSearchHelper {
 	 *            contains the pagination details
 	 */
 	public void paginationQuery(Query query, Pagination page) {
-		if (page.getPageStart() < 0 && page.getPageFetch() < 1) {
-			throw new DataAccessLayerException(HELPER_ERROR_CODE,
-					String.format(INVALID_PAGINATION_VALUE, page.getPageStart(), page.getPageFetch()), null);
+		if (page != null) {
+			if (page.getPageStart() < 0 && page.getPageFetch() < 1) {
+				throw new RequestException(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorCode(),
+						String.format(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorMessage(),
+								page.getPageStart(), page.getPageFetch()),
+						null);
+			}
+			query.setFirstResult(page.getPageStart());
+			query.setMaxResults(page.getPageFetch());
 		}
-		query.setFirstResult(page.getPageStart());
-		query.setMaxResults(page.getPageFetch());
 	}
 
 	/**
@@ -279,7 +283,8 @@ public class MasterdataSearchHelper {
 				return builder.between(root.get(columnName), fromValue, toValue);
 			}
 		} else {
-			throw new DataAccessLayerException(HELPER_ERROR_CODE, String.format(INVALID_COLUMN, filter.getColumnName()),
+			throw new RequestException(MasterdataSearchErrorCode.INVALID_COLUMN.getErrorCode(),
+					String.format(MasterdataSearchErrorCode.INVALID_COLUMN.getErrorMessage(), filter.getColumnName()),
 					null);
 		}
 		return null;
@@ -360,7 +365,7 @@ public class MasterdataSearchHelper {
 		if (filter != null) {
 			if (filter.getColumnName() != null && !filter.getColumnName().isEmpty()) {
 				if (filter.getType() != null && !filter.getType().isEmpty()) {
-					if (!"between".equalsIgnoreCase(filter.getType())) {
+					if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
 						String value = filter.getValue();
 						if (value != null && !value.isEmpty()) {
 							return true;
@@ -371,16 +376,19 @@ public class MasterdataSearchHelper {
 						if (fromValue != null && !fromValue.isEmpty() && toValue != null && !toValue.isEmpty()) {
 							return true;
 						} else {
-							throw new DataAccessLayerException(HELPER_ERROR_CODE,
-									String.format(INVALID_BETWEEN_VALUES, filter.getColumnName()), null);
+							throw new RequestException(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorCode(),
+									String.format(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorMessage(),
+											filter.getColumnName()));
 						}
 					}
 				} else {
-					throw new DataAccessLayerException(HELPER_ERROR_CODE,
-							String.format(FILTER_TYPE_NOT_AVAILABLE, filter.getColumnName()), null);
+					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
+							String.format(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorMessage(),
+									filter.getColumnName()));
 				}
 			} else {
-				throw new DataAccessLayerException(HELPER_ERROR_CODE, MISSING_FILTER_COLUMN, null);
+				throw new RequestException(MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorCode(),
+						MasterdataSearchErrorCode.MISSING_FILTER_COLUMN.getErrorMessage());
 			}
 		}
 		return true;
@@ -400,7 +408,8 @@ public class MasterdataSearchHelper {
 			if (field != null && !field.isEmpty() && type != null && !type.isEmpty()) {
 				return true;
 			} else {
-				throw new DataAccessLayerException(HELPER_ERROR_CODE, MISSING_FILTER_COLUMN, null);
+				throw new RequestException(MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorCode(),
+						MasterdataSearchErrorCode.INVALID_SORT_INPUT.getErrorMessage());
 			}
 		}
 		return false;
