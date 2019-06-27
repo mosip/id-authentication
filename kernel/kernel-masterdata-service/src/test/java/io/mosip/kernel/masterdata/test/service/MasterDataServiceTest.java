@@ -645,11 +645,13 @@ public class MasterDataServiceTest {
 
 	List<RegistrationCenterReqAdmDto> requestSetLang = null;
 	List<RegistrationCenterReqAdmDto> requestSetID = null;
+	List<RegistrationCenterReqAdmDto> requestListIdLang = null;
 	List<RegistrationCenterReqAdmDto> requestSetLongitudeInvalide = null;
 	RegistrationCenterReqAdmDto registrationCenterDto1  = null; 
 	RegistrationCenterReqAdmDto registrationCenterDto2  = null; 
 	RegistrationCenterReqAdmDto registrationCenterDto3  = null; 
 	RegistrationCenterReqAdmDto registrationCenterDto4  = null; 
+	RegistrationCenterReqAdmDto registrationCenterDto5 = null;
 	
 	
 	private void registrationCenterSetup() {
@@ -669,6 +671,7 @@ public class MasterDataServiceTest {
 		
 		requestSetLang = new ArrayList<>();
 		requestSetID = new ArrayList<>();
+		requestListIdLang = new ArrayList<>();
 		requestSetLongitudeInvalide = new ArrayList<>();
 		
 		// 1st obj
@@ -695,6 +698,7 @@ public class MasterDataServiceTest {
 		registrationCenterDto1.setWorkingHours("9");
 		requestSetLang.add(registrationCenterDto1);
 		requestSetID.add(registrationCenterDto1);
+		requestListIdLang.add(registrationCenterDto1);
 		
 		// 2nd obj
 		registrationCenterDto2 = new RegistrationCenterReqAdmDto();
@@ -720,6 +724,7 @@ public class MasterDataServiceTest {
 		registrationCenterDto2.setWorkingHours("9");
 		requestSetLang.add(registrationCenterDto2);
 		requestSetID.add(registrationCenterDto2);
+		requestListIdLang.add(registrationCenterDto2);
 
 		// 3rd obj
 		registrationCenterDto3 = new RegistrationCenterReqAdmDto();
@@ -767,6 +772,31 @@ public class MasterDataServiceTest {
 		registrationCenterDto4.setTimeZone("UTC");
 		registrationCenterDto4.setWorkingHours("9");
 		requestSetLongitudeInvalide.add(registrationCenterDto4);
+		
+		registrationCenterDto5 = new RegistrationCenterReqAdmDto();
+		registrationCenterDto5.setName("TEST CENTER");
+		registrationCenterDto5.setAddressLine1("Address Line 1");
+		registrationCenterDto5.setAddressLine2("Address Line 2");
+		registrationCenterDto5.setAddressLine3("Address Line 3");
+		registrationCenterDto5.setCenterTypeCode("REG");
+		registrationCenterDto5.setContactPerson("Test");
+		registrationCenterDto5.setContactPhone("9999999999");
+		registrationCenterDto5.setHolidayLocationCode("HLC01");
+		registrationCenterDto5.setId("676");
+		registrationCenterDto5.setLangCode("fra");
+		registrationCenterDto5.setLatitude("12.9646818");
+		registrationCenterDto5.setLocationCode("10190");
+		registrationCenterDto5.setLongitude("77.70168");
+		registrationCenterDto5.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto5.setCenterStartTime(centerStartTime);
+		registrationCenterDto5.setCenterEndTime(centerEndTime);
+		registrationCenterDto5.setLunchStartTime(lunchStartTime);
+		registrationCenterDto5.setLunchEndTime(lunchEndTime);
+		registrationCenterDto5.setTimeZone("UTC");
+		registrationCenterDto5.setWorkingHours("9");
+		requestListIdLang.add(registrationCenterDto5);
+		requestListIdLang.add(registrationCenterDto5);
+		
 	}
 
 	private void registrationCenterMachineDeviceHistorySetup() {
@@ -2001,6 +2031,11 @@ public class MasterDataServiceTest {
 	@Test(expected= RequestException.class)
 	public void invalideLongitudeRegCenterCreateExcpTest() {
 		registrationCenterService.createRegistrationCenterAdmin(requestSetLongitudeInvalide);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void duplicateIDLangCodeRegCenterCreateExcpTest() {
+		registrationCenterService.createRegistrationCenterAdmin(requestListIdLang);
 	}
 	
 	// ----------------------- update Registration center-----------------------
