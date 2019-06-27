@@ -643,9 +643,9 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
-	Set<RegistrationCenterReqAdmDto> requestSetLang = null;
-	Set<RegistrationCenterReqAdmDto> requestSetID = null;
-	Set<RegistrationCenterReqAdmDto> requestSetLongitudeInvalide = null;
+	List<RegistrationCenterReqAdmDto> requestSetLang = null;
+	List<RegistrationCenterReqAdmDto> requestSetID = null;
+	List<RegistrationCenterReqAdmDto> requestSetLongitudeInvalide = null;
 	RegistrationCenterReqAdmDto registrationCenterDto1  = null; 
 	RegistrationCenterReqAdmDto registrationCenterDto2  = null; 
 	RegistrationCenterReqAdmDto registrationCenterDto3  = null; 
@@ -667,9 +667,9 @@ public class MasterDataServiceTest {
 		LocalTime lunchEndTime = LocalTime.of(1, 10, 10, 30);
 		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
 		
-		requestSetLang = new HashSet<>();
-		requestSetID = new HashSet<>();
-		requestSetLongitudeInvalide = new HashSet<>();
+		requestSetLang = new ArrayList<>();
+		requestSetID = new ArrayList<>();
+		requestSetLongitudeInvalide = new ArrayList<>();
 		
 		// 1st obj
 	    registrationCenterDto1 = new RegistrationCenterReqAdmDto();
@@ -786,14 +786,16 @@ public class MasterDataServiceTest {
 	}
 	
 	
-	Set<RegistrationCenterPutReqAdmDto> updRequestSetLang = null;
-	Set<RegistrationCenterPutReqAdmDto> updRequestSetID = null;
-	Set<RegistrationCenterPutReqAdmDto> updRequestSetLongitudeInvalide = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestSetLang = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestListID = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestListIDLang = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestSetLongitudeInvalide = null;
 	
 	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto1 = null;
 	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto2 = null;
 	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto3 = null;
 	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto4 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto5 = null;
 	
 	private void updateRegistrationCenter() {
 		
@@ -812,9 +814,10 @@ public class MasterDataServiceTest {
 		LocalTime lunchEndTime = LocalTime.of(1, 10, 10, 30);
 		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
 		
-		updRequestSetLang = new HashSet<>();
-		updRequestSetID = new HashSet<>();
-		updRequestSetLongitudeInvalide = new HashSet<>();
+		updRequestSetLang = new ArrayList<>();
+		updRequestListID = new ArrayList<>();
+		updRequestListIDLang = new ArrayList<>();
+		updRequestSetLongitudeInvalide = new ArrayList<>();
 		
 		// 1st obj
 		registrationCenterPutReqAdmDto1 = new RegistrationCenterPutReqAdmDto();
@@ -840,7 +843,8 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto1.setWorkingHours("9");
 		registrationCenterPutReqAdmDto1.setIsActive(false);
 		updRequestSetLang.add(registrationCenterPutReqAdmDto1);
-		updRequestSetID.add(registrationCenterPutReqAdmDto1);
+		updRequestListID.add(registrationCenterPutReqAdmDto1);
+		updRequestListIDLang.add(registrationCenterPutReqAdmDto1);
 		
 		// 2nd obj
 		registrationCenterPutReqAdmDto2 = new RegistrationCenterPutReqAdmDto();
@@ -866,7 +870,8 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto2.setWorkingHours("9");
 		registrationCenterPutReqAdmDto2.setIsActive(false);
 		updRequestSetLang.add(registrationCenterPutReqAdmDto2);
-		updRequestSetID.add(registrationCenterPutReqAdmDto2);
+		updRequestListID.add(registrationCenterPutReqAdmDto2);
+		updRequestListIDLang.add(registrationCenterPutReqAdmDto2);
 
 		// 3rd obj
 		registrationCenterPutReqAdmDto3 = new RegistrationCenterPutReqAdmDto();
@@ -886,12 +891,13 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto3.setPerKioskProcessTime(perKioskProcessTime);
 		registrationCenterPutReqAdmDto3.setCenterStartTime(centerStartTime);
 		registrationCenterPutReqAdmDto3.setCenterEndTime(centerEndTime);
-		registrationCenterDto3.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto3.setLunchStartTime(lunchStartTime);
 		registrationCenterPutReqAdmDto3.setLunchEndTime(lunchEndTime);
 		registrationCenterPutReqAdmDto3.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto3.setWorkingHours("9");
 		registrationCenterPutReqAdmDto3.setIsActive(false);
-		updRequestSetID.add(registrationCenterPutReqAdmDto3);
+		updRequestListID.add(registrationCenterPutReqAdmDto3);
+		
 		
 		registrationCenterPutReqAdmDto4 = new RegistrationCenterPutReqAdmDto();
 		registrationCenterPutReqAdmDto4.setName("TEST CENTER");
@@ -916,6 +922,31 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto4.setWorkingHours("9");
 		registrationCenterPutReqAdmDto4.setIsActive(false);
 		updRequestSetLongitudeInvalide.add(registrationCenterPutReqAdmDto4);
+		
+		registrationCenterPutReqAdmDto5 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto5.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto5.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto5.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto5.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto5.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto5.setContactPerson("Test");
+		registrationCenterPutReqAdmDto5.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto5.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto5.setId("676");
+		registrationCenterPutReqAdmDto5.setLangCode("fra");
+		registrationCenterPutReqAdmDto5.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto5.setLocationCode("10190");
+		registrationCenterPutReqAdmDto5.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto5.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto5.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto5.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto5.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto5.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto5.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto5.setWorkingHours("9");
+		registrationCenterPutReqAdmDto5.setIsActive(false);
+		updRequestListIDLang.add(registrationCenterPutReqAdmDto5);
+		updRequestListIDLang.add(registrationCenterPutReqAdmDto5);
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------//
@@ -1980,12 +2011,17 @@ public class MasterDataServiceTest {
 	
 	@Test(expected= RequestException.class)
 	public void invalideIDRegCenterUpdateExcpTest() {
-		registrationCenterService.updateRegistrationCenterAdmin(updRequestSetID);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestListID);
 	}
 	
 	@Test(expected= RequestException.class)
 	public void invalideLongitudeRegCenterUpdateExcpTest() {
 		registrationCenterService.updateRegistrationCenterAdmin(updRequestSetLongitudeInvalide);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void duplicateIDLangCodeRegCenterUpdateExcpTest() {
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestListIDLang);
 	}
 
 }
