@@ -29,6 +29,7 @@ The admin should be able to manage the registration centers in the Admin applica
 	- The following URL is used to populate the filter dropdowns, 
 	"https://github.com/mosip/mosip/wiki/Registration-Center-APIs#post-filtervalues"
 	- In the above URL, the filters have to be passed as parameters for which you will get the values for the filter dropdown.
+	- Filter values are injected dynamically into the queries based on entity in runtime.
 	
 4. View:
 	- The following API is used with the id as filter,
