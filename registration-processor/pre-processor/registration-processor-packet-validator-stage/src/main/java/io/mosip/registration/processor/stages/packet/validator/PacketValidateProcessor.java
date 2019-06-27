@@ -165,7 +165,7 @@ public class PacketValidateProcessor {
 
 	private static final String VALIDATEMANDATORY = "registration-processor.validatemandotary";
 
-	private static final String PRE_REG_ID = "mosip.pre-registration.datasync";
+	private static final String PRE_REG_ID = "mosip.pre-registration.datasync.store";
 	private static final String VERSION = "1.0";
 	private static final String CREATED_BY = "MOSIP_SYSTEM";
 
@@ -641,8 +641,8 @@ public class PacketValidateProcessor {
 				if (preRegId != null && !preRegId.trim().isEmpty()) {
 					MainRequestDTO<ReverseDataSyncRequestDTO> mainRequestDto = new MainRequestDTO<>();
 					mainRequestDto.setId(PRE_REG_ID);
-					mainRequestDto.setVer(VERSION);
-					mainRequestDto.setReqTime(new Date());
+					mainRequestDto.setVersion(VERSION);
+					mainRequestDto.setRequesttime(new Date());
 					ReverseDataSyncRequestDTO reverseDataSyncRequestDto = new ReverseDataSyncRequestDTO();
 					reverseDataSyncRequestDto.setCreatedBy(CREATED_BY);
 					reverseDataSyncRequestDto.setLangCode("eng");
@@ -657,10 +657,10 @@ public class PacketValidateProcessor {
 					packetValidationDto.setTransactionSuccessful(true);
 
 				}
-				if (mainResponseDto != null && mainResponseDto.getErr() != null) {
+				if (mainResponseDto != null && mainResponseDto.getErrors() != null &&  mainResponseDto.getErrors().size() > 0) {
 					regProcLogger.error(LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 							PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage(),
-							mainResponseDto.getErr().toString());
+							mainResponseDto.getErrors().toString());
 					packetValidationDto.setTransactionSuccessful(false);
 					description.setMessage(PlatformErrorMessages.REVERSE_DATA_SYNC_FAILED.getMessage());
 
