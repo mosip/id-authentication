@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.status.dao;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -216,9 +217,9 @@ public class RegistrationStatusDao {
 		String alias = RegistrationStatusEntity.class.getName().toLowerCase().substring(0, 1);
 
 		String queryStr = SELECT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias + ".id = :rid " + AND
-				+ " " + alias + ".statusCode = :status_Code";
+				+ " " + alias + ".statusCode in (:status_Code)";
 		params.put("rid", rid);
-		params.put("status_Code", "PROCESSED");
+		params.put("status_Code", Arrays.asList("PROCESSED","PROCESSING"));
 		List<RegistrationStatusEntity> unprocessedPackets = registrationStatusRepositary.createQuerySelect(queryStr,
 				params);
 		if (!unprocessedPackets.isEmpty()) {
