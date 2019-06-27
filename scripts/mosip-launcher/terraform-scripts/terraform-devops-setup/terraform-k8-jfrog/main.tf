@@ -20,7 +20,7 @@ resource "random_id" "becrypt_password" {
 resource "helm_release" "mosipjfrog" {
     name      = "jfrog"
     chart     = "../../../helm-charts/jfrog"
-    
+    timeout   = "900"
 
     set {
         name = "artifactory.image.repository"

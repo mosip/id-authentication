@@ -23,6 +23,7 @@ variable "secrets_htpasswd_file" {
 resource "helm_release" "docker_registry" {
     name      = "docker-registry"
     chart     = "../../../helm-charts/docker-registry"
+	timeout   = "900"
 	
 	set {
         name = "secrets.htpasswd"

@@ -7,6 +7,7 @@ resource "random_uuid" "docker_registry_credentials_random_id" { }
 resource "helm_release" "mosipjenkins" {
   name  = "jenkins"
   chart = "../../../helm-charts/jenkins"
+  timeout   = "900"
 
   set_string {
     name  = "Master.JenkinsUrl"
