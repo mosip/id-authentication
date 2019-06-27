@@ -13,7 +13,8 @@ This document covers the design of 'Registration client' application initial set
    5. jre - Specific Java runtime environment (1.8.0_181) should be embedded.  
       - required rxtx jar and the respective dll should be loaded here.  
       - required certificate should be loaded here.  
-   6 run.jar - This should have the classes to intiate the download process from JFrog repo, decrypt the application binaries and launch the application.   
+   6 run.jar - This should have the classes to intiate the download process from JFrog repo, decrypt the application binaries and launch the application. 
+   7.run.bat - This will initialize the run.jar with embedded jre.
 
 **Build Process:**  
    During build process of 'registraion-lib' project the pom.xml file should be updated with inclusion 'io.mosip.registration.cipher.ClientJarEncryption' file to prepare the Initial Setup Zip file.  
@@ -22,8 +23,8 @@ This document covers the design of 'Registration client' application initial set
    A class should be created with the name of 'ClientJarDecryption' and that will have the following process:
    1. Connect to TPM device and fetch public key. 
    2. Use the TPM public key to encrypt the application and db key.  
-   3. Connect to JFrog repository and download the 'maven-metadata.xml' file and read the latest version.
-   4. Using latest version, download the relevant 'MANIFEST.MF' file and capture the jar names provided in the file.  
+   3. Connect to JFrog repository and download 'MANIFEST.MF' file with version which was in mosip-application.properties file,
+    and capture the jar names provided in the file.
    5. Initiate the supportive jar download process from the JFrog repository based on the 'MANIFEST.MF' file.  
    6. Then decrypt the 'mosip-client.jar' and 'mosip-services.jar' file using the key available in property file.  
    7. Set the 'classpath' and run the application 'mosip-client.jar' jar. 
