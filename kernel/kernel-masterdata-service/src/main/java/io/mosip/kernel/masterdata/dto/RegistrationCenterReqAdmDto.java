@@ -23,9 +23,9 @@ import lombok.Data;
 @Data
 public class RegistrationCenterReqAdmDto {
 	
-	@NotBlank
+	/*@NotBlank
 	@Size(min = 1, max = 10)
-	private String id;
+	private String id;*/
 
 	@NotBlank
 	@Size(min = 1, max = 128)

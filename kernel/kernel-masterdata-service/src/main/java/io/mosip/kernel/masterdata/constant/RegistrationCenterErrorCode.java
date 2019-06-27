@@ -16,14 +16,12 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_UPDATE_EXCEPTION("KER-MSD-111", "Error occurred while updating Registration Center details"),
 	REGISTRATION_CENTER_DELETE_EXCEPTION("KER-MSD-112", "Error occurred while deleting Registration Center details"),
 	REGISTRATION_CENTER_NOT_FOUND("KER-MSD-042", "Registration Center not found"),
-	REGISTRATION_CENTER_REQUEST_EXCEPTION("KER-MSD-YYY", "Bad Request Found"),
-	REGISTRATION_CENTER_LANGUAGE_EXCEPTION("KER-MSD-ZZZ", "Please make sure that entered Data is persent in all Languges supportted by MOSIP"),
+	REGISTRATION_CENTER_REQUEST_EXCEPTION("KER-MSD-YYY", "Please make sure that entered Latitude or Longitude is in floating Point format"),
+	REGISTRATION_CENTER_LANGUAGE_EXCEPTION("KER-MSD-ZZZ", "Please make sure that entered data is present in all Languages supported by MOSIP"),
 	REGISTRATION_CENTER_ID_EXCEPTION("KER-MSD-NNN", "Please make sure that enter All IDs must be same"),
-	REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION("KER-MSD-NNN", "ID and LangCode Combination is duplicate"),
+	REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION("KER-MSD-NNN", "Please make sure that enter ID and LangCode pair is NOT duplicate"),
 	DEPENDENCY_EXCEPTION("KER-MSD-149", "Cannot delete as dependency found"),
-
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
-
 	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database");
 
 	private final String errorCode;

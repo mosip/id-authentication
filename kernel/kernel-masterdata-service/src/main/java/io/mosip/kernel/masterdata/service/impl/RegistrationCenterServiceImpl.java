@@ -24,8 +24,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
@@ -109,6 +109,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+
+	@Autowired
+	RegistrationCenterIdGenerator<String> registrationCenterIdGenerator;
 
 	/**
 	 * Reference to HolidayRepository.
@@ -356,39 +359,39 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
-	/*@Override
-	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto) {
-		try {
-			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
-					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
-				Float.parseFloat(registrationCenterDto.getLatitude());
-				Float.parseFloat(registrationCenterDto.getLongitude());
-			}
-		} catch (NullPointerException | NumberFormatException latLongParseException) {
-			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(latLongParseException));
-		}
-		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
-		registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
-				registrationCenterEntity.getClass());
-		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
-				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
-		registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
-		registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
-		RegistrationCenter registrationCenter;
-		try {
-			registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
-			registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-		} catch (DataAccessLayerException | DataAccessException exception) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(exception));
-		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(registrationCenter.getId());
-		return idResponseDto;
-	}*/
+	/*
+	 * @Override public IdResponseDto createRegistrationCenter(RegistrationCenterDto
+	 * registrationCenterDto) { try { if
+	 * (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude()) &&
+	 * !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
+	 * Float.parseFloat(registrationCenterDto.getLatitude());
+	 * Float.parseFloat(registrationCenterDto.getLongitude()); } } catch
+	 * (NullPointerException | NumberFormatException latLongParseException) { throw
+	 * new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.
+	 * getErrorCode(),
+	 * ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage() +
+	 * ExceptionUtils.parseException(latLongParseException)); } RegistrationCenter
+	 * registrationCenterEntity = new RegistrationCenter(); registrationCenterEntity
+	 * = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+	 * registrationCenterEntity.getClass()); RegistrationCenterHistory
+	 * registrationCenterHistoryEntity = MetaDataUtils
+	 * .setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
+	 * registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.
+	 * getCreatedDateTime());
+	 * registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.
+	 * getCreatedDateTime()); RegistrationCenter registrationCenter; try {
+	 * registrationCenter =
+	 * registrationCenterRepository.create(registrationCenterEntity);
+	 * registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+	 * } catch (DataAccessLayerException | DataAccessException exception) { throw
+	 * new
+	 * MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.
+	 * getErrorCode(),
+	 * ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " " +
+	 * ExceptionUtils.parseException(exception)); } IdResponseDto idResponseDto =
+	 * new IdResponseDto(); idResponseDto.setId(registrationCenter.getId()); return
+	 * idResponseDto; }
+	 */
 
 	/*
 	 * (non-Javadoc)
@@ -448,40 +451,47 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * updateRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
-	/*@Transactional
-	@Override
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenter) {
-		RegistrationCenter updRegistrationCenter = null;
-		try {
-
-			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCodeAndIsDeletedTrue(
-					registrationCenter.getRequest().getId(), registrationCenter.getRequest().getLangCode());
-			if (renRegistrationCenter != null) {
-				MetaDataUtils.setUpdateMetaData(registrationCenter.getRequest(), renRegistrationCenter, false);
-				updRegistrationCenter = registrationCenterRepository.update(renRegistrationCenter);
-
-				RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
-				MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
-				MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
-				registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
-				registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
-				registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
-
-			} else {
-				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException exception) {
-			throw new MasterDataServiceException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception));
-		}
-
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(updRegistrationCenter, idAndLanguageCodeID);
-		return idAndLanguageCodeID;
-	}*/
+	/*
+	 * @Transactional
+	 * 
+	 * @Override public IdAndLanguageCodeID
+	 * updateRegistrationCenter(RequestWrapper<RegistrationCenterDto>
+	 * registrationCenter) { RegistrationCenter updRegistrationCenter = null; try {
+	 * 
+	 * RegistrationCenter renRegistrationCenter =
+	 * registrationCenterRepository.findByIdAndLangCodeAndIsDeletedTrue(
+	 * registrationCenter.getRequest().getId(),
+	 * registrationCenter.getRequest().getLangCode()); if (renRegistrationCenter !=
+	 * null) { MetaDataUtils.setUpdateMetaData(registrationCenter.getRequest(),
+	 * renRegistrationCenter, false); updRegistrationCenter =
+	 * registrationCenterRepository.update(renRegistrationCenter);
+	 * 
+	 * RegistrationCenterHistory registrationCenterHistory = new
+	 * RegistrationCenterHistory(); MapperUtils.map(updRegistrationCenter,
+	 * registrationCenterHistory);
+	 * MapperUtils.setBaseFieldValue(updRegistrationCenter,
+	 * registrationCenterHistory);
+	 * registrationCenterHistory.setEffectivetimes(updRegistrationCenter.
+	 * getUpdatedDateTime());
+	 * registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.
+	 * getUpdatedDateTime());
+	 * registrationCenterHistoryService.createRegistrationCenterHistory(
+	 * registrationCenterHistory);
+	 * 
+	 * } else { throw new
+	 * RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.
+	 * getErrorCode(),
+	 * RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+	 * } } catch (DataAccessLayerException | DataAccessException exception) { throw
+	 * new MasterDataServiceException(
+	 * RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode
+	 * (), RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.
+	 * getErrorMessage() + ExceptionUtils.parseException(exception)); }
+	 * 
+	 * IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
+	 * MapperUtils.map(updRegistrationCenter, idAndLanguageCodeID); return
+	 * idAndLanguageCodeID; }
+	 */
 
 	/*
 	 * (non-Javadoc)
@@ -715,39 +725,36 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		List<RegistrationCenter> registrationCenterList = new ArrayList<>();
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
-		Set<String> inputLangCodeSet = new HashSet<>();
-		List<String> inputIdList = new ArrayList<>();
-		List<String> idLangList  = new ArrayList<>();
+		List<String> inputLangCodeList = new ArrayList<>();
+
+		// Get RegistrationCenter Id by calling RegistrationCenterIdGenerator API
+		String regCenterID = registrationCenterIdGenerator.generateRegistrationCenterId();
 
 		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
-			try {	
-					Float.parseFloat(registrationCenterDto.getLatitude());
-					Float.parseFloat(registrationCenterDto.getLongitude());
-					idLangList.add(registrationCenterDto.getLangCode()+registrationCenterDto.getId());
-	
+			try {
+				Float.parseFloat(registrationCenterDto.getLatitude());
+				Float.parseFloat(registrationCenterDto.getLongitude());
+
 			} catch (NumberFormatException latLongParseException) {
-				throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
-						ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_REQUEST_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_REQUEST_EXCEPTION.getErrorMessage()
 								+ ExceptionUtils.parseException(latLongParseException));
 			}
-			inputLangCodeSet.add(registrationCenterDto.getLangCode());
-			inputIdList.add(registrationCenterDto.getId());
+			inputLangCodeList.add(registrationCenterDto.getLangCode());
 		}
-		//validate to check if data is received in all configured languages
-		if (!inputLangCodeSet.containsAll(supLanguages)) {
+		// validate to check if data is received in all configured languages
+		if (!new HashSet<String>(inputLangCodeList).containsAll(supLanguages)) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
-		//validate to check if data is received for only one registration center
-		if (new HashSet<String>(inputIdList).size() > 1) {
-			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
-		}
-		// validate to check duplicate ID and LanguageCode pair
-		if((new HashSet<String>(idLangList).size()) != idLangList.size()) {
-			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());	
+
+		// validate to check LanguageCode input 
+		if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
 		}
 
 		try {
@@ -756,6 +763,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				RegistrationCenter registrationCenter;
 				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
 						registrationCenterEntity.getClass());
+				/*
+				 * RegistrationCenterID from the rcid_Seq Table, RegistrationCenterID get by
+				 * calling RegistrationCenterIdGenerator API method
+				 * generateRegistrationCenterId().
+				 * 
+				 */
+				registrationCenterEntity.setId(regCenterID);
 				/*
 				 * at the time of creation of new Registration Center Number of Kiosks value
 				 * will be Zero always
@@ -810,30 +824,30 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		Set<String> inputLangCodeSet = new HashSet<>();
 		List<String> inputIdList = new ArrayList<>();
-		List<String> idLangList  = new ArrayList<>();
+		List<String> idLangList = new ArrayList<>();
 
-		
 		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 			inputLangCodeSet.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
-			idLangList.add(registrationCenterDto.getLangCode()+registrationCenterDto.getId());
-			
+			idLangList.add(registrationCenterDto.getLangCode() + registrationCenterDto.getId());
+
 		}
-        //validate to check if data is received in all configured languages
+		// validate to check if data is received in all configured languages
 		if (!inputLangCodeSet.containsAll(supLanguages)) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
-		//validate to check if data is received for only one registration center or not
+		// validate to check if data is received for only one registration center or not
 		if (new HashSet<String>(inputIdList).size() > 1) {
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
 		}
 		// validate to check duplicate pair of ID and LanguageCode
-		if((new HashSet<String>(idLangList).size()) != idLangList.size()) {
-			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());	
+		if ((new HashSet<String>(idLangList).size()) != idLangList.size()) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
 		}
 
 		try {
