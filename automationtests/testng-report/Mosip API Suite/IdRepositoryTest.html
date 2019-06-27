@@ -1,0 +1,1416 @@
+<html>
+<head>
+<title>TestNG:  IdRepositoryTest</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>IdRepositoryTest</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>3/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Thu Jun 27 21:19:05 IST 2019</td>
+</tr>
+<tr><td>Total time:</td><td>61 seconds (61707 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid.IdRepository_RetrieveIdentity_With Deactivted UIN()'><b>IdRepository_RetrieveIdentity_With Deactivted UIN</b><br>Test class: io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid (IdRepository_RetrieveIdentity_With Valid Smoke Rid)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@1678dda4, /idRepository/RetrieveIdentityByRid, IdRepository_RetrieveIdentity_With Deactivted UIN<br/>
+<a href="#Output-1016355086" onClick='toggleBox("Output-1016355086", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1016355086" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1016355086">
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idrepository/v1/identity/rid/27847657360002520190627183141) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.id.read",
+  "version": "v1",
+  "responsetime": "2019-06-27T15:50:06.130Z",
+  "response": {
+    "status": "DEACTIVATED",
+    "identity": {
+      "CNIENumber": "6789545678914",
+      "gender": [
+        {
+          "language": "ara",
+          "value": "الذكر"
+        },
+        {
+          "language": "fra",
+          "value": "Mâle"
+        },
+        {
+          "language": "eng",
+          "value": "Male"
+        }
+      ],
+      "city": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "postalCode": "14023",
+      "fullName": [
+        {
+          "language": "eng",
+          "value": "Dinesh Pudukottai"
+        },
+        {
+          "language": "ara",
+          "value": "دِنِسه پُدُكُتتَِ"
+        },
+        {
+          "language": "fra",
+          "value": "Dinesh Pudukottai"
+        }
+      ],
+      "localAdministrativeAuthority": [
+        {
+          "language": "eng",
+          "value": "Mograne"
+        },
+        {
+          "language": "ara",
+          "value": "بن منصور"
+        },
+        {
+          "language": "fra",
+          "value": "Mograne"
+        }
+      ],
+      "dateOfBirth": "1965/04/11",
+      "individualBiometrics": {
+        "format": "cbeff",
+        "value": "fileReferenceID",
+        "version": 1.0
+      },
+      "IDSchemaVersion": 1.0,
+      "province": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "phone": "9113356549",
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Mary Rose Street"
+        },
+        {
+          "language": "ara",
+          "value": "مَري رُسِ سترِِت"
+        },
+        {
+          "language": "fra",
+          "value": "Mary Rose Street"
+        }
+      ],
+      "parentOrGuardianName": [
+        {
+          "language": "eng",
+          "value": "Athila Banu"
+        },
+        {
+          "language": "ara",
+          "value": "َتهِلَ بَنُ"
+        },
+        {
+          "language": "fra",
+          "value": "Athila Banu"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Chitti Robo Street House"
+        },
+        {
+          "language": "ara",
+          "value": "كهِتتِ رُبُ سترِِت هُُسِ"
+        },
+        {
+          "language": "fra",
+          "value": "Chitti Robo Street House"
+        }
+      ],
+      "residenceStatus": "MOROCCO",
+      "UIN": 4083194307,
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Pacific Ocean"
+        },
+        {
+          "language": "ara",
+          "value": "پَسِفِك ُسَِن"
+        },
+        {
+          "language": "fra",
+          "value": "Pacific Ocean"
+        }
+      ],
+      "region": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat-Salé-Kénitra"
+        }
+      ],
+      "age": 34,
+      "email": "athila.sirajudeen@mindtree.com"
+    }
+  },
+  "errors": []
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\idRepository\RetrieveIdentityByRid\IdRepository_RetrieveIdentity_With Deactivted UIN\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\idRepository\RetrieveIdentityByRid\IdRepository_RetrieveIdentity_With Deactivted UIN\output-1-expected-y-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>metadata</td>
+    <td>NOT VERIFIED</td>
+    <td>null</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Chitti Robo Street House</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>كهِتتِ رُبُ سترِِت هُُسِ</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.individualBiometrics.value</td>
+    <td>NOT VERIFIED</td>
+    <td>fileReferenceID</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>القنيطرة</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat Sale Kenitra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.email</td>
+    <td>NOT VERIFIED</td>
+    <td>athila.sirajudeen@mindtree.com</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat-Salé-Kénitra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Chitti Robo Street House</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>جهة الرباط سلا القنيطرة</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.UIN</td>
+    <td>NOT VERIFIED</td>
+    <td>4083194307</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Dinesh Pudukottai</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>دِنِسه پُدُكُتتَِ</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mary Rose Street</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>َتهِلَ بَنُ</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Kenitra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>بن منصور</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>پَسِفِك ُسَِن</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.CNIENumber</td>
+    <td>NOT VERIFIED</td>
+    <td>6789545678914</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mary Rose Street</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>الذكر</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.phone</td>
+    <td>NOT VERIFIED</td>
+    <td>9113356549</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.postalCode</td>
+    <td>NOT VERIFIED</td>
+    <td>14023</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mâle</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Male</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.age</td>
+    <td>NOT VERIFIED</td>
+    <td>34</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Athila Banu</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Dinesh Pudukottai</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.residenceStatus</td>
+    <td>NOT VERIFIED</td>
+    <td>MOROCCO</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>الرباط</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mograne</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Pacific Ocean</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.individualBiometrics.format</td>
+    <td>NOT VERIFIED</td>
+    <td>cbeff</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Pacific Ocean</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mograne</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.IDSchemaVersion</td>
+    <td>NOT VERIFIED</td>
+    <td>1.0</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>مَري رُسِ سترِِت</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Athila Banu</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.dateOfBirth</td>
+    <td>NOT VERIFIED</td>
+    <td>1965/04/11</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.id.read</td>
+    <td>mosip.id.read</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.status</td>
+    <td>DEACTIVATED</td>
+    <td>DEACTIVATED</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>v1</td>
+    <td>v1</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid@776aec5c</td></tr>
+<tr>
+<td title='io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid.IdRepository_RetrieveIdentity_With InValid Rid()'><b>IdRepository_RetrieveIdentity_With InValid Rid</b><br>Test class: io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid (IdRepository_RetrieveIdentity_With Valid Smoke Rid)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@2cfc616, /idRepository/RetrieveIdentityByRid, IdRepository_RetrieveIdentity_With InValid Rid<br/>
+<a href="#Output-1116775201" onClick='toggleBox("Output-1116775201", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1116775201" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1116775201">
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idrepository/v1/identity/rid/dsjfsdkjgpodf) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.id.read",
+  "version": "v1",
+  "responsetime": "2019-06-27T15:50:06.528Z",
+  "errors": [
+    {
+      "errorCode": "IDR-IDC-002",
+      "message": "Invalid Input Parameter - registrationId"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\idRepository\RetrieveIdentityByRid\IdRepository_RetrieveIdentity_With InValid Rid\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\idRepository\RetrieveIdentityByRid\IdRepository_RetrieveIdentity_With InValid Rid\output-1-expected-err-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>metadata</td>
+    <td>NOT VERIFIED</td>
+    <td>null</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response</td>
+    <td>NOT VERIFIED</td>
+    <td>null</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].message</td>
+    <td>Invalid Input Parameter - registrationId</td>
+    <td>Invalid Input Parameter - registrationId</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDR-IDC-002</td>
+    <td>IDR-IDC-002</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.id.read</td>
+    <td>mosip.id.read</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>v1</td>
+    <td>v1</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid@776aec5c</td></tr>
+<tr>
+<td title='io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid.IdRepository_RetrieveIdentity_With Valid Smoke Rid()'><b>IdRepository_RetrieveIdentity_With Valid Smoke Rid</b><br>Test class: io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid (IdRepository_RetrieveIdentity_With Valid Smoke Rid)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@6bb0090, /idRepository/RetrieveIdentityByRid, IdRepository_RetrieveIdentity_With Valid Smoke Rid<br/>
+<a href="#Output-951419591" onClick='toggleBox("Output-951419591", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-951419591" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-951419591">
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idrepository/v1/identity/rid/27847657360002520190627183329) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.id.read",
+  "version": "v1",
+  "responsetime": "2019-06-27T15:50:07.086Z",
+  "response": {
+    "status": "ACTIVATED",
+    "identity": {
+      "CNIENumber": "6789545678909",
+      "gender": [
+        {
+          "language": "ara",
+          "value": "الذكر"
+        },
+        {
+          "language": "fra",
+          "value": "Mâle"
+        },
+        {
+          "language": "eng",
+          "value": "Male"
+        }
+      ],
+      "city": [
+        {
+          "language": "eng",
+          "value": "Rabat"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "postalCode": "14000",
+      "fullName": [
+        {
+          "language": "eng",
+          "value": "Bala CC"
+        },
+        {
+          "language": "ara",
+          "value": "بَلَ كك"
+        },
+        {
+          "language": "fra",
+          "value": "Bala CC"
+        }
+      ],
+      "localAdministrativeAuthority": [
+        {
+          "language": "eng",
+          "value": "Mograne"
+        },
+        {
+          "language": "ara",
+          "value": "بن منصور"
+        },
+        {
+          "language": "fra",
+          "value": "Mograne"
+        }
+      ],
+      "dateOfBirth": "1965/04/11",
+      "individualBiometrics": {
+        "format": "cbeff",
+        "value": "fileReferenceID",
+        "version": 1.0
+      },
+      "IDSchemaVersion": 1.0,
+      "province": [
+        {
+          "language": "eng",
+          "value": "Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "الرباط"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat"
+        }
+      ],
+      "phone": "9003356540",
+      "addressLine1": [
+        {
+          "language": "eng",
+          "value": "Sravya Street"
+        },
+        {
+          "language": "ara",
+          "value": "سرَڤيَ سترِِت"
+        },
+        {
+          "language": "fra",
+          "value": "Sravya Street"
+        }
+      ],
+      "parentOrGuardianName": [
+        {
+          "language": "eng",
+          "value": "Arjun Chandra"
+        },
+        {
+          "language": "ara",
+          "value": "َرجُن كهَندرَ"
+        },
+        {
+          "language": "fra",
+          "value": "Arjun Chandra"
+        }
+      ],
+      "addressLine2": [
+        {
+          "language": "eng",
+          "value": "Dubai Cross Street"
+        },
+        {
+          "language": "ara",
+          "value": "دُبَِ كرُسس سترِِت"
+        },
+        {
+          "language": "fra",
+          "value": "Dubai Cross Street"
+        }
+      ],
+      "residenceStatus": "MOROCCO",
+      "UIN": 3296072180,
+      "addressLine3": [
+        {
+          "language": "eng",
+          "value": "Sentinal Island"
+        },
+        {
+          "language": "ara",
+          "value": "سِنتِنَل ِسلَند"
+        },
+        {
+          "language": "fra",
+          "value": "Sentinal Island"
+        }
+      ],
+      "region": [
+        {
+          "language": "eng",
+          "value": "Rabat Sale Kenitra"
+        },
+        {
+          "language": "ara",
+          "value": "جهة الرباط سلا القنيطرة"
+        },
+        {
+          "language": "fra",
+          "value": "Rabat-Salé-Kénitra"
+        }
+      ],
+      "age": 34,
+      "email": "athila.sirajudeen@mindtree.com"
+    }
+  },
+  "errors": []
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\idRepository\RetrieveIdentityByRid\IdRepository_RetrieveIdentity_With Valid Smoke Rid\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\idRepository\RetrieveIdentityByRid\IdRepository_RetrieveIdentity_With Valid Smoke Rid\output-1-expected-y-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>metadata</td>
+    <td>NOT VERIFIED</td>
+    <td>null</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Dubai Cross Street</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>دُبَِ كرُسس سترِِت</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.individualBiometrics.value</td>
+    <td>NOT VERIFIED</td>
+    <td>fileReferenceID</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>الرباط</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Kenitra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat Sale Kenitra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.email</td>
+    <td>NOT VERIFIED</td>
+    <td>athila.sirajudeen@mindtree.com</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat-Salé-Kénitra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Dubai Cross Street</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>جهة الرباط سلا القنيطرة</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.UIN</td>
+    <td>NOT VERIFIED</td>
+    <td>3296072180</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Bala CC</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>بَلَ كك</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Sravya Street</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>َرجُن كهَندرَ</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Rabat</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>بن منصور</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>سِنتِنَل ِسلَند</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.CNIENumber</td>
+    <td>NOT VERIFIED</td>
+    <td>6789545678909</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Sravya Street</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>الذكر</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine2)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(province)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.phone</td>
+    <td>NOT VERIFIED</td>
+    <td>9003356540</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.postalCode</td>
+    <td>NOT VERIFIED</td>
+    <td>14000</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mâle</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Male</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.age</td>
+    <td>NOT VERIFIED</td>
+    <td>34</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Arjun Chandra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(gender)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Bala CC</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.residenceStatus</td>
+    <td>NOT VERIFIED</td>
+    <td>MOROCCO</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(city)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>الرباط</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[2].language</td>
+    <td>NOT VERIFIED</td>
+    <td>fra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mograne</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Sentinal Island</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.individualBiometrics.format</td>
+    <td>NOT VERIFIED</td>
+    <td>cbeff</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine3)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Sentinal Island</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(fullName)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(region)[1].language</td>
+    <td>NOT VERIFIED</td>
+    <td>ara</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(localAdministrativeAuthority)[2].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Mograne</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[0].language</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.IDSchemaVersion</td>
+    <td>NOT VERIFIED</td>
+    <td>1.0</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(addressLine1)[1].value</td>
+    <td>NOT VERIFIED</td>
+    <td>سرَڤيَ سترِِت</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.(parentOrGuardianName)[0].value</td>
+    <td>NOT VERIFIED</td>
+    <td>Arjun Chandra</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>response.identity.dateOfBirth</td>
+    <td>NOT VERIFIED</td>
+    <td>1965/04/11</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.id.read</td>
+    <td>mosip.id.read</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.status</td>
+    <td>ACTIVATED</td>
+    <td>ACTIVATED</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>v1</td>
+    <td>v1</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.idRepository.tests.RetrieveIdentityByRid@776aec5c</td></tr>
+</table><p>
+</body>
+</html>

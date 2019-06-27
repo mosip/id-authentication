@@ -1,0 +1,4122 @@
+<html>
+<head>
+<title>TestNG:  AuthenticationTest</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>AuthenticationTest</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>38/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Thu Jun 27 21:16:57 IST 2019</td>
+</tr>
+<tr><td>Total time:</td><td>127 seconds (127419 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Check_OTP_Flooding_Neg()'><b>Authentication_OTPGenerate_Check_OTP_Flooding_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@26fae9b5, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Check_OTP_Flooding_Neg<br/>
+<a href="#Output-1843496480" onClick='toggleBox("Output-1843496480", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1843496480" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1843496480">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "6980613672",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:16:00.000+05:30",
+  "transactionID": "1616102385",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1616102385",
+  "responseTime": "2019-06-27T21:18:02.103+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1616102385",
+  "responseTime": "2019-06-27T21:18:03.924+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1616102385",
+  "responseTime": "2019-06-27T21:18:05.738+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1616102385",
+  "responseTime": "2019-06-27T21:18:07.644+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1616102385",
+  "responseTime": "2019-06-27T21:18:08.022+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-001",
+      "errorMessage": "Innumerous OTP requests received"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Check_OTP_Flooding_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Check_OTP_Flooding_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:08.022+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-OTA-001</td>
+    <td>IDA-OTA-001</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Innumerous OTP requests received</td>
+    <td>Innumerous OTP requests received</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1616102385</td>
+    <td>1616102385</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>10</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg()'><b>Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@19526d83, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg<br/>
+<a href="#Output-1220146994" onClick='toggleBox("Output-1220146994", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1220146994" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1220146994">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "6389725932874236",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:16:00.000+05:30",
+  "transactionID": "2186105282",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2186105282",
+  "responseTime": "2019-06-27T21:18:13.338+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2186105282",
+  "responseTime": "2019-06-27T21:18:15.855+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2186105282",
+  "responseTime": "2019-06-27T21:18:18.490+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2186105282",
+  "responseTime": "2019-06-27T21:18:20.978+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6544",
+    "maskedEmail": "XXoXXmXXyXXuXXiXXjX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2186105282",
+  "responseTime": "2019-06-27T21:18:21.330+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-001",
+      "errorMessage": "Innumerous OTP requests received"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Check_OTP_Flooding_Using_VID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:21.330+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-OTA-001</td>
+    <td>IDA-OTA-001</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Innumerous OTP requests received</td>
+    <td>Innumerous OTP requests received</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2186105282</td>
+    <td>2186105282</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>10</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_Id_Neg()'><b>Authentication_OTPGenerate_With_Invalid_Id_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@7e4b8d05, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_Id_Neg<br/>
+<a href="#Output-1087550741" onClick='toggleBox("Output-1087550741", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1087550741" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1087550741">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "otp.mosip.identity",
+  "individualId": "5825047230",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:58.058+05:30",
+  "transactionID": "7021877686",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "7021877686",
+  "responseTime": "2019-06-27T21:18:32.916+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - id"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_Id_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_Id_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:32.916+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-009</td>
+    <td>IDA-MLC-009</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid Input Parameter - id</td>
+    <td>Invalid Input Parameter - id</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>7021877686</td>
+    <td>7021877686</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_Version_Neg()'><b>Authentication_OTPGenerate_With_Invalid_Version_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@4b68392c, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_Version_Neg<br/>
+<a href="#Output-66367800" onClick='toggleBox("Output-66367800", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-66367800" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-66367800">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2976158471",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:58.058+05:30",
+  "transactionID": "1072833856",
+  "version": "A.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1072833856",
+  "responseTime": "2019-06-27T21:18:39.992+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - version"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_Version_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_Version_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:39.992+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-009</td>
+    <td>IDA-MLC-009</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid Input Parameter - version</td>
+    <td>Invalid Input Parameter - version</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1072833856</td>
+    <td>1072833856</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_deactivated_UIN_Neg()'><b>Authentication_OTPGenerate_With_Invalid_deactivated_UIN_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@3a2ec6b5, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_deactivated_UIN_Neg<br/>
+<a href="#Output-180192889" onClick='toggleBox("Output-180192889", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-180192889" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-180192889">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "4896035062",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "8871734211",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "8871734211",
+  "responseTime": "2019-06-27T21:18:29.704+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-003",
+      "errorMessage": "UIN has been deactivated",
+      "actionMessage": "Your UIN status is not active"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_deactivated_UIN_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_deactivated_UIN_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>(errors)[0].actionMessage</td>
+    <td>NOT VERIFIED</td>
+    <td>Your UIN status is not active</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:29.704+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-003</td>
+    <td>IDA-MLC-003</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>UIN has been deactivated</td>
+    <td>UIN has been deactivated</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>8871734211</td>
+    <td>8871734211</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>1</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_email_otpchannel_Neg()'><b>Authentication_OTPGenerate_With_Invalid_email_otpchannel_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@301a9a06, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_email_otpchannel_Neg<br/>
+<a href="#Output-2076185496" onClick='toggleBox("Output-2076185496", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-2076185496" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-2076185496">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2976158471",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "1234",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "6144242575",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "6144242575",
+  "responseTime": "2019-06-27T21:18:30.472+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - otpChannel - 1234"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_email_otpchannel_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_email_otpchannel_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:30.472+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-009</td>
+    <td>IDA-MLC-009</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>$REGEXP:Invalid Input Parameter - otpChannel.*$</td>
+    <td>Invalid Input Parameter - otpChannel - 1234</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>6144242575</td>
+    <td>6144242575</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_expired_VID_Neg()'><b>Authentication_OTPGenerate_With_Invalid_expired_VID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@129b0aa5, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_expired_VID_Neg<br/>
+<a href="#Output-668723714" onClick='toggleBox("Output-668723714", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-668723714" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-668723714">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "6356921768974829",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "4746167003",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "4746167003",
+  "responseTime": "2019-06-27T21:18:31.474+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-005",
+      "errorMessage": "VID is EXPIRED"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_expired_VID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_expired_VID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:31.474+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-005</td>
+    <td>IDA-MLC-005</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>VID is EXPIRED</td>
+    <td>VID is EXPIRED</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>4746167003</td>
+    <td>4746167003</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>1</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_future_requestTime_Neg()'><b>Authentication_OTPGenerate_With_Invalid_future_requestTime_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@1830f083, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_future_requestTime_Neg<br/>
+<a href="#Output-674311848" onClick='toggleBox("Output-674311848", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-674311848" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-674311848">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "3841906398",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:27:59.059+05:30",
+  "transactionID": "4781428248",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "4781428248",
+  "responseTime": "2019-06-27T21:18:32.205+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-001",
+      "errorMessage": "Request to be received at MOSIP within 30 minutes",
+      "actionMessage": "Please send the request within 30 minutes"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_future_requestTime_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_future_requestTime_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>(errors)[0].actionMessage</td>
+    <td>NOT VERIFIED</td>
+    <td>Please send the request within 30 minutes</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:32.205+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-001</td>
+    <td>IDA-MLC-001</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Request to be received at MOSIP within 30 minutes</td>
+    <td>Request to be received at MOSIP within 30 minutes</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>4781428248</td>
+    <td>4781428248</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_individualIdType_Neg()'><b>Authentication_OTPGenerate_With_Invalid_individualIdType_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@54e7865e, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_individualIdType_Neg<br/>
+<a href="#Output-351452908" onClick='toggleBox("Output-351452908", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-351452908" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-351452908">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "8127604524",
+  "individualIdType": "VI",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "2266746361",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2266746361",
+  "responseTime": "2019-06-27T21:18:33.652+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - individualIdType"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualIdType_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualIdType_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:33.652+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-009</td>
+    <td>IDA-MLC-009</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid Input Parameter - individualIdType</td>
+    <td>Invalid Input Parameter - individualIdType</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2266746361</td>
+    <td>2266746361</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_individualId_UIN_as_per_data_definition_Neg()'><b>Authentication_OTPGenerate_With_Invalid_individualId_UIN_as_per_data_definition_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@3049fc6e, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_individualId_UIN_as_per_data_definition_Neg<br/>
+<a href="#Output-790899779" onClick='toggleBox("Output-790899779", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-790899779" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-790899779">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2344567\u002670",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "3562228271",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "3562228271",
+  "responseTime": "2019-06-27T21:18:34.321+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-002",
+      "errorMessage": "Invalid UIN",
+      "actionMessage": "Please retry with the correct UIN"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualId_UIN_as_per_data_definition_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualId_UIN_as_per_data_definition_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>(errors)[0].actionMessage</td>
+    <td>NOT VERIFIED</td>
+    <td>Please retry with the correct UIN</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:34.321+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-002</td>
+    <td>IDA-MLC-002</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid UIN</td>
+    <td>Invalid UIN</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>3562228271</td>
+    <td>3562228271</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_individualId_VID_Neg()'><b>Authentication_OTPGenerate_With_Invalid_individualId_VID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@7a4d06e0, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_individualId_VID_Neg<br/>
+<a href="#Output-584579569" onClick='toggleBox("Output-584579569", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-584579569" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-584579569">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "8161033170041320",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "2851307867",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2851307867",
+  "responseTime": "2019-06-27T21:18:35.777+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID",
+      "actionMessage": "Please retry with correct VID"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualId_VID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualId_VID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>(errors)[0].actionMessage</td>
+    <td>NOT VERIFIED</td>
+    <td>Please retry with correct VID</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:35.777+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-004</td>
+    <td>IDA-MLC-004</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid VID</td>
+    <td>Invalid VID</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2851307867</td>
+    <td>2851307867</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_individualId_VID_as_per_data_definition_Neg()'><b>Authentication_OTPGenerate_With_Invalid_individualId_VID_as_per_data_definition_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@656655c2, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_individualId_VID_as_per_data_definition_Neg<br/>
+<a href="#Output-1311461912" onClick='toggleBox("Output-1311461912", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1311461912" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1311461912">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "983584538149251",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "6324200526",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "6324200526",
+  "responseTime": "2019-06-27T21:18:35.044+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID",
+      "actionMessage": "Please retry with correct VID"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualId_VID_as_per_data_definition_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_individualId_VID_as_per_data_definition_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>(errors)[0].actionMessage</td>
+    <td>NOT VERIFIED</td>
+    <td>Please retry with correct VID</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:35.044+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-004</td>
+    <td>IDA-MLC-004</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid VID</td>
+    <td>Invalid VID</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>6324200526</td>
+    <td>6324200526</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_phone_otpchannel_Neg()'><b>Authentication_OTPGenerate_With_Invalid_phone_otpchannel_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@d5bea46, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_phone_otpchannel_Neg<br/>
+<a href="#Output-1791718028" onClick='toggleBox("Output-1791718028", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1791718028" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1791718028">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2976158471",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "flse"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "1515182473",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1515182473",
+  "responseTime": "2019-06-27T21:18:36.483+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - otpChannel - flse"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_phone_otpchannel_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_phone_otpchannel_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:36.483+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-009</td>
+    <td>IDA-MLC-009</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>$REGEXP:Invalid Input Parameter - otpChannel.*$</td>
+    <td>Invalid Input Parameter - otpChannel - flse</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1515182473</td>
+    <td>1515182473</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_requestTime_GT30MIN_Neg()'><b>Authentication_OTPGenerate_With_Invalid_requestTime_GT30MIN_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@720ecd0f, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_requestTime_GT30MIN_Neg<br/>
+<a href="#Output-379682685" onClick='toggleBox("Output-379682685", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-379682685" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-379682685">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2157038174",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:52:59.059+05:30",
+  "transactionID": "3780670443",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "3780670443",
+  "responseTime": "2019-06-27T21:18:37.188+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-001",
+      "errorMessage": "Request to be received at MOSIP within 30 minutes",
+      "actionMessage": "Please send the request within 30 minutes"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_requestTime_GT30MIN_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_requestTime_GT30MIN_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>(errors)[0].actionMessage</td>
+    <td>NOT VERIFIED</td>
+    <td>Please send the request within 30 minutes</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:37.188+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-001</td>
+    <td>IDA-MLC-001</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Request to be received at MOSIP within 30 minutes</td>
+    <td>Request to be received at MOSIP within 30 minutes</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>3780670443</td>
+    <td>3780670443</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_requestTime_LT30MIN_Neg()'><b>Authentication_OTPGenerate_With_Invalid_requestTime_LT30MIN_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@6066afa8, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_requestTime_LT30MIN_Neg<br/>
+<a href="#Output-648631821" onClick='toggleBox("Output-648631821", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-648631821" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-648631821">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "8127056491",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T20:42:59.059+05:30",
+  "transactionID": "1767627103",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1767627103",
+  "responseTime": "2019-06-27T21:18:37.884+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-001",
+      "errorMessage": "Request to be received at MOSIP within 30 minutes",
+      "actionMessage": "Please send the request within 30 minutes"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_requestTime_LT30MIN_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_requestTime_LT30MIN_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>(errors)[0].actionMessage</td>
+    <td>NOT VERIFIED</td>
+    <td>Please send the request within 30 minutes</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:37.884+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-001</td>
+    <td>IDA-MLC-001</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Request to be received at MOSIP within 30 minutes</td>
+    <td>Request to be received at MOSIP within 30 minutes</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1767627103</td>
+    <td>1767627103</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_requestTime_Neg()'><b>Authentication_OTPGenerate_With_Invalid_requestTime_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@37793e23, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_requestTime_Neg<br/>
+<a href="#Output-1324193482" onClick='toggleBox("Output-1324193482", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1324193482" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1324193482">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2356021530",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-04-01^11:48:59.059+05:30",
+  "transactionID": "3841413675",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "3841413675",
+  "responseTime": "2019-06-27T15:48:38.570Z",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - requestTime"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_requestTime_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_requestTime_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMPZ$</td>
+    <td>2019-06-27T15:48:38.570Z</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-009</td>
+    <td>IDA-MLC-009</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid Input Parameter - requestTime</td>
+    <td>Invalid Input Parameter - requestTime</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>3841413675</td>
+    <td>3841413675</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Invalid_transactionID_Neg()'><b>Authentication_OTPGenerate_With_Invalid_transactionID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@65a2eb50, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Invalid_transactionID_Neg<br/>
+<a href="#Output-485928988" onClick='toggleBox("Output-485928988", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-485928988" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-485928988">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "8523872071",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:58.058+05:30",
+  "transactionID": "123789009",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "123789009",
+  "responseTime": "2019-06-27T21:18:39.295+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-009",
+      "errorMessage": "Invalid Input Parameter - transactionID"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_transactionID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Invalid_transactionID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>NOT VERIFIED</td>
+    <td>123789009</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:39.295+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-009</td>
+    <td>IDA-MLC-009</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Invalid Input Parameter - transactionID</td>
+    <td>Invalid Input Parameter - transactionID</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Null_Id_Neg()'><b>Authentication_OTPGenerate_With_Null_Id_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@6140245e, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Null_Id_Neg<br/>
+<a href="#Output-843831478" onClick='toggleBox("Output-843831478", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-843831478" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-843831478">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "",
+  "individualId": "5063851390",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "2177226344",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2177226344",
+  "responseTime": "2019-06-27T21:18:40.752+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - id"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_Id_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_Id_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:40.752+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - id</td>
+    <td>Missing Input Parameter - id</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2177226344</td>
+    <td>2177226344</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Null_UIN_Neg()'><b>Authentication_OTPGenerate_With_Null_UIN_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@348edc31, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Null_UIN_Neg<br/>
+<a href="#Output-762735735" onClick='toggleBox("Output-762735735", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-762735735" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-762735735">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "2147576635",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2147576635",
+  "responseTime": "2019-06-27T21:18:44.386+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_UIN_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_UIN_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:44.386+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2147576635</td>
+    <td>2147576635</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Null_Version_Neg()'><b>Authentication_OTPGenerate_With_Null_Version_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@4af864a5, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Null_Version_Neg<br/>
+<a href="#Output-1584884240" onClick='toggleBox("Output-1584884240", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1584884240" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1584884240">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "9106143694",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "8582116668",
+  "version": ""
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "8582116668",
+  "responseTime": "2019-06-27T21:18:45.063+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - version"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_Version_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_Version_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:45.063+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - version</td>
+    <td>Missing Input Parameter - version</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>8582116668</td>
+    <td>8582116668</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Null_individualIdType_Neg()'><b>Authentication_OTPGenerate_With_Null_individualIdType_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@38f2fec1, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Null_individualIdType_Neg<br/>
+<a href="#Output-574725994" onClick='toggleBox("Output-574725994", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-574725994" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-574725994">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2976158471",
+  "individualIdType": "",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "6277820113",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "6277820113",
+  "responseTime": "2019-06-27T21:18:41.462+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_individualIdType_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_individualIdType_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:41.462+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - individualIdType</td>
+    <td>Missing Input Parameter - individualIdType</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>6277820113</td>
+    <td>6277820113</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Null_individualId_VID_Neg()'><b>Authentication_OTPGenerate_With_Null_individualId_VID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@58f05f55, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Null_individualId_VID_Neg<br/>
+<a href="#Output-787054927" onClick='toggleBox("Output-787054927", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-787054927" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-787054927">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "4161665834",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "4161665834",
+  "responseTime": "2019-06-27T21:18:42.163+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_individualId_VID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_individualId_VID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:42.163+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>4161665834</td>
+    <td>4161665834</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Null_requestTime_Neg()'><b>Authentication_OTPGenerate_With_Null_requestTime_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@1a5d7f2e, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Null_requestTime_Neg<br/>
+<a href="#Output-409499965" onClick='toggleBox("Output-409499965", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-409499965" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-409499965">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "5795298219",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "",
+  "transactionID": "2841814824",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2841814824",
+  "responseTime": "2019-06-27T15:48:42.998Z",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - requestTime"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_requestTime_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_requestTime_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMPZ$</td>
+    <td>2019-06-27T15:48:42.998Z</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - requestTime</td>
+    <td>Missing Input Parameter - requestTime</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2841814824</td>
+    <td>2841814824</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Null_transactionID_Neg()'><b>Authentication_OTPGenerate_With_Null_transactionID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@1309ed8c, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Null_transactionID_Neg<br/>
+<a href="#Output-750123536" onClick='toggleBox("Output-750123536", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-750123536" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-750123536">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "7497827503",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "transactionID": "",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "",
+  "responseTime": "2019-06-27T21:18:43.669+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_transactionID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Null_transactionID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>NOT VERIFIED</td>
+    <td></td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:43.669+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - transactionID</td>
+    <td>Missing Input Parameter - transactionID</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Valid_Request_EMAIL_alone_IntegrationTest_Smoke_Pos()'><b>Authentication_OTPGenerate_With_Valid_Request_EMAIL_alone_IntegrationTest_Smoke_Pos</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@3c220dda, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Valid_Request_EMAIL_alone_IntegrationTest_Smoke_Pos<br/>
+<a href="#Output-2027135039" onClick='toggleBox("Output-2027135039", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-2027135039" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-2027135039">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:15:58.058+05:30",
+  "otpChannel": [
+    "EMAIL"
+  ],
+  "id": "mosip.identity.otp",
+  "individualId": "9603145761",
+  "version": "1.0",
+  "individualIdType": "UIN",
+  "transactionID": "4548062331"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "4548062331",
+  "responseTime": "2019-06-27T21:18:46.928+05:30",
+  "response": {
+    "maskedEmail": "XXgXXsXXvXXaXXkXXaX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_EMAIL_alone_IntegrationTest_Smoke_Pos\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_EMAIL_alone_IntegrationTest_Smoke_Pos\output-1-expected-y-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:46.928+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.maskedEmail</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>XXgXXsXXvXXaXXkXXaX@mindtree.com</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.otp</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>4548062331</td>
+    <td>4548062331</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>1</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Pos()'><b>Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Pos</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@6672e7fc, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Pos<br/>
+<a href="#Output-1930520572" onClick='toggleBox("Output-1930520572", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1930520572" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1930520572">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "2356021530",
+  "individualIdType": "UIN",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:58.058+05:30",
+  "transactionID": "7555731707",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "7555731707",
+  "responseTime": "2019-06-27T21:18:49.376+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6547",
+    "maskedEmail": "XXgXXsXXvXXaXXkXXaX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Pos\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Pos\output-1-expected-y-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:49.376+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.maskedEmail</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>XXgXXsXXvXXaXXkXXaX@mindtree.com</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.maskedMobile</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>XXXXXX6547</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.otp</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>7555731707</td>
+    <td>7555731707</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Auth Transaction Validation</u></b><br/>
+<b> Output validation for: </b>Audit Transaction Validation<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>lang_code</td>
+    <td>NOT VERIFIED</td>
+    <td>eng</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>cr_dtimes</td>
+    <td>NOT VERIFIED</td>
+    <td>2019-06-27 15:48:49.376</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>9bc5bc87-85e1-5b15-84e3-f40ae9503b24</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>ref_id</td>
+    <td>F4B90FE5DE58C80B19C5D4976C225B91AC68AB4DFA96A038D5069A44BF499790</td>
+    <td>F4B90FE5DE58C80B19C5D4976C225B91AC68AB4DFA96A038D5069A44BF499790</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>status_code</td>
+    <td>Y</td>
+    <td>Y</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>status_comment</td>
+    <td>$REGEXP:.*OTP.*Request.*Success.*$</td>
+    <td>OTP Request Success</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>auth_type_code</td>
+    <td>OTP-REQUEST</td>
+    <td>OTP-REQUEST</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>request_trn_id</td>
+    <td>7555731707</td>
+    <td>7555731707</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>ref_id_type</td>
+    <td>UIN</td>
+    <td>UIN</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response_dtimes</td>
+    <td>2019-06-27 15:48:49.376</td>
+    <td>2019-06-27 15:48:49.376</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>request_dtimes</td>
+    <td>2019-06-27 15:45:58.058</td>
+    <td>2019-06-27 15:45:58.058</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Audit Log Validation</u></b><br/>
+<b> Output validation for: </b>Audit Log Validation<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>log_id</td>
+    <td>NOT VERIFIED</td>
+    <td>429a9f33-a126-4c6d-b2ff-9683fc62a897</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>host_ip</td>
+    <td>NOT VERIFIED</td>
+    <td>10.240.0.202</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>action_dtimes</td>
+    <td>NOT VERIFIED</td>
+    <td>2019-06-27 15:48:49.385</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>session_user_name</td>
+    <td>NOT VERIFIED</td>
+    <td>sessionUserName</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>cr_by</td>
+    <td>NOT VERIFIED</td>
+    <td>root</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>log_desc</td>
+    <td>NOT VERIFIED</td>
+    <td>Request/Response, UIN/VID to be masked</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>event_type</td>
+    <td>NOT VERIFIED</td>
+    <td>BUSINESS</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>module_id</td>
+    <td>NOT VERIFIED</td>
+    <td>IDA-OTR</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>log_dtimes</td>
+    <td>NOT VERIFIED</td>
+    <td>2019-06-27 15:48:49.463</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>session_user_id</td>
+    <td>NOT VERIFIED</td>
+    <td>sessionUserId</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>host_name</td>
+    <td>NOT VERIFIED</td>
+    <td>authentication-otp-service-c69896d89-dgtn2</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>ref_id</td>
+    <td>2356021530</td>
+    <td>2356021530</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>app_name</td>
+    <td>ID-Authentication</td>
+    <td>ID-Authentication</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>event_id</td>
+    <td>$REGEXP:.*IDA.*$</td>
+    <td>IDA-001</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>event_name</td>
+    <td>Authentication Request</td>
+    <td>Authentication Request</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>ref_id_type</td>
+    <td>UIN</td>
+    <td>UIN</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>module_name</td>
+    <td>Otp Requestor</td>
+    <td>Otp Requestor</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>app_id</td>
+    <td>IDA</td>
+    <td>IDA</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>12</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Using_VID_Pos()'><b>Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Using_VID_Pos</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@17275013, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Using_VID_Pos<br/>
+<a href="#Output-664099411" onClick='toggleBox("Output-664099411", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-664099411" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-664099411">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "5235725930176436",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-06-27T21:15:58.058+05:30",
+  "transactionID": "5344354743",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "5344354743",
+  "responseTime": "2019-06-27T21:19:02.859+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6546",
+    "maskedEmail": "XXgXXsXXvXXaXXkXXaX@mindtree.com"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Using_VID_Pos\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Using_VID_Pos\output-1-expected-y-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:19:02.859+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.maskedEmail</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>XXgXXsXXvXXaXXkXXaX@mindtree.com</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.maskedMobile</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>XXXXXX6546</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.otp</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>5344354743</td>
+    <td>5344354743</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>2</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos()'><b>Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@4b9ebaf6, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos<br/>
+<a href="#Output-240779865" onClick='toggleBox("Output-240779865", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-240779865" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-240779865">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:15:58.058+05:30",
+  "otpChannel": [
+    "PHONE"
+  ],
+  "id": "mosip.identity.otp",
+  "individualId": "6157165214",
+  "version": "1.0",
+  "individualIdType": "UIN",
+  "transactionID": "2513663505"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "2513663505",
+  "responseTime": "2019-06-27T21:19:04.780+05:30",
+  "response": {
+    "maskedMobile": "XXXXXX6545"
+  }
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos\output-1-expected-y-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:19:04.780+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>response.maskedMobile</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>XXXXXX6545</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.otp</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2513663505</td>
+    <td>2513663505</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>1</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Without_Id_Neg()'><b>Authentication_OTPGenerate_Without_Id_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@677e3282, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Without_Id_Neg<br/>
+<a href="#Output-942829020" onClick='toggleBox("Output-942829020", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-942829020" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-942829020">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "otpChannel": [
+    "PHONE",
+    "EMAIL"
+  ],
+  "individualId": "8790758430",
+  "version": "1.0",
+  "individualIdType": "UIN",
+  "transactionID": "4458042610"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "4458042610",
+  "responseTime": "2019-06-27T21:18:23.564+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - id"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_Id_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_Id_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:23.564+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - id</td>
+    <td>Missing Input Parameter - id</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>4458042610</td>
+    <td>4458042610</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Without_UIN_Neg()'><b>Authentication_OTPGenerate_Without_UIN_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@16427496, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Without_UIN_Neg<br/>
+<a href="#Output-69221303" onClick='toggleBox("Output-69221303", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-69221303" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-69221303">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "otpChannel": [
+    "PHONE",
+    "EMAIL"
+  ],
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "individualIdType": "UIN",
+  "transactionID": "1688354102"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1688354102",
+  "responseTime": "2019-06-27T21:18:27.894+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_UIN_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_UIN_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:27.894+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1688354102</td>
+    <td>1688354102</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Without_Version_Neg()'><b>Authentication_OTPGenerate_Without_Version_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@3bc81985, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Without_Version_Neg<br/>
+<a href="#Output-656361304" onClick='toggleBox("Output-656361304", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-656361304" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-656361304">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "otpChannel": [
+    "PHONE",
+    "EMAIL"
+  ],
+  "id": "mosip.identity.otp",
+  "individualId": "8102904739",
+  "individualIdType": "UIN",
+  "transactionID": "5248535464"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "5248535464",
+  "responseTime": "2019-06-27T21:18:28.607+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - version"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_Version_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_Version_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:28.607+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - version</td>
+    <td>Missing Input Parameter - version</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>5248535464</td>
+    <td>5248535464</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Without_individualIdType_Neg()'><b>Authentication_OTPGenerate_Without_individualIdType_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@5bf5d00, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Without_individualIdType_Neg<br/>
+<a href="#Output-665420278" onClick='toggleBox("Output-665420278", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-665420278" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-665420278">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:16:00.000+05:30",
+  "otpChannel": [
+    "PHONE",
+    "EMAIL"
+  ],
+  "id": "mosip.identity.otp",
+  "individualId": "4936273523",
+  "version": "1.0",
+  "transactionID": "8116214258"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "8116214258",
+  "responseTime": "2019-06-27T21:18:24.258+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualIdType"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_individualIdType_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_individualIdType_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:24.258+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - individualIdType</td>
+    <td>Missing Input Parameter - individualIdType</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>8116214258</td>
+    <td>8116214258</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Without_individualId_VID_Neg()'><b>Authentication_OTPGenerate_Without_individualId_VID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@13c39517, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Without_individualId_VID_Neg<br/>
+<a href="#Output-2137217680" onClick='toggleBox("Output-2137217680", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-2137217680" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-2137217680">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "otpChannel": [
+    "PHONE",
+    "EMAIL"
+  ],
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "individualIdType": "VID",
+  "transactionID": "4860238736"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "4860238736",
+  "responseTime": "2019-06-27T21:18:24.970+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - individualId"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_individualId_VID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_individualId_VID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:24.970+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td>Missing Input Parameter - individualId</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>4860238736</td>
+    <td>4860238736</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Without_requestTime_Neg()'><b>Authentication_OTPGenerate_Without_requestTime_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@1620a53d, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Without_requestTime_Neg<br/>
+<a href="#Output-932511638" onClick='toggleBox("Output-932511638", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-932511638" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-932511638">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "otpChannel": [
+    "PHONE",
+    "EMAIL"
+  ],
+  "id": "mosip.identity.otp",
+  "individualId": "8127604524",
+  "version": "1.0",
+  "individualIdType": "UIN",
+  "transactionID": "8444882660"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "8444882660",
+  "responseTime": "2019-06-27T15:48:26.457Z",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - requestTime"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_requestTime_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_requestTime_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMPZ$</td>
+    <td>2019-06-27T15:48:26.457Z</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - requestTime</td>
+    <td>Missing Input Parameter - requestTime</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>8444882660</td>
+    <td>8444882660</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_Without_transactionID_Neg()'><b>Authentication_OTPGenerate_Without_transactionID_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@6d5f824d, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_Without_transactionID_Neg<br/>
+<a href="#Output-2119889994" onClick='toggleBox("Output-2119889994", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-2119889994" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-2119889994">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:15:59.059+05:30",
+  "otpChannel": [
+    "PHONE",
+    "EMAIL"
+  ],
+  "id": "mosip.identity.otp",
+  "individualId": "8523872071",
+  "version": "1.0",
+  "individualIdType": "UIN"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "responseTime": "2019-06-27T21:18:27.164+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-006",
+      "errorMessage": "Missing Input Parameter - transactionID"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_transactionID_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_Without_transactionID_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:27.164+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-006</td>
+    <td>IDA-MLC-006</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Missing Input Parameter - transactionID</td>
+    <td>Missing Input Parameter - transactionID</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_null_OTPChannel_IntegrationTest_Neg()'><b>Authentication_OTPGenerate_null_OTPChannel_IntegrationTest_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@12f795bb, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_null_OTPChannel_IntegrationTest_Neg<br/>
+<a href="#Output-1443817284" onClick='toggleBox("Output-1443817284", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1443817284" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1443817284">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "individualId": "7351720523",
+  "individualIdType": "UIN",
+  "otpChannel": "",
+  "requestTime": "2019-06-27T21:16:00.000+05:30",
+  "transactionID": "1825710775",
+  "version": "1.0"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1825710775",
+  "responseTime": "2019-06-27T21:18:22.043+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-007",
+      "errorMessage": "Request could not be processed. Please try again"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_null_OTPChannel_IntegrationTest_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_null_OTPChannel_IntegrationTest_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:22.043+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-MLC-007</td>
+    <td>IDA-MLC-007</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>Request could not be processed. Please try again</td>
+    <td>Request could not be processed. Please try again</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1825710775</td>
+    <td>1825710775</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_set_email_phone_false_IntegrationTest_Neg()'><b>Authentication_OTPGenerate_set_email_phone_false_IntegrationTest_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@1d13d1df, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_set_email_phone_false_IntegrationTest_Neg<br/>
+<a href="#Output-1875459960" onClick='toggleBox("Output-1875459960", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1875459960" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1875459960">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:16:00.000+05:30",
+  "otpChannel": [],
+  "id": "mosip.identity.otp",
+  "individualId": "7497827503",
+  "version": "1.0",
+  "individualIdType": "UIN",
+  "transactionID": "1652002083"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "1652002083",
+  "responseTime": "2019-06-27T21:18:22.788+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-008",
+      "errorMessage": "OTP Notification Channel not provided"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_set_email_phone_false_IntegrationTest_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_set_email_phone_false_IntegrationTest_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:22.788+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-OTA-008</td>
+    <td>IDA-OTA-008</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>OTP Notification Channel not provided</td>
+    <td>OTP Notification Channel not provided</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1652002083</td>
+    <td>1652002083</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+<tr>
+<td title='io.mosip.authentication.tests.OtpGeneration.Authentication_OTPGenerate_without_OTPChannel_IntegrationTest_Neg()'><b>Authentication_OTPGenerate_without_OTPChannel_IntegrationTest_Neg</b><br>Test class: io.mosip.authentication.tests.OtpGeneration (Authentication_OTPGenerate_With_Valid_Request_Phone_alone_IntegrationTest_Smoke_Pos)<br>Parameters: io.mosip.authentication.fw.util.TestParameters@e89860d, /ida/Otp/OtpGenerate, Authentication_OTPGenerate_without_OTPChannel_IntegrationTest_Neg<br/>
+<a href="#Output-1514087105" onClick='toggleBox("Output-1514087105", this, "Show output", "Hide output");'>Show output</a>
+
+<a href="#Output-1514087105" onClick="toggleAllBoxes();">Show all outputs</a>
+<div class='log' id="Output-1514087105">
+<b><u>Otp generation request</u></b><br/>
+<pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "requestTime": "2019-06-27T21:16:00.000+05:30",
+  "id": "mosip.identity.otp",
+  "individualId": "6157165214",
+  "version": "1.0",
+  "individualIdType": "UIN",
+  "transactionID": "0687532734"
+}</textarea></pre><br/>
+<b> Output validation for: </b>Status Code<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+<b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "0687532734",
+  "responseTime": "2019-06-27T21:18:25.675+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-OTA-008",
+      "errorMessage": "OTP Notification Channel not provided"
+    }
+  ]
+}</textarea></pre><br/>
+<b> Output validation for: </b>C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_without_OTPChannel_IntegrationTest_Neg\output-1-actual-res.json vs C:\MyData\MOSIP\MOSIP\git_mosip\v8\mosip\automationtests-refactor\target\classes\AuthenticationTestResource\ida\Otp\OtpGenerate\Authentication_OTPGenerate_without_OTPChannel_IntegrationTest_Neg\output-1-expected-n-res.json<br/>
+<table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>NOT VERIFIED</td>
+    <td>mosip.identity.otp</td>
+    <td bgcolor='LIGHTYELLOW'>WARNING</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>2019-06-27T21:18:25.675+05:30</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorCode</td>
+    <td>IDA-OTA-008</td>
+    <td>IDA-OTA-008</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>1.0</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>(errors)[0].errorMessage</td>
+    <td>OTP Notification Channel not provided</td>
+    <td>OTP Notification Channel not provided</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>0687532734</td>
+    <td>0687532734</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/>
+</div>
+</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.authentication.tests.OtpGeneration@28701274</td></tr>
+</table><p>
+</body>
+</html>

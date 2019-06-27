@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Mosip API Suite]">
+  <listeners>
+    <listener class-name="io.mosip.report.CustomTestNGReporter"/>
+    <listener class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener"/>
+    <listener class-name="io.mosip.authentication.e2e.E2EReport"/>
+  </listeners>
+  <test name="AuthenticationTest(failed)">
+    <classes>
+      <class name="io.mosip.authentication.tests.OtpGeneration">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="testData"/>
+          <include name="authTestTearDown"/>
+          <include name="setTestType"/>
+          <include name="otpGenerationTest" invocation-numbers="21"/>
+          <include name="testTearDown"/>
+          <include name="wakeDemoApp"/>
+          <include name="setResultTestName"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.OtpGeneration -->
+    </classes>
+  </test> <!-- AuthenticationTest(failed) -->
+</suite> <!-- Failed suite [Mosip API Suite] -->

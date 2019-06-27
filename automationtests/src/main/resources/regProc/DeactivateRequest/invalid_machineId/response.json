@@ -1,0 +1,11 @@
+{
+    "errors": [
+        {
+            "errorCode": "RPR-PGS-004",
+            "message": "Machine not Found"
+        }
+    ],
+    "id": "mosip.registration.packetgenerator",
+    "version": "1.0",
+    "responsetime": "2019-06-25T08:20:22.567Z"
+}

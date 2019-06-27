@@ -1,0 +1,224 @@
+<html>
+<head>
+<title>TestNG:  Kernel Tests</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>Kernel Tests</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>29/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Thu Jun 27 21:16:11 IST 2019</td>
+</tr>
+<tr><td>Total time:</td><td>10 seconds (10517 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_allValid_smoke()'><b>kernel_AuditLog_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_allValid_smoke_removing_optional_fields()'><b>kernel_AuditLog_allValid_smoke_removing_optional_fields</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: allValid_smoke_removing_optional_fields</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_actionTimeStamp_diff_format()'><b>kernel_AuditLog_invalid_actionTimeStamp_diff_format</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_actionTimeStamp_diff_format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationId_above64()'><b>kernel_AuditLog_invalid_applicationId_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationId_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationId_blank()'><b>kernel_AuditLog_invalid_applicationId_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationId_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationName_above128()'><b>kernel_AuditLog_invalid_applicationName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationName_blank()'><b>kernel_AuditLog_invalid_applicationName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_createdBy_Removing required Data()'><b>kernel_AuditLog_invalid_createdBy_Removing required Data</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_createdBy_Removing required Data</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_createdBy_above256()'><b>kernel_AuditLog_invalid_createdBy_above256</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_createdBy_above256</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_createdBy_blank()'><b>kernel_AuditLog_invalid_createdBy_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_createdBy_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventId_above64()'><b>kernel_AuditLog_invalid_eventId_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventId_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventId_blank()'><b>kernel_AuditLog_invalid_eventId_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventId_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventName_above128()'><b>kernel_AuditLog_invalid_eventName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventName_blank()'><b>kernel_AuditLog_invalid_eventName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventType_above64()'><b>kernel_AuditLog_invalid_eventType_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventType_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventType_blank()'><b>kernel_AuditLog_invalid_eventType_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventType_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostIp_above16()'><b>kernel_AuditLog_invalid_hostIp_above16</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostIp_above16</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostIp_blank()'><b>kernel_AuditLog_invalid_hostIp_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostIp_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostName_above128()'><b>kernel_AuditLog_invalid_hostName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostName_blank()'><b>kernel_AuditLog_invalid_hostName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_idType_above64()'><b>kernel_AuditLog_invalid_idType_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_idType_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_idType_blank()'><b>kernel_AuditLog_invalid_idType_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_idType_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_id_above64()'><b>kernel_AuditLog_invalid_id_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_id_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_id_blank()'><b>kernel_AuditLog_invalid_id_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_id_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_requestBody_format()'><b>kernel_AuditLog_invalid_requestBody_format</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_requestBody_format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserId_above256()'><b>kernel_AuditLog_invalid_sessionUserId_above256</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserId_above256</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserId_blank()'><b>kernel_AuditLog_invalid_sessionUserId_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserId_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserName_above128()'><b>kernel_AuditLog_invalid_sessionUserName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserName_blank()'><b>kernel_AuditLog_invalid_sessionUserName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@1e9e725a</td></tr>
+</table><p>
+</body>
+</html>
