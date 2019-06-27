@@ -23,6 +23,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.UnexpectedException;
 import io.mosip.registration.processor.packet.receiver.builder.PacketReceiverResponseBuilder;
+import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.receiver.exception.PacketReceiverAppException;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
@@ -175,7 +176,7 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 			listObj.add(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 			listObj.add(env.getProperty(APPLICATION_VERSION));
 			if (messageDTO.getIsValid()) {
-				String responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
+				PacketReceiverResponseDTO responseData=PacketReceiverResponseBuilder.buildPacketReceiverResponse(StatusMessage.PACKET_RECEIVED.toString(), listObj);
 				this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 			}
 		} catch (IOException e) {
@@ -233,9 +234,9 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	private File getFileFromCtx(RoutingContext ctx) throws IOException {
 
 		FileUpload fileUpload = ctx.fileUploads().iterator().next();
-		FileUtils.copyFile(new File(fileUpload.uploadedFileName()),
-				new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
-		File file = new File(new File(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
+		FileUtils.copyFile(FileUtils.getFile(fileUpload.uploadedFileName()),
+				FileUtils.getFile(FileUtils.getFile(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName()));
+		File file = FileUtils.getFile(FileUtils.getFile(fileUpload.uploadedFileName()).getParent() + "/" + fileUpload.fileName());
 		return file;
 
 	}

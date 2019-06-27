@@ -149,9 +149,9 @@ public class RegistrationSyncExceptionHandler {
 		if(isEnabled) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
-			return ResponseEntity.ok().headers(headers).body(gson.toJson(response));
+			return ResponseEntity.ok().headers(headers).body(response);
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
 

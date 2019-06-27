@@ -388,7 +388,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		HMACUtils.update(isbytearray);
 		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 		String packetHashSequence = regEntity.getPacketHashValue();
-		if (!(packetHashSequence.equals(hashSequence))) {
+		if (!(MessageDigest.isEqual(packetHashSequence.getBytes(),hashSequence.getBytes()))) {
 			description.setMessage(PacketReceiverConstant.UNEQUAL_PACKET_HASH_PR
 					+ registrationId);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

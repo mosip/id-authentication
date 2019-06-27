@@ -372,7 +372,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		HMACUtils.update(isbytearray);
 		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 		String packetHashSequence = regEntity.getPacketHashValue();
-		if (!(packetHashSequence.equals(hashSequence))) {
+		if (!(MessageDigest.isEqual(packetHashSequence.getBytes(),hashSequence.getBytes()))) {
 			description.setMessage("The Registration Packet HashSequence is not equal as synced packet HashSequence"
 					+ registrationId);
 			dto.setLatestTransactionStatusCode(
