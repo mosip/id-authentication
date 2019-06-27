@@ -27,9 +27,6 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.exception.AuthenticationException;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
@@ -55,9 +52,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 	/** The env. */
 	@Autowired
 	private RestTemplate restTemplate;
-	
-	@Autowired
-	private ObjectMapper mapper;
 
 	/** The interceptor. */
 	@Autowired
@@ -83,8 +77,6 @@ public class IdRepoConfig implements WebMvcConfigurer {
 
 	@PostConstruct
 	public void init() {
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		
 		restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
 
 			@Override
