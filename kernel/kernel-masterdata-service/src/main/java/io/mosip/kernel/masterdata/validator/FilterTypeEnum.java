@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.validator;
 
 public enum FilterTypeEnum {
-	IN("in"), STARTSWITH("startsWith"), BETWEEN("between"), EQUALS("equals");
+	CONTAINS("contains"), STARTSWITH("startsWith"), BETWEEN("between"), EQUALS("equals");
 
 	private String type;
 

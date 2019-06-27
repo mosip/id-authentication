@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.dto.request;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,9 +18,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SearchFilter {
 
-	@NotNull
+	@NotBlank
 	private String columnName;
 
+	@NotBlank
 	private String type;
 
 	private String value;

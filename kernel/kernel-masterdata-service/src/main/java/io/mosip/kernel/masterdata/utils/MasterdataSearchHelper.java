@@ -321,6 +321,9 @@ public class MasterdataSearchHelper {
 			if (Double.class.getName().equals(fieldType)) {
 				return Double.parseDouble(value);
 			}
+			if (Boolean.class.getName().equals(fieldType)) {
+				return Boolean.valueOf(value);
+			}
 		}
 		return value;
 	}
