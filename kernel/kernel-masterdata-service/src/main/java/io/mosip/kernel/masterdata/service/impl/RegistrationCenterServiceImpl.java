@@ -24,7 +24,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
@@ -33,7 +32,6 @@ import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorC
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
-import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
@@ -52,7 +50,6 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -713,18 +710,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Override
 	@Transactional
 	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
-			Set<RegistrationCenterReqAdmDto> reqRegistarionCenterReqDto) {
+			List<RegistrationCenterReqAdmDto> reqRegistarionCenterReqDto) {
 		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
 		RegistrationCenterHistory registrationCenterHistoryEntity = null;
 		List<RegistrationCenter> registrationCenterList = new ArrayList<>();
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		Set<String> inputLangCodeSet = new HashSet<>();
 		List<String> inputIdList = new ArrayList<>();
+		List<String> idLangList  = new ArrayList<>();
 
 		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 			try {	
 					Float.parseFloat(registrationCenterDto.getLatitude());
 					Float.parseFloat(registrationCenterDto.getLongitude());
+					idLangList.add(registrationCenterDto.getLangCode()+registrationCenterDto.getId());
 	
 			} catch (NumberFormatException latLongParseException) {
 				throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
@@ -744,6 +743,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		if (new HashSet<String>(inputIdList).size() > 1) {
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
+		}
+		// validate to check duplicate ID and LanguageCode pair
+		if((new HashSet<String>(idLangList).size()) != idLangList.size()) {
+			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());	
 		}
 
 		try {
@@ -797,30 +801,39 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Transactional
 	@Override
 	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
-			Set<RegistrationCenterPutReqAdmDto> reqRegistarionCenterReqDto) {
+			List<RegistrationCenterPutReqAdmDto> reqRegistarionCenterReqDto) {
 		RegistrationCenter updRegistrationCenter = null;
 		RegistrationCenter updRegistrationCenterEntity = null;
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		List<RegistrationCenterPutReqAdmDto> notUpdRegistrationCenterList = new ArrayList<>();
 		List<RegistrationCenter> updRegistrationCenterList = new ArrayList<>();
 
-		List<String> inputLangCodeList = new ArrayList<>();
+		Set<String> inputLangCodeSet = new HashSet<>();
 		List<String> inputIdList = new ArrayList<>();
+		List<String> idLangList  = new ArrayList<>();
 
+		
 		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
-			inputLangCodeList.add(registrationCenterDto.getLangCode());
+			inputLangCodeSet.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
+			idLangList.add(registrationCenterDto.getLangCode()+registrationCenterDto.getId());
+			
 		}
         //validate to check if data is received in all configured languages
-		if (!inputLangCodeList.containsAll(supLanguages)) {
+		if (!inputLangCodeSet.containsAll(supLanguages)) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
-		//validate to check if data is received for only one registration center
+		//validate to check if data is received for only one registration center or not
 		if (new HashSet<String>(inputIdList).size() > 1) {
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
+		}
+		// validate to check duplicate pair of ID and LanguageCode
+		if((new HashSet<String>(idLangList).size()) != idLangList.size()) {
+			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());	
 		}
 
 		try {

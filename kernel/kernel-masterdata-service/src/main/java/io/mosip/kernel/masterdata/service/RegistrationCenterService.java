@@ -1,12 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
-import java.util.Set;
 
-import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.PageDto;
-import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
@@ -16,7 +12,6 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -200,7 +195,7 @@ public interface RegistrationCenterService {
 	 * @return RegistrationCenterPostResponseDto - return created registration centers complete DTO
 	 */
 	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
-			Set<RegistrationCenterReqAdmDto> reqRegistrationCenterDto);
+			List<RegistrationCenterReqAdmDto> reqRegistrationCenterDto);
 
 	/**
 	 * This method updates the registration center by admin.
@@ -211,6 +206,6 @@ public interface RegistrationCenterService {
 	 * @return RegistrationCenterPutResponseDto - return updated registration centers complete DTO
 	 */
 	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
-			Set<RegistrationCenterPutReqAdmDto> registrationCenterDto);
+			List<RegistrationCenterPutReqAdmDto> registrationCenterDto);
 
 }

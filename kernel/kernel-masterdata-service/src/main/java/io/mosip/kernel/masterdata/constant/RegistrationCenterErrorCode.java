@@ -19,6 +19,7 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_REQUEST_EXCEPTION("KER-MSD-YYY", "Bad Request Found"),
 	REGISTRATION_CENTER_LANGUAGE_EXCEPTION("KER-MSD-ZZZ", "Please make sure that entered Data is persent in all Languges supportted by MOSIP"),
 	REGISTRATION_CENTER_ID_EXCEPTION("KER-MSD-NNN", "Please make sure that enter All IDs must be same"),
+	REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION("KER-MSD-NNN", "ID and LangCode Combination is duplicate"),
 	DEPENDENCY_EXCEPTION("KER-MSD-149", "Cannot delete as dependency found"),
 
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
