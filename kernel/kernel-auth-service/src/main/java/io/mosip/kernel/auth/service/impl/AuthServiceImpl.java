@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.http.cookie.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -485,8 +486,8 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public MosipUserDto valdiateToken(String token) throws JsonParseException, JsonMappingException, IOException {
 		Map<String, String> pathparams = new HashMap<>();
-		
-        token=token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
+
+		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
 		pathparams.put("realmId", "mosip");
 		ResponseEntity<String> response = null;
 		MosipUserDto mosipUserDto = null;
@@ -494,7 +495,7 @@ public class AuthServiceImpl implements AuthService {
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString());
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + token);
-		
+
 		HttpEntity<?> httpRequest = new HttpEntity(headers);
 		try {
 			response = restTemplate.exchange(uriComponentsBuilder.buildAndExpand(pathparams).toUriString(),
@@ -530,6 +531,8 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	@Override
 	public AuthResponseDto logoutUser(String token) {
+
+		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
 		Map<String, String> pathparams = new HashMap<>();
 		pathparams.put("realmId", "mosip");
 		ResponseEntity<String> response = null;
@@ -558,8 +561,6 @@ public class AuthServiceImpl implements AuthService {
 
 	private MosipUserDto getClaims(String cookie) {
 		DecodedJWT decodedJWT = JWT.decode(cookie);
-		Claim iat = decodedJWT.getClaim("iat");
-		Claim nbf = decodedJWT.getClaim("nbf");
 
 		Claim realmAccess = decodedJWT.getClaim("realm_access");
 

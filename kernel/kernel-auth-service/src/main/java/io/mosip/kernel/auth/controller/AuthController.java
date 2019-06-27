@@ -522,13 +522,62 @@ public class AuthController {
 		return responseWrapper;
 	}
 
+	/**
+	 * 
+	 * @param req
+	 *            - {@link HttpServletRequest}
+	 * @param res
+	 *            - {@link HttpServletResponse}
+	 * @return {@link ResponseWrapper}
+	 */
 	@ResponseFilter
 	@DeleteMapping(value = "/logout/user")
-	public ResponseWrapper<AuthResponseDto> logoutUser(
-			@CookieValue(value = "Authorization", required = false) String token) {
+	public ResponseWrapper<AuthResponseDto> logoutUser(HttpServletRequest req, HttpServletResponse res) {
+		String token = getTokenFromCookie(req);
 		AuthResponseDto authResponseDto = authService.logoutUser(token);
 		ResponseWrapper<AuthResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authResponseDto);
 		return responseWrapper;
+	}
+
+	/**
+	 * Gets Access token from cookie
+	 * 
+	 * @param req
+	 *            - {@link HttpServletRequest}
+	 * @return {@link String} - accessToken
+	 */
+	private String getTokenFromCookie(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		String token = null;
+		if (cookies == null) {
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
+				token = cookie.getValue();
+				removeCookie(cookie);
+				break;
+			}
+		}
+		if (token == null) {
+			throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
+		}
+
+		return token;
+	}
+
+	/**
+	 * Erases Cookie from browser
+	 * 
+	 * @param cookie
+	 *            - {@link Cookie}
+	 */
+	private void removeCookie(Cookie cookie) {
+		cookie.setValue("");
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
 	}
 }
