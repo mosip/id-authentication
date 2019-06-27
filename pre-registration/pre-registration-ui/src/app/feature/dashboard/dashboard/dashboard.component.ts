@@ -80,9 +80,8 @@ export class DashBoardComponent implements OnInit {
     private autoLogout: AutoLogoutService,
     private translate: TranslateService,
     private configService: ConfigService,
-    private loggerService: LogService
-  ) // private errorService: ErrorService
-  {
+    private loggerService: LogService // private errorService: ErrorService
+  ) {
     this.translate.use(this.primaryLangCode);
     localStorage.setItem('modifyDocument', 'false');
   }
@@ -104,10 +103,6 @@ export class DashBoardComponent implements OnInit {
       this.autoLogout.getValues(this.primaryLangCode);
       this.autoLogout.continueWatching();
     }
-
-    // this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
-    //   if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
-    // });
     let factory = new LanguageFactory(this.primaryLangCode);
     let response = factory.getCurrentlanguage();
     this.secondaryLanguagelabels = response['dashboard'].discard;
@@ -246,7 +241,6 @@ export class DashBoardComponent implements OnInit {
 
     let primaryIndex = 0;
     let secondaryIndex = 1;
-    //new dashboard api applicantResponse['demographicMetadata']
     let lang =
       applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];
     if (lang !== this.primaryLangCode) {
@@ -255,7 +249,6 @@ export class DashBoardComponent implements OnInit {
     }
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
-      //new dashboard api ['demographicMetadata']
       name:
         applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex][
           'value'
@@ -271,12 +264,10 @@ export class DashBoardComponent implements OnInit {
         : '-',
       status: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
       regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto],
-      //new dashboard api ['demographicMetadata']
       nameInSecondaryLanguage:
         applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][
           secondaryIndex
         ]['value'],
-      //new dashboard api ['demographicMetadata']
       postalCode: applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
     };
 
@@ -622,12 +613,6 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private getErrorLabels() {
-    // return new Promise(resolve => {
-    //   this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
-    //     this.errorLanguagelabels = response['error'];
-    //     resolve(true);
-    //   });
-    // });
     let factory = new LanguageFactory(this.primaryLangCode);
     let response = factory.getCurrentlanguage();
     this.errorLanguagelabels = response['error'];
