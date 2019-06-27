@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.hibernate.Interceptor;
@@ -15,6 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.idrepository.core.constant.IdRepoConstants;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
@@ -34,6 +38,9 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private ObjectMapper mapper;
 
 	/** The Interceptor. */
 	@Autowired
@@ -61,6 +68,11 @@ public class VidRepoConfig extends HibernateDaoConfig {
 	 */
 	public void setAllowedStatus(List<String> status) {
 		this.allowedStatus = status;
+	}
+	
+	@PostConstruct
+	public void init() {
+		mapper.setSerializationInclusion(Include.NON_NULL);
 	}
 
 	/**
