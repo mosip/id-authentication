@@ -94,6 +94,13 @@ public class BIR {
 	}
 
 	/**
+	 * @return the sbInfo
+	 */
+	public List<BIR> getBirList() {
+		return birList;
+	}
+	
+	/**
 	 * @param birList the birList to set
 	 */
 	public void setBirList(List<BIR> birList) {
