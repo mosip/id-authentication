@@ -7,7 +7,7 @@
 |         |          |
 |----------|----------|
 SubmittedBy|Ravi C Balaji
-Date Raised | 25-Jun-2019
+Date Raised | 27-Jun-2019
 Jenkins Build #	|Min Version : 2235 [Any later version also]
 Objective & Scope of Release| Pre-registration module
 Acceptance Criteria	| Unit Testing and Code Coverage > 85%
@@ -157,7 +157,19 @@ MOS-25549|Closed|Yes
 MOS-25546|Closed|Yes
 MOS-25535|Closed|Yes
 
-### 1.8 Known Defects list : Fixed and will be available in code drop 12.14
+### 1.8 Ready for IVV Defects list :
+Defect JIRA ID|Status|Availabilty in the branch
+---------------|-------------|------------------
+MOS-26109|Ready for ivv|Yes
+MOS-26086|Ready for ivv|Yes
+MOS-25734|Ready for ivv|Yes
+MOS-25716|Ready for ivv|Yes
+MOS-25632|Ready for ivv|Yes
+MOS-25524|Ready for ivv|Yes
+MOS-25520|Ready for ivv|Yes
+MOS-25513|Ready for ivv|Yes
+
+### 1.9 Known Defects list : Fixed and will be available in code drop 12.14
 Defect JIRA ID|Status
 ---------------|-------------
 MOS-26396|Fixed
