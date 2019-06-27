@@ -315,8 +315,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(idValue);
 
-		String queryParamName = null;  //"type";
-		String queryParamValue =null; // "all";
+		String queryParamName = "type";
+		String queryParamValue = "all";
 
 		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
 				queryParamName, queryParamValue, IdResponseDTO1.class);
