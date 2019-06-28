@@ -8,10 +8,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,7 +128,26 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * get list of languages supported by MOSIP from configuration file
 	 */
 	@Value("#{'${mosip.supported-languages}'.split(',')}")
-	Set<String> supLanguages;
+	private Set<String> supLanguages;
+
+	/**
+	 * minimum digits after decimal point in Longitude and latitude
+	 */
+	@Value("${mosip.min-digit-longitude-latitude:4}")
+	private int minDegits;
+
+	private String negRegex ;
+	private String posRegex ;
+	
+	/**
+	 * Constructing regex for matching the Latitude and Longitude format
+	 */
+			
+	@PostConstruct
+	public void constructRegEx() {
+		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
+		posRegex =    "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -352,46 +373,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
-	 */
-	/*
-	 * @Override public IdResponseDto createRegistrationCenter(RegistrationCenterDto
-	 * registrationCenterDto) { try { if
-	 * (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude()) &&
-	 * !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
-	 * Float.parseFloat(registrationCenterDto.getLatitude());
-	 * Float.parseFloat(registrationCenterDto.getLongitude()); } } catch
-	 * (NullPointerException | NumberFormatException latLongParseException) { throw
-	 * new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.
-	 * getErrorCode(),
-	 * ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage() +
-	 * ExceptionUtils.parseException(latLongParseException)); } RegistrationCenter
-	 * registrationCenterEntity = new RegistrationCenter(); registrationCenterEntity
-	 * = MetaDataUtils.setCreateMetaData(registrationCenterDto,
-	 * registrationCenterEntity.getClass()); RegistrationCenterHistory
-	 * registrationCenterHistoryEntity = MetaDataUtils
-	 * .setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
-	 * registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.
-	 * getCreatedDateTime());
-	 * registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.
-	 * getCreatedDateTime()); RegistrationCenter registrationCenter; try {
-	 * registrationCenter =
-	 * registrationCenterRepository.create(registrationCenterEntity);
-	 * registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-	 * } catch (DataAccessLayerException | DataAccessException exception) { throw
-	 * new
-	 * MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.
-	 * getErrorCode(),
-	 * ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " " +
-	 * ExceptionUtils.parseException(exception)); } IdResponseDto idResponseDto =
-	 * new IdResponseDto(); idResponseDto.setId(registrationCenter.getId()); return
-	 * idResponseDto; }
-	 */
 
 	/*
 	 * (non-Javadoc)
@@ -731,17 +712,18 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		String regCenterID = registrationCenterIdGenerator.generateRegistrationCenterId();
 
 		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
-			try {
-				Float.parseFloat(registrationCenterDto.getLatitude());
-				Float.parseFloat(registrationCenterDto.getLongitude());
-
-			} catch (NumberFormatException latLongParseException) {
+			String latitude = registrationCenterDto.getLatitude();
+			String longitude = registrationCenterDto.getLongitude();
+			
+			//validate to check the format of latitude and longitude
+			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)) )) {
 				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_REQUEST_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_REQUEST_EXCEPTION.getErrorMessage()
-								+ ExceptionUtils.parseException(latLongParseException));
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
 			}
 			inputLangCodeList.add(registrationCenterDto.getLangCode());
+			
 		}
 		// validate to check if data is received in all configured languages
 		if (!new HashSet<String>(inputLangCodeList).containsAll(supLanguages)) {
@@ -750,7 +732,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
 
-		// validate to check LanguageCode input 
+		// validate to check LanguageCode duplicate input
 		if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
@@ -827,6 +809,17 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<String> idLangList = new ArrayList<>();
 
 		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+			String latitude = registrationCenterDto.getLatitude();
+			String longitude = registrationCenterDto.getLongitude();
+			
+			//validation to check the format of latitude and longitude
+			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)) )) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
+			}
+			
 			inputLangCodeSet.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
 			idLangList.add(registrationCenterDto.getLangCode() + registrationCenterDto.getId());

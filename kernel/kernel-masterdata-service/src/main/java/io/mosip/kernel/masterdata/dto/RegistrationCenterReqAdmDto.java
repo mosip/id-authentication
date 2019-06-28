@@ -91,11 +91,9 @@ public class RegistrationCenterReqAdmDto {
 	@Size(min = 1, max = 128)
 	private String contactPerson;
 
-	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime lunchStartTime;
 
-	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime lunchEndTime;
 

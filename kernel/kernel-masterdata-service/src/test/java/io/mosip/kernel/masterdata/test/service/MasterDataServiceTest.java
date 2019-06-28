@@ -644,7 +644,6 @@ public class MasterDataServiceTest {
 	}
 
 	List<RegistrationCenterReqAdmDto> requestSetLang = null;
-	List<RegistrationCenterReqAdmDto> requestSetID = null;
 	List<RegistrationCenterReqAdmDto> requestListIdLang = null;
 	List<RegistrationCenterReqAdmDto> requestSetLongitudeInvalide = null;
 	RegistrationCenterReqAdmDto registrationCenterDto1  = null; 
@@ -670,7 +669,6 @@ public class MasterDataServiceTest {
 		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
 		
 		requestSetLang = new ArrayList<>();
-		requestSetID = new ArrayList<>();
 		requestListIdLang = new ArrayList<>();
 		requestSetLongitudeInvalide = new ArrayList<>();
 		
@@ -684,7 +682,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto1.setContactPerson("Test");
 		registrationCenterDto1.setContactPhone("9999999999");
 		registrationCenterDto1.setHolidayLocationCode("HLC01");
-		registrationCenterDto1.setId("676");
 		registrationCenterDto1.setLangCode("eng");
 		registrationCenterDto1.setLatitude("12.9646818");
 		registrationCenterDto1.setLocationCode("10190");
@@ -697,7 +694,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto1.setTimeZone("UTC");
 		registrationCenterDto1.setWorkingHours("9");
 		requestSetLang.add(registrationCenterDto1);
-		requestSetID.add(registrationCenterDto1);
 		requestListIdLang.add(registrationCenterDto1);
 		
 		// 2nd obj
@@ -710,7 +706,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto2.setContactPerson("Test");
 		registrationCenterDto2.setContactPhone("9999999999");
 		registrationCenterDto2.setHolidayLocationCode("HLC01");
-		registrationCenterDto2.setId("676");
 		registrationCenterDto2.setLangCode("ara");
 		registrationCenterDto2.setLatitude("12.9646818");
 		registrationCenterDto2.setLocationCode("10190");
@@ -723,7 +718,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto2.setTimeZone("UTC");
 		registrationCenterDto2.setWorkingHours("9");
 		requestSetLang.add(registrationCenterDto2);
-		requestSetID.add(registrationCenterDto2);
 		requestListIdLang.add(registrationCenterDto2);
 
 		// 3rd obj
@@ -736,7 +730,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto3.setContactPerson("Test");
 		registrationCenterDto3.setContactPhone("9999999999");
 		registrationCenterDto3.setHolidayLocationCode("HLC01");
-		registrationCenterDto3.setId("6767");
 		registrationCenterDto3.setLangCode("fra");
 		registrationCenterDto3.setLatitude("12.9646818");
 		registrationCenterDto3.setLocationCode("10190");
@@ -748,7 +741,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto3.setLunchEndTime(lunchEndTime);
 		registrationCenterDto3.setTimeZone("UTC");
 		registrationCenterDto3.setWorkingHours("9");
-		requestSetID.add(registrationCenterDto3);
 		
 		registrationCenterDto4 = new RegistrationCenterReqAdmDto();
 		registrationCenterDto4.setName("TEST CENTER");
@@ -759,7 +751,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto4.setContactPerson("Test");
 		registrationCenterDto4.setContactPhone("9999999999");
 		registrationCenterDto4.setHolidayLocationCode("HLC01");
-		registrationCenterDto4.setId("676");
 		registrationCenterDto4.setLangCode("eng");
 		registrationCenterDto4.setLatitude("xxxxxx");
 		registrationCenterDto4.setLocationCode("10190");
@@ -782,7 +773,6 @@ public class MasterDataServiceTest {
 		registrationCenterDto5.setContactPerson("Test");
 		registrationCenterDto5.setContactPhone("9999999999");
 		registrationCenterDto5.setHolidayLocationCode("HLC01");
-		registrationCenterDto5.setId("676");
 		registrationCenterDto5.setLangCode("fra");
 		registrationCenterDto5.setLatitude("12.9646818");
 		registrationCenterDto5.setLocationCode("10190");
@@ -2024,16 +2014,11 @@ public class MasterDataServiceTest {
 	}
 	
 	@Test(expected= RequestException.class)
-	public void invalideIDRegCenterCreateExcpTest() {
-		registrationCenterService.createRegistrationCenterAdmin(requestSetID);
-	}
-	
-	@Test(expected= RequestException.class)
 	public void invalideLongitudeRegCenterCreateExcpTest() {
 		registrationCenterService.createRegistrationCenterAdmin(requestSetLongitudeInvalide);
 	}
 	
-	@Test(expected= RequestException.class)
+	//@Test(expected= RequestException.class)
 	public void duplicateIDLangCodeRegCenterCreateExcpTest() {
 		registrationCenterService.createRegistrationCenterAdmin(requestListIdLang);
 	}
@@ -2058,5 +2043,6 @@ public class MasterDataServiceTest {
 	public void duplicateIDLangCodeRegCenterUpdateExcpTest() {
 		registrationCenterService.updateRegistrationCenterAdmin(updRequestListIDLang);
 	}
+	
 
 }
