@@ -643,8 +643,8 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
-	List<RegistrationCenterReqAdmDto> requestSetLang = null;
-	List<RegistrationCenterReqAdmDto> requestListIdLang = null;
+	List<RegistrationCenterReqAdmDto> requestNotAllLang = null;
+	List<RegistrationCenterReqAdmDto> requestDuplicateLang = null;
 	List<RegistrationCenterReqAdmDto> requestSetLongitudeInvalide = null;
 	RegistrationCenterReqAdmDto registrationCenterDto1  = null; 
 	RegistrationCenterReqAdmDto registrationCenterDto2  = null; 
@@ -668,8 +668,8 @@ public class MasterDataServiceTest {
 		LocalTime lunchEndTime = LocalTime.of(1, 10, 10, 30);
 		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
 		
-		requestSetLang = new ArrayList<>();
-		requestListIdLang = new ArrayList<>();
+		requestNotAllLang = new ArrayList<>();
+		requestDuplicateLang = new ArrayList<>();
 		requestSetLongitudeInvalide = new ArrayList<>();
 		
 		// 1st obj
@@ -693,8 +693,8 @@ public class MasterDataServiceTest {
 		registrationCenterDto1.setLunchEndTime(lunchEndTime);
 		registrationCenterDto1.setTimeZone("UTC");
 		registrationCenterDto1.setWorkingHours("9");
-		requestSetLang.add(registrationCenterDto1);
-		requestListIdLang.add(registrationCenterDto1);
+		requestNotAllLang.add(registrationCenterDto1);
+		requestDuplicateLang.add(registrationCenterDto1);
 		
 		// 2nd obj
 		registrationCenterDto2 = new RegistrationCenterReqAdmDto();
@@ -717,8 +717,8 @@ public class MasterDataServiceTest {
 		registrationCenterDto2.setLunchEndTime(lunchEndTime);
 		registrationCenterDto2.setTimeZone("UTC");
 		registrationCenterDto2.setWorkingHours("9");
-		requestSetLang.add(registrationCenterDto2);
-		requestListIdLang.add(registrationCenterDto2);
+		requestNotAllLang.add(registrationCenterDto2);
+		requestDuplicateLang.add(registrationCenterDto2);
 
 		// 3rd obj
 		registrationCenterDto3 = new RegistrationCenterReqAdmDto();
@@ -752,7 +752,7 @@ public class MasterDataServiceTest {
 		registrationCenterDto4.setContactPhone("9999999999");
 		registrationCenterDto4.setHolidayLocationCode("HLC01");
 		registrationCenterDto4.setLangCode("eng");
-		registrationCenterDto4.setLatitude("xxxxxx");
+		registrationCenterDto4.setLatitude("-7.333");
 		registrationCenterDto4.setLocationCode("10190");
 		registrationCenterDto4.setLongitude("77.70168");
 		registrationCenterDto4.setPerKioskProcessTime(perKioskProcessTime);
@@ -784,8 +784,8 @@ public class MasterDataServiceTest {
 		registrationCenterDto5.setLunchEndTime(lunchEndTime);
 		registrationCenterDto5.setTimeZone("UTC");
 		registrationCenterDto5.setWorkingHours("9");
-		requestListIdLang.add(registrationCenterDto5);
-		requestListIdLang.add(registrationCenterDto5);
+		requestDuplicateLang.add(registrationCenterDto5);
+		requestDuplicateLang.add(registrationCenterDto5);
 		
 	}
 
@@ -806,9 +806,9 @@ public class MasterDataServiceTest {
 	}
 	
 	
-	List<RegistrationCenterPutReqAdmDto> updRequestSetLang = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestListID = null;
-	List<RegistrationCenterPutReqAdmDto> updRequestListIDLang = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestNotAllLang = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestInvalideID = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestDuplicateIDLang = null;
 	List<RegistrationCenterPutReqAdmDto> updRequestSetLongitudeInvalide = null;
 	
 	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto1 = null;
@@ -834,9 +834,9 @@ public class MasterDataServiceTest {
 		LocalTime lunchEndTime = LocalTime.of(1, 10, 10, 30);
 		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
 		
-		updRequestSetLang = new ArrayList<>();
-		updRequestListID = new ArrayList<>();
-		updRequestListIDLang = new ArrayList<>();
+		updRequestNotAllLang = new ArrayList<>();
+		updRequestInvalideID = new ArrayList<>();
+		updRequestDuplicateIDLang = new ArrayList<>();
 		updRequestSetLongitudeInvalide = new ArrayList<>();
 		
 		// 1st obj
@@ -862,9 +862,9 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto1.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto1.setWorkingHours("9");
 		registrationCenterPutReqAdmDto1.setIsActive(false);
-		updRequestSetLang.add(registrationCenterPutReqAdmDto1);
-		updRequestListID.add(registrationCenterPutReqAdmDto1);
-		updRequestListIDLang.add(registrationCenterPutReqAdmDto1);
+		updRequestNotAllLang.add(registrationCenterPutReqAdmDto1);
+		updRequestInvalideID.add(registrationCenterPutReqAdmDto1);
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto1);
 		
 		// 2nd obj
 		registrationCenterPutReqAdmDto2 = new RegistrationCenterPutReqAdmDto();
@@ -889,9 +889,9 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto2.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto2.setWorkingHours("9");
 		registrationCenterPutReqAdmDto2.setIsActive(false);
-		updRequestSetLang.add(registrationCenterPutReqAdmDto2);
-		updRequestListID.add(registrationCenterPutReqAdmDto2);
-		updRequestListIDLang.add(registrationCenterPutReqAdmDto2);
+		updRequestNotAllLang.add(registrationCenterPutReqAdmDto2);
+		updRequestInvalideID.add(registrationCenterPutReqAdmDto2);
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto2);
 
 		// 3rd obj
 		registrationCenterPutReqAdmDto3 = new RegistrationCenterPutReqAdmDto();
@@ -916,7 +916,7 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto3.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto3.setWorkingHours("9");
 		registrationCenterPutReqAdmDto3.setIsActive(false);
-		updRequestListID.add(registrationCenterPutReqAdmDto3);
+		updRequestInvalideID.add(registrationCenterPutReqAdmDto3);
 		
 		
 		registrationCenterPutReqAdmDto4 = new RegistrationCenterPutReqAdmDto();
@@ -965,8 +965,8 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto5.setTimeZone("UTC");
 		registrationCenterPutReqAdmDto5.setWorkingHours("9");
 		registrationCenterPutReqAdmDto5.setIsActive(false);
-		updRequestListIDLang.add(registrationCenterPutReqAdmDto5);
-		updRequestListIDLang.add(registrationCenterPutReqAdmDto5);
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto5);
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto5);
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------//
@@ -2010,7 +2010,7 @@ public class MasterDataServiceTest {
 	// ---------------------------------Registration Center TestCases----------------------------------
 	@Test(expected= RequestException.class)
 	public void notAllCongfLangRegCenterCreateExcpTest() {
-		registrationCenterService.createRegistrationCenterAdmin(requestSetLang);
+		registrationCenterService.createRegistrationCenterAdmin(requestNotAllLang);
 	}
 	
 	@Test(expected= RequestException.class)
@@ -2018,20 +2018,20 @@ public class MasterDataServiceTest {
 		registrationCenterService.createRegistrationCenterAdmin(requestSetLongitudeInvalide);
 	}
 	
-	//@Test(expected= RequestException.class)
-	public void duplicateIDLangCodeRegCenterCreateExcpTest() {
-		registrationCenterService.createRegistrationCenterAdmin(requestListIdLang);
+	@Test(expected= RequestException.class)
+	public void duplicateLangCodeRegCenterCreateExcpTest() {
+		registrationCenterService.createRegistrationCenterAdmin(requestDuplicateLang);
 	}
 	
 	// ----------------------- update Registration center-----------------------
 	@Test(expected= RequestException.class)
 	public void notAllCongfLangRegCenterUpdateExcpTest() {
-		registrationCenterService.updateRegistrationCenterAdmin(updRequestSetLang);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestNotAllLang);
 	}
 	
 	@Test(expected= RequestException.class)
 	public void invalideIDRegCenterUpdateExcpTest() {
-		registrationCenterService.updateRegistrationCenterAdmin(updRequestListID);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestInvalideID);
 	}
 	
 	@Test(expected= RequestException.class)
@@ -2041,7 +2041,7 @@ public class MasterDataServiceTest {
 	
 	@Test(expected= RequestException.class)
 	public void duplicateIDLangCodeRegCenterUpdateExcpTest() {
-		registrationCenterService.updateRegistrationCenterAdmin(updRequestListIDLang);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestDuplicateIDLang);
 	}
 	
 
