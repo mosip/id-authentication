@@ -1,23 +1,49 @@
 package io.mosip.kernel.auth.service.impl;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
+import io.mosip.kernel.auth.dto.AuthResponseDto;
 import io.mosip.kernel.auth.dto.AuthToken;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.BasicTokenDto;
 import io.mosip.kernel.auth.dto.ClientSecret;
+import io.mosip.kernel.auth.dto.KeycloakErrorResponseDto;
 import io.mosip.kernel.auth.dto.LoginUser;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
@@ -25,6 +51,7 @@ import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
+import io.mosip.kernel.auth.dto.RealmAccessDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
 import io.mosip.kernel.auth.dto.TimeToken;
 import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
@@ -76,7 +103,19 @@ public class AuthServiceImpl implements AuthService {
 	UinService uinService;
 
 	@Autowired
+	private HttpServletRequest request;
+
+	@Autowired
 	MosipEnvironment mosipEnvironment;
+
+	@Autowired
+	ObjectMapper objectmapper;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Value("${mosip.kernel.open-id-uri}")
+	private String openIdUrl;
 
 	/**
 	 * Method used for validating Auth token
@@ -276,7 +315,7 @@ public class AuthServiceImpl implements AuthService {
 					mosipToken = null;
 					System.out.println("Token expired for user "+authToken);
 				} else {
-					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(),auth);
+					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(), auth);
 				}
 			}
 			if (authToken != null && mosipToken != null) {
@@ -456,6 +495,107 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public UserDetailsResponseDto getUserDetailBasedOnUserId(String appId, List<String> userIds) {
 		return userStoreFactory.getDataStoreBasedOnApp(appId).getUserDetailBasedOnUid(userIds);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public MosipUserDto valdiateToken(String token) throws IOException {
+		Map<String, String> pathparams = new HashMap<>();
+
+		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
+		pathparams.put("realmId", "mosip");
+		ResponseEntity<String> response = null;
+		MosipUserDto mosipUserDto = null;
+		StringBuilder urlBuilder = new StringBuilder().append(openIdUrl).append("userinfo");
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString());
+		HttpHeaders headers = new HttpHeaders();
+		String accessToken="Bearer " + token;
+		headers.add("Authorization", accessToken);
+
+		HttpEntity<String> httpRequest = new HttpEntity(headers);
+		try {
+			response = restTemplate.exchange(uriComponentsBuilder.buildAndExpand(pathparams).toUriString(),
+					HttpMethod.GET, httpRequest, String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			KeycloakErrorResponseDto keycloakErrorResponseDto = objectmapper.readValue(e.getResponseBodyAsString(),
+					KeycloakErrorResponseDto.class);
+			if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Failed to parse JWT")) {
+				throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
+						AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+			} else if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Token is not active")) {
+				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(),
+						AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
+			} else {
+				throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
+						AuthErrorCode.REST_EXCEPTION.getErrorMessage() + " " + e.getResponseBodyAsString());
+			}
+		}
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+			mosipUserDto = getClaims(token);
+		}
+		return mosipUserDto;
+
+	}
+
+	Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.auth.service.AuthService#logoutUser(java.lang.String)
+	 */
+	@Override
+	public AuthResponseDto logoutUser(String token) {
+
+		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
+		Map<String, String> pathparams = new HashMap<>();
+		pathparams.put("realmId", "mosip");
+		ResponseEntity<String> response = null;
+		AuthResponseDto authResponseDto = new AuthResponseDto();
+		StringBuilder urlBuilder = new StringBuilder().append(openIdUrl).append("logout");
+
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString())
+				.queryParam("id_token_hint", token);
+		try {
+			response = restTemplate.getForEntity(uriComponentsBuilder.buildAndExpand(pathparams).toUriString(),
+					String.class);
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
+					AuthErrorCode.REST_EXCEPTION.getErrorMessage() + e.getResponseBodyAsString());
+		}
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+			authResponseDto.setMessage("successfully loggedout");
+			authResponseDto.setStatus("Success");
+		} else {
+			authResponseDto.setMessage("log out failed");
+			authResponseDto.setStatus("Failed");
+		}
+		return authResponseDto;
+	}
+
+	private MosipUserDto getClaims(String cookie) {
+		DecodedJWT decodedJWT = JWT.decode(cookie);
+
+		Claim realmAccess = decodedJWT.getClaim("realm_access");
+
+		RealmAccessDto access = realmAccess.as(RealmAccessDto.class);
+		String[] roles = access.getRoles();
+		StringBuilder builder = new StringBuilder();
+
+		for (String r : roles) {
+			builder.append(r);
+			builder.append(",");
+		}
+		MosipUserDto dto = new MosipUserDto();
+		dto.setUserId(decodedJWT.getClaim("preferred_username").asString());
+		dto.setMail(decodedJWT.getClaim("email").asString());
+		dto.setMobile(decodedJWT.getClaim("contactno").asString());
+		dto.setName(decodedJWT.getClaim("preferred_username").asString());
+		dto.setRId(decodedJWT.getClaim("rid").asString());
+		dto.setRole(builder.toString());
+		return dto;
 	}
 
 }

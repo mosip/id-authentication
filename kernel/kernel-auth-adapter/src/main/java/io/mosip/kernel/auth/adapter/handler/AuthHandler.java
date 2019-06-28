@@ -83,6 +83,9 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
+	
+	@Value("${auth.server.admin.validate.url}")
+	private String adminValidateUrl;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -100,8 +103,13 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
 		token = authToken.getToken();
 		MosipUserDto mosipUserDto = null;
-
+		//added for keycloak impl
+		if (token.startsWith(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX)) {
+             
+             response = getKeycloakValidatedUserResponse(token);
+		}else {
 		response = getValidatedUserResponse(token);
+		}
 		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
 		if (!validationErrorsList.isEmpty()) {
 			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
@@ -123,12 +131,24 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	private ResponseEntity<String> getValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
-		//System.out.println("\nInside Auth Handler");
-		//System.out.println("Token details " + System.currentTimeMillis() + " : " + token + "\n");
+		// System.out.println("\nInside Auth Handler");
+		// System.out.println("Token details " + System.currentTimeMillis() + " : " +
+		// token + "\n");
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
 			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
+		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
+		}
+	}
+	
+	private ResponseEntity<String> getKeycloakValidatedUserResponse(String token) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
+		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+		try {
+			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.GET, entity, String.class);
 		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
 		}
