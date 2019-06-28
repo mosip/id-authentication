@@ -21,6 +21,8 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION("KER-MSD-NNN", "Please make sure that enter LangCode is NOT duplicate"),
 	DEPENDENCY_EXCEPTION("KER-MSD-149", "Cannot delete as dependency found"),
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
+	REGISTRATION_CENTER_START_END_EXCEPTION("KER-MSD-VVV", "Please make sure that Center Start Time must be smaller than Center End Time"),
+	REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION("KER-MSD-VVV", "Please make sure that Center Lunch Start Time must be smaller than Center Lunch End Time"),
 	REGISTRATION_CENTER_FORMATE_EXCEPTION("KER-MSD-MMM", "Please make sure that entered Latitude or Longitude is in xx.xxxx or -xx.xxxx format"),
 	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database");
 

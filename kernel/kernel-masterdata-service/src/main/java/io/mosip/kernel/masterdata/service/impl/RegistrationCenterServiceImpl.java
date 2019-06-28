@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -136,17 +137,17 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Value("${mosip.min-digit-longitude-latitude:4}")
 	private int minDegits;
 
-	private String negRegex ;
-	private String posRegex ;
-	
+	private String negRegex;
+	private String posRegex;
+
 	/**
 	 * Constructing regex for matching the Latitude and Longitude format
 	 */
-			
+
 	@PostConstruct
 	public void constructRegEx() {
 		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
-		posRegex =    "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
+		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
 	}
 
 	/*
@@ -666,16 +667,30 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 			String latitude = registrationCenterDto.getLatitude();
 			String longitude = registrationCenterDto.getLongitude();
-			
-			//validate to check the format of latitude and longitude
+
+			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			// validate to check the format of latitude and longitude
 			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
-					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)) )) {
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
 			}
 			inputLangCodeList.add(registrationCenterDto.getLangCode());
-			
+
 		}
 		// validate to check if data is received in all configured languages
 		if (!new HashSet<String>(inputLangCodeList).containsAll(supLanguages)) {
@@ -763,15 +778,33 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 			String latitude = registrationCenterDto.getLatitude();
 			String longitude = registrationCenterDto.getLongitude();
-			
-			//validation to check the format of latitude and longitude
+
+			// validation to check the format of latitude and longitude
 			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
-					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)) )) {
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
 			}
-			
+
+			// validation to check the RegCenter Start Time is greater than RegCenter End
+			// Time
+			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// Lunch End Time
+			if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
 			inputLangCodeSet.add(registrationCenterDto.getLangCode());
 			inputIdList.add(registrationCenterDto.getId());
 			idLangList.add(registrationCenterDto.getLangCode() + registrationCenterDto.getId());
