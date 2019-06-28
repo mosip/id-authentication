@@ -494,7 +494,7 @@ public class AuthServiceImpl implements AuthService {
 		StringBuilder urlBuilder = new StringBuilder().append(openIdUrl).append("userinfo");
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString());
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + token);
+		headers.add("Authorization", "Bearer " + token);
 
 		HttpEntity<?> httpRequest = new HttpEntity(headers);
 		try {
