@@ -1,12 +1,10 @@
 package io.mosip.registration.cipher;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
@@ -105,23 +103,11 @@ public class ClientJarDecryption extends Application {
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-	public static void main(String[] args) throws IOException, InterruptedException,
-			io.mosip.kernel.core.exception.IOException, ParserConfigurationException, SAXException {
+	public static void main(String[] args) {
 
+		// Launch Reg-Client and perform necessary actions
 		launch(null);
-		/*
-		 * ProcessBuilder clientBuilder = new ProcessBuilder("java", "-jar", tempPath +
-		 * "/mosip/mosip-client.jar");
-		 * 
-		 * Process process = clientBuilder.start();
-		 * 
-		 * System.out.println("Invoked suuceessfully");
-		 * 
-		 * int status = process.waitFor(); if (status == 0) {
-		 * System.out.println("Registration Client stopped with the status: " + status);
-		 * process.destroy(); FileUtils.deleteDirectory(new File(tempPath + "mosip\\"));
-		 * }
-		 */
+
 	}
 
 	private static boolean checkForJars(boolean isToBeDownloaded)
@@ -206,8 +192,6 @@ public class ClientJarDecryption extends Application {
 					public void handle(WorkerStateEvent t) {
 
 						if (task.getValue()) {
-							System.out.println("  Inside Task thread--->>>>");
-							primaryStage.close();
 
 							File encryptedClientJar = new File(binFolder + MOSIP_CLIENT);
 
@@ -233,6 +217,7 @@ public class ClientJarDecryption extends Application {
 								FileUtils.writeByteArrayToFile(new File(clientJar + ".jar"), decryptedRegFileBytes);
 
 								System.out.println("Decrypt File Name====>" + encryptedServicesJar.getName());
+
 								byte[] decryptedRegServiceBytes = aesDecrypt
 										.decrypt(FileUtils.readFileToByteArray(encryptedServicesJar), decryptedKey);
 
@@ -258,23 +243,20 @@ public class ClientJarDecryption extends Application {
 								String libPath = "\"" + new File("lib").getAbsolutePath() + "\"";
 
 								String cmd = "java -Dspring.profiles.active=" + properties.getProperty("mosip.reg.env")
-										+ " -Dmosip.reg.healthcheck.url=" + properties.getProperty(MOSIP_REGISTRATION_HC_URL)
+										+ " -Dmosip.reg.healthcheck.url="
+										+ properties.getProperty(MOSIP_REGISTRATION_HC_URL)
 										+ " -Dfile.encoding=UTF-8 -Dmosip.reg.dbpath="
 										+ properties.getProperty("mosip.reg.dbpath") + " -D" + MOSIP_REGISTRATION_DB_KEY
 										+ "=" + "\"" + propsFilePath + "\"" + " -cp " + tempPath + "/*;" + libPath
 										+ "/* io.mosip.registration.controller.Initialization";
 
-								System.out.println("Command-->>" + cmd);
-								
 								Process process = Runtime.getRuntime().exec(cmd);
-								System.out.println("the output stream is " + process.getOutputStream().getClass());
-								BufferedReader bufferedReader = new BufferedReader(
-										new InputStreamReader(process.getInputStream()));
+								process.getInputStream().close();
+								process.getOutputStream().close();
+								process.getErrorStream().close();
 
-								String s;
-								while ((s = bufferedReader.readLine()) != null) {
-									System.out.println("The stream is : " + s);
-								}
+								primaryStage.close();
+
 								if (0 == process.waitFor()) {
 
 									process.destroyForcibly();
