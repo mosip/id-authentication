@@ -218,6 +218,7 @@ stage ('---------- build ---------------') {
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
+ }
  
  // Catching the exception for triggering email
   catch (exception) {
