@@ -930,7 +930,7 @@ public class MasterDataServiceTest {
 		registrationCenterPutReqAdmDto4.setHolidayLocationCode("HLC01");
 		registrationCenterPutReqAdmDto4.setId("676");
 		registrationCenterPutReqAdmDto4.setLangCode("eng");
-		registrationCenterPutReqAdmDto4.setLatitude("xxxxxx");
+		registrationCenterPutReqAdmDto4.setLatitude("-7.333");
 		registrationCenterPutReqAdmDto4.setLocationCode("10190");
 		registrationCenterPutReqAdmDto4.setLongitude("77.70168");
 		registrationCenterPutReqAdmDto4.setPerKioskProcessTime(perKioskProcessTime);
