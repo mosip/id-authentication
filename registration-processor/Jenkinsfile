@@ -16,6 +16,9 @@ node {
  updatedServicesForPrivateZone = []
  updatedDockerImagesForPrivateZone= []
  k8DevContextForPrivateZone = 'mosip-dev-cluster'
+ def dmz_reg_proc_dev_ip='52.172.39.154'
+ def config_url='http://104.211.212.28:51000'
+ def profile_env='dev'
  stage('------- Checkout --------') {
   // Checkout only Registration-Processor Module
   dir(branch) {
@@ -260,19 +263,19 @@ stage('Deploy - Private Zone Services - in K8'){
     }
     
     stage('DMZ_Deployment'){
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: '305c7f35-2eb5-44b4-b574-a0855ef70c26',
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: registryCredentials,
 usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
 def label_env=env.NEXT_BRANCH_NAME
-sh """ssh  madmin@52.172.39.154 /bin/bash << EOF
+sh """ssh  madmin@"${dmz_reg_proc_dev_ip}" /bin/bash << EOF
 docker login -u "${USERNAME}" -p "${PASSWORD}"  docker-registry.mosip.io:5000 
 docker ps -aq | xargs docker stop | xargs docker rm
 docker images -q | xargs docker rmi
 echo "Echoing label_env"
 echo "${label_env}"
-docker run --restart always -it -d -p 8083:8083 -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 docker-registry.mosip.io:5000/registration-processor-registration-status-service
-docker run --restart always -it -d -p 8082:8082 -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 docker-registry.mosip.io:5000/registration-processor-packet-generator-service
-docker run --restart always -it -d --network host --privileged=true -v /home/ftp1/LANDING_ZONE:/home/ftp1/LANDING_ZONE -v /home/ftp1/ARCHIVE_PACKET_LOCATION:/home/ftp1/ARCHIVE_PACKET_LOCATION -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 docker-registry.mosip.io:5000/registration-processor-packet-receiver-stage
-docker run --restart always -it -d --network host --privileged=true -e active_profile_env=dev -e spring_config_label_env="${label_env}" -e spring_config_url_env=http://104.211.212.28:51000 -e zone_env=dmz  docker-registry.mosip.io:5000/registration-processor-common-camel-bridge
+docker run --restart always -it -d -p 8083:8083 -e active_profile_env="${profile_env}" -e spring_config_label_env="${label_env}" -e spring_config_url_env="${config_url}" docker-registry.mosip.io:5000/registration-processor-registration-status-service
+docker run --restart always -it -d -p 8082:8082 -e active_profile_env="${profile_env}" -e spring_config_label_env="${label_env}" -e spring_config_url_env="${config_url}" docker-registry.mosip.io:5000/registration-processor-packet-generator-service
+docker run --restart always -it -d --network host --privileged=true -v /home/ftp1/LANDING_ZONE:/home/ftp1/LANDING_ZONE -v /home/ftp1/ARCHIVE_PACKET_LOCATION:/home/ftp1/ARCHIVE_PACKET_LOCATION -e active_profile_env="${profile_env}" -e spring_config_label_env="${label_env}" -e spring_config_url_env="${config_url}" docker-registry.mosip.io:5000/registration-processor-packet-receiver-stage
+docker run --restart always -it -d --network host --privileged=true -e active_profile_env="${profile_env}" -e spring_config_label_env="${label_env}" -e spring_config_url_env="${config_url}" -e zone_env=dmz  docker-registry.mosip.io:5000/registration-processor-common-camel-bridge
 EOF"""
     }
   }
