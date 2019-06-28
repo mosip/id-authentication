@@ -57,11 +57,8 @@ public class MasterdataSearchHelper {
 	private EntityManager entityManager;
 
 	/**
-	 * Constructor for HibernateRepositoryImpl having JpaEntityInformation and
-	 * EntityManager
+	 * Constructor for MasterdataSearchHelper having EntityManager
 	 * 
-	 * @param entityInformation
-	 *            The entityInformation
 	 * @param entityManager
 	 *            The entityManager
 	 */
@@ -76,6 +73,9 @@ public class MasterdataSearchHelper {
 	 *            the entity class for which search will be applied
 	 * @param searchDto
 	 *            which contains the list of filters, sort and pagination
+	 * @param optionalFilters
+	 *            filters to be considered as 'or' statements
+	 * 
 	 * @return {@link Page} of entity
 	 */
 	public <E> Page<E> searchMasterdata(Class<E> entity, SearchDto searchDto, List<SearchFilter> optionalFilters) {
@@ -103,15 +103,6 @@ public class MasterdataSearchHelper {
 			TypedQuery<E> executableQuery = entityManager.createQuery(selectQuery);
 			// creating executable query from count criteria query
 			TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
-
-			String query1 = entityManager.createQuery(selectQuery).unwrap(org.hibernate.query.Query.class)
-					.getQueryString();
-			String query2 = entityManager.createQuery(countQuery).unwrap(org.hibernate.query.Query.class)
-					.getQueryString();
-
-			System.out.println("select query :" + query1);
-			System.out.println("count query :" + query2);
-
 			// getting the rows count
 			rows = countExecutableQuery.getSingleResult();
 			// adding pagination
