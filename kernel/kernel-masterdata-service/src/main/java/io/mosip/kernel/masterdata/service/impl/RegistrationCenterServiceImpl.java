@@ -4,12 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -30,13 +33,16 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -44,6 +50,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -61,7 +68,10 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * This service class contains methods that provides registration centers
@@ -113,6 +123,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private LocationService locationService;
+
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -673,8 +689,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
 			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
 				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
-				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
-						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
+				registrationCenterPages = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(),
+						(int) pageData.getTotalElements(), registrationCenters);
 			} else {
 				throw new DataNotFoundException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
@@ -687,6 +703,59 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return registrationCenterPages;
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto) {
+		PageDto<RegistrationCenterExtnDto> pageDto = new PageDto<>();
+		List<RegistrationCenterExtnDto> registrationCenters = null;
+		List<SearchFilter> addList = new ArrayList<>();
+		List<SearchFilter> removeList = new ArrayList<>();
+		for (SearchFilter filter : dto.getFilters()) {
+			String column = filter.getColumnName();
+			if ("centertypename".equalsIgnoreCase(column)) {
+				filter.setColumnName("name");
+				Page<RegistrationCenterType> regtypes = masterdataSearchHelper.searchMasterdata(
+						RegistrationCenterType.class,
+						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+						Collections.emptyList());
+				removeList.add(filter);
+				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
+			}
+		}
+		dto.getFilters().removeAll(removeList);
+		dto.getFilters().addAll(addList);
+		Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto, null);
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterExtnDto.class);
+			pageDto.setData(registrationCenters);
+			pageDto.setPageNo(page.getNumber());
+			pageDto.setTotalItems(page.getTotalElements());
+			pageDto.setTotalPages(page.getTotalPages());
+		}
+		return pageDto;
+	}
+
+	private List<SearchFilter> buildRegistrationCenterTypeSearchFilter(List<RegistrationCenterType> regCenterTypes) {
+		if (regCenterTypes != null && !regCenterTypes.isEmpty())
+			return regCenterTypes.stream().filter(Objects::nonNull)
+					.map(i -> new SearchFilter("centerTypeCode", FilterTypeEnum.EQUALS.name(), i.getCode(), null, null))
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	private List<SearchFilter> buildLocationSearchFilter(List<Location> regCenterTypes) {
+		if (regCenterTypes != null && !regCenterTypes.isEmpty())
+			return regCenterTypes.stream().filter(Objects::nonNull)
+					.map(i -> new SearchFilter("centerTypeCode", FilterTypeEnum.EQUALS.name(), i.getCode(), null, null))
+					.collect(Collectors.toList());
+		return Collections.emptyList();
 	}
 
 }
