@@ -274,7 +274,7 @@ public class IdRepoManager {
 			Map<String, Object> vidMap = restHelper.requestSync(buildRequest);
 			List<Map<String, Object>> vidErrorList = (List<Map<String, Object>>) vidMap.get(ERRORS);
 			if ((null == vidErrorList || vidErrorList.isEmpty()) && vidMap.get("response") instanceof Map) {
-				uin = (Long) ((Map<String, Object>) vidMap.get("response")).get(UIN);
+				uin = Long.valueOf(((Map<String, Object>) vidMap.get("response")).get(UIN).toString());
 			}
 		} catch (RestServiceException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), e.getErrorCode(),
