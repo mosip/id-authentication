@@ -33,7 +33,10 @@ import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
-
+/**
+ * @author Ravi Kant
+ *
+ */
 public class SyncMDataWithKeyIndex extends BaseTestCase implements ITest{
 
 	public SyncMDataWithKeyIndex() {

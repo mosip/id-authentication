@@ -127,7 +127,7 @@ public class SecurityTests extends BaseTestCase implements ITest{
 	}
 	@Test (priority=2)
 	public void syncRequestWithInvalidToken() {
-		
+		validToken=getToken("syncTokenGenerationFilePath");
 		Response res=apiRequests.postRequestToDecrypt(encrypterURL, requestToEncrypt, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, validToken);
 		String encryptedData = res.jsonPath().get("response.data").toString();
 		LocalDateTime timeStamp=null;
@@ -155,6 +155,7 @@ public class SecurityTests extends BaseTestCase implements ITest{
 	}
 	@Test(priority=5)
 	public void packetStatusWithValidToken() {
+		adminAuthToken=getToken("getStatusTokenGenerationFilePath");
 		Response res=apiRequests.regProcPostRequest(api.getProperty("packetStatusApi"),getRequest, MediaType.APPLICATION_JSON,adminAuthToken);
 		System.out.println(res.asString());
 		Assert.assertTrue(res.jsonPath().get("response[0].statusCode").equals("PROCESSED"));

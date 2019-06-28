@@ -735,7 +735,7 @@ testdata:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:ODD$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$
@@ -1338,7 +1338,7 @@ testdata:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
-      AuthReq.individualId: $UIN:WITH:ODD$
+      AuthReq.individualId: $UIN$
       AuthReq.individualIdType: $TestData:indvId_Uin_valid$
       AuthReq.requestTime: $TIMESTAMP$
       AuthReq.transactionID: $RANDOM:N:10$

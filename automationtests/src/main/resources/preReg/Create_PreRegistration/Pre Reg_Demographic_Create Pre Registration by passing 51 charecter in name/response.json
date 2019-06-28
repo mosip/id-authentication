@@ -6,10 +6,6 @@
     "errors": [
         {
             "errorCode": "KER-IOV-004",
-            "message": "Invalid input parameter - identity/fullName/1/value"
-        },
-        {
-            "errorCode": "KER-IOV-004",
             "message": "Invalid input parameter - identity/fullName/0/value"
         }
     ]

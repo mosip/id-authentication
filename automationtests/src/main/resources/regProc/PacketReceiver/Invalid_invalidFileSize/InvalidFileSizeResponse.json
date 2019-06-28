@@ -1,8 +1,9 @@
 {
+	"response" : null,
     "errors": [
         {
             "errorCode": "RPR-PKR-002",
-            "message": "The Registration Packet Size is invalid"
+            "message": "Invalid Packet Size"
         }
     ],
     "id": "mosip.registration.packet",

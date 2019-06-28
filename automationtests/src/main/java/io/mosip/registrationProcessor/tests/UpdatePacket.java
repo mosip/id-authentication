@@ -322,8 +322,18 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 
 
 					}	
-				}else {
-					finalStatus="Fail";
+				}else if(object.get("testCaseName").toString().toLowerCase().contains("Invalid")){
+					List<Map<String,String>> errors = actualResponse.jsonPath().get("errors"); 
+					logger.info("errors : "+errors );
+					for(Map<String,String> err : errors){
+						String errorCode = err.get("errorCode").toString();
+						if(errorCode.matches("IDR-IDC-007")) {
+							logger.info("Validated..........");
+							finalStatus = "Pass";
+							softAssert.assertTrue(true);
+							
+						}
+					}
 				}
 				boolean setFinalStatus=false;
 				if(finalStatus.equals("Fail"))

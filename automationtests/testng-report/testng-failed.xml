@@ -6,20 +6,17 @@
     <listener class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener"/>
     <listener class-name="io.mosip.authentication.e2e.E2EReport"/>
   </listeners>
-  <test name="AuthenticationTest(failed)">
+  <test name="RegistrationProcessor Tests(failed)">
     <classes>
-      <class name="io.mosip.authentication.tests.OtpGeneration">
+      <class name="io.mosip.registrationProcessor.tests.Sync">
         <methods>
           <include name="suiteSetup"/>
-          <include name="testData"/>
-          <include name="authTestTearDown"/>
-          <include name="setTestType"/>
-          <include name="otpGenerationTest" invocation-numbers="21"/>
-          <include name="testTearDown"/>
-          <include name="wakeDemoApp"/>
           <include name="setResultTestName"/>
+          <include name="sync" invocation-numbers="12 23 25"/>
+          <include name="testTearDown"/>
+          <include name="getTestCaseName"/>
         </methods>
-      </class> <!-- io.mosip.authentication.tests.OtpGeneration -->
+      </class> <!-- io.mosip.registrationProcessor.tests.Sync -->
     </classes>
-  </test> <!-- AuthenticationTest(failed) -->
+  </test> <!-- RegistrationProcessor Tests(failed) -->
 </suite> <!-- Failed suite [Mosip API Suite] -->

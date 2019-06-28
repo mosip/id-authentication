@@ -13,7 +13,7 @@ import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
 
 /**
- * @author M9010714
+ * @author Arunakumar Rati
  *
  */
 public class KernelAuthentication extends BaseTestCase{

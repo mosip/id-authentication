@@ -40,58 +40,17 @@ import io.mosip.service.BaseTestCase;
 import io.mosip.testrunner.MosipTestRunner;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
-
+/**
+*
+* @author Ravikant
+*
+*/
 public class CommonLibrary extends BaseTestCase {
 
 	private static Logger logger = Logger.getLogger(CommonLibrary.class);
 	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-	/*public static void configFileWriter(String folderPath, String requestKeyFile, String generationType,
-			String baseFileName) throws Exception {
-		String splitRegex = Pattern.quote(System.getProperty("file.separator"));
-		folderPath.split(splitRegex);
-		String requestFilePath = "src/main/resources/" + folderPath + "/" + requestKeyFile;
-		String configFilePath = "src/main/resources/" + folderPath + "/" + "FieldConfig.properties";
-
-		JSONObject requestKeys = (JSONObject) new JSONParser().parse(new FileReader(requestFilePath));
-		Properties properties = new Properties();
-		Properties cloneProperties = new Properties();
-		properties.load(new FileReader(new File(configFilePath)));
-		cloneProperties.load(new FileReader(new File(configFilePath)));
-		try {
-			for (Object key : requestKeys.keySet()) {
-
-				if (properties.getProperty(key.toString()) != null) {
-					properties.setProperty(key.toString(), "invalid");
-					properties.setProperty("filename", "invalid_" + key.toString());
-					File file = new File(configFilePath);
-					FileOutputStream fileOut = new FileOutputStream(file);
-					properties.store(fileOut, "FieldConfig.properties");
-					
-					 * try { new Main().TestRequestReponseGenerator(api, testSuite,generationType);
-					 * }catch(org.json.JSONException exp) { exp.printStackTrace(); }
-					 
-					properties.remove(key.toString());
-					properties.setProperty(key.toString(), "valid");
-					properties.remove("filename");
-					properties.setProperty("filename", baseFileName);
-					properties.store(fileOut, "FieldConfig.properties");
-					fileOut.close();
-				}
-
-			}
-
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		cloneProperties.remove("prereg_id_custom");
-		cloneProperties.setProperty("prereg_id_custom", "");
-		properties.clear();
-		File file = new File(configFilePath);
-		FileOutputStream fileOut = new FileOutputStream(file);
-		properties.store(fileOut, null);
-		cloneProperties.store(fileOut, null);
-	}*/
+	
 	
 	/**
 	 * @param folderRelativePath

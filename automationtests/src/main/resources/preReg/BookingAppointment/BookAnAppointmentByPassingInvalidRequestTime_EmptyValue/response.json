@@ -6,7 +6,7 @@
     "errors": [
         {
             "errorCode": "PRG_PAM_CORE_003",
-            "message": "Request timestamp is invalid"
+            "message": "Invalid request time"
         }
     ]
 }

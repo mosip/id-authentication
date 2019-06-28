@@ -1,7 +1,10 @@
 package io.mosip.kernel.util;
 
 import java.util.regex.Pattern;
-
+/**
+ * @author Arunakumar Rati
+ *
+ */
 public class UIN_Assertions {
 
 	public static boolean ascendingMethod(String uin){

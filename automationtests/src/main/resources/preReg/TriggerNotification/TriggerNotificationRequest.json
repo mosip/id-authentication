@@ -1,54 +1,38 @@
 {
-   
-    "preReg_TriggerNotification_appointmentDate_withInvalidValueAsEmpty":"",
-    "preReg_TriggerNotification_appointmentDate_withInvalidValueAsNonExisting":"",
-    
-    "preReg_TriggerNotification_appointmentTime_withInvalidValueAsEmpty":"",
-     "preReg_TriggerNotification_appointmentTime_withInvalidValueAsEmpty":"",
-     
-     "preReg_TriggerNotification_emailId_withInvalidValueAsEncodedHtmlWithinEmailIsInvalid":"",
-     "preReg_TriggerNotification_emailId_withInvalidValueAsGarbage":"",
-     "preReg_TriggerNotification_emailId_withInvalidValueAsMissing@":"",
-     "preReg_TriggerNotification_emailId_withInvalidValueAsMissingUsername":"",
-     "preReg_TriggerNotification_emailId_withInvalidValueAsPlainAddress":"",
-     "preReg_TriggerNotification_emailId_withInvalidValueAsTwo@sign":"",
-       
-       
-      "preReg_TriggerNotification_id_withInvalidOtherThanStandardValue":"",
-      "preReg_TriggerNotification_id_withInvalidValueAsEmpty":"",
-       
-      "preReg_TriggerNotification_langcode_withInvalidValueAsEmpty":"",
-      "preReg_TriggerNotification_langcode_withInvalidValueAsNonExisting":"",
-       
-       "preReg_TriggerNotification_mobNum_withInvalidValueAsAlphabets":"",
-        "preReg_TriggerNotification_mobNum_withInvalidValueGreaterThanMax":"",
-         "preReg_TriggerNotification_mobNum_withInvalidValueLessThanMax":"",
-       
-       "preReg_TriggerNotification_name_withInvalidValueAsEmpty":"",
-        "preReg_TriggerNotification_name_withInvalidValueAsNonExisting":"",
-        
-         "preReg_TriggerNotification_preRegistrationId_withInvalidValueAsEmpty":"",
-         "preReg_TriggerNotification_preRegistrationId_withInvalidValueAsNonExisting":"",  
-         
-        "preReg_TriggerNotification_requesttime_withInvalidDateFormat":"",
-         "preReg_TriggerNotification_requesttime_withInvalidDateOfSlashInsteadOfHypen":"",
-         "preReg_TriggerNotification_requesttime_withInvalidDay":"", 
-         "preReg_TriggerNotification_requesttime_withInvalidMonth":"",
-         "preReg_TriggerNotification_requesttime_withInvalidTime":"",
-         "preReg_TriggerNotification_requesttime_withInvalidValueAsAlphabets":"",
-         "preReg_TriggerNotification_requesttime_withInvalidValueAsDateGreaterThanCurrentDate":"",
-         "preReg_TriggerNotification_requesttime_withInvalidvalueAsDateLessThanCurrentDate":"",
-         "preReg_TriggerNotification_requesttime_withInvalidvalueAsEmptyValue":"",
-         "preReg_TriggerNotification_requesttime_withInvalidvalueAsFebGreaterThan29":"",
-         "preReg_TriggerNotification_requesttime_withInvalidvalueAsFebNonLeapYearWith29":"",
-         "preReg_TriggerNotification_requesttime_withInvalidValueAsSpaces":"",
-         "preReg_TriggerNotification_requesttime_withInvalidValueAsSpecialCharacters":"",
-         "preReg_TriggerNotification_requesttime_withInvalidValueAsZeroInAllFields":"",
-         "preReg_TriggerNotification_requesttime_withInvalidYear":"",
-         
-         "preReg_TriggerNotification_version_withInvalidEmptyValue":"",
-         "preReg_TriggerNotification_version_withInvalidOtherThanStandardValue":""
-         
-         
-         
+	"preReg_TriggerNotification_appointmentDate_withInvalidValueAsEmpty": "",
+	"preReg_TriggerNotification_appointmentDate_withInvalidValueAsNonExisting": "",
+	"preReg_TriggerNotification_appointmentTime_withInvalidValueAsEmpty": "",
+	"preReg_TriggerNotification_appointmentTime_withInvalidValueAsEmpty" : "",
+	"preReg_TriggerNotification_emailId_withInvalidValueAsEncodedHtmlWithinEmailIsInvalid": "",
+	"preReg_TriggerNotification_emailId_withInvalidValueAsGarbage": "",
+	"preReg_TriggerNotification_emailId_withInvalidValueAsMissing@": "",
+	"preReg_TriggerNotification_emailId_withInvalidValueAsMissingUsername": "",
+	"preReg_TriggerNotification_emailId_withInvalidValueAsPlainAddress": "",
+	"preReg_TriggerNotification_emailId_withInvalidValueAsTwo@sign": "",
+	"preReg_TriggerNotification_id_withInvalidOtherThanStandardValue": "",
+	"preReg_TriggerNotification_id_withInvalidValueAsEmpty": "",
+	"preReg_TriggerNotification_langcode_withInvalidValueAsEmpty": "",
+	"preReg_TriggerNotification_langcode_withInvalidValueAsNonExisting": "",
+	"preReg_TriggerNotification_mobNum_withInvalidValueAsAlphabets": "",
+	"preReg_TriggerNotification_mobNum_withInvalidValueGreaterThanMax": "",
+	"preReg_TriggerNotification_mobNum_withInvalidValueLessThanMax": "",
+	"preReg_TriggerNotification_name_withInvalidValueAsNonExisting": "",
+	"preReg_TriggerNotification_preRegistrationId_withInvalidValueAsNonExisting": "",
+	"preReg_TriggerNotification_requesttime_withInvalidDateFormat": "",
+	"preReg_TriggerNotification_requesttime_withInvalidDateOfSlashInsteadOfHypen": "",
+	"preReg_TriggerNotification_requesttime_withInvalidDay": "",
+	"preReg_TriggerNotification_requesttime_withInvalidMonth": "",
+	"preReg_TriggerNotification_requesttime_withInvalidTime": "",
+	"preReg_TriggerNotification_requesttime_withInvalidValueAsAlphabets": "",
+	"preReg_TriggerNotification_requesttime_withInvalidValueAsDateGreaterThanCurrentDate": "",
+	"preReg_TriggerNotification_requesttime_withInvalidvalueAsDateLessThanCurrentDate": "",
+	"preReg_TriggerNotification_requesttime_withInvalidvalueAsEmptyValue": "",
+	"preReg_TriggerNotification_requesttime_withInvalidvalueAsFebGreaterThan29": "",
+	"preReg_TriggerNotification_requesttime_withInvalidvalueAsFebNonLeapYearWith29": "",
+	"preReg_TriggerNotification_requesttime_withInvalidValueAsSpaces": "",
+	"preReg_TriggerNotification_requesttime_withInvalidValueAsSpecialCharacters": "",
+	"preReg_TriggerNotification_requesttime_withInvalidValueAsZeroInAllFields": "",
+	"preReg_TriggerNotification_requesttime_withInvalidYear": "",
+	"preReg_TriggerNotification_version_withInvalidEmptyValue": "",
+	"preReg_TriggerNotification_version_withInvalidOtherThanStandardValue": ""
 }

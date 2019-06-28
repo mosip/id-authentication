@@ -176,7 +176,7 @@ public class Sync extends BaseTestCase implements ITest {
 
 			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
 			
-			validToken=getToken("getStatusTokenGenerationFilePath");
+			validToken=getToken("syncTokenGenerationFilePath");
 			boolean tokenStatus=apiRequests.validateToken(validToken);
 			while(!tokenStatus) {
 				validToken = getToken("syncTokenGenerationFilePath");
@@ -186,13 +186,14 @@ public class Sync extends BaseTestCase implements ITest {
 			Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
 					MediaType.APPLICATION_JSON,validToken);
 			String encryptedData = resp.jsonPath().get("response.data").toString();
-			LocalDateTime timeStamp = encryptData.getTime(regId);
+			//LocalDateTime timeStamp = encryptData.getTime(regId);
+			LocalDateTime timeStamp = encryptData.getLocalDateTime(resp.jsonPath().get("responsetime"));
 
 
 			// Expected response generation
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
 			
-			validToken=getToken("getStatusTokenGenerationFilePath");
+			validToken=getToken("syncTokenGenerationFilePath");
 			boolean tokenStatus1=apiRequests.validateToken(validToken);
 			while(!tokenStatus1) {
 				validToken = getToken("syncTokenGenerationFilePath");
@@ -202,7 +203,7 @@ public class Sync extends BaseTestCase implements ITest {
 			// Actual response generation
 			logger.info("sync API url : "+prop.getProperty("syncListApi"));
 			actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
-					timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
+					registrationPacketSyncDto.getRequesttime(), MediaType.APPLICATION_JSON,validToken);
 
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
@@ -217,9 +218,14 @@ public class Sync extends BaseTestCase implements ITest {
 			logger.info("Status after assertion : "+status);
 
 			if (status) {
-
-				boolean isError = expectedResponse.containsKey("errors");
+				boolean isError = false;
+				List<Map<String,String>> errorResponse =  actualResponse.jsonPath().get("errors");
+				if(errorResponse!=null && !errorResponse.isEmpty()) {
+					isError=true;
+				}
+				
 				logger.info("isError ========= : "+isError);
+
 
 				if(!isError){
 					List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
@@ -299,6 +305,7 @@ public class Sync extends BaseTestCase implements ITest {
 
 		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
 			Assert.assertTrue(false, "not able to execute sync method : "+ e.getCause());
+			e.printStackTrace();
 
 		}
 	}  

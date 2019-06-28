@@ -39,7 +39,10 @@ import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
-
+/**
+ * @author Arjun chandramohan
+ *
+ */
 public class FetchBiometricAttribute extends BaseTestCase implements ITest {
 	FetchBiometricAttribute() {
 		super();
