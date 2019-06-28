@@ -719,8 +719,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<SearchFilter> removeList = new ArrayList<>();
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
-			if ("centertypename".equalsIgnoreCase(column)) {
-				filter.setColumnName("name");
+			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
+				filter.setColumnName(MasterDataConstant.NAME);
 				Page<RegistrationCenterType> regtypes = masterdataSearchHelper.searchMasterdata(
 						RegistrationCenterType.class,
 						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
@@ -745,17 +745,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	private List<SearchFilter> buildRegistrationCenterTypeSearchFilter(List<RegistrationCenterType> regCenterTypes) {
 		if (regCenterTypes != null && !regCenterTypes.isEmpty())
 			return regCenterTypes.stream().filter(Objects::nonNull)
-					.map(i -> new SearchFilter("centerTypeCode", FilterTypeEnum.EQUALS.name(), i.getCode(), null, null))
+					.map(i -> new SearchFilter(MasterDataConstant.CENTERTYPECODE, FilterTypeEnum.EQUALS.name(), i.getCode(), null, null))
 					.collect(Collectors.toList());
 		return Collections.emptyList();
 	}
 
-	private List<SearchFilter> buildLocationSearchFilter(List<Location> regCenterTypes) {
-		if (regCenterTypes != null && !regCenterTypes.isEmpty())
-			return regCenterTypes.stream().filter(Objects::nonNull)
-					.map(i -> new SearchFilter("centerTypeCode", FilterTypeEnum.EQUALS.name(), i.getCode(), null, null))
-					.collect(Collectors.toList());
-		return Collections.emptyList();
-	}
 
 }
