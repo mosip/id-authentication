@@ -56,13 +56,9 @@ public class RestartController extends BaseController {
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Initiate Restart Timer started");
 
-		try {
-			/* Create Sync Restart timer */
-			createSyncRestartTimer();
+		/* Create Sync Restart timer */
+		createSyncRestartTimer();
 
-		} catch (RuntimeException runtimeException) {
-			runtimeException.printStackTrace();
-		}
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Initiate Restart Timer completed");
 
@@ -147,7 +143,7 @@ public class RestartController extends BaseController {
 		/* Get Restart time for timer */
 		SuccessResponseDTO successResponseDTO = jobConfigurationService.getRestartTime().getSuccessResponseDTO();
 
-		if (successResponseDTO.getMessage() != null) {
+		if (successResponseDTO != null) {
 			Timeline syncRestartTimer = new Timeline(
 					new KeyFrame(Duration.seconds((int) (Integer.parseInt(successResponseDTO.getMessage()) * 0.001)),
 							new EventHandler<ActionEvent>() {
@@ -176,7 +172,6 @@ public class RestartController extends BaseController {
 			syncRestartTimer.play();
 		}
 
-		
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Creation of sync restart timer completed");
 
