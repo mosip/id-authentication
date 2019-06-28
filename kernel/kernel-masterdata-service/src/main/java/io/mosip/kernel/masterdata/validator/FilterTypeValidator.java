@@ -42,7 +42,7 @@ public class FilterTypeValidator {
 						if (!containsFilter(field, filter.getType())) {
 							errors.add(new ServiceError(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
 									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-											filter.getColumnName(), filter.getColumnName())));
+											filter.getColumnName(), filter.getType())));
 						}
 					} else {
 						errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(), String.format(
