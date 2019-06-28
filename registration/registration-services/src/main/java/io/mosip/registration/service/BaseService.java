@@ -273,7 +273,7 @@ public class BaseService {
 
 		ApplicationContext.getInstance();
 		// Check application map
-		if (ApplicationContext.map().isEmpty()) {
+		if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key)==null) {
 
 			// Load Global params if application map is empty
 			ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
