@@ -16,9 +16,9 @@ node {
  updatedServicesForPrivateZone = []
  updatedDockerImagesForPrivateZone= []
  k8DevContextForPrivateZone = 'mosip-dev-cluster'
- def dmz_reg_proc_dev_ip='52.172.39.154'
- def config_url='http://104.211.212.28:51000'
- def profile_env='dev'
+ def dmz_reg_proc_dev_ip=env.DMZ_REG_PROC_DEV_IP
+ def config_url=env.CONFIG_URL
+ def profile_env=env.PROFILE_ENV_DMZ
  stage('------- Checkout --------') {
   // Checkout only Registration-Processor Module
   dir(branch) {
