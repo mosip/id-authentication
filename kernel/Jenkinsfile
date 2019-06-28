@@ -20,6 +20,7 @@ node {
  def config_url=env.CONFIG_URL
  def key_manager_vm_ip=env.KEY_MANAGER_VM_DEV_IP
  def profile_env=env.PROFILE_ENV_DMZ
+ def registryAddress=env.REGISTRY_ADDRESS
 
  stage('------- Checkout --------') {
   dir(branch) {
@@ -315,7 +316,7 @@ sudo docker ps -aq | xargs sudo docker stop | xargs sudo docker rm
 sudo docker images -q | xargs sudo docker rmi
 echo "Echoing label_env"
 echo "${branch}"
-sudo docker run -tid --ulimit memlock=-1 -p 8088:8088 -v softhsm:/softhsm -e spring_config_url_env="${config_url}" -e spring_config_label_env="${branch}" -e active_profile_env="${profile_env}" --name keymanager "${registryUrl}"/kernel-keymanager-service
+sudo docker run -tid --ulimit memlock=-1 -p 8088:8088 -v softhsm:/softhsm -e spring_config_url_env="${config_url}" -e spring_config_label_env="${branch}" -e active_profile_env="${profile_env}" --name keymanager "${registryAddress}"/kernel-keymanager-service
 EOF"""
 		}
 	}
