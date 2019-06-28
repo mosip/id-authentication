@@ -7,7 +7,7 @@ it during the span of the enrollment and other process. The entire
 functionality of this application should work only within the scope of a
 particular session. The session should be managed for a specific
 interval \[eg: 5 mins\] and if the user is ideal and does not perform
-any operation during this period then alter should be displayed and
+any operation during this period then alert should be displayed and
 signed off from the application. While signing off, the entire data
 inside the object should be cleared off from the memory.
 
@@ -18,26 +18,25 @@ The detailed requirement of the each context is mentioned below:
 
 -   Application Context:
 
+	-   When the application is launched the related context would be 
+		 generated and the detail would be stored into that.
 
--   When the application is launched the related context would be
-    generated and the detail would be stored into that.
+	-   This context would be available for the entire span of the
+    	 application until it is closed.
 
--   This context would be available for the entire span of the
-    application until it is closed.
+	-   This context object shouldn't be closed or cleared off when users 
+		 are login or logoff from the application.
 
--   This context object shouldn't be closed or cleared off when users
-    are login or logoff from the application.
-
--   While creating and closing the context the respective detail should
-    be audited.
+	-   While creating and closing the context the respective detail should 
+		 be audited.
 
 -   Session Context \[LogIn\]:
 
-    -   Once the user successfully logged in, the session context should
-        be created and can hold required information during the session
+    -   Once the user successfully completed all the authentications(s) for log in,
+    	 the session context should be created and can hold required information during the session
         valid period.
 
-    -   User and Enrollment Center related information should also be
+    -   SecurityContext, User and Registration Center related information should also be
         stored into this object and that will be used all the way
         through the enrollment process when the session is in valid
         state.
@@ -45,16 +44,20 @@ The detailed requirement of the each context is mentioned below:
     -   Session Context Details:
 
         -   Session id, Login time, Time of interval, Ideal time, User
-            Context has to be created once the user logged in
+            Context, Security Context has to be created once the user logged in
             successfully.
 
     -   User Context Details:
 
-        -   User id, User name, Enrolment center, Roles, Authorization
+        -   User id, User name, Registration center, Roles, Authorization
             context details should be present.
 
-    -   The Session context and the intern objects will be cleared off
-        when user clicks 'logoff' or if the session time expired.
+	-   SecurityContext Details:
+
+        -   User id, roles details should be present.
+
+    -   The Session context and the internal objects will be cleared off
+        when user clicks 'logout' or if the session time expired.
 
     -   Session Create:
 
@@ -138,6 +141,7 @@ are explained:
   Application Context   Singleton pattern
   Session Context       Singleton pattern
   User Context          As an inner class of Session Context and should not be accessible outside the Session context class.
+  Security Context		As an inner class of Session Context and should not be accessible outside the Session context class. 
 
 **Application Context :**
 
@@ -177,7 +181,7 @@ user opened the application.
 
     -   Created datetime
 
-    -   No. of enrollment created.
+    -   ResourceBundle
 
     -   Client IP address.
 
@@ -200,15 +204,17 @@ into the Registration application.
 -   Create a Java component as '**Session Context'** with **singleton
     pattern** method.
 
--   The application Session and User context would be created when the
+-   The application Session, Security and User context would be created when the
     user login to the application.
 
--   **Session context** will have the details of id, User context, Login
-    time, Refreshed Date Time, Timeout Interval and Ideal Time.
+-   **Session context** will have the details of id, User context, Security context, Login
+    time, Refreshed Date Time, Timeout Interval, Ideal Time and AuthToken.
 
 -   Unique id generated for the session using uuid.
 
 -   User level details will be maintained in user context.
+
+-	Security related details will be maintained in security context.
 
 -   Login time has user logged in time.
 
@@ -218,7 +224,7 @@ into the Registration application.
 
 
 -   **User context** is part of session context, it contains the user
-    detail -- user id, name, Roles, *EnrollmentCenterDetailDTO*,
+    detail -- user id, name, Roles, *RegistrationCenterDetailDTO*,
     *AuthorizationDTO*.
 
 -   This object should be created inside the ***Session context as inner
@@ -227,9 +233,12 @@ into the Registration application.
 
     -   Id, Name, Role denotes user id, user name and user role.
 
-    -   EnrollmentCenterDetailDTO will have the details of geo location,
+    -   RegistrationCenterDetailDTO will have the details of geo location,
         location code, Center registration code, Center code, Center
         type code.
+        
+    -   AuthorizationDTO will have screen authorization related 
+    	 details with respect to roles 
 
 -   This object creation and destroy will be taken care by the
     SessionContext component.
@@ -238,31 +247,40 @@ into the Registration application.
 
 -   Map the data from UserDTO to this context object, which was fetched
     from DB during login process.
+    
+-   **Security context** is part of session context, it contains the user
+    detail -- user id, Roles.
 
+-   This object should be created inside the ***Session context as inner
+    class*** and ***outside classes should not have*** permission to
+    create it.
+
+    -   Id, Role denotes user id and user roles.
+
+-   This object creation and destroy will be taken care by the
+    SessionContext component.
+
+-   While creating and clear off object the detail should be audited.
 
 -   Functions to be added in the Session Context to support the business
     functionality.
 
-  createSession()   Should be created with current datetime and initiate the map and other attributes. 
-					While creating the session object, the detail should be audited.
+  create()   					Should be created with current datetime and initiate the map and other attributes. 
+								While creating the session object, the detail should be audited.
 
-  isValid()         Compare the session refresh time and current time. If the time difference 
-					more than the session valid time then return false and invalidate the session object.
+  isSessionContextAvailable()   Checks and return the instance of session context object
 	
-  invalidate()      Invalidate the entire session object along with the user context object. 
-					While clear off the session object, the detail should be audited.
+  destroySession()      		Invalidate the entire session object along with the user context and security context 								object. While clear off the session object, the detail should be audited.
 								
-  getParam(key)     Get the value stored into the Session map object.
-  getAllParams()    Get all values from Session map object.
-  getUserContext()  Return user context object.
-  addParams(May)    Add the current map value to the existing Map, created inside the Session object.           
-  setParam(Map)     Overwrite the existing map with the new Map.
-  addParam(key, value) Add value into the Session map object.
-  getInstance()        The session object should be created by validating the respective instance object.
-  prepareUserContext(UserDTO)   Load the User detail from database and pass the respective DTO 
-								object to this method, which intern fetch the UserContext object 
-								from the session and load the respective user detail. 
-								If the usercontext already available then it won't overwrite the value.
+  getInstance()     			Returns the current instance of the Session Context object
+  
+  getUserContext()  			Returns user context object.
+  
+  getSecurityContext()			Returns security context object.
+  
+  map()     					Returns the map object of the session context
+  
+  createSecurityContext()   	Create the security context object and load all the user and center related details to 								session context object
 
 **Session Validation**
 
@@ -273,11 +291,12 @@ This should be implemented during the following cases.
 +===================================+===================================+
 | User Moving across the screen.    | While moving across the           |
 |                                   | controller object,                |
-|                                   | super.validateSession() to        |
+|                                   | isSessionContextAvailable() to    |
 |                                   | invoked to validate the session   |
 |                                   | object.                           |
 |                                   |                                   |
-|                                   | BaseController.validateSession()  |
+|                                   | SessionContext.                   |
+|									|  isSessionContextAvailable()      |
 |                                   | -- this function will validate    |
 |                                   | the session against the           |
 |                                   | SessionContext object. If session |
@@ -364,11 +383,11 @@ Load the configuration from property file
 Class Diagram
 -------------
 
-![Reg COntext Manager Class Diagram](_images/_class_diagram/registration-contextmanage-classDiagram.png)
+![Reg COntext Manager Class Diagram](_images/_class_diagram/registration-context-classDiagram.png)
 
 Sequence Diagram
 ----------------
-![Reg Context Manager Sequence Diagram](_images/_sequence_diagram/registration-contextmanage-sequenceDiagram.png)
+![Reg Context Manager Sequence Diagram](_images/_sequence_diagram/registration-context-sequenceDiagram.png)
                            
 
 **Audit Information **
