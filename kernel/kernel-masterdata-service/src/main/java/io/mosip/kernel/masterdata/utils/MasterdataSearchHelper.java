@@ -18,20 +18,22 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.HibernateException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.entity.BaseEntity;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -42,15 +44,30 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
  * @since 1.0.0
  */
 @Repository
+@Transactional(readOnly = true)
 public class MasterdataSearchHelper {
-	private final static String LANGCODE_COLUMN_NAME = "langCode";
-	private final static String ENTITY_IS_NULL = "enitity is null";
-	private final static String NO_SPECIAL_CHAR_REGEX = "[^\\w\\s]";
+	private static final String LANGCODE_COLUMN_NAME = "langCode";
+	private static final String ENTITY_IS_NULL = "enitity is null";
+	private static final String NO_SPECIAL_CHAR_REGEX = "[^\\w\\s]";
+
 	/**
-	 * Instance of {@link EntityManager}
+	 * Field for interface used to interact with the persistence context.
 	 */
 	@PersistenceContext
-	EntityManager entityManager;
+	private EntityManager entityManager;
+
+	/**
+	 * Constructor for HibernateRepositoryImpl having JpaEntityInformation and
+	 * EntityManager
+	 * 
+	 * @param entityInformation
+	 *            The entityInformation
+	 * @param entityManager
+	 *            The entityManager
+	 */
+	public MasterdataSearchHelper(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
 	/**
 	 * Method to search and sort the masterdata.
@@ -61,41 +78,53 @@ public class MasterdataSearchHelper {
 	 *            which contains the list of filters, sort and pagination
 	 * @return {@link Page} of entity
 	 */
-	@Transactional(readOnly = true)
-	public <T extends BaseEntity> Page<T> searchMasterdata(Class<T> entity, SearchDto searchDto) {
+	public <E> Page<E> searchMasterdata(Class<E> entity, SearchDto searchDto, List<SearchFilter> optionalFilters) {
+		long rows = 0l;
+		List<E> result;
 		Objects.requireNonNull(entity, ENTITY_IS_NULL);
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<T> selectQuery = criteriaBuilder.createQuery(entity);
+		CriteriaQuery<E> selectQuery = criteriaBuilder.createQuery(entity);
 		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
 		// root Query
-		Root<T> rootQuery = selectQuery.from(entity);
+		Root<E> rootQuery = selectQuery.from(entity);
 		// count query
 		countQuery.select(criteriaBuilder.count(countQuery.from(entity)));
 		// applying filters
-		filterQuery(criteriaBuilder, rootQuery, selectQuery, countQuery, searchDto.getFilters(),
+		filterQuery(criteriaBuilder, rootQuery, selectQuery, countQuery, searchDto.getFilters(), optionalFilters,
 				searchDto.getLanguageCode());
 
 		// applying sorting
 		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
 
 		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
-		// creating executable query from select criteria query
-		TypedQuery<T> executableQuery = entityManager.createQuery(selectQuery);
-		// creating executable query from count criteria query
-		TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
 
-		String query1 = entityManager.createQuery(selectQuery).unwrap(org.hibernate.query.Query.class).getQueryString();
-		String query2 = entityManager.createQuery(countQuery).unwrap(org.hibernate.query.Query.class).getQueryString();
+		try {
+			// creating executable query from select criteria query
+			TypedQuery<E> executableQuery = entityManager.createQuery(selectQuery);
+			// creating executable query from count criteria query
+			TypedQuery<Long> countExecutableQuery = entityManager.createQuery(countQuery);
 
-		System.out.println("select query :" + query1);
-		System.out.println("count query :" + query2);
+			String query1 = entityManager.createQuery(selectQuery).unwrap(org.hibernate.query.Query.class)
+					.getQueryString();
+			String query2 = entityManager.createQuery(countQuery).unwrap(org.hibernate.query.Query.class)
+					.getQueryString();
 
-		// getting the rows count
-		Long rows = countExecutableQuery.getSingleResult();
-		// adding pagination
-		paginationQuery(executableQuery, searchDto.getPagination());
-		// executing query and returning data
-		List<T> result = executableQuery.getResultList();
+			System.out.println("select query :" + query1);
+			System.out.println("count query :" + query2);
+
+			// getting the rows count
+			rows = countExecutableQuery.getSingleResult();
+			// adding pagination
+			paginationQuery(executableQuery, searchDto.getPagination());
+			// executing query and returning data
+			result = executableQuery.getResultList();
+		} catch (HibernateException hibernateException) {
+			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
+					hibernateException.getMessage(), hibernateException);
+		} catch (RuntimeException runtimeException) {
+			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+					runtimeException.getMessage(), runtimeException);
+		}
 		return new PageImpl<>(result,
 				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
 				rows);
@@ -117,18 +146,30 @@ public class MasterdataSearchHelper {
 	 * @param langCode
 	 *            language code if applicable
 	 */
-	private <T> void filterQuery(CriteriaBuilder builder, Root<T> root, CriteriaQuery<T> selectQuery,
-			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, String langCode) {
+	private <E> void filterQuery(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> selectQuery,
+			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, List<SearchFilter> optionalFilters,
+			String langCode) {
 		List<Predicate> predicates = new ArrayList<>();
+		List<Predicate> optionalPredicates = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
 			predicates = filters.stream().filter(this::validateFilters).map(i -> buildFilters(builder, root, i))
 					.filter(Objects::nonNull).collect(Collectors.toList());
+		}
+
+		if (optionalFilters != null && !optionalFilters.isEmpty()) {
+			optionalPredicates = optionalFilters.stream().filter(this::validateFilters)
+					.map(i -> buildFilters(builder, root, i)).filter(Objects::nonNull).collect(Collectors.toList());
 		}
 		Predicate langCodePredicate = setLangCode(builder, root, langCode);
 		if (langCodePredicate != null) {
 			predicates.add(langCodePredicate);
 		}
 		if (!predicates.isEmpty()) {
+			if (!optionalPredicates.isEmpty()) {
+				Predicate orPredicate = builder
+						.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
+				predicates.add(orPredicate);
+			}
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
 			selectQuery.where(whereClause);
 			countQuery.where(whereClause);
@@ -146,7 +187,7 @@ public class MasterdataSearchHelper {
 	 *            search filter
 	 * @return {@link Predicate}
 	 */
-	private <T> Predicate buildFilters(CriteriaBuilder builder, Root<T> root, SearchFilter filter) {
+	private <E> Predicate buildFilters(CriteriaBuilder builder, Root<E> root, SearchFilter filter) {
 		String columnName = filter.getColumnName();
 		String value = filter.getValue();
 		String filterType = filter.getType();
@@ -187,7 +228,7 @@ public class MasterdataSearchHelper {
 	 * @param sortFilter
 	 *            by the query to be sorted
 	 */
-	private <T> void sortQuery(CriteriaBuilder builder, Root<T> root, CriteriaQuery<T> criteriaQuery,
+	private <E> void sortQuery(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> criteriaQuery,
 			List<SearchSort> sortFilter) {
 		if (sortFilter != null && !sortFilter.isEmpty()) {
 			List<Order> orders = sortFilter.stream().filter(this::validateSort).map(i -> {
@@ -233,7 +274,7 @@ public class MasterdataSearchHelper {
 	 *            language code
 	 * @return {@link Predicate}
 	 */
-	private <T> Predicate setLangCode(CriteriaBuilder builder, Root<T> root, String langCode) {
+	private <E> Predicate setLangCode(CriteriaBuilder builder, Root<E> root, String langCode) {
 		if (langCode != null && !langCode.isEmpty()) {
 			Path<Object> langCodePath = root.get(LANGCODE_COLUMN_NAME);
 			if (langCodePath != null) {
@@ -254,7 +295,7 @@ public class MasterdataSearchHelper {
 	 *            search filter with the between type.
 	 * @return {@link Predicate}
 	 */
-	private <T> Predicate setBetweenValue(CriteriaBuilder builder, Root<T> root, SearchFilter filter) {
+	private <E> Predicate setBetweenValue(CriteriaBuilder builder, Root<E> root, SearchFilter filter) {
 		String columnName = filter.getColumnName();
 		Path<Object> path = root.get(columnName);
 		if (path != null) {
@@ -301,7 +342,7 @@ public class MasterdataSearchHelper {
 	 *            value to be cast based on the column data type
 	 * @return the value
 	 */
-	private <T> Object parseDataType(Root<T> root, String column, String value) {
+	private <E> Object parseDataType(Root<E> root, String column, String value) {
 		Path<Object> path = root.get(column);
 		if (path != null) {
 			Class<? extends Object> type = path.getJavaType();
@@ -341,7 +382,7 @@ public class MasterdataSearchHelper {
 	 *            column value
 	 * @return {@link Predicate}
 	 */
-	private <T> Predicate buildPredicate(CriteriaBuilder builder, Root<T> root, String column, String value) {
+	private <E> Predicate buildPredicate(CriteriaBuilder builder, Root<E> root, String column, String value) {
 		Predicate predicate = null;
 		Path<Object> path = root.get(column);
 		if (path != null) {
@@ -417,5 +458,4 @@ public class MasterdataSearchHelper {
 		}
 		return false;
 	}
-
 }
