@@ -1,6 +1,6 @@
 package io.mosip.authentication.tests;
 
-import java.io.File;
+import java.io.File; 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -49,6 +49,7 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 	private String TESTDATA_FILENAME;
 	private String testType;
 	private int invocationCount = 0;
+	private String kubernetSeriveName="";
 
 	/**
 	 * Set Test Type - Smoke, Regression or Integration

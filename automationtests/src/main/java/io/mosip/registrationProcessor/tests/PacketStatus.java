@@ -161,7 +161,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			validToken=getToken("getStatusTokenGenerationFilePath");
 			boolean tokenStatus=apiRequests.validateToken(validToken);
 			while(!tokenStatus) {
-				validToken = getToken("syncTokenGenerationFilePath");
+				validToken = getToken("getStatusTokenGenerationFilePath");
 				tokenStatus=apiRequests.validateToken(validToken);
 			}
 
@@ -178,7 +178,13 @@ public class PacketStatus extends BaseTestCase implements ITest {
 			Assert.assertTrue(status, "object are not equal");
 			
 			if (status) {
-				boolean isError = expectedResponse.containsKey("errors");
+				//boolean isError = expectedResponse.containsKey("errors");
+				boolean isError = false;
+				List<Map<String,String>> errorResponse =  actualResponse.jsonPath().get("errors");
+				if(errorResponse!=null && !errorResponse.isEmpty()) {
+					isError=true;
+				}
+				
 				logger.info("isError ========= : "+isError);
 
 				if(!isError){
@@ -231,6 +237,7 @@ public class PacketStatus extends BaseTestCase implements ITest {
 					JSONArray expectedError = (JSONArray) expectedResponse.get("errors");
 					String expectedErrorCode = null;
 					List<Map<String,String>> error = actualResponse.jsonPath().get("errors"); 
+				
 					logger.info("error : "+error );
 					for(Map<String,String> err : error){
 						String errorCode = err.get("errorCode").toString();

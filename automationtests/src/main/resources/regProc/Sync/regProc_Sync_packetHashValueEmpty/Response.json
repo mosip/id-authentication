@@ -2,10 +2,12 @@
     "id": "mosip.registration.sync",
     "version": "1.0",
     "responsetime": "2019-06-18T05:57:15.184Z",
+	
     "response": [
         {
             "status": "SUCCESS",
             "registrationId": "10006100060000120190618081137"
         }
-    ]
+    ],
+    "errors" : null
 }

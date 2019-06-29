@@ -2,11 +2,12 @@
     "id": "mosip.registration.sync",
     "version": "1.0",
     "responsetime": "2019-05-21T09:35:56.727Z",
+	"response": null,
     "errors": [
         {
         	"registrationId" : "10006100060000120190618081137",
             "status": "FAILURE",
-            "errorMessage": "Language Code must be of three character",
+            "errorMessage": "Invalid Language Code - Language Code must be of Three Characters",
             "errorCode": "RPR-RGS-004"
         }
     ]

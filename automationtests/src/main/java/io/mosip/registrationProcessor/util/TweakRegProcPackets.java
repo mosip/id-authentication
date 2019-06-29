@@ -447,6 +447,10 @@ public class TweakRegProcPackets extends BaseTestCase {
 										identity.put("individualBiometrics", bio);
 										identity.put("proofOfIdentity", poi);
 										
+									}else if(testCaseName.matches("UINInvalid")) {
+										
+										identity.put("UIN", property );
+									
 									}
 									
 									//logger.info("Identity is :: " + identity.get("fullName"));

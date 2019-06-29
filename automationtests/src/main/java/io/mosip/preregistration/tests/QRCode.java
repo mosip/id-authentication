@@ -142,7 +142,16 @@ public class QRCode extends BaseTestCase implements ITest {
 
 		outerKeys.add("responsetime");
 		logger.info("QR Code Valid TC Response::" + qrCoderes.asString());
-		status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
+		if(testCaseName.contains("requesttime_withAlphabets")||testCaseName.contains("requesttime_withInvalidDateOfSlashInsteadOfHypen")||testCaseName.contains("requesttime_withSpecialCharacters"))
+		{
+			innerKeys.add("message");
+			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
+		}
+		else
+		{
+			status = AssertResponses.assertResponses(qrCoderes, Expectedresponse, outerKeys, innerKeys);
+		}
+		
 
 		
 		if (status) {

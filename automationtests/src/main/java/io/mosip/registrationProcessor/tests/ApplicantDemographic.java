@@ -171,9 +171,14 @@ public class ApplicantDemographic extends BaseTestCase implements ITest {
 			logger.info("Status after assertion : " + status);
 
 			if (status) {
-
-				boolean isError = expectedResponse.containsKey("errors");
+				boolean isError = false;
+				List<Map<String,String>> errorResponse =  actualResponse.jsonPath().get("errors");
+				if(errorResponse!=null && !errorResponse.isEmpty()) {
+					isError=true;
+				}
+				
 				logger.info("isError ========= : "+isError);
+
 
 				if(!isError){
 					String file = actualResponse.jsonPath().get("file"); 

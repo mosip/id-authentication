@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,31 +30,29 @@ public class AssertResponses {
 	static JSONArray jsonArray = new JSONArray();
 	static SoftAssert softAssert=new SoftAssert();
 	@SuppressWarnings("serial")
-	public static boolean assertResponses(Response response, JSONObject object, List<String> outerKeys, List<String> innerKeys)
-			throws JsonProcessingException, IOException, ParseException {
-		JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
-		JSONObject obj2 = AssertResponses.getComparableBody(object.toString(), outerKeys, innerKeys);
-//		logger.info(obj1);
-//		logger.info(obj2);
-		Gson g = new Gson(); 
-		Type mapType = new TypeToken<Map<String, Object>>() {
-		}.getType();
-		Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
-		Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
-		logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
-		if (obj1.hashCode() == obj2.hashCode()) {
-			logger.info("both object are equal");
-			softAssert.assertTrue(obj1.equals(obj2));
-			logger.info("both object are equal");
-			softAssert.assertAll();
-			return true;
+    public static boolean assertResponses(Response response, JSONObject object, List<String> outerKeys, List<String> innerKeys)
+                  throws JsonProcessingException, IOException, ParseException {
+           JSONObject obj1 = AssertResponses.getComparableBody(response.asString(), outerKeys, innerKeys);
+           JSONObject obj2 = AssertResponses.getComparableBody(object.toString(), outerKeys, innerKeys);
+           Gson g = new Gson(); 
+           Type mapType = new TypeToken<Map<String, Object>>() {
+           }.getType();
+           Map<String, Object> firstMap = g.fromJson(obj1.toJSONString(), mapType);
+           Map<String, Object> secondMap = g.fromJson(obj2.toJSONString(), mapType);
+           logger.info(com.google.common.collect.Maps.difference(firstMap, secondMap));
 
-		} else { 
-			logger.info("both object are not equal");
-			return false;
-		}
+                  try {
+                        Assert.assertTrue(obj1.equals(obj2));
+                        logger.info("both object are equal");
+                  } catch (AssertionError e) {
+                        Assert.assertTrue(false, "Response Data Mismatch Failure  : "+com.google.common.collect.Maps.difference(firstMap, secondMap));
+                        return false;
+                  }
+                  softAssert.assertAll();
+                  return true;
 
-	}
+    }
+
 
 	@SuppressWarnings("serial")
 	public static boolean assertArrayResponses(Response response, JSONArray objectArray, List<String> outerKeys, List<String> innerKeys)

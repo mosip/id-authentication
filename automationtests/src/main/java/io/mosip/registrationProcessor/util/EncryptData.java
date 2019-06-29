@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,7 @@ import io.mosip.dbdto.CryptomanagerDto;
 import io.mosip.dbdto.DecrypterDto;
 import io.mosip.dbdto.RegistrationPacketSyncDTO;
 import io.mosip.dbdto.SyncRegistrationDto;
+import io.mosip.kernel.core.util.DateUtils;
 
 public class EncryptData {
 	private String applicationId="REGISTRATION";
@@ -54,29 +56,27 @@ public class EncryptData {
 		
 		String referenceId=registrationId.substring(0,5)+"_"+registrationId.substring(5,10);
 		
-		try {
-					
-			decrypterDto.setApplicationId(applicationId);
-			decrypterDto.setReferenceId(referenceId);
-			decrypterDto.setData(encryptedString);
-			decrypterDto.setTimeStamp(getTime(registrationId));
-			cryptoReq.setRequesttime(getTime(registrationId));
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.registerModule(new JavaTimeModule());
-			cryptographicRequest.put("applicationId", applicationId);
-			cryptographicRequest.put("data", encryptedString);
-			cryptographicRequest.put("referenceId", referenceId);
-			cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
-			encryptRequest.put("id","mosip.registration.sync");
-			encryptRequest.put("metadata","");
-			encryptRequest.put("request",cryptographicRequest);
-			encryptRequest.put("requesttime", cryptoReq.getRequesttime().atOffset(ZoneOffset.UTC).toString());
-			encryptRequest.put("version","1.0");
-		}  catch (java.text.ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		decrypterDto.setApplicationId(applicationId);
+		decrypterDto.setReferenceId(referenceId);
+		decrypterDto.setData(encryptedString);
+		decrypterDto.setTimeStamp(getDateTimeFromString(registrationPacketSyncDto.getRequesttime()));
+		cryptoReq.setRequesttime(getDateTimeFromString(registrationPacketSyncDto.getRequesttime()));
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+		cryptographicRequest.put("applicationId", applicationId);
+		cryptographicRequest.put("data", encryptedString);
+		cryptographicRequest.put("referenceId", referenceId);
+		cryptographicRequest.put("timeStamp",decrypterDto.getTimeStamp().atOffset(ZoneOffset.UTC).toString());
+		encryptRequest.put("id","mosip.registration.sync");
+		encryptRequest.put("metadata","");
+		encryptRequest.put("request",cryptographicRequest);
+		encryptRequest.put("requesttime", cryptoReq.getRequesttime().atOffset(ZoneOffset.UTC).toString());
+		encryptRequest.put("version","1.0");
 		return encryptRequest;
+	}
+	
+	private static LocalDateTime getDateTimeFromString(String datetime) {
+		return DateUtils.convertUTCToLocalDateTime(datetime);
 	}
 /*	public static void main(String[] args) {
 	File f=new File("D:\\sprint_10\\mosip\\automationtests\\src\\test\\resources\\regProc\\Packets\\ValidPackets\\packteForInvalidPackets\\10011100110001920190514120310.zip");
@@ -120,6 +120,20 @@ public class EncryptData {
 		
 		return ldt;
 	}
+	
+	public LocalDateTime getLocalDateTime(String time) throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		String  responseTime = time;
+		int n = 100 + new Random().nextInt(900);
+		String milliseconds = String.valueOf(n);
+		DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		/*Date date = formatter1.parse(responseTime);
+		LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());*/
+		LocalDateTime dateTime = LocalDateTime.parse(responseTime.substring(0,responseTime.length()-1), formatter1);
+		
+		return dateTime;
+	}
+	
 	public RegistrationPacketSyncDTO createSyncRequest(JSONObject jsonRequest) throws ParseException{
 		String regId = null;
 		String packetHash=null;

@@ -32,7 +32,10 @@ import io.mosip.kernel.util.KernelAuthentication;
 import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
-
+/**
+ * @author Arunakumar Rati
+ *
+ */
 public class GetDocTypeDocCatByLangCode extends BaseTestCase implements ITest{
 
 	public GetDocTypeDocCatByLangCode() {

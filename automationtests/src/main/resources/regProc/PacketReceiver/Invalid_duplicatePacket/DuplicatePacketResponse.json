@@ -1,8 +1,9 @@
 {
+	"response" : null,
     "errors": [
         {
             "errorCode": "RPR-PKR-005",
-            "message": "The request received is a duplicate request to upload a Packet"
+            "message": "Duplicate Request Received"
         }
     ],
     "id": "mosip.registration.packet",

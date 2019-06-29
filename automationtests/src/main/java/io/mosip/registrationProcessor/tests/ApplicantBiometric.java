@@ -173,8 +173,14 @@ public class ApplicantBiometric extends BaseTestCase implements ITest {
 
 			if (status) {
 
-				boolean isError = expectedResponse.containsKey("errors");
+				boolean isError = false;
+				List<Map<String,String>> errorResponse =  actualResponse.jsonPath().get("errors");
+				if(errorResponse!=null && !errorResponse.isEmpty()) {
+					isError=true;
+				}
+				
 				logger.info("isError ========= : "+isError);
+
 
 				if(!isError){
 					String file = actualResponse.jsonPath().get("file"); 

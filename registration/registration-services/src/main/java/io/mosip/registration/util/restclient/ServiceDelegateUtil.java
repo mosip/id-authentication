@@ -559,9 +559,13 @@ public class ServiceDelegateUtil {
 
 			if (loginMode.equals(LoginMode.CLIENTID)) {
 				ApplicationContext.setAuthTokenDTO(authTokenDTO);
+				LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+						"Completed fetching Auth Token based on Client ID");
 			} else {
 				if(null != SessionContext.getInstance()) {
 					SessionContext.setAuthTokenDTO(authTokenDTO);
+					LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+							"Completed fetching Auth Token based on login mode ::: " + loginMode );
 				} else {
 					return authTokenDTO;
 				}

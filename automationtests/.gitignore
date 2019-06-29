@@ -35,3 +35,4 @@ src/logs/mosip-api-test.log
 /target/
 target/
 test-output/
+testng-report/

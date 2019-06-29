@@ -37,7 +37,10 @@ import io.mosip.kernel.util.KernelDataBaseAccess;
 import io.mosip.kernel.util.TestCaseReader;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
-
+/**
+ * @author Ravi Kant
+ *
+ */
 public class UploadPublickey extends BaseTestCase implements ITest {
 
 	UploadPublickey() {
