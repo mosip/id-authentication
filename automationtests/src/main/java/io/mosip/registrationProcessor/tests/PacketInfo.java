@@ -174,8 +174,14 @@ public class PacketInfo extends BaseTestCase implements ITest {
 			Assert.assertTrue(status, "object are not equal");
 			if (status) {
 
-				boolean isError = expectedResponse.containsKey("errors");
+				boolean isError = false;
+				List<Map<String,String>> errorResponse =  actualResponse.jsonPath().get("errors");
+				if(errorResponse!=null && !errorResponse.isEmpty()) {
+					isError=true;
+				}
+				
 				logger.info("isError ========= : "+isError);
+
 
 				if(!isError){
 					Map<String,String> response = actualResponse.jsonPath().get("response"); 

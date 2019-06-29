@@ -174,7 +174,7 @@ public class Assignment extends BaseTestCase implements ITest {
 			
 			String message = null;
 			boolean noRecord = false;
-			if(actualResponse.asString().contains("errors")) {
+			if(actualResponse.asString().contains("errors") && actualResponse.jsonPath().get("errors")!=null) {
 				List<Map<String,String>> errors = actualResponse.jsonPath().get("errors");
 				for(Map<String,String> err : errors){
 					message = err.get("message").toString();
@@ -215,7 +215,12 @@ public class Assignment extends BaseTestCase implements ITest {
 
 				if (status) {
 
-					boolean isError = expectedResponse.containsKey("errors");
+					boolean isError = false;
+					List<Map<String,String>> errorResponse =  actualResponse.jsonPath().get("errors");
+					if(errorResponse!=null && !errorResponse.isEmpty()) {
+						isError=true;
+					}
+					
 					logger.info("isError ========= : "+isError);
 
 					if(!isError){

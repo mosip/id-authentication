@@ -1,12 +1,14 @@
 {
     "id": "mosip.registration.sync",
     "version": "1.0",
-    "responsetime": "2019-05-21T06:34:54.529Z",
+    "responsetime": "2019-06-28T06:47:26.787Z",
+    "response": null,
     "errors": [
         {
+        	"registrationId" : "1001110011ab$1920190325120310",
             "status": "FAILURE",
-            "errorMessage": "Decryption Failed",
-            "errorCode": "RPR-RGS-028"
+            "errorMessage": "Invalid Request Value - RID must be Numberic",
+            "errorCode": "RPR-RGS-008"
         }
     ]
 }

@@ -193,13 +193,13 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 			String message = null;
 			boolean uploaded = false;
 			Response syncResponse = null;
-			if(actualResponse.asString().contains("errors")) {
+			if(actualResponse.asString().contains("errors") && actualResponse.jsonPath().get("errors")!=null) {
 				List<Map<String,String>> error = actualResponse.jsonPath().get("errors");
 				for(Map<String,String> err : error){
 					message = err.get("message").toString();
 				}
 				logger.info("message : "+message);
-				if(message.matches("The request received is a duplicate request to upload a Packet") 
+				if(message.matches("Duplicate Request Received") 
 						&& object.get("testCaseName").toString().matches("PacketReceiver_smoke")) {
 					logger.info("Inside duplicate message block ========================");
 					uploaded = true;
@@ -207,7 +207,7 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 					softAssert.assertAll();
 					object.put("status", finalStatus);
 					arr.add(object);
-				}else if(message.matches("Registration packet is not in Sync with Sync table")) {
+				}else if(message.matches("Packet Not Found in Sync Table")) {
 					try {
 						registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
 
@@ -245,7 +245,12 @@ public class PacketReceiver extends  BaseTestCase implements ITest {
 				status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 				Assert.assertTrue(status, "object are not equal");
 				if (status) {
-					boolean isError = expectedResponse.containsKey("errors");
+					boolean isError = false;
+					List<Map<String,String>> errorResponse =  actualResponse.jsonPath().get("errors");
+					if(errorResponse!=null && !errorResponse.isEmpty()) {
+						isError=true;
+					}
+					
 					logger.info("isError ========= : "+isError);
 
 					if(!isError){

@@ -240,12 +240,12 @@ testdata:
       requesttime: $TIMESTAMPZ$
       vidStatus: USED
       id: $TestData:id_UpdateVid_valid$
-    output.output-1-expected-n-res:
-      output.1.res.n.version: $version$ 
-      output.1.res.n.responsetime: $IGNORE$
-      output.1.res.n.errorCode:  $errors:USEDVID:errorCode$
-      output.1.res.n.errormessage: $errors:USEDVID:errorMessage$
-      output.1.res.n.id: $TestData:id_UpdateVid_valid$ 
+    output.output-1-expected-y-res:
+      output.1.res.status: USED
+      output.1.res.responsetime: $IGNORE$
+      output.1.res.version: $version$
+      output.1.res.VID: $IGNORE$
+      output.1.res.id: $TestData:id_UpdateVid_valid$
       
   IdRepository_UpdateVidStatus_withVidStatus_REVOKE_for_USED VID_For Vid Type_Perpetual:
     input.create-request:

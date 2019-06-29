@@ -46,18 +46,14 @@ timestamp_invalid:
       - 2019-04-01^11:48:59.059+05:30
 uin_invalid:
       - 1234567890
-      - 2344567&70
-      - 1234R45780
+      - 2344567
+      - 123445780
       - 87657
-      - AYGUI
-      - 9*(_%$$@!
 expired_vid_invalid:
       - 9835845389149251
 vid_invalid:
       - 9835845389149
-      - 983584538Q149251
-      - ASUUYUHLIDIYDVUY
-      - _&%$@!()**&&^*^S
+      - 983584538149251
 name_valid:
       - Vignesh Ravi
       - Mary Rose
@@ -226,7 +222,7 @@ CNIENumber_Invalid:
       - 123456789
       - asdfiohjkj
       - 123456789012345678901234567890123
-      - 6789545678914
+      - 67
 emailId_valid:
       - vignesh.vijayakumar@mindtree.com
       - athila.sirajudeen@mindtree.com

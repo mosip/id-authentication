@@ -40,6 +40,8 @@ import io.mosip.dbaccess.KernelMasterDataR;
 import io.mosip.dbaccess.PreRegDbread;
 
 import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.preregistration.dao.PreregistrationDAO;
+import io.mosip.preregistration.tests.PreRegistrationConfigData;
 import io.mosip.testrunner.MosipTestRunner;
 import io.mosip.util.PreRegistrationLibrary;
 import io.mosip.util.TokenGeneration;
@@ -156,6 +158,7 @@ public class BaseTestCase{
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 			AuthTestsUtil.initiateAuthTest();
+			new PreregistrationDAO().makeAllRegistartionCenterActive();
 			//authToken=pil.getToken();
 			/*htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();

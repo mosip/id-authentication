@@ -1,1 +1,10 @@
-{"id":"mosip.pre-registration.notification.notify","version":"1.0","responsetime":"2019-06-21T13:08:54.474Z","response":null,"errors":[{"errorCode":"PRG_PAM_ACK_013","message":"Invalid requesttime format"}]}
+{
+	"id": "mosip.pre-registration.notification.notify",
+	"version": "1.0",
+	"responsetime": "2019-06-27T14:56:10.702Z",
+	"response": null,
+	"errors": [{
+		"errorCode": "PRG_PAM_CORE_003",
+		"message": "Invalid request time"
+	}]
+}

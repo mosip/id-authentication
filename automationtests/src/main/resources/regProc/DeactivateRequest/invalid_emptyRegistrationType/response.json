@@ -1,11 +1,12 @@
 {
+    "id": "mosip.registration.packetgenerator",
+    "version": "1.0",
+    "responsetime": "2019-06-28T07:22:02.425Z",
+    "response": null,
     "errors": [
         {
             "errorCode": "RPR-PGS-004",
             "message": "Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED"
         }
-    ],
-    "id": "mosip.registration.packetgenerator",
-    "version": "1.0",
-    "responsetime": "2019-06-25T08:24:25.356Z"
+    ]
 }

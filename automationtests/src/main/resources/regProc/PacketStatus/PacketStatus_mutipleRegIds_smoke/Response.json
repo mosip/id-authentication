@@ -9,6 +9,7 @@
             "statusCode": "REREGISTER"
         }
     ],
+    "errors": null,
     "id": "mosip.registration.status",
     "version": "1.0",
     "responsetime": "2019-06-14T09:46:58.882Z"

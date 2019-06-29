@@ -1,8 +1,9 @@
 {
+	"response" : null,
     "errors": [
         {
             "errorCode": "RPR-PKR-001",
-            "message": "Registration packet is not in Sync with Sync table"
+            "message": "Packet Not Found in Sync Table"
         }
     ],
     "id": "mosip.registration.packet",
