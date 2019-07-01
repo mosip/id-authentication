@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.keycloak.representations.AccessTokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +41,7 @@ import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.constant.KeycloakConstants;
+import io.mosip.kernel.auth.dto.AccessTokenResponse;
 import io.mosip.kernel.auth.dto.AccessTokenResponseDTO;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
@@ -73,6 +72,7 @@ import io.mosip.kernel.auth.dto.UserRoleDto;
 import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
+import io.mosip.kernel.auth.exception.LoginException;
 import io.mosip.kernel.auth.repository.UserStoreFactory;
 import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.OTPService;
@@ -125,32 +125,30 @@ public class AuthServiceImpl implements AuthService {
 
 	@Value("${mosip.kernel.open-id-uri}")
 	private String openIdUrl;
-	
+
 	@Value("${mosip.admin.login_flow.name}")
 	private String loginFlowName;
-	
+
 	@Value("${mosip.admin.clientid}")
 	private String clientID;
-	
+
 	@Value("${mosip.admin.clientsecret}")
 	private String clientSecret;
-	
+
 	@Value("${mosip.admin.redirecturi}")
 	private String redirectURI;
-	
+
 	@Value("${mosip.admin.login_flow.scope}")
 	private String scope;
-	
+
 	@Value("${mosip.admin.login_flow.response_type}")
 	private String responseType;
-	
+
 	@Value("${mosip.keycloak.authorization_endpoint}")
 	private String authorizationEndpoint;
-	
+
 	@Value("${mosip.keycloak.token_endpoint}")
 	private String tokenEndpoint;
-	
-	
 
 	/**
 	 * Method used for validating Auth token
@@ -170,9 +168,9 @@ public class AuthServiceImpl implements AuthService {
 		// long currentTime = Instant.now().toEpochMilli();
 		MosipUserTokenDto mosipUserDtoToken = tokenValidator.validateToken(token);
 		AuthToken authToken = customTokenServices.getTokenDetails(token);
-		if(authToken==null)
-		{
-			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+		if (authToken == null) {
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
+					AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 		/*
 		 * AuthToken authToken = customTokenServices.getTokenDetails(token); if
@@ -348,7 +346,7 @@ public class AuthServiceImpl implements AuthService {
 			} catch (AuthManagerException auth) {
 				if (auth.getErrorCode().equals(AuthErrorCode.TOKEN_EXPIRED.getErrorCode())) {
 					mosipToken = null;
-					System.out.println("Token expired for user "+authToken);
+					System.out.println("Token expired for user " + authToken);
 				} else {
 					throw new AuthManagerException(auth.getErrorCode(), auth.getMessage(), auth);
 				}
@@ -534,7 +532,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public MosipUserDto valdiateToken(String token) throws IOException {
+	public MosipUserDto valdiateToken(String token) {
 		Map<String, String> pathparams = new HashMap<>();
 
 		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
@@ -544,7 +542,7 @@ public class AuthServiceImpl implements AuthService {
 		StringBuilder urlBuilder = new StringBuilder().append(openIdUrl).append("userinfo");
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString());
 		HttpHeaders headers = new HttpHeaders();
-		String accessToken="Bearer " + token;
+		String accessToken = "Bearer " + token;
 		headers.add("Authorization", accessToken);
 
 		HttpEntity<String> httpRequest = new HttpEntity(headers);
@@ -557,9 +555,9 @@ public class AuthServiceImpl implements AuthService {
 				throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 			} else if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Token is not active")) {
 				throw new AuthenticationServiceException(AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
-			}else if(e.getStatusCode() == HttpStatus.FORBIDDEN ) {
-				throw new AccessDeniedException(AuthErrorCode.FORBIDDEN.getErrorMessage());	
-			}else {
+			} else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
+				throw new AccessDeniedException(AuthErrorCode.FORBIDDEN.getErrorMessage());
+			} else {
 				throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
 						AuthErrorCode.REST_EXCEPTION.getErrorMessage() + " " + e.getResponseBodyAsString());
 			}
@@ -653,9 +651,7 @@ public class AuthServiceImpl implements AuthService {
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 		ResponseEntity<String> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(
-					tokenEndpoint, HttpMethod.POST,
-					entity, String.class);
+			responseEntity = restTemplate.exchange(tokenEndpoint, HttpMethod.POST, entity, String.class);
 
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			KeycloakErrorResponseDto keycloakErrorResponseDto = parseKeyClockErrorResponse(e);
@@ -668,7 +664,8 @@ public class AuthServiceImpl implements AuthService {
 			accessTokenResponse = objectmapper.readValue(responseEntity.getBody(), AccessTokenResponse.class);
 		} catch (IOException exception) {
 			throw new LoginException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-					AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + AuthConstant.WHITESPACE + exception.getMessage());
+					AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + AuthConstant.WHITESPACE
+							+ exception.getMessage());
 		}
 		AccessTokenResponseDTO accessTokenResponseDTO = new AccessTokenResponseDTO();
 		accessTokenResponseDTO.setAccessToken(accessTokenResponse.getAccess_token());
@@ -690,7 +687,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public String getKeycloakURI(String redirectURI, String state) {
-		UriComponentsBuilder uriComponentsBuilder= UriComponentsBuilder.fromHttpUrl(authorizationEndpoint);
+		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(authorizationEndpoint);
 		uriComponentsBuilder.queryParam(KeycloakConstants.CLIENT_ID, clientID);
 		uriComponentsBuilder.queryParam(KeycloakConstants.REDIRECT_URI, this.redirectURI + redirectURI);
 		uriComponentsBuilder.queryParam(KeycloakConstants.STATE, state);

@@ -6,7 +6,6 @@ package io.mosip.kernel.auth.exception;
 import java.io.IOException;
 import java.util.List;
 
-import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
