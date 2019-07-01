@@ -1,12 +1,14 @@
 package io.mosip.kernel.auth.controller;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
@@ -17,15 +19,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.dto.AccessTokenResponseDTO;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
 import io.mosip.kernel.auth.dto.AuthResponseDto;
@@ -132,7 +137,7 @@ public class AuthController {
 		final Cookie cookie = new Cookie(mosipEnvironment.getAuthTokenHeader(), content);
 		cookie.setMaxAge(expirationTimeSeconds);
 		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
+		cookie.setSecure(false);
 		cookie.setPath("/");
 		return cookie;
 	}
@@ -580,6 +585,27 @@ public class AuthController {
 		ResponseWrapper<AuthResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authResponseDto);
 		return responseWrapper;
+	}
+
+	@GetMapping(value = "/login/{redirectURI}")
+	public void login(@CookieValue("state") String state, @PathVariable("redirectURI") String redirectURI,
+			HttpServletResponse res) throws IOException {
+		String uri = authService.getKeycloakURI(redirectURI, state);
+		res.setStatus(302);
+		res.sendRedirect(uri);
+	}
+
+	@GetMapping(value = "/login-redirect/{redirectURI}")
+	public void loginRedirect(@PathVariable("redirectURI") String redirectURI, @RequestParam("state") String state,
+			@RequestParam("session_state") String sessionState, @RequestParam("code") String code,
+			@CookieValue("state") String stateCookie, HttpServletResponse res) throws IOException {
+		AccessTokenResponseDTO jwtResponseDTO = authService.loginRedirect(state, sessionState, code, stateCookie,
+				redirectURI);
+		String uri = new String(Base64.decodeBase64(redirectURI.getBytes()));
+		Cookie cookie = createCookie(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
+		res.addCookie(cookie);
+		res.setStatus(302);
+		res.sendRedirect(uri);
 	}
 
 	/**

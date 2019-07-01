@@ -6,6 +6,7 @@ package io.mosip.kernel.auth.exception;
 import java.io.IOException;
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class AuthManagerExceptionHandler {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> methodArgumentNotValidException(
@@ -81,11 +83,11 @@ public class AuthManagerExceptionHandler {
 
 	@ExceptionHandler(value = { AuthManagerException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> customErrorMessage(HttpServletRequest request,
-			AuthManagerException e) throws IOException {
+			AuthManagerException exception) throws IOException {
 		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
-		ServiceError error = new ServiceError(e.getErrorCode(), e.getMessage());
+		ServiceError error = new ServiceError(exception.getErrorCode(), exception.getMessage());
 		responseWrapper.getErrors().add(error);
-		ExceptionUtils.logRootCause(e);
+		ExceptionUtils.logRootCause(exception);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
 	}
 
@@ -96,6 +98,16 @@ public class AuthManagerExceptionHandler {
 		responseWrapper.getErrors().addAll(e.getList());
 		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(responseWrapper, HttpStatus.OK);
+	}
+	
+	@ExceptionHandler(value = { LoginException.class })
+	public ResponseEntity<ResponseWrapper<ServiceError>> loginException(HttpServletRequest request,
+			LoginException exception) throws IOException {
+		ResponseWrapper<ServiceError> responseWrapper = setErrors(request);
+		ServiceError error = new ServiceError(exception.getErrorCode(), exception.getMessage());
+		responseWrapper.getErrors().add(error);
+		ExceptionUtils.logRootCause(exception);
+		return new ResponseEntity<>(responseWrapper, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
