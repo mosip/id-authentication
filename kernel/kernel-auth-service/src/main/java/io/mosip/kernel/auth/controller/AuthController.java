@@ -1,12 +1,14 @@
 package io.mosip.kernel.auth.controller;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
@@ -17,15 +19,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.dto.AccessTokenResponseDTO;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
 import io.mosip.kernel.auth.dto.AuthResponseDto;
@@ -129,7 +134,7 @@ public class AuthController {
 		final Cookie cookie = new Cookie(mosipEnvironment.getAuthTokenHeader(), content);
 		cookie.setMaxAge(expirationTimeSeconds);
 		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
+		cookie.setSecure(false);
 		cookie.setPath("/");
 		return cookie;
 	}
@@ -273,8 +278,8 @@ public class AuthController {
 	@ResponseFilter
 	@GetMapping(value = "/authorize/admin/validateToken")
 	public ResponseWrapper<MosipUserDto> validateToken(
-			@CookieValue(value = "Authorization", required = true) String token)
-			throws JsonParseException, JsonMappingException, IOException {
+			@CookieValue(value = "Authorization", required=false) String token)
+		{
 		MosipUserDto mosipUserDto = authService.valdiateToken(token);
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
@@ -371,10 +376,8 @@ public class AuthController {
 	/**
 	 * This API will fetch RID based on appId and userId.
 	 * 
-	 * @param appId
-	 *            - application Id
-	 * @param userId
-	 *            - user Id
+	 * @param appId  - application Id
+	 * @param userId - user Id
 	 * @return {@link RIdDto}
 	 * @throws Exception
 	 */
@@ -391,13 +394,10 @@ public class AuthController {
 	/**
 	 * Fetch username based on the user id.
 	 * 
-	 * @param appId
-	 *            - application id
-	 * @param userId
-	 *            - user id
+	 * @param appId  - application id
+	 * @param userId - user id
 	 * @return {@link UserNameDto}
-	 * @throws Exception
-	 *             - exception is thrown if
+	 * @throws Exception - exception is thrown if
 	 */
 	@ResponseFilter
 	@GetMapping(value = "unblock/{appid}/{userid}")
@@ -412,10 +412,8 @@ public class AuthController {
 	/**
 	 * This API will change the password of the particular user
 	 * 
-	 * @param appId
-	 *            - applicationId
-	 * @param passwordDto
-	 *            - {@link PasswordDto}
+	 * @param appId       - applicationId
+	 * @param passwordDto - {@link PasswordDto}
 	 * @return {@link AuthZResponseDto}
 	 * @throws Exception
 	 */
@@ -432,10 +430,8 @@ public class AuthController {
 	/**
 	 * This API will reset the password of the particular user
 	 * 
-	 * @param appId
-	 *            - applicationId
-	 * @param passwordDto
-	 *            -{@link PasswordDto}
+	 * @param appId       - applicationId
+	 * @param passwordDto -{@link PasswordDto}
 	 * @return {@link AuthZResponseDto}
 	 * @throws Exception
 	 */
@@ -451,10 +447,8 @@ public class AuthController {
 
 	/**
 	 * 
-	 * @param mobile
-	 *            - mobile number
-	 * @param appId
-	 *            - applicationId
+	 * @param mobile - mobile number
+	 * @param appId  - applicationId
 	 * @return {@link UserNameDto}
 	 * @throws Exception
 	 */
@@ -471,8 +465,7 @@ public class AuthController {
 	/**
 	 * Create a user account in Data Store
 	 * 
-	 * @param userCreationRequestDto
-	 *            {@link UserRegistrationRequestDto}
+	 * @param userCreationRequestDto {@link UserRegistrationRequestDto}
 	 * @return {@link UserRegistrationResponseDto}
 	 */
 	@ResponseFilter
@@ -505,10 +498,8 @@ public class AuthController {
 
 	/**
 	 * 
-	 * @param mobile
-	 *            - mobile number
-	 * @param appId
-	 *            - applicationId
+	 * @param mobile - mobile number
+	 * @param appId  - applicationId
 	 * @return {@link MosipUserDto}
 	 * @throws Exception
 	 */
@@ -524,10 +515,8 @@ public class AuthController {
 
 	/**
 	 * 
-	 * @param req
-	 *            - {@link HttpServletRequest}
-	 * @param res
-	 *            - {@link HttpServletResponse}
+	 * @param req - {@link HttpServletRequest}
+	 * @param res - {@link HttpServletResponse}
 	 * @return {@link ResponseWrapper}
 	 */
 	@ResponseFilter
@@ -540,11 +529,31 @@ public class AuthController {
 		return responseWrapper;
 	}
 
+	@GetMapping(value = "/login/{redirectURI}")
+	public void login(@CookieValue("state") String state, @PathVariable("redirectURI") String redirectURI,
+			HttpServletResponse res) throws IOException {
+		String uri = authService.getKeycloakURI(redirectURI, state);
+		res.setStatus(302);
+		res.sendRedirect(uri);
+	}
+
+	@GetMapping(value = "/login-redirect/{redirectURI}")
+	public void loginRedirect(@PathVariable("redirectURI") String redirectURI, @RequestParam("state") String state,
+			@RequestParam("session_state") String sessionState, @RequestParam("code") String code,
+			@CookieValue("state") String stateCookie, HttpServletResponse res) throws IOException {
+		AccessTokenResponseDTO jwtResponseDTO = authService.loginRedirect(state, sessionState, code, stateCookie,
+				redirectURI);
+		String uri = new String(Base64.decodeBase64(redirectURI.getBytes()));
+		Cookie cookie = createCookie(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
+		res.addCookie(cookie);
+		res.setStatus(302);
+		res.sendRedirect(uri);
+	}
+
 	/**
 	 * Gets Access token from cookie
 	 * 
-	 * @param req
-	 *            - {@link HttpServletRequest}
+	 * @param req - {@link HttpServletRequest}
 	 * @return {@link String} - accessToken
 	 */
 	private String getTokenFromCookie(HttpServletRequest req) {
@@ -572,8 +581,7 @@ public class AuthController {
 	/**
 	 * Erases Cookie from browser
 	 * 
-	 * @param cookie
-	 *            - {@link Cookie}
+	 * @param cookie - {@link Cookie}
 	 */
 	private void removeCookie(Cookie cookie) {
 		cookie.setValue("");
