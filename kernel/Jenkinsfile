@@ -93,6 +93,27 @@ stage('---------- SonarQube Analysis --------------') {
    pomFile = readMavenPom file: projectToBuild+'/pom.xml'
    dockerImagesTagVersion = pomFile.parent.version
    echo dockerImagesTagVersion
+	  
+	  
+      // Creating custom image for KeyManager
+    echo "Creating custom image for KeyManager"
+    sh "find . -name 'Dockerfile_DO_NOT_BUILD'> testdirectoryDockerFiles" // find keymanager dockerfile
+    locationOfDockerFiles = readFile("testdirectoryDockerFiles").split("\\r?\\n")
+    sh "rm -f testdirectoryDockerFiles"
+
+    //finding directory name for the Dockerfile
+    sh "dirname `find . -name 'Dockerfile_DO_NOT_BUILD'`> directoryDockerFiles"
+    locationOfDockerFileDirectory = readFile("directoryDockerFiles").split("\\r?\\n")
+    sh "rm -f directoryDockerFiles"
+
+    docker.withRegistry(registryUrl, registryCredentials) {
+      def buildName = registryName+'/kernel-keymanager-service'+ ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      def modulePath = locationOfDockerFileDirectory[0].substring(2)
+      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[0] + ' --build-arg docker_registry_url='+registryName+' '+ modulePath)
+      newApp.push()
+      newApp.push 'latest'
+      sh "docker rmi $buildName" //removing local copy of docker image
+     }
  
    /*
      Checking if there is any Dockerfile present to build, if not, returning from this stage
@@ -111,23 +132,7 @@ stage('---------- SonarQube Analysis --------------') {
    locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
    sh "rm -f directoryDockerFiles"
 	  
-    echo "Creating custom image for KeyManager"
-    sh "find . -name 'Dockerfile_DO_NOT_BUILD'> testdirectoryDockerFiles" // find keymanager dockerfile
-    locationOfDockerFiles = readFile("testdirectoryDockerFiles").split("\\r?\\n")
-    sh "rm -f testdirectoryDockerFiles"	  
-	
-    sh "dirname `find . -name 'Dockerfile_DO_NOT_BUILD'`> directoryDockerFiles"
-    locationOfDockerFileDirectory = readFile("directoryDockerFiles").split("\\r?\\n")
-    sh "rm -f directoryDockerFiles"
-	  
-   docker.withRegistry(registryUrl, registryCredentials) {
-      def buildName = registryName+'/kernel-keymanager-service'+ ":$dockerImagesTagVersion.$BUILD_NUMBER"
-      def modulePath = locationOfDockerFileDirectory[0].substring(2)
-      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[0] + ' --build-arg docker_registry_url='+registryName+' '+ modulePath)
-      newApp.push()
-      newApp.push 'latest'
-      sh "docker rmi $buildName" //removing local copy of docker image
-     }	  
+     
    /*
    If build paramerter is passed as Build All (All submodules have to be built)
    */
