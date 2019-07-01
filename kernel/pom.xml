@@ -124,6 +124,7 @@
 	</properties>
 
 	<modules>
+	<!--
 	        <module>kernel-core</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-auth-adapter</module>
@@ -174,6 +175,7 @@
 		<module>kernel-tokenidgenerator-service</module>
 		<module>kernel-config-server</module>
 		<module>kernel-signature-service</module>
+		-->
 		<module>kernel-cryptomanager-service</module>
 		<module>kernel-keymanager-service</module>
 
