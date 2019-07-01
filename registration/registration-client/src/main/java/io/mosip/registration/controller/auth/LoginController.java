@@ -60,6 +60,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -244,6 +245,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setHeight(bounds.getHeight());
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
+			primaryStage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			primaryStage.show();
 
 			// Execute SQL file (Script files on update)
