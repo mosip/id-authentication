@@ -1,5 +1,7 @@
 package io.mosip.kernel.auth.service.impl;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -9,7 +11,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.http.cookie.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,17 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -37,6 +44,9 @@ import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.constant.KeycloakConstants;
+import io.mosip.kernel.auth.dto.AccessTokenResponse;
+import io.mosip.kernel.auth.dto.AccessTokenResponseDTO;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
 import io.mosip.kernel.auth.dto.AuthResponseDto;
@@ -64,6 +74,7 @@ import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.UserRoleDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
+import io.mosip.kernel.auth.exception.LoginException;
 import io.mosip.kernel.auth.repository.UserStoreFactory;
 import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.OTPService;
@@ -71,18 +82,20 @@ import io.mosip.kernel.auth.service.TokenService;
 import io.mosip.kernel.auth.service.UinService;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * Auth Service for Authentication and Authorization
  * 
  * @author Ramadurai Pandian
- * 
+ * @author Urvil Joshi
+ * @author Srinivasan
  *
  */
 
 @Component
 public class AuthServiceImpl implements AuthService {
-
+	
 	@Autowired
 	UserStoreFactory userStoreFactory;
 
@@ -115,17 +128,41 @@ public class AuthServiceImpl implements AuthService {
 
 	@Value("${mosip.kernel.open-id-uri}")
 	private String openIdUrl;
+	
+	@Value("${mosip.admin.login_flow.name}")
+	private String loginFlowName;
+	
+	@Value("${mosip.admin.clientid}")
+	private String clientID;
+	
+	@Value("${mosip.admin.clientsecret}")
+	private String clientSecret;
+	
+	@Value("${mosip.admin.redirecturi}")
+	private String redirectURI;
+	
+	@Value("${mosip.admin.login_flow.scope}")
+	private String scope;
+	
+	@Value("${mosip.admin.login_flow.response_type}")
+	private String responseType;
+	
+	@Value("${mosip.keycloak.authorization_endpoint}")
+	private String authorizationEndpoint;
+	
+	@Value("${mosip.keycloak.token_endpoint}")
+	private String tokenEndpoint;
+	
+	
 
 	/**
 	 * Method used for validating Auth token
 	 * 
-	 * @param token
-	 *            token
+	 * @param token token
 	 * 
 	 * @return mosipUserDtoToken is of type {@link MosipUserTokenDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -172,13 +209,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based on username and password
 	 * 
-	 * @param loginUser
-	 *            is of type {@link LoginUser}
+	 * @param loginUser is of type {@link LoginUser}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -203,13 +238,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for sending OTP
 	 * 
-	 * @param otpUser
-	 *            is of type {@link OtpUser}
+	 * @param otpUser is of type {@link OtpUser}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -238,13 +271,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based with username and OTP
 	 * 
-	 * @param userOtp
-	 *            is of type {@link UserOtp}
+	 * @param userOtp is of type {@link UserOtp}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -280,13 +311,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for Authenticating User based with secretkey and password
 	 * 
-	 * @param clientSecret
-	 *            is of type {@link ClientSecret}
+	 * @param clientSecret is of type {@link ClientSecret}
 	 * 
 	 * @return authNResponseDto is of type {@link AuthNResponseDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -350,13 +379,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for generating refresh token
 	 * 
-	 * @param existingToken
-	 *            existing token
+	 * @param existingToken existing token
 	 * 
 	 * @return mosipUserDtoToken is of type {@link MosipUserTokenDto}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -386,13 +413,11 @@ public class AuthServiceImpl implements AuthService {
 	/**
 	 * Method used for invalidate token
 	 * 
-	 * @param token
-	 *            token
+	 * @param token token
 	 * 
 	 * @return authNResponse is of type {@link AuthNResponse}
 	 * 
-	 * @throws Exception
-	 *             exception
+	 * @throws Exception exception
 	 * 
 	 */
 
@@ -484,7 +509,11 @@ public class AuthServiceImpl implements AuthService {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public MosipUserDto valdiateToken(String token) throws JsonParseException, JsonMappingException, IOException {
+	public MosipUserDto valdiateToken(String token){
+		if(EmptyCheckUtils.isNullEmpty(token)) {
+			throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+		}
+		
 		Map<String, String> pathparams = new HashMap<>();
 
 		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
@@ -501,15 +530,14 @@ public class AuthServiceImpl implements AuthService {
 			response = restTemplate.exchange(uriComponentsBuilder.buildAndExpand(pathparams).toUriString(),
 					HttpMethod.GET, httpRequest, String.class);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			KeycloakErrorResponseDto keycloakErrorResponseDto = objectmapper.readValue(e.getResponseBodyAsString(),
-					KeycloakErrorResponseDto.class);
+			KeycloakErrorResponseDto keycloakErrorResponseDto = parseKeyClockErrorResponse(e);
 			if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Failed to parse JWT")) {
-				throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
-						AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+				throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 			} else if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Token is not active")) {
-				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(),
-						AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
-			} else {
+				throw new AuthenticationServiceException(AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
+			}else if(e.getStatusCode() == HttpStatus.FORBIDDEN ) {
+				throw new AccessDeniedException(AuthErrorCode.FORBIDDEN.getErrorMessage());	
+			}else {
 				throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
 						AuthErrorCode.REST_EXCEPTION.getErrorMessage() + " " + e.getResponseBodyAsString());
 			}
@@ -580,6 +608,73 @@ public class AuthServiceImpl implements AuthService {
 		dto.setRId(decodedJWT.getClaim("rid").asString());
 		dto.setRole(builder.toString());
 		return dto;
+	}
+
+	@Override
+	public AccessTokenResponseDTO loginRedirect(String state, String sessionState, String code, String stateCookie,
+			String redirectURI) {
+		// Compare states
+		if (!stateCookie.equals(state)) {
+			throw new AuthManagerException(AuthErrorCode.KEYCLOAK_STATE_EXCEPTION.getErrorCode(),
+					AuthErrorCode.KEYCLOAK_STATE_EXCEPTION.getErrorMessage());
+		}
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add(KeycloakConstants.GRANT_TYPE, loginFlowName);
+		map.add(KeycloakConstants.CLIENT_ID, clientID);
+		map.add(KeycloakConstants.CLIENT_SECRET, clientSecret);
+		map.add(KeycloakConstants.CODE, code);
+		map.add(KeycloakConstants.REDIRECT_URI, this.redirectURI + redirectURI);
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+		ResponseEntity<String> responseEntity = null;
+		try {
+			responseEntity = restTemplate.exchange(
+					tokenEndpoint, HttpMethod.POST,
+					entity, String.class);
+
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			KeycloakErrorResponseDto keycloakErrorResponseDto = parseKeyClockErrorResponse(e);
+			throw new LoginException(AuthErrorCode.KEYCLOAK_ACESSTOKEN_EXCEPTION.getErrorCode(),
+					AuthErrorCode.KEYCLOAK_ACESSTOKEN_EXCEPTION.getErrorMessage() + AuthConstant.WHITESPACE
+							+ keycloakErrorResponseDto.getError_description());
+		}
+		AccessTokenResponse accessTokenResponse = null;
+		try {
+			accessTokenResponse = objectmapper.readValue(responseEntity.getBody(), AccessTokenResponse.class);
+		} catch (IOException exception) {
+			throw new LoginException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+					AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + AuthConstant.WHITESPACE + exception.getMessage());
+		}
+		AccessTokenResponseDTO accessTokenResponseDTO = new AccessTokenResponseDTO();
+		accessTokenResponseDTO.setAccessToken(accessTokenResponse.getAccess_token());
+		accessTokenResponseDTO.setExpiresIn(accessTokenResponse.getExpires_in());
+		return accessTokenResponseDTO;
+	}
+
+	private KeycloakErrorResponseDto parseKeyClockErrorResponse(HttpStatusCodeException exception) {
+		KeycloakErrorResponseDto keycloakErrorResponseDto = null;
+		try {
+			keycloakErrorResponseDto = objectmapper.readValue(exception.getResponseBodyAsString(),
+					KeycloakErrorResponseDto.class);
+		} catch (IOException e) {
+			throw new LoginException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
+					AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage() + AuthConstant.WHITESPACE + e.getMessage());
+		}
+		return keycloakErrorResponseDto;
+	}
+
+	@Override
+	public String getKeycloakURI(String redirectURI, String state) {
+		UriComponentsBuilder uriComponentsBuilder= UriComponentsBuilder.fromHttpUrl(authorizationEndpoint);
+		uriComponentsBuilder.queryParam(KeycloakConstants.CLIENT_ID, clientID);
+		uriComponentsBuilder.queryParam(KeycloakConstants.REDIRECT_URI, this.redirectURI + redirectURI);
+		uriComponentsBuilder.queryParam(KeycloakConstants.STATE, state);
+		uriComponentsBuilder.queryParam(KeycloakConstants.RESPONSE_TYPE, responseType);
+		uriComponentsBuilder.queryParam(KeycloakConstants.SCOPE, scope);
+		return uriComponentsBuilder.build().toString();
 	}
 
 }
