@@ -118,7 +118,7 @@ stage('---------- SonarQube Analysis --------------') {
 	
     sh "dirname `find . -name 'Dockerfile_DO_NOT_BUILD'`> directoryDockerFiles"
     locationOfDockerFileDirectory = readFile("directoryDockerFiles").split("\\r?\\n")
-    sh "rm -f directoryDockerFiles
+    sh "rm -f directoryDockerFiles"
 	  
    docker.withRegistry(registryUrl, registryCredentials) {
       def buildName = registryName+'/kernel-keymanager-service'+ ":$dockerImagesTagVersion.$BUILD_NUMBER"
