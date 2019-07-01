@@ -23,7 +23,7 @@ public class PageUtils {
 		PageResponseDto<T> pageResponse = null;
 		if (page != null) {
 			long totalItem = page.getTotalElements();
-			int pageNumber = page.getNumber();
+			int pageNumber = page.getNumber()+1;
 			int pageSize = page.getSize();
 			int start = (pageNumber * pageSize) - (pageSize - 1);
 			pageResponse = new PageResponseDto<>();
