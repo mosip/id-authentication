@@ -1,4 +1,4 @@
-package io.mosip.kernel.ridgenerator.config;
+package io.mosip.kernel.signature.config;
 
 import java.io.IOException;
 
