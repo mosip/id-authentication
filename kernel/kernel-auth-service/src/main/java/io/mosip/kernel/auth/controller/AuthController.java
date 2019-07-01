@@ -283,7 +283,7 @@ public class AuthController {
 	@ResponseFilter
 	@GetMapping(value = "/authorize/admin/validateToken")
 	public ResponseWrapper<MosipUserDto> validateToken(
-			@CookieValue(value = "Authorization", required = true) String token)
+			@CookieValue(value = "Authorization", required = false) String token)
 			throws IOException {
 		MosipUserDto mosipUserDto = authService.valdiateToken(token);
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();

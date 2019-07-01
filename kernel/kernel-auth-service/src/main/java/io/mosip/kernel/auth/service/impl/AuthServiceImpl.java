@@ -80,6 +80,7 @@ import io.mosip.kernel.auth.service.TokenService;
 import io.mosip.kernel.auth.service.UinService;
 import io.mosip.kernel.auth.util.TokenGenerator;
 import io.mosip.kernel.auth.util.TokenValidator;
+import io.mosip.kernel.core.util.EmptyCheckUtils;
 
 /**
  * Auth Service for Authentication and Authorization
@@ -534,6 +535,10 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public MosipUserDto valdiateToken(String token) {
 		Map<String, String> pathparams = new HashMap<>();
+		
+		if(EmptyCheckUtils.isNullEmpty(token)) {
+			throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+		}
 
 		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
 		pathparams.put("realmId", "mosip");
