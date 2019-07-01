@@ -123,7 +123,8 @@ public interface RegistrationCenterService {
 	 *            the input registration center dto.
 	 * @return the id response dto.
 	 */
-	//public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto);
+	// public IdResponseDto createRegistrationCenter(RegistrationCenterDto
+	// registrationCenterDto);
 
 	/**
 	 * This method would validate timestamp and id whether the given date in
@@ -182,7 +183,8 @@ public interface RegistrationCenterService {
 	 * 
 	 * @param reqRegistrationCenterDto
 	 *            -pass the set of registration center DTO to create.
-	 * @return RegistrationCenterPostResponseDto - return created registration centers complete DTO
+	 * @return RegistrationCenterPostResponseDto - return created registration
+	 *         centers complete DTO
 	 */
 	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
 			List<RegistrationCenterReqAdmDto> reqRegistrationCenterDto);
@@ -193,7 +195,8 @@ public interface RegistrationCenterService {
 	 * @param RegistarionCenterReqDto
 	 *            - pass the set of registration center DTO to update.
 	 * 
-	 * @return RegistrationCenterPutResponseDto - return updated registration centers complete DTO
+	 * @return RegistrationCenterPutResponseDto - return updated registration
+	 *         centers complete DTO
 	 */
 	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
 			List<RegistrationCenterPutReqAdmDto> registrationCenterDto);

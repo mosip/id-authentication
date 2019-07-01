@@ -217,28 +217,6 @@ public class RegistrationCenterController {
 		return responseWrapper;
 	}
 
-	/**
-	 * This method creates registration center.
-	 * 
-	 * @param registrationCenterDto
-	 *            the request DTO for creating registration center.
-	 * @return the response i.e. the id of the registration center created.
-	 */
-	/*
-	 * @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	 * 
-	 * @ResponseFilter
-	 * 
-	 * @PostMapping("/registrationcenters") public ResponseWrapper<IdResponseDto>
-	 * createRegistrationCenter(
-	 * 
-	 * @RequestBody @Valid RequestWrapper<RegistrationCenterDto>
-	 * registrationCenterDto) { ResponseWrapper<IdResponseDto> responseWrapper = new
-	 * ResponseWrapper<>(); responseWrapper
-	 * .setResponse(registrationCenterService.createRegistrationCenter(
-	 * registrationCenterDto.getRequest())); return responseWrapper; }
-	 */
-
 	@ResponseFilter
 	@DeleteMapping("/registrationcenters/{registrationCenterId}")
 	public ResponseWrapper<IdResponseDto> deleteRegistrationCenter(

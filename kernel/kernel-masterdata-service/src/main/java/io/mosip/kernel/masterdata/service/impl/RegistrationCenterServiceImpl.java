@@ -684,6 +684,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 
 			// validate to check the format of latitude and longitude
+			// Latitude or Longitude must have minimum 4 digits after decimal
 			else if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
 					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
 				throw new RequestException(
@@ -700,11 +701,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
 
-		// validate to check LanguageCode duplicate input
+		// validate to if Records with duplicate language code
 		else if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
 			throw new RequestException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorMessage());
 		}
 
 		try {

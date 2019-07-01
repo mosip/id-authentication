@@ -23,10 +23,6 @@ import lombok.Data;
 @Data
 public class RegistrationCenterReqAdmDto {
 	
-	/*@NotBlank
-	@Size(min = 1, max = 10)
-	private String id;*/
-
 	@NotBlank
 	@Size(min = 1, max = 128)
 	private String name;
@@ -71,8 +67,6 @@ public class RegistrationCenterReqAdmDto {
 	@ValidLangCode
 	private String langCode;
 
-	//private Short numberOfKiosks;
-
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime perKioskProcessTime;
@@ -96,8 +90,5 @@ public class RegistrationCenterReqAdmDto {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime lunchEndTime;
-
-	/*@NotNull
-	private Boolean isActive;*/
 
 }

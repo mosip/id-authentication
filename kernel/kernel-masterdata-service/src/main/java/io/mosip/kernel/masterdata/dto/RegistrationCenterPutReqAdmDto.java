@@ -22,7 +22,7 @@ import lombok.Data;
 
 @Data
 public class RegistrationCenterPutReqAdmDto {
-	
+
 	@NotBlank
 	@Size(min = 1, max = 10)
 	private String id;
@@ -71,7 +71,6 @@ public class RegistrationCenterPutReqAdmDto {
 	@ValidLangCode
 	private String langCode;
 
-	//private Short numberOfKiosks;
 
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
@@ -101,4 +100,3 @@ public class RegistrationCenterPutReqAdmDto {
 	private Boolean isActive;
 
 }
-
