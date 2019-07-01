@@ -93,7 +93,10 @@ public enum AuthErrorCode {
 	
 	INVALID_DN("KER-ATH-018","Exception occured while creating DN"), 
 	INVALID_REQUEST("KER-ATH-019","should not be null or empty"),
-	REST_EXCEPTION("KER-ATH-020","Error occured while consuming restservice");
+	REST_EXCEPTION("KER-ATH-020","Error occured while consuming restservice"),
+	KEYCLOAK_ACESSTOKEN_EXCEPTION("KER-ATH-021","Error Occured while getting access token from keycloak"),
+	KEYCLOAK_STATE_EXCEPTION("KER-ATH-022","state is not maching"),
+	;
 	
 	
 
