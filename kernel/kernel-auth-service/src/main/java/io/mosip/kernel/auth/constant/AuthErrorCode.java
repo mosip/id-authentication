@@ -104,7 +104,12 @@ public enum AuthErrorCode {
 
 	IS_ACTIVE_FLAG_NOT_FOUND("KER-ATH-023", "IsActive flag is not present for this user"),
 
-	MOBILE_NOT_REGISTERED("KER-ATH-024", "Mobile is registered/not present");
+	MOBILE_NOT_REGISTERED("KER-ATH-024", "Mobile is registered/not present"),
+	
+	REST_EXCEPTION("KER-ATH-025","Exception occured while consuming service"),
+
+KEYCLOAK_ACESSTOKEN_EXCEPTION("KER-ATH-021","Error Occured while getting access token from keycloak"),
+	KEYCLOAK_STATE_EXCEPTION("KER-ATH-022","state is not maching");
 
 	/**
 	 * The error code
