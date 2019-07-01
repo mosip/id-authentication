@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
@@ -131,6 +132,15 @@ public class ApiExceptionHandler {
 		responseWrapper.setId(reqNode.path("id").asText());
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> validationException(HttpServletRequest httpServletRequest,
+			final ValidationException exception) throws IOException {
+		ExceptionUtils.logRootCause(exception);
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getErrors());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

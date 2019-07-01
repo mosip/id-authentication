@@ -1,5 +1,7 @@
 package io.mosip.kernel.core.exception;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 /**
@@ -8,8 +10,12 @@ import lombok.Data;
  *
  */
 @Data
-public class ServiceError {
+public class ServiceError implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5501835725093230935L;
 	/**
 	 * The error code.
 	 */
@@ -22,8 +28,10 @@ public class ServiceError {
 	/**
 	 * Constructor for ErrorBean.
 	 * 
-	 * @param errorCode    The error code.
-	 * @param errorMessage The error message.
+	 * @param errorCode
+	 *            The error code.
+	 * @param errorMessage
+	 *            The error message.
 	 */
 	public ServiceError(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
