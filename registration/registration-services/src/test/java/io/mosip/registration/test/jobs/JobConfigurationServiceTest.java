@@ -114,7 +114,7 @@ public class JobConfigurationServiceTest {
 		syncJobList.add(syncJob);
 
 		SyncJobDef mdsJob = new SyncJobDef();
-		mdsJob.setId("SCD_J00011");
+		mdsJob.setId("RCS_J00005");
 
 		mdsJob.setApiName("packetSyncStatusJob");
 		mdsJob.setSyncFrequency("0/5 * * * * ?");
@@ -339,7 +339,7 @@ public class JobConfigurationServiceTest {
 	public void isRestartTestSuccess() {
 		initiateJobTest();
 		HashMap<String, String> completedJobMap = new HashMap<>();
-		completedJobMap.put("SCD_J00011", RegistrationConstants.JOB_EXECUTION_SUCCESS);
+		completedJobMap.put("RCS_J00005", RegistrationConstants.JOB_EXECUTION_SUCCESS);
 
 		PowerMockito.mockStatic(BaseJob.class);
 
