@@ -514,6 +514,13 @@ public class DocumentUploadServiceTest {
 		MainResponseDTO<DocumentsMetaData> responseDto = new MainResponseDTO<>();
 		metadata.setDocumentsMetaData(documentGetAllDtos);
 		responseDto.setResponse(metadata);
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(documentRepository.findBypreregId(Mockito.anyString())).thenReturn(documentEntities);
 		InputStream sourceFile = new FileInputStream(file);
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
