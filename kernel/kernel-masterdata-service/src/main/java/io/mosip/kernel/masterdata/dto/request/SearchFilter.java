@@ -1,9 +1,8 @@
 package io.mosip.kernel.masterdata.dto.request;
 
-import javax.validation.constraints.NotBlank;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -14,15 +13,10 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor()
 @NoArgsConstructor
-public class SearchFilter {
-
-	@NotBlank
-	private String columnName;
-
-	@NotBlank
-	private String type;
+@EqualsAndHashCode(callSuper = true)
+public class SearchFilter extends FilterDto {
 
 	private String value;
 

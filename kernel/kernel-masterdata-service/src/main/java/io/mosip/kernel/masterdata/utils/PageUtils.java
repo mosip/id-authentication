@@ -13,7 +13,7 @@ import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 public class PageUtils {
 
 	/**
-	 * Method to create page metadat
+	 * Method to create page metadata
 	 * 
 	 * @param page
 	 *            request to be

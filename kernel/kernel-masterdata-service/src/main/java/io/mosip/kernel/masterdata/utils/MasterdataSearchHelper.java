@@ -30,10 +30,12 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -448,5 +450,9 @@ public class MasterdataSearchHelper {
 			}
 		}
 		return false;
+	}
+
+	public List<FilterResponseDto> masterdataFilter(List<FilterDto> filters) {
+		return null;
 	}
 }
