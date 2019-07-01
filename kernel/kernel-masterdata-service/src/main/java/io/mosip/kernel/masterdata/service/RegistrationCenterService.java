@@ -181,8 +181,8 @@ public interface RegistrationCenterService {
 	/**
 	 * This service method can be used to create registration center by admin.
 	 * 
-	 * @param reqRegistrationCenterDto
-	 *            -pass the set of registration center DTO to create.
+	 * @param RegistrationCenterReqAdmDto
+	 *            -pass the List of registration center DTO to create.
 	 * @return RegistrationCenterPostResponseDto - return created registration
 	 *         centers complete DTO
 	 */
@@ -192,8 +192,8 @@ public interface RegistrationCenterService {
 	/**
 	 * This method updates the registration center by admin.
 	 * 
-	 * @param RegistarionCenterReqDto
-	 *            - pass the set of registration center DTO to update.
+	 * @param RegistrationCenterPutReqAdmDto
+	 *            - pass the List of registration center DTO to update.
 	 * 
 	 * @return RegistrationCenterPutResponseDto - return updated registration
 	 *         centers complete DTO
