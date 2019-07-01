@@ -270,29 +270,46 @@ public class LoginController extends BaseController implements Initializable {
 	}
 
 	private void executeSQLFile() {
+
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Started Execute SQL file check");
+
 		String version = getValueFromApplicationContext(RegistrationConstants.SERVICES_VERSION_KEY);
-		if (!version.equalsIgnoreCase(softwareUpdateHandler.getCurrentVersion())) {
-			loginRoot.setDisable(true);
-			ResponseDTO responseDTO = softwareUpdateHandler.executeSqlFile(softwareUpdateHandler.getCurrentVersion(),
-					version);
-			loginRoot.setDisable(false);
 
-			if (responseDTO.getErrorResponseDTOs() != null) {
+		try {
+			if (!softwareUpdateHandler.getCurrentVersion().equalsIgnoreCase(version)) {
 
-				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Software Updated found");
 
-				if (RegistrationConstants.BACKUP_PREVIOUS_SUCCESS.equalsIgnoreCase(errorResponseDTO.getMessage())) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED
-							+ RegistrationUIConstants.RESTART_APPLICATION);
-					SessionContext.destroySession();
-				} else {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+				loginRoot.setDisable(true);
+				ResponseDTO responseDTO = softwareUpdateHandler
+						.executeSqlFile(softwareUpdateHandler.getCurrentVersion(), version);
+				loginRoot.setDisable(false);
 
+				if (responseDTO.getErrorResponseDTOs() != null) {
+
+					ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+
+					if (RegistrationConstants.BACKUP_PREVIOUS_SUCCESS.equalsIgnoreCase(errorResponseDTO.getMessage())) {
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.SQL_EXECUTION_FAILED_AND_REPLACED
+										+ RegistrationUIConstants.RESTART_APPLICATION);
+						SessionContext.destroySession();
+					} else {
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+
+					}
+
+					restartApplication();
 				}
-
-				restartApplication();
 			}
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
 		}
+
+		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+				"Completed Execute SQL file check");
 
 	}
 
@@ -305,7 +322,8 @@ public class LoginController extends BaseController implements Initializable {
 	@SuppressWarnings("unchecked")
 	public void validateUserId(ActionEvent event) {
 
-		auditFactory.audit(AuditEvent.LOGIN_AUTHENTICATE_USER_ID, Components.LOGIN, userId.getText().isEmpty() ? "NA" : userId.getText(),
+		auditFactory.audit(AuditEvent.LOGIN_AUTHENTICATE_USER_ID, Components.LOGIN,
+				userId.getText().isEmpty() ? "NA" : userId.getText(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
@@ -585,7 +603,8 @@ public class LoginController extends BaseController implements Initializable {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(userId.getText());
 
-		if (SessionContext.create(userDTO, RegistrationConstants.FINGERPRINT_UPPERCASE, false, false, authenticationValidatorDTO)) {
+		if (SessionContext.create(userDTO, RegistrationConstants.FINGERPRINT_UPPERCASE, false, false,
+				authenticationValidatorDTO)) {
 			bioLoginStatus = validateInvalidLogin(userDTO, "");
 		} else {
 			bioLoginStatus = validateInvalidLogin(userDTO, RegistrationUIConstants.FINGER_PRINT_MATCH);
