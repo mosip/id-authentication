@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -668,14 +667,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			String latitude = registrationCenterDto.getLatitude();
 			String longitude = registrationCenterDto.getLongitude();
 
+			// validation to check the RegCenter Start Time is greater than RegCenter End
+			// Time
 			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
-
 			}
-
-			if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// Lunch End Time
+			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
@@ -683,7 +684,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 
 			// validate to check the format of latitude and longitude
-			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
+			else if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
 					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
@@ -700,7 +701,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		// validate to check LanguageCode duplicate input
-		if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
+		else if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
@@ -789,7 +790,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 			// validation to check the RegCenter Start Time is greater than RegCenter End
 			// Time
-			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+			else if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
@@ -798,7 +799,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
 			// Lunch End Time
-			if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
@@ -817,12 +818,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
 		// validate to check if data is received for only one registration center or not
-		if (new HashSet<String>(inputIdList).size() > 1) {
+		else if (new HashSet<String>(inputIdList).size() > 1) {
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
 		}
 		// validate to check duplicate pair of ID and LanguageCode
-		if ((new HashSet<String>(idLangList).size()) != idLangList.size()) {
+		else if ((new HashSet<String>(idLangList).size()) != idLangList.size()) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
