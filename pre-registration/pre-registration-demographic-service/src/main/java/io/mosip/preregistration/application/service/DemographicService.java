@@ -545,7 +545,7 @@ public class DemographicService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
-				List list = (List) authUserDetails().getAuthorities();
+				List<String> list = listAuth(authUserDetails().getAuthorities());
 				if (demographicEntity != null) {
 					if (list.contains("ROLE_INDIVIDUAL")) {
 						userValidation(authUserDetails().getUserId(), demographicEntity.getCreatedBy());
@@ -664,7 +664,7 @@ public class DemographicService {
 
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
-					List list = (List) authUserDetails().getAuthorities();
+					List<String> list = listAuth(authUserDetails().getAuthorities());
 					if (list.contains("ROLE_INDIVIDUAL")) {
 						userValidation(authUserDetails().getUserId(), demographicEntity.getCreatedBy());
 					}
@@ -1028,5 +1028,20 @@ public class DemographicService {
 					ErrorMessages.DOCUMENT_SERVICE_FAILED_TO_CALL.getMessage());
 		}
 		return responsestatusDto;
+	}
+
+	/**
+	 * This method is used to get the list of authorization role
+	 * 
+	 * @param collection
+	 * @return list of auth role
+	 */
+	public List<String> listAuth(Collection<? extends GrantedAuthority> collection) {
+		List<String> listWORole = new ArrayList<>();
+		for (GrantedAuthority authority : collection) {
+			String s = authority.getAuthority();
+			listWORole.add(s);
+		}
+		return listWORole;
 	}
 }
