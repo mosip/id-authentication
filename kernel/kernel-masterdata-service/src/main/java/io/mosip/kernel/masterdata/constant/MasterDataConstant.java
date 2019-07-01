@@ -17,7 +17,8 @@ public class MasterDataConstant {
 	public static final String DATETIMEFORMAT = " format should be yyyy-mm-ddThh:mm:ss format";
 	public static final String VALID = "Valid";
 	public static final String INVALID = "Invalid";
-	public static final String CENTERTYPENAME="centertypename";
-	public static final String CENTERTYPECODE="centerTypeCode";
-	public static final String NAME="name";
+	public static final String CENTERTYPENAME = "centertypename";
+	public static final String CENTERTYPECODE = "centerTypeCode";
+	public static final String CENTERLOCCODE = "locationCode";
+	public static final String NAME = "name";
 }
