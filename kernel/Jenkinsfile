@@ -105,6 +105,7 @@ stage('---------- SonarQube Analysis --------------') {
     sh "dirname `find . -name 'Dockerfile_DO_NOT_BUILD'`> directoryDockerFiles"
     locationOfDockerFileDirectory = readFile("directoryDockerFiles").split("\\r?\\n")
     sh "rm -f directoryDockerFiles"
+    echo locationOfDockerFiles  
 
     docker.withRegistry(registryUrl, registryCredentials) {
       def buildName = registryName+'/kernel-keymanager-service'+ ":$dockerImagesTagVersion.$BUILD_NUMBER"
@@ -131,7 +132,7 @@ stage('---------- SonarQube Analysis --------------') {
    sh "dirname `find . -name 'Dockerfile'`> directoryDockerFiles"
    locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
    sh "rm -f directoryDockerFiles"
-	  
+   echo locationOfDockerFiles	  
      
    /*
    If build paramerter is passed as Build All (All submodules have to be built)
