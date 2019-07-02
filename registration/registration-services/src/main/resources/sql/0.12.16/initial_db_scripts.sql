@@ -115,3 +115,7 @@ insert into reg.global_param values ('mosip.country.code','mosip.country.code','
 insert into reg.global_param values ('mosip.registration.app.id','mosip.registration.app.id','REGISTRATIONCLIENT','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
 
 insert into reg.global_param values ('mosip.kernel.otp.expiry-time','mosip.kernel.otp.expiry-time','180','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('auth.jwt.secret','auth.jwt.secret','authjwtsecret','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
+
+insert into reg.global_param values ('auth.jwt.base','auth.jwt.base','Mosip-Token','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
