@@ -106,7 +106,7 @@ public class FilterValidationTest {
 		validator.validate(TestPojo.class, Arrays.asList());
 	}
 
-	@Test
+	@Test(expected=ValidationException.class)
 	public void testEmptyFilterValuesListValidate() {
 		validator.validate(TestPojo.class, Arrays.asList(emptyColumnAndTypeFilter));
 	}

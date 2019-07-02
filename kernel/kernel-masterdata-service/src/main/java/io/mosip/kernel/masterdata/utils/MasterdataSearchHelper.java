@@ -111,6 +111,8 @@ public class MasterdataSearchHelper {
 		} catch (HibernateException hibernateException) {
 			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
 					hibernateException.getMessage(), hibernateException);
+		} catch (RequestException e) {
+			throw e;
 		} catch (RuntimeException runtimeException) {
 			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 					runtimeException.getMessage(), runtimeException);
@@ -118,6 +120,7 @@ public class MasterdataSearchHelper {
 		return new PageImpl<>(result,
 				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
 				rows);
+
 	}
 
 	/**
@@ -246,9 +249,10 @@ public class MasterdataSearchHelper {
 						String.format(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorMessage(),
 								page.getPageStart(), page.getPageFetch()),
 						null);
+			} else {
+				query.setFirstResult(page.getPageStart());
+				query.setMaxResults(page.getPageFetch());
 			}
-			query.setFirstResult(page.getPageStart());
-			query.setMaxResults(page.getPageFetch());
 		}
 	}
 
@@ -398,21 +402,8 @@ public class MasterdataSearchHelper {
 		if (filter != null) {
 			if (filter.getColumnName() != null && !filter.getColumnName().isEmpty()) {
 				if (filter.getType() != null && !filter.getType().isEmpty()) {
-					if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
-						String value = filter.getValue();
-						if (value != null && !value.isEmpty()) {
-							return true;
-						}
-					} else {
-						String fromValue = filter.getFromValue();
-						String toValue = filter.getToValue();
-						if (fromValue != null && !fromValue.isEmpty() && toValue != null && !toValue.isEmpty()) {
-							return true;
-						} else {
-							throw new RequestException(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorCode(),
-									String.format(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorMessage(),
-											filter.getColumnName()));
-						}
+					if (validateFilter(filter)) {
+						return true;
 					}
 				} else {
 					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
@@ -425,6 +416,34 @@ public class MasterdataSearchHelper {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Method to validate the individual filter
+	 * 
+	 * @param filter
+	 *            input filter to be validated
+	 * @return true if valid false otherwise
+	 */
+	private boolean validateFilter(SearchFilter filter) {
+		boolean flag = false;
+		if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
+			String value = filter.getValue();
+			if (value != null && !value.isEmpty()) {
+				flag = true;
+			}
+		} else {
+			String fromValue = filter.getFromValue();
+			String toValue = filter.getToValue();
+			if (fromValue != null && !fromValue.isEmpty() && toValue != null && !toValue.isEmpty()) {
+				flag = true;
+			} else {
+				throw new RequestException(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorCode(),
+						String.format(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorMessage(),
+								filter.getColumnName()));
+			}
+		}
+		return flag;
 	}
 
 	/**

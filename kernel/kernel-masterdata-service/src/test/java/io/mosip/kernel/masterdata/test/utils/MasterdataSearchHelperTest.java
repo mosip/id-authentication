@@ -36,6 +36,7 @@ public class MasterdataSearchHelperTest {
 	private SearchFilter startWithFilter;
 	private SearchFilter wildCardFilter1;
 	private SearchFilter wildCardFilter2;
+	private SearchFilter wildCardFilter3;
 	private SearchFilter noFilterType;
 	private SearchFilter searchwithDateFilter;
 
@@ -79,6 +80,13 @@ public class MasterdataSearchHelperTest {
 		wildCardFilter2.setType("contains");
 		wildCardFilter2.setValue("mosip*");
 
+		
+		wildCardFilter3 = new SearchFilter();
+		wildCardFilter3.setColumnName("name");
+		wildCardFilter3.setType("contains");
+		wildCardFilter3.setValue("*mosip");
+
+		
 		noColumnSort = new SearchSort();
 		noColumnSort.setSortType("desc");
 
@@ -89,10 +97,11 @@ public class MasterdataSearchHelperTest {
 		page = new Pagination();
 		page.setPageStart(1);
 		page.setPageFetch(100);
+		
 
 		invalidPage = new Pagination();
-		invalidPage.setPageFetch(1);
-		invalidPage.setPageStart(0);
+		invalidPage.setPageFetch(0);
+		invalidPage.setPageStart(-1);
 
 		noFilterType = new SearchFilter();
 		noFilterType.setColumnName("name");
@@ -141,7 +150,7 @@ public class MasterdataSearchHelperTest {
 		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, Arrays.asList(betweenfilter));
 	}
 
-	@Test
+	@Test(expected=RequestException.class)
 	public void searchInvalidPaginationMasterdata() {
 		SearchDto searchDto = new SearchDto(Arrays.asList(filter), Arrays.asList(sort), invalidPage, "eng");
 		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, Arrays.asList(betweenfilter));
@@ -185,10 +194,20 @@ public class MasterdataSearchHelperTest {
 
 	@Test
 	public void searchWithDateMasterdata() {
-		SearchDto searchDto = new SearchDto(Arrays.asList(searchwithDateFilter), Arrays.asList(sort), page,
-				"eng");
+		SearchDto searchDto = new SearchDto(Arrays.asList(searchwithDateFilter), Arrays.asList(sort), page, "eng");
 		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);
 	}
-
+	
+	@Test
+	public void searchStartsWithMasterdata() {
+		SearchDto searchDto = new SearchDto(Arrays.asList(startWithFilter), Arrays.asList(sort), page, "eng");
+		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);
+	}
+	
+	@Test
+	public void searchwildcardSearchMasterdata() {
+		SearchDto searchDto = new SearchDto(Arrays.asList(wildCardFilter3), Arrays.asList(sort), page, "eng");
+		searchHelper.searchMasterdata(RegistrationCenter.class, searchDto, null);
+	}
 
 }

@@ -25,12 +25,11 @@ public class PageUtils {
 		PageResponseDto<D> pageResponse = null;
 		if (page != null) {
 			long totalItem = page.getTotalElements();
-			int pageNumber = page.getNumber() + 1;
 			int pageSize = page.getSize();
-			int start = (pageNumber * pageSize) - (pageSize - 1);
+			int start = (page.getNumber() * pageSize) + 1;
 			pageResponse = new PageResponseDto<>();
 			pageResponse.setFromRecord(start);
-			pageResponse.setToRecord(Math.min(start + pageSize - 1l, totalItem));
+			pageResponse.setToRecord((long) (start-1) + page.getNumberOfElements());
 			pageResponse.setTotalRecord(totalItem);
 		}
 		return pageResponse;
