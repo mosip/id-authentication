@@ -264,7 +264,31 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label addressLine3LocalLanguageMessage;
-
+	
+	@FXML
+	private Label postalCodeMessage;
+	
+	@FXML
+	private Label postalCodeLocalLanguageMessage;
+	
+	@FXML
+	private Label mobileNoMessage;
+	
+	@FXML
+	private Label mobileNoLocalLanguageMessage;
+	
+	@FXML
+	private Label emailIdMessage;
+	
+	@FXML
+	private Label emailIdLocalLanguageMessage;
+	
+	@FXML
+	private Label cniOrPinNumberMessage;
+	
+	@FXML
+	private Label cniOrPinNumberLocalLanguageMessage;
+	
 	@FXML
 	private TextField emailId;
 
@@ -2138,7 +2162,7 @@ public class DemographicDetailController extends BaseController {
 					RegistrationUIConstants.UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT);
 		} else {
 			if (validateThisPane()) {
-
+				disableTheMessages();
 				if (dd != null && mm != null && yyyy != null && dd.getText().matches(RegistrationConstants.NUMBER_REGEX)
 						&& mm.getText().matches(RegistrationConstants.NUMBER_REGEX)
 						&& yyyy.getText().matches(RegistrationConstants.NUMBER_REGEX)) {
@@ -2178,6 +2202,32 @@ public class DemographicDetailController extends BaseController {
 				}
 			}
 		}
+	}
+	/**
+	 * Disables the messages once the pane is validated
+	 */
+	private void disableTheMessages() {
+		fullNameMessage.setVisible(false);
+		fullNameLocalLanguageMessage.setVisible(false);
+		dobMessage.setVisible(false);
+		addressLine1Message.setVisible(false);
+		addressLine1LocalLanguageMessage.setVisible(false);
+		addressLine2Message.setVisible(false);
+		addressLine2LocalLanguageMessage.setVisible(false);
+		addressLine3Message.setVisible(false);
+		addressLine3LocalLanguageMessage.setVisible(false);
+		postalCodeMessage.setVisible(false);
+		postalCodeLocalLanguageMessage.setVisible(false);
+		mobileNoMessage.setVisible(false);
+		mobileNoLocalLanguageMessage.setVisible(false);
+		emailIdMessage.setVisible(false);
+		emailIdLocalLanguageMessage.setVisible(false);
+		cniOrPinNumberMessage.setVisible(false);
+		cniOrPinNumberLocalLanguageMessage.setVisible(false);
+		parentNameMessage.setVisible(false);
+		parentNameLocalLanguageMessage.setVisible(false);
+		parentRegIdMessage.setVisible(false);
+		parentUinIdMessage.setVisible(false);
 	}
 
 	/**

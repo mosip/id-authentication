@@ -46,12 +46,14 @@ import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
-import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
+import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
@@ -114,12 +116,17 @@ public class PacketHandlerController extends BaseController implements Initializ
 	
 	@FXML
 	private Label lastSyncTime;
-
-	/**
-	 * @return the lastSyncTime
-	 */
-	public Label getLastSyncTime() {
-		return lastSyncTime;
+	
+	@Autowired
+	private JobConfigurationService jobConfigurationService;
+	
+	public void setLastUpdateTime() {
+		try {
+		String  latestUpdateTime= ((List<SyncDataProcessDTO>) jobConfigurationService.getLastCompletedSyncJobs().getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO)).stream().sorted((sync1, sync2)->Timestamp.valueOf(sync2.getLastUpdatedTimes()).compareTo(Timestamp.valueOf(sync1.getLastUpdatedTimes()))).findFirst().get().getLastUpdatedTimes();
+		lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime().format(DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
+		}catch(RuntimeException expception) {
+			lastSyncTime.setText("---");
+		}
 	}
 
 	@FXML
@@ -217,7 +224,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			eodProcessGridPane.setVisible(false);
 			eodLabel.setVisible(false);
 		}
-
+		setLastUpdateTime();
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
 		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
 
