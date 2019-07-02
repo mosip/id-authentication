@@ -663,37 +663,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		// Get RegistrationCenter Id by calling RegistrationCenterIdGenerator API
 		String regCenterID = registrationCenterIdGenerator.generateRegistrationCenterId();
 
-		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
-			String latitude = registrationCenterDto.getLatitude();
-			String longitude = registrationCenterDto.getLongitude();
-
-			// validation to check the RegCenter Start Time is greater than RegCenter End
-			// Time
-			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
-			}
-			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
-			// Lunch End Time
-			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
-
-			}
-
-			// validate to check the format of latitude and longitude
-			// Latitude or Longitude must have minimum 4 digits after decimal
-			else if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
-					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
-			}
-			inputLangCodeList.add(registrationCenterDto.getLangCode());
-
-		}
+		validateRegCenterCreateReq(reqRegistarionCenterReqDto, inputLangCodeList);
 		// validate to check if data is received in all configured languages
 		if (!new HashSet<String>(inputLangCodeList).containsAll(supLanguages)) {
 			throw new RequestException(
@@ -756,6 +726,41 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	}
 
+	private void validateRegCenterCreateReq(List<RegistrationCenterReqAdmDto> reqRegistarionCenterReqDto,
+			List<String> inputLangCodeList) {
+		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+			String latitude = registrationCenterDto.getLatitude();
+			String longitude = registrationCenterDto.getLongitude();
+
+			// validation to check the RegCenter Start Time is greater than RegCenter End
+			// Time
+			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
+			}
+			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// Lunch End Time
+			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			// validate to check the format of latitude and longitude
+			// Latitude or Longitude must have minimum 4 digits after decimal
+			else if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
+			}
+			inputLangCodeList.add(registrationCenterDto.getLangCode());
+
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -777,41 +782,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<String> inputIdList = new ArrayList<>();
 		List<String> idLangList = new ArrayList<>();
 
-		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
-			String latitude = registrationCenterDto.getLatitude();
-			String longitude = registrationCenterDto.getLongitude();
-
-			// validation to check the format of latitude and longitude
-			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
-					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
-			}
-
-			// validation to check the RegCenter Start Time is greater than RegCenter End
-			// Time
-			else if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
-
-			}
-
-			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
-			// Lunch End Time
-			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
-				throw new RequestException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
-
-			}
-
-			inputLangCodeSet.add(registrationCenterDto.getLangCode());
-			inputIdList.add(registrationCenterDto.getId());
-			idLangList.add(registrationCenterDto.getLangCode() + registrationCenterDto.getId());
-
-		}
+		validateRegCenterUpdateReq(reqRegistarionCenterReqDto, inputLangCodeSet, inputIdList, idLangList);
 		// validate to check if data is received in all configured languages
 		if (!inputLangCodeSet.containsAll(supLanguages)) {
 			throw new RequestException(
@@ -868,6 +839,45 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		registrationCenterPutResponseDto.setRegistrationCenters(registrationCenterDtoList);
 		registrationCenterPutResponseDto.setNotUpdatedRegCenters(notUpdRegistrationCenterList);
 		return registrationCenterPutResponseDto;
+	}
+
+	private void validateRegCenterUpdateReq(List<RegistrationCenterPutReqAdmDto> reqRegistarionCenterReqDto,
+			Set<String> inputLangCodeSet, List<String> inputIdList, List<String> idLangList) {
+		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+			String latitude = registrationCenterDto.getLatitude();
+			String longitude = registrationCenterDto.getLongitude();
+
+			// validation to check the format of latitude and longitude
+			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
+			}
+
+			// validation to check the RegCenter Start Time is greater than RegCenter End
+			// Time
+			else if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// Lunch End Time
+			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			inputLangCodeSet.add(registrationCenterDto.getLangCode());
+			inputIdList.add(registrationCenterDto.getId());
+			idLangList.add(registrationCenterDto.getLangCode() + registrationCenterDto.getId());
+
+		}
 	}
 
 }
