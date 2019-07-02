@@ -616,12 +616,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		int tries = 0;
 		while (tries < MAX_TRIES) {
 			try {
+				System.out.println("\n Signature Key and Crt storing in keystore\n");
 				keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
 				Thread.sleep(1000);
 				if (keyStore.getPrivateKey(alias) != null) {
-					LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
-							KeymanagerConstant.STORECERTIFICATE,
-							"private key found in keystore safe to save in database");
+//					LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+//							KeymanagerConstant.STORECERTIFICATE,
+//							"private key found in keystore safe to save in database");
+
+					System.out.println("\n Signature key details storing in DB - " + alias + "\n");
 					break;
 				} else {
 					tries++;
@@ -644,13 +647,15 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private void logStoreSignCertificateError(int tries) {
 		if (tries < MAX_TRIES) {
-			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
-					KeymanagerConstant.STORECERTIFICATE,
-					"private key not found in keystore trying again tries = " + tries);
+//			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+//					KeymanagerConstant.STORECERTIFICATE,
+//					"private key not found in keystore trying again tries = " + tries);
+			System.out.println("\n Signature Key not found in keystore. Trying again =" + tries + "\n");
 		} else {
-			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
-					KeymanagerConstant.STORECERTIFICATE,
-					"private key not found in keystore max try limit reached tries= " + tries);
+//			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+//					KeymanagerConstant.STORECERTIFICATE,
+//					"private key not found in keystore max try limit reached tries= " + tries);
+			System.out.println("\n Signature Key not found in keystore. Try limit reached =" + tries + "\n");
 		}
 	}
 
