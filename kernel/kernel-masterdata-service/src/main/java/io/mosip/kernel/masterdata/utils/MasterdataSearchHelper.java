@@ -250,7 +250,7 @@ public class MasterdataSearchHelper {
 								page.getPageStart(), page.getPageFetch()),
 						null);
 			} else {
-				query.setFirstResult(page.getPageStart());
+				query.setFirstResult(page.getPageStart() * page.getPageFetch());
 				query.setMaxResults(page.getPageFetch());
 			}
 		}
