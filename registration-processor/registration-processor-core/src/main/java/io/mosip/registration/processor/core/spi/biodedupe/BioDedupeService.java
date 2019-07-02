@@ -38,6 +38,6 @@ public interface BioDedupeService {
 	 *            the registration id
 	 * @return the file
 	 */
-	public byte[] getFile(String registrationId);
+	public byte[] getFile(String registrationId, boolean callBackFromAbis);
 
 }

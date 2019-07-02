@@ -344,6 +344,9 @@ public enum PlatformErrorMessages {
 	/** The packet bio dedupe cbeff not present. */
 	PACKET_BIO_DEDUPE_CBEFF_NOT_PRESENT(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "001",
 			"Unable to Find Applicant CBEFF for Adult"),
+	
+	REGISTRATION_ID_NOT_FOUND(PlatformConstants.RPR_BIO_DEDUPE_STAGE_MODULE + "002",
+			"RegistrationId not found for given bio ref Id"),
 
 	/** The abis reference id not found. */
 	// stages - Abis Middleware

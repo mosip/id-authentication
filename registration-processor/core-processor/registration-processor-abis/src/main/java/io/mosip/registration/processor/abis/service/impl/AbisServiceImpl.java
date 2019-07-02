@@ -166,14 +166,11 @@ public class AbisServiceImpl implements AbisService {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisServiceImpl::getCbeffDocument()::entry");
-		List<String> regId = null;
 		if (referenceId != null) {
-			regId = packetInfoManager.getRidByReferenceId(referenceId);
 			List<String> pathSegments = new ArrayList<>();
-			if (regId != null && !(regId.isEmpty())) {
-				pathSegments.add(regId.get(0));
+				pathSegments.add(referenceId);
 
-				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
+				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.ABISBIODEDUPE, pathSegments, "", "",
 						byte[].class);
 				if (bytefile == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -192,7 +189,7 @@ public class AbisServiceImpl implements AbisService {
 					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 					return dBuilder.parse(is);
 				}
-			}
+			
 		} else {
 			throw new MissingMandatoryFieldsException(PlatformErrorMessages.MISSING_MANDATORY_FIELDS.getMessage());
 		}

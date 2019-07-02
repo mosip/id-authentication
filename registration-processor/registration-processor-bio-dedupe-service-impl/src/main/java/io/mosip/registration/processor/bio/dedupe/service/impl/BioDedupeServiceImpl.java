@@ -24,6 +24,7 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -267,10 +268,22 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 * java.lang.String)
 	 */
 	@Override
-	public byte[] getFile(String registrationId) {
+	public byte[] getFile(String regIdOrbioRefId,boolean callBackFromAbis) {
+		byte[] file = null;
+		String registrationId;
+		if (callBackFromAbis) {
+			List<String> registrationIds = packetInfoManager.getRidByReferenceId(regIdOrbioRefId);
+			if (registrationIds == null || registrationIds.isEmpty()) {
+				throw new RegistrationProcessorUnCheckedException(
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getCode(),
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getMessage());
+			}
+			registrationId = registrationIds.get(0);
+		} else {
+			registrationId = regIdOrbioRefId;
+		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::entry");
-		byte[] file = null;
 		try {
 		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
 				PacketFiles.PACKET_META_INFO.name());
@@ -298,6 +311,9 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+		}catch (RegistrationProcessorUnCheckedException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regIdOrbioRefId, ExceptionUtils.getStackTrace(e));
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() +ExceptionUtils.getStackTrace(e));

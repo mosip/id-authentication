@@ -62,7 +62,30 @@ public class BioDedupeController {
 			@CookieValue(value = "Authorization", required = true) String token) {
 
 		tokenValidator.validate("Authorization=" + token, "biodedupe");
-		byte[] file = bioDedupeService.getFile(regId);
+		byte[] file = bioDedupeService.getFile(regId,false);
+
+		if (isEnabled) {
+			HttpHeaders headers = new HttpHeaders();
+			if(file != null) {
+				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility.getDigitalSignature(new String(file)));
+			}
+			return ResponseEntity.ok().headers(headers).body(file);
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(file);
+
+	}
+	
+	@GetMapping(path = "/biometricfile/abis/{abisRefId}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+	@ApiOperation(value = "Get the CBEF XML file  of packet using abis ref Id", response = String.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "CBEF Xml file is successfully fetched"),
+			@ApiResponse(code = 400, message = "Unable to fetch the CBEF XML file"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public ResponseEntity<byte[]> getAbisBiometricFile(@PathVariable("abisRefId") String abisRefId,
+			@CookieValue(value = "Authorization", required = true) String token) {
+
+		tokenValidator.validate("Authorization=" + token, "biodedupe");
+		byte[] file = bioDedupeService.getFile(abisRefId,true);
 
 		if (isEnabled) {
 			HttpHeaders headers = new HttpHeaders();
