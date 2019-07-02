@@ -186,18 +186,7 @@ public class ClientJarDecryption extends Application {
 				LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 						LoggerConstants.APPLICATION_ID, "Started DB availability check");
 
-				if (!new File(dbpath).exists()) {
-					System.out.println("coming alert");
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setHeaderText(null);
-					alert.setContentText("Please provide correct path for Database");
-					alert.setTitle("INFO");
-					alert.setGraphic(null);
-					alert.setResizable(true);
-					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-					alert.showAndWait();
-					throw new RuntimeException();
-				}
+				dbCheck(dbpath);
 
 				// TODO Check Internet Connectivity
 
