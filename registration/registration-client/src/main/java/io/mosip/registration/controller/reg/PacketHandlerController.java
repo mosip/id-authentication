@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -44,13 +46,13 @@ import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.ReRegistrationService;
@@ -103,6 +105,22 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	private Label reRegistrationCountLbl;
+
+	@FXML
+	private Label lastBiometricTime;
+	
+	@FXML
+	private Label lastPreRegPacketDownloadedTime;
+	
+	@FXML
+	private Label lastSyncTime;
+
+	/**
+	 * @return the lastSyncTime
+	 */
+	public Label getLastSyncTime() {
+		return lastSyncTime;
+	}
 
 	@FXML
 	private GridPane eodProcessGridPane;
@@ -166,6 +184,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 
+	@Autowired
+	private UserOnboardService userOnboardService;
+
 	@FXML
 	ProgressIndicator progressIndicator;
 
@@ -223,7 +244,18 @@ public class PacketHandlerController extends BaseController implements Initializ
 					btnNode.setManaged(false);
 				}
 			});
-
+		}
+		
+		DateTimeFormatter format = DateTimeFormatter
+				.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());
+		Timestamp lastPreRegPacketDownloaded = preRegistrationDataSyncService.getLastPreRegPacketDownloadedTime();
+		if (ts != null) {
+			lastBiometricTime.setText(lastBiometricTime.getText() + " " + ts.toLocalDateTime().format(format));
+		}
+		if (lastPreRegPacketDownloaded != null) {
+			lastPreRegPacketDownloadedTime.setText(lastPreRegPacketDownloadedTime.getText() + " "
+					+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
 		}
 
 		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))

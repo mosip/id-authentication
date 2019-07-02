@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -404,5 +405,11 @@ public class PreRegistrationDataSyncServiceTest {
 		assertTrue(preRegistration.getId().equals("123456789"));
 		assertTrue(preRegistration.getPreRegId().equals("987654321"));
 
+	}
+	
+	@Test
+	public void getLastUpdatedTime() {
+		Mockito.when(preRegistrationDAO.getLastPreRegPacketDownloadedTime()).thenReturn(new Timestamp(System.currentTimeMillis()));
+		assertNotNull(preRegistrationDataSyncServiceImpl.getLastPreRegPacketDownloadedTime());
 	}
 }
