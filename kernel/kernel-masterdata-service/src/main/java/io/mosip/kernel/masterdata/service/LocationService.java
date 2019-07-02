@@ -119,4 +119,14 @@ public interface LocationService {
 	 */
 	public PageDto<LocationExtnDto> getLocations(int pageNumber, int pageSize, String sortBy, String orderBy);
 
+	/**
+	 * This method fetches child hierarchy details of the location based on location
+	 * code, here child isActive can true or false
+	 * 
+	 * @param locCode
+	 *            - location code
+	 * @return List<Location>
+	 */
+	public List<String> getChildList(String locCode);
+
 }

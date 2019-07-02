@@ -14,4 +14,6 @@ public class FilterResponseDto {
 	private String fieldID;
 	@NotBlank
 	private String fieldValue;
+	@NotBlank
+	private String fieldCode;
 }

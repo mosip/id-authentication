@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.HibernateException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,12 +31,10 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterdataSearchErrorCode;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -98,8 +97,6 @@ public class MasterdataSearchHelper {
 		// applying sorting
 		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
 
-		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
-
 		try {
 			// creating executable query from select criteria query
 			TypedQuery<E> executableQuery = entityManager.createQuery(selectQuery);
@@ -157,12 +154,11 @@ public class MasterdataSearchHelper {
 		if (langCodePredicate != null) {
 			predicates.add(langCodePredicate);
 		}
+		if (!optionalPredicates.isEmpty()) {
+			Predicate orPredicate = builder.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
+			predicates.add(orPredicate);
+		}
 		if (!predicates.isEmpty()) {
-			if (!optionalPredicates.isEmpty()) {
-				Predicate orPredicate = builder
-						.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
-				predicates.add(orPredicate);
-			}
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
 			selectQuery.where(whereClause);
 			countQuery.where(whereClause);
@@ -289,9 +285,9 @@ public class MasterdataSearchHelper {
 	 * @return {@link Predicate}
 	 */
 	private <E> Predicate setBetweenValue(CriteriaBuilder builder, Root<E> root, SearchFilter filter) {
-		String columnName = filter.getColumnName();
-		Path<Object> path = root.get(columnName);
-		if (path != null) {
+		try {
+			String columnName = filter.getColumnName();
+			Path<Object> path = root.get(columnName);
 			Class<? extends Object> type = path.getJavaType();
 			String fieldType = type.getTypeName();
 			String toValue = filter.getToValue();
@@ -316,7 +312,7 @@ public class MasterdataSearchHelper {
 			if (String.class.getName().equals(fieldType)) {
 				return builder.between(root.get(columnName), fromValue, toValue);
 			}
-		} else {
+		} catch (IllegalArgumentException | IllegalStateException | InvalidDataAccessApiUsageException e) {
 			throw new RequestException(MasterdataSearchErrorCode.INVALID_COLUMN.getErrorCode(),
 					String.format(MasterdataSearchErrorCode.INVALID_COLUMN.getErrorMessage(), filter.getColumnName()),
 					null);
@@ -450,9 +446,5 @@ public class MasterdataSearchHelper {
 			}
 		}
 		return false;
-	}
-
-	public List<FilterResponseDto> masterdataFilter(List<FilterDto> filters) {
-		return null;
 	}
 }

@@ -36,29 +36,33 @@ public class FilterTypeValidator {
 		List<ServiceError> errors = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
 			for (SearchFilter filter : filters) {
-				try {
-					if (validateColumnAndTypes(filter.getColumnName(), filter.getType())) {
-						Field field = target.getDeclaredField(filter.getColumnName());
-						if (!containsFilter(field, filter.getType())) {
-							errors.add(new ServiceError(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
-									String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-											filter.getColumnName(), filter.getType())));
-						}
-					} else {
-						errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(), String.format(
-								ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
-					}
-				} catch (NoSuchFieldException | SecurityException e) {
-					errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-							String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-									filter.getColumnName(), target.getName())));
-				}
+				validateFilter(target, errors, filter);
 			}
 		}
 		if (!errors.isEmpty())
 			throw new ValidationException(errors);
 
 		return true;
+	}
+
+	private <T> void validateFilter(Class<T> target, List<ServiceError> errors, SearchFilter filter) {
+		try {
+			if (validateColumnAndTypes(filter.getColumnName(), filter.getType())) {
+				Field field = target.getDeclaredField(filter.getColumnName());
+				if (!containsFilter(field, filter.getType())) {
+					errors.add(new ServiceError(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
+							String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
+									filter.getColumnName(), filter.getType())));
+				}
+			} else {
+				errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(), String.format(
+						ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
+			}
+		} catch (NoSuchFieldException | SecurityException e) {
+			errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+					String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
+							filter.getColumnName(), target.getName())));
+		}
 	}
 
 	/**

@@ -43,6 +43,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -70,6 +71,7 @@ import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -712,11 +714,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto) {
-		PageDto<RegistrationCenterExtnDto> pageDto = new PageDto<>();
+	public PageResponseDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto) {
+		PageResponseDto<RegistrationCenterExtnDto> pageDto = new PageResponseDto<>();
 		List<RegistrationCenterExtnDto> registrationCenters = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
+		List<SearchFilter> optionalFilters = new ArrayList<>();
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
@@ -728,27 +731,92 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				removeList.add(filter);
 				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
 			}
+			if (isLocationSearch(filter.getColumnName())) {
+				Location location = locationSearch(filter);
+				List<String> locationCodes = locationService.getChildList(location.getCode());
+				removeList.add(filter);
+				optionalFilters.addAll(buildLocationSearchFilter(locationCodes));
+			}
+			if (MasterDataConstant.POSTAL_CODE.equalsIgnoreCase(column)) {
+				Location location = locationSearch(filter);
+				addList.addAll(buildLocationSearchFilter(Arrays.asList(location.getCode())));
+				removeList.add(filter);
+			}
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-		Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto, null);
+		Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
+				optionalFilters);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			pageDto = PageUtils.page(page);
 			registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterExtnDto.class);
 			pageDto.setData(registrationCenters);
-			pageDto.setPageNo(page.getNumber());
-			pageDto.setTotalItems(page.getTotalElements());
-			pageDto.setTotalPages(page.getTotalPages());
 		}
 		return pageDto;
 	}
 
+	private Location locationSearch(SearchFilter filter) {
+		SearchFilter filter2 = new SearchFilter();
+		filter2.setColumnName(MasterDataConstant.HIERARCHY_NAME);
+		filter2.setType(FilterTypeEnum.CONTAINS.name());
+		if (MasterDataConstant.LAA.equalsIgnoreCase(filter.getColumnName()))
+			filter2.setValue(MasterDataConstant.LAA_FULL_NAME);
+		filter2.setValue(filter.getColumnName().toLowerCase());
+		filter.setColumnName(MasterDataConstant.NAME);
+		Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
+				new SearchDto(Arrays.asList(filter, filter2), Collections.emptyList(), new Pagination(), null),
+				Collections.emptyList());
+		if (locations.hasContent()) {
+			return locations.getContent().get(0);
+		} else {
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorMessage(),
+							filter.getValue()));
+		}
+	}
+
 	private List<SearchFilter> buildRegistrationCenterTypeSearchFilter(List<RegistrationCenterType> regCenterTypes) {
 		if (regCenterTypes != null && !regCenterTypes.isEmpty())
-			return regCenterTypes.stream().filter(Objects::nonNull)
-					.map(i -> new SearchFilter(MasterDataConstant.CENTERTYPECODE, FilterTypeEnum.EQUALS.name(), i.getCode(), null, null))
+			return regCenterTypes.stream().filter(Objects::nonNull).map(this::buildRegCenterType)
 					.collect(Collectors.toList());
 		return Collections.emptyList();
 	}
 
+	private List<SearchFilter> buildLocationSearchFilter(List<String> location) {
+		if (location != null && !location.isEmpty())
+			return location.stream().filter(Objects::nonNull).map(this::buildLocationFilter)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	private SearchFilter buildRegCenterType(RegistrationCenterType centerType) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.CENTERTYPECODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(centerType.getCode());
+		return filter;
+	}
+
+	private SearchFilter buildLocationFilter(String location) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.CENTERLOCCODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(location);
+		return filter;
+	}
+
+	private boolean isLocationSearch(String filter) {
+		switch (filter.toLowerCase()) {
+		case MasterDataConstant.CITY:
+			return true;
+		case MasterDataConstant.PROVINCE:
+			return true;
+		case MasterDataConstant.REGION:
+			return true;
+		default:
+			return false;
+		}
+
+	}
 
 }

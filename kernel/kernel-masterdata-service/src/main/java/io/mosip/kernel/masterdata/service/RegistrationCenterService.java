@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusRespo
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -194,6 +195,6 @@ public interface RegistrationCenterService {
 	 *            contains the data for searching and sorting.
 	 * @return list of registration center with all the metadata
 	 */
-	public PageDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto);
+	public PageResponseDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto);
 
 }

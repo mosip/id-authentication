@@ -15,15 +15,17 @@ public class PageUtils {
 	/**
 	 * Method to create page metadata
 	 * 
+	 * @param <D>
+	 * 
 	 * @param page
 	 *            request to be
 	 * @return {@link PageResponseDto}
 	 */
-	public static <T> PageResponseDto<T> page(Page<T> page) {
-		PageResponseDto<T> pageResponse = null;
+	public static <T, D> PageResponseDto<D> page(Page<T> page) {
+		PageResponseDto<D> pageResponse = null;
 		if (page != null) {
 			long totalItem = page.getTotalElements();
-			int pageNumber = page.getNumber()+1;
+			int pageNumber = page.getNumber() + 1;
 			int pageSize = page.getSize();
 			int start = (pageNumber * pageSize) - (pageSize - 1);
 			pageResponse = new PageResponseDto<>();

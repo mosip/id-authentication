@@ -18,7 +18,8 @@ public enum RegistrationCenterErrorCode {
 
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
 
-	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database");
+	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database"),
+	NO_LOCATION_DATA_AVAILABLE("KER-MSD-XXX","No Location found for value %s");
 
 	private final String errorCode;
 	private final String errorMessage;
