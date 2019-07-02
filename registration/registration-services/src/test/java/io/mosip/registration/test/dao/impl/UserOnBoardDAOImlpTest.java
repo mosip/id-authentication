@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +78,7 @@ public class UserOnBoardDAOImlpTest {
 
 	@InjectMocks
 	private UserOnboardDAOImpl userOnboardDAOImpl;
-	
+
 	@Before
 	public void initialize() throws Exception {
 		UserContext userContext = Mockito.mock(SessionContext.UserContext.class);
@@ -86,13 +87,12 @@ public class UserOnBoardDAOImlpTest {
 		PowerMockito.when(SessionContext.userContext().getUserId()).thenReturn("mosip");
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.when(ApplicationContext.applicationLanguage()).thenReturn("eng");
-		
-		
+
 		Map<String, Object> appMap = new HashMap<>();
 		appMap.put(RegistrationConstants.USER_STATION_ID, "1947");
 		appMap.put(RegistrationConstants.USER_CENTER_ID, "1947");
 		PowerMockito.when(ApplicationContext.map()).thenReturn(appMap);
-		
+
 	}
 
 	@Test
@@ -203,11 +203,12 @@ public class UserOnBoardDAOImlpTest {
 		assertNotNull(userOnboardDAOImpl.insert(biometricDTO));
 
 	}
-	
+
 	@Test
 	public void savetest() {
 		UserMachineMapping machineMapping = new UserMachineMapping();
-		Mockito.when(userMachineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
+		Mockito.when(userMachineMappingRepository.save(Mockito.any(UserMachineMapping.class)))
+				.thenReturn(machineMapping);
 		userOnboardDAOImpl.save();
 	}
 
@@ -331,7 +332,8 @@ public class UserOnBoardDAOImlpTest {
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(machineMasterRepository
+				.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		userOnboardDAOImpl.getStationID("8C-16-45-88-E7-0B");
 	}
@@ -344,7 +346,8 @@ public class UserOnBoardDAOImlpTest {
 		regMachineSpecId.setId("100311");
 		regMachineSpecId.setLangCode("eng");
 		machineMaster.setRegMachineSpecId(regMachineSpecId);
-		Mockito.when(machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(machineMasterRepository
+				.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineMaster);
 		String stationId = userOnboardDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		Assert.assertSame("100311", stationId);
@@ -370,6 +373,20 @@ public class UserOnBoardDAOImlpTest {
 				.thenReturn(centerMachine);
 		String stationId = userOnboardDAOImpl.getCenterID("StationID1947");
 		Assert.assertSame("CenterID1947", stationId);
+	}
+
+	@Test
+	public void getLastUpdatedTime() {
+		UserMachineMapping userMachineMapping = new UserMachineMapping();		
+		userMachineMapping.setCrDtime(new Timestamp(System.currentTimeMillis()));		
+		Mockito.when(userMachineMappingRepository.findByUserMachineMappingIdUserID(Mockito.anyString())).thenReturn(userMachineMapping);
+		Assert.assertNotNull(userOnboardDAOImpl.getLastUpdatedTime("Usr123"));
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void getLastUpdatedTimeFailure() {		
+		Mockito.when(userMachineMappingRepository.findByUserMachineMappingIdUserID(Mockito.anyString())).thenThrow(RuntimeException.class);
+		Assert.assertNotNull(userOnboardDAOImpl.getLastUpdatedTime("Usr123"));
 	}
 
 }
