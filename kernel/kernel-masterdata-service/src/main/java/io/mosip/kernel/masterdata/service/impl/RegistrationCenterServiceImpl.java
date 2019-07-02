@@ -38,7 +38,9 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -723,13 +725,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
-				filter.setColumnName(MasterDataConstant.NAME);
-				Page<RegistrationCenterType> regtypes = masterdataSearchHelper.searchMasterdata(
-						RegistrationCenterType.class,
-						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
-						Collections.emptyList());
-				removeList.add(filter);
-				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
+				centerTypeSearch(addList, removeList, filter);
 			}
 			if (isLocationSearch(filter.getColumnName())) {
 				Location location = locationSearch(filter);
@@ -745,36 +741,87 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-		Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
-				optionalFilters);
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			pageDto = PageUtils.page(page);
-			registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterExtnDto.class);
-			pageDto.setData(registrationCenters);
+		if (filterTypeValidator.validate(RegistrationCenterExtnDto.class, dto.getFilters())) {
+			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
+					optionalFilters);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.page(page);
+				registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterExtnDto.class);
+				pageDto.setData(registrationCenters);
+			}
 		}
 		return pageDto;
 	}
 
+	/**
+	 * Method to fetch registration center type
+	 * 
+	 * @param addList
+	 *            filter to be added for further operation
+	 * @param removeList
+	 *            filter to be removed from further operrations
+	 * @param filter
+	 *            list of request search filters
+	 */
+	private void centerTypeSearch(List<SearchFilter> addList, List<SearchFilter> removeList, SearchFilter filter) {
+		filter.setColumnName(MasterDataConstant.NAME);
+		if (filterTypeValidator.validate(RegistrationCenterTypeExtnDto.class, Arrays.asList(filter))) {
+			Page<RegistrationCenterType> regtypes = masterdataSearchHelper.searchMasterdata(
+					RegistrationCenterType.class,
+					new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+					Collections.emptyList());
+			if (regtypes.hasContent()) {
+				removeList.add(filter);
+				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
+			}
+		} else {
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorMessage(),
+							filter.getValue()));
+		}
+	}
+
+	/**
+	 * Method to search the location based the filter.
+	 * 
+	 * @param filter
+	 *            input for search
+	 * @return {@link Location}
+	 */
 	private Location locationSearch(SearchFilter filter) {
 		SearchFilter filter2 = new SearchFilter();
 		filter2.setColumnName(MasterDataConstant.HIERARCHY_NAME);
 		filter2.setType(FilterTypeEnum.CONTAINS.name());
 		if (MasterDataConstant.LAA.equalsIgnoreCase(filter.getColumnName()))
 			filter2.setValue(MasterDataConstant.LAA_FULL_NAME);
-		filter2.setValue(filter.getColumnName().toLowerCase());
+		else
+			filter2.setValue(filter.getColumnName().toLowerCase());
 		filter.setColumnName(MasterDataConstant.NAME);
-		Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
-				new SearchDto(Arrays.asList(filter, filter2), Collections.emptyList(), new Pagination(), null),
-				Collections.emptyList());
-		if (locations.hasContent()) {
-			return locations.getContent().get(0);
-		} else {
-			throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
-					String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorMessage(),
-							filter.getValue()));
+
+		if (filterTypeValidator.validate(LocationExtnDto.class, Arrays.asList(filter, filter2))) {
+			Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
+					new SearchDto(Arrays.asList(filter, filter2), Collections.emptyList(), new Pagination(), null),
+					Collections.emptyList());
+			if (locations.hasContent()) {
+				return locations.getContent().get(0);
+			} else {
+				throw new MasterDataServiceException(
+						RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorMessage(),
+								filter.getValue()));
+			}
 		}
+		return null;
 	}
 
+	/**
+	 * Method to prepare search filters based on the registration center type code
+	 * list passed
+	 * 
+	 * @param regCenterTypes
+	 *            list of registration center types
+	 * @return list of search filters
+	 */
 	private List<SearchFilter> buildRegistrationCenterTypeSearchFilter(List<RegistrationCenterType> regCenterTypes) {
 		if (regCenterTypes != null && !regCenterTypes.isEmpty())
 			return regCenterTypes.stream().filter(Objects::nonNull).map(this::buildRegCenterType)
@@ -782,6 +829,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Method to prepare search filters based on the location code list passed.
+	 * 
+	 * @param location
+	 *            list of location codes
+	 * @return list of search filter
+	 */
 	private List<SearchFilter> buildLocationSearchFilter(List<String> location) {
 		if (location != null && !location.isEmpty())
 			return location.stream().filter(Objects::nonNull).map(this::buildLocationFilter)
@@ -789,6 +843,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Method to build search filter by the registration center type id to fetch the
+	 * exact registration center
+	 * 
+	 * @param centerType
+	 *            request registration center
+	 * @return search filter
+	 */
 	private SearchFilter buildRegCenterType(RegistrationCenterType centerType) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName(MasterDataConstant.CENTERTYPECODE);
@@ -797,6 +859,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return filter;
 	}
 
+	/**
+	 * Method to build location search filter
+	 * 
+	 * @param location
+	 *            search filter
+	 * @return search filter
+	 */
 	private SearchFilter buildLocationFilter(String location) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName(MasterDataConstant.CENTERLOCCODE);
@@ -805,6 +874,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return filter;
 	}
 
+	/**
+	 * Method to check whether columnName is belong to location
+	 * 
+	 * @param filter
+	 *            to search the column name
+	 * @return true if column is location type false otherwise
+	 */
 	private boolean isLocationSearch(String filter) {
 		switch (filter.toLowerCase()) {
 		case MasterDataConstant.CITY:
@@ -812,6 +888,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		case MasterDataConstant.PROVINCE:
 			return true;
 		case MasterDataConstant.REGION:
+			return true;
+		case MasterDataConstant.LAA:
 			return true;
 		default:
 			return false;
