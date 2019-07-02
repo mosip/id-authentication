@@ -189,15 +189,11 @@ public class MasterDataValidation {
 				List<String> pathsegmentsEng = new ArrayList<>();
 
 				pathsegmentsEng.add(value);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-                        "", "MasterDataValidation::validateIdentityValues()::Master Data Api call started");
 
-                ResponseWrapper<StatusResponseDto> responseWrapper =  (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
+				ResponseWrapper<StatusResponseDto> responseWrapper = (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
 						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", ResponseWrapper.class);
 				statusResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 						StatusResponseDto.class);
-		           regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-	                          "", "MasterDataValidation::validateIdentityValues()::Master Data Api ended with response data : "+JsonUtil.objectMapperObjectToJson(statusResponseDto));
 
 				if (statusResponseDto.getStatus().equalsIgnoreCase(VALID))
 					isvalidateIdentity = true;
