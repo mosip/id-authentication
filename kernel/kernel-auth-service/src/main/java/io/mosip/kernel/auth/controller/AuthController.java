@@ -139,7 +139,6 @@ public class AuthController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public ResponseWrapper<AuthNResponse> sendOTP(@RequestBody @Valid RequestWrapper<OtpUser> otpUserDto)
 			throws Exception {
-		Thread.sleep(600000);
 		ResponseWrapper<AuthNResponse> responseWrapper = new ResponseWrapper<>();
 		AuthNResponse authNResponse = null;
 		AuthNResponseDto authResponseDto = authService.authenticateWithOtp(otpUserDto.getRequest());
