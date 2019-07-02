@@ -35,6 +35,8 @@ node{
   containersNames = ""
 
   stage('checkout'){
+    // Clean the workspace to avoid conflicts
+  	cleanWs()
     checkout([$class: 'GitSCM',
     branches: [
      [name: branch]
