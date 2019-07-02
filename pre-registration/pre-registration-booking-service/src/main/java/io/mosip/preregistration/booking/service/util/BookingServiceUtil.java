@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -137,7 +136,7 @@ public class BookingServiceUtil {
 
 	@Value("${notification.url}")
 	private String notificationResourseurl;
-	
+
 	@Value("${preregistration.country.specific.zoneId}")
 	private String specificZoneId;
 
@@ -391,11 +390,13 @@ public class BookingServiceUtil {
 	}
 
 	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
-		
+
 		ZonedDateTime currentTime = ZonedDateTime.now();
-		LocalDateTime requestTimeCountrySpecific=currentTime.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDateTime();
+		LocalDateTime requestTimeCountrySpecific = currentTime.toInstant().atZone(ZoneId.of(specificZoneId))
+				.toLocalDateTime();
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForCancle method of Booking Service for request Date Time- " + requestTimeCountrySpecific);
+				"In timeSpanCheckForCancle method of Booking Service for request Date Time- "
+						+ requestTimeCountrySpecific);
 		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForCancel)
 			return true;
@@ -404,12 +405,14 @@ public class BookingServiceUtil {
 					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 	}
 
-	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime,Date requestTime) {
-		
-		LocalDateTime requestTimeCountrySpecific=requestTime.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDateTime();
-		
+	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime, Date requestTime) {
+
+		LocalDateTime requestTimeCountrySpecific = requestTime.toInstant().atZone(ZoneId.of(specificZoneId))
+				.toLocalDateTime();
+
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForRebook method of Booking Service for request Date Time- " + requestTimeCountrySpecific);
+				"In timeSpanCheckForRebook method of Booking Service for request Date Time- "
+						+ requestTimeCountrySpecific);
 		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForRebook)
 			return true;
@@ -418,7 +421,6 @@ public class BookingServiceUtil {
 					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
 
 	}
-	
 
 	/**
 	 * This method will do booking time slots.
@@ -774,19 +776,18 @@ public class BookingServiceUtil {
 				sdf.setLenient(false);
 				sdf.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
-				Date currentDate=new Date();
-				LocalDate date=currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDate();
-				
+				Date currentDate = new Date();
+				LocalDate date = currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDate();
+
 				if (localDate.isBefore(date)) {
 					throw new InvalidRequestParameterException(
 							ErrorCodes.PRG_BOOK_RCI_031.getCode(), ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()
 									+ " found for - " + requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
 							null);
-				} else if (localDate.isEqual(date)
-						&& (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
-								&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
+				} else if (localDate.isEqual(date) && (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
+						&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
 					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
-					LocalTime time= currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalTime();
+					LocalTime time = currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalTime();
 					if (localTime.isBefore(time)) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for - "
