@@ -86,6 +86,12 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
+	
+	@Value("${auth.jwt.base}")
+	private String authJwtBase;
+	
+	@Value("${auth.jwt.secret}")
+	private String authJwtSecret;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -132,8 +138,8 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	}
 
 	private Claims getClaims(String token) throws Exception {
-		String token_base = "Mosip-Token";
-		String secret = "authjwtsecret";
+		String token_base = authJwtBase;
+		String secret = authJwtSecret;
 		Claims claims = null;
 
 		if (token == null || !token.startsWith(token_base)) {

@@ -34,7 +34,7 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 
 	private Map<String, DataStore> dataStoreMap = null;
 	
-	@Value("${hikari.maximumPoolSize:100}")
+	@Value("${hikari.maximumPoolSize:25}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
 	private int validationTimeout;
