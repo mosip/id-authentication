@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.dto.getresponse.extn;
 import java.time.LocalDateTime;
 
+import io.mosip.kernel.masterdata.validator.FilterType;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,6 +18,7 @@ public class BaseDto {
     @ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")
     private Boolean isActive;
 
+    @FilterType(types= {FilterTypeEnum.BETWEEN})
     @ApiModelProperty(value = "createdBy", required = true, dataType = "java.lang.String")
     private String createdBy;
 

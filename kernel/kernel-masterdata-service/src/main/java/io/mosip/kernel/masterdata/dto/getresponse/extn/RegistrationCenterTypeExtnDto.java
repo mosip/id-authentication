@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.dto.getresponse.extn;
 
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.validator.FilterType;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -28,6 +30,7 @@ public class RegistrationCenterTypeExtnDto extends BaseDto {
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
 
+	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.CONTAINS, FilterTypeEnum.STARTSWITH })
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
 
