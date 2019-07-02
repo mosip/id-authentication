@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.validator;
+package io.mosip.authentication.common.service.validator;
 
 import static org.junit.Assert.assertTrue;
 
@@ -25,13 +25,13 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
-import io.mosip.authentication.otp.service.validator.OTPRequestValidator;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
-public class ValidatorTest {
+public class OtpValidatorTest {
 
 	@InjectMocks
 	private OTPRequestValidator otpRequestValidator;

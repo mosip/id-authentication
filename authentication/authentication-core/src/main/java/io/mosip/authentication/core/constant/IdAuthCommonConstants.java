@@ -10,6 +10,8 @@ public final class IdAuthCommonConstants {
 	private IdAuthCommonConstants() {
 
 	}
+	
+	public static final String INTERNAL = "INTERNAL";
 
 	/** The Constant SESSION_ID. */
 	public static final String SESSION_ID = "sessionId";

@@ -1,13 +1,13 @@
-package io.mosip.authentication.otp.service.controller;
+package io.mosip.authentication.internal.service.controller;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,11 +32,13 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Rakesh Roshan
  */
 @RestController
-public class OTPController {
+public class InternalOTPController {
+
+	
 
 	private static final String GENERATE_OTP = "generateOTP";
 
-	private static Logger logger = IdaLogger.getLogger(OTPController.class);
+	private static Logger logger = IdaLogger.getLogger(InternalOTPController.class);
 
 	@Autowired
 	private OTPService otpService;
@@ -45,7 +47,7 @@ public class OTPController {
 	private OTPRequestValidator otpRequestValidator;
 
 	@InitBinder
-	private void initBinder(WebDataBinder binder) {
+	public void initBinder(WebDataBinder binder) {
 		binder.setValidator(otpRequestValidator);
 	}
 
@@ -61,14 +63,14 @@ public class OTPController {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@PostMapping(path = "/{Auth-Partner-ID}/{MISP-LK}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors,
-			@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("MISP-LK") String mispLK)
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR')")
+	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		OtpResponseDTO otpResponseDTO = null;
 		try {
 			DataValidationUtil.validate(errors);
-			otpResponseDTO = otpService.generateOtp(otpRequestDto, partnerId);
+			otpResponseDTO = otpService.generateOtp(otpRequestDto, IdAuthCommonConstants.INTERNAL);
 			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), GENERATE_OTP,
 					otpResponseDTO.getResponseTime());
 			return otpResponseDTO;
