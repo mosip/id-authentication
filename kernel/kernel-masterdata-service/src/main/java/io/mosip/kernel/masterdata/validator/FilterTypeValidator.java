@@ -55,13 +55,12 @@ public class FilterTypeValidator {
 									filter.getColumnName(), filter.getType())));
 				}
 			} else {
-				errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(), String.format(
-						ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
+				errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(),
+						String.format(ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
 			}
 		} catch (NoSuchFieldException | SecurityException e) {
 			errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-					String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-							filter.getColumnName(), target.getName())));
+					String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName())));
 		}
 	}
 
@@ -93,7 +92,7 @@ public class FilterTypeValidator {
 	 *            search type
 	 * @return
 	 */
-	public boolean validateColumnAndTypes(String column, String filterType) {
+	private boolean validateColumnAndTypes(String column, String filterType) {
 		return column != null && !column.isEmpty() && filterType != null && !filterType.isEmpty();
 	}
 }
