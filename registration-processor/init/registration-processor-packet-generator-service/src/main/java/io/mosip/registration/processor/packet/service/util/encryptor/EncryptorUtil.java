@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.packet.service.util.encryptor;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyFactory;
@@ -26,19 +25,24 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.dto.PublicKeyResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.service.impl.PacketCreationServiceImpl;
 
 /**
  * 
@@ -66,6 +70,8 @@ public class EncryptorUtil {
 	/** The Constant APPLICATION_ID. */
 	public static final String APPLICATION_ID = "REGISTRATION";
 
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketCreationServiceImpl.class);
+
 	/** The registration processor rest client service. */
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
@@ -73,17 +79,16 @@ public class EncryptorUtil {
 	/** The center id length. */
 	@Value("${mosip.kernel.registrationcenterid.length}")
 	private int centerIdLength;
-	
+
 	/** The center id length. */
 	@Value("${mosip.kernel.machineid.length}")
 	private int machineIdLength;
-	
+
 	@Value("${registration.processor.rid.machineidsubstring}")
 	private int machineIdSubStringLength;
 
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
-
 
 	/**
 	 * Encrypt uin update packet.
@@ -106,11 +111,16 @@ public class EncryptorUtil {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	public byte[] encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime) throws IOException,
-			ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, RegBaseCheckedException {
+	public byte[] encryptUinUpdatePacket(InputStream decryptedFile, String regId, String creationTime)
+			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
+			RegBaseCheckedException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "EncryptorUtil ::encryptUinUpdatePacket()::entry");
 		byte[] dataToEncrypt = IOUtils.toByteArray(decryptedFile);
-	byte[] encryptPacketByteArray = encrypt(dataToEncrypt, regId, creationTime).getBytes();
-	return encryptPacketByteArray;
+		byte[] encryptPacketByteArray = encrypt(dataToEncrypt, regId, creationTime).getBytes();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "EncryptorUtil ::encryptUinUpdatePacket()::exit");
+		return encryptPacketByteArray;
 	}
 
 	/**
@@ -135,15 +145,16 @@ public class EncryptorUtil {
 	 *             the reg base checked exception
 	 */
 	public String encrypt(byte[] dataToEncrypt, String regId, String creationTime) throws ApisResourceAccessException,
-		InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException, RegBaseCheckedException {
+			InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException, RegBaseCheckedException {
 
 		try {
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, "EncryptorUtil ::encrypt()::entry");
 			String centerId = regId.substring(0, centerIdLength);
 			String machineId = regId.substring(centerIdLength, machineIdSubStringLength);
 			String refId = centerId + "_" + machineId;
 
-			//byte[] dataToEncrypt = IOUtils.toByteArray(streamToEncrypt);
+			// byte[] dataToEncrypt = IOUtils.toByteArray(streamToEncrypt);
 
 			// Enable AES 256 bit encryption
 			Security.setProperty("crypto.policy", "unlimited");
@@ -153,7 +164,10 @@ public class EncryptorUtil {
 			final byte[] encryptedData = encryptor.symmetricEncrypt(symmetricKey, dataToEncrypt);
 			// Encrypt the AES Session Key using RSA
 			final byte[] rsaEncryptedKey = encryptRSA(symmetricKey.getEncoded(), refId, creationTime);
-			return CryptoUtil.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER));
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, "EncryptorUtil ::encrypt()::exit");
+			return CryptoUtil
+					.encodeBase64(CryptoUtil.combineByteArray(encryptedData, rsaEncryptedKey, AES_KEY_CIPHER_SPLITTER));
 
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_ENCRYPTOR_INVLAID_DATA_EXCEPTION,
@@ -190,17 +204,25 @@ public class EncryptorUtil {
 	 * @throws JsonParseException
 	 */
 	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
-			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException, IOException {
+			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
+			IOException {
 
 		// encrypt AES Session Key using RSA public key
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(APPLICATION_ID);
 		ResponseWrapper<?> responseWrapper;
-		PublicKeyResponseDto publicKeyResponsedto=null;
-		 ObjectMapper mapper=new ObjectMapper();
+		PublicKeyResponseDto publicKeyResponsedto = null;
+		ObjectMapper mapper = new ObjectMapper();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"EncryptorUtil::encryptRSA()::Encryption service call started");
+
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
-		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), PublicKeyResponseDto.class);
+		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+				PublicKeyResponseDto.class);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"EncryptorUtil::encryptRSA()::Encryption service call  ended with response data : "
+						+ JsonUtil.objectMapperObjectToJson(publicKeyResponsedto));
 
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));

@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.packet.service.impl;
 
-import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -19,9 +19,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
+
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -39,6 +39,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
+import io.mosip.registration.processor.packet.service.constants.RegistrationConstants;
 import io.mosip.registration.processor.packet.service.dto.MachineResponseDto;
 import io.mosip.registration.processor.packet.service.dto.PackerGeneratorFailureDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorDto;
@@ -108,11 +109,14 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 		PacketGeneratorResDto packerGeneratorResDto = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"", "PacketGeneratorServiceImpl ::createPacket()::entry");
 		byte[] packetZipBytes = null;
 		if (isValidCenter(request.getCenterId(), dto) && isValidMachine(request.getMachineId(), dto)
 				&& isValidUin(request.getUin(), dto) && isValidRegistrationType(request.getRegistrationType(), dto)) {
 			try {
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"", "Packet Generator Validation successfull");
 				RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(),
 						request.getRegistrationType(), request.getCenterId(), request.getMachineId());
 				packetZipBytes = packetCreationService.create(registrationDTO);
@@ -124,6 +128,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
 						creationTime, request.getRegistrationType(),packetZipBytes);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						rid, "PacketGeneratorServiceImpl ::createPacket()::exit");
 				return packerGeneratorResDto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
