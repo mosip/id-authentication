@@ -599,15 +599,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 					String.valueOf(currentKeyAlias.size()),
 					"CurrentKeyAlias size is zero. Will create new Keypair for this applicationId and timestamp");
 			storeCertificate(timestamp, keyAliasMap);
+		} else if (currentKeyAlias.size() == 1) {
+			System.out.println("\n Signature key details present in DB - " + currentKeyAlias.get(0) + "\n");
+
 		}
 	}
 
 	private void storeCertificate(LocalDateTime timestamp, Map<String, List<KeyAlias>> keyAliasMap) {
-		String alias;
+		String alias = "NA";
 		LocalDateTime generationDateTime;
 		LocalDateTime expiryDateTime;
 		CertificateEntry<X509Certificate, PrivateKey> certificateEntry;
-		alias = UUID.randomUUID().toString();
+
 		certificateEntry = createCertificateEntry();
 		generationDateTime = DateUtils
 				.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(certificateEntry.getChain()[0].getNotBefore()));
@@ -616,7 +619,8 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		int tries = 0;
 		while (tries < MAX_TRIES) {
 			try {
-				System.out.println("\n Signature Key and Crt storing in keystore\n");
+				alias = UUID.randomUUID().toString();
+				System.out.println("\n Signature Key and Crt storing in keystore...\n");
 				keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
 				Thread.sleep(1000);
 				if (keyStore.getPrivateKey(alias) != null) {
