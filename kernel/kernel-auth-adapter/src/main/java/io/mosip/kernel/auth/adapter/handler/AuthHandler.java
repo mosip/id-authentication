@@ -87,10 +87,10 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 	
-	@Value("${auth.jwt.base}")
+	@Value("${auth.jwt.base:Mosip-Token}")
 	private String authJwtBase;
 	
-	@Value("${auth.jwt.secret}")
+	@Value("${auth.jwt.secret:authjwtsecret}")
 	private String authJwtSecret;
 
 	@Autowired
