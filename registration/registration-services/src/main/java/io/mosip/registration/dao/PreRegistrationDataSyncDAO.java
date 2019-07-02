@@ -1,5 +1,6 @@
 package io.mosip.registration.dao;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -69,4 +70,11 @@ public interface PreRegistrationDataSyncDAO {
 	 * @return List - pre registration list
 	 */
 	List<PreRegistrationList> getAllPreRegPackets();
+	
+	/**
+	 * Last pre registration packet downloaded date time.
+	 *
+	 * @return the timestamp
+	 */
+	public Timestamp getLastPreRegPacketDownloadedTime();
 }
