@@ -84,5 +84,10 @@
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${springfox.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${io.jsonwebtoken.jjwt.version}</version>
+		</dependency>
 	</dependencies>
 </project>
