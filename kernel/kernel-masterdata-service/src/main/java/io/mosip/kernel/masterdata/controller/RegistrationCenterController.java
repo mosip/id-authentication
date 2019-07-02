@@ -279,7 +279,7 @@ public class RegistrationCenterController {
 	 * @return RegistrationCenterPostResponseDto return the created registration
 	 *         center DTO.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenterAdmin(
@@ -297,7 +297,7 @@ public class RegistrationCenterController {
 	 *            the request DTO for updating registration center.
 	 * @return the response i.e. the id of the registration center updated.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/registrationcenters")
 	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
