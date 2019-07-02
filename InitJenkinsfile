@@ -8,7 +8,7 @@ node{
   def gitUrl =env.scmUrl
   def dockerImagesTagVersion = 'NaV' //This will ensure that docker images tag should have 1-1 relation ship with project version
   def registryUrl = env.dockerRegistryUrl
-  def registryName =  registryUrl.replace("https://", "").replace("/docker-registry", "")
+  def registryName =  registryUrl.replace("https://", "")
   def registryCredentials = env.dockerRegistryCredentials
   def dmzDeploymentServer = "${env.environment}DmzDeploymentServer" // example devDmzDeploymentServer
   def keymanagerDeploymentServer = "${env.environment}KeymanagerDeploymentServer" // example devKeymanagerDeploymentServer

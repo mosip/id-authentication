@@ -696,6 +696,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 								.with(location -> location.setRegion(individualIdentity.getRegion() != null
 										? individualIdentity.getRegion().get(0).getValue()
 										: null))
+								.with(location -> location.setLocalAdministrativeAuthority(individualIdentity.getLocalAdministrativeAuthority() != null
+										? individualIdentity.getLocalAdministrativeAuthority().get(0).getValue()
+										: null))
 								.with(location -> location.setPostalCode(
 										individualIdentity.getPostalCode() != null ? individualIdentity.getPostalCode()
 												: null))

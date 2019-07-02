@@ -2001,6 +2001,10 @@ public class DemographicDetailController extends BaseController {
 					fxUtils.selectComboBoxValue(city, locationDto.getCity());
 					retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
 				}
+				if (locationDto.getLocalAdministrativeAuthority() != null) {
+					fxUtils.selectComboBoxValue(localAdminAuthority, locationDto.getLocalAdministrativeAuthority());
+				}
+
 				if (locationDto.getPostalCode() != null) {
 					postalCode.setText(locationDto.getPostalCode());
 				}

@@ -3,6 +3,7 @@ package io.mosip.preregistration.application.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -372,13 +374,7 @@ public class DemographicService {
 								ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.getMessage());
 					}
 					DemographicUpdateResponseDTO res = serviceUtil.setterForUpdatePreRegistration(demographicEntity);
-
-					// List<DemographicUpdateResponseDTO> saveList = new ArrayList<>();
-
-					// saveList.add(res);
 					mainResponseDTO.setResponse(res);
-					// mainResponseDTO.setId(updateId);
-					// mainResponseDTO.setVersion(version);
 				}
 			}
 			isSuccess = true;
@@ -549,9 +545,11 @@ public class DemographicService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
-
+				List<String> list = listAuth(authUserDetails().getAuthorities());
 				if (demographicEntity != null) {
-					// userValidation(userId, demographicEntity.getCreatedBy());
+					if (list.contains("ROLE_INDIVIDUAL")) {
+						userValidation(authUserDetails().getUserId(), demographicEntity.getCreatedBy());
+					}
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
 					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),
@@ -663,8 +661,13 @@ public class DemographicService {
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRAION_ID.getCode(), preRegId);
 			if (ValidationUtil.requstParamValidator(requestParamMap)) {
+
 				DemographicEntity demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
 				if (demographicEntity != null) {
+					List<String> list = listAuth(authUserDetails().getAuthorities());
+					if (list.contains("ROLE_INDIVIDUAL")) {
+						userValidation(authUserDetails().getUserId(), demographicEntity.getCreatedBy());
+					}
 					String hashString = HashUtill.hashUtill(demographicEntity.getApplicantDetailJson());
 
 					if (HashUtill.isHashEqual(demographicEntity.getDemogDetailHash().getBytes(),
@@ -798,8 +801,8 @@ public class DemographicService {
 
 		BookingRegistrationDTO bookingRegistrationDTO = null;
 		try {
-			Map<String, Object> params = new HashMap<>(); 
-			
+			Map<String, Object> params = new HashMap<>();
+
 			params.put("preRegistrationId", preId);
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(appointmentResourseUrl + "/appointment/");
 			HttpHeaders headers = new HttpHeaders();
@@ -1025,5 +1028,20 @@ public class DemographicService {
 					ErrorMessages.DOCUMENT_SERVICE_FAILED_TO_CALL.getMessage());
 		}
 		return responsestatusDto;
+	}
+
+	/**
+	 * This method is used to get the list of authorization role
+	 * 
+	 * @param collection
+	 * @return list of auth role
+	 */
+	public List<String> listAuth(Collection<? extends GrantedAuthority> collection) {
+		List<String> listWORole = new ArrayList<>();
+		for (GrantedAuthority authority : collection) {
+			String s = authority.getAuthority();
+			listWORole.add(s);
+		}
+		return listWORole;
 	}
 }
