@@ -17,6 +17,7 @@ public class PacketReceiverConstant {
 	public static final String UNEQUAL_PACKET_HASH_PR ="The Registration Packet HashSequence is not equal as synced packet HashSequence";
 	public static final String API_RESOURCE_UNAVAILABLE ="API resource not accessible : ";
 	public static final String PACKET_DECRYPTION_FAILED ="Packet decryption failed for registrationId ";
+	public static final String PACKET_RECEIVER_VALIDATION_SUCCESS ="Packet receiver validation success for registrationId ";
 
 	
 	

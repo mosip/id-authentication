@@ -159,6 +159,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				description.setMessage(PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getMessage() + " -- " + registrationId);
 				description.setCode(PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getCode());
 			}
+			
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
@@ -172,9 +173,6 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			object.setIsValid(false);
 		} finally {
 
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description.getMessage());
 			if (object.getInternalError()) {
 				registrationStatusDto.setUpdatedBy(USER);
 				int retryCount = registrationStatusDto.getRetryCount() != null
@@ -199,6 +197,8 @@ public class ExternalStage extends MosipVerticleAPIManager {
 		}
 
 		regProcLogger.debug("", "", "sent to next stage --> ", object.toString());
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "ExternalStage::process()::exit");
 		return object;
 	}
 

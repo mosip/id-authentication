@@ -53,7 +53,7 @@ import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDt
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
+
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
@@ -133,9 +133,6 @@ public class OSIValidator {
 	@Autowired
 	private AuthUtil authUtil;
 
-	/** The registration processor rest client service. */
-	@Autowired
-	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
 	/** The Constant APPLICATION_ID. */
 	public static final String IDA_APP_ID = "IDA";
@@ -215,7 +212,7 @@ public class OSIValidator {
 	}
 
 	private boolean isActiveUser(String officerId, String creationDate, String supervisorId, InternalRegistrationStatusDto registrationStatusDto)
-			throws ApisResourceAccessException {
+			throws ApisResourceAccessException, IOException {
 		boolean wasOfficerActiveDuringPCT = false;
 		boolean wasSupervisorActiveDuringPCT = false;
 		String statusMessage = "";
@@ -261,15 +258,18 @@ public class OSIValidator {
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
 
-	private UserResponseDto isUserActive(String operatorId, String creationDate, InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException {
+	private UserResponseDto isUserActive(String operatorId, String creationDate, InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		UserResponseDto userResponse;
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(operatorId);
 		pathSegments.add(creationDate);
 		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(), "OSIValidator::isUserActive()::User Details Api call started");
 			userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments, "", "",
 					UserResponseDto.class);
-
+			 regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					 registrationStatusDto.getRegistrationId(), "OSIValidator::isUserActive()::User Details Api ended with response data : "+JsonUtil.objectMapperObjectToJson(userResponse));
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
@@ -692,7 +692,7 @@ public class OSIValidator {
 	}
 
 	private boolean isActiveUserId(String registrationId, RegOsiDto regOsi, Identity identity, InternalRegistrationStatusDto registrationStatusDto)
-			throws UnsupportedEncodingException, ApisResourceAccessException {
+			throws ApisResourceAccessException, IOException {
 		boolean isValid = false;
 		String creationDate = osiUtils.getMetaDataValue(JsonConstant.CREATIONDATE, identity);
 		if (creationDate != null && !(StringUtils.isEmpty(creationDate))) {

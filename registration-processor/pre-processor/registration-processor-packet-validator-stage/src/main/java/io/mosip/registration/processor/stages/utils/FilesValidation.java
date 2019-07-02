@@ -3,9 +3,12 @@ package io.mosip.registration.processor.stages.utils;
 import java.io.IOException;
 import java.util.List;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
@@ -27,6 +30,9 @@ public class FilesValidation {
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(FilesValidation.class);
 
 	/**
 	 * Instantiates a new files validation.
@@ -55,13 +61,15 @@ public class FilesValidation {
 	 */
 	public boolean filesValidation(String registrationId, Identity identity) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		boolean filesValidated = false;
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"FilesValidation::filesValidation()::entry");
 		List<FieldValueArray> hashSequence = identity.getHashSequence1();
 		filesValidated = validateHashSequence(registrationId, hashSequence);
 
 		if (!filesValidated)
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"FilesValidation::filesValidation()::exit");
 		return filesValidated;
 
 	}

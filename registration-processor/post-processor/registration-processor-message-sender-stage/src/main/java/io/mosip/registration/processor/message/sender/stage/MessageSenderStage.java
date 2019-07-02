@@ -230,6 +230,9 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			if (notificationTypes == null || notificationTypes.isEmpty()) {
 				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_FAILED + id + "::"
 						+ PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), object.getRid(),
+						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getMessage());
 				throw new ConfigurationNotFoundException(
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
 			}
@@ -243,11 +246,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 			isTransactionSuccessful = true;
 			description.setMessage(MessageSenderConstant.MESSAGE_SENDER_NOTIF_SUCC + id);
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					id, "MessageSenderStage::process()::exit");
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					id, description.getMessage());
 
 			registrationStatusDto.setStatusComment(description.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -294,7 +292,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					id, ApiName.AUDIT);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				id, "MessageSenderStage::process()::exit");
 		return object;
 	}
 
