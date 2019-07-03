@@ -4,7 +4,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
@@ -33,6 +36,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
@@ -78,8 +82,12 @@ public class MasterdataSearchIntegrationTest {
 	private SearchDto searchDto;
 	private RequestWrapper<SearchDto> request;
 
+	private DocumentType documentType;
+	private List<DocumentType> documentTypes;
+
 	@Before
 	public void setup() throws JsonProcessingException {
+		documentTypeSetUp();
 		filter1 = new SearchFilter();
 		filter1.setColumnName("name");
 		filter1.setValue("*mosip*");
@@ -156,6 +164,13 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any(), Mockito.anyList()))
 						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
 
+	}
+
+	private void documentTypeSetUp() {
+		documentType = new DocumentType();
+		documentType.setCode("DT001");
+		documentTypes = new ArrayList<>();
+		documentTypes.add(documentType);
 	}
 
 	@Test
@@ -308,6 +323,44 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(
 				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
 				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchDocumentTypeTest() throws Exception {
+		RequestWrapper<SearchDto> requestDto = new RequestWrapper<>();
+		SearchDto searchDto = new SearchDto();
+		List<SearchFilter> filters = new ArrayList<SearchFilter>();
+		SearchFilter searchFilter1 = new SearchFilter();
+		searchFilter1.setColumnName("name");
+		searchFilter1.setType("CONTAINS");
+		searchFilter1.setValue("card");
+		filters.add(searchFilter1);
+		List<SearchSort> sort = new ArrayList<SearchSort>();
+		SearchSort searchSort = new SearchSort();
+		searchSort.setSortField("name");
+		searchSort.setSortType("ASC");
+		sort.add(searchSort);
+
+		Pagination pagination = new Pagination();
+		pagination.setPageFetch(0);
+		pagination.setPageStart(10);
+
+		searchDto.setFilters(filters);
+		searchDto.setSort(sort);
+		searchDto.setPagination(pagination);
+		searchDto.setLanguageCode("eng");
+
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVersion("1.0");
+		requestDto.setRequest(searchDto);
+
+		String contentJson = objectMapper.writeValueAsString(requestDto);
+		Page<DocumentType> page = new PageImpl<>(documentTypes, PageRequest.of(0, 10), 1);
+		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<DocumentType>>any(),
+				Mockito.any(SearchDto.class), Mockito.anyList())).thenReturn(page);
+		mockMvc.perform(post("/documenttypes/search").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isOk());
 	}
 
 }
