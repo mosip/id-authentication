@@ -46,6 +46,8 @@ import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * Service implementation class for {@link BlacklistedWordsService}.
@@ -62,6 +64,12 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Autowired
 	private BlacklistedWordsRepository blacklistedWordsRepository;
+
+	@Autowired
+	FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	FilterColumnValidator filterColumnValidator;
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
@@ -310,11 +318,13 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto) {
 		PageResponseDto<BlacklistedWordsExtnDto> pageDto = new PageResponseDto<>();
 		List<BlacklistedWordsExtnDto> blackListedWords = null;
-		Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			pageDto = PageUtils.pageResponse(page);
-			blackListedWords = MapperUtils.mapAll(page.getContent(), BlacklistedWordsExtnDto.class);
-			pageDto.setData(blackListedWords);
+		if (filterTypeValidator.validate(BlacklistedWordsExtnDto.class, dto.getFilters())) {
+			Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				blackListedWords = MapperUtils.mapAll(page.getContent(), BlacklistedWordsExtnDto.class);
+				pageDto.setData(blackListedWords);
+			}
 		}
 		return pageDto;
 	}
@@ -323,16 +333,18 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		for (FilterDto filterDto : filterValueDto.getFilters()) {
-			masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(), filterDto.getType(),
-					filterValueDto.getLanguageCode()).forEach(filterValue -> {
-						ColumnValue columnValue = new ColumnValue();
-						columnValue.setFieldID(filterDto.getColumnName());
-						columnValue.setFieldValue(filterValue);
-						columnValueList.add(columnValue);
-					});
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(),
+						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filterDto.getColumnName());
+							columnValue.setFieldValue(filterValue);
+							columnValueList.add(columnValue);
+						});
+			}
+			filterResponseDto.setFilters(columnValueList);
 		}
-		filterResponseDto.setFilters(columnValueList);
 		return filterResponseDto;
 	}
 }
