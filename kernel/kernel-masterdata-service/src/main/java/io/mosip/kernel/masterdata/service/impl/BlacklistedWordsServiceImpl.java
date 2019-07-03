@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -46,6 +42,7 @@ import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
@@ -66,13 +63,12 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	@Autowired
 	private BlacklistedWordsRepository blacklistedWordsRepository;
 
-	@PersistenceContext
-	private EntityManager entityManager;
-
-	private CriteriaBuilder criteriaBuilder;
+	@Autowired
+	MasterDataFilterHelper masterDataFilterHelper;
 
 	@Autowired
 	MasterdataSearchHelper masterDataSearchHelper;
+
 	/**
 	 * Autowired reference for {@link DataMapper}
 	 */
@@ -328,7 +324,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		for (FilterDto filterDto : filterValueDto.getFilters()) {
-			masterDataSearchHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(), filterDto.getType(),
+			masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(), filterDto.getType(),
 					filterValueDto.getLanguageCode()).forEach(filterValue -> {
 						ColumnValue columnValue = new ColumnValue();
 						columnValue.setFieldID(filterDto.getColumnName());
