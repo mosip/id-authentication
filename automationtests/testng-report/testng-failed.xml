@@ -8,16 +8,15 @@
   </listeners>
   <test name="PreReg Tests(failed)">
     <classes>
-      <class name="io.mosip.preregistration.tests.BatchJob">
+      <class name="io.mosip.preregistration.tests.DeleteDocumentByDocId">
         <methods>
           <include name="suiteSetup"/>
-          <include name="batchJobForExpiredApplication"/>
-          <include name="login"/>
           <include name="setResultTestName"/>
+          <include name="getTestCaseName"/>
+          <include name="deleteDocumentByDocId" invocation-numbers="2"/>
           <include name="testTearDown"/>
-          <include name="getToken"/>
         </methods>
-      </class> <!-- io.mosip.preregistration.tests.BatchJob -->
+      </class> <!-- io.mosip.preregistration.tests.DeleteDocumentByDocId -->
     </classes>
   </test> <!-- PreReg Tests(failed) -->
 </suite> <!-- Failed suite [Mosip API Suite] -->

@@ -76,11 +76,27 @@ public class Sample extends BaseTestCase implements ITest {
 
 	}
 
-	@Test
-	public void deleteAllDocumentByDocIdUsingUserBToken() {
-		lib.expiredStatus();
-		lib.expiredStatus();
+	@Test(groups = { "IntegrationScenarios" })
+	public void delDocByDocIdForDiscardedApplication() {
+		PreRegistrationLibrary lib = new PreRegistrationLibrary();
+
+		// Create PreReg
+
+		String preRegID = null;
+		Response createApplicationResponse = null;
+
+		createApplicationResponse = lib.CreatePreReg(individualToken);
+		preRegID = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response uploadDoc = lib.documentUpload(createApplicationResponse, individualToken);
+		String docId = uploadDoc.jsonPath().get("response.docId").toString();
+		Response discardApp = lib.discardApplication(preRegID, individualToken);
+		Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId, preRegID, individualToken);
+		lib.compareValues(lib.getErrorCode(delDocumentByDocId), "PRG_PAM_APP_005");
+		lib.compareValues(lib.getErrorMessage(delDocumentByDocId),
+				"No data found for the requested pre-registration id");
+
 	}
+
 
 	@BeforeMethod(alwaysRun = true)
 	public void run() {

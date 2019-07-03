@@ -24,7 +24,7 @@
     <div class="top-banner-root">
       <span class="top-banner-title-font">Test results</span>
       <br/>
-      <span class="top-banner-font-1">1 suite</span>
+      <span class="top-banner-font-1">1 suite, 1 failed test</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -38,7 +38,7 @@
         <div class="rounded-window">
           <div class="suite-header light-rounded-window-top">
             <a href="#" class="navigator-link" panel-name="suite-Mosip_API_Suite">
-              <span class="suite-name border-passed">Mosip API Suite</span>
+              <span class="suite-name border-failed">Mosip API Suite</span>
             </a> <!-- navigator-link -->
           </div> <!-- suite-header light-rounded-window-top -->
           <div class="navigator-suite-content">
@@ -91,7 +91,21 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">15 methods,   15 passed</span>
+                    <span class="method-stats">41 methods, 1 failed,   40 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title failed">Failed methods</span>
+                    <span class="show-or-hide-methods failed">
+                      <a href="#" panel-name="suite-Mosip_API_Suite" class="hide-methods failed suite-Mosip_API_Suite"> (hide)</a> <!-- hide-methods failed suite-Mosip_API_Suite -->
+                      <a href="#" panel-name="suite-Mosip_API_Suite" class="show-methods failed suite-Mosip_API_Suite"> (show)</a> <!-- show-methods failed suite-Mosip_API_Suite -->
+                    </span>
+                    <div class="method-list-content failed suite-Mosip_API_Suite">
+                      <span>
+                        <img width="3%" src="failed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/DeleteDocumentByDocId, 2, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/DeleteDocumentByDocId, 2, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content failed suite-Mosip_API_Suite -->
                   </li>
                   <li>
                     <span class="method-list-title passed">Passed methods</span>
@@ -102,77 +116,202 @@
                     <div class="method-list-content passed suite-Mosip_API_Suite">
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_bookAppointmentUsingUserBToken">preReg_BatchJob_bookAppointmentUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegId_smoke(preReg/DeleteAllDocumentsByPreRegID, 0, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegId_smoke(preReg/DeleteAllDocumentsByPreRegID, 0, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_bookMultipleAppointmentUsingUserBToken">preReg_BatchJob_bookMultipleAppointmentUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric(preReg/DeleteAllDocumentsByPreRegID, 3, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric(preReg/DeleteAllDocumentsByPreRegID, 3, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_cancelAppointmentUsingUserBToken">preReg_BatchJob_cancelAppointmentUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 5, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 5, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_copyUserADocumentToUserB">preReg_BatchJob_copyUserADocumentToUserB</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets(preReg/DeleteAllDocumentsByPreRegID, 2, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets(preReg/DeleteAllDocumentsByPreRegID, 2, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken">preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue(preReg/DeleteAllDocumentsByPreRegID, 7, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue(preReg/DeleteAllDocumentsByPreRegID, 7, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_deleteDocumentUsingUserBToken">preReg_BatchJob_deleteDocumentUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength(preReg/DeleteAllDocumentsByPreRegID, 4, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength(preReg/DeleteAllDocumentsByPreRegID, 4, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_discardUserADataUsingUserBToken">preReg_BatchJob_discardUserADataUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces(preReg/DeleteAllDocumentsByPreRegID, 1, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces(preReg/DeleteAllDocumentsByPreRegID, 1, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken">preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" hash-for-method="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 6, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 6, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_getDocumentByDocIdUsingUserBToken">preReg_BatchJob_getDocumentByDocIdUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/DeleteDocumentByDocId, 4, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/DeleteDocumentByDocId, 4, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_getPreRegistrationStatusUsingUserBToken">preReg_BatchJob_getPreRegistrationStatusUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 3, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 3, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_getUserADemographicDataUsingUserBToken">preReg_BatchJob_getUserADemographicDataUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/DeleteDocumentByDocId, 1, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;inval...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/DeleteDocumentByDocId, 1, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"inval...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_getUserADocumentUsingUserBToken">preReg_BatchJob_getUserADocumentUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/DeleteDocumentByDocId, 6, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/DeleteDocumentByDocId, 6, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_rebookAppointmentUsingUserBToken">preReg_BatchJob_rebookAppointmentUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 9, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 9, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_updateUserADataUsingUserBToken">preReg_BatchJob_updateUserADataUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/DeleteDocumentByDocId, 7, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/DeleteDocumentByDocId, 7, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.OperationWithDifferentToken" hash-for-method="preReg_BatchJob_uploadUserADocumentUsingUserBToken">preReg_BatchJob_uploadUserADocumentUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 5, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 5, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/DeleteDocumentByDocId, 10, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;vali...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/DeleteDocumentByDocId, 10, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 12, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;vali...)">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 12, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/DeleteDocumentByDocId, 8, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/DeleteDocumentByDocId, 8, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/DeleteDocumentByDocId, 11, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;vali...)">Pre Reg_DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/DeleteDocumentByDocId, 11, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.DeleteDocumentByDocId" hash-for-method="Pre Reg_DeleteDocumentByDocmentId_smoke(preReg/DeleteDocumentByDocId, 0, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">Pre Reg_DeleteDocumentByDocmentId_smoke(preReg/DeleteDocumentByDocId, 0, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/GetAllDocumentForDocId, 10, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/GetAllDocumentForDocId, 10, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 4, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 4, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/GetAllDocumentForDocId, 5, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/GetAllDocumentForDocId, 5, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/GetAllDocumentForDocId, 8, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/GetAllDocumentForDocId, 8, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 7, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 7, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForDocId, 3, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForDocId, 3, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 12, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 12, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForDocId, 9, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForDocId, 9, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForDocId, 1, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForDocId, 1, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 6, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 6, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/GetAllDocumentForDocId, 11, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)">Pre Reg_GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/GetAllDocumentForDocId, 11, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForDocId, 2, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForDocId, 2, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForDocId" hash-for-method="Pre Reg_GetAllDocumentForDocId_smoke(preReg/GetAllDocumentForDocId, 0, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">Pre Reg_GetAllDocumentForDocId_smoke(preReg/GetAllDocumentForDocId, 0, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" hash-for-method="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForPreRegId, 2, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForPreRegId, 2, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" hash-for-method="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForPreRegId, 5, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForPreRegId, 5, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" hash-for-method="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForPreRegId, 3, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForPreRegId, 3, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" hash-for-method="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForPreRegId, 1, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForPreRegId, 1, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" hash-for-method="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForPreRegId, 4, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForPreRegId, 4, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" hash-for-method="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForPreRegId, 6, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForPreRegId, 6, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.GetAllDocumentForPreRegId" hash-for-method="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegId_smoke(preReg/GetAllDocumentForPreRegId, 0, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegId_smoke(preReg/GetAllDocumentForPreRegId, 0, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content passed suite-Mosip_API_Suite -->
@@ -187,115 +326,377 @@
     <div class="wrapper">
       <div class="main-panel-root">
         <div panel-name="suite-Mosip_API_Suite" class="panel Mosip_API_Suite">
-          <div class="suite-Mosip_API_Suite-class-passed">
+          <div class="suite-Mosip_API_Suite-class-failed">
             <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">io.mosip.preregistration.tests.OperationWithDifferentToken</span>
+              <img src="failed.png"/>
+              <span class="class-name">io.mosip.preregistration.tests.DeleteDocumentByDocId</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_bookAppointmentUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_bookAppointmentUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_bookAppointmentUsingUserBToken</span>
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/DeleteDocumentByDocId, 2, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/DeleteDocumentByDocId, 2, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 2, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"invalid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1008","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":""})</span>
+                  <div class="stack-trace">java.lang.AssertionError: Response Data Mismatch Failure  : not equal: value differences={errors=([{errorCode=PRG_PAM_DOC_020, message=Demographic record failed to fetch}], [{errorCode=PRG_PAM_DOC_022, message=DocumentId is not belongs to the pre-registration Id}])} expected [true] but found [false]
+	at io.mosip.service.AssertResponses.assertResponses(AssertResponses.java:46)
+	at io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(DeleteDocumentByDocId.java:183)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:42)
+	at io.mosip.testrunner.MosipTestRunner.main(MosipTestRunner.java:30)
+... Removed 25 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Mosip_API_Suite-class-failed -->
+          <div class="suite-Mosip_API_Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegId_smoke(preReg/DeleteAllDocumentsByPreRegID, 0, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegId_smoke(preReg/DeleteAllDocumentsByPreRegID, 0, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegId_smoke</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 0, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"valid","jiraId":"MOS-1000","testType":"smoke","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"valid","testCaseName":"DeleteAllDocumentForPreRegId_smoke","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_bookMultipleAppointmentUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_bookMultipleAppointmentUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_bookMultipleAppointmentUsingUserBToken</span>
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric(preReg/DeleteAllDocumentsByPreRegID, 3, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric(preReg/DeleteAllDocumentsByPreRegID, 3, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 3, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"invalid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"valid","jiraId":"MOS-1002","testType":"regression","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"valid","testCaseName":"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_cancelAppointmentUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_cancelAppointmentUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_cancelAppointmentUsingUserBToken</span>
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 5, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 5, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 5, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"valid","jiraId":"MOS-1003","testType":"regression","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"invalid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"valid","testCaseName":"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_copyUserADocumentToUserB">
-                  </a> <!-- preReg_BatchJob_copyUserADocumentToUserB -->
-                  <span class="method-name">preReg_BatchJob_copyUserADocumentToUserB</span>
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets(preReg/DeleteAllDocumentsByPreRegID, 2, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets(preReg/DeleteAllDocumentsByPreRegID, 2, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 2, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"invalid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"valid","jiraId":"MOS-1001","testType":"regression","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"valid","testCaseName":"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken</span>
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue(preReg/DeleteAllDocumentsByPreRegID, 7, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue(preReg/DeleteAllDocumentsByPreRegID, 7, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 7, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"valid","jiraId":"MOS-1004","testType":"regression","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"valid","testCaseName":"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"invalid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_deleteDocumentUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_deleteDocumentUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_deleteDocumentUsingUserBToken</span>
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength(preReg/DeleteAllDocumentsByPreRegID, 4, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength(preReg/DeleteAllDocumentsByPreRegID, 4, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 4, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"invalid","jiraId":"MOS-1005","testType":"regression","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"valid","testCaseName":"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_discardUserADataUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_discardUserADataUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_discardUserADataUsingUserBToken</span>
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces(preReg/DeleteAllDocumentsByPreRegID, 1, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces(preReg/DeleteAllDocumentsByPreRegID, 1, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 1, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"invalid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"valid","jiraId":"MOS-1006","testType":"regression","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"valid","testCaseName":"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken</span>
+                  <a name="Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 6, {&quot;DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)">
+                  </a> <!-- Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 6, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...) -->
+                  <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters</span>
+                  <span class="parameters">(preReg/DeleteAllDocumentsByPreRegID, 6, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"valid","jiraId":"MOS-1007","testType":"regression","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"valid","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"invalid","testCaseName":"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters","DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Mosip_API_Suite-class-passed -->
+          <div class="suite-Mosip_API_Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">io.mosip.preregistration.tests.GetAllDocumentForDocId</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/GetAllDocumentForDocId, 10, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/GetAllDocumentForDocId, 10, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 10, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1001","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"invalid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_getDocumentByDocIdUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_getDocumentByDocIdUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_getDocumentByDocIdUsingUserBToken</span>
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 4, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 4, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 4, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"invalid","jiraId":"MOS-1002","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_getPreRegistrationStatusUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_getPreRegistrationStatusUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_getPreRegistrationStatusUsingUserBToken</span>
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/GetAllDocumentForDocId, 5, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/GetAllDocumentForDocId, 5, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 5, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"invalid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1000","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_getUserADemographicDataUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_getUserADemographicDataUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_getUserADemographicDataUsingUserBToken</span>
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/GetAllDocumentForDocId, 8, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/GetAllDocumentForDocId, 8, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 8, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"invalid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1003","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_getUserADocumentUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_getUserADocumentUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_getUserADocumentUsingUserBToken</span>
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 7, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 7, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 7, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1004","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"invalid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_rebookAppointmentUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_rebookAppointmentUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_rebookAppointmentUsingUserBToken</span>
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForDocId, 3, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForDocId, 3, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 3, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"invalid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1006","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_updateUserADataUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_updateUserADataUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_updateUserADataUsingUserBToken</span>
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 12, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 12, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 12, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1007","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"invalid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
               <div class="method">
                 <div class="method-content">
-                  <a name="preReg_BatchJob_uploadUserADocumentUsingUserBToken">
-                  </a> <!-- preReg_BatchJob_uploadUserADocumentUsingUserBToken -->
-                  <span class="method-name">preReg_BatchJob_uploadUserADocumentUsingUserBToken</span>
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForDocId, 9, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForDocId, 9, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 9, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1005","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"invalid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForDocId, 1, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForDocId, 1, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 1, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"invalid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1008","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 6, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 6, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 6, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"invalid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1009","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/GetAllDocumentForDocId, 11, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/GetAllDocumentForDocId, 11, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 11, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"invalid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1010","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testCaseName":"GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForDocId, 2, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForDocId, 2, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 2, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"invalid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1011","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForDocId_smoke(preReg/GetAllDocumentForDocId, 0, {&quot;GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForDocId_smoke(preReg/GetAllDocumentForDocId, 0, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForDocId_smoke</span>
+                  <span class="parameters">(preReg/GetAllDocumentForDocId, 0, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"smoke","GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1015","GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","testCaseName":"GetAllDocumentForDocId_smoke","GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Mosip_API_Suite-class-passed -->
+          <div class="suite-Mosip_API_Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">io.mosip.preregistration.tests.GetAllDocumentForPreRegId</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForPreRegId, 2, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForPreRegId, 2, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric</span>
+                  <span class="parameters">(preReg/GetAllDocumentForPreRegId, 2, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"invalid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"valid","jiraId":"MOS-1001","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","testCaseName":"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForPreRegId, 5, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForPreRegId, 5, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters</span>
+                  <span class="parameters">(preReg/GetAllDocumentForPreRegId, 5, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"valid","jiraId":"MOS-1002","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"invalid","testCaseName":"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForPreRegId, 3, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForPreRegId, 3, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets</span>
+                  <span class="parameters">(preReg/GetAllDocumentForPreRegId, 3, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"invalid","jiraId":"MOS-1000","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","testCaseName":"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForPreRegId, 1, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForPreRegId, 1, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue</span>
+                  <span class="parameters">(preReg/GetAllDocumentForPreRegId, 1, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"invalid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"valid","jiraId":"MOS-1003","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","testCaseName":"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForPreRegId, 4, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForPreRegId, 4, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength</span>
+                  <span class="parameters">(preReg/GetAllDocumentForPreRegId, 4, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"valid","jiraId":"MOS-1004","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"invalid","testType":"regression","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","testCaseName":"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForPreRegId, 6, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForPreRegId, 6, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters</span>
+                  <span class="parameters">(preReg/GetAllDocumentForPreRegId, 6, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"valid","jiraId":"MOS-1005","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"regression","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","testCaseName":"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"invalid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegId_smoke(preReg/GetAllDocumentForPreRegId, 0, {&quot;GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)">
+                  </a> <!-- Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegId_smoke(preReg/GetAllDocumentForPreRegId, 0, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...) -->
+                  <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegId_smoke</span>
+                  <span class="parameters">(preReg/GetAllDocumentForPreRegId, 0, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets":"valid","jiraId":"MOS-1009","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","testType":"smoke","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","testCaseName":"GetAllDocumentForPreRegId_smoke","GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Mosip_API_Suite-class-passed -->
+          <div class="suite-Mosip_API_Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">io.mosip.preregistration.tests.DeleteDocumentByDocId</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/DeleteDocumentByDocId, 4, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/DeleteDocumentByDocId, 4, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 4, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"invalid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1001","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 3, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 3, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 3, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"invalid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1002","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/DeleteDocumentByDocId, 1, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;inval...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/DeleteDocumentByDocId, 1, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"inval...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 1, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"invalid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1000","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/DeleteDocumentByDocId, 6, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/DeleteDocumentByDocId, 6, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 6, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"invalid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1003","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 9, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 9, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 9, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1004","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"invalid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/DeleteDocumentByDocId, 7, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/DeleteDocumentByDocId, 7, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 7, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1006","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"invalid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 5, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 5, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 5, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"invalid","jiraId":"MOS-1007","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/DeleteDocumentByDocId, 10, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;vali...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/DeleteDocumentByDocId, 10, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 10, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1005","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"invalid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 12, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;vali...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 12, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 12, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1009","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","testCaseName":"DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"invalid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/DeleteDocumentByDocId, 8, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/DeleteDocumentByDocId, 8, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 8, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"invalid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1010","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/DeleteDocumentByDocId, 11, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;vali...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/DeleteDocumentByDocId, 11, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 11, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"regression","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"invalid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1011","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","testCaseName":"DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="Pre Reg_DeleteDocumentByDocmentId_smoke(preReg/DeleteDocumentByDocId, 0, {&quot;DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets&quot;:&quot;valid...)">
+                  </a> <!-- Pre Reg_DeleteDocumentByDocmentId_smoke(preReg/DeleteDocumentByDocId, 0, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...) -->
+                  <span class="method-name">Pre Reg_DeleteDocumentByDocmentId_smoke</span>
+                  <span class="parameters">(preReg/DeleteDocumentByDocId, 0, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric":"valid","testType":"smoke","DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue":"valid","DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters":"valid","DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue":"valid","DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters":"valid","jiraId":"MOS-1015","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric":"valid","testCaseName":"DeleteDocumentByDocmentId_smoke","DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets":"valid","DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength":"valid","status":"Pass"})</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -317,7 +718,10 @@
   &lt;/listeners&gt;
   &lt;test name=&quot;PreReg Tests&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;io.mosip.preregistration.tests.OperationWithDifferentToken&quot;/&gt;
+      &lt;class name=&quot;io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID&quot;/&gt;
+      &lt;class name=&quot;io.mosip.preregistration.tests.DeleteDocumentByDocId&quot;/&gt;
+      &lt;class name=&quot;io.mosip.preregistration.tests.GetAllDocumentForDocId&quot;/&gt;
+      &lt;class name=&quot;io.mosip.preregistration.tests.GetAllDocumentForPreRegId&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- PreReg Tests --&gt;
 &lt;/suite&gt; &lt;!-- Mosip API Suite --&gt;
@@ -331,7 +735,7 @@
           <div class="main-panel-content rounded-window-bottom">
             <ul>
               <li>
-                <span class="test-name">PreReg Tests (1 class)</span>
+                <span class="test-name">PreReg Tests (4 classes)</span>
               </li>
             </ul>
           </div> <!-- main-panel-content rounded-window-bottom -->
@@ -357,72 +761,176 @@ data.addColumn('number', 'Number');
 data.addColumn('string', 'Method');
 data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
-data.addRows(15);
+data.addRows(41);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken')
-data.setCell(0, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(0, 3, 15506);
+data.setCell(0, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric')
+data.setCell(0, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(0, 3, 6327);
 data.setCell(1, 0, 1)
-data.setCell(1, 1, 'preReg_BatchJob_bookMultipleAppointmentUsingUserBToken')
-data.setCell(1, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(1, 3, 14337);
+data.setCell(1, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric')
+data.setCell(1, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(1, 3, 5704);
 data.setCell(2, 0, 2)
-data.setCell(2, 1, 'preReg_BatchJob_updateUserADataUsingUserBToken')
-data.setCell(2, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(2, 3, 13517);
+data.setCell(2, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue')
+data.setCell(2, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(2, 3, 4366);
 data.setCell(3, 0, 3)
-data.setCell(3, 1, 'preReg_BatchJob_copyUserADocumentToUserB')
-data.setCell(3, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(3, 3, 12457);
+data.setCell(3, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue')
+data.setCell(3, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(3, 3, 4337);
 data.setCell(4, 0, 4)
-data.setCell(4, 1, 'preReg_BatchJob_bookAppointmentUsingUserBToken')
-data.setCell(4, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(4, 3, 10743);
+data.setCell(4, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters')
+data.setCell(4, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(4, 3, 4092);
 data.setCell(5, 0, 5)
-data.setCell(5, 1, 'preReg_BatchJob_rebookAppointmentUsingUserBToken')
-data.setCell(5, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(5, 3, 10664);
+data.setCell(5, 1, 'Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegId_smoke')
+data.setCell(5, 2, 'io.mosip.preregistration.tests.GetAllDocumentForPreRegId')
+data.setCell(5, 3, 3797);
 data.setCell(6, 0, 6)
-data.setCell(6, 1, 'preReg_BatchJob_getDocumentByDocIdUsingUserBToken')
-data.setCell(6, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(6, 3, 9280);
+data.setCell(6, 1, 'Pre Reg_DeleteDocumentByDocmentId_smoke')
+data.setCell(6, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(6, 3, 3767);
 data.setCell(7, 0, 7)
-data.setCell(7, 1, 'preReg_BatchJob_deleteDocumentUsingUserBToken')
-data.setCell(7, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(7, 3, 9013);
+data.setCell(7, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets')
+data.setCell(7, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(7, 3, 3764);
 data.setCell(8, 0, 8)
-data.setCell(8, 1, 'preReg_BatchJob_discardUserADataUsingUserBToken')
-data.setCell(8, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(8, 3, 8800);
+data.setCell(8, 1, 'Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength')
+data.setCell(8, 2, 'io.mosip.preregistration.tests.GetAllDocumentForPreRegId')
+data.setCell(8, 3, 3762);
 data.setCell(9, 0, 9)
-data.setCell(9, 1, 'preReg_BatchJob_getUserADocumentUsingUserBToken')
-data.setCell(9, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(9, 3, 8604);
+data.setCell(9, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue')
+data.setCell(9, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(9, 3, 3705);
 data.setCell(10, 0, 10)
-data.setCell(10, 1, 'preReg_BatchJob_getPreRegistrationStatusUsingUserBToken')
-data.setCell(10, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(10, 3, 8151);
+data.setCell(10, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric')
+data.setCell(10, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(10, 3, 3662);
 data.setCell(11, 0, 11)
-data.setCell(11, 1, 'preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken')
-data.setCell(11, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(11, 3, 7059);
+data.setCell(11, 1, 'Pre Reg_GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters')
+data.setCell(11, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(11, 3, 3657);
 data.setCell(12, 0, 12)
-data.setCell(12, 1, 'preReg_BatchJob_cancelAppointmentUsingUserBToken')
-data.setCell(12, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(12, 3, 6585);
+data.setCell(12, 1, 'Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric')
+data.setCell(12, 2, 'io.mosip.preregistration.tests.GetAllDocumentForPreRegId')
+data.setCell(12, 3, 3606);
 data.setCell(13, 0, 13)
-data.setCell(13, 1, 'preReg_BatchJob_uploadUserADocumentUsingUserBToken')
-data.setCell(13, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(13, 3, 6294);
+data.setCell(13, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength')
+data.setCell(13, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(13, 3, 3577);
 data.setCell(14, 0, 14)
-data.setCell(14, 1, 'preReg_BatchJob_getUserADemographicDataUsingUserBToken')
-data.setCell(14, 2, 'io.mosip.preregistration.tests.OperationWithDifferentToken')
-data.setCell(14, 3, 5933);
+data.setCell(14, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue')
+data.setCell(14, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(14, 3, 3575);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters')
+data.setCell(15, 2, 'io.mosip.preregistration.tests.GetAllDocumentForPreRegId')
+data.setCell(15, 3, 3574);
+data.setCell(16, 0, 16)
+data.setCell(16, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength')
+data.setCell(16, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(16, 3, 3555);
+data.setCell(17, 0, 17)
+data.setCell(17, 1, 'Pre Reg_DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters')
+data.setCell(17, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(17, 3, 3366);
+data.setCell(18, 0, 18)
+data.setCell(18, 1, 'Pre Reg_GetAllDocumentForDocId_smoke')
+data.setCell(18, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(18, 3, 2569);
+data.setCell(19, 0, 19)
+data.setCell(19, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegId_smoke')
+data.setCell(19, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(19, 3, 2137);
+data.setCell(20, 0, 20)
+data.setCell(20, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength')
+data.setCell(20, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(20, 3, 1619);
+data.setCell(21, 0, 21)
+data.setCell(21, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets')
+data.setCell(21, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(21, 3, 1442);
+data.setCell(22, 0, 22)
+data.setCell(22, 1, 'Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue')
+data.setCell(22, 2, 'io.mosip.preregistration.tests.GetAllDocumentForPreRegId')
+data.setCell(22, 3, 1437);
+data.setCell(23, 0, 23)
+data.setCell(23, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets')
+data.setCell(23, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(23, 3, 1380);
+data.setCell(24, 0, 24)
+data.setCell(24, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength')
+data.setCell(24, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(24, 3, 1358);
+data.setCell(25, 0, 25)
+data.setCell(25, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters')
+data.setCell(25, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(25, 3, 1345);
+data.setCell(26, 0, 26)
+data.setCell(26, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters')
+data.setCell(26, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(26, 3, 1344);
+data.setCell(27, 0, 27)
+data.setCell(27, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters')
+data.setCell(27, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(27, 3, 1339);
+data.setCell(28, 0, 28)
+data.setCell(28, 1, 'Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters')
+data.setCell(28, 2, 'io.mosip.preregistration.tests.GetAllDocumentForPreRegId')
+data.setCell(28, 3, 1265);
+data.setCell(29, 0, 29)
+data.setCell(29, 1, 'Pre Reg_DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters')
+data.setCell(29, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(29, 3, 1261);
+data.setCell(30, 0, 30)
+data.setCell(30, 1, 'Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets')
+data.setCell(30, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(30, 3, 1260);
+data.setCell(31, 0, 31)
+data.setCell(31, 1, 'Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric')
+data.setCell(31, 2, 'io.mosip.preregistration.tests.DeleteDocumentByDocId')
+data.setCell(31, 3, 1249);
+data.setCell(32, 0, 32)
+data.setCell(32, 1, 'Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets')
+data.setCell(32, 2, 'io.mosip.preregistration.tests.GetAllDocumentForPreRegId')
+data.setCell(32, 3, 1218);
+data.setCell(33, 0, 33)
+data.setCell(33, 1, 'Pre Reg_GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters')
+data.setCell(33, 2, 'io.mosip.preregistration.tests.GetAllDocumentForDocId')
+data.setCell(33, 3, 1075);
+data.setCell(34, 0, 34)
+data.setCell(34, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets')
+data.setCell(34, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(34, 3, 172);
+data.setCell(35, 0, 35)
+data.setCell(35, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength')
+data.setCell(35, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(35, 3, 156);
+data.setCell(36, 0, 36)
+data.setCell(36, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric')
+data.setCell(36, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(36, 3, 145);
+data.setCell(37, 0, 37)
+data.setCell(37, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters')
+data.setCell(37, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(37, 3, 143);
+data.setCell(38, 0, 38)
+data.setCell(38, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters')
+data.setCell(38, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(38, 3, 141);
+data.setCell(39, 0, 39)
+data.setCell(39, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces')
+data.setCell(39, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(39, 3, 141);
+data.setCell(40, 0, 40)
+data.setCell(40, 1, 'Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue')
+data.setCell(40, 2, 'io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID')
+data.setCell(40, 3, 140);
 window.suiteTableData['Mosip_API_Suite']= { tableData: data, tableDiv: 'times-div-Mosip_API_Suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 2 minutes</span>
+              <span class="suite-total-time">Total running time: 1 minutes</span>
               <div id="times-div-Mosip_API_Suite">
               </div> <!-- times-div-Mosip_API_Suite -->
             </div> <!-- times-div -->
@@ -437,9 +945,36 @@ return data;
         </div> <!-- panel -->
         <div panel-name="ignored-methods-Mosip_API_Suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">0 ignored methods</span>
+            <span class="header-content">6 ignored methods</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
+            <div class="ignored-class-div">
+              <span class="ignored-class-name">io.mosip.preregistration.tests.GetAllDocumentForDocId</span>
+              <div class="ignored-methods-div">
+                <span class="ignored-method-name">suiteSetup</span>
+                <br/>
+                <span class="ignored-method-name">testTearDown</span>
+                <br/>
+              </div> <!-- ignored-methods-div -->
+            </div> <!-- ignored-class-div -->
+            <div class="ignored-class-div">
+              <span class="ignored-class-name">io.mosip.preregistration.tests.DeleteDocumentByDocId</span>
+              <div class="ignored-methods-div">
+                <span class="ignored-method-name">suiteSetup</span>
+                <br/>
+                <span class="ignored-method-name">testTearDown</span>
+                <br/>
+              </div> <!-- ignored-methods-div -->
+            </div> <!-- ignored-class-div -->
+            <div class="ignored-class-div">
+              <span class="ignored-class-name">io.mosip.preregistration.tests.GetAllDocumentForPreRegId</span>
+              <div class="ignored-methods-div">
+                <span class="ignored-method-name">suiteSetup</span>
+                <br/>
+                <span class="ignored-method-name">testTearDown</span>
+                <br/>
+              </div> <!-- ignored-methods-div -->
+            </div> <!-- ignored-class-div -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
         <div panel-name="chronological-Mosip_API_Suite" class="panel">
@@ -448,198 +983,520 @@ return data;
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <div class="chronological-class">
-              <div class="chronological-class-name">io.mosip.preregistration.tests.OperationWithDifferentToken</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID</div> <!-- chronological-class-name -->
               <div class="configuration-suite before">
                 <span class="method-name">suiteSetup</span>
                 <span class="method-start">0 ms</span>
               </div> <!-- configuration-suite before -->
-              <div class="configuration-class before">
-                <span class="method-name">getToken</span>
-                <span class="method-start">4063 ms</span>
-              </div> <!-- configuration-class before -->
               <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.bookAppointmentUsingUserBToke...)</span>
-                <span class="method-start">15421 ms</span>
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">15272 ms</span>
               </div> <!-- configuration-method before -->
               <div class="test-method">
-                <span class="method-name">preReg_BatchJob_bookAppointmentUsingUserBToken</span>
-                <span class="method-start">15421 ms</span>
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegId_smoke(preReg/DeleteAllDocumentsByPreRegID, 0, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">20377 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.bookMultipleAppointmentUsingU...)</span>
-                <span class="method-start">26164 ms</span>
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">22514 ms</span>
               </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_bookMultipleAppointmentUsingUserBToken</span>
-                <span class="method-start">26164 ms</span>
-              </div> <!-- test-method -->
               <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_bookAppointmentUsingUserBToken status=SUCCESS method=OperationWithD...)</span>
-                <span class="method-start">26164 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegId_smoke status=SUCCESS method=DeleteAllDocumentsByPreReg...)</span>
+                <span class="method-start">22514 ms</span>
               </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.cancelAppointmentUsingUserBTo...)</span>
-                <span class="method-start">40501 ms</span>
-              </div> <!-- configuration-method before -->
               <div class="test-method">
-                <span class="method-name">preReg_BatchJob_cancelAppointmentUsingUserBToken</span>
-                <span class="method-start">40501 ms</span>
-              </div> <!-- test-method -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_bookMultipleAppointmentUsingUserBToken status=SUCCESS method=Operat...)</span>
-                <span class="method-start">40501 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_cancelAppointmentUsingUserBToken status=SUCCESS method=OperationWit...)</span>
-                <span class="method-start">47086 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.copyUserADocumentToUserB())</span>
-                <span class="method-start">47087 ms</span>
-              </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_copyUserADocumentToUserB</span>
-                <span class="method-start">47087 ms</span>
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces(preReg/DeleteAllDocumentsByPreRegID, 1, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">22857 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.deleteAllDocumentByDocIdUsing...)</span>
-                <span class="method-start">59544 ms</span>
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">22998 ms</span>
               </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken</span>
-                <span class="method-start">59544 ms</span>
-              </div> <!-- test-method -->
               <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_copyUserADocumentToUserB status=SUCCESS method=OperationWithDiffere...)</span>
-                <span class="method-start">59544 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces status=...)</span>
+                <span class="method-start">22998 ms</span>
               </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.deleteDocumentUsingUserBToken...)</span>
-                <span class="method-start">66603 ms</span>
-              </div> <!-- configuration-method before -->
               <div class="test-method">
-                <span class="method-name">preReg_BatchJob_deleteDocumentUsingUserBToken</span>
-                <span class="method-start">66603 ms</span>
-              </div> <!-- test-method -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken status=SUCCESS method=Opera...)</span>
-                <span class="method-start">66603 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.discardUserADataUsingUserBTok...)</span>
-                <span class="method-start">75616 ms</span>
-              </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_discardUserADataUsingUserBToken</span>
-                <span class="method-start">75616 ms</span>
-              </div> <!-- test-method -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_deleteDocumentUsingUserBToken status=SUCCESS method=OperationWithDi...)</span>
-                <span class="method-start">75616 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.fetchAppointmentDetailsOfUser...)</span>
-                <span class="method-start">84416 ms</span>
-              </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken</span>
-                <span class="method-start">84416 ms</span>
-              </div> <!-- test-method -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_discardUserADataUsingUserBToken status=SUCCESS method=OperationWith...)</span>
-                <span class="method-start">84416 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.getDocumentByDocIdUsingUserBT...)</span>
-                <span class="method-start">99922 ms</span>
-              </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_getDocumentByDocIdUsingUserBToken</span>
-                <span class="method-start">99922 ms</span>
-              </div> <!-- test-method -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken status=SUCCESS method...)</span>
-                <span class="method-start">99922 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.getPreRegistrationStatusUsing...)</span>
-                <span class="method-start">109202 ms</span>
-              </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_getPreRegistrationStatusUsingUserBToken</span>
-                <span class="method-start">109202 ms</span>
-              </div> <!-- test-method -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_getDocumentByDocIdUsingUserBToken status=SUCCESS method=OperationWi...)</span>
-                <span class="method-start">109202 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_getPreRegistrationStatusUsingUserBToken status=SUCCESS method=Opera...)</span>
-                <span class="method-start">117353 ms</span>
-              </div> <!-- configuration-method after -->
-              <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.getUserADemographicDataUsingU...)</span>
-                <span class="method-start">117354 ms</span>
-              </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_getUserADemographicDataUsingUserBToken</span>
-                <span class="method-start">117354 ms</span>
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets(preReg/DeleteAllDocumentsByPreRegID, 2, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">23170 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.getUserADocumentUsingUserBTok...)</span>
-                <span class="method-start">123287 ms</span>
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">23342 ms</span>
               </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_getUserADocumentUsingUserBToken</span>
-                <span class="method-start">123287 ms</span>
-              </div> <!-- test-method -->
               <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_getUserADemographicDataUsingUserBToken status=SUCCESS method=Operat...)</span>
-                <span class="method-start">123287 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets stat...)</span>
+                <span class="method-start">23342 ms</span>
               </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric(preReg/DeleteAllDocumentsByPreRegID, 3, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">23543 ms</span>
+              </div> <!-- test-method -->
               <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.rebookAppointmentUsingUserBTo...)</span>
-                <span class="method-start">131891 ms</span>
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">23688 ms</span>
               </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_rebookAppointmentUsingUserBToken</span>
-                <span class="method-start">131891 ms</span>
-              </div> <!-- test-method -->
               <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_getUserADocumentUsingUserBToken status=SUCCESS method=OperationWith...)</span>
-                <span class="method-start">131891 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric s...)</span>
+                <span class="method-start">23688 ms</span>
               </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength(preReg/DeleteAllDocumentsByPreRegID, 4, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">23845 ms</span>
+              </div> <!-- test-method -->
               <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.updateUserADataUsingUserBToke...)</span>
-                <span class="method-start">142555 ms</span>
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">24001 ms</span>
               </div> <!-- configuration-method before -->
-              <div class="test-method">
-                <span class="method-name">preReg_BatchJob_updateUserADataUsingUserBToken</span>
-                <span class="method-start">142555 ms</span>
-              </div> <!-- test-method -->
               <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_rebookAppointmentUsingUserBToken status=SUCCESS method=OperationWit...)</span>
-                <span class="method-start">142555 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMax...)</span>
+                <span class="method-start">24001 ms</span>
               </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 5, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">24188 ms</span>
+              </div> <!-- test-method -->
               <div class="configuration-method before">
-                <span class="method-name">login(public void io.mosip.preregistration.tests.OperationWithDifferentToken.uploadUserADocumentUsingUserB...)</span>
-                <span class="method-start">156072 ms</span>
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">24329 ms</span>
               </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAn...)</span>
+                <span class="method-start">24329 ms</span>
+              </div> <!-- configuration-method after -->
               <div class="test-method">
-                <span class="method-name">preReg_BatchJob_uploadUserADocumentUsingUserBToken</span>
-                <span class="method-start">156072 ms</span>
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters(preReg/DeleteAllDocumentsByPreRegID, 6, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">24501 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID.deleteAllDocumentsByPreRegID...)</span>
+                <span class="method-start">24645 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharact...)</span>
+                <span class="method-start">24645 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteAllDocumentsByPreRegID_DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue(preReg/DeleteAllDocumentsByPreRegID, 7, {"DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreReg...)</span>
+                <span class="method-start">24804 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_updateUserADataUsingUserBToken status=SUCCESS method=OperationWithD...)</span>
-                <span class="method-start">156072 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue sta...)</span>
+                <span class="method-start">24944 ms</span>
               </div> <!-- configuration-method after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">io.mosip.preregistration.tests.DeleteDocumentByDocId</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">24960 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocmentId_smoke(preReg/DeleteDocumentByDocId, 0, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">25132 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">28899 ms</span>
+              </div> <!-- configuration-method before -->
               <div class="configuration-method after">
-                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_uploadUserADocumentUsingUserBToken status=SUCCESS method=OperationW...)</span>
-                <span class="method-start">162366 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocmentId_smoke status=SUCCESS method=DeleteDocumentByDocId.deleteD...)</span>
+                <span class="method-start">28899 ms</span>
               </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/DeleteDocumentByDocId, 1, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"inval...)</span>
+                <span class="method-start">29052 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">30494 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets status=SUCCESS method=Del...)</span>
+                <span class="method-start">30494 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/DeleteDocumentByDocId, 2, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">30681 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">35018 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue status=FAILURE me...)</span>
+                <span class="method-start">35018 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 3, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">35175 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">36520 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters st...)</span>
+                <span class="method-start">36520 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/DeleteDocumentByDocId, 4, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">36660 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">40322 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric status=SUCCESS method=...)</span>
+                <span class="method-start">40322 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/DeleteDocumentByDocId, 5, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">40498 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">41837 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharac...)</span>
+                <span class="method-start">41837 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/DeleteDocumentByDocId, 6, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">41993 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">45698 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidDocumentId_EmptyValue status=SUCCESS method=De...)</span>
+                <span class="method-start">45698 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/DeleteDocumentByDocId, 7, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">45869 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">47118 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric status=SUCCESS ...)</span>
+                <span class="method-start">47118 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/DeleteDocumentByDocId, 8, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">47289 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">50655 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters status=SUCCESS meth...)</span>
+                <span class="method-start">50655 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 9, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"valid...)</span>
+                <span class="method-start">50811 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">52430 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength status=SUCCESS...)</span>
+                <span class="method-start">52430 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/DeleteDocumentByDocId, 10, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...)</span>
+                <span class="method-start">52587 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">56351 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets status=SUCCESS met...)</span>
+                <span class="method-start">56351 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/DeleteDocumentByDocId, 11, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...)</span>
+                <span class="method-start">56534 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.DeleteDocumentByDocId.deleteDocumentByDocId(java.lang.Str...)</span>
+                <span class="method-start">57795 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters status=SUCCE...)</span>
+                <span class="method-start">57795 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/DeleteDocumentByDocId, 12, {"DeleteDocumentByDocIdByPassingInvalidDocumentId_Alphabets":"vali...)</span>
+                <span class="method-start">57936 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=DeleteDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength status=...)</span>
+                <span class="method-start">61513 ms</span>
+              </div> <!-- configuration-method after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">io.mosip.preregistration.tests.GetAllDocumentForDocId</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">61528 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForDocId_smoke(preReg/GetAllDocumentForDocId, 0, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">61700 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">64269 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForDocId_smoke status=SUCCESS method=GetAllDocumentForDocId.getAllDoc...)</span>
+                <span class="method-start">64269 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForDocId, 1, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">64441 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">68807 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_EmptyValue status=SUCCESS me...)</span>
+                <span class="method-start">68807 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForDocId, 2, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">68948 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">70023 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdPassingInvalidPreRegistrationId_SpecialCharacters status=SUCCE...)</span>
+                <span class="method-start">70023 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForDocId, 3, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">70179 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">75883 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumeric status=SUCCESS ...)</span>
+                <span class="method-start">75883 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 4, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">76054 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">80146 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumericAndSpecialCharacters st...)</span>
+                <span class="method-start">80146 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets(preReg/GetAllDocumentForDocId, 5, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">80316 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">81696 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidDocumentId_Alphabets status=SUCCESS method=Get...)</span>
+                <span class="method-start">81696 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 6, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">81836 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">85391 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength status=...)</span>
+                <span class="method-start">85391 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength(preReg/GetAllDocumentForDocId, 7, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">85563 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">86921 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidDocumentId_GreaterThanMaxLength status=SUCCESS...)</span>
+                <span class="method-start">86921 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue(preReg/GetAllDocumentForDocId, 8, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">87337 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">90912 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidDocumentId_EmptyValue status=SUCCESS method=Ge...)</span>
+                <span class="method-start">90912 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForDocId, 9, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNume...)</span>
+                <span class="method-start">91053 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">92313 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_Alphabets status=SUCCESS met...)</span>
+                <span class="method-start">92313 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric(preReg/GetAllDocumentForDocId, 10, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)</span>
+                <span class="method-start">92469 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">98796 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidDocumentId_AlphaNumeric status=SUCCESS method=...)</span>
+                <span class="method-start">98796 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters(preReg/GetAllDocumentForDocId, 11, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)</span>
+                <span class="method-start">98952 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForDocId.getAllDocumentForDocId(java.lang.S...)</span>
+                <span class="method-start">102609 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdPassingInvalidDocumentId_SpecialCharacters status=SUCCESS meth...)</span>
+                <span class="method-start">102609 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForDocId, 12, {"GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNum...)</span>
+                <span class="method-start">102750 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentByDocIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharac...)</span>
+                <span class="method-start">104094 ms</span>
+              </div> <!-- configuration-method after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">io.mosip.preregistration.tests.GetAllDocumentForPreRegId</div> <!-- chronological-class-name -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForPreRegId.getAllDocumentForPreRegId(java....)</span>
+                <span class="method-start">104109 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegId_smoke(preReg/GetAllDocumentForPreRegId, 0, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</span>
+                <span class="method-start">104328 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForPreRegId.getAllDocumentForPreRegId(java....)</span>
+                <span class="method-start">108125 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForPreRegId_smoke status=SUCCESS method=GetAllDocumentForPreRegId.get...)</span>
+                <span class="method-start">108125 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue(preReg/GetAllDocumentForPreRegId, 1, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</span>
+                <span class="method-start">108266 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForPreRegId.getAllDocumentForPreRegId(java....)</span>
+                <span class="method-start">109703 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_EmptyValue status=SUCCES...)</span>
+                <span class="method-start">109703 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric(preReg/GetAllDocumentForPreRegId, 2, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</span>
+                <span class="method-start">109875 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForPreRegId.getAllDocumentForPreRegId(java....)</span>
+                <span class="method-start">113481 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumeric status=SUCC...)</span>
+                <span class="method-start">113481 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets(preReg/GetAllDocumentForPreRegId, 3, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</span>
+                <span class="method-start">113622 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForPreRegId.getAllDocumentForPreRegId(java....)</span>
+                <span class="method-start">114840 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Alphabets status=SUCCESS...)</span>
+                <span class="method-start">114840 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength(preReg/GetAllDocumentForPreRegId, 4, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</span>
+                <span class="method-start">114981 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForPreRegId.getAllDocumentForPreRegId(java....)</span>
+                <span class="method-start">118743 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_GreaterThanMaxLength sta...)</span>
+                <span class="method-start">118743 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCharacters(preReg/GetAllDocumentForPreRegId, 5, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</span>
+                <span class="method-start">118915 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method before">
+                <span class="method-name">getTestCaseName(public void io.mosip.preregistration.tests.GetAllDocumentForPreRegId.getAllDocumentForPreRegId(java....)</span>
+                <span class="method-start">120180 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_AlphaNumericAndSpecialCh...)</span>
+                <span class="method-start">120180 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="test-method">
+                <span class="method-name">Pre Reg_GetAllDocumentForPreRegId_GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters(preReg/GetAllDocumentForPreRegId, 6, {"GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_Em...)</span>
+                <span class="method-start">120337 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=GetAllDocumentForPreRegIdByPassingInvalidPreRegistrationId_SpecialCharacters status...)</span>
+                <span class="method-start">123911 ms</span>
+              </div> <!-- configuration-method after -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID</div> <!-- chronological-class-name -->
               <div class="configuration-suite after">
-                <span class="method-name">testTearDown(org.testng.TestRunner@2eb0932c)</span>
-                <span class="method-start">162382 ms</span>
+                <span class="method-name">testTearDown(org.testng.TestRunner@21a5b599)</span>
+                <span class="method-start">123926 ms</span>
               </div> <!-- configuration-suite after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
