@@ -58,6 +58,7 @@ import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -103,6 +104,9 @@ public class MachineServiceImpl implements MachineService {
 	
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
+	
+	@Autowired
+	private FilterColumnValidator  filterColumnValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -497,6 +501,7 @@ public class MachineServiceImpl implements MachineService {
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 		for (FilterDto filterDto : filterValueDto.getFilters()) {
 			masterDataFilterHelper.filterValues(Machine.class, filterDto.getColumnName(), filterDto.getType(),
 					filterValueDto.getLanguageCode()).forEach(filterValue -> {
@@ -507,6 +512,8 @@ public class MachineServiceImpl implements MachineService {
 					});
 		}
 		filterResponseDto.setFilters(columnValueList);
+		
+		}
 		return filterResponseDto;
 	}
 }

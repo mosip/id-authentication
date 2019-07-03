@@ -38,7 +38,7 @@ public class FilterColumnValidator {
 
 	private <T> void validateFilterColumn(Class<T> target, List<ServiceError> errors, FilterDto filter) {
 		try {
-			if (validateFilterColumnType(filter.getType(), filter.getType())) {
+			if (validateFilterColumnType(filter.getType())) {
 				Field field = target.getDeclaredField(TYPE_FIELD);
 				if (!containsFilterColumn(field, filter.getType())) {
 					errors.add(new ServiceError(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
@@ -65,7 +65,7 @@ public class FilterColumnValidator {
 		return false;
 	}
 
-	private boolean validateFilterColumnType(String column, String filterType) {
-		return column != null && !column.isEmpty() && filterType != null && !filterType.isEmpty();
+	private boolean validateFilterColumnType(String filterType) {
+		return  filterType != null && !filterType.isEmpty();
 	}
 }
