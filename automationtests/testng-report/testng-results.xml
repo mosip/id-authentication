@@ -1,132 +1,497 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="1" ignored="0" total="2" passed="1">
+<testng-results skipped="0" failed="0" ignored="0" total="15" passed="15">
   <reporter-output>
   </reporter-output>
-  <suite name="Mosip API Suite" duration-ms="89963" started-at="2019-07-03T06:54:37Z" finished-at="2019-07-03T06:56:07Z">
+  <suite name="Mosip API Suite" duration-ms="158303" started-at="2019-07-03T08:43:43Z" finished-at="2019-07-03T08:46:21Z">
     <groups>
     </groups>
-    <test name="PreReg Tests" duration-ms="89963" started-at="2019-07-03T06:54:37Z" finished-at="2019-07-03T06:56:07Z">
-      <class name="io.mosip.preregistration.tests.BatchJob">
-        <test-method status="PASS" signature="suiteSetup()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="suiteSetup" is-config="true" duration-ms="1375" started-at="2019-07-03T12:24:35Z" finished-at="2019-07-03T12:24:37Z">
+    <test name="PreReg Tests" duration-ms="158303" started-at="2019-07-03T08:43:43Z" finished-at="2019-07-03T08:46:21Z">
+      <class name="io.mosip.preregistration.tests.OperationWithDifferentToken">
+        <test-method status="PASS" signature="suiteSetup()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="suiteSetup" is-config="true" duration-ms="4063" started-at="2019-07-03T14:13:39Z" finished-at="2019-07-03T14:13:43Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- suiteSetup -->
-        <test-method status="PASS" signature="getToken()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="getToken" is-config="true" duration-ms="24359" started-at="2019-07-03T12:24:37Z" finished-at="2019-07-03T12:25:01Z">
+        <test-method status="PASS" signature="getToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="getToken" is-config="true" duration-ms="11356" started-at="2019-07-03T14:13:43Z" finished-at="2019-07-03T14:13:54Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- getToken -->
-        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="login" is-config="true" duration-ms="1" started-at="2019-07-03T12:25:01Z" finished-at="2019-07-03T12:25:01Z">
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:13:54Z" finished-at="2019-07-03T14:13:54Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForConsumedApplication()]]>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.bookAppointmentUsingUserBToken()]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- login -->
-        <test-method status="PASS" signature="batchJobForConsumedApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="preReg_BatchJob_batchJobForConsumedApplication" duration-ms="34245" started-at="2019-07-03T12:25:01Z" finished-at="2019-07-03T12:25:35Z">
+        <test-method status="PASS" signature="bookAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_bookAppointmentUsingUserBToken" duration-ms="10743" started-at="2019-07-03T14:13:54Z" finished-at="2019-07-03T14:14:05Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- preReg_BatchJob_batchJobForConsumedApplication -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T12:25:35Z" finished-at="2019-07-03T12:25:35Z">
+        </test-method> <!-- preReg_BatchJob_bookAppointmentUsingUserBToken -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:05Z" finished-at="2019-07-03T14:14:05Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=preReg_BatchJob_batchJobForConsumedApplication status=SUCCESS method=BatchJob.batchJobForConsumedApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40] output={null}]]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForConsumedApplication()]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- setResultTestName -->
-        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T12:25:35Z" finished-at="2019-07-03T12:25:35Z">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication()]]>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.bookMultipleAppointmentUsingUserBToken()]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- login -->
-        <test-method status="FAIL" signature="batchJobForExpiredApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="preReg_BatchJob_batchJobForExpiredApplication" duration-ms="31316" started-at="2019-07-03T12:25:35Z" finished-at="2019-07-03T12:26:07Z">
-          <exception class="java.lang.AssertionError">
-            <message>
-              <![CDATA[Response Data Mismatch Failure  : expected is : Expired found is : Booked expected [true] but found [false]]]>
-            </message>
-            <full-stacktrace>
-              <![CDATA[java.lang.AssertionError: Response Data Mismatch Failure  : expected is : Expired found is : Booked expected [true] but found [false]
-	at org.testng.Assert.fail(Assert.java:93)
-	at org.testng.Assert.failNotEquals(Assert.java:512)
-	at org.testng.Assert.assertTrue(Assert.java:41)
-	at io.mosip.util.PreRegistrationLibrary.compareValues(PreRegistrationLibrary.java:997)
-	at io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication(BatchJob.java:88)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
-	at java.lang.reflect.Method.invoke(Unknown Source)
-	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
-	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
-	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
-	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
-	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
-	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
-	at org.testng.TestRunner.privateRun(TestRunner.java:744)
-	at org.testng.TestRunner.run(TestRunner.java:602)
-	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
-	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
-	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
-	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
-	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
-	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
-	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
-	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
-	at org.testng.TestNG.runSuites(TestNG.java:1144)
-	at org.testng.TestNG.run(TestNG.java:1115)
-	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:42)
-	at io.mosip.testrunner.MosipTestRunner.main(MosipTestRunner.java:30)
-]]>
-            </full-stacktrace>
-          </exception> <!-- java.lang.AssertionError -->
+        <test-method status="PASS" signature="bookMultipleAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_bookMultipleAppointmentUsingUserBToken" duration-ms="14337" started-at="2019-07-03T14:14:05Z" finished-at="2019-07-03T14:14:19Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- preReg_BatchJob_batchJobForExpiredApplication -->
-        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T12:26:07Z" finished-at="2019-07-03T12:26:07Z">
+        </test-method> <!-- preReg_BatchJob_bookMultipleAppointmentUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:05Z" finished-at="2019-07-03T14:14:05Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name=preReg_BatchJob_batchJobForExpiredApplication status=FAILURE method=BatchJob.batchJobForExpiredApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40] output={null}]]]>
+                <![CDATA[[TestResult name=preReg_BatchJob_bookAppointmentUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.bookAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
               </value>
             </param>
             <param index="1">
               <value>
-                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication()]]>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.bookAppointmentUsingUserBToken()]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- setResultTestName -->
-        <test-method status="PASS" signature="testTearDown(org.testng.ITestContext)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="testTearDown" is-config="true" duration-ms="1" started-at="2019-07-03T12:26:07Z" finished-at="2019-07-03T12:26:07Z">
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:19Z" finished-at="2019-07-03T14:14:19Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[org.testng.TestRunner@6598caab]]>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.cancelAppointmentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="cancelAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_cancelAppointmentUsingUserBToken" duration-ms="6585" started-at="2019-07-03T14:14:19Z" finished-at="2019-07-03T14:14:26Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_cancelAppointmentUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:19Z" finished-at="2019-07-03T14:14:19Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_bookMultipleAppointmentUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.bookMultipleAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.bookMultipleAppointmentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="1" started-at="2019-07-03T14:14:26Z" finished-at="2019-07-03T14:14:26Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_cancelAppointmentUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.cancelAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.cancelAppointmentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="copyUserADocumentToUserB()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_copyUserADocumentToUserB" duration-ms="12457" started-at="2019-07-03T14:14:26Z" finished-at="2019-07-03T14:14:38Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_copyUserADocumentToUserB -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:26Z" finished-at="2019-07-03T14:14:26Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.copyUserADocumentToUserB()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="deleteAllDocumentByDocIdUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken" duration-ms="7059" started-at="2019-07-03T14:14:38Z" finished-at="2019-07-03T14:14:45Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:38Z" finished-at="2019-07-03T14:14:38Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_copyUserADocumentToUserB status=SUCCESS method=OperationWithDifferentToken.copyUserADocumentToUserB()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.copyUserADocumentToUserB()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:38Z" finished-at="2019-07-03T14:14:38Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.deleteAllDocumentByDocIdUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:45Z" finished-at="2019-07-03T14:14:45Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.deleteDocumentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:45Z" finished-at="2019-07-03T14:14:45Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_deleteAllDocumentByDocIdUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.deleteAllDocumentByDocIdUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.deleteAllDocumentByDocIdUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="deleteDocumentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_deleteDocumentUsingUserBToken" duration-ms="9013" started-at="2019-07-03T14:14:45Z" finished-at="2019-07-03T14:14:54Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_deleteDocumentUsingUserBToken -->
+        <test-method status="PASS" signature="discardUserADataUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_discardUserADataUsingUserBToken" duration-ms="8800" started-at="2019-07-03T14:14:54Z" finished-at="2019-07-03T14:15:03Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_discardUserADataUsingUserBToken -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:54Z" finished-at="2019-07-03T14:14:54Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.discardUserADataUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:14:54Z" finished-at="2019-07-03T14:14:54Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_deleteDocumentUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.deleteDocumentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.deleteDocumentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:03Z" finished-at="2019-07-03T14:15:03Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.fetchAppointmentDetailsOfUserAUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:03Z" finished-at="2019-07-03T14:15:03Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_discardUserADataUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.discardUserADataUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.discardUserADataUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="fetchAppointmentDetailsOfUserAUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken" duration-ms="15506" started-at="2019-07-03T14:15:03Z" finished-at="2019-07-03T14:15:18Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:18Z" finished-at="2019-07-03T14:15:18Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_fetchAppointmentDetailsOfUserAUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.fetchAppointmentDetailsOfUserAUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.fetchAppointmentDetailsOfUserAUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="getDocumentByDocIdUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_getDocumentByDocIdUsingUserBToken" duration-ms="9280" started-at="2019-07-03T14:15:18Z" finished-at="2019-07-03T14:15:28Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_getDocumentByDocIdUsingUserBToken -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:18Z" finished-at="2019-07-03T14:15:18Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getDocumentByDocIdUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:28Z" finished-at="2019-07-03T14:15:28Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getPreRegistrationStatusUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="getPreRegistrationStatusUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_getPreRegistrationStatusUsingUserBToken" duration-ms="8151" started-at="2019-07-03T14:15:28Z" finished-at="2019-07-03T14:15:36Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_getPreRegistrationStatusUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:28Z" finished-at="2019-07-03T14:15:28Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_getDocumentByDocIdUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.getDocumentByDocIdUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getDocumentByDocIdUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:36Z" finished-at="2019-07-03T14:15:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_getPreRegistrationStatusUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.getPreRegistrationStatusUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getPreRegistrationStatusUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="getUserADemographicDataUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_getUserADemographicDataUsingUserBToken" duration-ms="5933" started-at="2019-07-03T14:15:36Z" finished-at="2019-07-03T14:15:42Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_getUserADemographicDataUsingUserBToken -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:36Z" finished-at="2019-07-03T14:15:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getUserADemographicDataUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="getUserADocumentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_getUserADocumentUsingUserBToken" duration-ms="8604" started-at="2019-07-03T14:15:42Z" finished-at="2019-07-03T14:15:50Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_getUserADocumentUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:42Z" finished-at="2019-07-03T14:15:42Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_getUserADemographicDataUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.getUserADemographicDataUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getUserADemographicDataUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:42Z" finished-at="2019-07-03T14:15:42Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getUserADocumentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:50Z" finished-at="2019-07-03T14:15:50Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_getUserADocumentUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.getUserADocumentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.getUserADocumentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="rebookAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_rebookAppointmentUsingUserBToken" duration-ms="10664" started-at="2019-07-03T14:15:50Z" finished-at="2019-07-03T14:16:01Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_rebookAppointmentUsingUserBToken -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:15:50Z" finished-at="2019-07-03T14:15:50Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.rebookAppointmentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:16:01Z" finished-at="2019-07-03T14:16:01Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_rebookAppointmentUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.rebookAppointmentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.rebookAppointmentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:16:01Z" finished-at="2019-07-03T14:16:01Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.updateUserADataUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="updateUserADataUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_updateUserADataUsingUserBToken" duration-ms="13517" started-at="2019-07-03T14:16:01Z" finished-at="2019-07-03T14:16:15Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_updateUserADataUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:16:15Z" finished-at="2019-07-03T14:16:15Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_updateUserADataUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.updateUserADataUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.updateUserADataUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T14:16:15Z" finished-at="2019-07-03T14:16:15Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.uploadUserADocumentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="uploadUserADocumentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" duration-ms="6294" started-at="2019-07-03T14:16:15Z" finished-at="2019-07-03T14:16:21Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_uploadUserADocumentUsingUserBToken -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T14:16:21Z" finished-at="2019-07-03T14:16:21Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_uploadUserADocumentUsingUserBToken status=SUCCESS method=OperationWithDifferentToken.uploadUserADocumentUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.OperationWithDifferentToken.uploadUserADocumentUsingUserBToken()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="testTearDown(org.testng.ITestContext)[pri:0, instance:io.mosip.preregistration.tests.OperationWithDifferentToken@5e0826e7]" test-instance-name="preReg_BatchJob_uploadUserADocumentUsingUserBToken" name="testTearDown" is-config="true" duration-ms="0" started-at="2019-07-03T14:16:21Z" finished-at="2019-07-03T14:16:21Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[org.testng.TestRunner@2eb0932c]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testTearDown -->
-      </class> <!-- io.mosip.preregistration.tests.BatchJob -->
+      </class> <!-- io.mosip.preregistration.tests.OperationWithDifferentToken -->
     </test> <!-- PreReg Tests -->
   </suite> <!-- Mosip API Suite -->
 </testng-results>
