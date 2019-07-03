@@ -274,7 +274,6 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			return jsonString.getBytes();
 		} catch (JsonProcessingException e) {
 			description.setMessage(AbisHandlerStageConstant.ERROR_IN_ABIS_HANDLER_IDENTIFY_REQUEST);
-			;
 			regProcLogger.error(AbisHandlerStageConstant.ERROR_IN_ABIS_HANDLER_IDENTIFY_REQUEST, "", "", "");
 			throw new AbisHandlerException(PlatformErrorMessages.RPR_ABIS_INTERNAL_ERROR.getCode(), e);
 		}
