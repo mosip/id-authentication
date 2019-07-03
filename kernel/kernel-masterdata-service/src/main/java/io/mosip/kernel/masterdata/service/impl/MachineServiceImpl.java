@@ -20,6 +20,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
@@ -357,6 +358,7 @@ public class MachineServiceImpl implements MachineService {
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<String> mappedMachineIdList = null;
+
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 
@@ -392,28 +394,33 @@ public class MachineServiceImpl implements MachineService {
 
 			if (column.equalsIgnoreCase("machineTypeName")) {
 				filter.setColumnName("name");
-				Page<MachineType> machineTypes = masterdataSearchHelper.searchMasterdata(MachineType.class,
-						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
-						Collections.emptyList());
-				List<SearchFilter> machineCodeFilter = buildMachineTypeSearchFilter(machineTypes.getContent());
-				if (machineCodeFilter.isEmpty()) {
-					throw new DataNotFoundException(
-							MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-							String.format(MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
-									filter.getValue()));
-				}
-				Page<MachineSpecification> machineSpecification = masterdataSearchHelper.searchMasterdata(
-						MachineSpecification.class,
-						new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null),
-						Collections.emptyList());
+				if (filterValidator.validate(MachineTypeDto.class, Arrays.asList(filter))) {
 
-				removeList.add(filter);
-				addList.addAll(buildMachineSpecificationSearchFilter(machineSpecification.getContent()));
-				if (addList.isEmpty()) {
-					throw new DataNotFoundException(
-							MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
-							String.format(MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION
-									.getErrorMessage(), filter.getValue()));
+					Page<MachineType> machineTypes = masterdataSearchHelper.searchMasterdata(MachineType.class,
+							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+							Collections.emptyList());
+					List<SearchFilter> machineCodeFilter = buildMachineTypeSearchFilter(machineTypes.getContent());
+					if (machineCodeFilter.isEmpty()) {
+						throw new DataNotFoundException(
+								MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
+								String.format(
+										MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
+										filter.getValue()));
+					}
+					Page<MachineSpecification> machineSpecification = masterdataSearchHelper.searchMasterdata(
+							MachineSpecification.class,
+							new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null),
+							Collections.emptyList());
+
+					removeList.add(filter);
+					addList.addAll(buildMachineSpecificationSearchFilter(machineSpecification.getContent()));
+					if (addList.isEmpty()) {
+						throw new DataNotFoundException(
+								MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
+								String.format(MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION
+										.getErrorMessage(), filter.getValue()));
+					}
+
 				}
 			}
 
