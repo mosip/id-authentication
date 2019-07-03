@@ -29,6 +29,8 @@ Key considerations :
 	- The following URL is used to populate the filter dropdowns, 
 	"https://github.com/mosip/mosip/wiki/Machine-APIs#post-machinesfiltervalues"
 	- In the above URL, the filters have to be passed as parameters for which you will get the values for the filter dropdown.
+	- Filter values are injected dynamically into the queries based on entity in runtime.
+	- Filter values are validated based on each entity which are to mapped to particular entity.
 	
 4. View:
 	- The following API is used with the id as filter,
