@@ -25,9 +25,13 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
@@ -50,6 +54,7 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
@@ -95,6 +100,9 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private FilterTypeValidator filterValidator;
+	
+	@Autowired
+	private MasterDataFilterHelper masterDataFilterHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -483,5 +491,22 @@ public class MachineServiceImpl implements MachineService {
 		filter.setType(FilterTypeEnum.EQUALS.name());
 		filter.setValue(centerType.getCode());
 		return filter;
+	}
+
+	@Override
+	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		for (FilterDto filterDto : filterValueDto.getFilters()) {
+			masterDataFilterHelper.filterValues(Machine.class, filterDto.getColumnName(), filterDto.getType(),
+					filterValueDto.getLanguageCode()).forEach(filterValue -> {
+						ColumnValue columnValue = new ColumnValue();
+						columnValue.setFieldID(filterDto.getColumnName());
+						columnValue.setFieldValue(filterValue);
+						columnValueList.add(columnValue);
+					});
+		}
+		filterResponseDto.setFilters(columnValueList);
+		return filterResponseDto;
 	}
 }
