@@ -110,4 +110,9 @@ public interface MachineRepository extends BaseRepository<Machine, String> {
 	@Query("FROM Machine m where m.id = ?1 and m.langCode = ?2 and (m.isDeleted is null or m.isDeleted = false)")
 	Machine findMachineByIdAndLangCodeAndIsDeletedFalseorIsDeletedIsNullWithoutActiveStatusCheck(String id, String langCode);
 
+	@Query(value="select m.id from master.machine_master m where m.id in(select  distinct rcm.machine_id from master.reg_center_machine rcm )",nativeQuery=true)
+	List<String> findMappedMachineId();
+	
+	@Query(value="select m.id from master.machine_master m where m.id not in(select  distinct rcm.machine_id from master.reg_center_machine rcm )",nativeQuery=true)
+	List<String>findNotMappedMachineId();
 }
