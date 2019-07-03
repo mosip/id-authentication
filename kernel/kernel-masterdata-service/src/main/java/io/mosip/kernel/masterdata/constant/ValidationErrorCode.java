@@ -7,10 +7,10 @@ package io.mosip.kernel.masterdata.constant;
  * @since 1.0.0
  */
 public enum ValidationErrorCode {
-	NO_FILTER_FOUND("KER-MSD-00X", "Column %s doesn't support filter"), COLUMN_DOESNT_EXIST("KER-MSD-0XX",
-			"Column %s doesn't exist for the searched entity %s"), FILTER_NOT_SUPPORTED("KER-MSD-XXX",
-					"Column %s doesn't support filter type %s"), INVALID_COLUMN_VALUE("KER-MSD-XXX",
-							"Column value is null or empty");
+	NO_FILTER_FOUND("KER-MSD-316", "Column %s doesn't support filter"), 
+	COLUMN_DOESNT_EXIST("KER-MSD-317","Column %s doesn't exist for the searched entity"), 
+	FILTER_NOT_SUPPORTED("KER-MSD-318","Column %s doesn't support filter type %s"), 
+	INVALID_COLUMN_VALUE("KER-MSD-319","Column value is null or empty");
 
 	/**
 	 * Error Code

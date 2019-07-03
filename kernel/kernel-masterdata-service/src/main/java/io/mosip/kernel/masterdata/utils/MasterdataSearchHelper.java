@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.HibernateException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -96,8 +97,6 @@ public class MasterdataSearchHelper {
 		// applying sorting
 		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
 
-		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
-
 		try {
 			// creating executable query from select criteria query
 			TypedQuery<E> executableQuery = entityManager.createQuery(selectQuery);
@@ -112,6 +111,8 @@ public class MasterdataSearchHelper {
 		} catch (HibernateException hibernateException) {
 			throw new DataAccessLayerException(HibernateErrorCode.HIBERNATE_EXCEPTION.getErrorCode(),
 					hibernateException.getMessage(), hibernateException);
+		} catch (RequestException e) {
+			throw e;
 		} catch (RuntimeException runtimeException) {
 			throw new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
 					runtimeException.getMessage(), runtimeException);
@@ -119,6 +120,7 @@ public class MasterdataSearchHelper {
 		return new PageImpl<>(result,
 				PageRequest.of(searchDto.getPagination().getPageStart(), searchDto.getPagination().getPageFetch()),
 				rows);
+
 	}
 
 	/**
@@ -155,12 +157,11 @@ public class MasterdataSearchHelper {
 		if (langCodePredicate != null) {
 			predicates.add(langCodePredicate);
 		}
+		if (!optionalPredicates.isEmpty()) {
+			Predicate orPredicate = builder.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
+			predicates.add(orPredicate);
+		}
 		if (!predicates.isEmpty()) {
-			if (!optionalPredicates.isEmpty()) {
-				Predicate orPredicate = builder
-						.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
-				predicates.add(orPredicate);
-			}
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
 			selectQuery.where(whereClause);
 			countQuery.where(whereClause);
@@ -241,16 +242,17 @@ public class MasterdataSearchHelper {
 	 * @param page
 	 *            contains the pagination details
 	 */
-	public void paginationQuery(Query query, Pagination page) {
+	private void paginationQuery(Query query, Pagination page) {
 		if (page != null) {
 			if (page.getPageStart() < 0 && page.getPageFetch() < 1) {
 				throw new RequestException(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorCode(),
 						String.format(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorMessage(),
 								page.getPageStart(), page.getPageFetch()),
 						null);
+			} else {
+				query.setFirstResult(page.getPageStart() * page.getPageFetch());
+				query.setMaxResults(page.getPageFetch());
 			}
-			query.setFirstResult(page.getPageStart());
-			query.setMaxResults(page.getPageFetch());
 		}
 	}
 
@@ -287,9 +289,9 @@ public class MasterdataSearchHelper {
 	 * @return {@link Predicate}
 	 */
 	private <E> Predicate setBetweenValue(CriteriaBuilder builder, Root<E> root, SearchFilter filter) {
-		String columnName = filter.getColumnName();
-		Path<Object> path = root.get(columnName);
-		if (path != null) {
+		try {
+			String columnName = filter.getColumnName();
+			Path<Object> path = root.get(columnName);
 			Class<? extends Object> type = path.getJavaType();
 			String fieldType = type.getTypeName();
 			String toValue = filter.getToValue();
@@ -314,7 +316,7 @@ public class MasterdataSearchHelper {
 			if (String.class.getName().equals(fieldType)) {
 				return builder.between(root.get(columnName), fromValue, toValue);
 			}
-		} else {
+		} catch (IllegalArgumentException | IllegalStateException | InvalidDataAccessApiUsageException e) {
 			throw new RequestException(MasterdataSearchErrorCode.INVALID_COLUMN.getErrorCode(),
 					String.format(MasterdataSearchErrorCode.INVALID_COLUMN.getErrorMessage(), filter.getColumnName()),
 					null);
@@ -400,21 +402,8 @@ public class MasterdataSearchHelper {
 		if (filter != null) {
 			if (filter.getColumnName() != null && !filter.getColumnName().isEmpty()) {
 				if (filter.getType() != null && !filter.getType().isEmpty()) {
-					if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
-						String value = filter.getValue();
-						if (value != null && !value.isEmpty()) {
-							return true;
-						}
-					} else {
-						String fromValue = filter.getFromValue();
-						String toValue = filter.getToValue();
-						if (fromValue != null && !fromValue.isEmpty() && toValue != null && !toValue.isEmpty()) {
-							return true;
-						} else {
-							throw new RequestException(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorCode(),
-									String.format(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorMessage(),
-											filter.getColumnName()));
-						}
+					if (validateFilter(filter)) {
+						return true;
 					}
 				} else {
 					throw new RequestException(MasterdataSearchErrorCode.FILTER_TYPE_NOT_AVAILABLE.getErrorCode(),
@@ -427,6 +416,34 @@ public class MasterdataSearchHelper {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Method to validate the individual filter
+	 * 
+	 * @param filter
+	 *            input filter to be validated
+	 * @return true if valid false otherwise
+	 */
+	private boolean validateFilter(SearchFilter filter) {
+		boolean flag = false;
+		if (!FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filter.getType())) {
+			String value = filter.getValue();
+			if (value != null && !value.isEmpty()) {
+				flag = true;
+			}
+		} else {
+			String fromValue = filter.getFromValue();
+			String toValue = filter.getToValue();
+			if (fromValue != null && !fromValue.isEmpty() && toValue != null && !toValue.isEmpty()) {
+				flag = true;
+			} else {
+				throw new RequestException(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorCode(),
+						String.format(MasterdataSearchErrorCode.INVALID_BETWEEN_VALUES.getErrorMessage(),
+								filter.getColumnName()));
+			}
+		}
+		return flag;
 	}
 
 	/**

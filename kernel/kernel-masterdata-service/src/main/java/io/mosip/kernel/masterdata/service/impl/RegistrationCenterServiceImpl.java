@@ -40,10 +40,16 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -68,6 +74,9 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * This service class contains methods that provides registration centers
@@ -878,6 +887,201 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			idLangList.add(registrationCenterDto.getLangCode() + registrationCenterDto.getId());
 
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * createRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
+	 * RegistrationCenterDto)
+	 */
+	@Override
+	public PageResponseDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto) {
+		PageResponseDto<RegistrationCenterExtnDto> pageDto = new PageResponseDto<>();
+		List<RegistrationCenterExtnDto> registrationCenters = null;
+		List<SearchFilter> addList = new ArrayList<>();
+		List<SearchFilter> removeList = new ArrayList<>();
+		List<SearchFilter> optionalFilters = new ArrayList<>();
+		for (SearchFilter filter : dto.getFilters()) {
+			String column = filter.getColumnName();
+			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
+				centerTypeSearch(addList, removeList, filter);
+			}
+			if (isLocationSearch(filter.getColumnName())) {
+				Location location = locationSearch(filter);
+				if (location != null) {
+					List<String> locationCodes = locationService.getChildList(location.getCode());
+					optionalFilters.addAll(buildLocationSearchFilter(locationCodes));
+				}
+				removeList.add(filter);
+			}
+			if (MasterDataConstant.POSTAL_CODE.equalsIgnoreCase(column)) {
+				Location location = locationSearch(filter);
+				if (location != null) {
+					addList.addAll(buildLocationSearchFilter(Arrays.asList(location.getCode())));
+				}
+				removeList.add(filter);
+			}
+			inputLangCodeList.add(registrationCenterDto.getLangCode());
+
+		}
+		dto.getFilters().removeAll(removeList);
+		dto.getFilters().addAll(addList);
+		if (filterTypeValidator.validate(RegistrationCenterExtnDto.class, dto.getFilters())) {
+			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
+					optionalFilters);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterExtnDto.class);
+				pageDto.setData(registrationCenters);
+			}
+		}
+		return pageDto;
+	}
+
+	/**
+	 * Method to fetch registration center type
+	 * 
+	 * @param addList
+	 *            filter to be added for further operation
+	 * @param removeList
+	 *            filter to be removed from further operrations
+	 * @param filter
+	 *            list of request search filters
+	 */
+	private void centerTypeSearch(List<SearchFilter> addList, List<SearchFilter> removeList, SearchFilter filter) {
+		filter.setColumnName(MasterDataConstant.NAME);
+		if (filterTypeValidator.validate(RegistrationCenterTypeExtnDto.class, Arrays.asList(filter))) {
+			Page<RegistrationCenterType> regtypes = masterdataSearchHelper.searchMasterdata(
+					RegistrationCenterType.class,
+					new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+					Collections.emptyList());
+			if (regtypes.hasContent()) {
+				removeList.add(filter);
+				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
+			} else {
+				throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorMessage(),
+								filter.getValue()));
+			}
+		}
+	}
+
+	/**
+	 * Method to search the location based the filter.
+	 * 
+	 * @param filter
+	 *            input for search
+	 * @return {@link Location}
+	 */
+	private Location locationSearch(SearchFilter filter) {
+		SearchFilter filter2 = new SearchFilter();
+		filter2.setColumnName(MasterDataConstant.HIERARCHY_NAME);
+		filter2.setType(FilterTypeEnum.CONTAINS.name());
+		if (MasterDataConstant.LAA.equalsIgnoreCase(filter.getColumnName()))
+			filter2.setValue(MasterDataConstant.LAA_FULL_NAME);
+		else
+			filter2.setValue(filter.getColumnName().toLowerCase());
+		filter.setColumnName(MasterDataConstant.NAME);
+
+		if (filterTypeValidator.validate(LocationExtnDto.class, Arrays.asList(filter, filter2))) {
+			Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
+					new SearchDto(Arrays.asList(filter, filter2), Collections.emptyList(), new Pagination(), null),
+					Collections.emptyList());
+			if (locations.hasContent()) {
+				return locations.getContent().get(0);
+			} else {
+				throw new MasterDataServiceException(
+						RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorMessage(),
+								filter.getValue()));
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Method to prepare search filters based on the registration center type code
+	 * list passed
+	 * 
+	 * @param regCenterTypes
+	 *            list of registration center types
+	 * @return list of search filters
+	 */
+	private List<SearchFilter> buildRegistrationCenterTypeSearchFilter(List<RegistrationCenterType> regCenterTypes) {
+		if (regCenterTypes != null && !regCenterTypes.isEmpty())
+			return regCenterTypes.stream().filter(Objects::nonNull).map(this::buildRegCenterType)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Method to prepare search filters based on the location code list passed.
+	 * 
+	 * @param location
+	 *            list of location codes
+	 * @return list of search filter
+	 */
+	private List<SearchFilter> buildLocationSearchFilter(List<String> location) {
+		if (location != null && !location.isEmpty())
+			return location.stream().filter(Objects::nonNull).map(this::buildLocationFilter)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Method to build search filter by the registration center type id to fetch the
+	 * exact registration center
+	 * 
+	 * @param centerType
+	 *            request registration center
+	 * @return search filter
+	 */
+	private SearchFilter buildRegCenterType(RegistrationCenterType centerType) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.CENTERTYPECODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(centerType.getCode());
+		return filter;
+	}
+
+	/**
+	 * Method to build location search filter
+	 * 
+	 * @param location
+	 *            search filter
+	 * @return search filter
+	 */
+	private SearchFilter buildLocationFilter(String location) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.CENTERLOCCODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(location);
+		return filter;
+	}
+
+	/**
+	 * Method to check whether columnName is belong to location
+	 * 
+	 * @param filter
+	 *            to search the column name
+	 * @return true if column is location type false otherwise
+	 */
+	private boolean isLocationSearch(String filter) {
+		switch (filter.toLowerCase()) {
+		case MasterDataConstant.CITY:
+			return true;
+		case MasterDataConstant.PROVINCE:
+			return true;
+		case MasterDataConstant.REGION:
+			return true;
+		case MasterDataConstant.LAA:
+			return true;
+		default:
+			return false;
+		}
+
 	}
 
 }

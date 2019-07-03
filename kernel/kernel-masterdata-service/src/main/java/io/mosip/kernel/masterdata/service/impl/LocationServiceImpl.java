@@ -1,8 +1,10 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -60,6 +62,7 @@ public class LocationServiceImpl implements LocationService {
 	private List<Location> childHierarchyList = null;
 	private List<Location> hierarchyChildList = null;
 	private List<Location> parentHierarchyList = null;
+	private List<String> childList = null;
 
 	/**
 	 * This method will all location details from the Database. Refers to
@@ -208,8 +211,8 @@ public class LocationServiceImpl implements LocationService {
 			}
 			if (!locationDto.getIsActive() && findIsActiveInHierarchy(location)) {
 				throw new RequestException(LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorCode(),
-					   LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorMessage());
-		   }
+						LocationErrorCode.LOCATION_CHILD_STATUS_EXCEPTION.getErrorMessage());
+			}
 			location = MetaDataUtils.setUpdateMetaData(locationDto, location, true);
 			locationRepository.update(location);
 			MapperUtils.map(location, postLocationCodeResponseDto);
@@ -526,6 +529,48 @@ public class LocationServiceImpl implements LocationService {
 	private List<Location> getIsActiveLocationChildHierarchyList(String locCode, String langCode) {
 
 		return locationRepository.findDistinctByparentLocCode(locCode, langCode);
+
+	}
+
+	/**
+	 * This method fetches child hierarchy details of the location based on location
+	 * code, here child isActive can true or false
+	 * 
+	 * @param locCode
+	 *            - location code
+	 * @return List<Location>
+	 */
+	@Override
+	public List<String> getChildList(String locCode) {
+		childList = new ArrayList<>();
+		List<String> resultList = new ArrayList<>();
+		resultList = getChildByLocCode(locCode);
+		if (!resultList.isEmpty())
+			return resultList;
+		return Arrays.asList(locCode);
+	}
+
+	private List<String> getChildByLocCode(String locCode) {
+		if (locCode != null && !locCode.isEmpty()) {
+			List<String> childLocHierList = getLocationChildHierarchyList(locCode);
+			childList.addAll(childLocHierList);
+			childLocHierList.parallelStream().filter(Objects::nonNull).map(this::getChildByLocCode)
+					.collect(Collectors.toList());
+		}
+		return childList;
+	}
+
+	/**
+	 * fetches location hierarchy details from database based on parent location
+	 * code and language code, children's isActive is either true or false
+	 * 
+	 * @param locCode
+	 *            - location code
+	 * @return List<LocationHierarchy>
+	 */
+	private List<String> getLocationChildHierarchyList(String locCode) {
+
+		return locationRepository.findDistinctByparentLocCode(locCode);
 
 	}
 

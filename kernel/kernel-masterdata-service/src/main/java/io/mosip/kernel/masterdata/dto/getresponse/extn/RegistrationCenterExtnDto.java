@@ -7,6 +7,8 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.mosip.kernel.masterdata.validator.FilterType;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
@@ -20,15 +22,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(value = "Registration Centers", description = "Registration centers")
 public class RegistrationCenterExtnDto extends BaseDto {
+	
 	@NotBlank
 	@Size(min = 1, max = 10)
 	private String id;
 
+	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.STARTSWITH,FilterTypeEnum.CONTAINS})
 	@NotBlank
 	@Size(min = 1, max = 128)
 	private String name;
 
 	@Size(min = 1, max = 36)
+	@FilterType(types= {FilterTypeEnum.EQUALS})
 	private String centerTypeCode;
 
 	@Size(min = 1, max = 256)
@@ -46,6 +51,7 @@ public class RegistrationCenterExtnDto extends BaseDto {
 	@Size(min = 1, max = 32)
 	private String longitude;
 
+	@FilterType(types= {FilterTypeEnum.EQUALS})
 	@NotBlank
 	@Size(min = 1, max = 36)
 	private String locationCode;

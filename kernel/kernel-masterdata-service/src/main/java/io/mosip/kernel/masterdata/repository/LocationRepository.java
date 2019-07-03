@@ -75,4 +75,14 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 */
 	@Query("FROM Location l where l.parentLocCode=?1 and l.langCode=?2 and l.isActive=true and (l.isDeleted is null or l.isDeleted=false)")
 	List<Location> findDistinctByparentLocCode(String parentLocCode, String langCode);
+
+	/**
+	 * give list of the immediate Locations for the given parent location code
+	 * 
+	 * @param locationName
+	 *            location name
+	 * @return {@link Boolean} true or false
+	 */
+	@Query("SELECT distinct l.code FROM Location l where l.parentLocCode=?1 GROUP BY l.code")
+	List<String> findDistinctByparentLocCode(String parentLocCode);
 }

@@ -29,6 +29,9 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -306,6 +309,16 @@ public class RegistrationCenterController {
 		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				registrationCenterService.updateRegistrationCenterAdmin(reqRegistrationCenterDto.getRequest()));
+			return responseWrapper;
+		}
+			
+
+	@PostMapping("/registrationcenters/search")
+	//@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> searchRegistrationCenter(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest()));
 		return responseWrapper;
 	}
 }

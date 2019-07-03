@@ -5,6 +5,8 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.mosip.kernel.masterdata.validator.CustomIntegerDeserializer;
+import io.mosip.kernel.masterdata.validator.FilterType;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +24,8 @@ import lombok.EqualsAndHashCode;
 public class LocationExtnDto extends BaseDto {
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
-
+	
+	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.CONTAINS,FilterTypeEnum.STARTSWITH})
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
 
@@ -31,6 +34,7 @@ public class LocationExtnDto extends BaseDto {
 	@ApiModelProperty(value = "hierarchyLevel", required = true, dataType = "java.lang.Integer")
 	private int hierarchyLevel;
 
+	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.CONTAINS,FilterTypeEnum.STARTSWITH})
 	@ApiModelProperty(value = "hierarchyName", required = true, dataType = "java.lang.String")
 	private String hierarchyName;
 
