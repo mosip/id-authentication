@@ -289,7 +289,7 @@ public class Validations extends BaseController {
 			} else {
 				
 				List<String> invalidWorlds = blackListedWords.stream().flatMap(l1->Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream().filter(l2->{
-					return l1.equalsIgnoreCase(l2) || Pattern.compile(Pattern.quote(l2), Pattern.CASE_INSENSITIVE).matcher(l1).find();
+					return l1.equalsIgnoreCase(l2) || Pattern.compile(Pattern.quote(l1), Pattern.CASE_INSENSITIVE).matcher(l2).find();
 				})).collect(Collectors.toList());
 				
 				String bWords = String.join(", ", invalidWorlds);

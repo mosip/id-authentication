@@ -134,4 +134,6 @@ public class KeymanagerConstant {
 	 * The constant INVALID_REQUEST
 	 */
 	public static final String INVALID_REQUEST = "should not be null or empty";
+
+	public static final String STORECERTIFICATE = "Storing certificate";
 }
