@@ -307,13 +307,13 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Function to fetch all registration centers.
+	 * Api to search the registration center based on the search input
 	 * 
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return list of registration center
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcenters/search")
-	//@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> searchRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> responseWrapper = new ResponseWrapper<>();
