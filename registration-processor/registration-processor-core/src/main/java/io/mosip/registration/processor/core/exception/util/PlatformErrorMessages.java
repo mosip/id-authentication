@@ -586,6 +586,9 @@ public enum PlatformErrorMessages {
 	/** The rpr bdd unable to serve request. */
 	RPR_BDD_UNABLE_TO_SERVE_REQUEST(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "004",
 			"ABIS for the Reference ID and Request ID was Unable to Execute the Request"),
+	
+	UNKNOWN_EXCEPTION(PlatformConstants.RPR_BIO_DEDUPE_SERVICE_MODULE + "005","un expected exception occured in biodedupe service"),
+
 
 	/** The connection to MOSIP underlying queue not available. */
 	RPR_MQI_CONNECTION_UNAVAILABLE(PlatformConstants.RPR_MOSIP_QUEUE_MODULE + "001",

@@ -170,7 +170,7 @@ public class AbisServiceImpl implements AbisService {
 			List<String> pathSegments = new ArrayList<>();
 				pathSegments.add(referenceId);
 
-				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.ABISBIODEDUPE, pathSegments, "", "",
+				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
 						byte[].class);
 				if (bytefile == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

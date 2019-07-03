@@ -70,7 +70,7 @@ public class BioDedupeControllerTest {
 		ReflectionTestUtils.setField(bioDedupeController, "isEnabled", true);
 		regId = "1234";
 		file = regId.getBytes();
-		Mockito.when(bioDedupeService.getFile(anyString(),Mockito.anyBoolean())).thenReturn(file);
+		Mockito.when(bioDedupeService.getFileByRegId(anyString())).thenReturn(file);
 		Mockito.doNothing().when(tokenValidator).validate(any(), any());
 	}
 

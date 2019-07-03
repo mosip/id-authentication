@@ -370,7 +370,7 @@ public class BioDedupeServiceImplTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
-		byte[] fileData = bioDedupeService.getFile(registrationId,false);
+		byte[] fileData = bioDedupeService.getFileByRegId(registrationId);
 		assertArrayEquals(fileData, data);
 	}
 
@@ -384,7 +384,7 @@ public class BioDedupeServiceImplTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenThrow(new IOException());
 
-		byte[] fileData = bioDedupeService.getFile(registrationId,false);
+		byte[] fileData = bioDedupeService.getFileByRegId(registrationId);
 		Assertions.assertThatExceptionOfType(IOException.class);
 	}
 }
