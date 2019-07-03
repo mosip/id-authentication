@@ -123,10 +123,12 @@ public class AuthUtil {
 				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes());
 		authRequestDTO.setRequestHMAC(Base64.encodeBase64String(byteArr));
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				individualId, "AuthUtil::authByIdAuthentication()::INTERNALAUTH POST service call started");
+				individualId, "AuthUtil::authByIdAuthentication()::INTERNALAUTH POST service call started with request data " +JsonUtil.objectMapperObjectToJson(authRequestDTO));
 		AuthResponseDTO response=new AuthResponseDTO();
 		response = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.INTERNALAUTH,
 				null, null, authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				individualId, "AuthUtil::authByIdAuthentication()::INTERNALAUTH POST service call ended with response data " +JsonUtil.objectMapperObjectToJson(response));
 		
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				individualId, "AuthUtil::authByIdAuthentication()::exit");

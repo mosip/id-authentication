@@ -11,6 +11,7 @@ import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.queue.factory.MosipActiveMq;
@@ -65,10 +66,16 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	 */
 	@Override
 	public Boolean send(MosipQueue mosipQueue, byte[] message, String address) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "MosipActiveMqImpl::send()::entry");
+
 		boolean flag = false;
 		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
 		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
 		if (activeMQConnectionFactory == null) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "MosipActiveMqImpl::send():: error with error message "
+							+ PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
 			throw new InvalidConnectionException(PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
 		}
 		setup(mosipActiveMq);
@@ -80,9 +87,15 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 			messageProducer.send(byteMessage);
 			flag = true;
 		} catch (JMSException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "MosipActiveMqImpl::send():: error with error message "
+							+ PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getMessage());
 			throw new ConnectionUnavailableException(
 					PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getMessage());
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "MosipActiveMqImpl::send()::exit");
+
 		return flag;
 	}
 
@@ -95,10 +108,16 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 	 */
 	@Override
 	public byte[] consume(MosipQueue mosipQueue, String address, QueueListener object) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "MosipActiveMqImpl::consume()::entry");
 
 		MosipActiveMq mosipActiveMq = (MosipActiveMq) mosipQueue;
 		ActiveMQConnectionFactory activeMQConnectionFactory = mosipActiveMq.getActiveMQConnectionFactory();
 		if (activeMQConnectionFactory == null) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "MosipActiveMqImpl::consume():: error with error message "
+							+ PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
+			
 			throw new InvalidConnectionException(PlatformErrorMessages.RPR_MQI_INVALID_CONNECTION.getMessage());
 		}
 		if (destination == null) {
@@ -110,9 +129,16 @@ public class MosipActiveMqImpl implements MosipQueueManager<MosipQueue, byte[]> 
 			consumer = session.createConsumer(destination);
 			consumer.setMessageListener(QueueListenerFactory.getListener(mosipQueue.getQueueName(), object));
 		} catch (JMSException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "MosipActiveMqImpl::consume():: error with error message "
+							+ PlatformErrorMessages.RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE.getMessage());
+		
 			throw new ConnectionUnavailableException(
 					PlatformErrorMessages.RPR_MQI_UNABLE_TO_CONSUME_FROM_QUEUE.getMessage());
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "MosipActiveMqImpl::consume()::exit");
+
 		return null;
 	}
 
