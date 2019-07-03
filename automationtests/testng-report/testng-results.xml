@@ -1,51 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="0" ignored="0" total="1" passed="1">
+<testng-results skipped="0" failed="1" ignored="0" total="2" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Mosip API Suite" duration-ms="27124" started-at="2019-07-03T05:18:59Z" finished-at="2019-07-03T05:19:26Z">
+  <suite name="Mosip API Suite" duration-ms="89963" started-at="2019-07-03T06:54:37Z" finished-at="2019-07-03T06:56:07Z">
     <groups>
     </groups>
-    <test name="PreReg Tests" duration-ms="27124" started-at="2019-07-03T05:18:59Z" finished-at="2019-07-03T05:19:26Z">
-      <class name="io.mosip.preregistration.tests.Sample">
-        <test-method status="PASS" signature="suiteSetup()[pri:0, instance:io.mosip.preregistration.tests.Sample@6aba2b86]" test-instance-name="" name="suiteSetup" is-config="true" duration-ms="1228" started-at="2019-07-03T10:48:58Z" finished-at="2019-07-03T10:48:59Z">
+    <test name="PreReg Tests" duration-ms="89963" started-at="2019-07-03T06:54:37Z" finished-at="2019-07-03T06:56:07Z">
+      <class name="io.mosip.preregistration.tests.BatchJob">
+        <test-method status="PASS" signature="suiteSetup()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="suiteSetup" is-config="true" duration-ms="1375" started-at="2019-07-03T12:24:35Z" finished-at="2019-07-03T12:24:37Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- suiteSetup -->
-        <test-method status="PASS" signature="run()[pri:0, instance:io.mosip.preregistration.tests.Sample@6aba2b86]" test-instance-name="" name="run" is-config="true" duration-ms="23862" started-at="2019-07-03T10:48:59Z" finished-at="2019-07-03T10:49:23Z">
+        <test-method status="PASS" signature="getToken()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="getToken" is-config="true" duration-ms="24359" started-at="2019-07-03T12:24:37Z" finished-at="2019-07-03T12:25:01Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- run -->
-        <test-method status="PASS" signature="readPropertiesFile()[pri:0, instance:io.mosip.preregistration.tests.Sample@6aba2b86]" test-instance-name="" name="readPropertiesFile" is-config="true" duration-ms="0" started-at="2019-07-03T10:48:59Z" finished-at="2019-07-03T10:48:59Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- readPropertiesFile -->
-        <test-method status="PASS" signature="deleteAllDocumentByDocIdUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.Sample@6aba2b86]" test-instance-name="" name="deleteAllDocumentByDocIdUsingUserBToken" duration-ms="3247" started-at="2019-07-03T10:49:23Z" finished-at="2019-07-03T10:49:26Z">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- deleteAllDocumentByDocIdUsingUserBToken -->
-        <test-method status="PASS" signature="afterMethod(org.testng.ITestResult)[pri:0, instance:io.mosip.preregistration.tests.Sample@6aba2b86]" test-instance-name="" name="afterMethod" is-config="true" duration-ms="0" started-at="2019-07-03T10:49:26Z" finished-at="2019-07-03T10:49:26Z">
+        </test-method> <!-- getToken -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="login" is-config="true" duration-ms="1" started-at="2019-07-03T12:25:01Z" finished-at="2019-07-03T12:25:01Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[[TestResult name="" status=SUCCESS method=Sample.deleteAllDocumentByDocIdUsingUserBToken()[pri:0, instance:io.mosip.preregistration.tests.Sample@6aba2b86] output={null}]]]>
+                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForConsumedApplication()]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- afterMethod -->
-        <test-method status="PASS" signature="testTearDown(org.testng.ITestContext)[pri:0, instance:io.mosip.preregistration.tests.Sample@6aba2b86]" test-instance-name="" name="testTearDown" is-config="true" duration-ms="0" started-at="2019-07-03T10:49:26Z" finished-at="2019-07-03T10:49:26Z">
+        </test-method> <!-- login -->
+        <test-method status="PASS" signature="batchJobForConsumedApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="preReg_BatchJob_batchJobForConsumedApplication" duration-ms="34245" started-at="2019-07-03T12:25:01Z" finished-at="2019-07-03T12:25:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_batchJobForConsumedApplication -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T12:25:35Z" finished-at="2019-07-03T12:25:35Z">
           <params>
             <param index="0">
               <value>
-                <![CDATA[org.testng.TestRunner@4703c998]]>
+                <![CDATA[[TestResult name=preReg_BatchJob_batchJobForConsumedApplication status=SUCCESS method=BatchJob.batchJobForConsumedApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForConsumedApplication()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="login(java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="login" is-config="true" duration-ms="0" started-at="2019-07-03T12:25:35Z" finished-at="2019-07-03T12:25:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- login -->
+        <test-method status="FAIL" signature="batchJobForExpiredApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="preReg_BatchJob_batchJobForExpiredApplication" duration-ms="31316" started-at="2019-07-03T12:25:35Z" finished-at="2019-07-03T12:26:07Z">
+          <exception class="java.lang.AssertionError">
+            <message>
+              <![CDATA[Response Data Mismatch Failure  : expected is : Expired found is : Booked expected [true] but found [false]]]>
+            </message>
+            <full-stacktrace>
+              <![CDATA[java.lang.AssertionError: Response Data Mismatch Failure  : expected is : Expired found is : Booked expected [true] but found [false]
+	at org.testng.Assert.fail(Assert.java:93)
+	at org.testng.Assert.failNotEquals(Assert.java:512)
+	at org.testng.Assert.assertTrue(Assert.java:41)
+	at io.mosip.util.PreRegistrationLibrary.compareValues(PreRegistrationLibrary.java:997)
+	at io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication(BatchJob.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:108)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:661)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:869)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1193)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:126)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:109)
+	at org.testng.TestRunner.privateRun(TestRunner.java:744)
+	at org.testng.TestRunner.run(TestRunner.java:602)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:380)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:375)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:340)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:289)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1301)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1226)
+	at org.testng.TestNG.runSuites(TestNG.java:1144)
+	at org.testng.TestNG.run(TestNG.java:1115)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:42)
+	at io.mosip.testrunner.MosipTestRunner.main(MosipTestRunner.java:30)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.AssertionError -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- preReg_BatchJob_batchJobForExpiredApplication -->
+        <test-method status="PASS" signature="setResultTestName(org.testng.ITestResult, java.lang.reflect.Method)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="setResultTestName" is-config="true" duration-ms="0" started-at="2019-07-03T12:26:07Z" finished-at="2019-07-03T12:26:07Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=preReg_BatchJob_batchJobForExpiredApplication status=FAILURE method=BatchJob.batchJobForExpiredApplication()[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40] output={null}]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[public void io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication()]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setResultTestName -->
+        <test-method status="PASS" signature="testTearDown(org.testng.ITestContext)[pri:0, instance:io.mosip.preregistration.tests.BatchJob@5fdcaa40]" test-instance-name="preReg_BatchJob_batchJobForExpiredApplication" name="testTearDown" is-config="true" duration-ms="1" started-at="2019-07-03T12:26:07Z" finished-at="2019-07-03T12:26:07Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[org.testng.TestRunner@6598caab]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testTearDown -->
-      </class> <!-- io.mosip.preregistration.tests.Sample -->
+      </class> <!-- io.mosip.preregistration.tests.BatchJob -->
     </test> <!-- PreReg Tests -->
   </suite> <!-- Mosip API Suite -->
 </testng-results>

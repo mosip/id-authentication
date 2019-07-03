@@ -9,8 +9,8 @@
         <!-- JDBC Database connection settings -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
         <property name="connection.url">jdbc:postgresql://104.211.208.136:9001/mosip_prereg</property>
-        <property name="connection.username">postgres</property>
-        <property name="connection.password">QAdbadmin@123</property>
+        <property name="connection.username">prereguser</property>
+        <property name="connection.password">Mosip@dev123</property>
         <property name="hibernate.default_schema">prereg</property>
 
         <!-- JDBC connection pool settings ... using built-in test pool -->

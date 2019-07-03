@@ -24,7 +24,7 @@
     <div class="top-banner-root">
       <span class="top-banner-title-font">Test results</span>
       <br/>
-      <span class="top-banner-font-1">1 suite</span>
+      <span class="top-banner-font-1">1 suite, 1 failed test</span>
     </div> <!-- top-banner-root -->
     <div class="navigator-root">
       <div class="navigator-suite-header">
@@ -38,7 +38,7 @@
         <div class="rounded-window">
           <div class="suite-header light-rounded-window-top">
             <a href="#" class="navigator-link" panel-name="suite-Mosip_API_Suite">
-              <span class="suite-name border-passed">Mosip API Suite</span>
+              <span class="suite-name border-failed">Mosip API Suite</span>
             </a> <!-- navigator-link -->
           </div> <!-- suite-header light-rounded-window-top -->
           <div class="navigator-suite-content">
@@ -91,7 +91,21 @@
               <div class="suite-section-content">
                 <ul>
                   <li>
-                    <span class="method-stats">1 method,   1 passed</span>
+                    <span class="method-stats">2 methods, 1 failed,   1 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title failed">Failed methods</span>
+                    <span class="show-or-hide-methods failed">
+                      <a href="#" panel-name="suite-Mosip_API_Suite" class="hide-methods failed suite-Mosip_API_Suite"> (hide)</a> <!-- hide-methods failed suite-Mosip_API_Suite -->
+                      <a href="#" panel-name="suite-Mosip_API_Suite" class="show-methods failed suite-Mosip_API_Suite"> (show)</a> <!-- show-methods failed suite-Mosip_API_Suite -->
+                    </span>
+                    <div class="method-list-content failed suite-Mosip_API_Suite">
+                      <span>
+                        <img width="3%" src="failed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.BatchJob" hash-for-method="preReg_BatchJob_batchJobForExpiredApplication">preReg_BatchJob_batchJobForExpiredApplication</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content failed suite-Mosip_API_Suite -->
                   </li>
                   <li>
                     <span class="method-list-title passed">Passed methods</span>
@@ -102,7 +116,7 @@
                     <div class="method-list-content passed suite-Mosip_API_Suite">
                       <span>
                         <img width="3%" src="passed.png"/>
-                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.Sample" hash-for-method="deleteAllDocumentByDocIdUsingUserBToken">deleteAllDocumentByDocIdUsingUserBToken</a> <!-- method navigator-link -->
+                        <a href="#" class="method navigator-link" panel-name="suite-Mosip_API_Suite" title="io.mosip.preregistration.tests.BatchJob" hash-for-method="preReg_BatchJob_batchJobForConsumedApplication">preReg_BatchJob_batchJobForConsumedApplication</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content passed suite-Mosip_API_Suite -->
@@ -117,17 +131,39 @@
     <div class="wrapper">
       <div class="main-panel-root">
         <div panel-name="suite-Mosip_API_Suite" class="panel Mosip_API_Suite">
-          <div class="suite-Mosip_API_Suite-class-passed">
+          <div class="suite-Mosip_API_Suite-class-failed">
             <div class="main-panel-header rounded-window-top">
-              <img src="passed.png"/>
-              <span class="class-name">io.mosip.preregistration.tests.Sample</span>
+              <img src="failed.png"/>
+              <span class="class-name">io.mosip.preregistration.tests.BatchJob</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="deleteAllDocumentByDocIdUsingUserBToken">
-                  </a> <!-- deleteAllDocumentByDocIdUsingUserBToken -->
-                  <span class="method-name">deleteAllDocumentByDocIdUsingUserBToken</span>
+                  <a name="preReg_BatchJob_batchJobForExpiredApplication">
+                  </a> <!-- preReg_BatchJob_batchJobForExpiredApplication -->
+                  <span class="method-name">preReg_BatchJob_batchJobForExpiredApplication</span>
+                  <div class="stack-trace">java.lang.AssertionError: Response Data Mismatch Failure  : expected is : Expired found is : Booked expected [true] but found [false]
+	at io.mosip.util.PreRegistrationLibrary.compareValues(PreRegistrationLibrary.java:997)
+	at io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication(BatchJob.java:88)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:42)
+	at io.mosip.testrunner.MosipTestRunner.main(MosipTestRunner.java:30)
+... Removed 25 stack frames
+</div> <!-- stack-trace -->
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Mosip_API_Suite-class-failed -->
+          <div class="suite-Mosip_API_Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">io.mosip.preregistration.tests.BatchJob</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="preReg_BatchJob_batchJobForConsumedApplication">
+                  </a> <!-- preReg_BatchJob_batchJobForConsumedApplication -->
+                  <span class="method-name">preReg_BatchJob_batchJobForConsumedApplication</span>
                 </div> <!-- method-content -->
               </div> <!-- method -->
             </div> <!-- main-panel-content rounded-window-bottom -->
@@ -149,7 +185,7 @@
   &lt;/listeners&gt;
   &lt;test name=&quot;PreReg Tests&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;io.mosip.preregistration.tests.Sample&quot;/&gt;
+      &lt;class name=&quot;io.mosip.preregistration.tests.BatchJob&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- PreReg Tests --&gt;
 &lt;/suite&gt; &lt;!-- Mosip API Suite --&gt;
@@ -189,16 +225,20 @@ data.addColumn('number', 'Number');
 data.addColumn('string', 'Method');
 data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
-data.addRows(1);
+data.addRows(2);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'deleteAllDocumentByDocIdUsingUserBToken')
-data.setCell(0, 2, 'io.mosip.preregistration.tests.Sample')
-data.setCell(0, 3, 3247);
+data.setCell(0, 1, 'preReg_BatchJob_batchJobForConsumedApplication')
+data.setCell(0, 2, 'io.mosip.preregistration.tests.BatchJob')
+data.setCell(0, 3, 34245);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'preReg_BatchJob_batchJobForExpiredApplication')
+data.setCell(1, 2, 'io.mosip.preregistration.tests.BatchJob')
+data.setCell(1, 3, 31316);
 window.suiteTableData['Mosip_API_Suite']= { tableData: data, tableDiv: 'times-div-Mosip_API_Suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 3 seconds</span>
+              <span class="suite-total-time">Total running time: 1 minutes</span>
               <div id="times-div-Mosip_API_Suite">
               </div> <!-- times-div-Mosip_API_Suite -->
             </div> <!-- times-div -->
@@ -224,30 +264,44 @@ return data;
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <div class="chronological-class">
-              <div class="chronological-class-name">io.mosip.preregistration.tests.Sample</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">io.mosip.preregistration.tests.BatchJob</div> <!-- chronological-class-name -->
               <div class="configuration-suite before">
                 <span class="method-name">suiteSetup</span>
                 <span class="method-start">0 ms</span>
               </div> <!-- configuration-suite before -->
               <div class="configuration-class before">
-                <span class="method-name">readPropertiesFile</span>
-                <span class="method-start">1243 ms</span>
+                <span class="method-name">getToken</span>
+                <span class="method-start">1375 ms</span>
               </div> <!-- configuration-class before -->
               <div class="configuration-method before">
-                <span class="method-name">run</span>
-                <span class="method-start">1243 ms</span>
+                <span class="method-name">login(public void io.mosip.preregistration.tests.BatchJob.batchJobForConsumedApplication())</span>
+                <span class="method-start">25758 ms</span>
               </div> <!-- configuration-method before -->
               <div class="test-method">
-                <span class="method-name">deleteAllDocumentByDocIdUsingUserBToken</span>
-                <span class="method-start">25105 ms</span>
+                <span class="method-name">preReg_BatchJob_batchJobForConsumedApplication</span>
+                <span class="method-start">25759 ms</span>
               </div> <!-- test-method -->
               <div class="configuration-method after">
-                <span class="method-name">afterMethod([TestResult name="" status=SUCCESS method=Sample.deleteAllDocumentByDocIdUsingUserBToken()[pri:0, in...)</span>
-                <span class="method-start">28352 ms</span>
+                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_batchJobForConsumedApplication status=SUCCESS method=BatchJob.batch...)</span>
+                <span class="method-start">60004 ms</span>
+              </div> <!-- configuration-method after -->
+              <div class="configuration-method before">
+                <span class="method-name">login(public void io.mosip.preregistration.tests.BatchJob.batchJobForExpiredApplication())</span>
+                <span class="method-start">60005 ms</span>
+              </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <img src="failed.png">
+                </img>
+                <span class="method-name">preReg_BatchJob_batchJobForExpiredApplication</span>
+                <span class="method-start">60005 ms</span>
+              </div> <!-- test-method -->
+              <div class="configuration-method after">
+                <span class="method-name">setResultTestName([TestResult name=preReg_BatchJob_batchJobForExpiredApplication status=FAILURE method=BatchJob.batchJ...)</span>
+                <span class="method-start">91337 ms</span>
               </div> <!-- configuration-method after -->
               <div class="configuration-suite after">
-                <span class="method-name">testTearDown(org.testng.TestRunner@4703c998)</span>
-                <span class="method-start">28383 ms</span>
+                <span class="method-name">testTearDown(org.testng.TestRunner@6598caab)</span>
+                <span class="method-start">91394 ms</span>
               </div> <!-- configuration-suite after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->
