@@ -12,6 +12,10 @@ import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
  */
 public class PageUtils {
 
+	private PageUtils() {
+		
+	}
+	
 	/**
 	 * Method to create page metadata
 	 * 
@@ -21,7 +25,7 @@ public class PageUtils {
 	 *            request to be
 	 * @return {@link PageResponseDto}
 	 */
-	public static <T, D> PageResponseDto<D> page(Page<T> page) {
+	public static <T, D> PageResponseDto<D> pageResponse(Page<T> page) {
 		PageResponseDto<D> pageResponse = null;
 		if (page != null) {
 			long totalItem = page.getTotalElements();
