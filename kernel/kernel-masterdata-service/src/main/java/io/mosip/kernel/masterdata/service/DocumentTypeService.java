@@ -6,6 +6,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -75,4 +77,14 @@ public interface DocumentTypeService {
 	 */
 	public PageDto<DocumentTypeExtnDto> getAllDocumentTypes(int pageNumber, int pageSize, String sortBy,
 			String orderBy);
+	
+	/**
+	 * Method to search and sort the filter based on the filters and sorting
+	 * provided
+	 * 
+	 * @param dto
+	 *            contains the data for searching and sorting.
+	 * @return list of document type with all the metadata.
+	 */
+	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto);
 }

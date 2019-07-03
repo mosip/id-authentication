@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -32,7 +35,10 @@ import io.mosip.kernel.masterdata.repository.ValidDocumentRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * This class have methods to fetch list of valid document type, create document
@@ -59,6 +65,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
+
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -209,6 +221,22 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			throw new MasterDataServiceException(DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					DocumentTypeErrorCode.DOCUMENT_TYPE_FETCH_EXCEPTION.getErrorMessage()
 							+ ExceptionUtils.parseException(e));
+		}
+		return pageDto;
+	}
+
+	@Override
+	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto) {
+		PageResponseDto<DocumentTypeExtnDto> pageDto = new PageResponseDto<>();
+		List<DocumentTypeExtnDto> doumentTypes = null;
+		if (filterTypeValidator.validate(DocumentTypeExtnDto.class, dto.getFilters())) {
+			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto,
+					Collections.emptyList());
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				PageUtils.pageResponse(page);
+				doumentTypes = MapperUtils.mapAll(page.getContent(), DocumentTypeExtnDto.class);
+				pageDto.setData(doumentTypes);
+			}
 		}
 		return pageDto;
 	}

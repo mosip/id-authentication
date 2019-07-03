@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +23,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.Api;
@@ -156,6 +157,21 @@ public class DocumentTypeController {
 		ResponseWrapper<PageDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(documentTypeService.getAllDocumentTypes(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Function to fetch all document types.
+	 * 
+	 * @return {@link DocumentTypeExtnDto} DocumentTypeResponseDto
+	 */
+	@ResponseFilter
+	@PostMapping("/documenttypes/search")
+	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.searchDocumentTypes(request.getRequest()));
 		return responseWrapper;
 	}
 }
