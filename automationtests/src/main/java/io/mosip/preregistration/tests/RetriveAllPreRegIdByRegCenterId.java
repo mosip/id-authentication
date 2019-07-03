@@ -187,6 +187,10 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		{
 			toDate= actualRequest.get("to_date").toString();
 		}
+		else if(testCaseName.contains("RetrivePreIdByRegCenterId_toDate_withEmptyValue"))
+		{
+			frmDate="2020-05-31";
+		}
 		
 		
 		parm.put("from_date", frmDate);
