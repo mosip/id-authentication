@@ -217,6 +217,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		boolean isTransactionSuccessful = false;
 		
 		String regId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), regId,
+				"PrintStage::process()::entry");
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
@@ -240,6 +242,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
+				
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
@@ -247,8 +250,10 @@ public class PrintStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusComment(description);
 				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
+				
 			}
-
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+					LoggerFileConstant.REGISTRATIONID.toString(),regId, description);
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			printPostService.generatePrintandPostal(regId, queue, mosipQueueManager);
@@ -300,6 +305,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
 					ApiName.AUDIT);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), regId,
+				"PrintStage::process()::exit");
 		return object;
 	}
 
@@ -393,6 +400,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		JsonObject object = ctx.getBodyAsJson();
 		MessageDTO messageDTO = new MessageDTO();
 		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), object.getString("regId"),
+					"PrintStage::reSendPrintPdf()::entry");
 			messageDTO.setRid(object.getString("regId"));
 			String uin = object.getString("uin");
 			String status = object.getString("status");
@@ -415,6 +424,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 					"", PlatformErrorMessages.RPR_BDD_UNKNOWN_EXCEPTION.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), object.getString("regId"),
+				"PrintStage::reSendPrintPdf()::exit");
 	}
 
 	public void consumerListener(Message message) {
@@ -423,7 +434,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 		boolean isTransactionSuccessful = false;
 		String uin = null;
 		try {			
-
+			
 			String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 
 			JSONObject jsonObject = JsonUtil.objectMapperReadValue(response, JSONObject.class);
@@ -433,12 +444,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 			if(uin != null) {
 				MessageDTO messageDTO = uinMap.get(uin);
 				registrationId = messageDTO.getRid();
-				
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PrintStage::consumerListener()::entry");
 				InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 						.getRegistrationStatus(registrationId);
 				
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, "ConsumerStage::process()::exit");
+
 				if (status.equals(SUCCESS)) {
 					isTransactionSuccessful = true;
 					description = "Print and Post Completed for the regId : " + registrationId;
@@ -456,10 +467,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 					this.send(mosipEventBus, MessageBusAddress.PRINTING_BUS, messageDTO);
 				}
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, "ConsumerStage::process()::exit");
+		
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						registrationId, description);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),registrationId,
+						"PrintStage::consumerListener()::exit");
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						registrationId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name());
@@ -485,6 +497,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
 					ApiName.AUDIT);
 		}
+		
 	}
 
 	private MosipQueue getQueueConnection() {

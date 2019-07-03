@@ -166,8 +166,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			}
 
 			registrationStatusDto.setUpdatedBy(USER);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					description.getCode() + " -- " + registrationId, "OSIValidatorStage::process()::exit");
+			
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					description.getCode() + " -- " + registrationId, description.getMessage());
 		} catch (FSAdapterException e) {
@@ -241,7 +240,8 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				description.getCode() + " -- " + registrationId, "OSIValidatorStage::process()::exit");
 		return object;
 	}
 

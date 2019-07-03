@@ -184,10 +184,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 							int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 							dto.setRetryCount(retrycount);
 							if (retrycount < getMaxRetryCount()) {
-								regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-										LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-										"PacketUploaderServiceImpl::validateAndUploadPacket()::entry");
-
+								
 								messageDTO = uploadPacket(dto, new ByteArrayInputStream(encryptedByteArray), messageDTO,
 										jschConnectionDto, registrationId, description);
 								if (messageDTO.getIsValid()) {
@@ -198,9 +195,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 											+ registrationId);
 									regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 											LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description.getMessage());
-									regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-											LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-											"PacketUploaderServiceImpl::validateAndUploadPacket()::exit");
+									
 
 								}
 							} else {
@@ -213,6 +208,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 										RegistrationStatusCode.FAILED.toString());
 								dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
 								dto.setUpdatedBy(USER);
+								regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+										LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description.getMessage());
 							}
 					}
 				}
@@ -312,7 +309,9 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					registrationId, ApiName.AUDIT);
 
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+				LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+				"PacketUploaderServiceImpl::validateAndUploadPacket()::exit");
 		return messageDTO;
 	}
 

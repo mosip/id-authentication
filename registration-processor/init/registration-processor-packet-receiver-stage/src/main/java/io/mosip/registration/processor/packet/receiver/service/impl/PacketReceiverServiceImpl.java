@@ -153,10 +153,12 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					throw new DuplicateUploadRequestException(
 							PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 				}
+				description.setMessage(PacketReceiverConstant.PACKET_SUCCESS_UPLOADED_IN_PACKET_RECIVER + dto.getRegistrationId());
+				
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), description.getCode() + " -- " + registrationId, PacketReceiverConstant.PACKET_RECEIVER_VALIDATION_SUCCESS);
 				storageFlag = storePacket(stageName, regEntity, dto, description);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"PacketReceiverServiceImpl::validatePacket()::exit");
+			
 
 			} catch (IOException e) {
 
@@ -197,7 +199,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			}
 
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+				LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+				"PacketReceiverServiceImpl::validatePacket()::exit");
 		return messageDTO;
 	}
 
@@ -462,9 +466,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				isTransactionSuccessful=true;
 				dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
 				description.setMessage(PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getMessage() + "-------" + registrationId);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-						"PacketReceiverServiceImpl::processPacket()::exit");
+				
 			}
 
 		} catch (IOException e) {
@@ -514,7 +516,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, registrationId,
 					ApiName.AUDIT);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+				LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+				"PacketReceiverServiceImpl::processPacket()::exit");
 		return messageDTO;
 	}
 

@@ -10,6 +10,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.vertx.core.json.JsonObject;
@@ -100,6 +101,8 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 *            the ctx
 	 */
 	public void processURL(RoutingContext ctx) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"", "PacketUploaderStage::processURL()::entry");
 		JsonObject obj = ctx.getBodyAsJson();
 
 		MessageDTO messageDTO = new MessageDTO();
@@ -123,6 +126,8 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 					null, null);
 
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"", "PacketUploaderStage::processURL()::exit");
 
 	}
 

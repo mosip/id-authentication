@@ -128,7 +128,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			filesGeneratedForPacket.put(RegistrationConstants.AUDIT_JSON_FILE,
 					javaObjectToJsonString(auditDto).getBytes());
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rid, String.format(loggerMessage, RegistrationConstants.AUDIT_JSON_FILE));
 
 			// Generating HMAC File as byte array
@@ -137,14 +137,14 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_DATA_HASH_FILE_NAME,
 					HMACGeneration.generatePacketDTOHash(registrationDTO, filesGeneratedForPacket, hashSequence));
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rid, String.format(loggerMessage, RegistrationConstants.PACKET_DATA_HASH_FILE_NAME));
 
 			// Generating packet_osi_hash text file as byte array
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_OSI_HASH_FILE_NAME, HMACGeneration
 					.generatePacketOSIHash(filesGeneratedForPacket, hashSequence.getOsiDataHashSequence()));
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rid, String.format(loggerMessage, RegistrationConstants.PACKET_OSI_HASH_FILE_NAME));
 
 			// Generating Packet Meta-Info JSON as byte array
@@ -170,7 +170,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 									.get());
 			filesGeneratedForPacket.put(RegistrationConstants.PACKET_META_JSON_NAME,
 					javaObjectToJsonString(packetInfo).getBytes());
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					rid, String.format(loggerMessage, RegistrationConstants.PACKET_META_JSON_NAME));
 			// Creating in-memory zip file for Packet Encryption
 			byte[] packetZipBytes = zipCreationService.createPacket(registrationDTO, filesGeneratedForPacket);

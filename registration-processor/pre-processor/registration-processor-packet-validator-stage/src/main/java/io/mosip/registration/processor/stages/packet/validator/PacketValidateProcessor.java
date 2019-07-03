@@ -214,10 +214,6 @@ public class PacketValidateProcessor {
 				packetValidationDto.setTransactionSuccessful(true);
 				description.setMessage(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage() + " -- " + registrationId);
 				description.setCode(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode());
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), description.getCode()
-						+ " -- " + registrationId,
-						"PacketValidatorStage::process()::exit");
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), description.getCode() + " -- " + registrationId, description.getMessage());
 
@@ -241,9 +237,7 @@ public class PacketValidateProcessor {
 
 				description.setMessage(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + " -- " + description.getMessage());
 				description.setCode(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getCode());
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), description.getCode() + " -- " + registrationId,
-						"PacketValidatorStage::process()::exit");
+				
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), description.getCode() + " -- " + registrationId, description.getMessage());
 
@@ -384,8 +378,7 @@ public class PacketValidateProcessor {
 
 		} finally {
 
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description.getMessage());
+
 			if (object.getInternalError()) {
 				registrationStatusDto.setUpdatedBy(USER);
 				int retryCount = registrationStatusDto.getRetryCount() != null
@@ -407,7 +400,9 @@ public class PacketValidateProcessor {
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+				LoggerFileConstant.REGISTRATIONID.toString(), description.getCode() + " -- " + registrationId,
+				"PacketValidatorStage::process()::exit");
 		return object;
 
 	}
