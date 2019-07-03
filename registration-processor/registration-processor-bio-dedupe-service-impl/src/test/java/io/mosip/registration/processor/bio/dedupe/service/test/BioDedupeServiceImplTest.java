@@ -168,9 +168,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test
-	public void insertBiometricsSuccessTest() throws ApisResourceAccessException {
+	public void insertBiometricsSuccessTest() throws ApisResourceAccessException, IOException {
 
 		abisInsertResponseDto.setReturnValue(1);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -186,9 +187,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = ABISInternalError.class)
-	public void insertBiometricsABISInternalErrorFailureTest() throws ApisResourceAccessException {
+	public void insertBiometricsABISInternalErrorFailureTest() throws ApisResourceAccessException, IOException {
 
 		abisInsertResponseDto.setFailureReason(1);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -204,9 +206,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = ABISAbortException.class)
-	public void insertBiometricsABISAbortExceptionFailureTest() throws ApisResourceAccessException {
+	public void insertBiometricsABISAbortExceptionFailureTest() throws ApisResourceAccessException, IOException {
 
 		abisInsertResponseDto.setFailureReason(2);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -222,9 +225,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = UnexceptedError.class)
-	public void insertBiometricsUnexceptedErrorFailureTest() throws ApisResourceAccessException {
+	public void insertBiometricsUnexceptedErrorFailureTest() throws ApisResourceAccessException, IOException {
 
 		abisInsertResponseDto.setFailureReason(3);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -240,9 +244,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = UnableToServeRequestABISException.class)
-	public void insertBiometricsUnableToServeRequestABISExceptionFailureTest() throws ApisResourceAccessException {
+	public void insertBiometricsUnableToServeRequestABISExceptionFailureTest() throws ApisResourceAccessException, IOException {
 
 		abisInsertResponseDto.setFailureReason(4);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -258,9 +263,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test
-	public void testPerformDedupeSuccess() throws ApisResourceAccessException {
+	public void testPerformDedupeSuccess() throws ApisResourceAccessException, IOException {
 
 		identifyResponse.setReturnValue(1);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -290,9 +296,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = ABISInternalError.class)
-	public void testPerformDedupeFailure() throws ApisResourceAccessException {
+	public void testPerformDedupeFailure() throws ApisResourceAccessException, IOException {
 
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(identifyResponse);
@@ -308,9 +315,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = ABISAbortException.class)
-	public void testDedupeAbisAbortException() throws ApisResourceAccessException {
+	public void testDedupeAbisAbortException() throws ApisResourceAccessException, IOException {
 
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(identifyResponse);
@@ -326,9 +334,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = UnexceptedError.class)
-	public void testDedupeUnexpectedError() throws ApisResourceAccessException {
+	public void testDedupeUnexpectedError() throws ApisResourceAccessException, IOException {
 
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(identifyResponse);
@@ -344,9 +353,10 @@ public class BioDedupeServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
 	@Test(expected = UnableToServeRequestABISException.class)
-	public void testDedupeUnableToServeRequestABISException() throws ApisResourceAccessException {
+	public void testDedupeUnableToServeRequestABISException() throws ApisResourceAccessException, IOException {
 
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
 				.thenReturn(identifyResponse);

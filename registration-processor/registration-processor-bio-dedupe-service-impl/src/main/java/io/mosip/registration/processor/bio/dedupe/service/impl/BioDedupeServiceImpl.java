@@ -101,7 +101,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 * insertBiometrics(java.lang.String)
 	 */
 	@Override
-	public String insertBiometrics(String registrationId) throws ApisResourceAccessException {
+	public String insertBiometrics(String registrationId) throws ApisResourceAccessException, IOException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::insertBiometrics()::entry");
@@ -123,11 +123,14 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		packetInfoManager.saveAbisRef(regAbisRefDto);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				registrationId, "BioDedupeServiceImpl::insertBiometrics():: BIODEDUPEPOTENTIAL POST SERVICE Start");
+				registrationId, "BioDedupeServiceImpl::insertBiometrics():: BIODEDUPEPOTENTIAL POST SERVICE Started with request data : "+JsonUtil.objectMapperObjectToJson(abisInsertRequestDto));
 	
 		AbisInsertResponseDto authResponseDTO = (AbisInsertResponseDto) restClientService
 				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponseDto.class);
-
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::insertBiometrics():: BIODEDUPEPOTENTIAL POST SERVICE ended with reponse data : "+JsonUtil.objectMapperObjectToJson(authResponseDTO));
+	
 		if (authResponseDTO.getReturnValue() == 1)
 			insertStatus = "success";
 		else
@@ -176,7 +179,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 * performDedupe(java.lang.String)
 	 */
 	@Override
-	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException {
+	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException, IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::performDedupe()::entry");
 		List<String> duplicates = new ArrayList<>();
@@ -199,12 +202,12 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		// call Identify Api to get duplicate ids
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE Start");
+				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE Start with request data :  "+JsonUtil.objectMapperObjectToJson(identifyRequestDto));
 		
 		AbisIdentifyResponseDto responsedto = (AbisIdentifyResponseDto) restClientService
 				.postApi(ApiName.BIODEDUPEPOTENTIAL, "", "", identifyRequestDto, AbisIdentifyResponseDto.class);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE end");
+				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE ended with response data : "+JsonUtil.objectMapperObjectToJson(responsedto));
 		
 		if (responsedto != null) {
 
