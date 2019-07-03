@@ -169,6 +169,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Map<String, byte[]> getDocuments(IdType idType, String idValue) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getDocuments()::entry");
+		
 		Map<String, byte[]> byteMap = new HashMap<>();
 		String uin = null;
 		String description = null;
@@ -298,7 +301,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin,
 					ApiName.AUDIT);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getDocuments()::exit");
+	
 		return byteMap;
 	}
 

@@ -333,7 +333,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public byte[] getFile(DirectoryPathDto workingDirectory, String fileName, SftpJschConnectionDto sftpConnectionDto)
 			throws JschConnectionException, SftpFileOperationException {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), fileName,
 				"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		byte[] bytedata = null;
@@ -358,11 +358,18 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		}
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), fileName,
+				"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::exit");
+
 		return bytedata;
 
 	}
 
 	public ChannelSftp getSftpConnection(SftpJschConnectionDto sftpConnectionDto) throws JschConnectionException {
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::getSftpConnection()::entry");
 
 		if (channelSftp != null && channelSftp.isConnected()) {
 			return channelSftp;
@@ -388,6 +395,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::getSftpConnection()::exit");
+
 		return channelSftp;
 
 	}
@@ -396,7 +406,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public boolean copy(String fileName, DirectoryPathDto sourceWorkingDirectory,
 			DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)
 					throws IOException, JschConnectionException, SftpFileOperationException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), fileName,
 				"FileManagerImpl::copy(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		boolean status = false;
@@ -436,6 +446,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			}
 
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), fileName,
+				"FileManagerImpl::copy(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
+
 		return status;
 	}
 
@@ -444,7 +457,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)
 					throws IOException, JschConnectionException, SftpFileOperationException {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),fileName,
 				"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		boolean status = false;
@@ -481,6 +494,10 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			}
 
 		}
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),fileName,
+				"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
+
 		return status;
 	}
 

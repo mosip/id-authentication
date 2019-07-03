@@ -122,7 +122,9 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		regAbisRefDto.setReg_id(registrationId);
 
 		packetInfoManager.saveAbisRef(regAbisRefDto);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::insertBiometrics():: BIODEDUPEPOTENTIAL POST SERVICE Start");
+	
 		AbisInsertResponseDto authResponseDTO = (AbisInsertResponseDto) restClientService
 				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponseDto.class);
 
@@ -196,9 +198,14 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		identifyRequestDto.setTargetFPIR(targetFPIR);
 
 		// call Identify Api to get duplicate ids
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE Start");
+		
 		AbisIdentifyResponseDto responsedto = (AbisIdentifyResponseDto) restClientService
 				.postApi(ApiName.BIODEDUPEPOTENTIAL, "", "", identifyRequestDto, AbisIdentifyResponseDto.class);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE end");
+		
 		if (responsedto != null) {
 
 			if (responsedto.getReturnValue() == 2) {

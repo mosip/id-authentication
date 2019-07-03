@@ -35,6 +35,7 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 
 /**
  * The Class TemplateGenerator.
@@ -85,20 +86,30 @@ public class TemplateGenerator {
 			throws IOException, ApisResourceAccessException {
 
 		ResponseWrapper<?> responseWrapper;
-		TemplateResponseDto template=null;
-
+		TemplateResponseDto template=new TemplateResponseDto();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TemplateGenerator::getTemplate()::entry");
+		
 		try {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"TemplateGenerator::getTemplate():: TEMPLATES GET service Started ");
+		
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "","", ResponseWrapper.class);
 			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"TemplateGenerator::getTemplate():: TEMPLATES GET service Ended with resp "+JsonUtil.objectMapperObjectToJson(template));
+		
 			InputStream fileTextStream = null;
 			if (template != null) {
 				InputStream stream = new ByteArrayInputStream(
 						template.getTemplates().iterator().next().getFileText().getBytes());
 				fileTextStream = getTemplateManager().merge(stream, attributes);
 			}
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"TemplateGenerator::getTemplate()::exit");
 			return fileTextStream;
 
 		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {

@@ -49,6 +49,7 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
+import io.mosip.registration.processor.core.util.JsonUtil;
 
 /**
  * @author Ranjitha Siddegowda
@@ -84,9 +85,10 @@ public class AuthUtil {
 	private String authRequestId;
 
 	public AuthResponseDTO authByIdAuthentication(String individualId,String individualType , byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException, BiometricException, BioTypeException {
-		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				individualId, "AuthUtil::authByIdAuthentication()::entry");
+	
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-
 		RequestDTO req = new RequestDTO();
 		List<BioInfo> biometrics;
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -120,10 +122,15 @@ public class AuthUtil {
 		byte[] byteArr = encryptor.symmetricEncrypt(secretKey,
 				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes());
 		authRequestDTO.setRequestHMAC(Base64.encodeBase64String(byteArr));
-
-		AuthResponseDTO response = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.INTERNALAUTH,
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				individualId, "AuthUtil::authByIdAuthentication()::INTERNALAUTH POST service call started");
+		AuthResponseDTO response=new AuthResponseDTO();
+		response = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.INTERNALAUTH,
 				null, null, authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
 		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				individualId, "AuthUtil::authByIdAuthentication()::exit");
+	
 		return response;
 
 	}
@@ -136,13 +143,17 @@ public class AuthUtil {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(IDA_APP_ID);
 		ResponseWrapper<?> responseWrapper;
-		PublicKeyResponseDto publicKeyResponsedto = null;
-
+		PublicKeyResponseDto publicKeyResponsedto =new PublicKeyResponseDto();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				refId, "AuthUtil::encryptRSA():: ENCRYPTIONSERVICE GET service call started");
+	
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
 		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 				PublicKeyResponseDto.class);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				refId, "AuthUtil::encryptRSA():: ENCRYPTIONSERVICE GET service call ended ");
+	
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
 

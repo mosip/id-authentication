@@ -133,7 +133,7 @@ public class MessageNotificationServiceImpl
 	public SmsResponseDto sendSmsNotification(String templateTypeCode, String id, IdType idType,
 			Map<String, Object> attributes, String regType) throws ApisResourceAccessException, IOException,
 			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
-		SmsResponseDto response = null;
+		SmsResponseDto response = new SmsResponseDto();
 		SmsRequestDto smsDto = new SmsRequestDto();
 		RequestWrapper<SmsRequestDto> requestWrapper = new RequestWrapper<>();
 		ResponseWrapper<?> responseWrapper;
@@ -161,11 +161,12 @@ public class MessageNotificationServiceImpl
 					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
 			requestWrapper.setRequesttime(localdatetime);
 			requestWrapper.setRequest(smsDto);
-
 			responseWrapper = (ResponseWrapper<?>) restClientService.postApi(ApiName.SMSNOTIFIER, "", "",
 					requestWrapper, ResponseWrapper.class);
 			response = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), SmsResponseDto.class);
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
+					"MessageNotificationServiceImpl::sendSmsNotification():: SMSNOTIFIER POST service ended with response : "+ JsonUtil.objectMapperObjectToJson(response));
+			
 		} catch (TemplateNotFoundException | TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.name() + e.getMessage()
@@ -266,11 +267,13 @@ public class MessageNotificationServiceImpl
 		builder.queryParam("mailContent", artifact);
 
 		params.add("attachments", attachment);
-
 		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),
 				MediaType.MULTIPART_FORM_DATA, params, ResponseWrapper.class);
+		
 		responseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), ResponseDto.class);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"MessageNotificationServiceImpl::sendEmail():: EMAILNOTIFIER POST service ended with in response : "+ JsonUtil.objectMapperObjectToJson(responseDto));
+		
 		return responseDto;
 	}
 
@@ -340,11 +343,14 @@ public class MessageNotificationServiceImpl
 			StringBuilder phoneNumber, StringBuilder emailId) throws IOException {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(uin.toString());
-		IdResponseDTO response = null;
+		IdResponseDTO response = new IdResponseDTO();
 		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"MessageNotificationServiceImpl::setAttributesFromIdRepo():: IDREPOGETIDBYUIN GET service Started ");
+			
 			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments, "", "",
 					IdResponseDTO.class);
-
+			
 			if (response == null || response.getResponse() == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), uin.toString(),
