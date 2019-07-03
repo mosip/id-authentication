@@ -7,6 +7,10 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 
 /**
@@ -80,5 +84,9 @@ public interface BlacklistedWordsService {
 			String orderBy);
 
 	WordAndLanguageCodeID updateBlackListedWordExceptWord(BlacklistedWordsDto blacklistedWordsDto);
+
+	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto);
+
+	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto);
 
 }

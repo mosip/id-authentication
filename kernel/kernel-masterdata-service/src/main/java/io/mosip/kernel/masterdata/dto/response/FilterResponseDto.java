@@ -1,6 +1,6 @@
 package io.mosip.kernel.masterdata.dto.response;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilterResponseDto {
-	@NotBlank
-	private String fieldID;
-	@NotBlank
-	private String fieldValue;
-	@NotBlank
-	private String fieldCode;
+	private List<ColumnValue> filters;
 }
