@@ -196,7 +196,7 @@ public class Utilities {
 	 * @throws IdRepoAppException
 	 * @throws IOException
 	 */
-	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException, IOException {
+	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException{
 
 		if (uin != null) {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
@@ -225,8 +225,7 @@ public class Utilities {
 			idResponseDto.getResponse().getIdentity();
 			ObjectMapper objMapper = new ObjectMapper();
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended with response : "
-							+ JsonUtil.objectMapperObjectToJson(idResponseDto));
+					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended");
 			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
 
 		}
