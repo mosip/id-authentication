@@ -1,3 +1,5 @@
+truncate table reg.global_param;
+
 insert into reg.global_param values ('mosip.kernel.applicant.type.age.limit','mosip.kernel.applicant.type.age.limit','5','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
 
 insert into reg.global_param values ('mosip.kernel.jsonvalidator.file-storage-uri','mosip.kernel.jsonvalidator.file-storage-uri','LOCAL','CONFIGURATION','eng',true,'SYSTEM',current timestamp, 'SYSTEM',current timestamp, false, current timestamp);
