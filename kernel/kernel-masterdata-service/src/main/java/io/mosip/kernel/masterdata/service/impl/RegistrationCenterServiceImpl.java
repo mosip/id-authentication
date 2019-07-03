@@ -729,13 +729,17 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 			if (isLocationSearch(filter.getColumnName())) {
 				Location location = locationSearch(filter);
-				List<String> locationCodes = locationService.getChildList(location.getCode());
+				if (location != null) {
+					List<String> locationCodes = locationService.getChildList(location.getCode());
+					optionalFilters.addAll(buildLocationSearchFilter(locationCodes));
+				}
 				removeList.add(filter);
-				optionalFilters.addAll(buildLocationSearchFilter(locationCodes));
 			}
 			if (MasterDataConstant.POSTAL_CODE.equalsIgnoreCase(column)) {
 				Location location = locationSearch(filter);
-				addList.addAll(buildLocationSearchFilter(Arrays.asList(location.getCode())));
+				if (location != null) {
+					addList.addAll(buildLocationSearchFilter(Arrays.asList(location.getCode())));
+				}
 				removeList.add(filter);
 			}
 		}
@@ -745,7 +749,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
 					optionalFilters);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
-				pageDto = PageUtils.page(page);
+				pageDto = PageUtils.pageResponse(page);
 				registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterExtnDto.class);
 				pageDto.setData(registrationCenters);
 			}
@@ -773,11 +777,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			if (regtypes.hasContent()) {
 				removeList.add(filter);
 				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
+			} else {
+				throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorMessage(),
+								filter.getValue()));
 			}
-		} else {
-			throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorCode(),
-					String.format(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorMessage(),
-							filter.getValue()));
 		}
 	}
 

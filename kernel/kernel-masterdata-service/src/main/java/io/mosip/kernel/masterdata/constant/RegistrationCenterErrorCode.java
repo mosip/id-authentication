@@ -17,8 +17,8 @@ public enum RegistrationCenterErrorCode {
 	DEPENDENCY_EXCEPTION("KER-MSD-149", "Cannot delete as dependency found"),
 	DATE_TIME_PARSE_EXCEPTION("KER-MSD-043", "Invalid date format"),
 	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database"),
-	NO_LOCATION_DATA_AVAILABLE("KER-MSD-XXX","No Location found for value %s"),
-	NO_CENTERTYPE_AVAILABLE("KER-MSD-XXX","No Registration Center type found for value %s");
+	NO_LOCATION_DATA_AVAILABLE("KER-MSD-320","No Location found for value %s"),
+	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s");
 
 	private final String errorCode;
 	private final String errorMessage;

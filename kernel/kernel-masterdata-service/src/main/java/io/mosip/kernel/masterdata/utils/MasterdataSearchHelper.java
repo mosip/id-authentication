@@ -242,7 +242,7 @@ public class MasterdataSearchHelper {
 	 * @param page
 	 *            contains the pagination details
 	 */
-	public void paginationQuery(Query query, Pagination page) {
+	private void paginationQuery(Query query, Pagination page) {
 		if (page != null) {
 			if (page.getPageStart() < 0 && page.getPageFetch() < 1) {
 				throw new RequestException(MasterdataSearchErrorCode.INVALID_PAGINATION_VALUE.getErrorCode(),
