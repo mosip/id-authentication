@@ -85,7 +85,7 @@ public class TemplateGenerator {
 	public InputStream getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {
 
-		ResponseWrapper<?> responseWrapper;
+		ResponseWrapper<?> responseWrapper=new ResponseWrapper<>();
 		TemplateResponseDto template=new TemplateResponseDto();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"TemplateGenerator::getTemplate()::entry");
@@ -100,7 +100,7 @@ public class TemplateGenerator {
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "","", ResponseWrapper.class);
 			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"TemplateGenerator::getTemplate():: TEMPLATES GET service Ended with resp "+JsonUtil.objectMapperObjectToJson(template));
+					"TemplateGenerator::getTemplate():: TEMPLATES GET service Ended with response "+JsonUtil.objectMapperObjectToJson(template));
 		
 			InputStream fileTextStream = null;
 			if (template != null) {

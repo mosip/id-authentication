@@ -80,11 +80,15 @@ public class IdRepoServiceImpl implements IdRepoService {
 	private Number getUin(List<String> pathSegments, String regProcessorDemographicIdentity)
 			throws IOException, ApisResourceAccessException {
 		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response;
-
+		ResponseWrapper<IdResponseDTO> response=new ResponseWrapper<>();
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"IdRepoServiceImpl::getUin():: IDREPOSITORY GET API CALL STARTED");
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"IdRepoServiceImpl::getUin():: IDREPOSITORY GET API CALL ENDED with response  "+JsonUtil.objectMapperObjectToJson(response));
+	
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();
 			String jsonString = gsonObj.toJson(response.getResponse());
@@ -137,11 +141,15 @@ public class IdRepoServiceImpl implements IdRepoService {
 		JSONObject demographicJsonObj = null;
 
 		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response;
-
+		ResponseWrapper<IdResponseDTO> response=new ResponseWrapper<>();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"IdRepoServiceImpl::getIdJsonFromIDRepo():: IDREPOSITORY GET API CALL STARTED");
+		
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"IdRepoServiceImpl::getIdJsonFromIDRepo():: IDREPOSITORY GET API CALL ENDED with reponse "+JsonUtil.objectMapperObjectToJson(response));
+		
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();
 			String jsonString = gsonObj.toJson(response.getResponse());

@@ -144,7 +144,7 @@ public class AuthUtil {
 		// encrypt AES Session Key using RSA public key
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(IDA_APP_ID);
-		ResponseWrapper<?> responseWrapper;
+		ResponseWrapper<?> responseWrapper=new ResponseWrapper<>();
 		PublicKeyResponseDto publicKeyResponsedto =new PublicKeyResponseDto();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				refId, "AuthUtil::encryptRSA():: ENCRYPTIONSERVICE GET service call started");
@@ -154,7 +154,7 @@ public class AuthUtil {
 		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 				PublicKeyResponseDto.class);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				refId, "AuthUtil::encryptRSA():: ENCRYPTIONSERVICE GET service call ended ");
+				refId, "AuthUtil::encryptRSA():: ENCRYPTIONSERVICE GET service call ended with response data "+JsonUtil.objectMapperObjectToJson(responseWrapper));
 	
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));

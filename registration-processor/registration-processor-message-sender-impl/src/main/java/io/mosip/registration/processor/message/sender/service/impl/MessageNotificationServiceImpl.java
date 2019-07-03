@@ -161,6 +161,9 @@ public class MessageNotificationServiceImpl
 					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
 			requestWrapper.setRequesttime(localdatetime);
 			requestWrapper.setRequest(smsDto);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
+					"MessageNotificationServiceImpl::sendSmsNotification():: SMSNOTIFIER POST service started with request : "+ JsonUtil.objectMapperObjectToJson(requestWrapper));
+			
 			responseWrapper = (ResponseWrapper<?>) restClientService.postApi(ApiName.SMSNOTIFIER, "", "",
 					requestWrapper, ResponseWrapper.class);
 			response = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), SmsResponseDto.class);
@@ -267,6 +270,9 @@ public class MessageNotificationServiceImpl
 		builder.queryParam("mailContent", artifact);
 
 		params.add("attachments", attachment);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"MessageNotificationServiceImpl::sendEmail():: EMAILNOTIFIER POST service started");
+		
 		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),
 				MediaType.MULTIPART_FORM_DATA, params, ResponseWrapper.class);
 		
@@ -350,6 +356,8 @@ public class MessageNotificationServiceImpl
 			
 			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments, "", "",
 					IdResponseDTO.class);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"MessageNotificationServiceImpl::setAttributesFromIdRepo():: IDREPOGETIDBYUIN GET service ended with reponse "+JsonUtil.objectMapperObjectToJson(response));
 			
 			if (response == null || response.getResponse() == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

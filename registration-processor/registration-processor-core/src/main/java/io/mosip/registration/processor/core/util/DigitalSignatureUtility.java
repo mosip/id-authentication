@@ -30,7 +30,7 @@ public class DigitalSignatureUtility {
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	
 	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(CbeffToBiometricUtil.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(DigitalSignatureUtility.class);
 
 	@Autowired
 	private Environment env;

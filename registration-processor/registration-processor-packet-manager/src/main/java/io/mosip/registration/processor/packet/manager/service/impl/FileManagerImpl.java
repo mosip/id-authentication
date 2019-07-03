@@ -344,9 +344,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				bytedata = IOUtils.toByteArray(is);
 			}
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::exit");
-
 		} catch (SftpException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -428,9 +425,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				status = true;
 			}
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"FileManagerImpl::copy(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
-
+			
 		} catch (SftpException e) {
 
 			if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
@@ -478,9 +473,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				}
 
 			}
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
-
+	
 		} catch (SftpException e) {
 
 			if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {

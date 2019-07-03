@@ -93,6 +93,8 @@ public class TokenValidator {
 	}
 
 	public boolean validateAccess(String url, String role) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TokenValidator::validateAccess()::entry");
 		if (url.contains("receiver")) {
 			for (String assignedRole : APIAuthorityList.PACKETRECEIVER.getList()) {
 				if (role.contains(assignedRole))
@@ -144,6 +146,9 @@ public class TokenValidator {
 					return true;
 			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TokenValidator::validateAccess()::exit");
+	
 		return false;
 	}
 }
