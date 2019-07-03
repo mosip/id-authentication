@@ -127,15 +127,17 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		ManualVerificationDTO manualVerificationDTO = new ManualVerificationDTO();
 		List<ManualVerificationEntity> entities;
 		String matchType = dto.getMatchType();
-		if(dto.getUserId() == null || dto.getUserId().isEmpty()) {
-			throw new UserIDNotPresentException(PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
+		if (dto.getUserId() == null || dto.getUserId().isEmpty()) {
+			throw new UserIDNotPresentException(
+					PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 		}
 		checkUserIDExistsInMasterList(dto);
 		entities = basePacketRepository.getAssignedApplicantDetails(dto.getUserId(),
 				ManualVerificationStatus.ASSIGNED.name());
 
-		if (!(matchType.equalsIgnoreCase(DedupeSourceName.ALL.toString()) || matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
+		if (!(matchType.equalsIgnoreCase(DedupeSourceName.ALL.toString())
+				|| matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
 				|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString()))) {
 			throw new MatchTypeNotFoundException(PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getMessage());
@@ -193,12 +195,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * java.lang.String)
 	 */
 	@Override
-	public byte[] getApplicantFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+	public byte[] getApplicantFile(String regId, String fileName) throws PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+
 		byte[] file = null;
 		InputStream fileInStream = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "ManualVerificationServiceImpl::getApplicantFile()::entry");
-		if(regId == null || regId.isEmpty()) {
+		if (regId == null || regId.isEmpty()) {
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 		}
@@ -229,12 +233,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @param fileName
 	 *            the file name
 	 * @return the applicant biometric file
-	 * @throws IOException 
-	 * @throws io.mosip.kernel.core.exception.IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
+	 * @throws IOException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws ApisResourceAccessException
+	 * @throws PacketDecryptionFailureException
 	 */
-	private InputStream getApplicantBiometricFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+	private InputStream getApplicantBiometricFile(String regId, String fileName)
+			throws PacketDecryptionFailureException, ApisResourceAccessException,
+			io.mosip.kernel.core.exception.IOException, IOException {
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.BIOMETRIC + fileName);
 	}
 
@@ -246,12 +252,14 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * @param fileName
 	 *            the file name
 	 * @return the applicant demographic file
-	 * @throws IOException 
-	 * @throws io.mosip.kernel.core.exception.IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
+	 * @throws IOException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws ApisResourceAccessException
+	 * @throws PacketDecryptionFailureException
 	 */
-	private InputStream getApplicantDemographicFile(String regId, String fileName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+	private InputStream getApplicantDemographicFile(String regId, String fileName)
+			throws PacketDecryptionFailureException, ApisResourceAccessException,
+			io.mosip.kernel.core.exception.IOException, IOException {
 		return filesystemCephAdapterImpl.getFile(regId, PacketStructure.APPLICANTDEMOGRAPHIC + fileName);
 	}
 
@@ -270,7 +278,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		messageDTO.setInternalError(false);
 		messageDTO.setIsValid(false);
 		messageDTO.setRid(manualVerificationDTO.getRegId());
-		if(registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty()) {
+		if (registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty()) {
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 		}
@@ -330,15 +338,13 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			registrationStatusDto.setUpdatedBy(USER);
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					manualVerificationDTO.getRegId(), description);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::exit");
+
 		} catch (TablenotAccessibleException e) {
 
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 
-			description = ManualVerificationConstants.TABLE_NOT_ACCESSIBLE + registrationId
-					+ "::" + e.getMessage();
+			description = ManualVerificationConstants.TABLE_NOT_ACCESSIBLE + registrationId + "::" + e.getMessage();
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					manualVerificationDTO.getRegId(), e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -359,6 +365,8 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
 					ApiName.AUDIT);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::exit");
 		return manualVerificationDTO;
 
 	}
@@ -370,12 +378,13 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 	 * ManualVerificationService#getApplicantPacketInfo(java.lang.String)
 	 */
 	@Override
-	public PacketMetaInfo getApplicantPacketInfo(String regId) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+	public PacketMetaInfo getApplicantPacketInfo(String regId) throws PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
 		PacketMetaInfo packetMetaInfo = new PacketMetaInfo();
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::entry");
-		if(regId == null || regId.isEmpty()) {
+		if (regId == null || regId.isEmpty()) {
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 		}
@@ -399,7 +408,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	@SuppressWarnings("unchecked")
 	private void checkUserIDExistsInMasterList(UserDto dto) {
-		ResponseWrapper<UserResponseDTOWrapper> responseWrapper;
+		ResponseWrapper<UserResponseDTOWrapper> responseWrapper = new ResponseWrapper<>();
 		UserResponseDTOWrapper userResponseDTOWrapper;
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(ManualVerificationConstants.USERS);
@@ -410,13 +419,23 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		// pathSegments.add("2019-05-16T06:12:52.994Z");
 		pathSegments.add(effectiveDate);
 		try {
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					dto.getUserId(),
+					"ManualVerificationServiceImpl::checkUserIDExistsInMasterList()::get MASTER USERS service call started : ");
+
 			responseWrapper = (ResponseWrapper<UserResponseDTOWrapper>) restClientService.getApi(ApiName.MASTER,
 					pathSegments, "", "", ResponseWrapper.class);
 
 			if (responseWrapper.getResponse() != null) {
 				userResponseDTOWrapper = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 						UserResponseDTOWrapper.class);
-				if (!userResponseDTOWrapper.getUserResponseDto().get(0).getStatusCode().equals(ManualVerificationConstants.ACT)) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+						dto.getUserId(),
+						"ManualVerificationServiceImpl::checkUserIDExistsInMasterList()::get MASTER USERS service call ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(userResponseDTOWrapper));
+				if (!userResponseDTOWrapper.getUserResponseDto().get(0).getStatusCode()
+						.equals(ManualVerificationConstants.ACT)) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), null,
 							PlatformErrorMessages.RPR_MVS_USER_STATUS_NOT_ACTIVE.getCode(),
 							PlatformErrorMessages.RPR_MVS_USER_STATUS_NOT_ACTIVE.getMessage() + dto.getUserId());
@@ -438,7 +457,6 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			throw new UserIDNotPresentException(PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_USER_ID_PRESENT.getMessage());
 
-			
 		}
 	}
 

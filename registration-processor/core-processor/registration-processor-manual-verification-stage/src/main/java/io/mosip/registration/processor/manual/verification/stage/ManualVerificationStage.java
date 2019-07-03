@@ -178,6 +178,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 	public void processBiometric(RoutingContext ctx)
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processBiometric::entry");
 		JsonObject obj = ctx.getBodyAsJson();
 		manualVerificationRequestValidator.validate(obj,
 				env.getProperty(ManualVerificationConstants.BIOMETRIC_SERVICE_ID));
@@ -192,11 +194,14 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 					env.getProperty(ManualVerificationConstants.DATETIME_PATTERN));
 			this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processBiometric::exit");
 	}
 
 	public void processDemographic(RoutingContext ctx)
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processDemographic::entry");
 		JsonObject obj = ctx.getBodyAsJson();
 		manualVerificationRequestValidator.validate(obj,
 				env.getProperty(ManualVerificationConstants.DEMOGRAPHIC_SERVICE_ID));
@@ -212,10 +217,14 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 					env.getProperty(ManualVerificationConstants.DATETIME_PATTERN));
 			this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processDemographic::exit");
 
 	}
 
 	public void processAssignment(RoutingContext ctx) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processAssignment::entry");
 		JsonObject obj = ctx.getBodyAsJson();
 		ManualVerificationAssignmentRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
 				ManualVerificationAssignmentRequestDTO.class);
@@ -230,10 +239,14 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 			this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processAssignment::exit");
 
 	}
 
 	public void processDecision(RoutingContext ctx) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processDecision::entry");
 		JsonObject obj = ctx.getBodyAsJson();
 		ManualVerificationDecisionRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
 				ManualVerificationDecisionRequestDTO.class);
@@ -248,11 +261,15 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 					env.getProperty(ManualVerificationConstants.DATETIME_PATTERN));
 			this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processDecision::exit");
 
 	}
 
 	public void processPacketInfo(RoutingContext ctx)
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processPacketInfo::entry");
 		JsonObject obj = ctx.getBodyAsJson();
 		ManualAppDemographicRequestDTO pojo = Json.mapper.convertValue(obj.getMap(),
 				ManualAppDemographicRequestDTO.class);
@@ -266,6 +283,8 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 					env.getProperty(ManualVerificationConstants.DATETIME_PATTERN));
 			this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"ManualVerificationStage::processPacketInfo::exit");
 
 	}
 

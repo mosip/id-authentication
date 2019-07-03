@@ -260,8 +260,6 @@ public class ReprocessorStage extends MosipVerticleManager {
 				}
 
 			}
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					description.getCode(), "PacketValidatorStage::process()::exit");
 
 		} catch (TablenotAccessibleException e) {
 			isTransactionSuccessful = false;
@@ -299,7 +297,8 @@ public class ReprocessorStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				description.getCode(), "PacketValidatorStage::process()::exit");
 		return object;
 	}
 }

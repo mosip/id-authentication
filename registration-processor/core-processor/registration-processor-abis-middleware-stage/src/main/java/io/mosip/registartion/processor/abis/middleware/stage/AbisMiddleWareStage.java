@@ -274,7 +274,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisMiddlewareStage::process()::Exit");
 		return object;
 	}
@@ -298,7 +298,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			List<String> registrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(bioRefId);
 			internalRegStatusDto = registrationStatusService.getRegistrationStatus(registrationIds.get(0));
 			registrationId = internalRegStatusDto.getRegistrationId();
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"AbisMiddlewareStage::consumerListener()::response from abis for requestId ::" + requestId);
 
 			AbisRequestDto abisCommonRequestDto = packetInfoManager.getAbisRequestByRequestId(requestId);
