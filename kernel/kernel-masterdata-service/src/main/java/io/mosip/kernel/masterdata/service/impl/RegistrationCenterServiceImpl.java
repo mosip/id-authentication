@@ -4,14 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -57,6 +60,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -73,6 +77,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -132,12 +137,23 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private LocationService locationService;
+	
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+	
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper; 
+		 
+	 /**
+     * get list of languages supported by MOSIP from configuration file
+     */
+     @Value("${mosip.secondary-language}")
+     private String secondaryLang;
 
-	/**
-	 * get list of languages supported by MOSIP from configuration file
-	 */
-	@Value("#{'${mosip.supported-languages}'.split(',')}")
-	private Set<String> supLanguages;
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
+
+	private Set<String> supportedLanguages;
 
 	/**
 	 * minimum digits after decimal point in Longitude and latitude
@@ -154,6 +170,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@PostConstruct
 	public void constructRegEx() {
+		supportedLanguages = new HashSet<>(Arrays.asList(secondaryLang.split(",")));
+		supportedLanguages.add(primaryLang);
+		System.out.println("=====supportedLanguages===" + supportedLanguages);
 		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
 		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
 	}
@@ -219,7 +238,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * getRegistrationCentersByCoordinates(double, double, int, java.lang.String)
+	 * getRegistrationCentersByCoordinates(double, double, int,
+	 * java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterResponseDto getRegistrationCentersByCoordinates(double longitude, double latitude,
@@ -387,7 +407,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
+	 * validateTimestampWithRegistrationCenter(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode,
@@ -406,8 +427,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
 			/**
-			 * a query is written in RegistrationCenterRepository which would check if the
-			 * date is not a holiday for that center
+			 * a query is written in RegistrationCenterRepository which would
+			 * check if the date is not a holiday for that center
 			 *
 			 */
 			RegistrationCenter registrationCenter = registrationCenterRepository.findByIdAndLangCode(id, langCode);
@@ -669,12 +690,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
 		List<String> inputLangCodeList = new ArrayList<>();
 
-		// Get RegistrationCenter Id by calling RegistrationCenterIdGenerator API
+		// Get RegistrationCenter Id by calling RegistrationCenterIdGenerator
+		// API
 		String regCenterID = registrationCenterIdGenerator.generateRegistrationCenterId();
 
 		validateRegCenterCreateReq(reqRegistarionCenterReqDto, inputLangCodeList);
 		// validate to check if data is received in all configured languages
-		if (!new HashSet<String>(inputLangCodeList).containsAll(supLanguages)) {
+		if ((!new HashSet<String>(inputLangCodeList).containsAll(supportedLanguages))
+				|| (!supportedLanguages.containsAll(new HashSet<String>(inputLangCodeList)))) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
@@ -694,20 +717,21 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
 						registrationCenterEntity.getClass());
 				/*
-				 * RegistrationCenterID from the rcid_Seq Table, RegistrationCenterID get by
-				 * calling RegistrationCenterIdGenerator API method
+				 * RegistrationCenterID from the rcid_Seq Table,
+				 * RegistrationCenterID get by calling
+				 * RegistrationCenterIdGenerator API method
 				 * generateRegistrationCenterId().
 				 * 
 				 */
 				registrationCenterEntity.setId(regCenterID);
 				/*
-				 * at the time of creation of new Registration Center Number of Kiosks value
-				 * will be Zero always
+				 * at the time of creation of new Registration Center Number of
+				 * Kiosks value will be Zero always
 				 */
 				registrationCenterEntity.setNumberOfKiosks((short) 0);
 				/*
-				 * Deactivate a Center during first time creation since there will be no
-				 * machines initially mapped to the Center
+				 * Deactivate a Center during first time creation since there
+				 * will be no machines initially mapped to the Center
 				 */
 				registrationCenterEntity.setIsActive(false);
 				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
@@ -741,14 +765,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			String latitude = registrationCenterDto.getLatitude();
 			String longitude = registrationCenterDto.getLongitude();
 
-			// validation to check the RegCenter Start Time is greater than RegCenter End
+			// validation to check the RegCenter Start Time is greater than
+			// RegCenter End
 			// Time
 			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 				throw new RequestException(
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
 			}
-			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// validation to check the RegCenter Lunch Start Time is greater
+			// than RegCenter
 			// Lunch End Time
 			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
 				throw new RequestException(
@@ -793,12 +819,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 		validateRegCenterUpdateReq(reqRegistarionCenterReqDto, inputLangCodeSet, inputIdList, idLangList);
 		// validate to check if data is received in all configured languages
-		if (!inputLangCodeSet.containsAll(supLanguages)) {
+		if ((!inputLangCodeSet.containsAll(supportedLanguages))
+				|| (!supportedLanguages.containsAll(inputLangCodeSet))) {
 			throw new RequestException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
 		}
-		// validate to check if data is received for only one registration center or not
+		// validate to check if data is received for only one registration
+		// center or not
 		else if (new HashSet<String>(inputIdList).size() > 1) {
 			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
@@ -864,7 +892,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
 			}
 
-			// validation to check the RegCenter Start Time is greater than RegCenter End
+			// validation to check the RegCenter Start Time is greater than
+			// RegCenter End
 			// Time
 			else if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
 				throw new RequestException(
@@ -873,7 +902,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 			}
 
-			// validation to check the RegCenter Lunch Start Time is greater than RegCenter
+			// validation to check the RegCenter Lunch Start Time is greater
+			// than RegCenter
 			// Lunch End Time
 			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
 				throw new RequestException(
@@ -893,8 +923,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * createRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
-	 * RegistrationCenterDto)
+	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request.
+	 * SearchDto)
 	 */
 	@Override
 	public PageResponseDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto) {
@@ -923,8 +953,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				}
 				removeList.add(filter);
 			}
-			inputLangCodeList.add(registrationCenterDto.getLangCode());
-
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
@@ -1002,8 +1030,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	/**
-	 * Method to prepare search filters based on the registration center type code
-	 * list passed
+	 * Method to prepare search filters based on the registration center type
+	 * code list passed
 	 * 
 	 * @param regCenterTypes
 	 *            list of registration center types
@@ -1031,8 +1059,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	/**
-	 * Method to build search filter by the registration center type id to fetch the
-	 * exact registration center
+	 * Method to build search filter by the registration center type id to fetch
+	 * the exact registration center
 	 * 
 	 * @param centerType
 	 *            request registration center
