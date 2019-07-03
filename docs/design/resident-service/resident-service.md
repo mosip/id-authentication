@@ -47,7 +47,7 @@ This service enables Individual to request for an OTP. The OTP will be send via 
 
 This service will respond with service request (UIN Generation/Updataion,Reprint etc) status to registerd phone/email.
 
-![](_images/iRS-StatusCheckReq.png) 
+![](_images/RS-StatusCheckReq.png) 
 
 #### 2.3. Get e-UIN 
 
