@@ -16,7 +16,12 @@ public enum MachineErrorCode {
 	DEPENDENCY_EXCEPTION("KER-MSD-148", "Cannot delete as dependency found"),
 	REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION("KER-MSD-XXX",
 			"Error occurred while fetching a Machine details mapped with the given Registration Center"),
-	MACHINE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Machine Not Found");
+	MACHINE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Machine Not Found"),
+	MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION("xxx","No Machine id mapped found"),
+	MACHINE_ID_ALREADY_MAPPED_EXCEPTION("xxx","All Machine Id are mapped"),
+	INVALID_MACHINE_FILTER_VALUE_EXCEPTION("xxx","Invalid filter value"),
+	MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("xxx","No Machine Id found for name:%s"),
+	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("xxx","No Machine specification id found for name:%s");
 
 	private final String errorCode;
 	private final String errorMessage;

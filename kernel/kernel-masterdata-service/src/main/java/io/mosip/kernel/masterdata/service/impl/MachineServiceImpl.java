@@ -1,6 +1,11 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -17,9 +22,16 @@ import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
+import io.mosip.kernel.masterdata.entity.MachineSpecification;
+import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
@@ -37,7 +49,11 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.service.MachineService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * This class have methods to fetch a Machine Details
@@ -72,6 +88,12 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@Autowired
+	private FilterTypeValidator filterValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -316,15 +338,143 @@ public class MachineServiceImpl implements MachineService {
 			throw new RequestException(MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineErrorCode.MACHINE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		
+
 		pageDto.setPageNo(pageEntity.getNumber());
 		pageDto.setPageSize(pageEntity.getSize());
 		pageDto.setSort(pageEntity.getSort());
 		pageDto.setTotalItems(pageEntity.getTotalElements());
 		pageDto.setTotalPages(pageEntity.getTotalPages());
 		pageDto.setData(machineRegistrationCenterDtoList);
-		
+
 		return pageDto;
 
+	}
+
+	@Override
+	public PageResponseDto<MachineExtnDto> searchMachine(SearchDto dto) {
+		PageResponseDto<MachineExtnDto> pageDto = new PageResponseDto<>();
+		List<MachineExtnDto> machines = null;
+		List<SearchFilter> addList = new ArrayList<>();
+		List<SearchFilter> removeList = new ArrayList<>();
+		List<String> mappedMachineIdList = null;
+		for (SearchFilter filter : dto.getFilters()) {
+			String column = filter.getColumnName();
+
+			if (column.equalsIgnoreCase("mapStatus")) {
+
+				if (filter.getValue().equalsIgnoreCase("assigned")) {
+					mappedMachineIdList = machineRepository.findMappedMachineId();
+					addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
+					if (addList.isEmpty()) {
+						throw new DataNotFoundException(
+								MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(), String.format(
+										MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage()));
+					}
+
+				} else {
+					if (filter.getValue().equalsIgnoreCase("unassigned")) {
+						mappedMachineIdList = machineRepository.findNotMappedMachineId();
+						addList.addAll(buildRegistrationCenterMachineTypeSearchFilter(mappedMachineIdList));
+						if (addList.isEmpty()) {
+							throw new DataNotFoundException(
+									MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorCode(), String.format(
+											MachineErrorCode.MACHINE_ID_ALREADY_MAPPED_EXCEPTION.getErrorMessage()));
+						}
+					} else {
+						throw new RequestException(
+								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorCode(),
+								MachineErrorCode.INVALID_MACHINE_FILTER_VALUE_EXCEPTION.getErrorMessage());
+					}
+
+				}
+				removeList.add(filter);
+			}
+
+			if (column.equalsIgnoreCase("machineTypeName")) {
+				filter.setColumnName("name");
+				Page<MachineType> machineTypes = masterdataSearchHelper.searchMasterdata(MachineType.class,
+						new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
+						Collections.emptyList());
+				List<SearchFilter> machineCodeFilter = buildMachineTypeSearchFilter(machineTypes.getContent());
+				if (machineCodeFilter.isEmpty()) {
+					throw new DataNotFoundException(
+							MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
+							String.format(MachineErrorCode.MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorMessage(),
+									filter.getValue()));
+				}
+				Page<MachineSpecification> machineSpecification = masterdataSearchHelper.searchMasterdata(
+						MachineSpecification.class,
+						new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null),
+						Collections.emptyList());
+
+				removeList.add(filter);
+				addList.addAll(buildMachineSpecificationSearchFilter(machineSpecification.getContent()));
+				if (addList.isEmpty()) {
+					throw new DataNotFoundException(
+							MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION.getErrorCode(),
+							String.format(MachineErrorCode.MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION
+									.getErrorMessage(), filter.getValue()));
+				}
+			}
+
+		}
+		dto.getFilters().removeAll(removeList);
+
+		if (filterValidator.validate(MachineExtnDto.class, dto.getFilters())) {
+			Page<Machine> page = masterdataSearchHelper.searchMasterdata(Machine.class, dto, addList);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				machines = MapperUtils.mapAll(page.getContent(), MachineExtnDto.class);
+				pageDto.setData(machines);
+			}
+
+		}
+		return pageDto;
+
+	}
+
+	private List<SearchFilter> buildRegistrationCenterMachineTypeSearchFilter(List<String> machineIdList) {
+		if (machineIdList != null && !machineIdList.isEmpty())
+			return machineIdList.stream().filter(Objects::nonNull).map(this::buildRegistrationCenterMachineType)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	private List<SearchFilter> buildMachineTypeSearchFilter(List<MachineType> machineTypes) {
+		if (machineTypes != null && !machineTypes.isEmpty())
+			return machineTypes.stream().filter(Objects::nonNull).map(this::buildMachineType)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	private List<SearchFilter> buildMachineSpecificationSearchFilter(List<MachineSpecification> regCenterTypes) {
+		if (regCenterTypes != null && !regCenterTypes.isEmpty())
+			return regCenterTypes.stream().filter(Objects::nonNull).map(this::buildMachineSpecification)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	private SearchFilter buildRegistrationCenterMachineType(String machineId) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName("id");
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(machineId);
+		return filter;
+	}
+
+	private SearchFilter buildMachineSpecification(MachineSpecification machineSpecification) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName("machineSpecId");
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(machineSpecification.getId());
+		return filter;
+	}
+
+	private SearchFilter buildMachineType(MachineType centerType) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName("machineTypeCode");
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(centerType.getCode());
+		return filter;
 	}
 }
