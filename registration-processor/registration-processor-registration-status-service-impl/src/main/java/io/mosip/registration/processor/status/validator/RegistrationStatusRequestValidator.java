@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
@@ -38,7 +39,7 @@ public class RegistrationStatusRequestValidator {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
 	/** The mosip logger. */
-	Logger mosipLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
+	Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
 
 	/** The Constant REG_STATUS_SERVICE. */
 	private static final String REG_STATUS_SERVICE = "RegStatusService";
@@ -66,10 +67,17 @@ public class RegistrationStatusRequestValidator {
 	 */
 	public void validate(RegistrationStatusRequestDTO registrationStatusRequestDTO, String serviceId)
 			throws RegStatusAppException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationStatusRequestValidator::validate()::entry");
+
 		id.put("status", serviceId);
 		validateId(registrationStatusRequestDTO.getId());
 		validateVersion(registrationStatusRequestDTO.getVersion());
 		validateReqTime(registrationStatusRequestDTO.getRequesttime());
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationStatusRequestValidator::validate()::exit");
+
 	}
 
 	/**
@@ -140,7 +148,7 @@ public class RegistrationStatusRequestValidator {
 
 				}
 			} catch (IllegalArgumentException e) {
-				mosipLogger.error(REG_STATUS_SERVICE, "IdRequestValidator", "validateReqTime",
+				regProcLogger.error(REG_STATUS_SERVICE, "IdRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,
 						exception);

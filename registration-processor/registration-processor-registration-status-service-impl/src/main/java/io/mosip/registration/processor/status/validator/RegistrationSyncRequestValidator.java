@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -72,6 +73,9 @@ public class RegistrationSyncRequestValidator {
 
 	public boolean validate(Object target, String serviceId, List<SyncResponseDto> synchResponseList) {
 		boolean isValid = false;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationSyncRequestValidator::validate()::entry");
+
 		id.put("sync", serviceId);
 		request = (RegistrationSyncRequestDTO) target;
 		if (validateReqTime(request.getRequesttime(), synchResponseList)
@@ -79,6 +83,9 @@ public class RegistrationSyncRequestValidator {
 				&& validateVersion(request.getVersion(), synchResponseList)) {
 			isValid = true;
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationSyncRequestValidator::validate()::exit");
+
 		return isValid;
 	}
 

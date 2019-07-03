@@ -435,6 +435,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
 				status = false;
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + ExceptionUtils.getStackTrace(e));
 				return status;
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -482,6 +485,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
 				status = false;
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + ExceptionUtils.getStackTrace(e));
 				return status;
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

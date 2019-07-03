@@ -87,7 +87,6 @@ public class RestApiClient {
 		T result = null;
 		try {
 			restTemplate = getRestTemplate();
-			// result = (T) restTemplate.getForObject(uri, responseType);
 			result = (T) restTemplate.exchange(uri, HttpMethod.GET, setRequestHeader(null, null), responseType)
 					.getBody();
 		} catch (Exception e) {
