@@ -406,15 +406,20 @@ public class BioDedupeProcessor {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(registrationId);
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call started : ");
+
 		byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
 
 		if (bytefile != null) {
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "Fetched ByteFile");
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId,
+					"BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call ended and Fetched ByteFile");
 			return true;
 		} else if (registrationType.equalsIgnoreCase(SyncTypeDto.LOST.toString())) {
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, BioDedupeConstants.CBEFF_NOT_FOUND);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call ended"
+							+ BioDedupeConstants.CBEFF_NOT_FOUND);
 			throw new CbeffNotFoundException(PlatformErrorMessages.PACKET_BIO_DEDUPE_CBEFF_NOT_PRESENT.getMessage());
 		} else {
 
