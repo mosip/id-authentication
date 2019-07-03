@@ -191,7 +191,7 @@ public class DeleteAllDocumentsByPreRegID extends BaseTestCase implements ITest 
 		testCaseName = object.get("testCaseName").toString();
 
 		//Delete Document By PreregistrationId Resource URI
-		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DeleteAllDocumentByPreIdURI");
+		preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_DelAllDocumentByPreIdURI");
 		if (!preRegLib.isValidToken(individualToken)) {
 			individualToken = preRegLib.getToken();
 		}

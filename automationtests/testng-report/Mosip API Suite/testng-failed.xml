@@ -6,17 +6,199 @@
     <listener class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener"/>
     <listener class-name="io.mosip.authentication.e2e.E2EReport"/>
   </listeners>
-  <test name="RegistrationProcessor Tests(failed)">
+  <test name="PreReg Tests(failed)">
     <classes>
-      <class name="io.mosip.registrationProcessor.tests.Sync">
+      <class name="io.mosip.preregistration.tests.BatchJob">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="batchJobForExpiredApplication"/>
+          <include name="login"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="getToken"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.BatchJob -->
+      <class name="io.mosip.preregistration.tests.TriggerNotification">
+        <methods>
+          <include name="setResultTestName"/>
+          <include name="suiteSetup"/>
+          <include name="triggerNotification" invocation-numbers="23"/>
+          <include name="getTestCaseName"/>
+          <include name="testTearDown"/>
+          <include name="statusUpdate"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.TriggerNotification -->
+      <class name="io.mosip.preregistration.tests.IntegrationScenarios">
+        <methods>
+          <include name="updatePreRegistrationDataForExpiredApplication"/>
+          <include name="suiteSetup"/>
+          <include name="consumedBatchJobService"/>
+          <include name="cosumedBookedAppointment"/>
+          <include name="bookAppointmentForExpiredApplication"/>
+          <include name="login"/>
+          <include name="testTearDown"/>
+          <include name="readPropertiesFile"/>
+          <include name="setResultTestName"/>
+          <include name="cancelAppointmentForExpiredApplication"/>
+          <include name="cosumedExpiredAppointment"/>
+          <include name="expiredBatchJobService"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.IntegrationScenarios -->
+      <class name="io.mosip.preregistration.tests.Pagination">
+        <methods>
+          <include name="run"/>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
+          <include name="pagination_withoutPageIndexValue"/>
+          <include name="readPropertiesFile"/>
+          <include name="pagination_withNullValue"/>
+          <include name="testTearDown"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.Pagination -->
+      <class name="io.mosip.preregistration.tests.SendOtp">
         <methods>
           <include name="suiteSetup"/>
           <include name="setResultTestName"/>
-          <include name="sync" invocation-numbers="12 23 25"/>
+          <include name="readPropertiesFile"/>
+          <include name="testTearDown"/>
+          <include name="login"/>
+          <include name="sendOtpToEmailId"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.SendOtp -->
+      <class name="io.mosip.preregistration.tests.Audit">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
+          <include name="getAuditDataForBatchJobExpired"/>
+          <include name="run"/>
+          <include name="readPropertiesFile"/>
+          <include name="getAuditDataForBatchJobConsumed"/>
+          <include name="testTearDown"/>
+          <include name="login"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.Audit -->
+      <class name="io.mosip.preregistration.tests.InvalidateToken">
+        <methods>
+          <include name="setResultTestName"/>
+          <include name="suiteSetup"/>
+          <include name="readPropertiesFile"/>
+          <include name="login"/>
+          <include name="invalidateToken"/>
+          <include name="testTearDown"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.InvalidateToken -->
+      <class name="io.mosip.preregistration.tests.FetchAppointmentDetails">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="fetchAppointmentDetails" invocation-numbers="5 8 9"/>
+          <include name="setResultTestName"/>
+          <include name="getTestCaseName"/>
+          <include name="testTearDown"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.FetchAppointmentDetails -->
+      <class name="io.mosip.preregistration.tests.OperationWithDifferentToken">
+        <methods>
+          <include name="rebookAppointmentUsingUserBToken"/>
+          <include name="suiteSetup"/>
+          <include name="getToken"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="login"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.OperationWithDifferentToken -->
+      <class name="io.mosip.preregistration.tests.UpdateDemographicDetails">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="login"/>
+          <include name="readPropertiesFile"/>
+          <include name="updateDemographicDetailsOfExpiredAppointment"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.UpdateDemographicDetails -->
+      <class name="io.mosip.preregistration.tests.ValidateOtp">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="testTearDown"/>
+          <include name="validateWithoutGeneratingOtp"/>
+          <include name="login"/>
+          <include name="setResultTestName"/>
+          <include name="readPropertiesFile"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.ValidateOtp -->
+      <class name="io.mosip.preregistration.tests.QRCode">
+        <methods>
+          <include name="qrCode" invocation-numbers="15"/>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
           <include name="testTearDown"/>
           <include name="getTestCaseName"/>
         </methods>
-      </class> <!-- io.mosip.registrationProcessor.tests.Sync -->
+      </class> <!-- io.mosip.preregistration.tests.QRCode -->
+      <class name="io.mosip.preregistration.tests.GetAllDocumentForPreRegId">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="getAllDocumentForPreRegId" invocation-numbers="2 3 4 5 6"/>
+          <include name="testTearDown"/>
+          <include name="getTestCaseName"/>
+          <include name="setResultTestName"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.GetAllDocumentForPreRegId -->
+      <class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="getTestCaseName"/>
+          <include name="deleteAllDocumentsByPreRegID" invocation-numbers="2 3 4 5 6"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID -->
+      <class name="io.mosip.preregistration.tests.DeleteDocumentByDocId">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
+          <include name="getTestCaseName"/>
+          <include name="deleteDocumentByDocId" invocation-numbers="2 5 7 8 10 11 12"/>
+          <include name="testTearDown"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.DeleteDocumentByDocId -->
+      <class name="io.mosip.preregistration.tests.CancelAnBookedAppointment">
+        <methods>
+          <include name="getTestCaseName"/>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="cancelAnBookedAppointment" invocation-numbers="0 1 4 7 9"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.CancelAnBookedAppointment -->
+      <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="retrivePreRegistrationByRegistrationCenterId" invocation-numbers="9 10"/>
+          <include name="getTestCaseName"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId -->
+      <class name="io.mosip.preregistration.tests.GetAllDocumentForDocId">
+        <methods>
+          <include name="setResultTestName"/>
+          <include name="suiteSetup"/>
+          <include name="getAllDocumentForDocId" invocation-numbers="3 6 9 12"/>
+          <include name="getTestCaseName"/>
+          <include name="testTearDown"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.GetAllDocumentForDocId -->
+      <class name="io.mosip.preregistration.tests.Translitration">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="translitrationFromFranchToArabic"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="readPropertiesFile"/>
+          <include name="login"/>
+        </methods>
+      </class> <!-- io.mosip.preregistration.tests.Translitration -->
     </classes>
-  </test> <!-- RegistrationProcessor Tests(failed) -->
+  </test> <!-- PreReg Tests(failed) -->
 </suite> <!-- Failed suite [Mosip API Suite] -->

@@ -19,5 +19,6 @@
    "Pre Reg_Demographic_Create Pre Registration without passing Local Administrative Authority in request":"",
    "Pre Reg_Demographic_Create Pre Registration without passing Postal code in request":"",
    "Pre Reg_Demographic_Create Pre Registration without passing Province in request":"",
-   "Pre Reg_Demographic_Create Pre Registration without passing Region in request":""
+   "Pre Reg_Demographic_Create Pre Registration without passing Region in request":"",
+   "Pre Reg_Demographic_requesttime_Create Pre Registration By past date":""
 }

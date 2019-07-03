@@ -32,7 +32,7 @@
                     },
                     {
                         "language": "ara",
-                        "value": "جَگَدِسهوَرِ سِلڤَرَج"
+                        "value": "Ø¬ÙŽÚ¯ÙŽØ¯Ù�Ø³Ù‡ÙˆÙŽØ±Ù� Ø³Ù�Ù„Ú¤ÙŽØ±ÙŽØ¬"
                     }
                 ],
                 "localAdministrativeAuthority": [
@@ -64,7 +64,7 @@
                     },
                     {
                         "language": "ara",
-                        "value": "مِندترِِ پهَسِ ٢، گلُبَل ڤِللَگِ"
+                        "value": "Ù…Ù�Ù†Ø¯ØªØ±Ù�Ù� Ù¾Ù‡ÙŽØ³Ù� Ù¢ØŒ Ú¯Ù„Ù�Ø¨ÙŽÙ„ Ú¤Ù�Ù„Ù„ÙŽÚ¯Ù�"
                     }
                 ],
                 "residenceStatus": [
@@ -84,7 +84,7 @@
                     },
                     {
                         "language": "ara",
-                        "value": "كَرنَتَكَ"
+                        "value": "ÙƒÙŽØ±Ù†ÙŽØªÙŽÙƒÙŽ"
                     }
                 ],
                 "addressLine3": [
@@ -107,6 +107,7 @@
                         "value": "RSK"
                     }
                 ],
+				"phone": "9625625706",
                 "email": "ashish.rastogi@mindtree.com"
 
             }

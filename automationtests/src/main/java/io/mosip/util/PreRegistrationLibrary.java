@@ -55,6 +55,7 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.preregistration.util.PreRegistrationUtil;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
@@ -87,6 +88,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	// private static CommonLibrary commonLibrary = new CommonLibrary();
 	io.mosip.kernel.util.CommonLibrary cLib = new io.mosip.kernel.util.CommonLibrary();
+	RegProcApiRequests regproc=new RegProcApiRequests();
 
 	private static String preReg_CreateApplnURI;
 	PreregistrationDAO dao = new PreregistrationDAO();
@@ -270,29 +272,36 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return this method is for checking cookie(token) is expired or not.
 	 */
 	public boolean isValidToken(String cookie) {
-		// we will have to read configCookieTime, token and secret from property file
-		String token_base = "Mosip-Token";
-		String secret = "authjwtsecret";
-		long configCookieTime = 20;
-		Integer cookieGenerationTimeMili = null;
+		
+		if(regproc.validateToken(cookie))
+		{
+			// we will have to read configCookieTime, token and secret from property file
+			String token_base = "Mosip-Token";
+			String secret = "authjwtsecret";
+			long configCookieTime = 20;
+			Integer cookieGenerationTimeMili = null;
 
-		try {
-			cookieGenerationTimeMili = (Integer) Jwts.parser().setSigningKey(secret)
-					.parseClaimsJws(cookie.substring(token_base.length())).getBody().get("iat");
-		} catch (ExpiredJwtException | NullPointerException | UnsupportedJwtException | MalformedJwtException
-				| SignatureException | IllegalArgumentException e) {
-			logger.info(e.getMessage());
-			return false;
+			try {
+				cookieGenerationTimeMili = (Integer) Jwts.parser().setSigningKey(secret)
+						.parseClaimsJws(cookie.substring(token_base.length())).getBody().get("iat");
+			} catch (ExpiredJwtException | NullPointerException | UnsupportedJwtException | MalformedJwtException
+					| SignatureException | IllegalArgumentException e) {
+				logger.info(e.getMessage());
+				return false;
+			}
+			Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) * 1000);
+			Date currentDate = new Date();
+			long intervalMin = (currentDate.getTime() - date.getTime()) / (60 * 1000) % 60;
+
+			if (intervalMin <= configCookieTime)
+				return true;
+			else
+				return false;
+
 		}
-		Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) * 1000);
-		Date currentDate = new Date();
-		long intervalMin = (currentDate.getTime() - date.getTime()) / (60 * 1000) % 60;
-
-		if (intervalMin <= configCookieTime)
-			return true;
 		else
 			return false;
-
+		
 	}
 
 	/**
