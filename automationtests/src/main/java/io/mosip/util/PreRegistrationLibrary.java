@@ -1142,10 +1142,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object = new JSONObject();
 				JSONObject innerData = new JSONObject();
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
-				regCenterId = appointmentDetails.get(0);
-				appDate = appointmentDetails.get(1);
-				timeSlotFrom = appointmentDetails.get(2);
-				timeSlotTo = appointmentDetails.get(3);
+				try {
+					regCenterId = appointmentDetails.get(0);
+					appDate = appointmentDetails.get(1);
+					timeSlotFrom = appointmentDetails.get(2);
+					timeSlotTo = appointmentDetails.get(3);
+				} catch (IndexOutOfBoundsException e) {
+					Assert.fail("slots are not available for give registration center");
+				}
+			
 				object.put("registration_center_id", regCenterId);
 				object.put("appointment_date", appDate);
 				object.put("time_slot_from", timeSlotFrom);
@@ -1346,7 +1351,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		} catch (NullPointerException e) {
 			Assert.assertTrue(false, "Failed to fetch registration details while booking appointment");
 		}
-
 		for (int i = 0; i < countCenterDetails; i++) {
 			try {
 				fetchCenterResponse.jsonPath().get("response.centerDetails[" + i + "].timeSlots[0].fromTime")
@@ -1354,6 +1358,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			} catch (NullPointerException e) {
 				continue;
 			}
+			
 			try {
 				appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());
 				appointmentDetails
