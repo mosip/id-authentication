@@ -117,9 +117,10 @@ public class OTPManagerTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class))).thenReturn(authTokenDTO);
+		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class), Mockito.anyBoolean()))
+				.thenReturn(authTokenDTO);
 
-		assertNotNull(otpManager.validateOTP("mosip", "12345"));
+		assertNotNull(otpManager.validateOTP("mosip", "12345", true));
 	}
 
 	@Test
@@ -129,9 +130,9 @@ public class OTPManagerTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		Mockito.doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(serviceDelegateUtil)
-				.getAuthToken(Mockito.any(LoginMode.class));
+				.getAuthToken(Mockito.any(LoginMode.class), Mockito.anyBoolean());
 
-		assertNull(otpManager.validateOTP("mosip", "12345"));
+		assertNull(otpManager.validateOTP("mosip", "12345", true));
 	}
 
 	@Test
@@ -142,8 +143,8 @@ public class OTPManagerTest {
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		Mockito.doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(serviceDelegateUtil)
-				.getAuthToken(Mockito.any(LoginMode.class));
-		assertNull(otpManager.validateOTP("mosip", "12345"));
+				.getAuthToken(Mockito.any(LoginMode.class), Mockito.anyBoolean());
+		assertNull(otpManager.validateOTP("mosip", "12345", true));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -196,7 +197,7 @@ public class OTPManagerTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 
-		assertNotNull(otpManager.validateOTP("Key", "123456"));
+		assertNotNull(otpManager.validateOTP("Key", "123456", true));
 
 	}
 

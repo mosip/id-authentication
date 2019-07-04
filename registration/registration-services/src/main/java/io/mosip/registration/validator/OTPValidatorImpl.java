@@ -36,8 +36,8 @@ public class OTPValidatorImpl extends AuthenticationBaseValidator {
 	 * @see io.mosip.registration.validator.AuthenticationBaseValidator#validate(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public AuthTokenDTO validate(String userId, String otp) {
-		return otpManager.validateOTP(userId, otp);
+	public AuthTokenDTO validate(String userId, String otp, boolean haveToSaveAuthToken) {
+		return otpManager.validateOTP(userId, otp, haveToSaveAuthToken);
 	}
 
 }

@@ -143,7 +143,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 	}
 
 	@Override
-	public AuthTokenDTO validate(String userId, String otp) {
+	public AuthTokenDTO validate(String userId, String otp, boolean haveToSaveAuthToken) {
 		return null;
 	}	
 }
