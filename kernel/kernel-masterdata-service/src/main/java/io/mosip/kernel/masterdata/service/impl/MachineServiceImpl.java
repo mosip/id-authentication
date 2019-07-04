@@ -505,15 +505,12 @@ public class MachineServiceImpl implements MachineService {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper.filterValues(Machine.class, filterDto.getColumnName(), filterDto.getType(),
 						filterValueDto.getLanguageCode()).forEach(filterValue -> {
-							if (filterValue == null) {
-								throw new DataNotFoundException(
-										MachineErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorCode(),
-										MachineErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorMessage());
+							if (filterValue != null) {
+								ColumnValue columnValue = new ColumnValue();
+								columnValue.setFieldID(filterDto.getColumnName());
+								columnValue.setFieldValue(filterValue.toString());
+								columnValueList.add(columnValue);
 							}
-							ColumnValue columnValue = new ColumnValue();
-							columnValue.setFieldID(filterDto.getColumnName());
-							columnValue.setFieldValue(filterValue.toString());
-							columnValueList.add(columnValue);
 						});
 			}
 			filterResponseDto.setFilters(columnValueList);
