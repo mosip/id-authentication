@@ -11,9 +11,9 @@ public enum ValidationErrorCode {
 	COLUMN_DOESNT_EXIST("KER-MSD-317","Column %s doesn't exist for the searched entity"), 
 	FILTER_NOT_SUPPORTED("KER-MSD-318","Column %s doesn't support filter type %s"), 
 	INVALID_COLUMN_VALUE("KER-MSD-319","Column value is null or empty"),
-	NO_FILTER_COLUMN_FOUND("-----1----", "Type can't be empty or null"), 
-	FILTER_COLUMN_DOESNT_EXIST("----2-----","Type %s doesn't exist for the searched entity"), 
-	FILTER_COLUMN_NOT_SUPPORTED("-----3----","Type doesn't support filter %s");
+	NO_FILTER_COLUMN_FOUND("KER-MSD-322", "Filter Type cannot be empty or null"), 
+	FILTER_COLUMN_DOESNT_EXIST("KER-MSD-323","Filter Type for column %s is not supported"), 
+	FILTER_COLUMN_NOT_SUPPORTED("KER-MSD-324","Received Filter Type %s not supported");
 
 	/**
 	 * Error Code

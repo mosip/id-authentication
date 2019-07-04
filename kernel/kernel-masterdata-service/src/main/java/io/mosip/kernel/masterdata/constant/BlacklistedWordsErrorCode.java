@@ -12,8 +12,7 @@ public enum BlacklistedWordsErrorCode {
 	BLACKLISTED_WORDS_FETCH_EXCEPTION("KER-MSD-007", "Error occurred while fetching Blacklisted words"),
 	BLACKLISTED_WORDS_INSERT_EXCEPTION("KER-MSD-070", "Error occurred while inserting Blacklisted words"),
 	BLACKLISTED_WORDS_UPDATE_EXCEPTION("KER-MSD-105", "Error occurred while updating Blacklisted Word"),
-	BLACKLISTED_WORDS_DELETE_EXCEPTION("KER-MSD-106", "Error occurred while deleting Blacklisted Word"),
-	NO_DATA_FOR_FILTER_VALUES("KER-MSD-___","No Data Found for the given filter column");
+	BLACKLISTED_WORDS_DELETE_EXCEPTION("KER-MSD-106", "Error occurred while deleting Blacklisted Word");
 	/**
 	 * The error code.
 	 */
