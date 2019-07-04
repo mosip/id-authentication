@@ -624,8 +624,8 @@ public class LocationServiceImpl implements LocationService {
 						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
 							if (filterValue == null) {
 								throw new DataNotFoundException(
-										BlacklistedWordsErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorCode(),
-										BlacklistedWordsErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorMessage());
+										LocationErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorCode(),
+										LocationErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorMessage());
 							}
 							ColumnValue columnValue = new ColumnValue();
 							columnValue.setFieldID(filterDto.getColumnName());
