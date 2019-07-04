@@ -548,8 +548,26 @@ public class MasterdataSearchIntegrationTest {
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
 		when(masterDataFilterHelper.filterValues(Mockito.eq(Machine.class), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(Arrays.asList("machineName","secondMachineName"));
+				Mockito.any())).thenReturn(Arrays.asList("machineName", "secondMachineName"));
 		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void filterBlackListedWordsTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("word");
+		filterDto.setType("all");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Arrays.asList("damn", "dammit"));
+		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 }
