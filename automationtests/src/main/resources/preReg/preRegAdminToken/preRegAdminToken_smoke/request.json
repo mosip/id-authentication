@@ -3,7 +3,7 @@
   "request": {
     "appId": "preregistration",
     "password": "eb9c03da6a467ceb0745fb3d3d05c7ef76ac3d625c8d4c29202531818c77463a",
-    "userName": "preregadminuser1"
+    "userName": "preregadmin"
   },
   "timestamp": "string",
   "version": "string"

@@ -5,8 +5,8 @@
    "response":null,
    "errors": [
   	{
-    	    "errorCode": "PRG_PAM_DOC_005",
-    	    "message": "Documents is not found for the requested pre-registration id"
+    	    "errorCode": "PRG_PAM_APP_005",
+    	    "message": "No data found for the requested pre-registration id"
         }
     ]
 }

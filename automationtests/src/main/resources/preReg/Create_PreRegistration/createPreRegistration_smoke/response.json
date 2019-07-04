@@ -1,10 +1,10 @@
 {
     "id": "mosip.pre-registration.demographic.create",
     "version": "1.0",
-    "responsetime": "2019-06-24T11:09:04.239Z",
+    "responsetime": "2019-07-02T07:39:40.233Z",
     "response": {
-        "preRegistrationId": "38120890836824",
-        "createdDateTime": "2019-06-24T11:09:04.059Z",
+        "preRegistrationId": "74627514687265",
+        "createdDateTime": "2019-07-02T07:39:39.978Z",
         "statusCode": "Pending_Appointment",
         "langCode": "fra",
         "demographicDetails": {
@@ -63,7 +63,6 @@
                         "value": "KTA"
                     }
                 ],
-                "phone": "9625625706",
                 "addressLine1": [
                     {
                         "language": "fra",
