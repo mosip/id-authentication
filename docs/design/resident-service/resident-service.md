@@ -98,7 +98,7 @@ This request will authenticate an Individual based on provided OTP and will lock
 #### 2.11. Auth UnLock
 This request will authenticate an Individual based on provided OTP and will unlock provided locked authentication types.
 
-![](_images/AuthUnLockReq.png) 
+![](_images/AuthUnlockReq.png) 
 
 #### 2.12. Get Auth History
 This request will authenticate an Individual based on provided OTP and respond with auth history. Notification will be sent to phone/email.
