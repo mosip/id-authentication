@@ -552,25 +552,4 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
-	@Test
-	@WithUserDetails("test")
-	public void filterMachineExceptionTest() throws Exception {
-		FilterDto filterDto = new FilterDto();
-		filterDto.setColumnName("deletedDateTime");
-		filterDto.setType("all");
-		FilterValueDto filterValueDto = new FilterValueDto();
-		filterValueDto.setFilters(Arrays.asList(filterDto));
-		filterValueDto.setLanguageCode("eng");
-		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
-		requestDto.setRequest(filterValueDto);
-		String json = objectMapper.writeValueAsString(requestDto);
-		List<Object> list=new ArrayList<>();
-		list.add(null);
-		when(masterDataFilterHelper.filterValues(Mockito.eq(Machine.class), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(list);
-		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
-	}
-
 }
