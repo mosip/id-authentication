@@ -32,6 +32,8 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
@@ -45,10 +47,12 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
-@SpringBootTest
+@SpringBootTest(classes = TestBootApplication.class)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class MasterdataSearchIntegrationTest {
@@ -61,6 +65,9 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@MockBean
+	private MasterDataFilterHelper masterDataFilterHelper;
 
 	@MockBean
 	private LocationService locationService;
@@ -518,7 +525,7 @@ public class MasterdataSearchIntegrationTest {
 		searchDto.setPagination(pagination);
 		searchDto.setSort(Arrays.asList());
 		request.setRequest(searchDto);
-		String json = objectMapper.writeValueAsString(machineRequestDto);
+		String json = objectMapper.writeValueAsString(request);
 		BlacklistedWords blacklistedWords = new BlacklistedWords();
 		blacklistedWords.setWord("BlackListedWord");
 		Page<BlacklistedWords> pageContentData = new PageImpl<>(Arrays.asList(blacklistedWords));
@@ -527,30 +534,23 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/blacklistedwords/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("test")
-	public void filterBlackListedWordsTest() throws Exception {
-		SearchFilter searchFilter = new SearchFilter();
-		searchFilter.setColumnName("word");
-		searchFilter.setType("equals");
-		searchFilter.setValue("damn");
-		SearchDto searchDto = new SearchDto();
-		searchDto.setFilters(Arrays.asList(searchFilter));
-		searchDto.setLanguageCode("eng");
-		Pagination pagination = new Pagination();
-		pagination.setPageFetch(5);
-		pagination.setPageStart(0);
-		searchDto.setPagination(pagination);
-		searchDto.setSort(Arrays.asList());
-		request.setRequest(searchDto);
-		String json = objectMapper.writeValueAsString(machineRequestDto);
-		BlacklistedWords blacklistedWords = new BlacklistedWords();
-		blacklistedWords.setWord("BlackListedWord");
-		Page<BlacklistedWords> pageContentData = new PageImpl<>(Arrays.asList(blacklistedWords));
-		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any()))
-				.thenReturn(pageContentData);
-		mockMvc.perform(post("/blacklistedwords/search").contentType(MediaType.APPLICATION_JSON).content(json))
+	public void filterMachineTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setType("all");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(Machine.class), Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Arrays.asList());
+		mockMvc.perform(post("/machines/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
+
 }
