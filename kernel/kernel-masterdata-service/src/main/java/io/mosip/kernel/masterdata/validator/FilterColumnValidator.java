@@ -66,6 +66,6 @@ public class FilterColumnValidator {
 	}
 
 	private boolean validateFilterColumnType(String filterType) {
-		return  filterType != null && !filterType.isEmpty();
+		return filterType != null && !filterType.trim().isEmpty();
 	}
 }
