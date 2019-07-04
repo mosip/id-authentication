@@ -1180,8 +1180,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	public boolean setUsers(RegistrationCenterSearchDto centerDto) {
 		try {
-			long devices = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
-			centerDto.setMachines(devices);
+			long users = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
+			centerDto.setUsers(users);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
