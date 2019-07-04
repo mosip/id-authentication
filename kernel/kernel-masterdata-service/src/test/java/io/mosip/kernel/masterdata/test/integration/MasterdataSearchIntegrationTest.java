@@ -36,6 +36,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -498,6 +499,58 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchBlackListedWordsTest() throws Exception {
+		SearchFilter searchFilter = new SearchFilter();
+		searchFilter.setColumnName("word");
+		searchFilter.setType("equals");
+		searchFilter.setValue("damn");
+		SearchDto searchDto = new SearchDto();
+		searchDto.setFilters(Arrays.asList(searchFilter));
+		searchDto.setLanguageCode("eng");
+		Pagination pagination = new Pagination();
+		pagination.setPageFetch(5);
+		pagination.setPageStart(0);
+		searchDto.setPagination(pagination);
+		searchDto.setSort(Arrays.asList());
+		request.setRequest(searchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		BlacklistedWords blacklistedWords = new BlacklistedWords();
+		blacklistedWords.setWord("BlackListedWord");
+		Page<BlacklistedWords> pageContentData = new PageImpl<>(Arrays.asList(blacklistedWords));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/blacklistedwords/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void filterBlackListedWordsTest() throws Exception {
+		SearchFilter searchFilter = new SearchFilter();
+		searchFilter.setColumnName("word");
+		searchFilter.setType("equals");
+		searchFilter.setValue("damn");
+		SearchDto searchDto = new SearchDto();
+		searchDto.setFilters(Arrays.asList(searchFilter));
+		searchDto.setLanguageCode("eng");
+		Pagination pagination = new Pagination();
+		pagination.setPageFetch(5);
+		pagination.setPageStart(0);
+		searchDto.setPagination(pagination);
+		searchDto.setSort(Arrays.asList());
+		request.setRequest(searchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		BlacklistedWords blacklistedWords = new BlacklistedWords();
+		blacklistedWords.setWord("BlackListedWord");
+		Page<BlacklistedWords> pageContentData = new PageImpl<>(Arrays.asList(blacklistedWords));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/blacklistedwords/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 }
