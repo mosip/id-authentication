@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.licensekeygenerator.misp.impl.MISPLicenseKeyGeneratorImpl,\
-io.mosip.kernel.licensekeygenerator.misp.util.MISPLicenseKeyGeneratorUtil

@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.auth.adapter.config.BeanConfig,\
-io.mosip.kernel.auth.adapter.config.RestTemplateInterceptor,\
-io.mosip.kernel.auth.adapter.config.SecurityConfig,\
-io.mosip.kernel.auth.adapter.handler.AuthHandler\

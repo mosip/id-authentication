@@ -1,4 +1,0 @@
-# mosip-open-test
-test
-
-

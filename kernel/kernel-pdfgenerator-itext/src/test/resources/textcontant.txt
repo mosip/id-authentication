@@ -1,9 +1,0 @@
-this is the text file to be created form itext 7
-Instructions about final paper and figure submissions in this document are for IEEE journals; 
-please use this document as a &ldquo;template&rdquo; to prepare your manuscript. For submission guidelines,
-follow instructions on paper submission system as well as the Conference web site.
-Please check with your editor on whether to submit your manuscript by hard copy or electronically for review.
-If hard copy, submit photocopies such that only one column appears per page. 
-This will give your referees plenty of room to write comments.
- Send the number of copies specified by your editor (typically four). 
-If submitted electronically, find out if your editor prefers submissions on disk or as e-mail attachments.

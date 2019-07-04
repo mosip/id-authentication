@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.fsadapter.hdfs.impl.HDFSAdapterImpl,io.mosip.kernel.fsadapter.hdfs.util.ConnectionUtils
