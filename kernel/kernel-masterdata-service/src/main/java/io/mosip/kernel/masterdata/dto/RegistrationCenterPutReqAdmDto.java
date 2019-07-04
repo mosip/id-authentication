@@ -39,10 +39,10 @@ public class RegistrationCenterPutReqAdmDto {
 	@Size(min = 1, max = 256)
 	private String addressLine1;
 
-	@Size(min = 1, max = 256)
+	@Size(min = 0, max = 256)
 	private String addressLine2;
 
-	@Size(min = 1, max = 256)
+	@Size(min = 0, max = 256)
 	private String addressLine3;
 
 	@NotBlank
@@ -61,7 +61,7 @@ public class RegistrationCenterPutReqAdmDto {
 	@Size(min = 1, max = 36)
 	private String holidayLocationCode;
 
-	@Size(min = 1, max = 16)
+	@Size(min = 0, max = 16)
 	private String contactPhone;
 
 	@NotBlank
@@ -84,10 +84,10 @@ public class RegistrationCenterPutReqAdmDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime centerEndTime;
 
-	@Size(min = 1, max = 64)
+	@Size(min = 0, max = 64)
 	private String timeZone;
 
-	@Size(min = 1, max = 128)
+	@Size(min = 0, max = 128)
 	private String contactPerson;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
