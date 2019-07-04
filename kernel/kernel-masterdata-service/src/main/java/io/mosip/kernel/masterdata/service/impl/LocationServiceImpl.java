@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -37,7 +36,6 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -71,13 +69,13 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Autowired
 	private LocationRepository locationRepository;
-	
+
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
-	
+
 	@Autowired
-	private MasterdataSearchHelper masterdataSearchHelper; 
-	
+	private MasterdataSearchHelper masterdataSearchHelper;
+
 	@Autowired
 	FilterColumnValidator filterColumnValidator;
 
@@ -598,7 +596,7 @@ public class LocationServiceImpl implements LocationService {
 		return locationRepository.findDistinctByparentLocCode(locCode);
 
 	}
-	
+
 	@Override
 	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationExtnDto> pageDto = new PageResponseDto<>();
@@ -613,30 +611,26 @@ public class LocationServiceImpl implements LocationService {
 		}
 		return pageDto;
 	}
-	
+
 	@Override
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(Location.class, filterDto.getColumnName(),
-						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
-							if (filterValue == null) {
-								throw new DataNotFoundException(
-										LocationErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorCode(),
-										LocationErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorMessage());
+				masterDataFilterHelper.filterValues(Location.class, filterDto.getColumnName(), filterDto.getType(),
+						filterValueDto.getLanguageCode()).forEach(filterValue -> {
+							if (filterValue != null) {
+								ColumnValue columnValue = new ColumnValue();
+								columnValue.setFieldID(filterDto.getColumnName());
+								columnValue.setFieldValue(filterValue.toString());
+								columnValueList.add(columnValue);
 							}
-							ColumnValue columnValue = new ColumnValue();
-							columnValue.setFieldID(filterDto.getColumnName());
-							columnValue.setFieldValue(filterValue.toString());
-							columnValueList.add(columnValue);
 						});
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
 	}
-	
 
 }
