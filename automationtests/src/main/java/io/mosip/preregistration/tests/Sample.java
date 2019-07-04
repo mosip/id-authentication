@@ -78,21 +78,15 @@ public class Sample extends BaseTestCase implements ITest {
 
 	@Test(groups = { "IntegrationScenarios" })
 	public void delDocByDocIdForDiscardedApplication() {
-		testSuite = "Create_PreRegistration/createPreRegistration_smoke";
-		JSONObject createPregRequest = lib.createRequest(testSuite);
-		Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
-		String preID = lib.getPreId(createResponse);
-		Response documentResponse = lib.documentUpload(createResponse,individualToken);
-		Response avilibityResponse = lib.FetchCentre(individualToken);
-		lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
+		dao.deleteAvailableSlot();
 	}
 
 
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
-		if (!lib.isValidToken(individualToken)) {
+		/*if (!lib.isValidToken(individualToken)) {
 			individualToken = lib.getToken();
-		}
+		}*/
 	}
 
 	@Override

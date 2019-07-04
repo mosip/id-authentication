@@ -129,6 +129,11 @@ public class PreregistrationDAO
 		String queryString="update master.registration_center set is_active= "+Boolean.FALSE+ " where id='"+registartionCenter+"'";
 		dbAccess.updateDbData(queryString, "masterdata");
 	}
+	public void deleteAvailableSlot()
+	{
+		String queryString="Delete from prereg.reg_available_slot";
+		dbAccess.delete(queryString, "prereg");
+	}
 	public Date MakeDayAsHoliday()
 	{
 		Date date1 = null;

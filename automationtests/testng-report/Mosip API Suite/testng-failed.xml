@@ -8,15 +8,16 @@
   </listeners>
   <test name="PreReg Tests(failed)">
     <classes>
-      <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId">
+      <class name="io.mosip.preregistration.tests.Sample">
         <methods>
           <include name="suiteSetup"/>
-          <include name="retrivePreRegistrationByRegistrationCenterId" invocation-numbers="15 16 17"/>
-          <include name="getTestCaseName"/>
-          <include name="setResultTestName"/>
+          <include name="run"/>
+          <include name="afterMethod"/>
+          <include name="readPropertiesFile"/>
+          <include name="delDocByDocIdForDiscardedApplication"/>
           <include name="testTearDown"/>
         </methods>
-      </class> <!-- io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId -->
+      </class> <!-- io.mosip.preregistration.tests.Sample -->
     </classes>
   </test> <!-- PreReg Tests(failed) -->
 </suite> <!-- Failed suite [Mosip API Suite] -->
