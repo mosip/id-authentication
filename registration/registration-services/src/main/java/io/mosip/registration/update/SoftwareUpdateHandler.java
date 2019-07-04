@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -126,6 +128,9 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	@Autowired
 	private GlobalParamService globalParamService;
+	private String SQL = "sql";
+	private String exectionSqlFile = "initial_db_scripts.sql";
+	private String rollBackSqlFile = "rollback_scripts.sql";
 
 	/**
 	 * It will check whether any software updates are available or not.
@@ -558,49 +563,47 @@ public class SoftwareUpdateHandler extends BaseService {
 	 * @param previousVersion
 	 *            previous version
 	 * @return response of sql execution
+	 * @throws IOException
 	 */
-	public ResponseDTO executeSqlFile(String latestVersion, String previousVersion) {
+	public ResponseDTO executeSqlFile(String latestVersion, String previousVersion) throws IOException {
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"DB-Script files execution started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		URL resource = this.getClass().getResource("/sql/" + latestVersion + "/");
+		// execute sql file
 
-		if (resource != null) {
+		try {
 
-			File sqlFile = getSqlFile(resource.getPath());
+			execute(SQL + SLASH + latestVersion + SLASH + exectionSqlFile);
 
-			// execute sql file
+		}
+
+		catch (RuntimeException | IOException runtimeException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+			// ROLL BACK QUERIES
 			try {
 
-				runSqlFile(sqlFile);
+				execute(SQL + SLASH + latestVersion + SLASH + rollBackSqlFile);
 
-			} catch (RuntimeException | IOException runtimeException) {
+			} catch (RuntimeException | IOException exception) {
 
-				try {
-					File rollBackFile = getSqlFile(
-							this.getClass().getResource("/sql/" + latestVersion + "_rollback/").getPath());
-
-					if (rollBackFile.exists()) {
-						runSqlFile(rollBackFile);
-					}
-				} catch (RuntimeException | IOException exception) {
-
-					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-				}
-				// Prepare Error Response
-				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
-
-				// Replace with backup
-				rollback(responseDTO, previousVersion);
-
-				return responseDTO;
+				LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			}
+			// Prepare Error Response
+			setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
+
+			// Replace with backup
+			rollback(responseDTO, previousVersion);
+
+			return responseDTO;
+
 		}
 
 		// Update global param with current version
@@ -616,19 +619,22 @@ public class SoftwareUpdateHandler extends BaseService {
 		return responseDTO;
 	}
 
-	private File getSqlFile(String path) {
+	private void execute(String path) throws IOException {
+		try (InputStream inputStream = SoftwareUpdateHandler.class.getClassLoader().getResourceAsStream(path)) {
 
-		// Get File
-		return FileUtils.getFile(path);
-
+			if (inputStream != null) {
+				runSqlFile(inputStream);
+			}
+		}
 	}
 
-	private void runSqlFile(File sqlFile) throws IOException {
+	private void runSqlFile(InputStream inputStream) throws IOException {
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution started sql file : " + sqlFile.getName());
-		for (File file : sqlFile.listFiles()) {
-			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+				"Execution started sql file");
+
+		try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream)) {
+			try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
 				String str;
 				StringBuilder sb = new StringBuilder();
@@ -641,16 +647,19 @@ public class SoftwareUpdateHandler extends BaseService {
 				for (String stat : statments) {
 					if (!stat.trim().equals("")) {
 
+						LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+								"Executing Statment : " + stat);
+
 						jdbcTemplate.execute(stat);
 
 					}
 				}
-
 			}
 
 		}
+
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution completed sql file : " + sqlFile.getName());
+				"Execution completed sql file");
 
 	}
 
@@ -745,10 +754,9 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	private void addProperties(String version) {
-		
+
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Started updating version property in mosip-application.properties");
-
 
 		try {
 			Properties properties = new Properties();
@@ -768,10 +776,10 @@ public class SoftwareUpdateHandler extends BaseService {
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 		}
-		
+
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Completed updating version property in mosip-application.properties");
 
-
 	}
+
 }
