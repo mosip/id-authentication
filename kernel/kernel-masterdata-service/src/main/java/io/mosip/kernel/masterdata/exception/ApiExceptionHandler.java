@@ -137,7 +137,6 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(ValidationException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> validationException(HttpServletRequest httpServletRequest,
 			final ValidationException exception) throws IOException {
-		ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getErrors());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

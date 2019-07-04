@@ -28,7 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
@@ -40,6 +43,7 @@ import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -361,6 +365,50 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any(SearchDto.class), Mockito.anyList())).thenReturn(page);
 		mockMvc.perform(post("/documenttypes/search").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchDocumentTypeFailureTest() throws Exception {
+		RequestWrapper<SearchDto> requestDto = new RequestWrapper<>();
+		SearchDto searchDto = new SearchDto();
+		List<SearchFilter> filters = new ArrayList<SearchFilter>();
+		SearchFilter searchFilter1 = new SearchFilter();
+		searchFilter1.setColumnName("name");
+		searchFilter1.setType("qwx");
+		searchFilter1.setValue("card");
+		filters.add(searchFilter1);
+		List<SearchSort> sort = new ArrayList<SearchSort>();
+		SearchSort searchSort = new SearchSort();
+		searchSort.setSortField("name");
+		searchSort.setSortType("ASC");
+		sort.add(searchSort);
+
+		Pagination pagination = new Pagination();
+		pagination.setPageFetch(0);
+		pagination.setPageStart(10);
+
+		searchDto.setFilters(filters);
+		searchDto.setSort(sort);
+		searchDto.setPagination(pagination);
+		searchDto.setLanguageCode("eng");
+
+		requestDto.setId("mosip.idtype.create");
+		requestDto.setVersion("1.0");
+		requestDto.setRequest(searchDto);
+		List<ServiceError> errors=new ArrayList<ServiceError>();
+		ServiceError error=new ServiceError();
+		errors.add(error);
+
+		String contentJson = objectMapper.writeValueAsString(requestDto);
+		Page<DocumentType> page = new PageImpl<>(documentTypes, PageRequest.of(0, 10), 1);
+
+		when(filterTypeValidator.validate(ArgumentMatchers.<Class<DocumentTypeExtnDto>>any(), Mockito.anyList()))
+				.thenThrow(new ValidationException(errors));
+		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<DocumentType>>any(),
+				Mockito.any(SearchDto.class), Mockito.anyList())).thenReturn(page);
+		mockMvc.perform(post("/documenttypes/search").contentType(MediaType.APPLICATION_JSON).content(contentJson))
+				.andExpect(status().isInternalServerError());
 	}
 
 }
