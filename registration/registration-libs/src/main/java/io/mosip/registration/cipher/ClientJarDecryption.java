@@ -80,8 +80,6 @@ public class ClientJarDecryption extends Application {
 	static String tempPath;
 	private AsymmetricEncryptionService asymmetricEncryptionService = new AsymmetricEncryptionService();
 	private AsymmetricDecryptionService asymmetricDecryptionService = new AsymmetricDecryptionService();
-	
-	private ServerSocket serverSocket;
 
 	/**
 	 * Decrypt the bytes
@@ -161,6 +159,8 @@ public class ClientJarDecryption extends Application {
 		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 				LoggerConstants.APPLICATION_ID, "Started JavaFx start");
 
+		System.out.println("Started");
+		
 		ClientJarDecryption aesDecrypt = new ClientJarDecryption();
 
 		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
@@ -191,18 +191,8 @@ public class ClientJarDecryption extends Application {
 				// TODO Check Internet Connectivity
 
 				showDialog();
+
 				
-				// Check if any application running on mosip's port
-				if (isApplicationLaunched(properties.getProperty("mosip.reg.port"))) {
-
-					// Close Stage of run.jar
-					closeStage();
-					
-					exit();
-				}
-
-
-				System.out.println("Inside try statement");
 				Task<Boolean> task = new Task<Boolean>() {
 					/*
 					 * (non-Javadoc)
@@ -238,8 +228,6 @@ public class ClientJarDecryption extends Application {
 
 							tempPath = FileUtils.getTempDirectoryPath();
 							tempPath = tempPath + UUID.randomUUID();
-
-							
 
 							byte[] decryptedRegFileBytes;
 							try {
@@ -333,8 +321,6 @@ public class ClientJarDecryption extends Application {
 											LoggerConstants.APPLICATION_ID,
 											"Completed Destroying proccess of reg-client and force deleting the decrypted jars");
 
-									serverSocket.close();
-									
 									exit();
 								}
 							} catch (RuntimeException | InterruptedException | IOException runtimeException) {
@@ -434,30 +420,6 @@ public class ClientJarDecryption extends Application {
 	private String getEncryptedValue(Properties properties, String key) {
 		return CryptoUtil.encodeBase64String(asymmetricEncryptionService.encryptUsingTPM(
 				TPMInitialization.getTPMInstance(), Base64.getDecoder().decode(properties.getProperty(key))));
-	}
-
-	@SuppressWarnings("resource")
-	private boolean isApplicationLaunched(String port) {
-
-		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
-				LoggerConstants.APPLICATION_ID, "Checking for port : " + port);
-
-		boolean isApplicationLaunched;
-		try {
-
-			serverSocket = new ServerSocket(Integer.parseInt(port));
-
-			isApplicationLaunched = false;
-
-		} catch (NumberFormatException | IOException exception) {
-			LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
-					LoggerConstants.APPLICATION_ID, "Port : " + port + " was already opened");
-
-			isApplicationLaunched = true;
-		}
-
-		return isApplicationLaunched;
-
 	}
 
 	private void closeStage() {
