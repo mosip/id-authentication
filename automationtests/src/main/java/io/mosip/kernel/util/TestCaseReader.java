@@ -58,23 +58,6 @@ public class TestCaseReader extends BaseTestCase {
 
 	}
 
-	
-/*	*//**
-	 * @param path
-	 * @return this method is for reading the jsonData object from the given path.
-	 *//*
-	public JSONObject readJsonData(String path) {
-
-		
-		JSONObject jsonData = null;
-		try {
-			InputStream is = TestCaseReader.class.getResourceAsStream("/" + path);
-			jsonData = (JSONObject) new JSONParser().parse(new InputStreamReader(is, "UTF-8"));
-		} catch (IOException | ParseException e) {
-			logger.info(e.getMessage());
-		}
-		return jsonData;
-	}*/
 
 	/**
 	 * @param modulename
@@ -99,57 +82,5 @@ public class TestCaseReader extends BaseTestCase {
 		return objectData;
 	}
 	
-/*	*//**
-	 * @param folderRelativePath
-	 * @param isfolder(it should be true if u want to get list of folders and false for list of files)
-	 * @return this method is for returning the list of relative path of each folder or files in a given path
-	 *//*
-	public List<String> getFoldersFilesNameList(String folderRelativePath, boolean isfolder){
-		String configPath = folderRelativePath;
-		List<String> listFoldersFiles = new ArrayList<>();
-
-		final File jarFile = new File(
-				TestNgApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-
-		if (jarFile.isFile()) { // Run with JAR file
-			JarFile jar = null;
-			try {
-				jar = new JarFile(jarFile);
-			} catch (IOException e) {
-				logger.info(e.getMessage());
-			}
-			
-			final Enumeration<JarEntry> entries = jar.entries(); // gives ALL entries in jar
-			while (entries.hasMoreElements()) {
-				JarEntry je = entries.nextElement();
-				if (je.isDirectory()==isfolder) {
-					final String name = je.getName();
-					if (name.startsWith(configPath + "/")) { // filter according to the path
-						listFoldersFiles.add(name);
-					}
-				}
-			}
-			try {
-				jar.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-		} else { // Run with IDE
-			final URL url = TestCaseReader.class.getResource("/" + configPath);
-			if (url != null) {
-				try {
-					final File file = new File(url.toURI());
-					for (File f : file.listFiles()) {
-						if (f.isDirectory()==isfolder)
-						listFoldersFiles.add(configPath + "/" + f.getName());
-					}
-				} catch (URISyntaxException | NullPointerException e) {
-					logger.info(e.getMessage());
-				}
-			}
-		//}
-		return listFoldersFiles;
-	}*/
 	
 }

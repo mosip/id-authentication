@@ -561,8 +561,11 @@ public class DocumentService {
 		delResponseDto.setVersion(ver);
 		boolean isRetrieveSuccess = false;
 		boolean isDocNotFound = false;
+		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
+			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preRegistrationId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)
+					&& serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 				DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
 				if (!documentEntity.getPreregId().equals(preRegistrationId)) {
 					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
