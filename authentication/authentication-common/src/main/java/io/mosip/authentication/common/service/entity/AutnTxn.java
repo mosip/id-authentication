@@ -88,4 +88,10 @@ public class AutnTxn {
 	
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
+	
+	@Column(name = "uin")
+	private String uin;
+	
+	@Column(name = "uin_hash")
+	private String uinHash;
 }
