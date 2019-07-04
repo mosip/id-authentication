@@ -134,7 +134,7 @@ public class BioDedupeProcessor {
 	public MessageDTO process(MessageDTO object, String stageName) {
 		String registrationId = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "BioDedupeStage::BioDedupeProcessor::entry");
+				registrationId, "BioDedupeProcessor::process::entry");
 		LogDescription description = new LogDescription();
 		object.setMessageBusAddress(MessageBusAddress.BIO_DEDUPE_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
@@ -260,7 +260,7 @@ public class BioDedupeProcessor {
 		}
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "BioDedupeStage::BioDedupeProcessor::exit");
+				registrationId, "BioDedupeProcessor::process::exit");
 		return object;
 	}
 

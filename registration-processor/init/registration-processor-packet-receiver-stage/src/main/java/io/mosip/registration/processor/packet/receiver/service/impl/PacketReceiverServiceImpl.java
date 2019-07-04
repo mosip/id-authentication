@@ -153,7 +153,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						PacketReceiverConstant.PACKET_SUCCESS_UPLOADED_IN_PACKET_RECIVER + dto.getRegistrationId());
 
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), description.getCode() + " -- " + registrationId,
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						PacketReceiverConstant.PACKET_RECEIVER_VALIDATION_SUCCESS);
 				storageFlag = storePacket(stageName, regEntity, dto, description);
 

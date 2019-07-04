@@ -552,20 +552,15 @@ public class Utilities {
 	}
 
 	private String validateAbisQueueJsonAndReturnValue(JSONObject jsonObject, String key) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"Utilities::validateAbisQueueJsonAndReturnValue():: entry");
 
 		String value = JsonUtil.getJSONValue(jsonObject, key);
 		if (value == null) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "Utilities::validateAbisQueueJsonAndReturnValue():: error with error message "
-							+ PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getMessage());
+
 			throw new RegistrationProcessorUnCheckedException(
 					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getCode(),
 					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getMessage() + "::" + key);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"Utilities::validateAbisQueueJsonAndReturnValue():: exit");
+
 		return value;
 	}
 

@@ -184,7 +184,7 @@ public class PacketValidateProcessor {
 			object.setIsValid(Boolean.FALSE);
 			object.setInternalError(Boolean.FALSE);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "PacketValidatorStage::process()::entry");
+					"", "PacketValidateProcessor::process()::entry");
 			registrationId = object.getRid();
 			packetValidationDto.setTransactionSuccessful(false);
 
@@ -419,7 +419,7 @@ public class PacketValidateProcessor {
 					moduleId, moduleName, registrationId);
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				description.getCode() + " -- " + registrationId, "PacketValidatorStage::process()::exit");
+				description.getCode() + " -- " + registrationId, "PacketValidateProcessor::process()::exit");
 		return object;
 
 	}

@@ -7,10 +7,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
@@ -39,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
 import com.google.gson.Gson;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -119,8 +117,6 @@ public class RestApiClient {
 			restTemplate = getRestTemplate();
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), uri);
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.postForObject(uri, setRequestHeader(requestType, mediaType), responseClass);
 
 		} catch (Exception e) {
@@ -155,8 +151,6 @@ public class RestApiClient {
 			restTemplate = getRestTemplate();
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), uri);
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 			result = (T) restTemplate.patchForObject(uri, setRequestHeader(requestType, mediaType), responseClass);
 
 		} catch (Exception e) {
@@ -199,8 +193,6 @@ public class RestApiClient {
 			restTemplate = getRestTemplate();
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
 					LoggerFileConstant.APPLICATIONID.toString(), uri);
-			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), requestType.toString());
 
 			response = (ResponseEntity<T>) restTemplate.exchange(uri, HttpMethod.PUT,
 					setRequestHeader(requestType.toString(), mediaType), responseClass);
@@ -258,20 +250,19 @@ public class RestApiClient {
 		}
 		if (requestType != null) {
 			try {
-				HttpEntity<Object> httpEntity = (HttpEntity<Object>)requestType;
+				HttpEntity<Object> httpEntity = (HttpEntity<Object>) requestType;
 				HttpHeaders httpHeader = httpEntity.getHeaders();
 				Iterator<String> iterator = httpHeader.keySet().iterator();
-				while(iterator.hasNext()) {
+				while (iterator.hasNext()) {
 					String key = iterator.next();
-					if(!(headers.containsKey("Content-Type") && key == "Content-Type"))
+					if (!(headers.containsKey("Content-Type") && key == "Content-Type"))
 						headers.add(key, httpHeader.get(key).get(0));
 				}
 				return new HttpEntity<Object>(httpEntity.getBody(), headers);
-			}catch(ClassCastException e) {
+			} catch (ClassCastException e) {
 				return new HttpEntity<Object>(requestType, headers);
 			}
-		}
-		else
+		} else
 			return new HttpEntity<Object>(headers);
 	}
 
@@ -304,15 +295,15 @@ public class RestApiClient {
 			post.setHeader("Content-type", "application/json");
 			HttpResponse response = httpClient.execute(post);
 			org.apache.http.HttpEntity entity = response.getEntity();
-			String responseBody = EntityUtils.toString(entity,"UTF-8");
+			String responseBody = EntityUtils.toString(entity, "UTF-8");
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), "Resonse body=> "+responseBody);
+					LoggerFileConstant.APPLICATIONID.toString(), "Resonse body=> " + responseBody);
 			Header[] cookie = response.getHeaders("Set-Cookie");
 			if (cookie.length == 0)
 				throw new TokenGenerationFailedException();
 			String token = response.getHeaders("Set-Cookie")[0].getValue();
 			logger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-					LoggerFileConstant.APPLICATIONID.toString(), "Cookie => "+cookie[0]);
+					LoggerFileConstant.APPLICATIONID.toString(), "Cookie => " + cookie[0]);
 
 			return token.substring(0, token.indexOf(';'));
 		} catch (IOException e) {
