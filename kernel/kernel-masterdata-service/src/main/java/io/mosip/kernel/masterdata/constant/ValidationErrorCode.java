@@ -13,7 +13,7 @@ public enum ValidationErrorCode {
 	INVALID_COLUMN_VALUE("KER-MSD-319","Column value is null or empty"),
 	NO_FILTER_COLUMN_FOUND("KER-MSD-322", "Filter Type cannot be empty or null"), 
 	FILTER_COLUMN_DOESNT_EXIST("KER-MSD-323","Filter Type for column %s is not supported"), 
-	FILTER_COLUMN_NOT_SUPPORTED("KER-MSD-324","Received Filter Type %s not supported");
+	FILTER_COLUMN_NOT_SUPPORTED("KER-MSD-324","Received Filter Type not supported");
 
 	/**
 	 * Error Code
