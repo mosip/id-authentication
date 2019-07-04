@@ -1102,10 +1102,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object = new JSONObject();
 				JSONObject innerData = new JSONObject();
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
-				regCenterId = appointmentDetails.get(0);
-				appDate = appointmentDetails.get(1);
-				timeSlotFrom = appointmentDetails.get(2);
-				timeSlotTo = appointmentDetails.get(3);
+				try {
+					regCenterId = appointmentDetails.get(0);
+					appDate = appointmentDetails.get(1);
+					timeSlotFrom = appointmentDetails.get(2);
+					timeSlotTo = appointmentDetails.get(3);
+				} catch (IndexOutOfBoundsException e) {
+					Assert.fail("slots are not available for give registration center");
+				}
 				object.put("registration_center_id", regCenterId);
 				object.put("appointment_date", appDate);
 				object.put("time_slot_from", timeSlotFrom);

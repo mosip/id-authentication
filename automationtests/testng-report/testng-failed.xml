@@ -8,15 +8,15 @@
   </listeners>
   <test name="PreReg Tests(failed)">
     <classes>
-      <class name="io.mosip.preregistration.tests.DeleteDocumentByDocId">
+      <class name="io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId">
         <methods>
           <include name="suiteSetup"/>
-          <include name="setResultTestName"/>
+          <include name="retrivePreRegistrationByRegistrationCenterId" invocation-numbers="15 16 17"/>
           <include name="getTestCaseName"/>
-          <include name="deleteDocumentByDocId" invocation-numbers="2"/>
+          <include name="setResultTestName"/>
           <include name="testTearDown"/>
         </methods>
-      </class> <!-- io.mosip.preregistration.tests.DeleteDocumentByDocId -->
+      </class> <!-- io.mosip.preregistration.tests.RetriveAllPreRegIdByRegCenterId -->
     </classes>
   </test> <!-- PreReg Tests(failed) -->
 </suite> <!-- Failed suite [Mosip API Suite] -->

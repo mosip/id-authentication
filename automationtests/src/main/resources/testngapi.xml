@@ -109,7 +109,7 @@
 	         <class name="io.mosip.preregistration.tests.TriggerNotification" /> 
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" /> 
-			<class name="io.mosip.preregistration.tests.OperationWithDifferentToken" /> 
+			<class name="io.mosip.preregistration.tests.OperationWithDifferentToken" />  
 		</classes> 
 	</test> 
 
