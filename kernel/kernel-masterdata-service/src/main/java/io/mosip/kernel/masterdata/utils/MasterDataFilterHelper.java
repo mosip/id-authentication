@@ -1,9 +1,5 @@
 package io.mosip.kernel.masterdata.utils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -45,29 +41,13 @@ public class MasterDataFilterHelper {
 		this.entityManager = entityManager;
 	}
 
-	public <E> List<?> filterValues(Class<E> entity, String columnName, String columnType, String languageCode) {
+	@SuppressWarnings("unchecked")
+	public <E,T> List<T> filterValues(Class<E> entity, String columnName, String columnType, String languageCode) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQuery.from(entity);
 		Path<Object> path = root.get(columnName);
-		Class<? extends Object> type = path.getJavaType();
-		String fieldType = type.getTypeName();
-		if (LocalDateTime.class.getName().equals(fieldType)) {
-			return filterValuesByType(entity, LocalDateTime.class, columnName, columnType, languageCode);
-		} else if (String.class.getName().equals(fieldType)) {
-			return filterValuesByType(entity, String.class, columnName, columnType, languageCode);
-		} else if (fieldType.equals("short")) {
-			return filterValuesByType(entity, Short.class, columnName, columnType, languageCode);
-		} else if (Integer.class.getName().equals(fieldType)) {
-			return filterValuesByType(entity, Integer.class, columnName, columnType, languageCode);
-		} else if (Boolean.class.getName().equals(fieldType)) {
-			return filterValuesByType(entity, Boolean.class, columnName, columnType, languageCode);
-		} else if (LocalDate.class.getName().equals(fieldType)) {
-			return filterValuesByType(entity, LocalDate.class, columnName, columnType, languageCode);
-		} else if (LocalTime.class.getName().equals(fieldType)) {
-			return filterValuesByType(entity, LocalTime.class, columnName, columnType, languageCode);
-		}
-		return Collections.emptyList();
+		return  (List<T>) filterValuesByType(entity, path.getJavaType(), columnName, columnType, languageCode);
 	}
 
 	private <E, T> List<T> filterValuesByType(Class<E> entity, Class<T> type, String columnName, String columnType,
