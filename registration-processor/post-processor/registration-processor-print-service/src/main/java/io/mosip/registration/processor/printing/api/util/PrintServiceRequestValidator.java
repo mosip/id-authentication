@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.lang.NonNull;
@@ -60,6 +61,8 @@ public class PrintServiceRequestValidator implements Validator {
 	/** The id. */
 	private Map<String, String> id = new HashMap<>();
 
+	@Value("${mosip.registration.processor.grace.period}")
+	private int gracePeriod;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -145,7 +148,10 @@ public class PrintServiceRequestValidator implements Validator {
 					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
-					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
+					if (!(DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+							.isAfter(new DateTime().minusSeconds(gracePeriod))
+							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
 						errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 								String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
 										TIMESTAMP));

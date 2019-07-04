@@ -7,6 +7,7 @@ import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.RegStatusValidationException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RegistrationStatusRequestValidator.
  * 
@@ -27,9 +27,6 @@ import io.mosip.registration.processor.status.exception.RegStatusValidationExcep
  */
 @Component
 public class RegistrationStatusRequestValidator {
-
-	/** The Constant VER. */
-	private static final String VER = "version";
 
 	/** The Constant DATETIME_TIMEZONE. */
 	private static final String DATETIME_TIMEZONE = "mosip.registration.processor.timezone";
@@ -50,8 +47,13 @@ public class RegistrationStatusRequestValidator {
 	@Autowired
 	private Environment env;
 
+	@Value("${server.port}")
+	private int port;
+
+	@Value("${mosip.registration.processor.grace.period}")
+	private int gracePeriod;
+
 	/** The id. */
-	// @Resource
 	private Map<String, String> id = new HashMap<>();
 
 	/**
@@ -133,7 +135,10 @@ public class RegistrationStatusRequestValidator {
 					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
-					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
+					if (!(DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+							.isAfter(new DateTime().minusSeconds(gracePeriod))
+							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
 						throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,
 								exception);
 					}

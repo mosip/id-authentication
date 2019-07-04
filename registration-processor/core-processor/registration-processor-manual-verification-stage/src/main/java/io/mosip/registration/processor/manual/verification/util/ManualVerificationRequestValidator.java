@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
@@ -38,7 +39,9 @@ public class ManualVerificationRequestValidator{
 	/** The id. */
 	//	@Resource
 	private Map<String, String> id=new HashMap<>();
-
+	
+	@Value("${mosip.registration.processor.grace.period}")
+	private int gracePeriod;
 
 	/**
 	 * Validate.
@@ -114,8 +117,11 @@ public class ManualVerificationRequestValidator{
 					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
 							env.getProperty(ManualVerificationConstants.DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(ManualVerificationConstants.DATETIME_TIMEZONE)));
-					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
-						throw new ManualVerificationAppException(PlatformErrorMessages.RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
+					if (!(DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+							.isAfter(new DateTime().minusSeconds(gracePeriod))
+							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
+					throw new ManualVerificationAppException(PlatformErrorMessages.RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
 							}
 
 				}
