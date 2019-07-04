@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +24,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.swagger.annotations.Api;
@@ -54,7 +57,7 @@ public class BlacklistedWordsController {
 	 *            language code
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
-	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ZONAL_ADMIN','ZONAL_APPROVER')")
+	// @PreAuthorize("hasAnyRole('INDIVIDUAL','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping("/{langcode}")
 	public ResponseWrapper<BlacklistedWordsResponseDto> getAllBlackListedWordByLangCode(
@@ -101,7 +104,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         added.
 	 */
-	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	public ResponseWrapper<WordAndLanguageCodeID> createBlackListedWord(
@@ -121,7 +124,7 @@ public class BlacklistedWordsController {
 	 * @return the response entity i.e. the word and language code of the word
 	 *         updated.
 	 */
-	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "update the blacklisted word")
@@ -134,7 +137,7 @@ public class BlacklistedWordsController {
 		return responseWrapper;
 	}
 
-	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping(path = "/details")
 	@ApiOperation(value = "update the blacklisted word details except word")
@@ -171,7 +174,7 @@ public class BlacklistedWordsController {
 	 * 
 	 * @return list of {@link BlacklistedWordsDto}
 	 */
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the blacklisted words with additional metadata", notes = "Retrieve all the blacklisted words with metadata")
@@ -185,6 +188,38 @@ public class BlacklistedWordsController {
 		ResponseWrapper<PageDto<BlacklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(blacklistedWordsService.getBlackListedWords(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API to search BlackListedWords.
+	 * 
+	 * @param request
+	 *            the request DTO
+	 * @return the response
+	 */
+	@ResponseFilter
+	@PostMapping("/search")
+	public ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> searchBlackListedWords(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<BlacklistedWordsExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blacklistedWordsService.searchBlackListedWords(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filters.
+	 * 
+	 * @param request
+	 *            the request DTO
+	 * @return the response
+	 */
+	@ResponseFilter
+	@PostMapping("/filtervalues")
+	public ResponseWrapper<FilterResponseDto> blackListedWordsFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(blacklistedWordsService.blackListedWordsFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 }

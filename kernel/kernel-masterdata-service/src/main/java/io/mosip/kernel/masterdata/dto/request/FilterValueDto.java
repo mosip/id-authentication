@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 
 /**
@@ -18,5 +19,6 @@ public class FilterValueDto {
 	@NotNull
 	private List<FilterDto> filters;
 	@NotBlank
-	private String LanguageCode;
+	@ValidLangCode
+	private String languageCode;
 }

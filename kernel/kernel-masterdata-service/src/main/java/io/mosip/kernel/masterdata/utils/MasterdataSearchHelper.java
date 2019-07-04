@@ -123,6 +123,23 @@ public class MasterdataSearchHelper {
 
 	}
 
+	public <E> List<String> filterValues(Class<E> entity, String columnName, String columnType, String languageCode) {
+		List<String> results;
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+		Root<E> root = criteriaQuery.from(entity);
+		criteriaQuery.select(root.get(columnName));
+		criteriaQuery.where(criteriaBuilder.equal(root.get(LANGCODE_COLUMN_NAME), languageCode));
+		if (columnType.equals("unique")) {
+			criteriaQuery.distinct(true);
+		} else if (columnType.equals("all")) {
+			criteriaQuery.distinct(false);
+		}
+		TypedQuery<String> q = entityManager.createQuery(criteriaQuery);
+		results = q.getResultList();
+		return results;
+	}
+
 	/**
 	 * Method to add the filters to the criteria query
 	 * 
@@ -466,4 +483,5 @@ public class MasterdataSearchHelper {
 		}
 		return false;
 	}
+
 }
