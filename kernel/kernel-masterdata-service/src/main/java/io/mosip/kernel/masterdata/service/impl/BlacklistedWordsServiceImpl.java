@@ -337,6 +337,11 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(),
 						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
+							if (filterValue == null) {
+								throw new DataNotFoundException(
+										BlacklistedWordsErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorCode(),
+										BlacklistedWordsErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorMessage());
+							}
 							ColumnValue columnValue = new ColumnValue();
 							columnValue.setFieldID(filterDto.getColumnName());
 							columnValue.setFieldValue(filterValue.toString());
