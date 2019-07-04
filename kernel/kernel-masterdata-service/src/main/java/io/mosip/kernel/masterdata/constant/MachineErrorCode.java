@@ -21,6 +21,7 @@ public enum MachineErrorCode {
 	MACHINE_ID_ALREADY_MAPPED_EXCEPTION("xxx","All Machine Id are mapped"),
 	INVALID_MACHINE_FILTER_VALUE_EXCEPTION("xxx","Invalid filter value"),
 	MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("xxx","No Machine Id found for name:%s"),
+	NO_DATA_FOR_FILTER_VALUES("KER-MSD-___","No Data Found for the given filter column"),
 	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("xxx","No Machine specification id found for name:%s");
 
 	private final String errorCode;

@@ -66,7 +66,7 @@ public class MasterDataFilterHelper {
 		return Collections.emptyList();
 	}
 
-	public <E, T> List<T> filterValuesByType(Class<E> entity, Class<T> type, String columnName, String columnType,
+	private <E, T> List<T> filterValuesByType(Class<E> entity, Class<T> type, String columnName, String columnType,
 			String languageCode) {
 		List<T> results;
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
