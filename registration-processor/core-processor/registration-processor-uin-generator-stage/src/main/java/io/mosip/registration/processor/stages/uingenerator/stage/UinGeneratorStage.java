@@ -23,7 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -207,18 +206,15 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-							"UinGeneratorStage::process()::get UINGENERATOR service call started : ");
+							"UinGeneratorStage::process()::get UINGENERATOR service call started");
 
 					String test = (String) registrationProcessorRestClientService.getApi(ApiName.UINGENERATOR, null, "",
 							"", String.class);
-
-					Gson gsonObj = new Gson();
-					uinResponseDto = gsonObj.fromJson(test, UinGenResponseDto.class);
-
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 							registrationId,
-							"UinGeneratorStage::process()::get UINGENERATOR service call ended with response data : "
-									+ JsonUtil.objectMapperObjectToJson(uinResponseDto));
+							"UinGeneratorStage::process()::get UINGENERATOR service call ended successfully");
+					Gson gsonObj = new Gson();
+					uinResponseDto = gsonObj.fromJson(test, UinGenResponseDto.class);
 
 					long uinInLong = Long.parseLong(uinResponseDto.getResponse().getUin());
 					demographicIdentity.put("UIN", uinInLong);
@@ -391,23 +387,16 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 		idRequestDTO.setVersion(UINConstants.idRepoApiVersion);
 		idRequestDTO.setMetadata(null);
-		Gson gson = new GsonBuilder().create();
-		String idRequest = gson.toJson(idRequestDTO);
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				regId,
-				"UinGeneratorStage::sendIdRepoWithUin()::post IDREPOSITORY service call started with request data :"
-						+ idRequest);
+				regId, "UinGeneratorStage::sendIdRepoWithUin()::post IDREPOSITORY service call started");
 		try {
 
 			result = (IdResponseDTO) registrationProcessorRestClientService.postApi(ApiName.IDREPOSITORY, "", "",
 					idRequestDTO, IdResponseDTO.class);
 
-			Gson gsonResult = new GsonBuilder().create();
-			String idResponce = gsonResult.toJson(result);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId,
-					"UinGeneratorStage::sendIdRepoWithUin()::post IDREPOSITORY service call ended :" + idResponce);
+					regId, "UinGeneratorStage::sendIdRepoWithUin()::post IDREPOSITORY service call ended successfully");
 
 		} catch (ApisResourceAccessException e) {
 
@@ -590,19 +579,13 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		idRequestDTO.setVersion(UINConstants.idRepoApiVersion);
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				regId,
-				"UinGeneratorStage::idRepoRequestBuilder()::patch IDREPOSITORY service call started with request data :"
-						+ JsonUtil.objectMapperObjectToJson(idRequestDTO));
+				regId, "UinGeneratorStage::idRepoRequestBuilder()::patch IDREPOSITORY service call started");
 
 		idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 				pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
-		Gson gsonResult = new GsonBuilder().create();
-		String idResponce = gsonResult.toJson(idResponseDto);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				regId,
-				"UinGeneratorStage::idRepoRequestBuilder()::patch IDREPOSITORY service call ended with responce data : "
-						+ idResponce);
+				regId, "UinGeneratorStage::idRepoRequestBuilder()::patch IDREPOSITORY service call ended successfully");
 
 		return idResponseDto;
 	}
@@ -655,23 +638,16 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				idRequestDTO.setMetadata(null);
 				idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 				idRequestDTO.setVersion(UINConstants.idRepoApiVersion);
-				Gson gson = new GsonBuilder().create();
-				String idReq = gson.toJson(idResponseDTO);
 
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), regId,
-						"UinGeneratorStage::reActivateUin()::patch IDREPOSITORY service call started with request data :"
-								+ idReq);
+						"UinGeneratorStage::reActivateUin()::patch IDREPOSITORY service call started");
 				result = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
-				Gson gsonResult = new GsonBuilder().create();
-				String idResponce = gsonResult.toJson(result);
-
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), regId,
-						"UinGeneratorStage::reActivateUin()::patch IDREPOSITORY service call ended with responce data : "
-								+ idResponce);
+						"UinGeneratorStage::reActivateUin()::patch IDREPOSITORY service call ended successfully");
 
 				if (result != null && result.getResponse() != null) {
 
@@ -756,18 +732,12 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			idRequestDTO.setVersion(UINConstants.idRepoApiVersion);
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId,
-					"UinGeneratorStage::deactivateUin()::patch IDREPOSITORY service call started with request data : "
-							+ JsonUtil.objectMapperObjectToJson(idRequestDTO));
+					regId, "UinGeneratorStage::deactivateUin()::patch IDREPOSITORY service call started ");
 			idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 					pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
-			Gson gsonResult = new GsonBuilder().create();
-			String idResponce = gsonResult.toJson(idResponseDto);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId,
-					"UinGeneratorStage::deactivateUin()::patch IDREPOSITORY service call ended with response data : "
-							+ idResponce);
+					regId, "UinGeneratorStage::deactivateUin()::patch IDREPOSITORY service call ended successfully");
 
 			if (idResponseDto != null && idResponseDto.getResponse() != null) {
 				if (idResponseDto.getResponse().getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
@@ -817,17 +787,13 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		try {
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, "UinGeneratorStage::getIdRepoDataByUIN():: get IDREPOGETIDBYUIN service call started : ");
+					regId, "UinGeneratorStage::getIdRepoDataByUIN():: get IDREPOGETIDBYUIN service call started");
 
 			response = (IdResponseDTO) registrationProcessorRestClientService.getApi(ApiName.IDREPOGETIDBYUIN,
 					pathsegments, "", "", IdResponseDTO.class);
 
-			Gson gsonResult = new GsonBuilder().create();
-			String idResponce = gsonResult.toJson(response);
-
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
-					"UinGeneratorStage::getIdRepoDataByUIN():: get IDREPOGETIDBYUIN service call ended with response data : "
-							+ idResponce);
+					"UinGeneratorStage::getIdRepoDataByUIN():: get IDREPOGETIDBYUIN service call ended successfully");
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -877,19 +843,17 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
-					"UinGeneratorStage::sendResponseToUinGenerator():: put UINGENERATOR service call started with request date : "
-							+ JsonUtil.objectMapperObjectToJson(uinRequest));
+					"UinGeneratorStage::sendResponseToUinGenerator():: put UINGENERATOR service call started");
 
 			response = (String) registrationProcessorRestClientService.putApi(ApiName.UINGENERATOR, null, "", "",
 					jsonString, String.class, MediaType.APPLICATION_JSON);
 
-			Gson gsonValue = new Gson();
-			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
-
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
-					"UinGeneratorStage::sendResponseToUinGenerator():: put UINGENERATOR service call ended with response data : "
-							+ JsonUtil.objectMapperObjectToJson(uinresponse));
+					"UinGeneratorStage::sendResponseToUinGenerator():: put UINGENERATOR service call ended successfully ");
+
+			Gson gsonValue = new Gson();
+			UinDto uinresponse = gsonValue.fromJson(response, UinDto.class);
 
 			if (uinresponse.getResponse() != null) {
 				String uinSuccessDescription = "Kernel service called successfully to update the uin status as assigned";
@@ -986,13 +950,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			response = (ResponseWrapper<VidResponseDto>) registrationProcessorRestClientService
 					.postApi(ApiName.CREATEVID, "", "", request, ResponseWrapper.class);
 
-			Gson gson = new GsonBuilder().create();
-			String vidRes = gson.toJson(vidResponseDto);
-
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId,
-					"UinGeneratorStage::generateVid():: post CREATEVID service call ended with response data : "
-							+ JsonUtil.objectMapperObjectToJson(vidResponseDto));
+					"UinGeneratorStage::generateVid():: post CREATEVID service call ended successfully");
 
 			if (!response.getErrors().isEmpty()) {
 				throw new VidCreationException(PlatformErrorMessages.RPR_UGS_VID_EXCEPTION.getMessage(),
@@ -1049,22 +1009,16 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			idRequestDTO.setMetadata(null);
 			idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
 			idRequestDTO.setVersion(UINConstants.idRepoApiVersion);
-			Gson gson = new GsonBuilder().create();
-			String idReq = gson.toJson(idRequestDTO);
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					lostPacketRegId,
-					"UinGeneratorStage::linkRegIdWrtUin():: patch IDREPOSITORY service call started with request data : "
-							+ idReq);
+					lostPacketRegId, "UinGeneratorStage::linkRegIdWrtUin():: patch IDREPOSITORY service call started ");
 
 			idResponse = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY, null, "",
 					"", idRequestDTO, IdResponseDTO.class);
-			Gson gsonResult = new GsonBuilder().create();
-			String idResponce = gsonResult.toJson(idResponse);
+
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					lostPacketRegId,
-					"UinGeneratorStage::linkRegIdWrtUin():: patch IDREPOSITORY service call ended with response data : "
-							+ idResponce);
+					"UinGeneratorStage::linkRegIdWrtUin():: patch IDREPOSITORY service call ended successfully ");
 
 			if (idResponse != null && idResponse.getResponse() != null) {
 				description.setCode(RegistrationStatusCode.PROCESSED.toString());
