@@ -7,6 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -27,6 +34,12 @@ import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -36,7 +49,9 @@ import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
 
 /**
  * Service implementation class for {@link BlacklistedWordsService}.
@@ -53,6 +68,14 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Autowired
 	private BlacklistedWordsRepository blacklistedWordsRepository;
+
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	private CriteriaBuilder criteriaBuilder;
+
+	@Autowired
+	MasterdataSearchHelper masterDataSearchHelper;
 	/**
 	 * Autowired reference for {@link DataMapper}
 	 */
@@ -288,5 +311,35 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		}
 
 		return id;
+	}
+
+	@Override
+	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto) {
+		PageResponseDto<BlacklistedWordsExtnDto> pageDto = new PageResponseDto<>();
+		List<BlacklistedWordsExtnDto> blackListedWords = null;
+		Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
+		if (page.getContent() != null && !page.getContent().isEmpty()) {
+			pageDto = PageUtils.pageResponse(page);
+			blackListedWords = MapperUtils.mapAll(page.getContent(), BlacklistedWordsExtnDto.class);
+			pageDto.setData(blackListedWords);
+		}
+		return pageDto;
+	}
+
+	@Override
+	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		for (FilterDto filterDto : filterValueDto.getFilters()) {
+			masterDataSearchHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(), filterDto.getType(),
+					filterValueDto.getLanguageCode()).forEach(filterValue -> {
+						ColumnValue columnValue = new ColumnValue();
+						columnValue.setFieldID(filterDto.getColumnName());
+						columnValue.setFieldValue(filterValue);
+						columnValueList.add(columnValue);
+					});
+		}
+		filterResponseDto.setFilters(columnValueList);
+		return filterResponseDto;
 	}
 }

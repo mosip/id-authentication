@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -46,21 +47,25 @@ public class FilterTypeValidator {
 	}
 
 	private <T> void validateFilter(Class<T> target, List<ServiceError> errors, SearchFilter filter) {
-		try {
-			if (validateColumnAndTypes(filter.getColumnName(), filter.getType())) {
-				Field field = target.getDeclaredField(filter.getColumnName());
-				if (!containsFilter(field, filter.getType())) {
-					errors.add(new ServiceError(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
-							String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
-									filter.getColumnName(), filter.getType())));
-				}
-			} else {
-				errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(),
-						String.format(ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
+		if (validateColumnAndTypes(filter.getColumnName(), filter.getType())) {
+			Field[] childFields = target.getDeclaredFields();
+			Field[] superFields = target.getSuperclass().getDeclaredFields();
+			List<Field> fieldList=new ArrayList<>();
+			fieldList.addAll(Arrays.asList(childFields));
+			fieldList.addAll(Arrays.asList(superFields));
+			Optional<Field> field = fieldList.stream().filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName()))
+					.findFirst();
+			if (!field.isPresent()) {
+				errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(), String
+						.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName())));
+			} else if (!containsFilter(field.get(), filter.getType())) {
+				errors.add(new ServiceError(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
+						String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
+								filter.getColumnName(), filter.getType())));
 			}
-		} catch (NoSuchFieldException | SecurityException e) {
-			errors.add(new ServiceError(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorCode(),
-					String.format(ValidationErrorCode.COLUMN_DOESNT_EXIST.getErrorMessage(), filter.getColumnName())));
+		} else {
+			errors.add(new ServiceError(ValidationErrorCode.NO_FILTER_FOUND.getErrorCode(),
+					String.format(ValidationErrorCode.NO_FILTER_FOUND.getErrorMessage(), filter.getColumnName())));
 		}
 	}
 

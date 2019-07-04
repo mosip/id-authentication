@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "Registration Centers", description = "Registration centers")
 public class RegistrationCenterExtnDto extends BaseDto {
 	
+	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.STARTSWITH,FilterTypeEnum.CONTAINS})
 	@NotBlank
 	@Size(min = 1, max = 10)
 	private String id;

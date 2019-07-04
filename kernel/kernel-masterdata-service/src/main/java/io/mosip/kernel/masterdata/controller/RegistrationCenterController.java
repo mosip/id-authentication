@@ -283,6 +283,7 @@ public class RegistrationCenterController {
 	}
 
 	/**
+	 * 
 	 * This method creates registration center by Admin.
 	 * 
 	 * @param reqRegistrationCenterDto
@@ -327,6 +328,7 @@ public class RegistrationCenterController {
 	 *            search input for registration center search
 	 * @return list of registration center  
 	 */
+	@ResponseFilter
 	@PostMapping("/registrationcenters/search")
 	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> searchRegistrationCenter(
