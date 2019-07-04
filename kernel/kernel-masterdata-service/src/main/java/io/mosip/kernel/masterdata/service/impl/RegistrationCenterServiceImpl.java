@@ -1115,12 +1115,27 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 	}
+	/**
+	 * Method to fetch no. of machines for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successfull otherwise exception
+	 */
 
 	public void setCenterMetadata(List<RegistrationCenterSearchDto> list) {
 		list.parallelStream().filter(this::setDevices).filter(this::setMachines).filter(this::setRegistrationCenterType)
 				.forEach(this::setUsers);
 	}
-
+	/**
+	 * Method to fetch no. of devices for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
 	public boolean setDevices(RegistrationCenterSearchDto centerDto) {
 		try {
 			long devices = registrationCenterDeviceRepository.countCenterDevices(centerDto.getId());
@@ -1130,7 +1145,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		return true;
 	}
-
+	/**
+	 * Method to fetch no. of machines for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
 	public boolean setMachines(RegistrationCenterSearchDto centerDto) {
 		try {
 			long machines = registrationCenterMachineRepository.countCenterMachines(centerDto.getId());
@@ -1141,6 +1163,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return true;
 	}
 
+	/**
+	 * Method to fetch no. of machines for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
 	public boolean setUsers(RegistrationCenterSearchDto centerDto) {
 		try {
 			long devices = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
@@ -1151,6 +1181,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return true;
 	}
 
+	/**
+	 * Method to fetch registration center type and set the response to registration
+	 * center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
 	public boolean setRegistrationCenterType(RegistrationCenterSearchDto dto) {
 		try {
 			RegistrationCenterType centerType = registrationCenterTypeRepository
