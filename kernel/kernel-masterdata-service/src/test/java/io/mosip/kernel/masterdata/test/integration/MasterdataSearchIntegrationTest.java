@@ -4,7 +4,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
@@ -34,8 +37,12 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.Machine;
+import io.mosip.kernel.masterdata.entity.MachineSpecification;
+import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -60,6 +67,9 @@ public class MasterdataSearchIntegrationTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@MockBean
+	private MachineRepository machineRepository;
+
 	private RegistrationCenterType centerTypeEntity;
 	private RegistrationCenter centerEntity;
 	private Location locationRegionEntity;
@@ -74,9 +84,12 @@ public class MasterdataSearchIntegrationTest {
 	private SearchFilter filter5;
 	private SearchFilter filter6;
 	private SearchFilter filter7;
+	private SearchFilter machineSearchFilter;
 	private SearchSort sort;
 	private SearchDto searchDto;
+	private SearchDto machineSearchDto;
 	private RequestWrapper<SearchDto> request;
+	private RequestWrapper<SearchDto> machineRequestDto;
 
 	@Before
 	public void setup() throws JsonProcessingException {
@@ -143,6 +156,18 @@ public class MasterdataSearchIntegrationTest {
 		searchDto.setPagination(pagination);
 		searchDto.setSort(Arrays.asList(sort));
 		request.setRequest(searchDto);
+
+		machineRequestDto = new RequestWrapper<>();
+		machineSearchFilter = new SearchFilter();
+		machineSearchFilter.setColumnName("name");
+		machineSearchFilter.setType("equals");
+		machineSearchFilter.setValue("Dekstop");
+		machineSearchDto = new SearchDto();
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineSearchDto.setLanguageCode("eng");
+		machineSearchDto.setSort(Arrays.asList());
+		machineSearchDto.setPagination(pagination);
+		machineRequestDto.setRequest(machineSearchDto);
 
 		when(filterTypeValidator.validate(ArgumentMatchers.<Class<LocationExtnDto>>any(), Mockito.anyList()))
 				.thenReturn(true);
@@ -310,4 +335,169 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineTest() throws Exception {
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		Machine machine = new Machine();
+		machine.setId("1001");
+		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineByMappedStatusFieldTest() throws Exception {
+		machineSearchFilter.setColumnName("mapStatus");
+		machineSearchFilter.setValue("assigned");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		List<String> machineIdList = new ArrayList<>();
+		machineIdList.add("1001");
+		Machine machine = new Machine();
+		machine.setId("1001");
+		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
+		when(machineRepository.findMappedMachineId()).thenReturn(machineIdList);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineByMappedStatusFieldNotFoundExceptionTest() throws Exception {
+		machineSearchFilter.setColumnName("mapStatus");
+		machineSearchFilter.setValue("assigned");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		List<String> machineIdList = new ArrayList<>();
+		machineIdList.add("1001");
+		Machine machine = new Machine();
+		machine.setId("1001");
+		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList());
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineByNotMappedStatusFieldTest() throws Exception {
+		machineSearchFilter.setColumnName("mapStatus");
+		machineSearchFilter.setValue("unassigned");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		List<String> machineIdList = new ArrayList<>();
+		machineIdList.add("1001");
+		Machine machine = new Machine();
+		machine.setId("1001");
+		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
+		when(machineRepository.findNotMappedMachineId()).thenReturn(machineIdList);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineByNotMappedStatusFieldNotFoundExceptionTest() throws Exception {
+		machineSearchFilter.setColumnName("mapStatus");
+		machineSearchFilter.setValue("unassigned");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		List<String> machineIdList = new ArrayList<>();
+		machineIdList.add("1001");
+		Machine machine = new Machine();
+		machine.setId("1001");
+		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList());
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineRequestExceptionTest() throws Exception {
+		machineSearchFilter.setColumnName("mapStatus");
+		machineSearchFilter.setValue("invalidValue");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineByMachineTypeNameTest() throws Exception {
+		machineSearchFilter.setColumnName("machineTypeName");
+		machineSearchFilter.setValue("Desktop");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		MachineType type = new MachineType();
+		type.setCode("machineCode");
+		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(type));
+		MachineSpecification specification = new MachineSpecification();
+		specification.setId("1001");
+		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
+				Mockito.any())).thenReturn(pageContentSpecificationData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineByMachineTypeNameNotFoundExceptionTest() throws Exception {
+		machineSearchFilter.setColumnName("machineTypeName");
+		machineSearchFilter.setValue("Desktop");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList());
+		MachineSpecification specification = new MachineSpecification();
+		specification.setId("1001");
+		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
+				Mockito.any())).thenReturn(pageContentSpecificationData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchMachineByMachineTypeNameWithCorrespondingSpecificationIdNotFoundExceptionTest() throws Exception {
+		machineSearchFilter.setColumnName("machineTypeName");
+		machineSearchFilter.setValue("Desktop");
+		machineSearchDto.setFilters(Arrays.asList(machineSearchFilter));
+		machineRequestDto.setRequest(machineSearchDto);
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		MachineType type = new MachineType();
+		type.setCode("machineCode");
+		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(type));
+		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList());
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
+				Mockito.any())).thenReturn(pageContentSpecificationData);
+		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
 }
