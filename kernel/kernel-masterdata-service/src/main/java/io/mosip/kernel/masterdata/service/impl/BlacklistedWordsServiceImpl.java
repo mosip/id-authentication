@@ -319,7 +319,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		List<BlacklistedWordsExtnDto> blackListedWords = null;
 		Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
 		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			pageDto = PageUtils.page(page);
+			pageDto = PageUtils.pageResponse(page);
 			blackListedWords = MapperUtils.mapAll(page.getContent(), BlacklistedWordsExtnDto.class);
 			pageDto.setData(blackListedWords);
 		}
