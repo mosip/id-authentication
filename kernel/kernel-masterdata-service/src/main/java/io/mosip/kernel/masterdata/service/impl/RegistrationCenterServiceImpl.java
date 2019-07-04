@@ -53,6 +53,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -72,6 +73,8 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepo
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -137,18 +140,23 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private LocationService locationService;
-	
+
 	@Autowired
 	private FilterTypeValidator filterTypeValidator;
-	
+
 	@Autowired
-	private MasterdataSearchHelper masterdataSearchHelper; 
-		 
-	 /**
-     * get list of languages supported by MOSIP from configuration file
-     */
-     @Value("${mosip.secondary-language}")
-     private String secondaryLang;
+	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@Autowired
+	private RegistrationCenterUserRepository registrationCenterUserRepository;
+
+	@Autowired
+	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+	/**
+	 * get list of languages supported by MOSIP from configuration file
+	 */
+	@Value("${mosip.secondary-language}")
+	private String secondaryLang;
 
 	@Value("${mosip.primary-language}")
 	private String primaryLang;
@@ -238,8 +246,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * getRegistrationCentersByCoordinates(double, double, int,
-	 * java.lang.String)
+	 * getRegistrationCentersByCoordinates(double, double, int, java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterResponseDto getRegistrationCentersByCoordinates(double longitude, double latitude,
@@ -407,8 +414,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * validateTimestampWithRegistrationCenter(java.lang.String,
-	 * java.lang.String)
+	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public ResgistrationCenterStatusResponseDto validateTimeStampWithRegistrationCenter(String id, String langCode,
@@ -427,8 +433,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		ResgistrationCenterStatusResponseDto resgistrationCenterStatusResponseDto = new ResgistrationCenterStatusResponseDto();
 		try {
 			/**
-			 * a query is written in RegistrationCenterRepository which would
-			 * check if the date is not a holiday for that center
+			 * a query is written in RegistrationCenterRepository which would check if the
+			 * date is not a holiday for that center
 			 *
 			 */
 			RegistrationCenter registrationCenter = registrationCenterRepository.findByIdAndLangCode(id, langCode);
@@ -717,21 +723,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
 						registrationCenterEntity.getClass());
 				/*
-				 * RegistrationCenterID from the rcid_Seq Table,
-				 * RegistrationCenterID get by calling
-				 * RegistrationCenterIdGenerator API method
+				 * RegistrationCenterID from the rcid_Seq Table, RegistrationCenterID get by
+				 * calling RegistrationCenterIdGenerator API method
 				 * generateRegistrationCenterId().
 				 * 
 				 */
 				registrationCenterEntity.setId(regCenterID);
 				/*
-				 * at the time of creation of new Registration Center Number of
-				 * Kiosks value will be Zero always
+				 * at the time of creation of new Registration Center Number of Kiosks value
+				 * will be Zero always
 				 */
 				registrationCenterEntity.setNumberOfKiosks((short) 0);
 				/*
-				 * Deactivate a Center during first time creation since there
-				 * will be no machines initially mapped to the Center
+				 * Deactivate a Center during first time creation since there will be no
+				 * machines initially mapped to the Center
 				 */
 				registrationCenterEntity.setIsActive(false);
 				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
@@ -923,13 +928,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request.
-	 * SearchDto)
+	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request. SearchDto)
 	 */
 	@Override
-	public PageResponseDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto) {
-		PageResponseDto<RegistrationCenterExtnDto> pageDto = new PageResponseDto<>();
-		List<RegistrationCenterExtnDto> registrationCenters = null;
+	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto dto) {
+		PageResponseDto<RegistrationCenterSearchDto> pageDto = new PageResponseDto<>();
+		List<RegistrationCenterSearchDto> registrationCenters = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<SearchFilter> optionalFilters = new ArrayList<>();
@@ -961,7 +965,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					optionalFilters);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
-				registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterExtnDto.class);
+				registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterSearchDto.class);
+				setCenterMetadata(registrationCenters);
 				pageDto.setData(registrationCenters);
 			}
 		}
@@ -1030,8 +1035,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	/**
-	 * Method to prepare search filters based on the registration center type
-	 * code list passed
+	 * Method to prepare search filters based on the registration center type code
+	 * list passed
 	 * 
 	 * @param regCenterTypes
 	 *            list of registration center types
@@ -1059,8 +1064,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	}
 
 	/**
-	 * Method to build search filter by the registration center type id to fetch
-	 * the exact registration center
+	 * Method to build search filter by the registration center type id to fetch the
+	 * exact registration center
 	 * 
 	 * @param centerType
 	 *            request registration center
@@ -1110,6 +1115,53 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			return false;
 		}
 
+	}
+
+	public void setCenterMetadata(List<RegistrationCenterSearchDto> list) {
+		list.parallelStream().filter(this::setDevices).filter(this::setMachines).filter(this::setRegistrationCenterType)
+				.forEach(this::setUsers);
+	}
+
+	public boolean setDevices(RegistrationCenterSearchDto centerDto) {
+		try {
+			long devices = registrationCenterDeviceRepository.countCenterDevices(centerDto.getId());
+			centerDto.setDevices(devices);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException("", e.getMessage());
+		}
+		return true;
+	}
+
+	public boolean setMachines(RegistrationCenterSearchDto centerDto) {
+		try {
+			long machines = registrationCenterMachineRepository.countCenterMachines(centerDto.getId());
+			centerDto.setMachines(machines);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException("", e.getMessage());
+		}
+		return true;
+	}
+
+	public boolean setUsers(RegistrationCenterSearchDto centerDto) {
+		try {
+			long devices = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
+			centerDto.setMachines(devices);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException("", e.getMessage());
+		}
+		return true;
+	}
+
+	public boolean setRegistrationCenterType(RegistrationCenterSearchDto dto) {
+		try {
+			RegistrationCenterType centerType = registrationCenterTypeRepository
+					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(dto.getCenterTypeCode(),
+							dto.getLangCode());
+			dto.setCenterTypeName(centerType.getName());
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException("", e.getMessage());
+		}
+		return true;
 	}
 
 }
