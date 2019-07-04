@@ -46,7 +46,7 @@ emailext (
 	    attachmentsPattern:'**/testng-report/MOSIP_ModuleLevelAutoRun_TestNGReport.html',
 	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER'",
 	    body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
-	    to: "ashish.rastogi@mindtree.com",
+	    to: "$recipients",
 	    from: '"Jenkins" <info@mosip.io>'
 	)
 
