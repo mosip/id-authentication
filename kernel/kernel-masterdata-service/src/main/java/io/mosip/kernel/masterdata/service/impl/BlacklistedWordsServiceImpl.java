@@ -339,7 +339,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
 							ColumnValue columnValue = new ColumnValue();
 							columnValue.setFieldID(filterDto.getColumnName());
-							columnValue.setFieldValue(filterValue);
+							columnValue.setFieldValue(filterValue.toString());
 							columnValueList.add(columnValue);
 						});
 			}

@@ -101,12 +101,12 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private FilterTypeValidator filterValidator;
-	
+
 	@Autowired
 	private MasterDataFilterHelper masterDataFilterHelper;
-	
+
 	@Autowired
-	private FilterColumnValidator  filterColumnValidator;
+	private FilterColumnValidator filterColumnValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -502,17 +502,17 @@ public class MachineServiceImpl implements MachineService {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
-		for (FilterDto filterDto : filterValueDto.getFilters()) {
-			masterDataFilterHelper.filterValues(Machine.class, filterDto.getColumnName(), filterDto.getType(),
-					filterValueDto.getLanguageCode()).forEach(filterValue -> {
-						ColumnValue columnValue = new ColumnValue();
-						columnValue.setFieldID(filterDto.getColumnName());
-						columnValue.setFieldValue(filterValue);
-						columnValueList.add(columnValue);
-					});
-		}
-		filterResponseDto.setFilters(columnValueList);
-		
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				masterDataFilterHelper.filterValues(Machine.class, filterDto.getColumnName(), filterDto.getType(),
+						filterValueDto.getLanguageCode()).forEach(filterValue -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filterDto.getColumnName());
+							columnValue.setFieldValue(filterValue.toString());
+							columnValueList.add(columnValue);
+						});
+			}
+			filterResponseDto.setFilters(columnValueList);
+
 		}
 		return filterResponseDto;
 	}
