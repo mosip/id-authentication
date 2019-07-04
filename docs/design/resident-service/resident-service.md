@@ -33,83 +33,83 @@ The key solution considerations are
 
 #### 2.1. Request for OTP
 
-This service enables Individual to request for an OTP. The OTP will be send via registered message/email to the Individual. This OTP can then be used to authenticate in other resident services.
+This service enables Individual to request for an OTP. The OTP will be sent via message/email to the Individual. This OTP can then be used to authenticate in other resident services.
 
 **OTP request with VID/UIN**
 
-![](_images/RS-Uin-VidOTPReq.png)   
+![](_images/Uin-VidOTPReq.png)   
 
 **OTP request with Demo Details**
 
-![](_images/RS-DemoOTPReq.png) 
+![](_images/DemoOTPReq.png) 
 
 #### 2.2. Service Request Status Check 
 
-This service will respond with service request (UIN Generation/Updataion,Reprint etc) status to registerd phone/email.
+This service will respond with service request (UIN Generation/Updataion,Reprint etc) status and notification will be sent to phone/email.
 
-![](_images/RS-StatusCheckReq.png) 
+![](_images/StatusCheckReq.png) 
 
 #### 2.3. Get e-UIN 
 
-This request will authenticate an Individual based on provided OTP and UIN PDF will be sent to registered Email.
+This request will authenticate an Individual based on provided OTP and respond with e-UIN. Notification will be sent to phone/email.
 
-![](_images/RS-e-UINReq.png) 
+![](_images/e-UINReq.png) 
 
 
 #### 2.4. Request for re-print UIN
 
-This request will authenticate an Individual based on provided OTP and post a request for UIN re-print to Postal Service.
+This request will authenticate an Individual based on provided OTP and post a request for UIN re-print to Postal Service. Notification will be sent to phone/email.
 
-** Sequence Diagram TBA **
+![](_images/UIN-PrintReq.png) 
 
 #### 2.5. Get lost UIN
 
-This request will authenticate an Individual based on provided OTP and UIN PDF will be sent to registered Email.
+This request will authenticate an Individual based on provided OTP and respond with UIN. Notification will be sent to phone/email.
 
-** Sequence Diagram TBA **
+![](_images/GetUINReq.png) 
 
 #### 2.6. Get lost RID
 
-This request will authenticate an Individual based on provided OTP and RID will be sent to registered Phone/Email.
+This request will authenticate an Individual based on provided OTP and respond with RID. Notification will be sent to phone/email.
 
-** Sequence Diagram TBA **
+![](_images/GetRIDReq.png) 
 
 #### 2.7. Update UIN
 
-This request will authenticate an Individual based on provided OTP and RID will be sent to registered Phone/Email after successfully placing update request to Registration Processor.
+This request will authenticate an Individual based on provided OTP and respond with RID after successfully placing update request to Registration Processor. Notification will be sent to phone/email.
 
-** Sequence Diagram TBA **
+![](_images/UIN-UpdateReq.png) 
 
 #### 2.8. Generate VID
 This request will authenticate an Individual based on provided OTP and will generate VID for the respective UIN.
 
-** Sequence Diagram TBA **
+![](_images/VIDGenerateReq.png) 
 
 #### 2.9. Revoke VID
 This request will authenticate an Individual based on provided OTP and will revoke respective VID.
       
-** Sequence Diagram TBA **
+![](_images/VIDRevokeReq.png) 
       
 #### 2.10. Auth Lock
 This request will authenticate an Individual based on provided OTP and will lock provided authentication types.
 
-** Sequence Diagram TBA **
+![](_images/AuthLockReq.png) 
    
-#### 2.11. Auth Lock
+#### 2.11. Auth UnLock
 This request will authenticate an Individual based on provided OTP and will unlock provided locked authentication types.
 
-** Sequence Diagram TBA **
+![](_images/AuthUnLockReq.png) 
 
-#### 2.11. Get Auth History
-This request will authenticate an Individual based on provided OTP and auth history will be sent to registred Phone/Email.
+#### 2.12. Get Auth History
+This request will authenticate an Individual based on provided OTP and respond with auth history. Notification will be sent to phone/email.
 
-** Sequence Diagram TBA **
+![](_images/AuthHistoryReq.png) 
    
 
-**2.1.	Class Diagram**   
+## 3. Class Diagram  
 ** Class Diagram TBA **
 
 
-#### 3. REST API Specs
+## 4. REST API Specs
 
 [Refer Wiki for Resident Services APIs](https://github.com/mosip/mosip/wiki/Resident-Service-APIs) 
