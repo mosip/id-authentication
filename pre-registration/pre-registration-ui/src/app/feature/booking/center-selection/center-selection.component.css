@@ -47,25 +47,28 @@
         min-width: 1000px;
       }
 } */
+
+.inline-flex {
+  display: inline-flex;
+}
+.center_selection-wrapper {
+  margin: 5px 2vw;
+}
 .center-selection__title-card {
   color: #ff4081;
-  font-size: 20px;
   padding: 0;
-  margin: 20px;
-  height: 40px;
   display: flex;
   align-items: center;
   white-space: nowrap;
 }
 .center-selection__button-container {
   width: 100%;
-  height: 70px;
   position: fixed;
   bottom: 0vh;
   left: 0;
-  padding-top: 10px;
+  padding: 2px 1.6rem;
   display: flex;
-  z-index:22;
+  z-index: 22;
 }
 .spacer {
   flex: 1 1 auto;
@@ -75,9 +78,8 @@ section {
   display: flex;
 }
 .centers-wrapper {
-  margin-left: 25px;
-  margin-right: 2vw;
-  width: 55%;
+  width: 60vw;
+  padding: 0 1rem 0 0;
 }
 
 .centers-list ul {
@@ -104,48 +106,53 @@ input[type='radio'] {
 }
 
 .map {
-  width: 40%;
+  height: 60vh;
+  padding: 0 1rem;
   display: flex;
 }
 
 .container {
   display: flex;
-  margin-bottom:68px;
+  padding: 10px 2rem;
 }
 
 .user-back-btn {
-  background-color: #ff4081;
-  border: none;
-  color: white !important;
-  padding: 0.8rem 4rem;
+  background-color: #ffffff;
+  border: 1px solid #ff4081;
+  color: #ff4081;
+  padding: 0.8rem 2rem;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 0.8rem;
+  margin: 4px 2rem;
   cursor: pointer;
   text-transform: uppercase;
 }
 .user-book_later-btn {
-  color: #fd518c;
-  background-color: white;
-  font-family: Roboto;
-  margin-right: 20px;
-  border: 1px solid #fd518c;
-  opacity: 100%;
+  background-color: #ffffff;
+  border: 1px solid #ff4081;
+  color: #ff4081;
+  padding: 0.8rem 2rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.8rem;
+  margin: 4px 2rem;
+  cursor: pointer;
+  margin-right: 0px;
   text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 1px;
-  border-radius: 0;
 }
 .user-continue-btn {
   background-color: #ff4081;
   border: none;
-  color: white !important;
-  padding: 0.8rem 4rem;
+  color: white;
+  padding: 0.8rem 2rem;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 0.8rem;
+  margin: 4px 3rem 4px 1.2rem !important;
   cursor: pointer;
   text-transform: uppercase;
 }
@@ -160,6 +167,7 @@ input[type='radio'] {
   font-family: Roboto;
   white-space: nowrap;
   cursor: pointer;
+  display: inline-flex;
 }
 .center_selection-nearby-btn {
   color: #afafaf;
@@ -168,6 +176,8 @@ input[type='radio'] {
   margin-left: 30px;
   margin-right: 15px;
   padding: 0;
+  text-transform: uppercase;
+  transform: translateY(-0.4rem);
 }
 .center_selection-center-available-text {
   color: #6e6e6e;
@@ -175,8 +185,9 @@ input[type='radio'] {
   font-family: Roboto;
   font-size: 12px;
 }
-img {
-  height: 17px;
+.search-btn img {
+  height: 1rem;
+  transform: translateY(-0.01rem);
 }
 .search-btn {
   width: 35px;
@@ -186,11 +197,9 @@ img {
   border-radius: 0;
   opacity: 100%;
   line-height: 30px;
+  text-transform: uppercase;
 }
 .center_selection-form-container {
-  margin-left: 25px;
-  width: 100%;
-  padding: 0;
   animation: 1.3s anim ease-out;
 }
 @keyframes anim {
@@ -207,6 +216,7 @@ img {
   background-color: #fd518c;
   border-radius: 0;
   opacity: 100%;
+  text-transform: uppercase;
 }
 .search-input {
   padding: 10px;
@@ -216,7 +226,7 @@ img {
   opacity: 100%;
   background-color: white;
   border: none;
-  width: 225px;
+  width: 85%;
 }
 .select-input {
   outline: none;
@@ -226,7 +236,7 @@ img {
   padding: 10px;
   background-color: white;
   appearance: none;
-  width: 245px;
+  width: 100%;
   font-size: 14px;
 }
 .mat-option:hover {
@@ -238,7 +248,7 @@ img {
   box-shadow: 4px black;
   border-radius: 0;
   height: 40px;
-  width: 250px;
+  width: 50%;
   margin-top: 10px;
 }
 .search-text {
@@ -251,7 +261,7 @@ img {
   margin-left: 25px;
 }
 .search-card {
-  width: 300px;
+  width: 50%;
   height: 40px;
   padding: 0;
   box-shadow: 4px black;
@@ -273,8 +283,8 @@ img {
     margin-right: 20px;
   }
   .container {
-    flex-wrap: wrap;
-    margin-bottom: 68px;
+    display: flex;
+    padding: 0px 1rem 0px 2rem;
   }
   .centers-wrapper {
     width: 90%;
