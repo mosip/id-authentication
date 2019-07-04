@@ -261,14 +261,52 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * get cbef file based on registration Id
-	 * @see
-	 * io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#getFileByRegId(
-	 * java.lang.String)
+	 * (non-Javadoc) get cbef file based on registration Id
+	 * 
+	 * @see io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#
+	 * getFileByRegId( java.lang.String)
 	 */
 	@Override
 	public byte[] getFileByRegId(String registrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFileByRegId()::entry");
+		byte[] file = getFile(registrationId);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFileByRegId()::exit");
+		return file;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * get cbef file based on abisRefId
+	 * @see
+	 * io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#getFile(
+	 * java.lang.String)
+	 */
+	@Override
+	public byte[] getFileByAbisRefId(String abisRefId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), abisRefId,
+				"BioDedupeServiceImpl::getFileByAbisRefId()::entry");
+		String registrationId = "";
+		try {
+			List<String> registrationIds = packetInfoManager.getRidByReferenceId(abisRefId);
+			if (registrationIds == null || registrationIds.isEmpty()) {
+				throw new RegistrationProcessorUnCheckedException(
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getCode(),
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getMessage());
+			}
+			registrationId = registrationIds.get(0);
+		} catch (RegistrationProcessorUnCheckedException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					abisRefId, ExceptionUtils.getStackTrace(e));
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), abisRefId,
+				"BioDedupeServiceImpl::getFileByAbisRefId()::exit");
+		return getFile(registrationId);
+	}
+	
+	private byte[] getFile(String registrationId) {
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::entry");
 		byte[] file = null;
@@ -306,30 +344,8 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::exit");
 		return file;
-	}
 	
-	/*
-	 * (non-Javadoc)
-	 * get cbef file based on abisRefId
-	 * @see
-	 * io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#getFile(
-	 * java.lang.String)
-	 */
-	@Override
-	public byte[] getFileByAbisRefId(String abisRefId) {
-		String registrationId ="";
-		try {
-		List<String> registrationIds = packetInfoManager.getRidByReferenceId(abisRefId);
-		if (registrationIds == null || registrationIds.isEmpty()) {
-			throw new RegistrationProcessorUnCheckedException(PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getCode(),
-					PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getMessage());
-		}
-		registrationId = registrationIds.get(0);
-		}catch (RegistrationProcessorUnCheckedException e) {
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					abisRefId, ExceptionUtils.getStackTrace(e));
-		}
-		return getFileByRegId(registrationId);
+		
 	}
 
 }
