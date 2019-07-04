@@ -2,14 +2,16 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
-import io.mosip.kernel.core.http.RequestWrapper;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -28,6 +30,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * @author Sidhant Agarwal
  * @author Srinivasan
  * @author Uday Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -123,7 +126,8 @@ public interface RegistrationCenterService {
 	 *            the input registration center dto.
 	 * @return the id response dto.
 	 */
-	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto);
+	// public IdResponseDto createRegistrationCenter(RegistrationCenterDto
+	// registrationCenterDto);
 
 	/**
 	 * This method would validate timestamp and id whether the given date in
@@ -149,16 +153,6 @@ public interface RegistrationCenterService {
 	 * @return - the id response DTO.
 	 */
 	IdResponseDto deleteRegistrationCenter(String registrationCenterId);
-
-	/**
-	 * This method updates the registration center.
-	 * 
-	 * @param registrationCenterDto
-	 *            - the updated registration center DTO.
-	 * 
-	 * @return - the id response DTO.
-	 */
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenterDto);
 
 	/**
 	 * Function to fetch list of registration centers based on hierarchy level,text
@@ -188,13 +182,27 @@ public interface RegistrationCenterService {
 			String orderBy);
 
 	/**
-	 * Method to search and sort the filter based on the filters and sorting
-	 * provided
+	 * This service method can be used to create registration center by admin.
 	 * 
-	 * @param dto
-	 *            contains the data for searching and sorting.
-	 * @return list of registration center with all the metadata
+	 * @param RegistrationCenterReqAdmDto
+	 *            -pass the List of registration center DTO to create.
+	 * @return RegistrationCenterPostResponseDto - return created registration
+	 *         centers complete DTO
 	 */
+	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
+			List<RegistrationCenterReqAdmDto> reqRegistrationCenterDto);
+
+	/**
+	 * This method updates the registration center by admin.
+	 * 
+	 * @param RegistrationCenterPutReqAdmDto
+	 *            - pass the List of registration center DTO to update.
+	 * 
+	 * @return RegistrationCenterPutResponseDto - return updated registration
+	 *         centers complete DTO
+	 */
+	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
+			List<RegistrationCenterPutReqAdmDto> registrationCenterDto);
 	public PageResponseDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto);
 
 }

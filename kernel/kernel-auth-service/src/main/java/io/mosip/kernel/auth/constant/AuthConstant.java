@@ -70,4 +70,5 @@ public class AuthConstant {
 	public static final String SMS_NOTIFYTYPE = "SMS";
 	
 	public static final String EMAIL_NOTIFYTYPE = "EMAIL";
+
 }

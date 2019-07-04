@@ -19,13 +19,17 @@ import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.constant.OrderEnum;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
+import io.mosip.kernel.masterdata.dto.RegistarionCenterReqDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -45,6 +49,7 @@ import io.swagger.annotations.ApiParam;
  * @author Sidhant Agarwal
  * @author Srinivasan
  * @author Uday Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -59,8 +64,8 @@ public class RegistrationCenterController {
 	RegistrationCenterService registrationCenterService;
 
 	/**
-	 * Function to fetch registration centers list using location code and language
-	 * code.
+	 * Function to fetch registration centers list using location code and
+	 * language code.
 	 * 
 	 * @param langCode
 	 *            language code for which the registration center needs to be
@@ -68,7 +73,8 @@ public class RegistrationCenterController {
 	 * @param locationCode
 	 *            location code for which the registration center needs to be
 	 *            searched.
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto}
+	 *         RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/getlocspecificregistrationcenters/{langcode}/{locationcode}")
@@ -117,7 +123,8 @@ public class RegistrationCenterController {
 	 *            the latitude provided by user.
 	 * @param proximityDistance
 	 *            the proximity distance provided by user.
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto}
+	 *         RegistrationCenterResponseDto
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
@@ -139,7 +146,8 @@ public class RegistrationCenterController {
 	 *            centerId of required center.
 	 * @param langCode
 	 *            langCode of required center.
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto}
+	 *         RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/{id}/{langcode}")
@@ -154,7 +162,8 @@ public class RegistrationCenterController {
 	/**
 	 * Function to fetch all registration centers.
 	 * 
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto}
+	 *         RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters")
@@ -166,8 +175,8 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Function to fetch list of registration centers based on hierarchy level,text
-	 * and language code
+	 * Function to fetch list of registration centers based on hierarchy
+	 * level,text and language code
 	 * 
 	 * @param langCode
 	 *            input from user
@@ -175,7 +184,8 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param name
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto}
+	 *         RegistrationCenterResponseDto
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
@@ -192,8 +202,8 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Check whether the time stamp sent for the given registration center id is not
-	 * a holiday and is in between working hours.
+	 * Check whether the time stamp sent for the given registration center id is
+	 * not a holiday and is in between working hours.
 	 * 
 	 * @param regId
 	 *            - registration center id
@@ -216,42 +226,6 @@ public class RegistrationCenterController {
 		return responseWrapper;
 	}
 
-	/**
-	 * This method creates registration center.
-	 * 
-	 * @param registrationCenterDto
-	 *            the request DTO for creating registration center.
-	 * @return the response i.e. the id of the registration center created.
-	 */
-	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	@ResponseFilter
-	@PostMapping("/registrationcenters")
-	public ResponseWrapper<IdResponseDto> createRegistrationCenter(
-			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
-		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper
-				.setResponse(registrationCenterService.createRegistrationCenter(registrationCenterDto.getRequest()));
-		return responseWrapper;
-	}
-
-	/**
-	 * This method updates registration center.
-	 * 
-	 * @param registrationCenterDto
-	 *            the request DTO for updating registration center.
-	 * @return the response i.e. the id of the registration center updated.
-	 */
-	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
-	@ResponseFilter
-	@PutMapping("/registrationcenters")
-	public ResponseWrapper<IdAndLanguageCodeID> updateRegistrationCenter(
-			@RequestBody @Valid RequestWrapper<RegistrationCenterDto> registrationCenterDto) {
-
-		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(registrationCenterService.updateRegistrationCenter(registrationCenterDto));
-		return responseWrapper;
-	}
-
 	@ResponseFilter
 	@DeleteMapping("/registrationcenters/{registrationCenterId}")
 	public ResponseWrapper<IdResponseDto> deleteRegistrationCenter(
@@ -263,8 +237,8 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Function to fetch list of registration centers based on hierarchy level,List
-	 * of text and language code
+	 * Function to fetch list of registration centers based on hierarchy
+	 * level,List of text and language code
 	 * 
 	 * @param langCode
 	 *            input from user
@@ -272,7 +246,8 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param names
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto}
+	 *         RegistrationCenterResponseDto
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
@@ -290,7 +265,8 @@ public class RegistrationCenterController {
 	/**
 	 * Function to fetch all registration centers.
 	 * 
-	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto}
+	 *         RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/all")
@@ -307,9 +283,50 @@ public class RegistrationCenterController {
 	}
 
 	/**
+	 * 
+	 * This method creates registration center by Admin.
+	 * 
+	 * @param reqRegistrationCenterDto
+	 *            the request DTO for creating registration center.
+	 * @return RegistrationCenterPostResponseDto return the created registration
+	 *         center DTO.
+	 */
+	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PostMapping("/registrationcenters")
+	public ResponseWrapper<RegistrationCenterPostResponseDto> createRegistrationCenterAdmin(
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterReqAdmDto> reqRegistrationCenterDto) {
+		ResponseWrapper<RegistrationCenterPostResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				registrationCenterService.createRegistrationCenterAdmin(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * This method updates registration center by Admin.
+	 * 
+	 * @param reqRegistrationCenterDto
+	 *            the request DTO for updating registration center.
+	 * @return the response i.e. the id of the registration center updated.
+	 */
+	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@ResponseFilter
+	@PutMapping("/registrationcenters")
+	public ResponseWrapper<RegistrationCenterPutResponseDto> updateRegistrationCenterAdmin(
+			@RequestBody @Valid RegistarionCenterReqDto<RegistrationCenterPutReqAdmDto> reqRegistrationCenterDto) {
+
+		ResponseWrapper<RegistrationCenterPutResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(
+				registrationCenterService.updateRegistrationCenterAdmin(reqRegistrationCenterDto.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
 	 * Api to search the registration center based on the search input
 	 * 
-	 * @return list of registration center
+	 * @param request
+	 *            search input for registration center search
+	 * @return list of registration center  
 	 */
 	@ResponseFilter
 	@PostMapping("/registrationcenters/search")

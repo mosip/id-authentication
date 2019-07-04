@@ -1,26 +1,39 @@
 package io.mosip.kernel.auth.controller;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
+import io.mosip.kernel.auth.dto.AccessTokenResponseDTO;
 import io.mosip.kernel.auth.dto.AuthNResponse;
 import io.mosip.kernel.auth.dto.AuthNResponseDto;
+import io.mosip.kernel.auth.dto.AuthResponseDto;
 import io.mosip.kernel.auth.dto.AuthToken;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.ClientSecret;
@@ -48,7 +61,6 @@ import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.AuthService;
 import io.mosip.kernel.auth.service.TokenService;
-import io.mosip.kernel.auth.service.impl.AuthServiceImpl;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
@@ -125,7 +137,7 @@ public class AuthController {
 		final Cookie cookie = new Cookie(mosipEnvironment.getAuthTokenHeader(), content);
 		cookie.setMaxAge(expirationTimeSeconds);
 		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
+		cookie.setSecure(false);
 		cookie.setPath("/");
 		return cookie;
 	}
@@ -256,6 +268,26 @@ public class AuthController {
 			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), exp.getMessage());
 		}
 		responseWrapper.setResponse(mosipUserDtoToken.getMosipUserDto());
+		return responseWrapper;
+	}
+
+	/**
+	 * API to validate token
+	 * 
+	 * 
+	 * @return ResponseEntity with MosipUserDto
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	@ResponseFilter
+	@GetMapping(value = "/authorize/admin/validateToken")
+	public ResponseWrapper<MosipUserDto> validateToken(
+			@CookieValue(value = "Authorization", required = false) String token)
+			throws IOException {
+		MosipUserDto mosipUserDto = authService.valdiateToken(token);
+		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(mosipUserDto);
 		return responseWrapper;
 	}
 
@@ -535,5 +567,85 @@ public class AuthController {
 		ResponseWrapper<UserDetailsResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(userDetailsDto);
 		return responseWrapper;
+	}
+
+	/**
+	 * 
+	 * @param req
+	 *            - {@link HttpServletRequest}
+	 * @param res
+	 *            - {@link HttpServletResponse}
+	 * @return {@link ResponseWrapper}
+	 */
+	@ResponseFilter
+	@DeleteMapping(value = "/logout/user")
+	public ResponseWrapper<AuthResponseDto> logoutUser(HttpServletRequest req, HttpServletResponse res) {
+		String token = getTokenFromCookie(req);
+		AuthResponseDto authResponseDto = authService.logoutUser(token);
+		ResponseWrapper<AuthResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(authResponseDto);
+		return responseWrapper;
+	}
+
+	@GetMapping(value = "/login/{redirectURI}")
+	public void login(@CookieValue("state") String state, @PathVariable("redirectURI") String redirectURI,
+			HttpServletResponse res) throws IOException {
+		String uri = authService.getKeycloakURI(redirectURI, state);
+		res.setStatus(302);
+		res.sendRedirect(uri);
+	}
+
+	@GetMapping(value = "/login-redirect/{redirectURI}")
+	public void loginRedirect(@PathVariable("redirectURI") String redirectURI, @RequestParam("state") String state,
+			@RequestParam("session_state") String sessionState, @RequestParam("code") String code,
+			@CookieValue("state") String stateCookie, HttpServletResponse res) throws IOException {
+		AccessTokenResponseDTO jwtResponseDTO = authService.loginRedirect(state, sessionState, code, stateCookie,
+				redirectURI);
+		String uri = new String(Base64.decodeBase64(redirectURI.getBytes()));
+		Cookie cookie = createCookie(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+jwtResponseDTO.getAccessToken(), Integer.parseInt(jwtResponseDTO.getExpiresIn()));
+		res.addCookie(cookie);
+		res.setStatus(302);
+		res.sendRedirect(uri);
+	}
+
+	/**
+	 * Gets Access token from cookie
+	 * 
+	 * @param req
+	 *            - {@link HttpServletRequest}
+	 * @return {@link String} - accessToken
+	 */
+	private String getTokenFromCookie(HttpServletRequest req) {
+		Cookie[] cookies = req.getCookies();
+		String token = null;
+		if (cookies == null) {
+			throw new AuthManagerException(AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.COOKIE_NOTPRESENT_ERROR.getErrorMessage());
+		}
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().contains(AuthConstant.AUTH_COOOKIE_HEADER)) {
+				token = cookie.getValue();
+				removeCookie(cookie);
+				break;
+			}
+		}
+		if (token == null) {
+			throw new AuthManagerException(AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorCode(),
+					AuthErrorCode.TOKEN_NOTPRESENT_ERROR.getErrorMessage());
+		}
+
+		return token;
+	}
+
+	/**
+	 * Erases Cookie from browser
+	 * 
+	 * @param cookie
+	 *            - {@link Cookie}
+	 */
+	private void removeCookie(Cookie cookie) {
+		cookie.setValue("");
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
 	}
 }

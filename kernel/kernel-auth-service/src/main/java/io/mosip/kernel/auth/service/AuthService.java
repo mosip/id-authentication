@@ -5,7 +5,9 @@ package io.mosip.kernel.auth.service;
 
 import java.util.List;
 
+import io.mosip.kernel.auth.dto.AccessTokenResponseDTO;
 import io.mosip.kernel.auth.dto.AuthNResponse;
+import io.mosip.kernel.auth.dto.AuthResponseDto;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
@@ -60,5 +62,13 @@ public interface AuthService extends AuthZService, AuthNService {
 	public ValidationResponseDto validateUserName(String appId,String userName);
 	
 	public UserDetailsResponseDto getUserDetailBasedOnUserId(String appId,List<String> userIds);
+	
+	public MosipUserDto valdiateToken(String token);
+	
+	public AuthResponseDto logoutUser(String token);
+	
+	AccessTokenResponseDTO loginRedirect(String state, String sessionState, String code, String stateCookie, String redirectURI);
+
+	String getKeycloakURI(String redirectURI, String state);
 
 }
