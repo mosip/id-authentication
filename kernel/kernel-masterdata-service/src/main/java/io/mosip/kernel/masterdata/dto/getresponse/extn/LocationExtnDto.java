@@ -28,7 +28,9 @@ public class LocationExtnDto extends BaseDto {
 	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.CONTAINS,FilterTypeEnum.STARTSWITH})
 	@ApiModelProperty(value = "name", required = true, dataType = "java.lang.String")
 	private String name;
-
+	
+	
+	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.CONTAINS,FilterTypeEnum.STARTSWITH})
 	@JsonDeserialize(using = CustomIntegerDeserializer.class)
 	@Range(min = 0)
 	@ApiModelProperty(value = "hierarchyLevel", required = true, dataType = "java.lang.Integer")

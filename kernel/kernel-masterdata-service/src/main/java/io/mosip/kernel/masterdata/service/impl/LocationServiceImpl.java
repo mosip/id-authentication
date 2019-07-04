@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
+import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.LocationDto;
@@ -30,6 +31,13 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -39,7 +47,12 @@ import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * Class will fetch Location details based on various parameters this class is
@@ -58,6 +71,18 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Autowired
 	private LocationRepository locationRepository;
+	
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+	
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper; 
+	
+	@Autowired
+	FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	MasterDataFilterHelper masterDataFilterHelper;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> hierarchyChildList = null;
@@ -573,5 +598,45 @@ public class LocationServiceImpl implements LocationService {
 		return locationRepository.findDistinctByparentLocCode(locCode);
 
 	}
+	
+	@Override
+	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto) {
+		PageResponseDto<LocationExtnDto> pageDto = new PageResponseDto<>();
+		List<LocationExtnDto> location = null;
+		if (filterTypeValidator.validate(LocationExtnDto.class, dto.getFilters())) {
+			Page<Location> page = masterdataSearchHelper.searchMasterdata(Location.class, dto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				location = MapperUtils.mapAll(page.getContent(), LocationExtnDto.class);
+				pageDto.setData(location);
+			}
+		}
+		return pageDto;
+	}
+	
+	@Override
+	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				masterDataFilterHelper.filterValues(Location.class, filterDto.getColumnName(),
+						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
+							if (filterValue == null) {
+								throw new DataNotFoundException(
+										BlacklistedWordsErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorCode(),
+										BlacklistedWordsErrorCode.NO_DATA_FOR_FILTER_VALUES.getErrorMessage());
+							}
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filterDto.getColumnName());
+							columnValue.setFieldValue(filterValue.toString());
+							columnValueList.add(columnValue);
+						});
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
+	}
+	
 
 }
