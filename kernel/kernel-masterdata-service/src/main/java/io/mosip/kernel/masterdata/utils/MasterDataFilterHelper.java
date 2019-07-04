@@ -56,6 +56,10 @@ public class MasterDataFilterHelper {
 			return filterValuesByType(entity, LocalDateTime.class, columnName, columnType, languageCode);
 		} else if (String.class.getName().equals(fieldType)) {
 			return filterValuesByType(entity, String.class, columnName, columnType, languageCode);
+		} else if (fieldType.equals("short")) {
+			return filterValuesByType(entity, Short.class, columnName, columnType, languageCode);
+		} else if (Integer.class.getName().equals(fieldType)) {
+			return filterValuesByType(entity, Integer.class, columnName, columnType, languageCode);
 		} else if (Boolean.class.getName().equals(fieldType)) {
 			return filterValuesByType(entity, Boolean.class, columnName, columnType, languageCode);
 		} else if (LocalDate.class.getName().equals(fieldType)) {

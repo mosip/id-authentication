@@ -11,6 +11,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 
 /**
@@ -129,4 +133,8 @@ public interface LocationService {
 	 */
 	public List<String> getChildList(String locCode);
 
+	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto); 
+	
+	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto);
 }
+

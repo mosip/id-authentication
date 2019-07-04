@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +25,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -212,6 +215,24 @@ public class LocationController {
 		ResponseWrapper<PageDto<LocationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(locationHierarchyService.getLocations(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PostMapping("/search")
+	public ResponseWrapper<PageResponseDto<LocationExtnDto>> searchLocation(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<LocationExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.searchLocation(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PostMapping("/filtervalues")
+	public ResponseWrapper<FilterResponseDto> locationFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.locationFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 

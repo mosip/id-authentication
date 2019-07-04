@@ -8,7 +8,7 @@ public enum LocationErrorCode {
 	LOCATION_UPDATE_EXCEPTION("KER-MSD-097", "Error occured wihile updating location hierarchy details"),
 	LOCATION_DELETE_EXCEPTION("KER-MSD-098", "Error occured wihile deleting location hierarchy details"),
 	LOCATION_LEVEL_NOT_FOUND_EXCEPTION("KER-MSD-028", "Location Hierarchy Level not found"),
-	LOCATION_CHILD_STATUS_EXCEPTION("KER-MSD-300", "Cannot deactivate the Location as active child Location are mapped");
+	LOCATION_CHILD_STATUS_EXCEPTION("KER-MSD-300", "Cannot deactivate the Location as active child Location are mapped"), NO_DATA_FOR_FILTER_VALUES("KER-MSD-___","No Data Found for the given filter column");
 
 	private String errorCode;
 	private String errorMessage;
