@@ -179,6 +179,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		} catch (ApisResourceAccessException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		}
 		return isValidUIN;
 	}
