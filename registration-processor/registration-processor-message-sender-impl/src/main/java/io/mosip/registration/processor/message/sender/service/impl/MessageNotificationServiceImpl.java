@@ -162,14 +162,16 @@ public class MessageNotificationServiceImpl
 			requestWrapper.setRequesttime(localdatetime);
 			requestWrapper.setRequest(smsDto);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
-					"MessageNotificationServiceImpl::sendSmsNotification():: SMSNOTIFIER POST service started with request : "+ JsonUtil.objectMapperObjectToJson(requestWrapper));
-			
+					"MessageNotificationServiceImpl::sendSmsNotification():: SMSNOTIFIER POST service started with request : "
+							+ JsonUtil.objectMapperObjectToJson(requestWrapper));
+
 			responseWrapper = (ResponseWrapper<?>) restClientService.postApi(ApiName.SMSNOTIFIER, "", "",
 					requestWrapper, ResponseWrapper.class);
 			response = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), SmsResponseDto.class);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), id,
-					"MessageNotificationServiceImpl::sendSmsNotification():: SMSNOTIFIER POST service ended with response : "+ JsonUtil.objectMapperObjectToJson(response));
-			
+					"MessageNotificationServiceImpl::sendSmsNotification():: SMSNOTIFIER POST service ended with response : "
+							+ JsonUtil.objectMapperObjectToJson(response));
+
 		} catch (TemplateNotFoundException | TemplateProcessingFailureException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, PlatformErrorMessages.RPR_SMS_TEMPLATE_GENERATION_FAILURE.name() + e.getMessage()
@@ -272,14 +274,15 @@ public class MessageNotificationServiceImpl
 		params.add("attachments", attachment);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"MessageNotificationServiceImpl::sendEmail():: EMAILNOTIFIER POST service started");
-		
+
 		responseWrapper = (ResponseWrapper<?>) resclient.postApi(builder.build().toUriString(),
 				MediaType.MULTIPART_FORM_DATA, params, ResponseWrapper.class);
-		
+
 		responseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), ResponseDto.class);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"MessageNotificationServiceImpl::sendEmail():: EMAILNOTIFIER POST service ended with in response : "+ JsonUtil.objectMapperObjectToJson(responseDto));
-		
+				"MessageNotificationServiceImpl::sendEmail():: EMAILNOTIFIER POST service ended with in response : "
+						+ JsonUtil.objectMapperObjectToJson(responseDto));
+
 		return responseDto;
 	}
 
@@ -353,12 +356,12 @@ public class MessageNotificationServiceImpl
 		try {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"MessageNotificationServiceImpl::setAttributesFromIdRepo():: IDREPOGETIDBYUIN GET service Started ");
-			
+
 			response = (IdResponseDTO) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments, "", "",
 					IdResponseDTO.class);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"MessageNotificationServiceImpl::setAttributesFromIdRepo():: IDREPOGETIDBYUIN GET service ended with reponse "+JsonUtil.objectMapperObjectToJson(response));
-			
+					"MessageNotificationServiceImpl::setAttributesFromIdRepo():: IDREPOGETIDBYUIN GET service ended successfully");
+
 			if (response == null || response.getResponse() == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), uin.toString(),
@@ -455,10 +458,10 @@ public class MessageNotificationServiceImpl
 				.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
 		String email = regProcessorIdentityJson.getIdentity().getEmail().getValue();
 		String phone = regProcessorIdentityJson.getIdentity().getPhone().getValue();
-		
+
 		emailId.append(JsonUtil.getJSONValue(demographicIdentity, email).toString());
 		phoneNumber.append(JsonUtil.getJSONValue(demographicIdentity, phone).toString());
-		
+
 	}
 
 }

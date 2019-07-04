@@ -22,7 +22,6 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
-import io.mosip.registration.processor.packet.manager.service.impl.FileSystemManagerImpl;
 
 /**
  * The Class IdRepoServiceImpl.
@@ -80,15 +79,15 @@ public class IdRepoServiceImpl implements IdRepoService {
 	private Number getUin(List<String> pathSegments, String regProcessorDemographicIdentity)
 			throws IOException, ApisResourceAccessException {
 		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response=new ResponseWrapper<>();
-		
+		ResponseWrapper<IdResponseDTO> response = new ResponseWrapper<>();
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"IdRepoServiceImpl::getUin():: IDREPOSITORY GET API CALL STARTED");
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"IdRepoServiceImpl::getUin():: IDREPOSITORY GET API CALL ENDED with response  "+JsonUtil.objectMapperObjectToJson(response));
-	
+				"IdRepoServiceImpl::getUin():: IDREPOSITORY GET API CALL ENDED Successfully");
+
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();
 			String jsonString = gsonObj.toJson(response.getResponse());
@@ -132,8 +131,8 @@ public class IdRepoServiceImpl implements IdRepoService {
 	@Override
 	public JSONObject getIdJsonFromIDRepo(String machedRegId, String regProcessorDemographicIdentity)
 			throws IOException, ApisResourceAccessException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),machedRegId,
-				"IdRepoServiceImpl::getIdJsonFromIDRepo()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				machedRegId, "IdRepoServiceImpl::getIdJsonFromIDRepo()::entry");
 
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add("rid");
@@ -141,15 +140,15 @@ public class IdRepoServiceImpl implements IdRepoService {
 		JSONObject demographicJsonObj = null;
 
 		@SuppressWarnings("unchecked")
-		ResponseWrapper<IdResponseDTO> response=new ResponseWrapper<>();
+		ResponseWrapper<IdResponseDTO> response = new ResponseWrapper<>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"IdRepoServiceImpl::getIdJsonFromIDRepo():: IDREPOSITORY GET API CALL STARTED");
-		
+
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"IdRepoServiceImpl::getIdJsonFromIDRepo():: IDREPOSITORY GET API CALL ENDED with reponse "+JsonUtil.objectMapperObjectToJson(response));
-		
+				"IdRepoServiceImpl::getIdJsonFromIDRepo():: IDREPOSITORY GET API CALL ENDED Successfully");
+
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();
 			String jsonString = gsonObj.toJson(response.getResponse());
@@ -157,8 +156,8 @@ public class IdRepoServiceImpl implements IdRepoService {
 			demographicJsonObj = JsonUtil.getJSONObject(identityJson, regProcessorDemographicIdentity);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),machedRegId,
-				"IdRepoServiceImpl::getIdJsonFromIDRepo()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				machedRegId, "IdRepoServiceImpl::getIdJsonFromIDRepo()::exit");
 
 		return demographicJsonObj;
 	}
