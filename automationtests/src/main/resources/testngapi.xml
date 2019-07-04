@@ -174,7 +174,7 @@
                     <class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />
                    <class name="io.mosip.authentication.idRepository.tests.RetrieveUinByVid" /> 
              </classes>
-       </test> 
+       </test>
 				 
 
 		</suite>

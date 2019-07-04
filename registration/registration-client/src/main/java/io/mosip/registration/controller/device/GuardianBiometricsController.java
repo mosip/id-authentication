@@ -850,6 +850,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 					|| excepCount == 12) {
 				bioValue = RegistrationUIConstants.SELECT;
 				biometricBox.setVisible(true);
+				bioProgress.setProgress(1);
 				biometricTypecombo.setVisible(false);
 				thresholdBox.setVisible(false);
 				scanBtn.setText(RegistrationUIConstants.TAKE_PHOTO);
@@ -900,9 +901,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 		biometricTypecombo.getSelectionModel().clearSelection();
 		biometricTypecombo.setPromptText(bioValue);
-		if (!bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
-			scanBtn.setDisable(true);
+		if (bioProgress.getProgress() != 0) {
+			if(!scanBtn.getText().equalsIgnoreCase(RegistrationUIConstants.TAKE_PHOTO)) {
+				scanBtn.setDisable(true);
+			}
 			continueBtn.setDisable(false);
+		} else {
+			continueBtn.setDisable(true);
 		}
 	}
 	

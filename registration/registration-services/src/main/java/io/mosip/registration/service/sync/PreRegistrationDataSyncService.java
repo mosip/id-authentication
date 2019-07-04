@@ -1,5 +1,6 @@
 package io.mosip.registration.service.sync;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import io.mosip.registration.dto.ResponseDTO;
@@ -68,4 +69,12 @@ public interface PreRegistrationDataSyncService {
 	 * @return the pre registration record for deletion
 	 */
 	public PreRegistrationList getPreRegistrationRecordForDeletion(String preRegistrationId);
+	
+	
+	/**
+	 * Last pre registration packet downloaded date time.
+	 *
+	 * @return the timestamp
+	 */
+	public Timestamp getLastPreRegPacketDownloadedTime();
 }

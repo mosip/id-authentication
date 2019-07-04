@@ -67,8 +67,7 @@ public class OTPServiceImpl implements OTPService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.auth.service.OTPService#sendOTP(io.mosip.kernel.auth.
+	 * @see io.mosip.kernel.auth.service.OTPService#sendOTP(io.mosip.kernel.auth.
 	 * entities.MosipUserDto, java.lang.String)
 	 */
 
@@ -113,7 +112,7 @@ public class OTPServiceImpl implements OTPService {
 					throw new AuthNException(validationErrorsList);
 				} else {
 					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),ex);
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
 				}
 			}
 			if (ex.getRawStatusCode() == 403) {
@@ -121,18 +120,16 @@ public class OTPServiceImpl implements OTPService {
 					throw new AuthZException(validationErrorsList);
 				} else {
 					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),ex);
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
 				}
 			}
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
-				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 			}
 		} catch (Exception e) {
-			throw new AuthManagerException(AuthErrorCode.SERVER_ERROR.getErrorCode(),
-					AuthErrorCode.SERVER_ERROR.getErrorMessage(),e);
+			throw new AuthManagerException(AuthErrorCode.SERVER_ERROR.getErrorCode(), e.getMessage(), e);
 		}
 		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUserDto, token);
 		if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
@@ -189,7 +186,7 @@ public class OTPServiceImpl implements OTPService {
 				otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 						OtpTemplateResponseDto.class);
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 			}
 		}
 		List<OtpTemplateDto> otpTemplateList = otpTemplateResponseDto.getTemplates();
@@ -226,7 +223,7 @@ public class OTPServiceImpl implements OTPService {
 					otpTemplateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 							OtpTemplateResponseDto.class);
 				} catch (Exception e) {
-					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
+					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 				}
 			}
 			String template = null;
@@ -284,7 +281,7 @@ public class OTPServiceImpl implements OTPService {
 				otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 						OtpEmailSendResponseDto.class);
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 			}
 		}
 		return otpEmailSendResponseDto;
@@ -332,7 +329,7 @@ public class OTPServiceImpl implements OTPService {
 		try {
 			token = tokenService.getInternalTokenGenerationService();
 		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 		}
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParam("key", key).queryParam("otp",
 				otp);
@@ -355,7 +352,7 @@ public class OTPServiceImpl implements OTPService {
 				otpResponse = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 						OtpValidatorResponseDto.class);
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 			}
 			if (otpResponse.getStatus() != null && otpResponse.getStatus().equals("success")) {
 				BasicTokenDto basicToken = tokenGenerator.basicGenerateOTPToken(mosipUser, true);
@@ -422,24 +419,22 @@ public class OTPServiceImpl implements OTPService {
 					throw new AuthNException(validationErrorsList);
 				} else {
 					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-							AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+							AuthErrorCode.CLIENT_ERROR.getErrorMessage(), ex);
 				}
 			}
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
 				} else {
-					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-							AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 				}
 			}
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
-				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 			}
-		} 
+		}
 		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser, token);
 		if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
 			authNResponseDto = new AuthNResponseDto();
@@ -504,7 +499,7 @@ public class OTPServiceImpl implements OTPService {
 					otpEmailSendResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 							OtpEmailSendResponseDto.class);
 				} catch (Exception e) {
-					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
+					throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 				}
 			}
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
@@ -515,22 +510,20 @@ public class OTPServiceImpl implements OTPService {
 					throw new AuthNException(validationErrorsList);
 				} else {
 					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-							AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+							AuthErrorCode.CLIENT_ERROR.getErrorMessage(), ex);
 				}
 			}
 			if (ex.getRawStatusCode() == 403) {
 				if (!validationErrorsList.isEmpty()) {
 					throw new AuthZException(validationErrorsList);
 				} else {
-					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-							AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+					throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 				}
 			}
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
-				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 			}
 		}
 		return otpEmailSendResponseDto;
