@@ -48,21 +48,21 @@ public class BioDedupeController {
 	/**
 	 * Gets the file.
 	 *
-	 * @param regId
-	 *            the reg id
+	 * @param abisRefId
+	 *            the abisRefId
 	 * @return the file
 	 */
 
-	@GetMapping(path = "/biometricfile/{regId}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+	@GetMapping(path = "/biometricfile/{abisRefId}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
 	@ApiOperation(value = "Get the CBEF XML file  of packet", response = String.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "CBEF Xml file is successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the CBEF XML file"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public ResponseEntity<byte[]> getFile(@PathVariable("regId") String regId,
+	public ResponseEntity<byte[]> getFile(@PathVariable("abisRefId") String abisRefId,
 			@CookieValue(value = "Authorization", required = true) String token) {
 
 		tokenValidator.validate("Authorization=" + token, "biodedupe");
-		byte[] file = bioDedupeService.getFile(regId);
+		byte[] file = bioDedupeService.getFileByAbisRefId(abisRefId);
 
 		if (isEnabled) {
 			HttpHeaders headers = new HttpHeaders();
@@ -75,4 +75,6 @@ public class BioDedupeController {
 		return ResponseEntity.status(HttpStatus.OK).body(file);
 
 	}
+	
+
 }

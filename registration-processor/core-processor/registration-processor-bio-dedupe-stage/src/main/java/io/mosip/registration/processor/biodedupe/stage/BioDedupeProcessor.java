@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -106,6 +107,9 @@ public class BioDedupeProcessor {
 	/** The abis handler util. */
 	@Autowired
 	private ABISHandlerUtil abisHandlerUtil;
+	
+	@Autowired
+	private BioDedupeService biodedupeServiceImpl;
 	
 	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
@@ -403,8 +407,7 @@ public class BioDedupeProcessor {
 
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(registrationId);
-		byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
-
+		byte[] bytefile = biodedupeServiceImpl.getFileByRegId(registrationId);
 		if (bytefile != null)
 			return true;
 

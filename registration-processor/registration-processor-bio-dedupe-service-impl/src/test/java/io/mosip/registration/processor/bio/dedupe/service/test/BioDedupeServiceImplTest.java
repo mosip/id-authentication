@@ -370,8 +370,27 @@ public class BioDedupeServiceImplTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
-		byte[] fileData = bioDedupeService.getFile(registrationId);
+		byte[] fileData = bioDedupeService.getFileByRegId(registrationId);
 		assertArrayEquals(fileData, data);
+	}
+	
+	@Test
+	public void getFileByAbisRefId() throws Exception {
+		//case1 : if regId is invalid(null or empty), 
+		byte[] expected = "1234567890".getBytes();
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(expected);
+
+		byte[] fileData = bioDedupeService.getFileByAbisRefId(registrationId);
+		assertArrayEquals("verfing if byte array returned is null for the given invalid regId ",fileData, null);
+		
+		//case2 : if regId is valid
+		List<String> regIds = new ArrayList<>();
+		regIds.add("10006100360000320190702102135");
+		Mockito.when(packetInfoManager.getRidByReferenceId(anyString())).thenReturn(regIds);
+		byte[] result = bioDedupeService.getFileByAbisRefId(registrationId);
+		assertArrayEquals("verfing if byte array returned is same as expected ",result, expected);
 	}
 
 	@Test
@@ -384,7 +403,7 @@ public class BioDedupeServiceImplTest {
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenThrow(new IOException());
 
-		byte[] fileData = bioDedupeService.getFile(registrationId);
+		byte[] fileData = bioDedupeService.getFileByRegId(registrationId);
 		Assertions.assertThatExceptionOfType(IOException.class);
 	}
 }
