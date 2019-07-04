@@ -306,10 +306,13 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	}
 	
 	private byte[] getFile(String registrationId) {
+		byte[] file = null;
+		if (registrationId == null || registrationId.isEmpty()) {
+			return file;
+		}
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::entry");
-		byte[] file = null;
 		try {
 		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
 				PacketFiles.PACKET_META_INFO.name());
