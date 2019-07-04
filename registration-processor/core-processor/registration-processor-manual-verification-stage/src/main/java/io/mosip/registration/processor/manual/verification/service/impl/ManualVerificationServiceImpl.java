@@ -128,6 +128,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		List<ManualVerificationEntity> entities;
 		String matchType = dto.getMatchType();
 		if (dto.getUserId() == null || dto.getUserId().isEmpty()) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::UserIDNotPresentException"
+							+ PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 			throw new UserIDNotPresentException(
 					PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_USER_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
@@ -139,6 +142,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		if (!(matchType.equalsIgnoreCase(DedupeSourceName.ALL.toString())
 				|| matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
 				|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString()))) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()"
+							+ PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getMessage());
 			throw new MatchTypeNotFoundException(PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getMessage());
 		}
@@ -161,6 +167,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 						matchType);
 			}
 			if (entities.isEmpty()) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+						dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()"
+								+ PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
 				throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 						PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
 			} else {
@@ -203,6 +212,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "ManualVerificationServiceImpl::getApplicantFile()::entry");
 		if (regId == null || regId.isEmpty()) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, "ManualVerificationServiceImpl::getApplicantFile()"
+							+ PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 		}
@@ -211,6 +223,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		} else if (PacketFiles.DEMOGRAPHIC.name().equals(fileName)) {
 			fileInStream = getApplicantDemographicFile(regId, PacketFiles.ID.name());
 		} else {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, "ManualVerificationServiceImpl::getApplicantFile()"
+							+ PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_FILE_REQUEST.getMessage());
 		}
@@ -279,6 +294,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		messageDTO.setIsValid(false);
 		messageDTO.setRid(manualVerificationDTO.getRegId());
 		if (registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty()) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "ManualVerificationServiceImpl::updatePacketStatus()::InvalidFileNameException"
+							+ PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 		}
@@ -290,6 +308,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::entry");
 		if (!manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.REJECTED.name())
 				&& !manualVerificationDTO.getStatusCode().equalsIgnoreCase(ManualVerificationStatus.APPROVED.name())) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "ManualVerificationServiceImpl::updatePacketStatus()"
+							+ PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
 			throw new InvalidUpdateException(PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getCode(),
 					PlatformErrorMessages.RPR_MVS_INVALID_STATUS_UPDATE.getMessage());
 		}
@@ -298,6 +319,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				manualVerificationDTO.getMvUsrId(), ManualVerificationStatus.ASSIGNED.name());
 
 		if (entities.isEmpty()) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "ManualVerificationServiceImpl::updatePacketStatus()"
+							+ PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
 			throw new NoRecordAssignedException(PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getCode(),
 					PlatformErrorMessages.RPR_MVS_NO_ASSIGNED_RECORD.getMessage());
 		} else {
@@ -385,6 +409,9 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "ManualVerificationServiceImpl::getApplicantPacketInfo()::entry");
 		if (regId == null || regId.isEmpty()) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "ManualVerificationServiceImpl::getApplicantPacketInfo()"
+							+ PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 			throw new InvalidFileNameException(PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getCode(),
 					PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
 		}

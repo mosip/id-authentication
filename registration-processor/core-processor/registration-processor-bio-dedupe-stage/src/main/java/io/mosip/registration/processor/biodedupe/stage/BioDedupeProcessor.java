@@ -417,7 +417,7 @@ public class BioDedupeProcessor {
 					"BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call ended and Fetched ByteFile");
 			return true;
 		} else if (registrationType.equalsIgnoreCase(SyncTypeDto.LOST.toString())) {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call ended"
 							+ BioDedupeConstants.CBEFF_NOT_FOUND);
 			throw new CbeffNotFoundException(PlatformErrorMessages.PACKET_BIO_DEDUPE_CBEFF_NOT_PRESENT.getMessage());

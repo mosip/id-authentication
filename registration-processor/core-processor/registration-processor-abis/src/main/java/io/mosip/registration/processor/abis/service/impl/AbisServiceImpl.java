@@ -97,8 +97,8 @@ public class AbisServiceImpl implements AbisService {
 		if (storedRefId.size() < 1000)
 			storedRefId.add(referenceId);
 
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				" referenceId storeList " + storedRefId);
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, " referenceId storeList " + storedRefId);
 
 		response.setId(ABIS_INSERT);
 		response.setRequestId(abisInsertRequestDto.getRequestId());
@@ -108,8 +108,8 @@ public class AbisServiceImpl implements AbisService {
 		try {
 			doc = getCbeffDocument(referenceId);
 			if (testFingerPrint == null || testIris == null || testFace == null) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), referenceId, "Test Tags are not present");
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId, "Test Tags are not present");
 			}
 			if (doc != null) {
 				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
@@ -124,9 +124,8 @@ public class AbisServiceImpl implements AbisService {
 					response.setFailureReason(7);
 				}
 			} else {
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"AbisServiceImpl():: unable to fect CBEF file ");
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId, "AbisServiceImpl():: unable to fect CBEF file ");
 				response.setReturnValue(2);
 				response.setFailureReason(7);
 			}
@@ -149,12 +148,12 @@ public class AbisServiceImpl implements AbisService {
 			response.setReturnValue(2);
 			response.setFailureReason(3);
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::insert()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::insert()::exit");
 
 		return response;
 	}
@@ -162,8 +161,8 @@ public class AbisServiceImpl implements AbisService {
 	private Document getCbeffDocument(String referenceId)
 			throws ApisResourceAccessException, ParserConfigurationException, SAXException, IOException {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::getCbeffDocument()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::getCbeffDocument()::entry");
 		List<String> regId = null;
 		if (referenceId != null) {
 			regId = packetInfoManager.getRidByReferenceId(referenceId);
@@ -171,17 +170,20 @@ public class AbisServiceImpl implements AbisService {
 			if (regId != null && !(regId.isEmpty())) {
 				pathSegments.add(regId.get(0));
 
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId, "AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call started : ");
 				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
 						byte[].class);
 				if (bytefile == null) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), referenceId,
-							"Byte file not found from BioDedupe api");
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REFFERENCEID.toString(), referenceId,
+							"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended	and Byte file not found from BioDedupe api");
 				}
 
 				if (bytefile != null) {
-					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-							"", "Got Byte file from BioDedupe api");
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REFFERENCEID.toString(), referenceId,
+							"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended and Got Byte file from BioDedupe api");
 					String byteFileStr = new String(bytefile);
 
 					InputSource is = new InputSource();
@@ -196,8 +198,8 @@ public class AbisServiceImpl implements AbisService {
 		} else {
 			throw new MissingMandatoryFieldsException(PlatformErrorMessages.MISSING_MANDATORY_FIELDS.getMessage());
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::getCbeffDocument()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::getCbeffDocument()::exit");
 
 		return null;
 	}
