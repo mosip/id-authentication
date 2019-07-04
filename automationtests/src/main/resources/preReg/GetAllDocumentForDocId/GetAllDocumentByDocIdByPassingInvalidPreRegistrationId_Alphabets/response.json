@@ -1,12 +1,12 @@
 {
-    "id": "mosip.pre-registration.document.fetch.content",
-    "version": "1.0",
-    "responsetime": "2019-06-01T17:13:09.590Z",
-    "response": null,
-    "errors": [
-        {
-            "errorCode": "PRG_PAM_DOC_022",
-            "message": "DocumentId is not belongs to the pre-registration Id"
+   "id": "mosip.pre-registration.document.fetch.content",
+   "version" : "1.0",
+   "responsetime": "2019-01-16T17:31:04.021Z",
+   "response":null,
+   "errors": [
+  	{
+    	    "errorCode": "PRG_PAM_APP_005",
+    	    "message": "No data found for the requested pre-registration id"
         }
     ]
 }

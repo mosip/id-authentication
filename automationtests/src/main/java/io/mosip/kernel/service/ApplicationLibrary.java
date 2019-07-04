@@ -141,7 +141,7 @@ public class ApplicationLibrary extends BaseTestCase {
 	} 
 	
 	public Response putFileAndJson(String Resource_Uri,Object body,File file,String cookie) {
-		return commonLibrary.Post_JSONwithFile(body, file, ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA,cookie);
+		return commonLibrary.postJSONwithFile(body, file, ApplnURI+Resource_Uri,MediaType.MULTIPART_FORM_DATA,cookie);
 	} 
 	
 		

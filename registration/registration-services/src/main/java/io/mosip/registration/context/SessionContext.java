@@ -63,6 +63,7 @@ public class SessionContext {
 	private static List<String> authModes = new ArrayList<>();
 	
 	private static List<String> validAuthModes = new ArrayList<>();
+	private static final boolean HAVE_TO_SAVE_AUTH_TOKEN = true;
 
 	/**
 	 * constructor of sessionContext
@@ -164,7 +165,7 @@ public class SessionContext {
 	private static boolean validateInitialLogin(UserDTO userDTO, String loginMethod) {
 		ServiceDelegateUtil serviceDelegateUtil = applicationContext.getBean(ServiceDelegateUtil.class);
 		try {
-			AuthTokenDTO authTknDTO = serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
+			AuthTokenDTO authTknDTO = serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD, HAVE_TO_SAVE_AUTH_TOKEN);
 			if(null != authTknDTO) {
 				createSessionContext();
 				sessionContext.authTokenDTO = authTknDTO;
@@ -254,9 +255,11 @@ public class SessionContext {
 	 * 
 	 * @return boolean
 	 */
-	private static boolean validateOTP(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
+	private static boolean validateOTP(String loginMethod, UserDTO userDTO,
+			AuthenticationValidatorDTO authenticationValidatorDTO) {
 		AuthenticationService authenticationService = applicationContext.getBean(AuthenticationService.class);
-		AuthTokenDTO authTknDTO = authenticationService.authValidator(RegistrationConstants.OTP, authenticationValidatorDTO.getUserId(), authenticationValidatorDTO.getOtp());
+		AuthTokenDTO authTknDTO = authenticationService.authValidator(RegistrationConstants.OTP,
+				authenticationValidatorDTO.getUserId(), authenticationValidatorDTO.getOtp(), HAVE_TO_SAVE_AUTH_TOKEN);
 		if(null != authTknDTO) {
 			createSessionContext();
 			sessionContext.authTokenDTO = authTknDTO;

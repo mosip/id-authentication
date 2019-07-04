@@ -28,9 +28,12 @@ public interface AuthenticationService {
 	 *            The userId
 	 * @param otp
 	 *            otp entered
+	 * @param haveToSaveAuthToken
+	 *            flag indicating whether the Authorization Token have to be saved
+	 *            in context
 	 * @return {@link AuthTokenDTO} returning authtokendto
 	 */
-	AuthTokenDTO authValidator(String validatorType, String userId, String otp);
+	AuthTokenDTO authValidator(String validatorType, String userId, String otp, boolean haveToSaveAuthToken);
 
 	/**
 	 * This method is used to set the Authentication validators

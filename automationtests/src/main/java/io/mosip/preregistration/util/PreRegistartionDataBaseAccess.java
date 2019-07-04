@@ -62,6 +62,12 @@ public class PreRegistartionDataBaseAccess {
 	public Date getHoliday(String queryString, String dbName) {
 		return  (Date) getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString).list().get(0);
 	}
+	@SuppressWarnings("unchecked")
+	public void delete(String queryString, String dbName) {
+		Query query = getDataBaseConnection(dbName.toLowerCase()).createSQLQuery(queryString);
+		int res = query.executeUpdate();
+		session.getTransaction().commit();	
+	}
 	
 	
 	@AfterClass(alwaysRun = true)

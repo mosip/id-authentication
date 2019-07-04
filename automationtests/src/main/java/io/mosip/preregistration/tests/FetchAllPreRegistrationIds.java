@@ -116,6 +116,16 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
 		actualRequest.put("requesttime",lib.getCurrentDate());
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
+		if(testCaseName.toLowerCase().contains("smoke"))
+		{
+			testSuite = "Create_PreRegistration/createPreRegistration_smoke";
+			JSONObject createPregRequest = lib.createRequest(testSuite);
+			Response createResponse = lib.CreatePreReg(createPregRequest,individualToken);
+			String preID = lib.getPreId(createResponse);
+			Response documentResponse = lib.documentUpload(createResponse,individualToken);
+			Response avilibityResponse = lib.FetchCentre("10001",individualToken);
+			lib.BookAppointment(documentResponse, avilibityResponse, preID,individualToken);
+		}
 		try {
 			Actualresponse = appLib.postWithJson(preReg_URI,actualRequest.toJSONString(),regClientToken);
 			
@@ -172,11 +182,15 @@ public class FetchAllPreRegistrationIds extends BaseTestCase implements ITest{
           JSONObject object = (JSONObject) testdata[2];
           testCaseName = object.get("testCaseName").toString();
    
-          preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllPreRegistrationIdsURI");
-          if(!lib.isValidToken(regClientToken))
+         preReg_URI = commonLibrary.fetch_IDRepo().get("preReg_FetchAllPreRegistrationIdsURI");
+         if(!lib.isValidToken(regClientToken))
   		{
         	  regClientToken=lib.regClientAdminToken();
+        	  
   		}
+        if (!lib.isValidToken(individualToken)) {
+   		  individualToken=lib.getToken();
+		}
     }
 
 

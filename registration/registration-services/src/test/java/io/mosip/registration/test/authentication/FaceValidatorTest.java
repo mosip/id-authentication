@@ -56,7 +56,7 @@ public class FaceValidatorTest {
 	
 	@Test
 	public void validateAuthTest() {
-		assertNull(faceValidatorImpl.validate("mosip","123"));
+		assertNull(faceValidatorImpl.validate("mosip","123", true));
 	}
 
 }

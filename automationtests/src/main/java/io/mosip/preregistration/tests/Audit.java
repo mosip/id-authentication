@@ -299,8 +299,8 @@ public class Audit extends BaseTestCase implements ITest {
 		dao.setDate(preID);
 		lib.expiredStatus();
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDataForBatchJobExpired");
-		expectedRequest.put("session_user_id", "preregadminuser1");
-		List<String> objs = dao.getAuditData("preregadminuser1");
+		expectedRequest.put("session_user_id", "preregadmin");
+		List<String> objs = dao.getAuditData("preregadmin");
 		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 
@@ -320,8 +320,8 @@ public class Audit extends BaseTestCase implements ITest {
 		lib.reverseDataSync(preRegistrationId);
 		Response consumedResponse = lib.consumedStatus();
 		JSONObject expectedRequest = lib.getRequest("Audit/AuditDataForBatchJobConsumed");
-		expectedRequest.put("session_user_id", "preregadminuser1");
-		List<String> objs = dao.getAuditData("preregadminuser1");
+		expectedRequest.put("session_user_id", "preregadmin");
+		List<String> objs = dao.getAuditData("preregadmin");
 		JSONObject auditDatas = lib.getAuditData(objs, 0);
 		boolean result = lib.jsonComparison(expectedRequest, auditDatas);
 
