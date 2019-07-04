@@ -959,7 +959,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-		if (filterTypeValidator.validate(RegistrationCenterExtnDto.class, dto.getFilters())) {
+		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters())) {
 			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
 					optionalFilters);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {

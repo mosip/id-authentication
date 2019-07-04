@@ -21,10 +21,10 @@ public class BaseDto {
 	@ApiModelProperty(value = "isActive", required = true, dataType = "java.lang.Boolean")
 	private Boolean isActive;
 
-	@FilterType(types = { FilterTypeEnum.BETWEEN })
 	@ApiModelProperty(value = "createdBy", required = true, dataType = "java.lang.String")
 	private String createdBy;
 
+	@FilterType(types = { FilterTypeEnum.BETWEEN})
 	@ApiModelProperty(value = "createdBy", required = true, dataType = "java.time.LocalDateTime")
 	private LocalDateTime createdDateTime;
 
