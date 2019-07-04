@@ -1,5 +1,7 @@
 package io.mosip.authentication.internal.service.controller;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,13 +26,13 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
-import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
@@ -68,6 +70,11 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.invokeMethod(internalAuthTxnController, "initBinder", binder);
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnValidator", authTxnValidator);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
+	}
+	
+	@Test
+	public void testSupportTrue() {
+		assertTrue(authTxnValidator.supports(AutnTxnDto.class));
 	}
 
 	@Test
