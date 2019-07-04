@@ -1,0 +1,4 @@
+﻿Bonjour $name_lang3,
+
+Votre demande d'enregistrement $RID a échoué car un UIN a été trouvé contre vos coordonnées. Veuillez visiter votre bureau d'inscription le plus proche.
+Et visitez https://mosip.io/grievances

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl,\
+io.mosip.kernel.idgenerator.vid.util.VidFilterUtils

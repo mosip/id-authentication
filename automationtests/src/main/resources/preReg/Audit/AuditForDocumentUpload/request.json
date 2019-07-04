@@ -1,0 +1,10 @@
+{
+	"ref_id": "NO_ID",
+	"log_desc": "Document uploaded & the respective Pre-Registration data is saved in the document table",
+	"event_id": "PRE_404",
+	"event_type": "BUSINESS",
+	"session_user_id": "9300774452",
+	"event_name": "UPLOAD",
+	"module_name": "DOCUMENT_SERVICE",
+	"ref_id_type": "PRE_REGISTRATION_ID"
+}

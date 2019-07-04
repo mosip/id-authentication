@@ -1,0 +1,6 @@
+<app-header></app-header>
+<div class="container">
+    <div class="app-sidebar" [ngStyle]="{ width: getWidth() }"><app-sidebar></app-sidebar></div>
+    <div class="app-main" ><router-outlet></router-outlet></div>
+</div>
+<app-footer></app-footer>

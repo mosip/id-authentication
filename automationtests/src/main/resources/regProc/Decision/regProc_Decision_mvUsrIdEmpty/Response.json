@@ -1,0 +1,12 @@
+{
+	"response" : null,
+    "errors": [
+        {
+            "errorCode": "RPR-MVS-004",
+            "message": "No Assigned Record Found"
+        }
+    ],
+    "id": "mosip.manual.verification.decision",
+    "version": "1.0",
+    "responsetime": "2019-06-24T11:03:42.113Z"
+}

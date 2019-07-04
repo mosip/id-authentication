@@ -1,0 +1,13 @@
+{
+  "id": "getapplicanttype.code",
+  "version": "V1.0",
+  "responsetime": "2019-04-17T11:44:03.199Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-148",
+      "message": "One or more input parameter is invalid or does not exist"
+    }
+  ]
+}

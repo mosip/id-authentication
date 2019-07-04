@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.12.16</version>
+	</parent>
+
+	<groupId>io.mosip.registration</groupId>
+	<version>0.12.16</version>
+	<artifactId>registration-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>registration</name>
+	<description>Parent project of MOSIP Registration</description>
+
+	<properties>
+		<main.basedir>${project.basedir}</main.basedir>
+		<maven.jacoco.version>0.8.2</maven.jacoco.version>
+		<javafx.version>2.2</javafx.version>
+		<maven.sonar.version>3.2</maven.sonar.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.version>3.7.0</maven.compiler.version>
+		<maven.javadoc.version>3.0.1</maven.javadoc.version>
+
+		<!-- Test & Logging -->
+		<junit.version>4.12</junit.version>
+		<logback.version>1.1.6</logback.version>
+		<slf4j.version>1.7.19</slf4j.version>
+		<mockito.version>1.10.19</mockito.version>
+
+		<!-- Lombok -->
+		<lombok.version>1.16.18</lombok.version>
+
+		<!-- Orika Mapper -->
+		<orika.version>1.4.6</orika.version>
+
+		<!-- Spring version -->
+		<spring.version>5.0.6.RELEASE</spring.version>
+
+		<!-- Hibernate version -->
+		<hibernate.version>5.2.9.Final</hibernate.version>
+
+		<!-- Apache Commons DPC2 version -->
+		<apache.commons.dpce.version>2.1.1</apache.commons.dpce.version>
+
+		<!-- Jackson -->
+		<jackson.version>2.8.8</jackson.version>
+		<jackson.mapper.asl.version>1.7.1</jackson.mapper.asl.version>
+
+		<mosip.core.kernel.version>${project.version}</mosip.core.kernel.version>
+		<!-- Derby Version -->
+		<apache.derby.version>10.13.1.1</apache.derby.version>
+
+		<!-- sourceafis Version -->
+		<sourceafis.version>3.4.0</sourceafis.version>
+
+		<!-- openimaj version -->
+		<org.openimaj.version>1.3.5</org.openimaj.version>
+
+		<!-- webcam-capture version -->
+		<webcam-capture.version>0.3.12</webcam-capture.version>
+
+		<!-- TSS Version -->
+		<tss.version>0.3.0</tss.version>
+
+		<sonar.exclusions>
+			src/main/java/io/mosip/registration/util/**/*,
+			src/main/java/io/mosip/registration/repositories/**/*,
+			src/main/java/io/mosip/registration/context/**/*,
+			src/main/java/io/mosip/registration/controller/**/*,
+			src/main/java/io/mosip/registration/ui/constants/**/*,
+			src/main/java/io/mosip/registration/scheduler/**/*,
+			src/main/java/io/mosip/registration/dto/**/*,
+			src/main/java/io/mosip/registration/constants/**/*,
+			src/main/java/io/mosip/registration/entity/**/*,
+			src/main/java/io/mosip/registration/exception/**/*,
+			src/main/java/io/mosip/registration/config/**/*,
+			src/main/java/io/mosip/registration/device/**/*,
+			src/main/java/io/mosip/registration/cipher/**/*,
+			src/main/java/io/mosip/registration/update/**/*,
+			src/main/java/io/mosip/registration/config/**/*,
+			src/main/java/io/mosip/registration/mdm/dto/**/*,
+			src/main/java/io/mosip/registration/mdm/constants/**/*,
+			src/main/java/io/mosip/registration/mdm/util/**/*,
+			src/main/java/io/mosip/registration/mdmservice/**/*
+		</sonar.exclusions>
+	</properties>
+
+	<modules>
+		<module>registration-services</module>
+		<module>registration-client</module>
+		<module>registration-mdm-service</module>
+		<module>registration-libs</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Lombok -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<!-- JUnit -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- Mockito -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-core</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ma.glasnost.orika</groupId>
+				<artifactId>orika-core</artifactId>
+				<version>${orika.version}</version>
+			</dependency>
+
+			<!-- Spring ORM -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<!-- Hibernate 5.2.9 Final -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<!-- Apache Commons DBCP -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-dbcp2</artifactId>
+				<version>${apache.commons.dpce.version}</version>
+			</dependency>
+			<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>kernel-utils</artifactId> 
+				<version>${project.version}</version> </dependency> -->
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-logger-logback</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>kernel-security</artifactId> 
+				<version>${project.version}</version> </dependency> -->
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-dataaccess-hibernate</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-auditmanager-api</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator-rid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator-uin</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idvalidator-prid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idgenerator-rid</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-crypto-signature</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-keygenerator-bouncycastle</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-templatemanager-velocity</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>dom4j</groupId>
+						<artifactId>dom4j</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-qrcodegenerator-zxing</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-pdfgenerator-itext</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derby</artifactId>
+				<version>${apache.derby.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derbyclient</artifactId>
+				<version>${apache.derby.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.9.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>${jackson.mapper.asl.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz</artifactId>
+				<version>2.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.24.0-GA</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-crypto-jce</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cronutils</groupId>
+				<artifactId>cron-utils</artifactId>
+				<version>8.0.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-virusscanner-clamav</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-transliteration-icu4j</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-applicanttype-api</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-cbeffutil-api</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.github.microsoft/TSS.Java -->
+			<dependency>
+				<groupId>com.github.microsoft</groupId>
+				<artifactId>TSS.Java</artifactId>
+				<version>${tss.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-idobjectvalidator</artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-bioapi-provider </artifactId>
+				<version>${mosip.core.kernel.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<fork>true</fork>
+					<meminitial>1024m</meminitial>
+					<maxmem>2024m</maxmem>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${maven.jacoco.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.projectName>Registration-DEV</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
+				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+				<sonar.projectName>Registration</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
+</project>

@@ -1,0 +1,2 @@
+--select * from audit.app_audit_log;
+--select * from reg.registration;

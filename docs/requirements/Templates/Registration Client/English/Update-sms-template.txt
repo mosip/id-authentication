@@ -1,0 +1,2 @@
+Dear $name, 
+Thank you for updating your details with the digital identity platform. Your registration id is $RegistrationID. If there are any corrections to be made in your details, please contact the Registration centre within the next 4 days.

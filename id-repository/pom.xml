@@ -1,0 +1,125 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>0.12.16</version>
+	</parent>
+
+	<groupId>io.mosip.idrepository</groupId>
+	<artifactId>id-repository-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>ID-Repository</name>
+	<description>MOSIP ID-Repository</description>
+	<modules>
+		<module>id-repository-core</module>
+		<module>id-repository-vid-service</module>
+		<module>id-repository-identity-service</module>
+		<module>id-repository-salt-generator</module>
+
+	</modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- maven -->
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.version>3.7.0</maven.compiler.version>
+		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
+		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
+		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
+		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
+		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
+		<maven.javadoc.version>3.1.0</maven.javadoc.version>
+
+		<!-- spring -->
+		<spring.version>5.0.4.RELEASE</spring.version>
+		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+		<swagger.version>2.9.2</swagger.version>
+
+		<!-- data -->
+		<postgresql.version>42.2.2</postgresql.version>
+
+		<!-- test -->
+		<junit.version>4.12</junit.version>
+		<mockito.version>1.10.19</mockito.version>
+
+		<!-- utilities -->
+		<lombok.version>1.16.18</lombok.version>
+		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java,**/*VertxApplication.java,**/cbeffutil/**</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
+		<powermock.version>2.0.0</powermock.version>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven.surefire.plugin.version}</version>
+					<configuration>
+						<skip>false</skip>
+						<useFile>false</useFile>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${maven.jacoco.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${maven.sonar.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven.javadoc.version}</version>
+					<configuration>
+						<aggregate>true</aggregate>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/constant/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/entity/**</exclude>
+						<exclude>**/repository/**</exclude>
+						<exclude>**/*BootApplication.class</exclude>
+						<exclude>**/httpfilter/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+

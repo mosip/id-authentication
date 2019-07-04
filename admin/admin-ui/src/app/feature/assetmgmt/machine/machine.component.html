@@ -1,0 +1,12 @@
+<div class="container">
+    <div class="search-row">
+        <span class="totalNumber-text"><b>Total Nos:&nbsp;{{recordNumber}}</b></span>
+        <span class="spacer"></span>
+            <span class="input"><mat-form-field>
+                <input matInput #searchKey placeholder="Search Machine" (keyup)="search(searchKey)">
+            </mat-form-field></span>
+          <span ><button mat-flat-button class="assign-btn" disabled>Assign</button></span>
+      </div>
+    <app-table [data]="tableData"></app-table>
+</div>
+

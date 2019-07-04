@@ -1,0 +1,75 @@
+<div class="title">
+    <span class="title-word"><mat-icon class="arrow">keyboard_backspace</mat-icon>
+  New User Registration</span>
+  <hr  class="horizontal-line">
+</div>
+<div class="form-container">
+
+  <form class="login-form"  [formGroup]="userRegistrationForm" (ngSubmit)="onSubmit()">
+    <div>
+    <div style="display:inline-flex;flex-wrap: wrap;">
+      <mat-form-field class="input-full-width">
+        <input formControlName="firstName" matInput placeholder="First Name" />
+      </mat-form-field>
+      <mat-form-field class="input-full-width">
+        <input  formControlName="lastName" matInput placeholder="Last Name" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="input-full-width">
+        <input  formControlName="contactNumber" matInput placeholder="Contact Number" type="number" />
+      </mat-form-field>
+      <mat-form-field class="input-full-width">
+        <input formControlName="emailID" matInput placeholder="Email Id"/>
+      </mat-form-field>
+      <div *ngIf="(emailID.touched) && emailID.invalid">
+        please enter a valid email id
+      </div>
+    </div>
+    <div>
+        <mat-form-field class="input-full">
+            <input [max]="maxDob" formControlName="DOB" matInput readonly [matDatepicker]="picker" (focus)="picker.open()" placeholder="DOB">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+      <mat-form-field class="input-full-width">
+        <input formControlName="userName" matInput placeholder="User Name" />
+      </mat-form-field>
+    </div>
+    <div class="row-option">
+        <mat-form-field class="select-field">
+            <mat-label>Roles</mat-label>
+            <mat-select formControlName="roles">
+              <mat-option value="MISP">MISP</mat-option>
+              <mat-option  value="CENTRAL_ADMIN">CENTRAL_ADMIN</mat-option>
+              <mat-option  value="CENTER_ADMIN">CENTER_ADMIN</mat-option>
+              <mat-option  value="ZONAL_ADMIN">ZONAL_ADMIN</mat-option>
+              <mat-option  value="REGISTRATION_SUPERVISOR">REGISTRATION_SUPERVISOR</mat-option>
+              <mat-option  value="REGISTRATION_ADMIN">REGISTRATION_ADMIN</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-radio-group aria-label="Select an option" formControlName="gender">
+              <div class="gender-radio">
+              <mat-radio-button  value=MLE>Male</mat-radio-button>
+              <mat-radio-button  value=FLE>FeMale</mat-radio-button>
+              </div>  
+            </mat-radio-group>
+          <!-- <mat-radio-group aria-label="Select an option" formControlName="gender">
+              <div class="gender-radio" *ngFor="let x of genderResponseObject">
+              <mat-radio-button  value={{x.code}} *ngIf="isValid(x.langCode)">{{x.genderName}}</mat-radio-button>
+              </div>  
+            </mat-radio-group> -->
+    </div>
+      
+    <div class="button-container">
+        <button mat-raised-button class="cancel-button" (click)="cancel()">
+            Cancel
+          </button>
+        <button mat-raised-button class="proceed-button" type="submit">
+          Proceed
+        </button>
+      </div>
+  </div>
+  </form>
+</div>

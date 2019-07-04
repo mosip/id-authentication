@@ -1,0 +1,9 @@
+{
+      "DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_EmptyValue":"",
+      "DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Alphabets": " ",
+      "DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumeric":"",
+      "DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_SpecialCharacters":"",
+      "DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_AlphaNumericAndSpecialCharacters":"",
+      "DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_GreaterThanMaxLength":"",
+      "DeleteAllDocumentForPreRegisrationIdByPassingInvalidPreRegisrationId_Spaces":""
+}

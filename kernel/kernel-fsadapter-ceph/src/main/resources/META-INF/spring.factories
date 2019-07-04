@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.mosip.kernel.fsadapter.ceph.util.ConnectionUtils,\
+io.mosip.kernel.fsadapter.ceph.impl.CephAdapterImpl

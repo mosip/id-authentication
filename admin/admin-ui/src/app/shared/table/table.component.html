@@ -1,0 +1,9 @@
+  <table >
+    <tr>
+      <th *ngFor="let key of keys">{{key}}</th>
+    </tr>
+    <tr *ngFor="let item of data">
+      <td  *ngFor="let keyItem of keys">{{item[keyItem]}}</td>
+    </tr>
+  </table>
+

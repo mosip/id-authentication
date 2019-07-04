@@ -1,0 +1,4 @@
+Hi $name_lang1,
+
+Your Request for Registration $RID has failed because of an Technical issue please visit your nearest Registration Office.
+And Visit https://mosip.io/grievances

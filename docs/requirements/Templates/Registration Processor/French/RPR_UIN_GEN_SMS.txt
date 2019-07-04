@@ -1,0 +1,3 @@
+Bonjour $name_lang3,
+
+Votre UIN pour l'enregistrement $RID a été généré avec succès et vous parviendra sous peu à votre adresse postale.

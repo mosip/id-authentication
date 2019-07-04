@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.demographic.create",
+    "version": "1.0",
+    "responsetime": "2019-06-03T08:11:43.992Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "KER-IOV-004",
+            "message": "Invalid input parameter - identity/postalCode"
+        }
+    ]
+}
