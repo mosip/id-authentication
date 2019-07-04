@@ -29,12 +29,20 @@ public class InternalAuthFilterConfig {
 
 		return registrationBean;
 	}
-	
+
 	@Bean
 	public FilterRegistrationBean<BaseOTPFilter> getInternalOTPFilter() {
 		FilterRegistrationBean<BaseOTPFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new BaseOTPFilter());
 		registrationBean.addUrlPatterns("/otp");
+		return registrationBean;
+	}
+
+	@Bean
+	public FilterRegistrationBean<BaseOTPFilter> getAuth_Transactions() {
+		FilterRegistrationBean<BaseOTPFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new BaseOTPFilter());
+		registrationBean.addUrlPatterns("/auth-transactions");
 		return registrationBean;
 	}
 
