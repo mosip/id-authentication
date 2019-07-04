@@ -11,9 +11,10 @@
 	</listeners>
 
 
-	   <test name="Kernel Tests">
+	  <test name="Kernel Tests">
 						 <classes>
-                           <class name="io.mosip.kernel.tests.AuditLog" />   
+						
+                        <class name="io.mosip.kernel.tests.AuditLog" />   
                        <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
                             <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
@@ -66,13 +67,13 @@
                            <class name="io.mosip.kernel.tests.UINStatusUpdate" /> 
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
-                          <class name="io.mosip.kernel.tests.FetchRegCent" /> 
+                          <class name="io.mosip.kernel.tests.FetchRegCent" />  
                  </classes>
-				</test>     
-				
-  
-		 	  <test name="PreReg Tests">
+				</test>      
+				 
+  	  <test name="PreReg Tests">
 		<classes>	
+			<class name="io.mosip.preregistration.tests.DeleteAllDocumentsByPreRegID" />
 		 <class name="io.mosip.preregistration.tests.TriggerNotification" /> 
 		  <class name="io.mosip.preregistration.tests.BatchJob" />
 		       <class name="io.mosip.preregistration.tests.Audit" />
@@ -108,7 +109,7 @@
 			<class name="io.mosip.preregistration.tests.UpdateDemographicDetails" />
 			<class name="io.mosip.preregistration.tests.ValidateOtp" /> 
 		</classes>
-	</test> 
+	</test>  
 
       <test name="RegistrationProcessor Tests">
 		<classes>					
@@ -155,7 +156,7 @@
                       name="io.mosip.authentication.tests.EkycPartnerAuthentication" />
                  <class name="io.mosip.authentication.tests.OtpAuthentication" /> 
              </classes>
-       </test> 
+       </test>  
        <test name="IdRepositoryTest">
              <classes>
              
