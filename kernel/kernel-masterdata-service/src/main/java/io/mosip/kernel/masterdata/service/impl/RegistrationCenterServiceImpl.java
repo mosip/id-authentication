@@ -172,7 +172,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public void constructRegEx() {
 		supportedLanguages = new HashSet<>(Arrays.asList(secondaryLang.split(",")));
 		supportedLanguages.add(primaryLang);
-		System.out.println("=====supportedLanguages===" + supportedLanguages);
 		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
 		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
 	}
