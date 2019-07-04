@@ -21,6 +21,10 @@
   font-style: normal;
 }
 
+button {
+  text-transform: uppercase;
+}
+
 .mar_right-30 {
   margin-right: 30px;
 }
@@ -64,7 +68,7 @@ body {
   min-width: 158px;
   min-height: 50px;
   padding: 0px 50px;
-  font-size: 16px;
+  font-size: 0.8rem;
   font-family: Roboto;
   font-weight: 500;
   color: rgba(255, 255, 255, 1);
@@ -77,7 +81,7 @@ body {
   min-width: 158px;
   min-height: 50px;
   padding: 0px 50px;
-  font-size: 16px;
+  font-size: 0.8rem;
   font-family: Roboto;
   font-weight: 500;
   color: rgba(255, 64, 129, 1);
@@ -135,7 +139,7 @@ body {
 .mat-form-field-appearance-outline .mat-form-field-outline-end,
 .mat-form-field-appearance-outline .mat-form-field-outline-start {
   border: none !important;
-  border-bottom: 1px solid rgba(230, 58, 116, 1) !important;
+  border-bottom: 1px solid #838383 !important;
   border-radius: 0 !important;
   background: rgba(255, 255, 255, 1);
 }
@@ -220,18 +224,4 @@ mat-keyboard-container mat-keyboard-key .mat-keyboard-key {
 }
 .mat-keyboard-wrapper {
   padding: 0 !important;
-}
-
-
-.ol-viewport{
-  overflow: visible !important;
-  min-height: 275px !important;
-}
-
-.ol-overlaycontainer-stopevent{
-  text-align: right;
-}
-
-.ol-rotate-reset{
-  display: none !important;
 }
