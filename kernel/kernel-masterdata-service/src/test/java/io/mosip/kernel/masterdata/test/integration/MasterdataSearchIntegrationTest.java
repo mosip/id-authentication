@@ -570,4 +570,40 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void filterBlackListedWordsTestForArabicLanguage() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("كلمة في القائمة السوداء");
+		filterDto.setType("all");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("ara");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Arrays.asList("damn", "dammit"));
+		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void filterBlackListedWordsTestForInvalidLanguageCode() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("invalid");
+		filterDto.setType("all");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("inv");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(BlacklistedWords.class), Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Arrays.asList("damn", "dammit"));
+		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
 }
