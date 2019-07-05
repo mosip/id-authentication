@@ -314,6 +314,12 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		return id;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * searchBlackListedWords(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
 	@Override
 	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto) {
 		PageResponseDto<BlacklistedWordsExtnDto> pageDto = new PageResponseDto<>();
@@ -329,6 +335,13 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		return pageDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * blackListedWordsFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
+	 */
 	@Override
 	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();

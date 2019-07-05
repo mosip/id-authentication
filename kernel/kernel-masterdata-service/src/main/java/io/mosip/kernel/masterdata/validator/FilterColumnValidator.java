@@ -14,6 +14,8 @@ import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 
 /**
+ * Class that validates the fields annotated with {@link FilterColumn}.
+ * 
  * @author Sagar Mahapatra
  * @author Ritesh Sinha
  * @since 1.0.0
@@ -21,8 +23,18 @@ import io.mosip.kernel.masterdata.exception.ValidationException;
  */
 @Component
 public class FilterColumnValidator {
+	/**
+	 * Value of the column name which uses {@link FilterColumn} annotation.
+	 */
 	private static final String TYPE_FIELD = "type";
 
+	/**
+	 * @param target
+	 *            the entity name for which the filters needs to be validated.
+	 * @param filters
+	 *            list of filters.
+	 * @return true if validation is successful.
+	 */
 	public <T> boolean validate(Class<T> target, List<FilterDto> filters) {
 		List<ServiceError> errors = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
@@ -36,6 +48,16 @@ public class FilterColumnValidator {
 		return true;
 	}
 
+	/**
+	 * Method to validate filter column values.
+	 * 
+	 * @param target
+	 *            Entity class type.
+	 * @param errors
+	 *            errors to be returned if validation fails.
+	 * @param filter
+	 *            the filter column type value.
+	 */
 	private <T> void validateFilterColumn(Class<T> target, List<ServiceError> errors, FilterDto filter) {
 		try {
 			if (validateFilterColumnType(filter.getType())) {
@@ -55,6 +77,15 @@ public class FilterColumnValidator {
 		}
 	}
 
+	/**
+	 * Method to validate filter column values.
+	 * 
+	 * @param field
+	 *            the name of the filter column variable.
+	 * @param filterColumn
+	 *            the value of the filter column.
+	 * @return true if the value is same as in {@link FilterColumnEnum}.
+	 */
 	public boolean containsFilterColumn(Field field, String filterColumn) {
 		if (field.isAnnotationPresent(FilterColumn.class)) {
 			FilterColumn annotation = field.getAnnotation(FilterColumn.class);
@@ -65,6 +96,13 @@ public class FilterColumnValidator {
 		return false;
 	}
 
+	/**
+	 * Method to validate whether the field value is empty or null.
+	 * 
+	 * @param filterType
+	 *            the filter type to be validated.
+	 * @return true if it neither empty nor null.
+	 */
 	private boolean validateFilterColumnType(String filterType) {
 		return filterType != null && !filterType.trim().isEmpty();
 	}

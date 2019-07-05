@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation that validates the Filter Column value.
+ * 
  * @author Sagar Mahapatra
  * @since 1.0
  *

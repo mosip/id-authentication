@@ -85,8 +85,22 @@ public interface BlacklistedWordsService {
 
 	WordAndLanguageCodeID updateBlackListedWordExceptWord(BlacklistedWordsDto blacklistedWordsDto);
 
+	/**
+	 * Method to search blacklisted words.
+	 * 
+	 * @param dto
+	 *            the searchDTO
+	 * @return {@link PageResponseDto} containing pages of the searched values.
+	 */
 	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto);
 
+	/**
+	 * Method that returns the column values of specific filter column name.
+	 * 
+	 * @param filterValueDto
+	 *            the request DTO that provides the column name.
+	 * @return the response containing the filter values.
+	 */
 	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto);
 
 }

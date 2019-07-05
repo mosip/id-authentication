@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.validator;
 
 /**
+ * ENUM that provides with the permissible values for the Filter Column Type.
+ * 
  * @author Sagar Mahapatra
  * @since 1.0
  *

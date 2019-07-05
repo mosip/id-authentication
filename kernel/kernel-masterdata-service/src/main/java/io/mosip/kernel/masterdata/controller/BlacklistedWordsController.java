@@ -195,8 +195,10 @@ public class BlacklistedWordsController {
 	 * API to search BlackListedWords.
 	 * 
 	 * @param request
-	 *            the request DTO
-	 * @return the response
+	 *            the request DTO {@link SearchDto} wrapped in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. multiple entities based on the search values
+	 *         required.
 	 */
 	@ResponseFilter
 	@PostMapping("/search")
@@ -208,11 +210,13 @@ public class BlacklistedWordsController {
 	}
 
 	/**
-	 * API that returns the values required for the column filters.
+	 * API that returns the values required for the column filter columns.
 	 * 
 	 * @param request
-	 *            the request DTO
-	 * @return the response
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
 	 */
 	@ResponseFilter
 	@PostMapping("/filtervalues")
