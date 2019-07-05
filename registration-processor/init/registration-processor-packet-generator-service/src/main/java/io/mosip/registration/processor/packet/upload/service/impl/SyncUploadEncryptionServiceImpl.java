@@ -164,6 +164,9 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 						packerGeneratorResDto.setStatus(uploadStatus);
 					} else if (uploadStatus.contains(PACKET_RECEIVED)) {
 						packerGeneratorResDto.setStatus(SUCCESS);
+						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registartionId,
+								"Packet Generator packet created and uploaded::success");
 					} else {
 						packerGeneratorResDto.setStatus(uploadStatus);
 					}
