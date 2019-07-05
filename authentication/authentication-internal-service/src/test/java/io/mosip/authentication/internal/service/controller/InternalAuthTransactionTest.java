@@ -2,6 +2,7 @@ package io.mosip.authentication.internal.service.controller;
 
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +72,7 @@ public class InternalAuthTransactionTest {
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnValidator", authTxnValidator);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
 	}
-	
+
 	@Test
 	public void testSupportTrue() {
 		assertTrue(authTxnValidator.supports(AutnTxnRequestDto.class));
@@ -84,7 +85,7 @@ public class InternalAuthTransactionTest {
 		value.put("uin", "9172985031");
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
-		List<AutnTxn> valueList = new ArrayList<>();
+		List<AutnTxn> valueList = getAuthTxnList();
 		Mockito.when(authtxnRepo.findByPagableUinorVid(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", 1, 10);
 	}
@@ -106,7 +107,19 @@ public class InternalAuthTransactionTest {
 		} catch (IdAuthenticationAppException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_NOT_AVAILABLE, e);
 		}
+	}
 
+	private List<AutnTxn> getAuthTxnList() {
+		List<AutnTxn> valueList = new ArrayList<>();
+		AutnTxn autnTxn = new AutnTxn();
+		autnTxn.setRequestTrnId("1234567890");
+		autnTxn.setRequestDTtimes(null);
+		autnTxn.setAuthTypeCode("UIN");
+		autnTxn.setStatusCode("Y");
+		autnTxn.setStatusComment("success");
+		autnTxn.setRefIdType("test");
+		valueList.add(autnTxn);
+		return valueList;
 	}
 
 }
