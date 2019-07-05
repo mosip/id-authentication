@@ -40,6 +40,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
@@ -571,7 +572,7 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("test")
 	public void filterBlackListedWordsTestForArabicLanguage() throws Exception {
@@ -589,7 +590,7 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("test")
 	public void filterBlackListedWordsTestForInvalidLanguageCode() throws Exception {
@@ -607,7 +608,7 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/blacklistedwords/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	@WithUserDetails("test")
 	public void filterDeviceTest() throws Exception {
@@ -620,10 +621,29 @@ public class MasterdataSearchIntegrationTest {
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(masterDataFilterHelper.filterValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(Arrays.asList("deviceName", "secondDeviceName"));
+		when(masterDataFilterHelper.filterValues(Mockito.eq(Device.class), Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList("deviceName", "secondDeviceName"));
 		mockMvc.perform(post("/devices/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-	
+
+	// TODO:
+	@Test
+	@WithUserDetails("test")
+	public void filterDocumentTypeTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setType("all");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(DocumentType.class), Mockito.any(), Mockito.any(),
+				Mockito.any())).thenReturn(Arrays.asList("damn", "dammit"));
+		mockMvc.perform(post("/documenttypes/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
 }
