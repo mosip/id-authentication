@@ -298,6 +298,8 @@ public class LoginController extends BaseController implements Initializable {
 						SessionContext.destroySession();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+						
+						new Initialization().stop();
 
 					}
 
@@ -307,6 +309,10 @@ public class LoginController extends BaseController implements Initializable {
 		} catch (RuntimeException | IOException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+			
+			new Initialization().stop();
 
 		}
 

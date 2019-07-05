@@ -577,13 +577,12 @@ public class SoftwareUpdateHandler extends BaseService {
 		try {
 
 			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-					"Started Execution of : "+latestVersion + SLASH + exectionSqlFile);
+					"Started Execution of : " + latestVersion + SLASH + exectionSqlFile);
 
 			execute(SQL + SLASH + latestVersion + SLASH + exectionSqlFile);
-			
-			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-					"Completed Execution of : "+latestVersion + SLASH + exectionSqlFile);
 
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Completed Execution of : " + latestVersion + SLASH + exectionSqlFile);
 
 		}
 
@@ -596,13 +595,12 @@ public class SoftwareUpdateHandler extends BaseService {
 			try {
 
 				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-						"Started Execution of : "+latestVersion + SLASH + rollBackSqlFile);
+						"Started Execution of : " + latestVersion + SLASH + rollBackSqlFile);
 
 				execute(SQL + SLASH + latestVersion + SLASH + rollBackSqlFile);
-				
-				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-						"Completed Execution of : "+latestVersion + SLASH + rollBackSqlFile);
 
+				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						"Completed Execution of : " + latestVersion + SLASH + rollBackSqlFile);
 
 			} catch (RuntimeException | IOException exception) {
 
@@ -644,8 +642,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	private void runSqlFile(InputStream inputStream) throws IOException {
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution started sql file");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Execution started sql file");
 
 		try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream)) {
 			try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
@@ -672,8 +669,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		}
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution completed sql file");
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Execution completed sql file");
 
 	}
 
@@ -705,23 +701,29 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		File file = FileUtils.getFile(backUpPath);
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Backup Path found : " + file.exists());
+
 		boolean isBackUpCompleted = false;
-		for (File backUpFolder : file.listFiles()) {
-			if (backUpFolder.getName().contains(previousVersion)) {
 
-				try {
-					rollBackSetup(backUpFolder);
+		if (file.exists()) {
+			for (File backUpFolder : file.listFiles()) {
+				if (backUpFolder.getName().contains(previousVersion)) {
 
-					isBackUpCompleted = true;
-					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
-				} catch (io.mosip.kernel.core.exception.IOException exception) {
-					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+					try {
+						rollBackSetup(backUpFolder);
 
-					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
+						isBackUpCompleted = true;
+						setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
+					} catch (io.mosip.kernel.core.exception.IOException exception) {
+						LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+								exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+						setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
+					}
+					break;
+
 				}
-				break;
-
 			}
 		}
 
