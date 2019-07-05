@@ -232,6 +232,7 @@ public class SessionContext {
 		AuthenticationService authenticationService = applicationContext.getBean(AuthenticationService.class);
 		if(authenticationService.validatePassword(authenticationValidatorDTO).equalsIgnoreCase(RegistrationConstants.PWD_MATCH)) {
 			createSessionContext();
+			SessionContext.authTokenDTO().setLoginMode(loginMethod);
 			validAuthModes.add(loginMethod);
 			createSecurityContext(userDTO);		
 			return true;
@@ -291,6 +292,7 @@ public class SessionContext {
 		try {
 			if(bioService.validateFingerPrint(bioService.getFingerPrintAuthenticationDto(authenticationValidatorDTO.getUserId()))) {				
 				createSessionContext();
+				SessionContext.authTokenDTO().setLoginMode(loginMethod);
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
 				return true;
@@ -322,6 +324,7 @@ public class SessionContext {
 		try {
 			if(bioService.validateIris(bioService.getIrisAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
 				createSessionContext();
+				SessionContext.authTokenDTO().setLoginMode(loginMethod);
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
 				return true;
@@ -353,6 +356,7 @@ public class SessionContext {
 		try {
 			if(bioService.validateFace(bioService.getFaceAuthenticationDto(authenticationValidatorDTO.getUserId()))) {
 				createSessionContext();
+				SessionContext.authTokenDTO().setLoginMode(loginMethod);
 				validAuthModes.add(loginMethod);
 				createSecurityContext(userDTO);	
 				return true;
@@ -374,6 +378,7 @@ public class SessionContext {
 			sessionContext = new SessionContext();
 			sessionContext.setId(UUID.randomUUID());
 			sessionContext.setMapObject(new HashMap<>());
+			SessionContext.setAuthTokenDTO(new AuthTokenDTO());
 		}
 	}
 
