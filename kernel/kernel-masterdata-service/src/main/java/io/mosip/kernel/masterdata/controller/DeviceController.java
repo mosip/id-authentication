@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,9 +22,12 @@ import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.swagger.annotations.Api;
@@ -206,6 +208,22 @@ public class DeviceController {
 		ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceService.getDevicesByRegistrationCenter(regCenterId, page, size, orderBy, direction));
+		return responseWrapper;
+	}
+	
+	/**
+	 * @param searchRequestDto
+	 * 				input parameter deviceRequestDto
+	 * @return DeviceResponseDto all device details based on given filter parameters
+	 *         {@link DeviceResponseDto}
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/search")
+	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
+	public ResponseWrapper<PageResponseDto<DeviceExtnDto>> searchDevice(
+			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DeviceExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
 		return responseWrapper;
 	}
 	
