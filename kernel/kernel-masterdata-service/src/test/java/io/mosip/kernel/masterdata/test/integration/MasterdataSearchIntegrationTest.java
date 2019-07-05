@@ -97,6 +97,18 @@ public class MasterdataSearchIntegrationTest {
 	@MockBean
 	private DeviceRepository deviceRepository;
 
+	@MockBean
+	private RegistrationCenterUserRepository registrationCenterUserRepository;
+
+	@MockBean
+	private RegistrationCenterMachineRepository registrationCenterMachineRepository;
+
+	@MockBean
+	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+
+	@MockBean
+	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+
 	private RegistrationCenterType centerTypeEntity;
 	private RegistrationCenter centerEntity;
 	private Location locationRegionEntity;
