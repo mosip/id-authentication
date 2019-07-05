@@ -246,7 +246,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 					}
 				} else {
 					applicantBufferedImage = null;
-					applicantImage.setImage(defaultImage);
 					saveBiometricDetailsBtn.setDisable(true);
 				}
 			}
