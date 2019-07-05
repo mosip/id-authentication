@@ -58,6 +58,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  * 
  * @author Srinivasan
  * @author Tapaswini
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -597,6 +598,9 @@ public class LocationServiceImpl implements LocationService {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
 	@Override
 	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto) {
 		PageResponseDto<LocationExtnDto> pageDto = new PageResponseDto<>();
@@ -612,6 +616,9 @@ public class LocationServiceImpl implements LocationService {
 		return pageDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	 */
 	@Override
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
@@ -619,33 +626,25 @@ public class LocationServiceImpl implements LocationService {
 		List<String> getValues = null;
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				if(filterDto.getType().equals("unique")) {
-					getValues = locationRepository.filterByDistinctHierarchyLevel(Integer.parseInt(filterDto.getColumnName()),filterValueDto.getLanguageCode());
-				}else {
-					getValues = locationRepository.filterByHierarchyLevel(Integer.parseInt(filterDto.getColumnName()),filterValueDto.getLanguageCode());
+				if (filterDto.getType().equals("unique")) {
+					getValues = locationRepository.filterByDistinctHierarchyLevel(
+							Integer.parseInt(filterDto.getColumnName()), filterValueDto.getLanguageCode());
+				} else {
+					getValues = locationRepository.filterByHierarchyLevel(Integer.parseInt(filterDto.getColumnName()),
+							filterValueDto.getLanguageCode());
 				}
-				
-				getValues.forEach(value->{
+
+				getValues.forEach(value -> {
 					ColumnValue columnValue = new ColumnValue();
 					columnValue.setFieldID(filterDto.getColumnName());
 					columnValue.setFieldValue(value.toString());
 					columnValueList.add(columnValue);
-					
-				});	
+
+				});
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
 	}
-	
-	/*masterDataFilterHelper.filterValues(Location.class, filterDto.getColumnName(), filterDto.getType(),
-			filterValueDto.getLanguageCode()).forEach(filterValue -> {
-				if (filterValue != null) {
-					ColumnValue columnValue = new ColumnValue();
-					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(filterValue.toString());
-					columnValueList.add(columnValue);
-				}
-			});*/
 
 }

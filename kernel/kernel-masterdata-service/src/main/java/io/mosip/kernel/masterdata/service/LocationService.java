@@ -133,8 +133,20 @@ public interface LocationService {
 	 */
 	public List<String> getChildList(String locCode);
 
-	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto); 
-	
+	/**
+	 * Service method to search location
+	 * 
+	 * @param dto
+	 *            input from user
+	 * @return response dto containing location values
+	 */
+	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto);
+
+	/**
+	 * Service method to filter location values
+	 * 
+	 * @param filterValueDto
+	 * @return names corresponding to the eneted filter dto
+	 */
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto);
 }
-
