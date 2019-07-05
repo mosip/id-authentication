@@ -21,8 +21,13 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.entity.DeviceHistory;
+import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -36,7 +41,9 @@ import io.mosip.kernel.masterdata.service.DeviceHistoryService;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 
 /**
  * This class have methods to fetch and save Device Details
@@ -64,6 +71,12 @@ public class DeviceServiceImpl implements DeviceService {
 
 	@Autowired
 	RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
+	
+	@Autowired
+	private MasterDataFilterHelper masterDataFilterHelper;
+	
+	@Autowired
+	private FilterColumnValidator filterColumnValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -293,6 +306,28 @@ public class DeviceServiceImpl implements DeviceService {
 
 		return pageDto;
 
+	}
+	
+	@Override
+	public FilterResponseDto deviceFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				masterDataFilterHelper.filterValues(Device.class, filterDto.getColumnName(), filterDto.getType(),
+						filterValueDto.getLanguageCode()).forEach(filterValue -> {
+							if (filterValue != null) {
+								ColumnValue columnValue = new ColumnValue();
+								columnValue.setFieldID(filterDto.getColumnName());
+								columnValue.setFieldValue(filterValue.toString());
+								columnValueList.add(columnValue);
+							}
+						});
+			}
+			filterResponseDto.setFilters(columnValueList);
+
+		}
+		return filterResponseDto;
 	}
 
 }
