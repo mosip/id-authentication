@@ -959,7 +959,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-		if (filterTypeValidator.validate(RegistrationCenterExtnDto.class, dto.getFilters())) {
+		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters())) {
 			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
 					optionalFilters);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
@@ -1180,8 +1180,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	public boolean setUsers(RegistrationCenterSearchDto centerDto) {
 		try {
-			long devices = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
-			centerDto.setMachines(devices);
+			long users = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
+			centerDto.setUsers(users);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),

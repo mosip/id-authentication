@@ -175,25 +175,17 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
 				Mockito.any(), Mockito.anyList()))
 						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
+		when(registrationCenterUserRepository.countCenterUsers(Mockito.any())).thenReturn(10l);
+		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any())).thenReturn(10l);
+		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any())).thenReturn(10l);
+		doReturn(new RegistrationCenterType("10001", "ENG", "Center Name", "Description", null))
+				.when(registrationCenterTypeRepository).findByCodeAndLangCode(Mockito.any(), Mockito.any());
 
-	}
-
-	private void setUpMocks() {
-		when(registrationCenterUserRepository.countCenterUsers(Mockito.anyString())).thenReturn(10l);
-		when(registrationCenterMachineRepository.countCenterMachines(Mockito.anyString())).thenReturn(10l);
-		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.anyString())).thenReturn(10l);
-
-		RegistrationCenterType centerType = new RegistrationCenterType();
-		centerType.setCode("10001");
-		centerType.setLangCode("eng");
-		centerType.setDescr("Desciption");
-		doReturn(centerType).when(registrationCenterTypeRepository).findByCodeAndLangCode(Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithNameSuccess() throws Exception {
-		setUpMocks();
 		searchDto.setFilters(Arrays.asList(filter1));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
@@ -204,7 +196,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithCenterTypeNameSuccess() throws Exception {
-		setUpMocks();
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
@@ -215,7 +206,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithCityNameSuccess() throws Exception {
-		setUpMocks();
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
 				Mockito.anyList()))
@@ -231,7 +221,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithPostalCodeNameSuccess() throws Exception {
-		setUpMocks();
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
 				Mockito.anyList()))
@@ -247,7 +236,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithRegionNameSuccess() throws Exception {
-		setUpMocks();
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
 				Mockito.anyList()))
@@ -263,7 +251,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithLAANameSuccess() throws Exception {
-		setUpMocks();
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
 				Mockito.anyList()))
@@ -279,7 +266,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithProvinceNameSuccess() throws Exception {
-		setUpMocks();
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
 				Mockito.anyList()))
@@ -295,7 +281,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCenterFilterTypeSuccess() throws Exception {
-		setUpMocks();
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
 				Mockito.anyList())).thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
@@ -313,7 +298,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCityName() throws Exception {
-		setUpMocks();
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
 				Mockito.anyList())).thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
@@ -328,7 +312,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCenterName() throws Exception {
-		setUpMocks();
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
 				Mockito.any(), Mockito.anyList()))
 						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
@@ -342,7 +325,6 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCenterTypeName() throws Exception {
-		setUpMocks();
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
 				Mockito.any(), Mockito.anyList()))
 						.thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
@@ -356,11 +338,8 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterUserCountFailure() throws Exception {
-		when(registrationCenterUserRepository.countCenterUsers(Mockito.anyString()))
-				.thenThrow(DataAccessException.class);
-		when(registrationCenterMachineRepository.countCenterMachines(Mockito.anyString()))
-				.thenThrow(DataAccessException.class);
-		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.anyString())).thenReturn(10l);
+		when(registrationCenterUserRepository.countCenterUsers(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
@@ -371,10 +350,8 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterMachineCountFailure() throws Exception {
-		when(registrationCenterUserRepository.countCenterUsers(Mockito.anyString())).thenReturn(10l);
-		when(registrationCenterMachineRepository.countCenterMachines(Mockito.anyString()))
-				.thenThrow(DataAccessException.class);
-		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.anyString())).thenReturn(10l);
+		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
@@ -385,9 +362,7 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterDevicesCountFailure() throws Exception {
-		when(registrationCenterUserRepository.countCenterUsers(Mockito.anyString())).thenReturn(10l);
-		when(registrationCenterMachineRepository.countCenterMachines(Mockito.anyString())).thenReturn(10l);
-		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.anyString()))
+		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any()))
 				.thenThrow(DataRetrievalFailureException.class);
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -399,11 +374,8 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterTypeFailure() throws Exception {
-		when(registrationCenterUserRepository.countCenterUsers(Mockito.anyString())).thenReturn(10l);
-		when(registrationCenterMachineRepository.countCenterMachines(Mockito.anyString())).thenReturn(10l);
-		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.anyString())).thenReturn(10l);
-		doThrow(DataAccessException.class).when(registrationCenterTypeRepository).findByCodeAndLangCode(Mockito.any(),
-				Mockito.any());
+		doThrow(DataRetrievalFailureException.class).when(registrationCenterTypeRepository)
+				.findByCodeAndLangCode(Mockito.any(), Mockito.any());
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
