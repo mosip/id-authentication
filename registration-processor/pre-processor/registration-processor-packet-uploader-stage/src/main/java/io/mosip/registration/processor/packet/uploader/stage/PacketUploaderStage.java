@@ -112,9 +112,9 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 		if (messageDTO.getIsValid()) {
 			sendMessage(messageDTO);
 			this.setResponse(ctx, "Packet with registrationId '" + obj.getString("rid")
-					+ "' has been forwarded to Packet validation stage");
+					+ "' has been forwarded to next stage");
 			regProcLogger.info(obj.getString("rid"), "Packet with registrationId '" + obj.getString("rid")
-					+ "' has been forwarded to Packet validation stage", null, null);
+					+ "' has been forwarded to next stage", null, null);
 		} else {
 			this.setResponse(ctx,
 					"Packet with registrationId '" + obj.getString("rid") + "' has not been uploaded to file System");
