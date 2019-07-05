@@ -100,5 +100,25 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 
 	@Query("FROM Device d where d.id = ?1 and d.langCode = ?2 AND (d.isDeleted is null or d.isDeleted = false)")
 	Device findByIdAndLangCodeAndIsDeletedFalseOrIsDeletedIsNullNoIsActive(String id, String langCode);
+	
+	/**
+	 * This method trigger query to fetch the Device id's those are mapped with
+	 * the regCenterId
+	 * 
+	 * @return Device id's fetched for all device those are mapped with the 
+	 *         registration center from database
+	 */
+	@Query(value = "SELECT dm.id FROM master.device_master dm inner join master.reg_center_device rcd on dm.id = rcd.device_id", nativeQuery = true)
+	List<String> findMappedDeviceId();
+	
+	/**
+	 * This method trigger query to fetch the Device id's those are not mapped with
+	 * the regCenterId
+	 * 
+	 * @return Device id's fetched for all device those are not mapped with the 
+	 *         registration center from database
+	 */
+	@Query(value = "SELECT dm.id FROM master.device_master dm left outer join master.reg_center_device rcd on dm.id = rcd.device_id where rcd.device_id is null", nativeQuery = true)
+	List<String> findNotMappedDeviceId();
 
 }
