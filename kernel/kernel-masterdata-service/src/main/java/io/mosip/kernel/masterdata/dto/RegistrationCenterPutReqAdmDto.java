@@ -71,6 +71,7 @@ public class RegistrationCenterPutReqAdmDto {
 	@ValidLangCode
 	private String langCode;
 
+	private Short numberOfKiosks;
 
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
