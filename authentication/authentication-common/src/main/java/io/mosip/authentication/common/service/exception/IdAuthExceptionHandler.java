@@ -194,8 +194,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				List<String> actionArgs = validationException.getActionargs();
 				errors = IntStream.range(0, errorCodes.size())
 						.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
-								args != null ? String.format(errorMessages.get(i), args) : errorMessages.get(i),
-								args != null && actionArgs != null && !actionArgs.contains(null)
+								args.isEmpty() ? errorMessages.get(i) : String.format(errorMessages.get(i), args.get(i)),
+								!args.isEmpty() && actionArgs != null && !actionArgs.contains(null)
 										? String.format(actionArgs.get(i), args.get(i))
 										: actionArgs.get(i)))
 						.distinct().collect(Collectors.toList());
