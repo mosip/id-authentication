@@ -7,6 +7,7 @@ import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.RegStatusValidationException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RegistrationStatusRequestValidator.
  * 
@@ -28,17 +28,15 @@ import io.mosip.registration.processor.status.exception.RegStatusValidationExcep
 @Component
 public class RegistrationStatusRequestValidator {
 
-	/** The Constant VER. */
-	private static final String VER = "version";
-
 	/** The Constant DATETIME_TIMEZONE. */
 	private static final String DATETIME_TIMEZONE = "mosip.registration.processor.timezone";
 
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
-	/** The mosip logger. */
-	Logger mosipLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
+
+	/** The reg proc logger. */
+	Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
 
 	/** The Constant REG_STATUS_SERVICE. */
 	private static final String REG_STATUS_SERVICE = "RegStatusService";
@@ -50,8 +48,12 @@ public class RegistrationStatusRequestValidator {
 	@Autowired
 	private Environment env;
 
+	
+	/** The grace period. */
+	@Value("${mosip.registration.processor.grace.period}")
+	private int gracePeriod;
+
 	/** The id. */
-	// @Resource
 	private Map<String, String> id = new HashMap<>();
 
 	/**
@@ -133,14 +135,20 @@ public class RegistrationStatusRequestValidator {
 					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
-					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
+					if (!(DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+							.isAfter(new DateTime().minusSeconds(gracePeriod))
+							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
+						regProcLogger.error(REG_STATUS_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
+								"\n" + PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP.getMessage());
+						
 						throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,
 								exception);
 					}
 
 				}
 			} catch (IllegalArgumentException e) {
-				mosipLogger.error(REG_STATUS_SERVICE, "IdRequestValidator", "validateReqTime",
+				regProcLogger.error(REG_STATUS_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,
 						exception);
