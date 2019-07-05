@@ -6,6 +6,10 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -75,4 +79,14 @@ public interface DocumentTypeService {
 	 */
 	public PageDto<DocumentTypeExtnDto> getAllDocumentTypes(int pageNumber, int pageSize, String sortBy,
 			String orderBy);
+	
+	/**
+	 * Method that returns the column values of specific filter column name.
+	 * 
+	 * @param filterValueDto
+	 *            the request DTO that provides the column name.
+	 * @return the response containing the filter values.
+	 */
+	public FilterResponseDto documentTypeFilterValues(FilterValueDto filterValueDto);
+	
 }
