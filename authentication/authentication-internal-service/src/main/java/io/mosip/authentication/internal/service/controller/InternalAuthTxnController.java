@@ -1,7 +1,9 @@
 package io.mosip.authentication.internal.service.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
+import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
+import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
@@ -85,19 +88,19 @@ public class InternalAuthTxnController {
 	@PostMapping(path = "/auth-transactions/individualIdType/{IDType}/individualId/{ID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "No Records Found") })
-	public ResponseEntity<List<AutnTxn>> getAuthTxnDetails(@PathVariable("IDType") String individualIdType,
+	public ResponseEntity<List<AutnTxnResponseDto>> getAuthTxnDetails(@PathVariable("IDType") String individualIdType,
 			@PathVariable("ID") String individualId,
 			@RequestParam(name = "pageStart", required = false) Integer pageStart,
 			@RequestParam(name = "pageFetch", required = false) Integer pageFetch)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {
-			List<AutnTxn> autnTxnList = null;
-			AutnTxnDto authTxnDto = new AutnTxnDto();
+			AutnTxnRequestDto authTxnDto = new AutnTxnRequestDto();
 			authTxnDto.setIndividualId(individualId);
 			authTxnDto.setIndividualIdType(individualIdType);
 			Errors errors = new BindException(authTxnDto, "authTxnDto");
 			authTxnValidator.validate(authTxnDto, errors);
 			DataValidationUtil.validate(errors);
+			List<AutnTxn> autnTxnList = new ArrayList<>();
 			Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
 			if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
 				String uin = String.valueOf(idResDTO.get(UIN_KEY));
@@ -108,7 +111,7 @@ public class InternalAuthTxnController {
 				logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
 						"pageStart >>" + pageStart + "pageFetch >>" + pageFetch);
 			}
-			return new ResponseEntity<>(autnTxnList, HttpStatus.OK);
+			return new ResponseEntity<>(fetchAuthResponse(autnTxnList), HttpStatus.OK);
 
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
@@ -118,6 +121,21 @@ public class InternalAuthTxnController {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
+	}
+
+	private List<AutnTxnResponseDto> fetchAuthResponse(List<AutnTxn> autnTxnList) {
+		return autnTxnList.stream().map(this::fetchAuthResponseDTO).collect(Collectors.toList());
+	}
+
+	private AutnTxnResponseDto fetchAuthResponseDTO(AutnTxn autnTxn) {
+		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
+		autnTxnResponseDto.setTransactionID(autnTxn.getRequestTrnId());
+		autnTxnResponseDto.setRequestdatetime(autnTxn.getRequestDTtimes());
+		autnTxnResponseDto.setAuthtypeCode(autnTxn.getAuthTypeCode());
+		autnTxnResponseDto.setStatusCode(autnTxn.getStatusCode());
+		autnTxnResponseDto.setStatusComment(autnTxn.getStatusComment());
+		autnTxnResponseDto.setReferenceIdType(autnTxn.getRefIdType());
+		return autnTxnResponseDto;
 	}
 
 }

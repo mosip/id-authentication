@@ -26,7 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
-import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
+import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -74,7 +74,7 @@ public class InternalAuthTransactionTest {
 	
 	@Test
 	public void testSupportTrue() {
-		assertTrue(authTxnValidator.supports(AutnTxnDto.class));
+		assertTrue(authTxnValidator.supports(AutnTxnRequestDto.class));
 	}
 
 	@Test
