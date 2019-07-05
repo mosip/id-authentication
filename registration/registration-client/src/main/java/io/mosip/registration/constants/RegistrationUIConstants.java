@@ -343,4 +343,9 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 
 	// AUTH TOKEN
 	public static String UNABLE_TO_GET_AUTH_TOKEN = bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
+	
+	// PAGE NAVIGATION
+	public static final String PAGE_NAVIGATION_MESSAGE = bundle.getString("PAGE_NAVIGATION_MESSAGE");
+	public static final String PAGE_NAVIGATION_CONFIRM = bundle.getString("PAGE_NAVIGATION_CONFIRM");
+	public static final String PAGE_NAVIGATION_CANCEL = bundle.getString("PAGE_NAVIGATION_CANCEL");
 }
