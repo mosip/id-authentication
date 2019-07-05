@@ -5,9 +5,12 @@ import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -105,6 +108,15 @@ public interface DeviceService {
 	 */
 	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page, int size,
 			String orderBy, String direction);
+	
+	/**
+	 * Fetch all Devices based on the given Filter parameters
+	 * 
+	 * @param searchRequestDto
+	 * 			contains the data for searching and sorting
+	 * @return list of devices with all the metadata
+	 */
+	public PageResponseDto<DeviceExtnDto> searchDevice(SearchDto searchRequestDto);
 	
 	public FilterResponseDto deviceFilterValues(FilterValueDto filterValueDto);
 }
