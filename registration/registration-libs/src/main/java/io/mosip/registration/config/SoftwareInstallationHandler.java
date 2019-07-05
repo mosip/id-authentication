@@ -26,7 +26,6 @@ import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.registration.cipher.ClientJarDecryption;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.util.LoggerFactory;
 
@@ -45,8 +44,7 @@ public class SoftwareInstallationHandler {
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.reg.client.url");
-		serverMosipXmlFileUrl = properties.getProperty("mosip.reg.xml.file.url");
-
+		
 		latestVersion = properties.getProperty("mosip.reg.version");
 
 		getLocalManifest();
@@ -59,8 +57,7 @@ public class SoftwareInstallationHandler {
 
 	private static String manifestFile = "MANIFEST.MF";
 
-	private static String serverRegClientURL;
-	private static String serverMosipXmlFileUrl;
+	private  String serverRegClientURL;
 
 	private static String libFolder = "lib/";
 	private String binFolder = "bin/";

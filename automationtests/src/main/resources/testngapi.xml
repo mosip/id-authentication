@@ -71,9 +71,7 @@
                  </classes>
 
 				</test>      
-				 
-
-			<!-- 	
+			
   
 		 	  <test name="PreReg Tests">
 		<classes>
@@ -114,7 +112,9 @@
 		</classes> 
 	</test> 
 
+
     <test name="RegistrationProcessor Tests">
+
 		<classes>					
 		  			 <class name="io.mosip.registrationProcessor.tests.SecurityTests" />
                    <class name="io.mosip.registrationProcessor.tests.Sync" />
@@ -171,9 +171,8 @@
                     <class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />
                    <class name="io.mosip.authentication.idRepository.tests.RetrieveUinByVid" /> 
              </classes>
-       </test>
- -->
-				 
+
+       </test>				 
 
 		</suite>
 		

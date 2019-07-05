@@ -45,10 +45,8 @@ Same for registration-processor-qa.properties and id-repository-qa.properties
 #### 1.5 Deployment
 
 1. The existing schemas must be dropped and recreated. Scripts are there in Getting started page. </br>
-2. Deploy the kernel module. 
-https://github.com/mosip/mosip/blob/0.12.0/docs/ReleaseNotes/MOSIP_Kernel_Sprint12-ReleaseNotes.md </br>
-3. In Kernel config server kubernetes yaml (deployment - confi-server-deployment-and-service.yml inside scripts/configuration), change git_url_env environment variable to the ssh URL of mosip-configuration repository that you have mirrored. <br/>
-4. Deploy the Pre-registration module. 
+2. In Kernel config server kubernetes yaml (deployment - confi-server-deployment-and-service.yml inside scripts/configuration), change git_url_env environment variable to the ssh URL of mosip-configuration repository that you have mirrored. <br/>
+3. Deploy the Pre-registration module. 
 
 
 #### 1.6 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>

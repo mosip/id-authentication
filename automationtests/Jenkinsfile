@@ -1,6 +1,6 @@
 node {
 
- def branch = '0.13.0_Automation_PreReg'
+ def branch = env.NEXT_BRANCH_NAME
  def projectToBuild = 'automationtests'
  stage('------- Checkout --------') {
   // Checkout only automation tests Module
@@ -28,7 +28,7 @@ stage ('---------- mvn-clean-test ---------------') {
 	  dir(branch+"/"+projectToBuild)
   {
 	sh '/usr/local/maven/bin/mvn clean install'
-	sh "java -Dmaven.test.failure.ignore=true -Dmaven.test.failure.ignore=true -Denv.user=${params.Environment} -Denv.endpoint=https://${params.Environment}.mosip.io -Denv.testLevel=smokeAndRegression -jar ./target/automationtests-0.12.14-jar-with-dependencies.jar"	  
+	sh "java -Dmaven.test.failure.ignore=true -Dmaven.test.failure.ignore=true -Denv.user=${params.Environment} -Denv.endpoint=https://${params.Environment}.mosip.io -Denv.testLevel=smokeAndRegression -jar ./target/automationtests-0.12.16-jar-with-dependencies.jar"	  
   }
   
   publishHTML(
@@ -46,7 +46,7 @@ emailext (
 	    attachmentsPattern:'**/testng-report/MOSIP_ModuleLevelAutoRun_TestNGReport.html',
 	    subject: "MOSIP Jenkins Job $JOB_NAME with build no $BUILD_NUMBER'",
 	    body: """<p>Check console output at <a href="$BUILD_URL">'${JOB_NAME}'</a></p>""",
-	    to: "ashish.rastogi@mindtree.com",
+	    to: "$recipients",
 	    from: '"Jenkins" <info@mosip.io>'
 	)
 
