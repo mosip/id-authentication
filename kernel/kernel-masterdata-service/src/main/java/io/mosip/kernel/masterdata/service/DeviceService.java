@@ -110,13 +110,20 @@ public interface DeviceService {
 			String orderBy, String direction);
 	
 	/**
-	 * Fetch all Devices based on the given Filter parameters
+	 * Method to search Devices based on filters provided.
 	 * 
 	 * @param searchRequestDto
-	 * 			contains the data for searching and sorting
-	 * @return list of devices with all the metadata
+	 *            the search DTO.
+	 * @return the {@link PageResponseDto}.
 	 */
 	public PageResponseDto<DeviceExtnDto> searchDevice(SearchDto searchRequestDto);
 	
+	/**
+	 * Method to filter Device based on column and type provided.
+	 * 
+	 * @param filterValueDto
+	 *            the filter DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
 	public FilterResponseDto deviceFilterValues(FilterValueDto filterValueDto);
 }

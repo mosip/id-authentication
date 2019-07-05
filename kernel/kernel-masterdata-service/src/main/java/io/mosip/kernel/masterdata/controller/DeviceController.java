@@ -23,6 +23,7 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -212,10 +213,11 @@ public class DeviceController {
 	}
 	
 	/**
-	 * @param searchRequestDto
-	 * 				input parameter deviceRequestDto
-	 * @return DeviceResponseDto all device details based on given filter parameters
-	 *         {@link DeviceResponseDto}
+	 * Api to search Device based on filters provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the pages of {@link DeviceExtnDto}.
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/search")
@@ -227,6 +229,13 @@ public class DeviceController {
 		return responseWrapper;
 	}
 	
+	/**
+	 * Api to filter Device based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
 	@ResponseFilter
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> deviceFilterValues(

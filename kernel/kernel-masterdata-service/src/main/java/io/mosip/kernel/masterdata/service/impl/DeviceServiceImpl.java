@@ -458,6 +458,9 @@ public class DeviceServiceImpl implements DeviceService {
 		return filter;
 	}
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DeviceService#deviceFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	 */
 	@Override
 	public FilterResponseDto deviceFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
