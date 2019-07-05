@@ -40,12 +40,15 @@ import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineSpecification;
 import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
@@ -78,6 +81,9 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private MachineRepository machineRepository;
+	
+	@MockBean
+	private DeviceRepository deviceRepository;
 
 	private RegistrationCenterType centerTypeEntity;
 	private RegistrationCenter centerEntity;
@@ -94,11 +100,14 @@ public class MasterdataSearchIntegrationTest {
 	private SearchFilter filter6;
 	private SearchFilter filter7;
 	private SearchFilter machineSearchFilter;
+	private SearchFilter deviceSearchFilter;
 	private SearchSort sort;
 	private SearchDto searchDto;
 	private SearchDto machineSearchDto;
+	private SearchDto deviceSearchDto;
 	private RequestWrapper<SearchDto> request;
 	private RequestWrapper<SearchDto> machineRequestDto;
+	private RequestWrapper<SearchDto> deviceRequestDto;
 
 	@Before
 	public void setup() throws JsonProcessingException {
@@ -177,6 +186,18 @@ public class MasterdataSearchIntegrationTest {
 		machineSearchDto.setSort(Arrays.asList());
 		machineSearchDto.setPagination(pagination);
 		machineRequestDto.setRequest(machineSearchDto);
+		
+		deviceRequestDto = new RequestWrapper<>();
+		deviceSearchFilter = new SearchFilter();
+		deviceSearchFilter.setColumnName("name");
+		deviceSearchFilter.setType("equals");
+		deviceSearchFilter.setValue("Dekstop");
+		deviceSearchDto = new SearchDto();
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceSearchDto.setLanguageCode("eng");
+		deviceSearchDto.setSort(Arrays.asList());
+		deviceSearchDto.setPagination(pagination);
+		deviceRequestDto.setRequest(deviceSearchDto);
 
 		when(filterTypeValidator.validate(ArgumentMatchers.<Class<LocationExtnDto>>any(), Mockito.anyList()))
 				.thenReturn(true);
@@ -507,6 +528,172 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineSpecification.class), Mockito.any(),
 				Mockito.any())).thenReturn(pageContentSpecificationData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceTest() throws Exception {
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		Device device = new Device();
+		device.setId("1001");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceByMappedStatusFieldTest() throws Exception {
+		deviceSearchFilter.setColumnName("mapStatus");
+		deviceSearchFilter.setValue("assigned");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		List<String> deviceIdList = new ArrayList<>();
+		deviceIdList.add("1001");
+		Device device = new Device();
+		device.setId("1001");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
+		when(deviceRepository.findMappedDeviceId()).thenReturn(deviceIdList);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceByMappedStatusFieldNotFoundExceptionTest() throws Exception {
+		deviceSearchFilter.setColumnName("mapStatus");
+		deviceSearchFilter.setValue("assigned");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		List<String> deviceIdList = new ArrayList<>();
+		deviceIdList.add("1001");
+		Device device = new Device();
+		device.setId("1001");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList());
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceByNotMappedStatusFieldTest() throws Exception {
+		deviceSearchFilter.setColumnName("mapStatus");
+		deviceSearchFilter.setValue("un-assigned");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		List<String> deviceIdList = new ArrayList<>();
+		deviceIdList.add("1001");
+		Device device = new Device();
+		device.setId("1001");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
+		when(deviceRepository.findNotMappedDeviceId()).thenReturn(deviceIdList);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceByNotMappedStatusFieldNotFoundExceptionTest() throws Exception {
+		deviceSearchFilter.setColumnName("mapStatus");
+		deviceSearchFilter.setValue("un-assigned");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		List<String> deviceIdList = new ArrayList<>();
+		deviceIdList.add("1001");
+		Device device = new Device();
+		device.setId("1001");
+		Page<Device> pageContentData = new PageImpl<>(Arrays.asList(device));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Device.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceRequestExceptionTest() throws Exception {
+		deviceSearchFilter.setColumnName("mapStatus");
+		deviceSearchFilter.setValue("un-assigned");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceByDeviceTypeNameTest() throws Exception {
+		deviceSearchFilter.setColumnName("deviceTypeName");
+		deviceSearchFilter.setValue("Desktop");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		DeviceType type = new DeviceType();
+		type.setCode("deviceCode");
+		Page<DeviceType> pageContentData = new PageImpl<>(Arrays.asList(type));
+		DeviceSpecification specification = new DeviceSpecification();
+		specification.setId("1001");
+		Page<DeviceSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceType.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
+				Mockito.any())).thenReturn(pageContentSpecificationData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceByDeviceTypeNameNotFoundExceptionTest() throws Exception {
+		deviceSearchFilter.setColumnName("deviceTypeName");
+		deviceSearchFilter.setValue("Desktop");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		Page<DeviceType> pageContentData = new PageImpl<>(Arrays.asList());
+		DeviceSpecification specification = new DeviceSpecification();
+		specification.setId("1001");
+		Page<DeviceSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceType.class), Mockito.any(), Mockito.any()))
+		.thenReturn(pageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
+		Mockito.any())).thenReturn(pageContentSpecificationData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("test")
+	public void searchDeviceByDeviceTypeNameWithCorrespondingSpecificationIdNotFoundExceptionTest() throws Exception {
+		deviceSearchFilter.setColumnName("deviceTypeName");
+		deviceSearchFilter.setValue("Desktop");
+		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
+		deviceRequestDto.setRequest(deviceSearchDto);
+		String json = objectMapper.writeValueAsString(deviceRequestDto);
+		DeviceType type = new DeviceType();
+		type.setCode("deviceCode");
+		Page<DeviceType> pageContentData = new PageImpl<>(Arrays.asList(type));
+		Page<DeviceSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList());
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceType.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DeviceSpecification.class), Mockito.any(),
+		Mockito.any())).thenReturn(pageContentSpecificationData);
+		mockMvc.perform(post("/devices/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
