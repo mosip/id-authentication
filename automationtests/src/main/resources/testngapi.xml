@@ -11,7 +11,7 @@
 	</listeners>
 
 
-	  <test name="Kernel Tests">
+	<!--  <test name="Kernel Tests">
 						 <classes>
 						
                         <class name="io.mosip.kernel.tests.AuditLog" />   
@@ -134,7 +134,7 @@
 
 
 		</classes>
-	</test>    
+	</test>    -->
 
 	<test name="AuthenticationTest">
              <classes>
