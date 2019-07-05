@@ -416,22 +416,26 @@ public class PacketValidateProcessor {
 			MessageDTO object, IdentityIteratorUtil identityIteratorUtil, PacketValidationDto packetValidationDto) throws IOException, ApisResourceAccessException, JSONException,
 			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException,
 			IdObjectValidationFailedException, IdObjectIOException , PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+		Long uin = null;
+		JSONObject demographicIdentity= null;
 		String registrationId = registrationStatusDto.getRegistrationId();
+		Identity identity = packetMetaInfo.getIdentity();
+
+		if (!fileValidation(identity, registrationStatusDto, packetValidationDto)) {
+			return false;
+		}
+
 		InputStream idJsonStream = fileSystemManager.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+
 		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
 		String jsonString = new String(bytearray);
 		ObjectMapper mapper=new ObjectMapper();
 		JSONObject idObject=mapper.readValue(bytearray, JSONObject.class);
-		Identity identity = packetMetaInfo.getIdentity();
-		Long uin = null;
-		JSONObject demographicIdentity= null;
+
 		if (!schemaValidation(idObject, registrationStatusDto, packetValidationDto)) {
 			return false;
 		}
-
-		if (!fileValidation(identity, registrationStatusDto, packetValidationDto))
-			return false;
 
 		if (!checkSumValidation(identity, registrationStatusDto, packetValidationDto))
 			return false;

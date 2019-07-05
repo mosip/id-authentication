@@ -57,13 +57,20 @@ public class FilesValidation {
 		boolean filesValidated = false;
 
 		List<FieldValueArray> hashSequence = identity.getHashSequence1();
-		filesValidated = validateHashSequence(registrationId, hashSequence);
+		boolean isSequence1Validated = validateHashSequence(registrationId, hashSequence);
 
-		if (!filesValidated)
+		List<FieldValueArray> hashSequence2 = identity.getHashSequence2();
+		boolean isSequence2Validated = validateHashSequence(registrationId, hashSequence2);
+
+		if ((!isSequence1Validated) || (!isSequence2Validated)) {
 			registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
+		}
+
+		if (isSequence1Validated && isSequence2Validated) {
+			filesValidated = true;
+		}
 
 		return filesValidated;
-
 	}
 
 	/**
@@ -88,6 +95,8 @@ public class FilesValidation {
 				isHashSequenceValidated = validateBiometric(registrationId, fieldValueArray.getValue());
 			} else if (PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
 				isHashSequenceValidated = validateDemographicSequence(registrationId, fieldValueArray.getValue());
+			} else if (PacketFiles.OTHERFILES.name().equalsIgnoreCase(fieldValueArray.getLabel()) ){
+				isHashSequenceValidated = validateOtherFilesSequence(registrationId, fieldValueArray.getValue());
 			}
 		}
 
@@ -150,6 +159,19 @@ public class FilesValidation {
 			}
 		}
 		return isApplicantValidated;
+	}
+
+	private boolean validateOtherFilesSequence(String registrationId, List<String> values) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+		boolean isOtherFilesValidated = false;
+		for(String otherFile : values){
+			String fileName = otherFile.toUpperCase();
+			isOtherFilesValidated = adapter.checkFileExistence(registrationId, fileName);
+			if (!isOtherFilesValidated) {
+				break;
+			}
+		}
+
+		return isOtherFilesValidated;
 	}
 
 }
