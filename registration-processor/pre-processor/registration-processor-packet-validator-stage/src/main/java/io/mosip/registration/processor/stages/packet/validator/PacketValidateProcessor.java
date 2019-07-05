@@ -216,9 +216,10 @@ public class PacketValidateProcessor {
 				description.setMessage(
 						PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage() + " -- " + registrationId);
 				description.setCode(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getCode());
+
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), description.getCode() + " -- " + registrationId,
-						description.getMessage());
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						description.getCode() + description.getMessage());
 
 			} else {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -418,6 +419,7 @@ public class PacketValidateProcessor {
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					moduleId, moduleName, registrationId);
 		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				description.getCode() + " -- " + registrationId, "PacketValidateProcessor::process()::exit");
 		return object;

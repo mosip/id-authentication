@@ -154,14 +154,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisMiddlewareStage::process()::entry");
 		object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 		object.setIsValid(false);
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		String registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "AbisMiddlewareStage::process()::entry");
 		InternalRegistrationStatusDto internalRegDto = registrationStatusService.getRegistrationStatus(registrationId);
 		try {
 			List<String> abisRefList = packetInfoManager.getReferenceIdByRid(registrationId);

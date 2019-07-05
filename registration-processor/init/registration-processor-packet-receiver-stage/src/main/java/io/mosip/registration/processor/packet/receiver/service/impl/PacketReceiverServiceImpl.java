@@ -467,6 +467,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 				dto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString());
 				description.setMessage(
 						PlatformSuccessMessages.RPR_PKR_PACKET_RECEIVER.getMessage() + "-------" + registrationId);
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PacketReceiverServiceImpl::success");
 
 			}
 
@@ -520,6 +523,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					registrationId, ApiName.AUDIT);
 		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "PacketReceiverServiceImpl::processPacket()::exit");
 		return messageDTO;

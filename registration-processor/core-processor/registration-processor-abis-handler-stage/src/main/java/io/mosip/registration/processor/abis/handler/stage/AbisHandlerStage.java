@@ -150,6 +150,8 @@ public class AbisHandlerStage extends MosipVerticleManager {
 			}
 			description.setMessage(AbisHandlerStageConstant.ABIS_HANDLER_SUCCESS);
 			isTransactionSuccessful = true;
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, description.getMessage());
 		} catch (Exception e) {
 			description.setMessage(AbisHandlerStageConstant.ERROR_IN_ABIS_HANDLER);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -175,6 +177,7 @@ public class AbisHandlerStage extends MosipVerticleManager {
 					moduleId, moduleName, regId);
 
 		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				regId, "AbisHandlerStage::process()::exit");
 		return object;

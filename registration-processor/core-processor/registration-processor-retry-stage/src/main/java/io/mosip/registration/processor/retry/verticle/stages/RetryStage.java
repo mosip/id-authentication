@@ -74,7 +74,8 @@ public class RetryStage extends MosipVerticleAPIManager {
 				}
 			}
 		}, waitPeriod * 60000l);
-
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RetryStage::success");
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"RetryStage::process::exit");
 		return null;

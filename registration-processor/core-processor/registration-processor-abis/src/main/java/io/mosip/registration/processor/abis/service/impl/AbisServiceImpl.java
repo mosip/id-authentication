@@ -89,11 +89,11 @@ public class AbisServiceImpl implements AbisService {
 
 	@Override
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::insert()::entry");
+
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::insert()::entry");
 		if (storedRefId.size() < 1000)
 			storedRefId.add(referenceId);
 
@@ -152,6 +152,7 @@ public class AbisServiceImpl implements AbisService {
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 
 		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 				referenceId, "AbisServiceImpl::insert()::exit");
 

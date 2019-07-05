@@ -180,6 +180,7 @@ public class BioDedupeProcessor {
 
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.BIOGRAPHIC_VERIFICATION.toString());
+
 			registrationStatusDto.setRegistrationStageName(stageName);
 			isTransactionSuccessful = true;
 
@@ -246,6 +247,13 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} finally {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+
+			if (object.getIsValid())
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "BioDedupeProcessor::success");
+			else
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "BioDedupeProcessor::Failure");
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();

@@ -244,6 +244,8 @@ public class ReprocessorStage extends MosipVerticleManager {
 							description.setMessage(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage());
 
 						}
+						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description.getMessage());
 						registrationStatusService.updateRegistrationStatus(dto);
 						String eventId = EventId.RPR_402.toString();
 						String eventName = EventName.UPDATE.toString();

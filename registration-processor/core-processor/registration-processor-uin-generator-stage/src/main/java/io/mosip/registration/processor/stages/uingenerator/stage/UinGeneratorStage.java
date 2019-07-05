@@ -277,6 +277,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 			}
 			registrationStatusDto.setUpdatedBy(UINConstants.USER);
+
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto

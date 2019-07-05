@@ -145,8 +145,12 @@ public class QualityCheckerStage extends MosipVerticleManager {
 				MessageBusAddress.QUALITY_CHECKER_BUS_OUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
@@ -202,7 +206,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 				List<BIR> birList = cbeffUtil.convertBIRTypeToBIR(birTypeList);
 				int scoreCounter = 0;
 				for (BIR bir : birList) {
-					SingleType singleType = bir.getBdbInfo().getType().get(0);;
+					SingleType singleType = bir.getBdbInfo().getType().get(0);
+					;
 					List<String> subtype = bir.getBdbInfo().getSubtype();
 					Integer threshold = getThresholdBasedOnType(singleType, subtype);
 					QualityScore qualityScore = bioAPi.checkQuality(bir, null);
@@ -226,6 +231,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), regId, "QualityCheckerImpl::success");
 				}
 			}
 
@@ -289,8 +296,10 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	/**
 	 * Gets the threshold based on type.
 	 *
-	 * @param singleType the single type
-	 * @param subtype the subtype
+	 * @param singleType
+	 *            the single type
+	 * @param subtype
+	 *            the subtype
 	 * @return the threshold based on type
 	 */
 	private Integer getThresholdBasedOnType(SingleType singleType, List<String> subtype) {

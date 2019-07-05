@@ -261,7 +261,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			transactionStatusService.addRegistrationTransaction(transactionDto);
 
 			object.setIsValid(Boolean.TRUE);
-
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, "MessageSenderStage::success");
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException
 				| ConfigurationNotFoundException e) {
 			object.setInternalError(Boolean.TRUE);

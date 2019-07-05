@@ -165,6 +165,9 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 				object.setIsValid(true);
 				object.setInternalError(false);
 				isTransactionSuccessful = true;
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"BiometricAuthenticationStage::success");
 				if (SyncTypeDto.NEW.toString().equalsIgnoreCase(registartionType)) {
 					description = BiometricAuthenticationConstants.NEW_PACKET_DESCRIPTION + registrationId;
 				} else
