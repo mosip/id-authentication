@@ -304,7 +304,7 @@ public class LoginController extends BaseController implements Initializable {
 					restartApplication();
 				}
 			}
-		} catch (RuntimeException runtimeException) {
+		} catch (RuntimeException | IOException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 

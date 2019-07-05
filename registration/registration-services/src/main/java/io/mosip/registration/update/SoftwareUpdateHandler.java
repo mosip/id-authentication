@@ -576,7 +576,14 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		try {
 
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Started Execution of : "+latestVersion + SLASH + exectionSqlFile);
+
 			execute(SQL + SLASH + latestVersion + SLASH + exectionSqlFile);
+			
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Completed Execution of : "+latestVersion + SLASH + exectionSqlFile);
+
 
 		}
 
@@ -588,7 +595,14 @@ public class SoftwareUpdateHandler extends BaseService {
 			// ROLL BACK QUERIES
 			try {
 
+				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						"Started Execution of : "+latestVersion + SLASH + rollBackSqlFile);
+
 				execute(SQL + SLASH + latestVersion + SLASH + rollBackSqlFile);
+				
+				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						"Completed Execution of : "+latestVersion + SLASH + rollBackSqlFile);
+
 
 			} catch (RuntimeException | IOException exception) {
 
