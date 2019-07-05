@@ -634,6 +634,9 @@ public class SoftwareUpdateHandler extends BaseService {
 	private void execute(String path) throws IOException {
 		try (InputStream inputStream = SoftwareUpdateHandler.class.getClassLoader().getResourceAsStream(path)) {
 
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					inputStream != null ? path + " found" : path + " Not Found");
+			
 			if (inputStream != null) {
 				runSqlFile(inputStream);
 			}
