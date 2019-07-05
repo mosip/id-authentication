@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service;
 
-
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
@@ -133,10 +132,24 @@ public interface MachineService {
 	 *         of machins those are mapped with the given registration center
 	 *         {@link RegistrationCenterMachineID}
 	 */
-	public PageDto<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId, int page, int size, String orderBy, String direction);
+	public PageDto<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId, int page, int size,
+			String orderBy, String direction);
 
-	
+	/**
+	 * Method to search Machines based on filters provided.
+	 * 
+	 * @param dto
+	 *            the search DTO.
+	 * @return the {@link PageResponseDto}.
+	 */
 	public PageResponseDto<MachineExtnDto> searchMachine(SearchDto dto);
-	
+
+	/**
+	 * Method to filter Machine based on column and type provided.
+	 * 
+	 * @param filterValueDto
+	 *            the filter DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto);
 }

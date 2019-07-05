@@ -66,6 +66,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  * This class have methods to fetch a Machine Details
  * 
  * @author Megha Tanga
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
@@ -363,6 +364,13 @@ public class MachineServiceImpl implements MachineService {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#searchMachine(io.mosip.
+	 * kernel.masterdata.dto.request.SearchDto)
+	 */
 	@Override
 	public PageResponseDto<MachineExtnDto> searchMachine(SearchDto dto) {
 		PageResponseDto<MachineExtnDto> pageDto = new PageResponseDto<>();
@@ -452,6 +460,13 @@ public class MachineServiceImpl implements MachineService {
 
 	}
 
+	/**
+	 * This method return Machine Id list filters.
+	 * 
+	 * @param machineIdList
+	 *            the Machine Id list.
+	 * @return the list of {@link SearchFilter}.
+	 */
 	private List<SearchFilter> buildRegistrationCenterMachineTypeSearchFilter(List<String> machineIdList) {
 		if (machineIdList != null && !machineIdList.isEmpty())
 			return machineIdList.stream().filter(Objects::nonNull).map(this::buildRegistrationCenterMachineType)
@@ -459,6 +474,13 @@ public class MachineServiceImpl implements MachineService {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * This method return Machine Types list filters.
+	 * 
+	 * @param machineTypes
+	 *            the list of Machine Type.
+	 * @return the list of {@link SearchFilter}.
+	 */
 	private List<SearchFilter> buildMachineTypeSearchFilter(List<MachineType> machineTypes) {
 		if (machineTypes != null && !machineTypes.isEmpty())
 			return machineTypes.stream().filter(Objects::nonNull).map(this::buildMachineType)
@@ -466,13 +488,27 @@ public class MachineServiceImpl implements MachineService {
 		return Collections.emptyList();
 	}
 
-	private List<SearchFilter> buildMachineSpecificationSearchFilter(List<MachineSpecification> regCenterTypes) {
-		if (regCenterTypes != null && !regCenterTypes.isEmpty())
-			return regCenterTypes.stream().filter(Objects::nonNull).map(this::buildMachineSpecification)
+	/**
+	 * This method return Machine Specification list filters.
+	 * 
+	 * @param machineSpecification
+	 *            the list of Machine Specification.
+	 * @return the list of {@link SearchFilter}.
+	 */
+	private List<SearchFilter> buildMachineSpecificationSearchFilter(List<MachineSpecification> machineSpecification) {
+		if (machineSpecification != null && !machineSpecification.isEmpty())
+			return machineSpecification.stream().filter(Objects::nonNull).map(this::buildMachineSpecification)
 					.collect(Collectors.toList());
 		return Collections.emptyList();
 	}
 
+	/**
+	 * This method provide search filter for provided machine id.
+	 * 
+	 * @param machineId
+	 *            the machine id.
+	 * @return the {@link SearchFilter}.
+	 */
 	private SearchFilter buildRegistrationCenterMachineType(String machineId) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName("id");
@@ -481,6 +517,13 @@ public class MachineServiceImpl implements MachineService {
 		return filter;
 	}
 
+	/**
+	 * This method provide search filter for provided Machine specification.
+	 * 
+	 * @param machineSpecification
+	 *            the machine specification.
+	 * @return the {@link SearchFilter}.
+	 */
 	private SearchFilter buildMachineSpecification(MachineSpecification machineSpecification) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName("machineSpecId");
@@ -489,14 +532,28 @@ public class MachineServiceImpl implements MachineService {
 		return filter;
 	}
 
-	private SearchFilter buildMachineType(MachineType centerType) {
+	/**
+	 * This method provide search filter for provided Machine Type.
+	 * 
+	 * @param machineType
+	 *            the machine type.
+	 * @return the {@link SearchFilter}.
+	 */
+	private SearchFilter buildMachineType(MachineType machineType) {
 		SearchFilter filter = new SearchFilter();
 		filter.setColumnName("machineTypeCode");
 		filter.setType(FilterTypeEnum.EQUALS.name());
-		filter.setValue(centerType.getCode());
+		filter.setValue(machineType.getCode());
 		return filter;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#machineFilterValues(io.
+	 * mosip.kernel.masterdata.dto.request.FilterValueDto)
+	 */
 	@Override
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
