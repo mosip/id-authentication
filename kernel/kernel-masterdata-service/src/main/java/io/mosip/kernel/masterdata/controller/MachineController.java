@@ -39,6 +39,7 @@ import io.swagger.annotations.ApiResponses;
  * This class provide services to do CRUD operations on Machine.
  * 
  * @author Megha Tanga
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
@@ -222,6 +223,13 @@ public class MachineController {
 
 	}
 
+	/**
+	 * Api to search Machine based on filters provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the pages of {@link MachineExtnDto}.
+	 */
 	@ResponseFilter
 	@PostMapping("/machines/search")
 	public ResponseWrapper<PageResponseDto<MachineExtnDto>> searchMachine(
@@ -231,6 +239,13 @@ public class MachineController {
 		return responseWrapper;
 	}
 
+	/**
+	 * Api to filter Machine based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
 	@ResponseFilter
 	@PostMapping("/machines/filtervalues")
 	public ResponseWrapper<FilterResponseDto> machineFilterValues(
