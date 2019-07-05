@@ -31,6 +31,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostRespons
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -321,9 +322,9 @@ public class RegistrationCenterController {
 	@ResponseFilter
 	@PostMapping("/registrationcenters/search")
 	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
-	public ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> searchRegistrationCenter(
+	public ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> searchRegistrationCenter(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageResponseDto<RegistrationCenterSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(registrationCenterService.searchRegistrationCenter(request.getRequest()));
 		return responseWrapper;
 	}

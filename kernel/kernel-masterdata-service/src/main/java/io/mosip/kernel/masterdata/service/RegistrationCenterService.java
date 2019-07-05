@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostRespons
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
+import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
@@ -203,6 +203,14 @@ public interface RegistrationCenterService {
 	 */
 	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
 			List<RegistrationCenterPutReqAdmDto> registrationCenterDto);
-	public PageResponseDto<RegistrationCenterExtnDto> searchRegistrationCenter(SearchDto dto);
+
+	/**
+	 * Method to perform search based on the input
+	 * 
+	 * @param searchDto
+	 *            search criteria for the registration center
+	 * @return list of registration centers
+	 */
+	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto searchDto);
 
 }
