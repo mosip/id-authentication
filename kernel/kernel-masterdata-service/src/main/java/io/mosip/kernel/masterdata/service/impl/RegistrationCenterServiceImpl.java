@@ -959,7 +959,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
-		if (filterTypeValidator.validate(RegistrationCenterExtnDto.class, dto.getFilters())) {
+		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters())) {
 			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
 					optionalFilters);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
@@ -1115,6 +1115,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 	}
+
 	/**
 	 * Method to fetch no. of machines for the registration center and set the
 	 * response to registration center response dto
@@ -1128,6 +1129,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		list.parallelStream().filter(this::setDevices).filter(this::setMachines).filter(this::setRegistrationCenterType)
 				.forEach(this::setUsers);
 	}
+
 	/**
 	 * Method to fetch no. of devices for the registration center and set the
 	 * response to registration center response dto
@@ -1141,10 +1143,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			long devices = registrationCenterDeviceRepository.countCenterDevices(centerDto.getId());
 			centerDto.setDevices(devices);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException("", e.getMessage());
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		return true;
 	}
+
 	/**
 	 * Method to fetch no. of machines for the registration center and set the
 	 * response to registration center response dto
@@ -1158,7 +1163,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			long machines = registrationCenterMachineRepository.countCenterMachines(centerDto.getId());
 			centerDto.setMachines(machines);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException("", e.getMessage());
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		return true;
 	}
@@ -1173,10 +1180,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	public boolean setUsers(RegistrationCenterSearchDto centerDto) {
 		try {
-			long devices = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
-			centerDto.setMachines(devices);
+			long users = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
+			centerDto.setUsers(users);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException("", e.getMessage());
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		return true;
 	}
@@ -1192,11 +1201,12 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public boolean setRegistrationCenterType(RegistrationCenterSearchDto dto) {
 		try {
 			RegistrationCenterType centerType = registrationCenterTypeRepository
-					.findByCodeAndLangCodeAndIsDeletedFalseOrIsDeletedIsNull(dto.getCenterTypeCode(),
-							dto.getLangCode());
+					.findByCodeAndLangCode(dto.getCenterTypeCode(), dto.getLangCode());
 			dto.setCenterTypeName(centerType.getName());
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException("", e.getMessage());
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
 		}
 		return true;
 	}

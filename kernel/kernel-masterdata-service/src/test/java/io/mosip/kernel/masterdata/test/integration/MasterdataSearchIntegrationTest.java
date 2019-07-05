@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.test.integration;
 
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
@@ -36,6 +40,10 @@ import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -56,6 +64,18 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private LocationService locationService;
+
+	@MockBean
+	private RegistrationCenterUserRepository registrationCenterUserRepository;
+
+	@MockBean
+	private RegistrationCenterMachineRepository registrationCenterMachineRepository;
+
+	@MockBean
+	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+
+	@MockBean
+	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -155,6 +175,11 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
 				Mockito.any(), Mockito.anyList()))
 						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
+		when(registrationCenterUserRepository.countCenterUsers(Mockito.any())).thenReturn(10l);
+		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any())).thenReturn(10l);
+		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any())).thenReturn(10l);
+		doReturn(new RegistrationCenterType("10001", "ENG", "Center Name", "Description", null))
+				.when(registrationCenterTypeRepository).findByCodeAndLangCode(Mockito.any(), Mockito.any());
 
 	}
 
@@ -303,6 +328,54 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
 				Mockito.any(), Mockito.anyList()))
 						.thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
+		searchDto.setFilters(Arrays.asList(filter2));
+		String validRequest = objectMapper.writeValueAsString(request);
+		mockMvc.perform(
+				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchRegCenterUserCountFailure() throws Exception {
+		when(registrationCenterUserRepository.countCenterUsers(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		searchDto.setFilters(Arrays.asList(filter2));
+		String validRequest = objectMapper.writeValueAsString(request);
+		mockMvc.perform(
+				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchRegCenterMachineCountFailure() throws Exception {
+		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		searchDto.setFilters(Arrays.asList(filter2));
+		String validRequest = objectMapper.writeValueAsString(request);
+		mockMvc.perform(
+				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchRegCenterDevicesCountFailure() throws Exception {
+		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		searchDto.setFilters(Arrays.asList(filter2));
+		String validRequest = objectMapper.writeValueAsString(request);
+		mockMvc.perform(
+				post("/registrationcenters/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchRegCenterTypeFailure() throws Exception {
+		doThrow(DataRetrievalFailureException.class).when(registrationCenterTypeRepository)
+				.findByCodeAndLangCode(Mockito.any(), Mockito.any());
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
