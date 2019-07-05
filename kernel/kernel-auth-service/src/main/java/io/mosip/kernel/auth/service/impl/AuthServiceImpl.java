@@ -94,6 +94,14 @@ import io.mosip.kernel.core.util.EmptyCheckUtils;
 @Component
 public class AuthServiceImpl implements AuthService {
 
+	private static final String LOG_OUT_FAILED = "log out failed";
+
+	private static final String FAILED = "Failed";
+
+	private static final String SUCCESS = "Success";
+
+	private static final String SUCCESSFULLY_LOGGED_OUT = "successfully loggedout";
+
 	@Autowired
 	UserStoreFactory userStoreFactory;
 
@@ -150,6 +158,9 @@ public class AuthServiceImpl implements AuthService {
 
 	@Value("${mosip.keycloak.token_endpoint}")
 	private String tokenEndpoint;
+	
+	@Value("${mosip.admin_realm_id}")
+	private String realmID;
 
 	/**
 	 * Method used for validating Auth token
@@ -531,7 +542,6 @@ public class AuthServiceImpl implements AuthService {
 		return userStoreFactory.getDataStoreBasedOnApp(appId).getUserDetailBasedOnUid(userIds);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public MosipUserDto valdiateToken(String token) {
 		Map<String, String> pathparams = new HashMap<>();
@@ -541,26 +551,32 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
-		pathparams.put("realmId", "mosip");
+		pathparams.put(KeycloakConstants.REALM_ID, "mosip");
 		ResponseEntity<String> response = null;
 		MosipUserDto mosipUserDto = null;
+		System.out.println("validate token url "+openIdUrl);
 		StringBuilder urlBuilder = new StringBuilder().append(openIdUrl).append("userinfo");
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString());
 		HttpHeaders headers = new HttpHeaders();
+		System.out.println(token);
 		String accessToken = "Bearer " + token;
 		headers.add("Authorization", accessToken);
 
-		HttpEntity<String> httpRequest = new HttpEntity(headers);
+		HttpEntity<String> httpRequest = new HttpEntity<>(headers);
 		try {
 			response = restTemplate.exchange(uriComponentsBuilder.buildAndExpand(pathparams).toUriString(),
 					HttpMethod.GET, httpRequest, String.class);
+			System.out.println(response.getBody());
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			KeycloakErrorResponseDto keycloakErrorResponseDto = parseKeyClockErrorResponse(e);
 			if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Failed to parse JWT")) {
 				throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 			} else if (keycloakErrorResponseDto.getError_description().equals("Token invalid: Token is not active")) {
 				throw new AuthenticationServiceException(AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
-			} else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
+			} else if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new AccessDeniedException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+			} 
+			else if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
 				throw new AccessDeniedException(AuthErrorCode.FORBIDDEN.getErrorMessage());
 			} else {
 				throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
@@ -584,30 +600,33 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	@Override
 	public AuthResponseDto logoutUser(String token) {
-
+		if(EmptyCheckUtils.isNullEmpty(token)) {
+			throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+		}
 		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
 		Map<String, String> pathparams = new HashMap<>();
-		pathparams.put("realmId", "mosip");
+		pathparams.put(KeycloakConstants.REALM_ID, realmID);
 		ResponseEntity<String> response = null;
 		AuthResponseDto authResponseDto = new AuthResponseDto();
 		StringBuilder urlBuilder = new StringBuilder().append(openIdUrl).append("logout");
-
+        System.out.println(urlBuilder.toString());
 		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(urlBuilder.toString())
-				.queryParam("id_token_hint", token);
+				.queryParam(KeycloakConstants.ID_TOKEN_HINT, token);
 		try {
 			response = restTemplate.getForEntity(uriComponentsBuilder.buildAndExpand(pathparams).toUriString(),
 					String.class);
+			System.out.println(response.getBody());
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			throw new AuthManagerException(AuthErrorCode.REST_EXCEPTION.getErrorCode(),
 					AuthErrorCode.REST_EXCEPTION.getErrorMessage() + e.getResponseBodyAsString());
 		}
 
 		if (response.getStatusCode().is2xxSuccessful()) {
-			authResponseDto.setMessage("successfully loggedout");
-			authResponseDto.setStatus("Success");
+			authResponseDto.setMessage(SUCCESSFULLY_LOGGED_OUT);
+			authResponseDto.setStatus(SUCCESS);
 		} else {
-			authResponseDto.setMessage("log out failed");
-			authResponseDto.setStatus("Failed");
+			authResponseDto.setMessage(LOG_OUT_FAILED);
+			authResponseDto.setStatus(FAILED);
 		}
 		return authResponseDto;
 	}
