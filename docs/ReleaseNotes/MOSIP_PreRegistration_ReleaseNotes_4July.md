@@ -137,18 +137,5 @@ After hitting validateOtp() api with proper request having otp and userid you wi
 ### 1.8 Ready for IVV Defects list :
 Defect JIRA ID|Status|Availabilty in the branch
 ---------------|-------------|------------------
-MOS-26659|Ready for ivv|Yes
-MOS-25721|Ready for ivv|Yes
-MOS-25684|Ready for ivv|Yes
-MOS-25683|Ready for ivv|Yes
-MOS-25603|Ready for ivv|Yes
-MOS-25601|Ready for ivv|Yes
-MOS-25562|Ready for ivv|Yes
-MOS-25543|Ready for ivv|Yes
-MOS-24721|Ready for ivv|Yes
-MOS-24097|Ready for ivv|Yes
-MOS-23989|Ready for ivv|Yes
-MOS-23876|Ready for ivv|Yes
 MOS-23891|Ready for ivv|Yes
-MOS-23720|Ready for ivv|Yes
 
