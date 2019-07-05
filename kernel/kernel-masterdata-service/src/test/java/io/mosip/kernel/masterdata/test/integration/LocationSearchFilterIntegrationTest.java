@@ -149,7 +149,7 @@ public class LocationSearchFilterIntegrationTest {
 	@WithUserDetails("test")
 	public void filterLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
-		filterDto.setColumnName("hierarchyLevel");
+		filterDto.setColumnName("0");
 		filterDto.setType("all");
 		FilterValueDto filterValueDto = new FilterValueDto();
 		filterValueDto.setFilters(Arrays.asList(filterDto));
