@@ -641,7 +641,6 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	// TODO:
 	@Test
 	@WithUserDetails("test")
 	public void filterDocumentTypeTest() throws Exception {
@@ -655,11 +654,12 @@ public class MasterdataSearchIntegrationTest {
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
 		when(masterDataFilterHelper.filterValues(Mockito.eq(DocumentType.class), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(Arrays.asList("damn", "dammit"));
+				Mockito.any())).thenReturn(Arrays.asList("Birth Certificate", "Canteen card of the Army","Certificate of residence"));
 		mockMvc.perform(post("/documenttypes/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
+	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchDocumentTypeTest() throws Exception {
 		RequestWrapper<SearchDto> requestDto = new RequestWrapper<>();

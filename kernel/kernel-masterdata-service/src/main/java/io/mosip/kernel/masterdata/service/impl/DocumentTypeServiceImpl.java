@@ -237,6 +237,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return pageDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#documentTypeFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	 */
 	@Override
 	public FilterResponseDto documentTypeFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
@@ -258,6 +261,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return filterResponseDto;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#searchDocumentTypes(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
 	@Override
 	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto) {
 		PageResponseDto<DocumentTypeExtnDto> pageDto = new PageResponseDto<>();
