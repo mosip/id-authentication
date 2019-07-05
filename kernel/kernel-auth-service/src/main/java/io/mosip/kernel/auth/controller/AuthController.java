@@ -1,7 +1,6 @@
 package io.mosip.kernel.auth.controller;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -579,8 +578,7 @@ public class AuthController {
 	 */
 	@ResponseFilter
 	@DeleteMapping(value = "/logout/user")
-	public ResponseWrapper<AuthResponseDto> logoutUser(HttpServletRequest req, HttpServletResponse res) {
-		String token = getTokenFromCookie(req);
+	public ResponseWrapper<AuthResponseDto> logoutUser(@CookieValue(value = "Authorization", required = false) String token, HttpServletResponse res) {
 		AuthResponseDto authResponseDto = authService.logoutUser(token);
 		ResponseWrapper<AuthResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authResponseDto);
