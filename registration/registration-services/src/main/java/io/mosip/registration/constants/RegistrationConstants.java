@@ -123,6 +123,7 @@ public class RegistrationConstants {
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
 	public static final String SCAN = "/images/scan.png";
+	public static final String LOGO = "/images/logo-final-small.png";
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
@@ -295,6 +296,7 @@ public class RegistrationConstants {
 	// onBoard User	
 	public static final String ONBOARD_STYLE_CLASS = "onboardAlertMsg";
 	public static final String ONBOARD_IMG_PATH = "images/tick.png";
+	public static final String ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT = "EEEE dd MMM hh:mm a";
 
 	// RegistrationApproval
 	public static final String PLACEHOLDER_LABEL = "PLACEHOLDER_LABEL";

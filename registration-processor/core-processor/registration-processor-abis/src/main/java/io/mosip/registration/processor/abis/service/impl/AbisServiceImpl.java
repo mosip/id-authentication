@@ -162,14 +162,11 @@ public class AbisServiceImpl implements AbisService {
 	private Document getCbeffDocument(String referenceId)
 			throws ApisResourceAccessException, ParserConfigurationException, SAXException, IOException {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
-				referenceId, "AbisServiceImpl::getCbeffDocument()::entry");
-		List<String> regId = null;
+        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+                referenceId, "AbisServiceImpl::getCbeffDocument()::entry");
 		if (referenceId != null) {
-			regId = packetInfoManager.getRidByReferenceId(referenceId);
 			List<String> pathSegments = new ArrayList<>();
-			if (regId != null && !(regId.isEmpty())) {
-				pathSegments.add(regId.get(0));
+				pathSegments.add(referenceId);
 
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 						referenceId, "AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call started : ");
@@ -195,7 +192,7 @@ public class AbisServiceImpl implements AbisService {
 					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 					return dBuilder.parse(is);
 				}
-			}
+
 		} else {
 			throw new MissingMandatoryFieldsException(PlatformErrorMessages.MISSING_MANDATORY_FIELDS.getMessage());
 		}

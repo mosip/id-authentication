@@ -55,6 +55,7 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.mosip.preregistration.dao.PreregistrationDAO;
 import io.mosip.preregistration.util.PreRegistrationUtil;
+import io.mosip.registrationProcessor.util.RegProcApiRequests;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.restassured.response.Response;
@@ -87,6 +88,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(BaseTestCase.class);
 	// private static CommonLibrary commonLibrary = new CommonLibrary();
 	io.mosip.kernel.util.CommonLibrary cLib = new io.mosip.kernel.util.CommonLibrary();
+	RegProcApiRequests regproc=new RegProcApiRequests();
 
 	private static String preReg_CreateApplnURI;
 	PreregistrationDAO dao = new PreregistrationDAO();
@@ -270,29 +272,36 @@ public class PreRegistrationLibrary extends BaseTestCase {
 	 * @return this method is for checking cookie(token) is expired or not.
 	 */
 	public boolean isValidToken(String cookie) {
-		// we will have to read configCookieTime, token and secret from property file
-		String token_base = "Mosip-Token";
-		String secret = "authjwtsecret";
-		long configCookieTime = 20;
-		Integer cookieGenerationTimeMili = null;
+		
+		if(regproc.validateToken(cookie))
+		{
+			// we will have to read configCookieTime, token and secret from property file
+			String token_base = "Mosip-Token";
+			String secret = "authjwtsecret";
+			long configCookieTime = 20;
+			Integer cookieGenerationTimeMili = null;
 
-		try {
-			cookieGenerationTimeMili = (Integer) Jwts.parser().setSigningKey(secret)
-					.parseClaimsJws(cookie.substring(token_base.length())).getBody().get("iat");
-		} catch (ExpiredJwtException | NullPointerException | UnsupportedJwtException | MalformedJwtException
-				| SignatureException | IllegalArgumentException e) {
-			logger.info(e.getMessage());
-			return false;
+			try {
+				cookieGenerationTimeMili = (Integer) Jwts.parser().setSigningKey(secret)
+						.parseClaimsJws(cookie.substring(token_base.length())).getBody().get("iat");
+			} catch (ExpiredJwtException | NullPointerException | UnsupportedJwtException | MalformedJwtException
+					| SignatureException | IllegalArgumentException e) {
+				logger.info(e.getMessage());
+				return false;
+			}
+			Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) * 1000);
+			Date currentDate = new Date();
+			long intervalMin = (currentDate.getTime() - date.getTime()) / (60 * 1000) % 60;
+
+			if (intervalMin <= configCookieTime)
+				return true;
+			else
+				return false;
+
 		}
-		Date date = new Date(Long.parseLong(Integer.toString(cookieGenerationTimeMili)) * 1000);
-		Date currentDate = new Date();
-		long intervalMin = (currentDate.getTime() - date.getTime()) / (60 * 1000) % 60;
-
-		if (intervalMin <= configCookieTime)
-			return true;
 		else
 			return false;
-
+		
 	}
 
 	/**
@@ -1093,10 +1102,14 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object = new JSONObject();
 				JSONObject innerData = new JSONObject();
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
-				regCenterId = appointmentDetails.get(0);
-				appDate = appointmentDetails.get(1);
-				timeSlotFrom = appointmentDetails.get(2);
-				timeSlotTo = appointmentDetails.get(3);
+				try {
+					regCenterId = appointmentDetails.get(0);
+					appDate = appointmentDetails.get(1);
+					timeSlotFrom = appointmentDetails.get(2);
+					timeSlotTo = appointmentDetails.get(3);
+				} catch (IndexOutOfBoundsException e) {
+					Assert.fail("slots are not available for give registration center");
+				}
 				object.put("registration_center_id", regCenterId);
 				object.put("appointment_date", appDate);
 				object.put("time_slot_from", timeSlotFrom);
@@ -1133,10 +1146,15 @@ public class PreRegistrationLibrary extends BaseTestCase {
 				object = new JSONObject();
 				JSONObject innerData = new JSONObject();
 				appointmentDetails = getAppointmentDetails(FetchCentreResponse);
-				regCenterId = appointmentDetails.get(0);
-				appDate = appointmentDetails.get(1);
-				timeSlotFrom = appointmentDetails.get(2);
-				timeSlotTo = appointmentDetails.get(3);
+				try {
+					regCenterId = appointmentDetails.get(0);
+					appDate = appointmentDetails.get(1);
+					timeSlotFrom = appointmentDetails.get(2);
+					timeSlotTo = appointmentDetails.get(3);
+				} catch (IndexOutOfBoundsException e) {
+					Assert.fail("slots are not available for give registration center");
+				}
+			
 				object.put("registration_center_id", regCenterId);
 				object.put("appointment_date", appDate);
 				object.put("time_slot_from", timeSlotFrom);
@@ -1337,7 +1355,6 @@ public class PreRegistrationLibrary extends BaseTestCase {
 		} catch (NullPointerException e) {
 			Assert.assertTrue(false, "Failed to fetch registration details while booking appointment");
 		}
-
 		for (int i = 0; i < countCenterDetails; i++) {
 			try {
 				fetchCenterResponse.jsonPath().get("response.centerDetails[" + i + "].timeSlots[0].fromTime")
@@ -1345,6 +1362,7 @@ public class PreRegistrationLibrary extends BaseTestCase {
 			} catch (NullPointerException e) {
 				continue;
 			}
+			
 			try {
 				appointmentDetails.add(fetchCenterResponse.jsonPath().get("response.regCenterId").toString());
 				appointmentDetails

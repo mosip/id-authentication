@@ -194,6 +194,7 @@ public class ReprocessorStage extends MosipVerticleManager {
 		List<String> statusList = new ArrayList<>();
 		statusList.add(RegistrationTransactionStatusCode.SUCCESS.toString());
 		statusList.add(RegistrationTransactionStatusCode.REPROCESS.toString());
+		statusList.add(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"ReprocessorStage::process()::entry");
 		try {
@@ -223,11 +224,11 @@ public class ReprocessorStage extends MosipVerticleManager {
 							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
 							isTransactionSuccessful = true;
 							String stageName = MessageBusUtil.getMessageBusAdress(dto.getRegistrationStageName());
-							if (RegistrationTransactionStatusCode.REPROCESS.name()
+							if (RegistrationTransactionStatusCode.SUCCESS.name()
 									.equalsIgnoreCase(dto.getLatestTransactionStatusCode())) {
-								stageName = stageName.concat(ReprocessorConstants.BUS_IN);
-							} else {
 								stageName = stageName.concat(ReprocessorConstants.BUS_OUT);
+							} else {
+								stageName = stageName.concat(ReprocessorConstants.BUS_IN);
 							}
 							MessageBusAddress address = new MessageBusAddress(stageName);
 							sendMessage(object, address);

@@ -1,6 +1,5 @@
 package io.mosip.registration.cipher;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.ServerSocket;
 import java.util.Base64;
 import java.util.Properties;
 import java.util.UUID;
@@ -159,6 +159,8 @@ public class ClientJarDecryption extends Application {
 		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 				LoggerConstants.APPLICATION_ID, "Started JavaFx start");
 
+		System.out.println("Started");
+		
 		ClientJarDecryption aesDecrypt = new ClientJarDecryption();
 
 		String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
@@ -184,24 +186,13 @@ public class ClientJarDecryption extends Application {
 				LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 						LoggerConstants.APPLICATION_ID, "Started DB availability check");
 
-				if (!new File(dbpath).exists()) {
-					System.out.println("coming alert");
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setHeaderText(null);
-					alert.setContentText("Please provide correct path for Database");
-					alert.setTitle("INFO");
-					alert.setGraphic(null);
-					alert.setResizable(true);
-					alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-					alert.showAndWait();
-					throw new RuntimeException();
-				}
+				dbCheck(dbpath);
 
 				// TODO Check Internet Connectivity
 
 				showDialog();
 
-				System.out.println("Inside try statement");
+				
 				Task<Boolean> task = new Task<Boolean>() {
 					/*
 					 * (non-Javadoc)
@@ -237,8 +228,6 @@ public class ClientJarDecryption extends Application {
 
 							tempPath = FileUtils.getTempDirectoryPath();
 							tempPath = tempPath + UUID.randomUUID();
-
-							System.out.println(tempPath);
 
 							byte[] decryptedRegFileBytes;
 							try {
@@ -292,7 +281,7 @@ public class ClientJarDecryption extends Application {
 										LoggerConstants.APPLICATION_ID, "Terminating the application");
 
 								// EXIT
-								System.exit(0);
+								exit();
 							}
 
 							try {
@@ -316,7 +305,7 @@ public class ClientJarDecryption extends Application {
 								process.getOutputStream().close();
 								process.getErrorStream().close();
 
-								primaryStage.close();
+								closeStage();
 
 								if (0 == process.waitFor()) {
 
@@ -332,12 +321,16 @@ public class ClientJarDecryption extends Application {
 											LoggerConstants.APPLICATION_ID,
 											"Completed Destroying proccess of reg-client and force deleting the decrypted jars");
 
+									exit();
 								}
 							} catch (RuntimeException | InterruptedException | IOException runtimeException) {
 								LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 										LoggerConstants.APPLICATION_ID,
 										runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 
+								closeStage();
+
+								exit();
 							}
 						} else {
 
@@ -345,7 +338,9 @@ public class ClientJarDecryption extends Application {
 									LoggerConstants.APPLICATION_ID,
 									"Not installed Fully, closing mosip run.jar screen");
 
-							primaryStage.close();
+							closeStage();
+
+							exit();
 						}
 					}
 				});
@@ -425,5 +420,27 @@ public class ClientJarDecryption extends Application {
 	private String getEncryptedValue(Properties properties, String key) {
 		return CryptoUtil.encodeBase64String(asymmetricEncryptionService.encryptUsingTPM(
 				TPMInitialization.getTPMInstance(), Base64.getDecoder().decode(properties.getProperty(key))));
+	}
+
+	private void closeStage() {
+		primaryStage.close();
+	}
+
+	private void exit() {
+		System.exit(0);
+	}
+
+	private void dbCheck(String dbPath) {
+		if (!new File(dbPath).exists()) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setHeaderText(null);
+			alert.setContentText("Please provide correct path for Database");
+			alert.setTitle("INFO");
+			alert.setGraphic(null);
+			alert.setResizable(true);
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			alert.showAndWait();
+			throw new RuntimeException();
+		}
 	}
 }

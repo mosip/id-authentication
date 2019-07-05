@@ -46,6 +46,7 @@ public class RestClientAuthAdvice {
 
 	private static final String INVALID_TOKEN_STRING = "Invalid Token";
 	private static final String TOKEN_EXPIRED = "Token expired";
+	private static final boolean HAVE_TO_SAVE_AUTH_TOKEN = true;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
@@ -142,14 +143,15 @@ public class RestClientAuthAdvice {
 		String authZToken = RegistrationConstants.EMPTY;
 		boolean haveToAuthZByClientId = false;
 		LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
+
 		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
 			if (loginUserDTO == null || loginUserDTO.getPassword() == null
-					|| isLoginModeOTP(loginUserDTO)) {
+					|| isLoginModeOTP(loginUserDTO) || !SessionContext.isSessionContextAvailable()) {
 				haveToAuthZByClientId = true;
 				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 						"Application context or Session Context with OTP ");
 			} else {
-				serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
+				serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD, HAVE_TO_SAVE_AUTH_TOKEN);
 				authZToken = SessionContext.authTokenDTO().getCookie();
 				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 						"Session Context with password auth token generated " + authZToken);
@@ -159,7 +161,7 @@ public class RestClientAuthAdvice {
 		// Get the AuthZ Token By Client ID and Secret Key if
 		if ((haveToAuthZByClientId
 				|| RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint()))) {
-			serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+			serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID, HAVE_TO_SAVE_AUTH_TOKEN);
 			authZToken = ApplicationContext.authTokenDTO().getCookie();
 			SessionContext.authTokenDTO().setCookie(authZToken);
 			
@@ -187,10 +189,10 @@ public class RestClientAuthAdvice {
 						"Session Context Auth token " + authZToken);
 			} else {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
-				if (loginUserDTO == null || loginUserDTO.getPassword() == null) {
+				if (loginUserDTO == null || loginUserDTO.getPassword() == null || !SessionContext.isSessionContextAvailable()) {
 					haveToAuthZByClientId = true;
 				} else {
-					serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
+					serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD, HAVE_TO_SAVE_AUTH_TOKEN);
 					authZToken = SessionContext.authTokenDTO().getCookie();
 					LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
 							"Session Context with password Auth token " + authZToken);
@@ -202,7 +204,7 @@ public class RestClientAuthAdvice {
 		if ((haveToAuthZByClientId
 				|| RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint()))) {
 			if (null == ApplicationContext.authTokenDTO() || null == ApplicationContext.authTokenDTO().getCookie()) {
-				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID, HAVE_TO_SAVE_AUTH_TOKEN);
 			}
 			authZToken = ApplicationContext.authTokenDTO().getCookie();
 			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,

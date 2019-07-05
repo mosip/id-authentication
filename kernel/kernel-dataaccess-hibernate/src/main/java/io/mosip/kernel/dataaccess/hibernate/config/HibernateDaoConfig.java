@@ -63,7 +63,7 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	 * @see io.mosip.kernel.core.dao.config.BaseDaoConfig#dataSource()
 	 */
 
-	@Value("${hikari.maximumPoolSize:100}")
+	@Value("${hikari.maximumPoolSize:25}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
 	private int validationTimeout;

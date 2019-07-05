@@ -60,6 +60,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -244,6 +245,7 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.setHeight(bounds.getHeight());
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
+			primaryStage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			primaryStage.show();
 
 			// Execute SQL file (Script files on update)
@@ -296,15 +298,21 @@ public class LoginController extends BaseController implements Initializable {
 						SessionContext.destroySession();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+						
+						new Initialization().stop();
 
 					}
 
 					restartApplication();
 				}
 			}
-		} catch (RuntimeException runtimeException) {
+		} catch (RuntimeException | IOException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+			
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+			
+			new Initialization().stop();
 
 		}
 

@@ -37,10 +37,19 @@ public interface BioDedupeService {
 	/**
 	 * Gets the file.
 	 *
-	 * @param registrationId
-	 *            the registration id
+	 * @param abisRefId
+	 *            the abisRefId
 	 * @return the file
 	 */
-	public byte[] getFile(String registrationId);
+	public byte[] getFileByAbisRefId(String abisRefId);
+	
+	/**
+	 * Gets the file.
+	 *
+	 * @param registrationId
+	 *            the registrationId
+	 * @return the file
+	 */
+	public byte[] getFileByRegId(String registrationId);
 
 }

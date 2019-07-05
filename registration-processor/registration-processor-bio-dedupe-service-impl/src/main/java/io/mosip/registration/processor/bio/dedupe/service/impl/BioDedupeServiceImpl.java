@@ -24,6 +24,7 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -270,17 +271,58 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * (non-Javadoc) get cbef file based on registration Id
 	 * 
+	 * @see io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#
+	 * getFileByRegId( java.lang.String)
+	 */
+	@Override
+	public byte[] getFileByRegId(String registrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFileByRegId()::entry");
+		byte[] file = getFile(registrationId);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFileByRegId()::exit");
+		return file;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * get cbef file based on abisRefId
 	 * @see
 	 * io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#getFile(
 	 * java.lang.String)
 	 */
 	@Override
-	public byte[] getFile(String registrationId) {
+	public byte[] getFileByAbisRefId(String abisRefId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), abisRefId,
+				"BioDedupeServiceImpl::getFileByAbisRefId()::entry");
+		String registrationId = "";
+		try {
+			List<String> registrationIds = packetInfoManager.getRidByReferenceId(abisRefId);
+			if (registrationIds == null || registrationIds.isEmpty()) {
+				throw new RegistrationProcessorUnCheckedException(
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getCode(),
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getMessage());
+			}
+			registrationId = registrationIds.get(0);
+		} catch (RegistrationProcessorUnCheckedException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					abisRefId, ExceptionUtils.getStackTrace(e));
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), abisRefId,
+				"BioDedupeServiceImpl::getFileByAbisRefId()::exit");
+		return getFile(registrationId);
+	}
+	
+	private byte[] getFile(String registrationId) {
+		byte[] file = null;
+		if (registrationId == null || registrationId.isEmpty()) {
+			return file;
+		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::entry");
-		byte[] file = null;
 		try {
 		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
 				PacketFiles.PACKET_META_INFO.name());
@@ -304,17 +346,19 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		} catch (UnsupportedEncodingException exp) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() + exp.getMessage());
+					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() + ExceptionUtils.getStackTrace(exp));
 		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() +ExceptionUtils.getStackTrace(e));
+					registrationId, PlatformErrorMessages.UNKNOWN_EXCEPTION.getMessage() +ExceptionUtils.getStackTrace(e));
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::exit");
 		return file;
+	
+		
 	}
 
 }

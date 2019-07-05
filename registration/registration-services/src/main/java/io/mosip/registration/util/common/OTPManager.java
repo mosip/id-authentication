@@ -160,19 +160,22 @@ public class OTPManager extends BaseService {
 	}
 
 	/**
-	 * This method is used to validate the entered OTP against the user through Kernel's AuthN
-	 * Web-Service. Based on the response received, appropriate {@link AuthTokenDTO} is created
+	 * This method is used to validate the entered OTP against the user through
+	 * Kernel's AuthN Web-Service. Based on the response received, appropriate
+	 * {@link AuthTokenDTO} is created
 	 * 
 	 * <p>
 	 * Returns the {@link AuthTokenDTO} object.
 	 * </p>
 	 * 
-	 * <p>If application is offline, web-service will not invoked and empty {@link AuthTokenDTO} 
-	 * object is returned.</p>
+	 * <p>
+	 * If application is offline, web-service will not invoked and empty
+	 * {@link AuthTokenDTO} object is returned.
+	 * </p>
 	 * 
 	 * <p>
-	 * If OTP is validated successfully, the token response upon invoking the rest API 
-	 * will be set to the {@link AuthTokenDTO} object.
+	 * If OTP is validated successfully, the token response upon invoking the rest
+	 * API will be set to the {@link AuthTokenDTO} object.
 	 * </p>
 	 * 
 	 * <p>
@@ -183,9 +186,12 @@ public class OTPManager extends BaseService {
 	 *            the user id of the user to be validated against
 	 * @param otp
 	 *            the user entered OTP
+	 * @param haveToSaveAuthToken
+	 *            flag indicating whether the Authorization Token have to be saved
+	 *            in context
 	 * @return the {@link AuthTokenDTO} object.
 	 */
-	public AuthTokenDTO validateOTP(String userId, String otp) {
+	public AuthTokenDTO validateOTP(String userId, String otp, boolean haveToSaveAuthToken) {
 
 		LOGGER.info(LoggerConstants.OTP_MANAGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validate OTP Started");
@@ -208,7 +214,7 @@ public class OTPManager extends BaseService {
 						RegistrationConstants.APPLICATION_ID, "Validate OTP ended");				
 
 				// Obtain otpValidatorResponseDto from service delegate util
-				authTokenDTO = serviceDelegateUtil.getAuthToken(LoginMode.OTP);
+				authTokenDTO = serviceDelegateUtil.getAuthToken(LoginMode.OTP, haveToSaveAuthToken);
 			} 
 		} catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | ResourceAccessException
 				| RegBaseUncheckedException exception) {

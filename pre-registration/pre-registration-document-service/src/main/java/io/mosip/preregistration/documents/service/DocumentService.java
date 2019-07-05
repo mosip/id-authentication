@@ -412,12 +412,10 @@ public class DocumentService {
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
-			if (ValidationUtil.requstParamValidator(requestParamMap)) {
-				if (serviceUtil.getPreRegInfoRestService(preId)) {
-					List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
-					responseDto.setResponse(createDocumentResponse(documentEntities));
-					responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
-				}
+			if (ValidationUtil.requstParamValidator(requestParamMap) && serviceUtil.getPreRegInfoRestService(preId)) {
+				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
+				responseDto.setResponse(createDocumentResponse(documentEntities));
+				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 			}
 			isRetrieveSuccess = true;
 
@@ -469,7 +467,7 @@ public class DocumentService {
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
-			if (ValidationUtil.requstParamValidator(requestParamMap)) {
+			if (ValidationUtil.requstParamValidator(requestParamMap) && serviceUtil.getPreRegInfoRestService(preId)) {
 				DocumentEntity documentEntity = documnetDAO.findBydocumentId(docId);
 				if (!documentEntity.getPreregId().equals(preId)) {
 					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
@@ -563,24 +561,28 @@ public class DocumentService {
 		delResponseDto.setVersion(ver);
 		boolean isRetrieveSuccess = false;
 		boolean isDocNotFound = false;
+		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
-			if (!documentEntity.getPreregId().equals(preRegistrationId)) {
-				throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
-						ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
-			}
-			if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
-				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
-				if (!isDeleted) {
-					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
+			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preRegistrationId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)
+					&& serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
+				DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
+				if (!documentEntity.getPreregId().equals(preRegistrationId)) {
+					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
+							ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 				}
-				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
-				delResponseDto.setResponse(deleteDTO);
+				if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
+					String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
+					boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
+					if (!isDeleted) {
+						throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
+								ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
+					}
+					DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
+					deleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
+					delResponseDto.setResponse(deleteDTO);
+				}
 			}
-
 			delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
 			isRetrieveSuccess = true;
 
@@ -629,7 +631,8 @@ public class DocumentService {
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preregId);
-			if (ValidationUtil.requstParamValidator(requestParamMap)) {
+			if (ValidationUtil.requstParamValidator(requestParamMap)
+					&& serviceUtil.getPreRegInfoRestService(preregId)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
 				DocumentDeleteResponseDTO deleteDTO = deleteFile(documentEntityList, preregId);
 				deleteRes.setResponse(deleteDTO);

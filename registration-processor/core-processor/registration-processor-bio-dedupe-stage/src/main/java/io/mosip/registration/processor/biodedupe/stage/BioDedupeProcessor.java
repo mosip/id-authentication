@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -106,6 +107,9 @@ public class BioDedupeProcessor {
 	/** The abis handler util. */
 	@Autowired
 	private ABISHandlerUtil abisHandlerUtil;
+
+	@Autowired
+	private BioDedupeService biodedupeServiceImpl;
 
 	/** The config server file storage URL. */
 	@Value("${config.server.file.storage.uri}")
@@ -409,16 +413,13 @@ public class BioDedupeProcessor {
 
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(registrationId);
-
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call started");
-
-		byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
-
-		if (bytefile != null) {
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId,
-					"BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call ended and Fetched ByteFile");
+        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                registrationId, "BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call started");
+		byte[] bytefile = biodedupeServiceImpl.getFileByRegId(registrationId);
+		if (bytefile != null){
+            regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+                    registrationId,
+                    "BioDedupeProcessor::isValidCbeff()::get BIODEDUPE service call ended and Fetched ByteFile");
 			return true;
 		} else if (registrationType.equalsIgnoreCase(SyncTypeDto.LOST.toString())) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
