@@ -135,7 +135,7 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 	 */
 	@Test(dataProvider = "updatePacketPacket")
 	public void updatePacket(String testSuite, Integer i, JSONObject object) throws java.text.ParseException{
-		
+
 		ObjectMapper mapper=new ObjectMapper();
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
@@ -145,53 +145,11 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 		String regId = null;
 		JSONObject requestToEncrypt = null;
 		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
-		File file=ResponseRequestMapper.getPacket(testSuite, object);
-		String propertyFilePath = System.getProperty("user.dir") + "/src/config/" + "updatePacketProperties.properties";
+		File file=ResponseRequestMapper.getUpdatePacket(testSuite, object);
+		String propertyFilePath = apiRequests.getResourcePath()+"config/" + "updatePacketProperties.properties";
 
-		/*//New Packet
-		File file = new File ("src//test//resources//regProc//Packets//ValidPackets//packteForInvalidPackets//10002100320001820190607070015.zip");
-
-		//Syncing new packet
-		RegistrationPacketSyncDTO registrationPacketSyncDto = new RegistrationPacketSyncDTO();
-		try{
-			if(file!=null){
-				registrationPacketSyncDto=encryptData.createSyncRequest(file,"NEW");
-
-				regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
-
-				requestToEncrypt=encryptData.encryptData(registrationPacketSyncDto);
-			}else {
-				actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-				JSONArray request = (JSONArray) actualRequest.get("request");
-				for(int j = 0; j<request.size() ; j++){
-					JSONObject obj  = (JSONObject) request.get(j);
-					regId = obj.get("registrationId").toString();
-					registrationPacketSyncDto = encryptData.createSyncRequest(actualRequest);
-					requestToEncrypt = encryptData.encryptData(registrationPacketSyncDto);
-				}
-			}
-
-			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-			Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
-					MediaType.APPLICATION_JSON,validToken);
-			String encryptedData = resp.jsonPath().get("response.data").toString();
-			LocalDateTime timeStamp = encryptData.getTime(regId);
-
-			// Actual response generation
-			logger.info("sync API url : "+prop.getProperty("syncListApi"));
-			actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
-					timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
-
-			String status = null;
-			List<Map<String,String>> response = actualResponse.jsonPath().get("response"); 
-			for(Map<String,String> res : response){
-				status=res.get("status").toString();
-				logger.info("status is : " +status);
-			}*/
-
-
-		//Sync update packet
 		Response syncResponse = null;
+		// syncing updated packet
 		try{
 			if(file!=null){
 				registrationPacketSyncDto=encryptData.createSyncRequest(file,"UPDATE");
@@ -211,36 +169,34 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 			}
 
 			String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
-			
-			validToken=getToken("getStatusTokenGenerationFilePath");
+
+			validToken=getToken("syncTokenGenerationFilePath");
 			boolean tokenStatus=apiRequests.validateToken(validToken);
 			while(!tokenStatus) {
 				validToken = getToken("syncTokenGenerationFilePath");
 				tokenStatus=apiRequests.validateToken(validToken);
 			}
-			
+
 			Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
 					MediaType.APPLICATION_JSON,validToken);
 			String encryptedData = resp.jsonPath().get("response.data").toString();
 			LocalDateTime timeStamp = encryptData.getTime(regId);
 
-			
-			validToken=getToken("getStatusTokenGenerationFilePath");
+
+			validToken=getToken("syncTokenGenerationFilePath");
 			boolean tokenStatus1=apiRequests.validateToken(validToken);
 			while(!tokenStatus1) {
 				validToken = getToken("syncTokenGenerationFilePath");
 				tokenStatus1=apiRequests.validateToken(validToken);
 			}
-			
-			// Actual response generation
-			logger.info("sync API url : "+prop.getProperty("syncListApi"));
 			syncResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
 					timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
-			//Uploading new packet
+			
+			//Uploading  updated packet
 			Response uploadPacketResponse  = null;
 			String uploadStatus = null;
-			
-			validToken=getToken("getStatusTokenGenerationFilePath");
+
+			validToken=getToken("syncTokenGenerationFilePath");
 			boolean tokenStatus2=apiRequests.validateToken(validToken);
 			while(!tokenStatus2) {
 				validToken = getToken("syncTokenGenerationFilePath");
@@ -274,12 +230,14 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 				boolean isUinGenerated = readStatusFromDb.uinGenerator(regId);
 				logger.info("isUinGenerated : "+isUinGenerated);
 
-				validToken=getToken("getStatusTokenGenerationFilePath");
+				validToken=getToken("syncTokenGenerationFilePath");
 				boolean tokenStatus4=apiRequests.validateToken(validToken);
 				while(!tokenStatus4) {
 					validToken = getToken("syncTokenGenerationFilePath");
 					tokenStatus4=apiRequests.validateToken(validToken);
 				}
+				
+				//Response from id repo
 				Response idRepoResponse = getIDRepoResponse(regId, validToken);
 
 				if(isUinGenerated && idRepoResponse!=null) {
@@ -288,53 +246,57 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 					Properties updateProp = new Properties();
 					updateProp.load(readFile);
 					Set<Object> properties = updateProp.keySet();
+					logger.info("Properties : "+properties);
 					for(Object property : properties) {
 
 						if(object.get("testCaseName").toString().toLowerCase().contains(property.toString().toLowerCase())) {
-							updatedFieldValue = updateProp.getProperty(property.toString());
-							HashMap<String,Object> identity = null;
-							Map<String,Object> response = idRepoResponse.jsonPath().get("response"); 
-							for (Map.Entry<String,Object> entry : response.entrySet()) { 
-								if(entry.getKey().toString().matches("identity")) {
-									identity = (HashMap<String, Object>) entry.getValue();
-								} 
-							}
+							if(!object.get("testCaseName").toString().toLowerCase().contains("invalid")) {
 
-							String idRepoUpdatedValue = null;
-							if(property.toString().contains("bio&")) {
-								String field = object.get("testCaseName").toString().substring(object.get("testCaseName").toString().lastIndexOf("&")+1, 
-										object.get("testCaseName").toString().lastIndexOf("_"));
-								idRepoUpdatedValue = identity.get(field).toString();
-							}else
-								idRepoUpdatedValue = identity.get(property.toString()).toString();
-							logger.info("idRepoUpdatedValue : "+idRepoUpdatedValue);
-							if(idRepoUpdatedValue.contains(updatedFieldValue)) {
-								logger.info("Validated in DB and ID REPO .......");
+								updatedFieldValue = updateProp.getProperty(property.toString());
+								HashMap<String,Object> identity = null;
+								Map<String,Object> response = idRepoResponse.jsonPath().get("response"); 
+								for (Map.Entry<String,Object> entry : response.entrySet()) { 
+									if(entry.getKey().toString().matches("identity")) {
+										identity = (HashMap<String, Object>) entry.getValue();
+									} 
+								}
+
+								String idRepoUpdatedValue = null;
+								if(property.toString().contains("bio&")) {
+									String field = object.get("testCaseName").toString().substring(object.get("testCaseName").toString().lastIndexOf("&")+1, 
+											object.get("testCaseName").toString().lastIndexOf("_"));
+									idRepoUpdatedValue = identity.get(field).toString();
+								}else
+									idRepoUpdatedValue = identity.get(property.toString()).toString();
+								logger.info("idRepoUpdatedValue : "+idRepoUpdatedValue);
+								
+								//validating the changed values
+								if(idRepoUpdatedValue.contains(updatedFieldValue)) {
+									logger.info("Validated in DB and ID REPO .......");
+									finalStatus = "Pass";
+									softAssert.assertTrue(true);
+								}
+
+							}
+						}
+					}	
+				}else {
+					if(object.get("testCaseName").toString().toLowerCase().contains("invalid")){
+						List<Map<String,String>> errors = idRepoResponse.jsonPath().get("errors"); 
+						logger.info("errors : "+errors );
+						for(Map<String,String> err : errors){
+							String errorCode = err.get("errorCode").toString();
+							if(errorCode.matches("IDR-IDC-007")) {
+								logger.info("Validated..........");
 								finalStatus = "Pass";
 								softAssert.assertTrue(true);
+
 							}
-						}else {
-							logger.info("Validated in DB.......");
-							finalStatus = "Pass";
-							softAssert.assertTrue(true);
-						}
-
-
-
-					}	
-				}else if(object.get("testCaseName").toString().toLowerCase().contains("Invalid")){
-					List<Map<String,String>> errors = actualResponse.jsonPath().get("errors"); 
-					logger.info("errors : "+errors );
-					for(Map<String,String> err : errors){
-						String errorCode = err.get("errorCode").toString();
-						if(errorCode.matches("IDR-IDC-007")) {
-							logger.info("Validated..........");
-							finalStatus = "Pass";
-							softAssert.assertTrue(true);
-							
 						}
 					}
 				}
+
+
 				boolean setFinalStatus=false;
 				if(finalStatus.equals("Fail"))
 					setFinalStatus=false;
@@ -344,87 +306,10 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 				softAssert.assertAll();
 
 
-
-				/*TweakRegProcPackets e = new TweakRegProcPackets();
-				String validPacketPath = prop.getProperty("newPacketForUpdatePacket");
-				String updatedPacketFolderPath = prop.getProperty("updatedPacketFolderPath");
-				e.updatePacketPropertyFileReader("updatePacketProperties.properties",validPacketPath,updatedPacketFolderPath);
-				 */
-				/*//Update packet
-				File updateFile=ResponseRequestMapper.getPacket(testSuite, object);
-
-				//refactor
-				String updateRegId = null;
-				RegistrationPacketSyncDTO updateRegistrationPacketSyncDto = null;
-				JSONObject updateRequestToEncrypt =null;
-				if(updateFile!=null){
-					 updateRegistrationPacketSyncDto = encryptData.createSyncRequest(updateFile,"UPDATE");
-
-					 updateRegId = updateRegistrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
-
-					updateRequestToEncrypt = encryptData.encryptData(updateRegistrationPacketSyncDto);
-				}else {
-					actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-					JSONArray request = (JSONArray) actualRequest.get("request");
-					for(int j = 0; j<request.size() ; j++){
-						JSONObject obj  = (JSONObject) request.get(j);
-						updateRegId = obj.get("registrationId").toString();
-						updateRegistrationPacketSyncDto = encryptData.createSyncRequest(actualRequest);
-						updateRequestToEncrypt = encryptData.encryptData(updateRegistrationPacketSyncDto);
-					}
-				}
-				Response updateSyncResponse = null;
-				String updateCenter_machine_refID=updateRegId.substring(0,5)+"_"+updateRegId.substring(5, 10);
-				Response updateResp=apiRequests.postRequestToDecrypt(encrypterURL,updateRequestToEncrypt,MediaType.APPLICATION_JSON,
-						MediaType.APPLICATION_JSON,validToken);
-				String updateEncryptedData = updateResp.jsonPath().get("response.data").toString();
-				LocalDateTime updateTimeStamp = encryptData.getTime(updateRegId);
-
-				// Actual response generation
-				logger.info("sync API url : "+prop.getProperty("syncListApi"));
-				updateSyncResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),updateEncryptedData,updateCenter_machine_refID,
-						updateTimeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
-
-				String updateStatus = null;
-				List<Map<String,String>> updateResponse = updateSyncResponse.jsonPath().get("response"); 
-				for(Map<String,String> res : updateResponse){
-					updateStatus=res.get("status").toString();
-					logger.info("updateStatus is : " +updateStatus);
-				}
-
-				//Uploading update packet
-				Response uploadUpdatePacketResponse  = null;
-				String uploadUpdateStatus = null;
-				if(updateStatus.equalsIgnoreCase("SUCCESS")) {
-					uploadUpdatePacketResponse = apiRequests.regProcPacketUpload(updateFile, prop.getProperty("packetReceiverApi"), validToken);
-					boolean isUpdateError = uploadUpdatePacketResponse.asString().contains("errors");
-					logger.info("isUpdateError : "+isUpdateError);
-					if(!isUpdateError) {
-						Map<String,String> uploadResponse = uploadUpdatePacketResponse.jsonPath().get("response"); 
-						for(Map.Entry<String,String> res: uploadResponse.entrySet()){
-							if(res.getKey().equals("status"))
-								uploadUpdateStatus =  res.getValue().toString();
-							if (uploadUpdateStatus.matches("\"Packet is in PACKET_RECEIVED status\"")){
-								logger.info("Packet Uploaded ...........");
-							} 
-						}
-					}else {
-						List<Map<String,String>> uploadError = uploadUpdatePacketResponse.jsonPath().get("errors"); 
-						logger.info("error : "+uploadError);
-						for(Map<String,String> err : uploadError){
-							String errorCode = err.get("errorCode").toString();
-							logger.info("errorCode : "+errorCode);
-							if(errorCode.matches("RPR-PKR-005")) {
-								logger.info("Packet Already Uploaded ...........");
-							}
-						}
-					}*/
-
-
 			}
 
-
 		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
+			e.printStackTrace();
 			logger.error("Exception occurred in UpdatePacket class in updatePacket method "+e);
 
 		}
@@ -449,7 +334,7 @@ public class UpdatePacket extends BaseTestCase implements ITest {
 		return uin;
 	}
 
-	private Response getIDRepoResponse(String regId, String validToken) {
+	public Response getIDRepoResponse(String regId, String validToken) {
 		String idRepoUrl = "/idrepository/v1/identity/rid/" + regId + "?type=all" ;
 		Response idRepoResponse = apiRequests.regProcGetIdRepo(idRepoUrl, validToken);
 		return idRepoResponse;

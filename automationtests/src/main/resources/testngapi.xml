@@ -11,7 +11,7 @@
 	</listeners>
 
 
-	  <test name="Kernel Tests">
+<!-- 	  <test name="Kernel Tests">
 						 <classes>
 						
                         <class name="io.mosip.kernel.tests.AuditLog" />   
@@ -110,33 +110,32 @@
                      <class name="io.mosip.preregistration.tests.OperationWithDifferentToken" />
 
 		</classes> 
-	</test> 
+	</test>  -->
 
 
     <test name="RegistrationProcessor Tests">
 
 		<classes>					
-		  			 <class name="io.mosip.registrationProcessor.tests.SecurityTests" />
-                   <class name="io.mosip.registrationProcessor.tests.Sync" />
-                     <class name="io.mosip.registrationProcessor.tests.PacketStatus" />
-                  	<class name="io.mosip.registrationProcessor.tests.PacketReceiver" />
-                   <class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
-                    <class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
-                    <class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
-                    <class name="io.mosip.registrationProcessor.tests.Assignment" />
-                    <class name="io.mosip.registrationProcessor.tests.Decision" />
-                    <class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
-                    <class name="io.mosip.registrationProcessor.tests.ApplicantDemographic" />
-                    <class name="io.mosip.registrationProcessor.tests.ApplicantBiometric" />
-                   <class name="io.mosip.registrationProcessor.tests.PacketInfo" />   
-                   <class name="io.mosip.registrationProcessor.tests.AbisMiddlewareTests" />  
-                    <class name="io.mosip.registrationProcessor.tests.UpdatePacket" />  
-
-
+		  	<class name="io.mosip.registrationProcessor.tests.Sync" />
+			<class name="io.mosip.registrationProcessor.tests.SecurityTests" />
+			<class name="io.mosip.registrationProcessor.tests.PacketStatus" />
+			<class name="io.mosip.registrationProcessor.tests.PacketReceiver" /> 
+			<class name="io.mosip.registrationProcessor.tests.StageValidationTests" />
+			<class name="io.mosip.registrationProcessor.tests.PacketGenerator" />
+			<class name="io.mosip.registrationProcessor.tests.PacketGeneratorReactivate" />
+			<class name="io.mosip.registrationProcessor.tests.Assignment" />
+			<class name="io.mosip.registrationProcessor.tests.Decision" />
+			<class name="io.mosip.registrationProcessor.tests.IntegrationScenarios" />
+			<class name="io.mosip.registrationProcessor.tests.ApplicantDemographic" />
+			<class name="io.mosip.registrationProcessor.tests.ApplicantBiometric" />
+			<class name="io.mosip.registrationProcessor.tests.PacketInfo" />
+			<class name="io.mosip.registrationProcessor.tests.AbisMiddlewareTests" />
+			<class name="io.mosip.registrationProcessor.tests.UpdatePacket" />
+			<class name="io.mosip.registrationProcessor.tests.PrintingStage" />
 		</classes>
 	</test>    
 
-	<test name="AuthenticationTest">
+	<!-- <test name="AuthenticationTest">
              <classes>
               
                 <class name="io.mosip.authentication.idRepository.prerequiste.CreateUinRecord" /> 
@@ -172,7 +171,7 @@
                    <class name="io.mosip.authentication.idRepository.tests.RetrieveUinByVid" /> 
              </classes>
 
-       </test>				 
+       </test>	 -->			 
 
 		</suite>
 		

@@ -131,5 +131,26 @@ public class RegProcTransactionDb {
 		return false;
 	}
 	
+	public boolean printAndPost(String regId) {
+		Session session=getCurrentSession();
+		 Transaction t=session.beginTransaction();
+		
+		 
+		 String queryString="SELECT * " + 
+		 		"	FROM regprc.registration_transaction where regprc.registration_transaction.reg_id= :regId "
+		 		+ "AND regprc.registration_transaction.trn_type_code = :print "
+		 		+ "AND regprc.registration_transaction.status_code = :statusCode";
+		 Query<String> query=session.createSQLQuery(queryString);
+		 query.setParameter("regId", regId); 
+		 query.setParameter("print", "PRINT_POSTAL_SERVICE"); 
+		 query.setParameter("statusCode", "PROCESSED"); 
+		 List<String> list=query.getResultList();
+		 logger.info("inside print and post : "+list);
+		if(list.size()==1) {
+			return true ;
+		}
+		return false;
+	}
+	
 	
 }
