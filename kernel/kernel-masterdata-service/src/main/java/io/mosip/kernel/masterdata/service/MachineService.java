@@ -1,11 +1,15 @@
 package io.mosip.kernel.masterdata.service;
 
-
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -128,6 +132,24 @@ public interface MachineService {
 	 *         of machins those are mapped with the given registration center
 	 *         {@link RegistrationCenterMachineID}
 	 */
-	public PageDto<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId, int page, int size, String orderBy, String direction);
+	public PageDto<MachineRegistrationCenterDto> getMachinesByRegistrationCenter(String regCenterId, int page, int size,
+			String orderBy, String direction);
 
+	/**
+	 * Method to search Machines based on filters provided.
+	 * 
+	 * @param dto
+	 *            the search DTO.
+	 * @return the {@link PageResponseDto}.
+	 */
+	public PageResponseDto<MachineExtnDto> searchMachine(SearchDto dto);
+
+	/**
+	 * Method to filter Machine based on column and type provided.
+	 * 
+	 * @param filterValueDto
+	 *            the filter DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto);
 }

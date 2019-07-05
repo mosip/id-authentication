@@ -275,7 +275,6 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * 
 	 * This method creates registration center by Admin.
 	 * 
 	 * @param reqRegistrationCenterDto

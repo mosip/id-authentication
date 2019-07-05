@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +25,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +42,7 @@ import io.swagger.annotations.ApiResponses;
  * {@link LocationService} is called wherein the business logics are handled.
  * 
  * @author Srinivasan
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -60,7 +64,9 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
-	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	// @PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION',
+	// 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER',
+	// 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping(value = "/{langcode}")
 	public ResponseWrapper<LocationHierarchyResponseDto> getLocationHierarchyDetails(@PathVariable String langcode) {
@@ -69,7 +75,6 @@ public class LocationController {
 		return responseWrapper;
 	}
 
-	
 	@ResponseFilter
 	@PostMapping()
 	public ResponseWrapper<PostLocationCodeResponseDto> createLocationHierarchyDetails(
@@ -103,7 +108,9 @@ public class LocationController {
 	 *            hierarchy Name
 	 * @return list of location hierarchies
 	 */
-	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR')")
+	// @PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION',
+	// 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER',
+	// 'REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/locationhierarchy/{hierarchyname}")
 	public ResponseWrapper<LocationResponseDto> getLocationDataByHierarchyName(
@@ -121,7 +128,7 @@ public class LocationController {
 	 *            - location request DTO
 	 * @return PostLocationCodeResponseDto
 	 */
-	//@PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	public ResponseWrapper<PostLocationCodeResponseDto> updateLocationHierarchyDetails(
@@ -156,7 +163,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
-	//@PreAuthorize("hasAnyRole('INDIVIDUAL')")
+	// @PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
 	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationResponseDto> getImmediateChildrenByLocCodeAndLangCode(
@@ -174,7 +181,7 @@ public class LocationController {
 	 * @param locationName
 	 * @return StatusResponseCode
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
+	// @PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/validate/{locationname}")
 	public ResponseWrapper<StatusResponseDto> validateLocationName(@PathVariable("locationname") String locationName) {
@@ -198,7 +205,7 @@ public class LocationController {
 	 * 
 	 * @return the response i.e. pages containing the locations.
 	 */
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the location with additional metadata", notes = "Retrieve all the location with the additional metadata")
@@ -212,6 +219,38 @@ public class LocationController {
 		ResponseWrapper<PageDto<LocationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(locationHierarchyService.getLocations(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * POST API to search location
+	 * 
+	 * @param request
+	 *            input from user
+	 * @return location values
+	 */
+	@ResponseFilter
+	@PostMapping("/search")
+	public ResponseWrapper<PageResponseDto<LocationExtnDto>> searchLocation(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<LocationExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.searchLocation(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * POST API to filter location
+	 * 
+	 * @param request
+	 *            input from user
+	 * @return column values corresponding to entered dto
+	 */
+	@ResponseFilter
+	@PostMapping("/filtervalues")
+	public ResponseWrapper<FilterResponseDto> locationFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(locationHierarchyService.locationFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 

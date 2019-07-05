@@ -30,6 +30,12 @@ import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -39,7 +45,12 @@ import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * Class will fetch Location details based on various parameters this class is
@@ -47,6 +58,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * 
  * @author Srinivasan
  * @author Tapaswini
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -58,6 +70,18 @@ public class LocationServiceImpl implements LocationService {
 	 */
 	@Autowired
 	private LocationRepository locationRepository;
+
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@Autowired
+	FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	MasterDataFilterHelper masterDataFilterHelper;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> hierarchyChildList = null;
@@ -572,6 +596,55 @@ public class LocationServiceImpl implements LocationService {
 
 		return locationRepository.findDistinctByparentLocCode(locCode);
 
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto) {
+		PageResponseDto<LocationExtnDto> pageDto = new PageResponseDto<>();
+		List<LocationExtnDto> location = null;
+		if (filterTypeValidator.validate(LocationExtnDto.class, dto.getFilters())) {
+			Page<Location> page = masterdataSearchHelper.searchMasterdata(Location.class, dto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				location = MapperUtils.mapAll(page.getContent(), LocationExtnDto.class);
+				pageDto.setData(location);
+			}
+		}
+		return pageDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	 */
+	@Override
+	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		List<String> getValues = null;
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				if (filterDto.getType().equals("unique")) {
+					getValues = locationRepository.filterByDistinctHierarchyLevel(
+							Integer.parseInt(filterDto.getColumnName()), filterValueDto.getLanguageCode());
+				} else {
+					getValues = locationRepository.filterByHierarchyLevel(Integer.parseInt(filterDto.getColumnName()),
+							filterValueDto.getLanguageCode());
+				}
+
+				getValues.forEach(value -> {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(value.toString());
+					columnValueList.add(columnValue);
+
+				});
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
 	}
 
 }

@@ -9,10 +9,6 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,9 +45,12 @@ import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * Service implementation class for {@link BlacklistedWordsService}.
@@ -72,10 +71,18 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private CriteriaBuilder criteriaBuilder;
+	@Autowired
+	FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	FilterColumnValidator filterColumnValidator;
 
 	@Autowired
 	MasterdataSearchHelper masterDataSearchHelper;
+
+	@Autowired
+	MasterDataFilterHelper masterDataFilterHelper;
+
 	/**
 	 * Autowired reference for {@link DataMapper}
 	 */
@@ -313,33 +320,52 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		return id;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * searchBlackListedWords(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
 	@Override
 	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto) {
 		PageResponseDto<BlacklistedWordsExtnDto> pageDto = new PageResponseDto<>();
 		List<BlacklistedWordsExtnDto> blackListedWords = null;
-		Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
-		if (page.getContent() != null && !page.getContent().isEmpty()) {
-			pageDto = PageUtils.pageResponse(page);
-			blackListedWords = MapperUtils.mapAll(page.getContent(), BlacklistedWordsExtnDto.class);
-			pageDto.setData(blackListedWords);
+		if (filterTypeValidator.validate(BlacklistedWordsExtnDto.class, dto.getFilters())) {
+			Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				blackListedWords = MapperUtils.mapAll(page.getContent(), BlacklistedWordsExtnDto.class);
+				pageDto.setData(blackListedWords);
+			}
 		}
 		return pageDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * blackListedWordsFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
+	 */
 	@Override
 	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		for (FilterDto filterDto : filterValueDto.getFilters()) {
-			masterDataSearchHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(), filterDto.getType(),
-					filterValueDto.getLanguageCode()).forEach(filterValue -> {
-						ColumnValue columnValue = new ColumnValue();
-						columnValue.setFieldID(filterDto.getColumnName());
-						columnValue.setFieldValue(filterValue);
-						columnValueList.add(columnValue);
-					});
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(),
+						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
+							if (filterValue != null) {
+								ColumnValue columnValue = new ColumnValue();
+								columnValue.setFieldID(filterDto.getColumnName());
+								columnValue.setFieldValue(filterValue.toString());
+								columnValueList.add(columnValue);
+							}
+						});
+			}
+			filterResponseDto.setFilters(columnValueList);
 		}
-		filterResponseDto.setFilters(columnValueList);
 		return filterResponseDto;
 	}
 }

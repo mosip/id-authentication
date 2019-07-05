@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +23,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.Api;
@@ -81,7 +84,9 @@ public class DocumentTypeController {
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
-	//@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION',
+	// 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER',
+	// 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
@@ -100,7 +105,7 @@ public class DocumentTypeController {
 	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
-	//@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping("/documenttypes")
 	@ApiOperation(value = "Service to update document type")
@@ -142,7 +147,7 @@ public class DocumentTypeController {
 	 * 
 	 * @return the response i.e. pages containing the document types.
 	 */
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/documenttypes/all")
 	@ApiOperation(value = "Retrieve all the document types with additional metadata", notes = "Retrieve all the document types with additional metadata")
@@ -156,6 +161,40 @@ public class DocumentTypeController {
 		ResponseWrapper<PageDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(documentTypeService.getAllDocumentTypes(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/documenttypes/filtervalues")
+	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<FilterResponseDto> documentTypeFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.documentTypeFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Function to fetch all document types.
+	 * 
+	 * @return {@link DocumentTypeExtnDto} DocumentTypeResponseDto
+	 */
+	@ResponseFilter
+	@PostMapping("/documenttypes/search")
+	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.searchDocumentTypes(request.getRequest()));
 		return responseWrapper;
 	}
 }

@@ -5,7 +5,12 @@ import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -103,4 +108,22 @@ public interface DeviceService {
 	 */
 	public PageDto<DeviceRegistrationCenterDto> getDevicesByRegistrationCenter(String regCenterId, int page, int size,
 			String orderBy, String direction);
+	
+	/**
+	 * Method to search Devices based on filters provided.
+	 * 
+	 * @param searchRequestDto
+	 *            the search DTO.
+	 * @return the {@link PageResponseDto}.
+	 */
+	public PageResponseDto<DeviceExtnDto> searchDevice(SearchDto searchRequestDto);
+	
+	/**
+	 * Method to filter Device based on column and type provided.
+	 * 
+	 * @param filterValueDto
+	 *            the filter DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	public FilterResponseDto deviceFilterValues(FilterValueDto filterValueDto);
 }
