@@ -91,10 +91,10 @@ public class RegistrationStatusController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<Object> search(
-			@RequestBody(required = true) RegistrationStatusRequestDTO registrationStatusRequestDTO)
-			//@CookieValue(value = "Authorization") String token)
+			@RequestBody(required = true) RegistrationStatusRequestDTO registrationStatusRequestDTO,
+			@CookieValue(value = "Authorization") String token)
 			throws RegStatusAppException {
-		//tokenValidator.validate("Authorization=" + token, "registrationstatus");
+		tokenValidator.validate("Authorization=" + token, "registrationstatus");
 		try {
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,
 					env.getProperty(REG_STATUS_SERVICE_ID));

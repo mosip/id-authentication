@@ -61,6 +61,7 @@ public class PrintServiceRequestValidator implements Validator {
 	/** The id. */
 	private Map<String, String> id = new HashMap<>();
 
+	/** The grace period. */
 	@Value("${mosip.registration.processor.grace.period}")
 	private int gracePeriod;
 	/*
@@ -152,6 +153,10 @@ public class PrintServiceRequestValidator implements Validator {
 							.isAfter(new DateTime().minusSeconds(gracePeriod))
 							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
+						regProcLogger.error(PRINT_SERVICE, "PrintServiceRequestValidator", "validateReqTime",
+								"\n" +String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
+										TIMESTAMP));
+						
 						errors.rejectValue(TIMESTAMP, PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 								String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
 										TIMESTAMP));

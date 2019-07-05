@@ -157,6 +157,9 @@ public class PacketGeneratorRequestValidator {
 							.isAfter(new DateTime().minusSeconds(gracePeriod))
 							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
+						regProcLogger.error(PACKET_GENERATOR_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
+								"\n" + PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage());
+						
 						throw new PacketGeneratorValidationException(
 								PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 								String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),

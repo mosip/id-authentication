@@ -29,7 +29,7 @@ public class ManualVerificationRequestValidator{
 
 
 	/** The mosip logger. */
-	Logger mosipLogger = RegProcessorLogger.getLogger(ManualVerificationRequestValidator.class);
+	Logger regProcLogger = RegProcessorLogger.getLogger(ManualVerificationRequestValidator.class);
 
 
 	/** The env. */
@@ -40,6 +40,7 @@ public class ManualVerificationRequestValidator{
 	//	@Resource
 	private Map<String, String> id=new HashMap<>();
 	
+	/** The grace period. */
 	@Value("${mosip.registration.processor.grace.period}")
 	private int gracePeriod;
 
@@ -121,12 +122,16 @@ public class ManualVerificationRequestValidator{
 							.isAfter(new DateTime().minusSeconds(gracePeriod))
 							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
+						
+						regProcLogger.error(ManualVerificationConstants.MAN_VERI_SERVICE, "ManReqRequestValidator", "validateReqTime",
+								"\n" + PlatformErrorMessages.RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP.getMessage());
+						
 					throw new ManualVerificationAppException(PlatformErrorMessages.RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
 							}
 
 				}
 			} catch (IllegalArgumentException e) {
-				mosipLogger.error(ManualVerificationConstants.MAN_VERI_SERVICE, "ManReqRequestValidator", "validateReqTime",
+				regProcLogger.error(ManualVerificationConstants.MAN_VERI_SERVICE, "ManReqRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new ManualVerificationAppException(PlatformErrorMessages.RPR_MVS_INVALID_INPUT_PARAMETER_TIMESTAMP,exception);
 				}
