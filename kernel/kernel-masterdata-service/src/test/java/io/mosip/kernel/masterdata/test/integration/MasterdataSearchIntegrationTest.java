@@ -238,6 +238,11 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
 				Mockito.any(), Mockito.anyList()))
 						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
+		when(registrationCenterUserRepository.countCenterUsers(Mockito.any())).thenReturn(10l);
+		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any())).thenReturn(10l);
+		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any())).thenReturn(10l);
+		doReturn(new RegistrationCenterType("10001", "ENG", "Center Name", "Description", null))
+				.when(registrationCenterTypeRepository).findByCodeAndLangCode(Mockito.any(), Mockito.any());
 
 	}
 
