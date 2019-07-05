@@ -113,7 +113,7 @@ public class OTPManagerTest {
 			throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 
 		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-		authTokenDTO.setToken("12345");
+		authTokenDTO.setCookie("12345");
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
