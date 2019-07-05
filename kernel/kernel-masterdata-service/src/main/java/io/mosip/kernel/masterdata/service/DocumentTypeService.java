@@ -79,7 +79,7 @@ public interface DocumentTypeService {
 	 */
 	public PageDto<DocumentTypeExtnDto> getAllDocumentTypes(int pageNumber, int pageSize, String sortBy,
 			String orderBy);
-	
+
 	/**
 	 * Method that returns the column values of specific filter column name.
 	 * 
@@ -88,5 +88,14 @@ public interface DocumentTypeService {
 	 * @return the response containing the filter values.
 	 */
 	public FilterResponseDto documentTypeFilterValues(FilterValueDto filterValueDto);
-	
+
+	/**
+	 * Method to search and sort the filter based on the filters and sorting
+	 * provided
+	 * 
+	 * @param dto
+	 *            contains the data for searching and sorting.
+	 * @return list of document type with all the metadata.
+	 */
+	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto);
 }

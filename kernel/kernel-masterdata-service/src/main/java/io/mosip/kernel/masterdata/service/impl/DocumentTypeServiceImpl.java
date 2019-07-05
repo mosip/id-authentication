@@ -72,17 +72,17 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	 */
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
-	
-	@Autowired
-	private FilterTypeValidator filterTypeValidator;
-	
-	private MasterdataSearchHelper masterdataSearchHelper;
-	
 	@Autowired
 	FilterColumnValidator filterColumnValidator;
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
+
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -236,15 +236,15 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		}
 		return pageDto;
 	}
-	
+
 	@Override
 	public FilterResponseDto documentTypeFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(DocumentType.class, filterDto.getColumnName(),
-						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
+				masterDataFilterHelper.filterValues(DocumentType.class, filterDto.getColumnName(), filterDto.getType(),
+						filterValueDto.getLanguageCode()).forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnValue columnValue = new ColumnValue();
 								columnValue.setFieldID(filterDto.getColumnName());
@@ -256,6 +256,22 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
+	}
+
+	@Override
+	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto) {
+		PageResponseDto<DocumentTypeExtnDto> pageDto = new PageResponseDto<>();
+		List<DocumentTypeExtnDto> doumentTypes = null;
+		if (filterTypeValidator.validate(DocumentTypeExtnDto.class, dto.getFilters())) {
+			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto,
+					Collections.emptyList());
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				PageUtils.pageResponse(page);
+				doumentTypes = MapperUtils.mapAll(page.getContent(), DocumentTypeExtnDto.class);
+				pageDto.setData(doumentTypes);
+			}
+		}
+		return pageDto;
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +31,6 @@ import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostRespons
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
@@ -64,8 +62,8 @@ public class RegistrationCenterController {
 	RegistrationCenterService registrationCenterService;
 
 	/**
-	 * Function to fetch registration centers list using location code and
-	 * language code.
+	 * Function to fetch registration centers list using location code and language
+	 * code.
 	 * 
 	 * @param langCode
 	 *            language code for which the registration center needs to be
@@ -73,8 +71,7 @@ public class RegistrationCenterController {
 	 * @param locationCode
 	 *            location code for which the registration center needs to be
 	 *            searched.
-	 * @return {@link RegistrationCenterResponseDto}
-	 *         RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/getlocspecificregistrationcenters/{langcode}/{locationcode}")
@@ -123,8 +120,7 @@ public class RegistrationCenterController {
 	 *            the latitude provided by user.
 	 * @param proximityDistance
 	 *            the proximity distance provided by user.
-	 * @return {@link RegistrationCenterResponseDto}
-	 *         RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
@@ -146,8 +142,7 @@ public class RegistrationCenterController {
 	 *            centerId of required center.
 	 * @param langCode
 	 *            langCode of required center.
-	 * @return {@link RegistrationCenterResponseDto}
-	 *         RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/{id}/{langcode}")
@@ -162,8 +157,7 @@ public class RegistrationCenterController {
 	/**
 	 * Function to fetch all registration centers.
 	 * 
-	 * @return {@link RegistrationCenterResponseDto}
-	 *         RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters")
@@ -175,8 +169,8 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Function to fetch list of registration centers based on hierarchy
-	 * level,text and language code
+	 * Function to fetch list of registration centers based on hierarchy level,text
+	 * and language code
 	 * 
 	 * @param langCode
 	 *            input from user
@@ -184,8 +178,7 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param name
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto}
-	 *         RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
@@ -202,8 +195,8 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Check whether the time stamp sent for the given registration center id is
-	 * not a holiday and is in between working hours.
+	 * Check whether the time stamp sent for the given registration center id is not
+	 * a holiday and is in between working hours.
 	 * 
 	 * @param regId
 	 *            - registration center id
@@ -237,8 +230,8 @@ public class RegistrationCenterController {
 	}
 
 	/**
-	 * Function to fetch list of registration centers based on hierarchy
-	 * level,List of text and language code
+	 * Function to fetch list of registration centers based on hierarchy level,List
+	 * of text and language code
 	 * 
 	 * @param langCode
 	 *            input from user
@@ -246,8 +239,7 @@ public class RegistrationCenterController {
 	 *            input from user
 	 * @param names
 	 *            input from user
-	 * @return {@link RegistrationCenterResponseDto}
-	 *         RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	// @PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@ResponseFilter
@@ -265,8 +257,7 @@ public class RegistrationCenterController {
 	/**
 	 * Function to fetch all registration centers.
 	 * 
-	 * @return {@link RegistrationCenterResponseDto}
-	 *         RegistrationCenterResponseDto
+	 * @return {@link RegistrationCenterResponseDto} RegistrationCenterResponseDto
 	 */
 	@ResponseFilter
 	@GetMapping("/registrationcenters/all")
@@ -327,6 +318,7 @@ public class RegistrationCenterController {
 	 *            search input for registration center search
 	 * @return list of registration center  
 	 */
+	@ResponseFilter
 	@PostMapping("/registrationcenters/search")
 	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<PageResponseDto<RegistrationCenterExtnDto>> searchRegistrationCenter(

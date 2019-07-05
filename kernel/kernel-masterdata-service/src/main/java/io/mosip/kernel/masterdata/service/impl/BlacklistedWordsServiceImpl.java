@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -65,6 +68,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	@Autowired
 	private BlacklistedWordsRepository blacklistedWordsRepository;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+
 	@Autowired
 	FilterTypeValidator filterTypeValidator;
 
@@ -72,10 +78,10 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	FilterColumnValidator filterColumnValidator;
 
 	@Autowired
-	MasterDataFilterHelper masterDataFilterHelper;
+	MasterdataSearchHelper masterDataSearchHelper;
 
 	@Autowired
-	MasterdataSearchHelper masterDataSearchHelper;
+	MasterDataFilterHelper masterDataFilterHelper;
 
 	/**
 	 * Autowired reference for {@link DataMapper}

@@ -182,4 +182,19 @@ public class DocumentTypeController {
 		responseWrapper.setResponse(documentTypeService.documentTypeFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
+
+	/**
+	 * Function to fetch all document types.
+	 * 
+	 * @return {@link DocumentTypeExtnDto} DocumentTypeResponseDto
+	 */
+	@ResponseFilter
+	@PostMapping("/documenttypes/search")
+	// @PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.searchDocumentTypes(request.getRequest()));
+		return responseWrapper;
+	}
 }
