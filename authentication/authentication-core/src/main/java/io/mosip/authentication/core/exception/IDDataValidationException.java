@@ -108,7 +108,8 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	 * @param args         the args
 	 */
 	public void addInfo(String errorCode, String errorMessage, String actionMesgsage, Object... args) {
-		super.addInfo(errorCode, String.format(Optional.ofNullable(errorMessage).orElseGet(() -> ""), args));
+		String msg = Optional.ofNullable(errorMessage).orElseGet(() -> "");
+		super.addInfo(errorCode, args == null ? msg :  String.format(msg, args));
 		this.args.add(args);
 		this.actionargs.add(actionMesgsage);
 	}
