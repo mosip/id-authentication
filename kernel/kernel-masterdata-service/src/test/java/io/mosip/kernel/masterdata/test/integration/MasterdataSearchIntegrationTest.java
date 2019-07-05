@@ -603,7 +603,7 @@ public class MasterdataSearchIntegrationTest {
 	@WithUserDetails("test")
 	public void searchDeviceByNotMappedStatusFieldTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
-		deviceSearchFilter.setValue("un-assigned");
+		deviceSearchFilter.setValue("unassigned");
 		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
 		deviceRequestDto.setRequest(deviceSearchDto);
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
@@ -623,7 +623,7 @@ public class MasterdataSearchIntegrationTest {
 	@WithUserDetails("test")
 	public void searchDeviceByNotMappedStatusFieldNotFoundExceptionTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
-		deviceSearchFilter.setValue("un-assigned");
+		deviceSearchFilter.setValue("unassigned");
 		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
 		deviceRequestDto.setRequest(deviceSearchDto);
 		String json = objectMapper.writeValueAsString(deviceRequestDto);
@@ -642,7 +642,7 @@ public class MasterdataSearchIntegrationTest {
 	@WithUserDetails("test")
 	public void searchDeviceRequestExceptionTest() throws Exception {
 		deviceSearchFilter.setColumnName("mapStatus");
-		deviceSearchFilter.setValue("un-assigned");
+		deviceSearchFilter.setValue("unassigned");
 		deviceSearchDto.setFilters(Arrays.asList(deviceSearchFilter));
 		deviceRequestDto.setRequest(deviceSearchDto);
 		String json = objectMapper.writeValueAsString(deviceRequestDto);

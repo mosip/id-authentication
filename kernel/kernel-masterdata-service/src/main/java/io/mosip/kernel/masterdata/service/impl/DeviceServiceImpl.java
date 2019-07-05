@@ -354,7 +354,7 @@ public class DeviceServiceImpl implements DeviceService {
 										DeviceErrorCode.MAPPED_DEVICE_ID_NOT_FOUND_EXCEPTION.getErrorMessage()));
 					}
 				} else {
-				if (filter.getValue().equalsIgnoreCase("un-assgined")) {
+				if (filter.getValue().equalsIgnoreCase("unassigned")) {
 					mappedDeviceIdList = deviceRepository.findNotMappedDeviceId();
 					addList.addAll(buildRegistrationCenterDeviceTypeSearchFilter(mappedDeviceIdList));
 					if (addList.isEmpty()) {
