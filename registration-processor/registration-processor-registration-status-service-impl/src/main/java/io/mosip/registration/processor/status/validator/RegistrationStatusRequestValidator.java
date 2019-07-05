@@ -48,10 +48,7 @@ public class RegistrationStatusRequestValidator {
 	@Autowired
 	private Environment env;
 
-	/** The port. */
-	@Value("${server.port}")
-	private int port;
-
+	
 	/** The grace period. */
 	@Value("${mosip.registration.processor.grace.period}")
 	private int gracePeriod;
