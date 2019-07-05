@@ -14,11 +14,6 @@ import lombok.Data;
 public class AuthTokenDTO {
 
 	private String loginMode;
-	private String token;
-	private Timestamp tokenRequestTime;
-	private Timestamp tokenExpirationTime;
-	private long tokenMaxAge;
-	private long thresholdSeconds;
 	private String cookie;
 
 }
