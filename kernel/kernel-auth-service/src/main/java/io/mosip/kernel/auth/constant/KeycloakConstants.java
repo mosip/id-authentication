@@ -30,4 +30,8 @@ public class KeycloakConstants {
 	public static final String RESPONSE_TYPE = "response_type";
 	
 	public static final String SCOPE = "scope";
+	
+	public static final String REALM_ID = "realmId";
+	
+	public static final String ID_TOKEN_HINT = "id_token_hint";
 }
