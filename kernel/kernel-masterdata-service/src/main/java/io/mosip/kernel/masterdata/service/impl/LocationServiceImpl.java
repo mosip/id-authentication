@@ -616,21 +616,36 @@ public class LocationServiceImpl implements LocationService {
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
+		List<String> getValues = null;
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(Location.class, filterDto.getColumnName(), filterDto.getType(),
-						filterValueDto.getLanguageCode()).forEach(filterValue -> {
-							if (filterValue != null) {
-								ColumnValue columnValue = new ColumnValue();
-								columnValue.setFieldID(filterDto.getColumnName());
-								columnValue.setFieldValue(filterValue.toString());
-								columnValueList.add(columnValue);
-							}
-						});
+				if(filterDto.getType().equals("unique")) {
+					getValues = locationRepository.filterByDistinctHierarchyLevel(Integer.parseInt(filterDto.getColumnName()),filterValueDto.getLanguageCode());
+				}else {
+					getValues = locationRepository.filterByHierarchyLevel(Integer.parseInt(filterDto.getColumnName()),filterValueDto.getLanguageCode());
+				}
+				
+				getValues.forEach(value->{
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(value.toString());
+					columnValueList.add(columnValue);
+					
+				});	
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
 	}
+	
+	/*masterDataFilterHelper.filterValues(Location.class, filterDto.getColumnName(), filterDto.getType(),
+			filterValueDto.getLanguageCode()).forEach(filterValue -> {
+				if (filterValue != null) {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.toString());
+					columnValueList.add(columnValue);
+				}
+			});*/
 
 }
