@@ -213,10 +213,6 @@ mat-select:focus {
 
 .user__btn:disabled,
 .user__btn:active {
-  /* border: 1px solid gray;
-  background-color: white;
-  color: #ff4081;
-  cursor: default; */
   border: 1px solid lightgray;
   background-color: lightgray;
   color: #2f3033;
