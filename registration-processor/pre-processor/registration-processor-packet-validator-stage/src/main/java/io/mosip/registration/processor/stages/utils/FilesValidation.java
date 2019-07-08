@@ -3,9 +3,12 @@ package io.mosip.registration.processor.stages.utils;
 import java.io.IOException;
 import java.util.List;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -28,6 +31,9 @@ public class FilesValidation {
 
 	/** The registration status dto. */
 	InternalRegistrationStatusDto registrationStatusDto;
+
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(FilesValidation.class);
 
 	/**
 	 * Instantiates a new files validation.

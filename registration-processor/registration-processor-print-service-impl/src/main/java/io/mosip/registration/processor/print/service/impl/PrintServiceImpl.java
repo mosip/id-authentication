@@ -1,6 +1,10 @@
 package io.mosip.registration.processor.print.service.impl;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,19 +46,15 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
-import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerator;
 import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -169,6 +169,9 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Map<String, byte[]> getDocuments(IdType idType, String idValue) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getDocuments()::entry");
+
 		Map<String, byte[]> byteMap = new HashMap<>();
 		String uin = null;
 		String description = null;
@@ -179,8 +182,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 				uin = idValue;
 			} else if (idType.toString().equalsIgnoreCase(RID)) {
 				JSONObject jsonObject = utilities.retrieveUIN(idValue);
-				Long value=JsonUtil.getJSONValue(jsonObject, UIN);
-				uin= Long.toString(value);
+				Long value = JsonUtil.getJSONValue(jsonObject, UIN);
+				uin = Long.toString(value);
 				if (uin == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), null,
@@ -298,6 +301,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, uin,
 					ApiName.AUDIT);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PrintServiceImpl::getDocuments()::exit");
 
 		return byteMap;
 	}
@@ -318,8 +323,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String queryParamName = "type";
 		String queryParamValue = "all";
 
-		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
-				queryParamName, queryParamValue, IdResponseDTO1.class);
+		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
+				pathsegments, queryParamName, queryParamValue, IdResponseDTO1.class);
 
 		if (response == null || response.getResponse() == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -332,7 +337,8 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 	/**
 	 * Creates the text file.
-	 * @param attributes 
+	 * 
+	 * @param attributes
 	 *
 	 * @return the byte[]
 	 * @throws IOException
@@ -382,14 +388,15 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *
 	 * @param textFileByte
 	 *            the text file byte
-	 * @param attributes 
+	 * @param attributes
 	 * @return true, if successful
 	 * @throws QrcodeGenerationException
 	 *             the qrcode generation exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	private boolean setQrCode(byte[] textFileByte, Map<String, Object> attributes) throws QrcodeGenerationException, IOException {
+	private boolean setQrCode(byte[] textFileByte, Map<String, Object> attributes)
+			throws QrcodeGenerationException, IOException {
 		String qrString = new String(textFileByte);
 		boolean isQRCodeSet = false;
 		byte[] qrCodeBytes = qrCodeGenerator.generateQrCode(qrString, QrVersion.V30);
@@ -407,7 +414,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 *
 	 * @param response
 	 *            the response
-	 * @param attributes 
+	 * @param attributes
 	 * @return true, if successful
 	 * @throws Exception
 	 *             the exception
@@ -432,7 +439,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			CbeffToBiometricUtil util = new CbeffToBiometricUtil(cbeffutil);
 			List<String> subtype = new ArrayList<>();
 			byte[] photobyte = util.getImageBytes(value, FACE, subtype);
-			if(photobyte != null) {
+			if (photobyte != null) {
 				String imageString = CryptoUtil.encodeBase64String(photobyte);
 				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
 				isPhotoSet = true;

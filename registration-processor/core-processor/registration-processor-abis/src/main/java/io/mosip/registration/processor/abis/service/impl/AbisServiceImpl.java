@@ -69,7 +69,7 @@ public class AbisServiceImpl implements AbisService {
 	private static final String ABIS_IDENTIFY = "mosip.abis.identify";
 
 	private static Set<String> storedRefId = new HashSet<>();
-	
+
 	private static Set<String> actualStoredRefId = new HashSet<>();
 
 	/** The Constant TESTFINGERPRINT. */
@@ -89,16 +89,16 @@ public class AbisServiceImpl implements AbisService {
 
 	@Override
 	public AbisInsertResponseDto insert(AbisInsertRequestDto abisInsertRequestDto) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::insert()::entry");
+
 		AbisInsertResponseDto response = new AbisInsertResponseDto();
 		String referenceId = abisInsertRequestDto.getReferenceId();
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::insert()::entry");
 		if (storedRefId.size() < 1000)
 			storedRefId.add(referenceId);
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				" referenceId storeList " + storedRefId);
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, " referenceId storeList " + storedRefId);
 
 		response.setId(ABIS_INSERT);
 		response.setRequestId(abisInsertRequestDto.getRequestId());
@@ -108,8 +108,8 @@ public class AbisServiceImpl implements AbisService {
 		try {
 			doc = getCbeffDocument(referenceId);
 			if (testFingerPrint == null || testIris == null || testFace == null) {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), referenceId, "Test Tags are not present");
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId, "Test Tags are not present");
 			}
 			if (doc != null) {
 				NodeList fingerNodeList = doc.getElementsByTagName(testFingerPrint);
@@ -124,9 +124,8 @@ public class AbisServiceImpl implements AbisService {
 					response.setFailureReason(7);
 				}
 			} else {
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"AbisServiceImpl():: unable to fect CBEF file ");
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId, "AbisServiceImpl():: unable to fect CBEF file ");
 				response.setReturnValue(2);
 				response.setFailureReason(7);
 			}
@@ -134,8 +133,6 @@ public class AbisServiceImpl implements AbisService {
 		} catch (ApisResourceAccessException | ParserConfigurationException | SAXException | IOException e) {
 			response.setReturnValue(2);
 			response.setFailureReason(7);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "AbisServiceImpl():: Exception Occured ");
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					referenceId, "ApisResourceAccessException : Unable to acces getting cbef url."
 							+ ExceptionUtils.getStackTrace(e));
@@ -151,12 +148,13 @@ public class AbisServiceImpl implements AbisService {
 			response.setReturnValue(2);
 			response.setFailureReason(3);
 
-			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
 					referenceId, "Due to some internal error, abis failed" + ExceptionUtils.getStackTrace(e));
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::insert()::exit");
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::insert()::exit");
 
 		return response;
 	}
@@ -164,37 +162,39 @@ public class AbisServiceImpl implements AbisService {
 	private Document getCbeffDocument(String referenceId)
 			throws ApisResourceAccessException, ParserConfigurationException, SAXException, IOException {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::getCbeffDocument()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::getCbeffDocument()::entry");
 		if (referenceId != null) {
 			List<String> pathSegments = new ArrayList<>();
-				pathSegments.add(referenceId);
+			pathSegments.add(referenceId);
 
-				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
-						byte[].class);
-				if (bytefile == null) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), referenceId,
-							"Byte file not found from BioDedupe api");
-				}
+			byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
+			if (bytefile == null) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId,
+						"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended	and cbeff file is not present for the referenceID");
+			}
 
-				if (bytefile != null) {
-					String byteFileStr = new String(bytefile);
+			if (bytefile != null) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId,
+						"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended and Got Byte file from BioDedupe api");
+				String byteFileStr = new String(bytefile);
 
-					InputSource is = new InputSource();
-					is.setCharacterStream(new StringReader(byteFileStr));
+				InputSource is = new InputSource();
+				is.setCharacterStream(new StringReader(byteFileStr));
 
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-					dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-					return dBuilder.parse(is);
-				}
-			
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				return dBuilder.parse(is);
+			}
+
 		} else {
 			throw new MissingMandatoryFieldsException(PlatformErrorMessages.MISSING_MANDATORY_FIELDS.getMessage());
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisServiceImpl::getCbeffDocument()::exit");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::getCbeffDocument()::exit");
 
 		return null;
 	}
@@ -285,9 +285,9 @@ public class AbisServiceImpl implements AbisService {
 				}
 			}
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisServiceImpl::addCandidateList()::storedRefId" + storedRefId);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisServiceImpl::addCandidateList()::actualStoredRefId" + actualStoredRefId);
 		ArrayList<String> storedRefIdList = new ArrayList<>(actualStoredRefId);
 		Collections.shuffle(storedRefIdList);
@@ -313,7 +313,7 @@ public class AbisServiceImpl implements AbisService {
 		}
 		if (storedRefId.size() < 1000)
 			storedRefId.add(identifyReqId);
-		
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisServiceImpl::addCandidateList()::Exit");
 

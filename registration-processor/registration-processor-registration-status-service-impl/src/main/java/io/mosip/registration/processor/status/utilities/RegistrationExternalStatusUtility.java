@@ -29,7 +29,7 @@ public class RegistrationExternalStatusUtility {
 	/** The elapsed time. */
 	@Value("${registration.processor.reprocess.elapse.time}")
 	private int elapsedTime;
-	
+
 	/**
 	 * Instantiates a new registration external status utility.
 	 */
@@ -47,6 +47,8 @@ public class RegistrationExternalStatusUtility {
 	public RegistrationExternalStatusCode getExternalStatus(RegistrationStatusEntity entity) {
 
 		RegistrationExternalStatusCode mappedValue = null;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationStatusMapUtil::getExternalStatus()::entry");
 
 		String status = entity.getStatusCode();
 		if (status.equalsIgnoreCase(RegistrationTransactionStatusCode.PROCESSED.toString())) {
@@ -97,7 +99,7 @@ public class RegistrationExternalStatusUtility {
 		if ((entity.getLatestTransactionTypeCode()
 				.equalsIgnoreCase(RegistrationTransactionTypeCode.PACKET_RECEIVER.toString())
 				|| entity.getLatestTransactionTypeCode()
-				.equalsIgnoreCase(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString()))
+						.equalsIgnoreCase(RegistrationTransactionTypeCode.UPLOAD_PACKET.toString()))
 				&& (entity.getRetryCount() < thresholdTime)) {
 			return RegistrationExternalStatusCode.RESEND;
 		} else
