@@ -419,6 +419,11 @@ public class PacketValidateProcessor {
 		Long uin = null;
 		JSONObject demographicIdentity= null;
 		String registrationId = registrationStatusDto.getRegistrationId();
+
+		if(packetMetaInfo == null){
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
+			return false;
+		}
 		Identity identity = packetMetaInfo.getIdentity();
 
 		if (!fileValidation(identity, registrationStatusDto, packetValidationDto)) {

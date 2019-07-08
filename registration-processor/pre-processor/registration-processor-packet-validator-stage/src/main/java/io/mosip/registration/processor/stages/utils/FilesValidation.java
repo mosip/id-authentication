@@ -98,6 +98,9 @@ public class FilesValidation {
 			} else if (PacketFiles.OTHERFILES.name().equalsIgnoreCase(fieldValueArray.getLabel()) ){
 				isHashSequenceValidated = validateOtherFilesSequence(registrationId, fieldValueArray.getValue());
 			}
+
+			if (!isHashSequenceValidated)
+				return false;
 		}
 
 		return isHashSequenceValidated;
@@ -145,7 +148,7 @@ public class FilesValidation {
 	 * @throws PacketDecryptionFailureException 
 	 */
 	private boolean validateBiometric(String registrationId, List<String> applicant) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
-		boolean isApplicantValidated = false;
+		boolean isApplicantValidated = true;
 
 		for (String applicantFile : applicant) {
 			String fileName = "";
