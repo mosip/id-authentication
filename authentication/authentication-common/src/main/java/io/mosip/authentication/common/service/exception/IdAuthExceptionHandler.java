@@ -61,10 +61,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/** The Constant EVENT_EXCEPTION. */
 	private static final String EVENT_EXCEPTION = "Exception";
 
-
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
-	
+
 	@Autowired
 	private HttpServletRequest servletRequest;
 
@@ -86,8 +85,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(), ex.toString() + "\n Request : "
-				+ request + "\n Status returned : " + HttpStatus.OK + "\n" + ExceptionUtils.getStackTrace(ex));
+		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
+				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.OK + "\n"
+						+ ExceptionUtils.getStackTrace(ex));
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
 				IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, EVENT_EXCEPTION, "Changing exception",
@@ -143,20 +143,19 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdAuthenticationAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdAuthenticationBaseException ex, WebRequest request) {
 
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, "Entered handleIdUsageException",
-				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION,
+				"Entered handleIdUsageException", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
 		mosipLogger.error(IdAuthCommonConstants.SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.getErrorCode(),
 				ex.toString() + "\n Status returned: " + HttpStatus.OK + ExceptionUtils.getStackTrace(ex));
-
 		Throwable e = ex;
 		while (e.getCause() != null) {
 			if (e.getCause() instanceof BaseCheckedException
 					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
 				e = e.getCause();
-			} else if (e instanceof BaseCheckedException) {
-				e = new IdAuthenticationAppException(((BaseCheckedException) e).getErrorCode(),
-						((BaseCheckedException) e).getErrorText());
+			} else if (ex instanceof BaseCheckedException) {
+				e = new IdAuthenticationAppException(((BaseCheckedException) ex).getErrorCode(),
+						((BaseCheckedException) ex).getErrorText());
 				break;
 			} else {
 				break;
@@ -168,13 +167,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex the exception occurred
+	 * @param ex      the exception occurred
 	 * @param request the request
 	 * @return Object .
 	 */
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
-		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
-				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
+		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response",
+				"Entered buildExceptionResponse", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		String contextPath = request.getContextPath();
 		String[] splitedContext = contextPath.split("/");
 		String requestReceived = splitedContext[splitedContext.length - 1];
@@ -185,19 +184,19 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 			List<String> errorMessages = ((BaseCheckedException) ex).getErrorTexts();
 
-			//Retrived error codes and error messages are in reverse order.
+			// Retrived error codes and error messages are in reverse order.
 			Collections.reverse(errorCodes);
 			Collections.reverse(errorMessages);
 			if (ex instanceof IDDataValidationException) {
 				IDDataValidationException validationException = (IDDataValidationException) ex;
 				List<Object[]> args = validationException.getArgs();
 				List<String> actionArgs = validationException.getActionargs();
-				errors = IntStream.range(0, errorCodes.size())
-						.mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
-								args.isEmpty() ? errorMessages.get(i) : String.format(errorMessages.get(i), args.get(i)),
-								!args.isEmpty() && actionArgs != null && !actionArgs.contains(null)
-										? String.format(actionArgs.get(i), args.get(i))
-										: actionArgs.get(i)))
+				errors = IntStream.range(0, errorCodes.size()).mapToObj(i -> createAuthError(validationException,
+						errorCodes.get(i),
+						args.isEmpty() ? errorMessages.get(i) : String.format(errorMessages.get(i), args.get(i)),
+						!args.isEmpty() && actionArgs != null && !actionArgs.contains(null)
+								? String.format(actionArgs.get(i), args.get(i))
+								: actionArgs.get(i)))
 						.distinct().collect(Collectors.toList());
 			} else {
 				errors = IntStream.range(0, errorCodes.size())
@@ -213,13 +212,12 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return null;
 	}
-	
+
 	/**
-	 * This method used to construct response
-	 * respective to the request received
+	 * This method used to construct response respective to the request received
 	 *
 	 * @param requestReceived the fetched for the servlet path
-	 * @param errors the errors
+	 * @param errors          the errors
 	 * @return the object
 	 */
 	private static Object frameErrorResponse(String requestReceived, List<AuthError> errors) {
