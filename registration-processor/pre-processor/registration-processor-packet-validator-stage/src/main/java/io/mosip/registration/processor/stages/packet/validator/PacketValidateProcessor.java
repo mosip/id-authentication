@@ -425,26 +425,29 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
-			MessageDTO object, IdentityIteratorUtil identityIteratorUtil, PacketValidationDto packetValidationDto)
-			throws IOException, ApisResourceAccessException, JSONException, org.json.simple.parser.ParseException,
-			RegistrationProcessorCheckedException, IdObjectValidationFailedException, IdObjectIOException,
-			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
-		String registrationId = registrationStatusDto.getRegistrationId();
-		InputStream idJsonStream = fileSystemManager.getFile(registrationId,
-				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
-		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
-		String jsonString = new String(bytearray);
-		ObjectMapper mapper = new ObjectMapper();
-		JSONObject idObject = mapper.readValue(bytearray, JSONObject.class);
-		Identity identity = packetMetaInfo.getIdentity();
+			MessageDTO object, IdentityIteratorUtil identityIteratorUtil, PacketValidationDto packetValidationDto) throws IOException, ApisResourceAccessException, JSONException,
+			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException,
+			IdObjectValidationFailedException, IdObjectIOException , PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		Long uin = null;
-		JSONObject demographicIdentity = null;
-		if (!schemaValidation(idObject, registrationStatusDto, packetValidationDto)) {
+		JSONObject demographicIdentity= null;
+		String registrationId = registrationStatusDto.getRegistrationId();
+
+		if(!fileValidation(packetMetaInfo, registrationStatusDto, packetValidationDto)) {
 			return false;
 		}
 
-		if (!fileValidation(identity, registrationStatusDto, packetValidationDto))
+		Identity identity = packetMetaInfo.getIdentity();
+		InputStream idJsonStream = fileSystemManager.getFile(registrationId,
+				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
+
+		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
+		String jsonString = new String(bytearray);
+		ObjectMapper mapper=new ObjectMapper();
+		JSONObject idObject=mapper.readValue(bytearray, JSONObject.class);
+
+		if (!schemaValidation(idObject, registrationStatusDto, packetValidationDto)) {
 			return false;
+		}
 
 		if (!checkSumValidation(identity, registrationStatusDto, packetValidationDto))
 			return false;
@@ -562,16 +565,13 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean fileValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto,
-			PacketValidationDto packetValidationDto)
-			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+	private boolean fileValidation(PacketMetaInfo packetMetaInfo, InternalRegistrationStatusDto registrationStatusDto, PacketValidationDto packetValidationDto) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		if (env.getProperty(VALIDATEFILE).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			packetValidationDto.setFilesValidated(true);
 			return packetValidationDto.isFilesValidated();
 		}
 		FilesValidation filesValidation = new FilesValidation(fileSystemManager, registrationStatusDto);
-		packetValidationDto.setFilesValidated(
-				filesValidation.filesValidation(registrationStatusDto.getRegistrationId(), identity));
+		packetValidationDto.setFilesValidated(filesValidation.filesValidation(registrationStatusDto.getRegistrationId(), packetMetaInfo));
 		if (!packetValidationDto.isFilesValidated())
 			packetValidationDto.setPacketValidaionFailure(" fileValidation failed ");
 		return packetValidationDto.isFilesValidated();

@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-07-05T09:21:32.989Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-ATH-436",
+      "message": " Template is missing for language engwith context -sms-template"
+    }
+  ]
+}
