@@ -171,7 +171,7 @@ public class FilesValidation {
 	}
 
 	private boolean validateOtherFilesSequence(String registrationId, List<String> values) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
-		boolean isOtherFilesValidated = false;
+		boolean isOtherFilesValidated = true;
 		for(String otherFile : values){
 			String fileName = otherFile.toUpperCase();
 			isOtherFilesValidated = adapter.checkFileExistence(registrationId, fileName);
