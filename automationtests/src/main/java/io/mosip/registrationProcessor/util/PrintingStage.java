@@ -28,6 +28,8 @@ import io.mosip.dbaccess.RegProcStageDb;
 import io.mosip.dbdto.JsonFileDTO;
 import io.mosip.dbdto.JsonRequestDTO;
 import io.mosip.dbdto.PrintQueueDTO;
+import io.mosip.dbentity.TokenGenerationEntity;
+import io.mosip.registrationProcessor.tests.UpdatePacket;
 import io.mosip.service.ApplicationLibrary;
 import io.mosip.service.BaseTestCase;
 import io.mosip.util.CbeffImpl;
@@ -48,6 +50,7 @@ import io.mosip.util.QrCodeGenerator;
 import io.mosip.util.QrVersion;
 import io.mosip.util.QrcodeGeneratorImpl;
 import io.mosip.util.TemplateGenerator;
+import io.mosip.util.TokenGeneration;
 import io.mosip.util.UINCardConstant;
 import io.mosip.util.UinCardGenerator;
 import io.mosip.util.UinCardGeneratorImpl;
@@ -67,33 +70,60 @@ public class PrintingStage extends BaseTestCase{
 	String primaryLang= "ara" ;
 	String secondaryLang = "fra";
 	MosipQueueManager<MosipQueue, byte[]> mosipQueueManager = new MosipActiveMqImpl();
+	String validToken="";
+	TokenGeneration generateToken=new TokenGeneration();
+	TokenGenerationEntity tokenEntity=new TokenGenerationEntity();
+	public String getToken(String tokenType) {
+		String tokenGenerationProperties=generateToken.readPropertyFile(tokenType);
+		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
+		String token=generateToken.getToken(tokenEntity);
+		return token;
+	}
 
 	public boolean validatePrintingStage(String rid) throws IOException{
 		boolean isPrintingStageValidated =  false;
 		RegProcStageDb dbData= new RegProcStageDb();
-		String uin = dbData.regproc_getUIN(rid);
+		//String uin = dbData.regproc_getUIN(rid);
 		Response actualResponse = null;
 		ApplicationLibrary applicationLibrary = new ApplicationLibrary();
 		String id_url = "/v1/idrepo/identity";
 		Map<String, byte[]> byteMap = new HashMap<>();
+		RegProcApiRequests apiRequests  = new RegProcApiRequests();
+		
+		
 
+		UpdatePacket updatePacket = new UpdatePacket();
+		validToken=getToken("syncTokenGenerationFilePath");
+		boolean tokenStatus4=apiRequests.validateToken(validToken);
+		while(!tokenStatus4) {
+			validToken = getToken("syncTokenGenerationFilePath");
+			tokenStatus4=apiRequests.validateToken(validToken);
+		}
+		Long uin = updatePacket.getUINByRegId(rid, validToken);
 
-
-		if(uin == null){
+		if(uin.toString() == null){
 			isPrintingStageValidated = false;
 		}else{
 			HashMap<String, String> type_new = new HashMap<>();
 			type_new.put("type", "all");
 			HashMap<String, String> uin_new = new HashMap<>();
-			uin_new.put("uin", uin);
+			uin_new.put("uin", uin.toString());
 			String id_url_path = "/v1/idrepo/identity/"+uin;
 
 			//get document
-			actualResponse = applicationLibrary.getRequest(id_url_path, type_new);
+			/*actualResponse = applicationLibrary.getRequest(id_url_path, type_new);
 			//	actualResponse = applicationLibrary.getRequestPathQueryPara(id_url, uin_new, type_new);
 			logger.info("Actual response : "+actualResponse.asString());
 			Map<String,Map<String,String>> response = actualResponse.jsonPath().get("response"); 
-			logger.info("response  : "+response);
+			logger.info("response  : "+response);*/
+			validToken=getToken("syncTokenGenerationFilePath");
+			boolean tokenStatus1=apiRequests.validateToken(validToken);
+			while(!tokenStatus1) {
+				validToken = getToken("syncTokenGenerationFilePath");
+				tokenStatus1=apiRequests.validateToken(validToken);
+			}
+			Response idRepoResponse = updatePacket.getIDRepoResponse(rid, validToken);
+			Map<String,Map<String,String>> response = idRepoResponse.jsonPath().get("response"); 
 
 			//set applicant photograph
 			boolean isPhotoset = setApplicantPhoto(response);
@@ -156,7 +186,7 @@ public class PrintingStage extends BaseTestCase{
 				logger.info("Conenction not created...");
 			}
 
-			boolean isAddedToQueue = sendToQueue(queue, byteMap, 0, uin);
+			boolean isAddedToQueue = sendToQueue(queue, byteMap, 0, uin.toString());
 			
 			if (isAddedToQueue) {
 				isPrintingStageValidated = true;
@@ -372,8 +402,8 @@ public class PrintingStage extends BaseTestCase{
 			
 		return isPhotoSet;
 	}
-/*
-	public static void main(String args[]){
+
+/*	public static void main(String args[]) throws IOException{
 		PrintingStage ps = new PrintingStage();
 		ps.validatePrintingStage("10002100320000220190417100557");
 	}*/
@@ -381,7 +411,7 @@ public class PrintingStage extends BaseTestCase{
 	public void testRun(){
 		PrintingStage ps = new PrintingStage();
 		try {
-			ps.validatePrintingStage("10011100110001920190518080310");
+			ps.validatePrintingStage("10006100360000220190702093517");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

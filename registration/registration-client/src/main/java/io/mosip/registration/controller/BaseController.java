@@ -264,6 +264,8 @@ public class BaseController {
 		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 		alert.showAndWait();
 	}
 
@@ -285,6 +287,8 @@ public class BaseController {
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 		alert.showAndWait();
 	}
 

@@ -7,6 +7,7 @@ import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,7 @@ public class PacketGeneratorRequestValidator {
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
 
+	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
@@ -58,6 +60,11 @@ public class PacketGeneratorRequestValidator {
 
 	/** The id. */
 	private Map<String, String> id = new HashMap<>();
+	
+	
+	/** The grace period. */
+	@Value("${mosip.registration.processor.grace.period}")
+	private int gracePeriod;
 
 	/**
 	 * Validate.
@@ -146,7 +153,13 @@ public class PacketGeneratorRequestValidator {
 					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
-					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
+					if (!(DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+							.isAfter(new DateTime().minusSeconds(gracePeriod))
+							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
+						regProcLogger.error(PACKET_GENERATOR_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
+								"\n" + PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage());
+						
 						throw new PacketGeneratorValidationException(
 								PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 								String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),

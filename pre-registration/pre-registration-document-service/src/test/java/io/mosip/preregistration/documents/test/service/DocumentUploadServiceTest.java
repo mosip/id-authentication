@@ -514,6 +514,13 @@ public class DocumentUploadServiceTest {
 		MainResponseDTO<DocumentsMetaData> responseDto = new MainResponseDTO<>();
 		metadata.setDocumentsMetaData(documentGetAllDtos);
 		responseDto.setResponse(metadata);
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(documentRepository.findBypreregId(Mockito.anyString())).thenReturn(documentEntities);
 		InputStream sourceFile = new FileInputStream(file);
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
@@ -528,6 +535,13 @@ public class DocumentUploadServiceTest {
 	public void getAllDocumentForDocIdSuccessTest() throws Exception {
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenReturn(entity);
 		InputStream sourceFile = new FileInputStream(file);
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.doReturn(sourceFile).when(fs).getFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any())).thenReturn(file.toString().getBytes());
 		MainResponseDTO<DocumentDTO> serviceResponseDto = documentUploadService.getDocumentForDocId(docId,
@@ -538,6 +552,13 @@ public class DocumentUploadServiceTest {
 	@Test(expected = FSServerException.class)
 	public void getAllDocumentForDocIdCEPHExceptionTest() throws Exception {
 		Mockito.when(documentRepository.findBydocumentId(docId)).thenReturn(entity);
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(fs.getFile(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 		documentUploadService.getDocumentForDocId(docId, preRegistrationId);
 
@@ -549,6 +570,13 @@ public class DocumentUploadServiceTest {
 		documentDeleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 		responsedelete.setResponse(documentDeleteDTO);
 		Mockito.doReturn(true).when(fs).deleteFile(Mockito.anyString(), Mockito.anyString());
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenReturn(entity);
 		Mockito.when(documentRepository.deleteAllBydocumentId(Mockito.anyString())).thenReturn(1);
 		MainResponseDTO<DocumentDeleteResponseDTO> responseDto = documentUploadService.deleteDocument(documentId,
@@ -558,6 +586,13 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = InvalidDocumentIdExcepion.class)
 	public void invalidDocumentIdExcepionTest() {
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.doReturn(true).when(fs).deleteFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenReturn(copyEntity);
 		MainResponseDTO<DocumentDeleteResponseDTO> responseDto = documentUploadService.deleteDocument(documentId,
@@ -567,6 +602,13 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = DocumentNotFoundException.class)
 	public void deleteDocumentFailureTest() {
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString())).thenReturn(null);
 		documentUploadService.deleteDocument(documentId, preRegistrationId);
 
@@ -579,7 +621,13 @@ public class DocumentUploadServiceTest {
 		MainResponseDTO<DocumentDeleteResponseDTO> delResponseDto = new MainResponseDTO<>();
 		delResponseDto.setResponse(documentDeleteDTO);
 		Mockito.doReturn(true).when(fs).deleteFile(Mockito.anyString(), Mockito.anyString());
-
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(documentRepository.findBypreregId(preRegistrationId)).thenReturn(docEntity);
 		Mockito.when(documentRepository.deleteAllBypreregId(preRegistrationId)).thenReturn(1);
 		MainResponseDTO<DocumentDeleteResponseDTO> responseDto = documentUploadService
@@ -589,6 +637,13 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = TableNotAccessibleException.class)
 	public void deleteFailureTest() {
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(documentRepository.findBydocumentId(Mockito.anyString()))
 				.thenThrow(DataAccessLayerException.class);
 		documentUploadService.deleteDocument("1", preRegistrationId);
@@ -596,6 +651,13 @@ public class DocumentUploadServiceTest {
 
 	@Test(expected = TableNotAccessibleException.class)
 	public void deleteByPreIdFailureTest() {
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		responseUpload.setResponse(null);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.when(documentRepository.findBypreregId(Mockito.anyString())).thenThrow(DataAccessLayerException.class);
 		documentUploadService.deleteAllByPreId("91324567567565");
 	}
@@ -605,6 +667,12 @@ public class DocumentUploadServiceTest {
 		documentDeleteDTO = new DocumentDeleteResponseDTO();
 		documentDeleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 		responsedelete.setResponse(documentDeleteDTO);
+		MainResponseDTO restRes = new MainResponseDTO<>();
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> rescenter = new ResponseEntity<>(restRes,
+				HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}), Mockito.anyMap())).thenReturn(rescenter);
 		Mockito.doReturn(false).when(fs).deleteFile(Mockito.anyString(), Mockito.anyString());
 		Mockito.when(documentRepository.findBydocumentId(documentId)).thenReturn(entity);
 		Mockito.when(documentRepository.deleteAllBydocumentId(documentId)).thenReturn(1);

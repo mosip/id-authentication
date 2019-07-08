@@ -684,7 +684,7 @@
 																				</GridPane>
 																			</children>
 																		</GridPane>
-																		<GridPane fx:id="addressParentPane" prefHeight="550.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="addressParentPane" prefHeight="625.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane fx:id="applicatoinAddressPane">
 																					<children>

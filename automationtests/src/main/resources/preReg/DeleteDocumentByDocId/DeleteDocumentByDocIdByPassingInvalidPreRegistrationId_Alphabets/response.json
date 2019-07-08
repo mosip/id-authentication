@@ -5,8 +5,8 @@
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_PAM_DOC_022",
-            "message": "DocumentId is not belongs to the pre-registration Id"
+            "errorCode": "PRG_PAM_APP_005",
+            "message": "No data found for the requested pre-registration id"
         }
     ]
 }

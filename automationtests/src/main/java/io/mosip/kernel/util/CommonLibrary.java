@@ -380,7 +380,7 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("Name of the file is" + file.getName());
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file)
-				.formParams(formParams).contentType(contentHeader).expect().when().post(url);
+				.formParams(formParams).contentType(contentHeader).expect().when().post(url).then().log().all().extract().response();
 		// log then response
 		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: the response time is: " + postResponse.time());
@@ -522,7 +522,7 @@ public class CommonLibrary extends BaseTestCase {
 	public Response getWithoutParams(String url, String cookie) {
 		logger.info("REST-ASSURED: Sending a Get request to " + url);
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
-		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().log().all().when().get(url);
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().log().all().when().get(url).then().log().all().extract().response();
 		// log then response
 		responseLogger(getResponse);
 		logger.info("REST-ASSURED: the response Time is: " + getResponse.time());
@@ -541,7 +541,7 @@ public class CommonLibrary extends BaseTestCase {
 
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
 		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().pathParams(patharams).log()
-				.all().when().get(url);
+				.all().when().get(url).then().log().all().extract().response().then().log().all().extract().response();
 		// log then response
 		responseLogger(getResponse);
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
@@ -560,7 +560,7 @@ public class CommonLibrary extends BaseTestCase {
 
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
 		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().queryParams(queryParams).log()
-				.all().when().get(url);
+				.all().when().get(url).then().log().all().extract().response();
 		// log then response
 		responseLogger(getResponse);
 		logger.info("REST-ASSURED: The response Time is: " + getResponse.time());
@@ -822,8 +822,16 @@ public class CommonLibrary extends BaseTestCase {
 		return getResponse;
 	} 
 	
- 
-public Response Post_JSONwithFile(Object body, File file, String url, String contentHeader,String cookie) {
+ /**
+  * Ashish
+  * @param body
+  * @param file
+  * @param url
+  * @param contentHeader
+  * @param cookie
+  * @return
+  */
+public Response postJSONwithFile(Object body, File file, String url, String contentHeader,String cookie) {
 		Response getResponse = null;
 		/*
 		 * Fetch to get the param name to be passed in the request

@@ -128,7 +128,11 @@ public SoftAssert softAssert = new SoftAssert();
 		List<String> outerKeys = new ArrayList<String>();
 		List<String> innerKeys = new ArrayList<String>();
 		JSONObject actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
-		actualRequest.put("requesttime", lib.getCurrentDate());
+		if(!testCaseName.toLowerCase().contains("requesttime"))
+		{
+			actualRequest.put("requesttime", lib.getCurrentDate());
+
+		}
 		Expectedresponse = ResponseRequestMapper.mapResponse(testSuite, object);
 		try {
 

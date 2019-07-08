@@ -162,11 +162,14 @@ public class Sync extends BaseTestCase implements ITest {
 			}
 			else {
 				actualRequest = ResponseRequestMapper.mapRequest(testSuite, object);
+				
+				
 				JSONArray request = (JSONArray) actualRequest.get("request");
 				for(int j = 0; j<request.size() ; j++){
 					JSONObject obj  = (JSONObject) request.get(j);
 					regId = obj.get("registrationId").toString();
 					registrationPacketSyncDto = encryptData.createSyncRequest(actualRequest);
+					
 					requestToEncrypt = encryptData.encryptData(registrationPacketSyncDto);
 				}
 			}
@@ -187,8 +190,13 @@ public class Sync extends BaseTestCase implements ITest {
 					MediaType.APPLICATION_JSON,validToken);
 			String encryptedData = resp.jsonPath().get("response.data").toString();
 			//LocalDateTime timeStamp = encryptData.getTime(regId);
-			LocalDateTime timeStamp = encryptData.getLocalDateTime(resp.jsonPath().get("responsetime"));
-
+			
+			String timeStamp = registrationPacketSyncDto.getRequesttime();
+			
+			LocalDateTime reqsttime = encryptData.getDateTimeFromString(timeStamp);
+			if(reqsttime==null) {
+				timeStamp = "2019-03-02T06:29:41.011Z";
+			}
 
 			// Expected response generation
 			expectedResponse = ResponseRequestMapper.mapResponse(testSuite, object);
@@ -203,8 +211,7 @@ public class Sync extends BaseTestCase implements ITest {
 			// Actual response generation
 			logger.info("sync API url : "+prop.getProperty("syncListApi"));
 			actualResponse = apiRequests.regProcSyncRequest(prop.getProperty("syncListApi"),encryptedData,center_machine_refID,
-					registrationPacketSyncDto.getRequesttime(), MediaType.APPLICATION_JSON,validToken);
-
+					timeStamp, MediaType.APPLICATION_JSON,validToken);
 			//outer and inner keys which are dynamic in the actual response
 			outerKeys.add("requesttime");
 			outerKeys.add("responsetime");
@@ -304,8 +311,9 @@ public class Sync extends BaseTestCase implements ITest {
 			softAssert.assertAll();
 
 		}catch(IOException | ParseException |NullPointerException | IllegalArgumentException e){
-			Assert.assertTrue(false, "not able to execute sync method : "+ e.getCause());
 			e.printStackTrace();
+			Assert.assertTrue(false, "not able to execute sync method : "+ e.getCause());
+			
 
 		}
 	}  

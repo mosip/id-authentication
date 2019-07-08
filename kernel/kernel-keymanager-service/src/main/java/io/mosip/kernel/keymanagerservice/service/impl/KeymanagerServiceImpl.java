@@ -1,7 +1,5 @@
 package io.mosip.kernel.keymanagerservice.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.crypto.SecretKey;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
@@ -39,7 +36,6 @@ import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.core.crypto.exception.NullMethodException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
-import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.keymanager.spi.KeyStore;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -60,6 +56,7 @@ import io.mosip.kernel.keymanagerservice.entity.KeyAlias;
 import io.mosip.kernel.keymanagerservice.entity.KeyPolicy;
 import io.mosip.kernel.keymanagerservice.exception.CryptoException;
 import io.mosip.kernel.keymanagerservice.exception.InvalidApplicationIdException;
+import io.mosip.kernel.keymanagerservice.exception.KeyStoreException;
 import io.mosip.kernel.keymanagerservice.exception.NoUniqueAliasException;
 import io.mosip.kernel.keymanagerservice.logger.KeymanagerLogger;
 import io.mosip.kernel.keymanagerservice.repository.KeyAliasRepository;
@@ -83,6 +80,8 @@ import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private static final Logger LOGGER = KeymanagerLogger.getLogger(KeymanagerServiceImpl.class);
+
+	private static final int MAX_TRIES = 3;
 
 	@Value("${mosip.sign-certificate-refid:SIGN}")
 	private String certificateSignRefID;
@@ -537,15 +536,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	private CertificateEntry<X509Certificate, PrivateKey> createCertificateEntry() {
 
-		//byte[] certData = null;
+		// byte[] certData = null;
 		CertificateFactory cf = null;
 		X509Certificate cert = null;
 		PrivateKey privateKey = null;
 		try {
-			//certData = IOUtils.toByteArray(resourceLoader.getResource(certificateFilePath).getInputStream());
+			// certData =
+			// IOUtils.toByteArray(resourceLoader.getResource(certificateFilePath).getInputStream());
 			cf = CertificateFactory.getInstance(certificateType);
-			cert = (X509Certificate) cf.generateCertificate(resourceLoader.getResource(certificateFilePath).getInputStream());
-			privateKey = keymanagerUtil.privateKeyExtractor(resourceLoader.getResource(privateKeyFilePath).getInputStream());
+			cert = (X509Certificate) cf
+					.generateCertificate(resourceLoader.getResource(certificateFilePath).getInputStream());
+			privateKey = keymanagerUtil
+					.privateKeyExtractor(resourceLoader.getResource(privateKeyFilePath).getInputStream());
 		} catch (CertificateException | java.io.IOException e) {
 			throw new KeystoreProcessingException(KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					KeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
@@ -597,25 +599,67 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 					String.valueOf(currentKeyAlias.size()),
 					"CurrentKeyAlias size is zero. Will create new Keypair for this applicationId and timestamp");
 			storeCertificate(timestamp, keyAliasMap);
+		} else if (currentKeyAlias.size() == 1) {
+			System.out.println("\n Signature key details present in DB - " + currentKeyAlias.get(0) + "\n");
+
 		}
 	}
 
 	private void storeCertificate(LocalDateTime timestamp, Map<String, List<KeyAlias>> keyAliasMap) {
-		String alias;
+		String alias = "NA";
 		LocalDateTime generationDateTime;
 		LocalDateTime expiryDateTime;
 		CertificateEntry<X509Certificate, PrivateKey> certificateEntry;
-		alias = UUID.randomUUID().toString();
+
 		certificateEntry = createCertificateEntry();
 		generationDateTime = DateUtils
 				.parseToLocalDateTime(DateUtils.getUTCTimeFromDate(certificateEntry.getChain()[0].getNotBefore()));
 		expiryDateTime = getCertficateExpiryPolicy(signApplicationid, timestamp,
 				keyAliasMap.get(KeymanagerConstant.KEYALIAS), certificateEntry);
-		keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
+		int tries = 0;
+		while (tries < MAX_TRIES) {
+			try {
+				alias = UUID.randomUUID().toString();
+				System.out.println("\n Signature Key and Crt storing in keystore...\n");
+				keyStore.storeCertificate(alias, certificateEntry.getChain(), certificateEntry.getPrivateKey());
+				Thread.sleep(1000);
+				if (keyStore.getPrivateKey(alias) != null) {
+//					LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+//							KeymanagerConstant.STORECERTIFICATE,
+//							"private key found in keystore safe to save in database");
+
+					System.out.println("\n Signature key details storing in DB - " + alias + "\n");
+					break;
+				} else {
+					tries++;
+					logStoreSignCertificateError(tries);
+				}
+			} catch (Exception exception) {
+				tries++;
+				logStoreSignCertificateError(tries);
+				throw new KeyStoreException(KeymanagerErrorConstant.KEY_STORE_EXCEPTION.getErrorCode(),
+						KeymanagerErrorConstant.KEY_STORE_EXCEPTION.getErrorMessage());
+			}
+
+		}
 		if (!keymanagerUtil.isValidReferenceId(certificateSignRefID)) {
 			storeKeyInAlias(signApplicationid, generationDateTime, null, alias, expiryDateTime);
 		} else {
 			storeKeyInAlias(signApplicationid, generationDateTime, certificateSignRefID, alias, expiryDateTime);
+		}
+	}
+
+	private void logStoreSignCertificateError(int tries) {
+		if (tries < MAX_TRIES) {
+//			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+//					KeymanagerConstant.STORECERTIFICATE,
+//					"private key not found in keystore trying again tries = " + tries);
+			System.out.println("\n Signature Key not found in keystore. Trying again =" + tries + "\n");
+		} else {
+//			LOGGER.info(KeymanagerConstant.SESSIONID, KeymanagerConstant.APPLICATIONID,
+//					KeymanagerConstant.STORECERTIFICATE,
+//					"private key not found in keystore max try limit reached tries= " + tries);
+			System.out.println("\n Signature Key not found in keystore. Try limit reached =" + tries + "\n");
 		}
 	}
 

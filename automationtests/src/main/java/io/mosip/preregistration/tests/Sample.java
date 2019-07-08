@@ -68,22 +68,6 @@ public class Sample extends BaseTestCase implements ITest {
 	ApplicationLibrary applnLib = new ApplicationLibrary();
 	String updateSuite = "UpdateDemographicData/UpdateDemographicData_smoke";
 	PreregistrationDAO dao = new PreregistrationDAO();
-	public String expectedMessageDeleteDoc = "DOCUMENT_DELETE_SUCCESSFUL";
-	public String docMissingMessage = "Documents is not found for the requested pre-registration id";
-	public String unableToFetchPreReg = "UNABLE_TO_FETCH_THE_PRE_REGISTRATION";
-	public String appointmentCanceledMessage = "APPOINTMENT_SUCCESSFULLY_CANCELED";
-	public String bookingSuccessMessage = "APPOINTMENT_SUCCESSFULLY_BOOKED";
-	public String expectedErrMessageDocGreaterThanFileSize = "DOCUMENT_EXCEEDING_PREMITTED_SIZE";
-	public String expectedErrCodeDocGreaterThanFileSize = "PRG_PAM_DOC_007";
-	public String filepathPOA = "IntegrationScenario/DocumentUpload_POA";
-	public String filepathPOB = "IntegrationScenario/DocumentUpload_POB";
-	public String filepathPOI = "IntegrationScenario/DocumentUpload_POI";
-	public String filepathDocGreaterThanFileSize = "IntegrationScenario/DocumentUploadGreaterThanFileSize";
-	public String POADocName = "AadhaarCard_POA.pdf";
-	public String POBDocName = "ProofOfBirth_POB.pdf";
-	public String POIDocName = "LicenseCertification_POI.pdf";
-	public String ExceedingSizeDocName = "ProofOfAddress.pdf";
-
 	SoftAssert soft = new SoftAssert();
 
 	@BeforeClass
@@ -92,60 +76,17 @@ public class Sample extends BaseTestCase implements ITest {
 
 	}
 
-	/**
-	 * Batch job service for expired application
-	 * 
-	 * @throws java.text.ParseException
-	 * 
-	 * 
-	 */
+	@Test(groups = { "IntegrationScenarios" })
+	public void delDocByDocIdForDiscardedApplication() {
+		dao.deleteAvailableSlot();
+	}
 
-	
-		@Test(groups = { "IntegrationScenarios" })
-		public void documentUploadGreaterThanFileSize() {
-			PreRegistrationLibrary lib = new PreRegistrationLibrary();
 
-			// Create PreReg
-
-			String preRegID = null;
-			String createdBy = null;
-			Response createApplicationResponse = null;
-			Response docUploadResGreaterThanFileSize = null;
-			try {
-				createApplicationResponse = lib.CreatePreReg(individualToken);
-				preRegID = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
-				createdBy = createApplicationResponse.jsonPath().get("response.createdBy").toString();
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				logger.error(e.getMessage());
-			}
-
-			try {
-
-				docUploadResGreaterThanFileSize = lib.multipleDocumentUpload(createApplicationResponse,
-						filepathDocGreaterThanFileSize, "/" + ExceedingSizeDocName,individualToken);
-
-				// Assertion Document exceeding the permitted size
-				lib.compareValues(docUploadResGreaterThanFileSize.jsonPath().get("errors[0].errorCode").toString(),
-						expectedErrCodeDocGreaterThanFileSize);
-				lib.compareValues(docUploadResGreaterThanFileSize.jsonPath().get("errors[0].message").toString(),
-						expectedErrMessageDocGreaterThanFileSize);
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				logger.error(e.getMessage());
-			}
-		}
-
-	
 	@BeforeMethod(alwaysRun = true)
 	public void run() {
-		if(!lib.isValidToken(individualToken))
-		{
-			individualToken=lib.getToken();
-		}
-	
+		/*if (!lib.isValidToken(individualToken)) {
+			individualToken = lib.getToken();
+		}*/
 	}
 
 	@Override

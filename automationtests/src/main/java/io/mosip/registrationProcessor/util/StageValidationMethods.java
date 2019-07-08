@@ -86,7 +86,7 @@ public class StageValidationMethods extends BaseTestCase {
 	}
 	public void uploadPacket(File file) {
 		validToken=getToken("syncTokenGenerationFilePath");
-		
+
 		try {
 			prop.load(new FileReader(new File(propertyFilePath)));
 		} catch (IOException e) {

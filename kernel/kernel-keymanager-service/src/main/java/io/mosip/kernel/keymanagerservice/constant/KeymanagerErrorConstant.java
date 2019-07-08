@@ -22,6 +22,9 @@ public enum KeymanagerErrorConstant {
 	DATE_TIME_PARSE_EXCEPTION("KER-KMS-006", "timestamp should be in ISO 8601 format yyyy-MM-ddTHH::mm:ss.SSSZ"),
 
 	CRYPTO_EXCEPTION("KER-KMS-007", "Exception occured in cypto library: "),
+	
+	KEY_STORE_EXCEPTION("KER-KMS-008", "Service is  not able to store sign certificate"),
+	
 	INTERNAL_SERVER_ERROR("KER-KMS-500", "Internal server error");
 
 	/**

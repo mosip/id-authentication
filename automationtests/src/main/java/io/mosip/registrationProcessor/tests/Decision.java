@@ -152,7 +152,7 @@ public class Decision extends BaseTestCase implements ITest{
 				if(object.get("testCaseName").toString().contains("smoke")) {
 					JSONObject request = (JSONObject) actualRequest.get("request");
 					userId = request.get("mvUsrId").toString();
-					boolean statusUpdated = readDataFromDb.updateStatusInManualVerification(userId, "ASSIGEND");
+					boolean statusUpdated = readDataFromDb.updateStatusInManualVerification(userId, "ASSIGNED");
 					logger.info("statusUpdated : "+statusUpdated);
 				}
 			}

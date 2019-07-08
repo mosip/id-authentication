@@ -20,7 +20,6 @@
      "prereg_RetrivePreIdByRegCenterId_registrationCenterId_withInvalidValueGreaterThanMaxLength":"",
      
      "prereg_RetrivePreIdByRegCenterId_toDate_withAlphabets":"",
-     "prereg_RetrivePreIdByRegCenterId_toDate_withEmptyValue":"",
      "prereg_RetrivePreIdByRegCenterId_toDate_withFebGreaterThan29":"",
      "prereg_RetrivePreIdByRegCenterId_toDate_withFebNonLeapYearWith29":"",
      "prereg_RetrivePreIdByRegCenterId_toDate_withInvalidDateFormat":"",

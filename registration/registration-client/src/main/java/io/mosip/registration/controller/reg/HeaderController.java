@@ -439,6 +439,10 @@ public class HeaderController extends BaseController {
 		taskService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent t) {
+				double totalJobs = jobConfigurationService.getActiveSyncJobMap().size()-jobConfigurationService.getOfflineJobs().size()-jobConfigurationService.getUnTaggedJobs().size();
+				packetHandlerController.syncProgressBar
+				.setProgress(BaseJob.successJob.size() / totalJobs);
+				packetHandlerController.setLastUpdateTime();
 
 				ResponseDTO responseDTO = taskService.getValue();
 				if (responseDTO.getErrorResponseDTOs() != null) {
@@ -472,9 +476,6 @@ public class HeaderController extends BaseController {
 							packetHandlerController.syncProgressBar
 									.setProgress(success / totalJobs);
 						}
-						success= BaseJob.successJob.size();
-						packetHandlerController.syncProgressBar
-						.setProgress(success / totalJobs);
 						return null;
 
 					}

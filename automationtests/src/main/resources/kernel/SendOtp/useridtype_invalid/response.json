@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-07-05T09:31:53.274Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "401",
+      "message": "Invalid User Id type"
+    }
+  ]
+}

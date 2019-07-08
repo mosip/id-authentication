@@ -2,12 +2,11 @@
     "id": "mosip.registration.sync",
     "version": "1.0",
     "responsetime": "2019-06-28T06:47:26.787Z",
-    "response": null,
-    "errors": [
+    "errors": null,
+    "response": [
         {
-            "status": "FAILURE",
-            "errorMessage": "Request Decryption Failed",
-            "errorCode": "RPR-RGS-028"
+        	"registrationId" : "10011100110001900000325120310",
+            "status": "SUCCESS"
         }
     ]
 }

@@ -158,7 +158,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 			/* Registration Client Config Sync */
 			// it contains the list of job id, once this job is successfully completed then
 			// application should be restarted to pick the updated config.
-			restartableJobList.add("SCD_J00011");
+			restartableJobList.add("RCS_J00005");
 
 			/* Get All Jobs */
 			List<SyncJobDef> jobDefs = getJobs();

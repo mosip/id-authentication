@@ -72,7 +72,7 @@ public class IntegMethods extends BaseTestCase {
 		tokenEntity=generateToken.createTokenGeneratorDto(tokenGenerationProperties);
 		String token=generateToken.getToken(tokenEntity);
 		return token;
-		}
+	}
 	/**
 	 * 
 	 * @param testCase
@@ -94,7 +94,7 @@ public class IntegMethods extends BaseTestCase {
 		try {
 			registrationPacketSyncDto = encryptData.createSyncRequest(packet,"NEW"); 
 		} catch (java.text.ParseException e) {
-	 		// TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace(); 
 		}
 		String regId=registrationPacketSyncDto.getSyncRegistrationDTOs().get(0).getRegistrationId();
@@ -102,7 +102,7 @@ public class IntegMethods extends BaseTestCase {
 		String center_machine_refID=regId.substring(0,5)+"_"+regId.substring(5, 10);
 		Response resp=apiRequests.postRequestToDecrypt(encrypterURL,requestToEncrypt,MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON,validToken); 
-		
+
 		//Response resp=applnMethods.postRequestToDecrypt(requestToEncrypt, encrypterURL);
 		String encryptedData = resp.jsonPath().get("response.data").toString();
 		LocalDateTime timeStamp=null;
@@ -122,16 +122,16 @@ public class IntegMethods extends BaseTestCase {
 				timeStamp.toString()+"Z", MediaType.APPLICATION_JSON,validToken);
 		int status=actualResponse.statusCode();
 		try {
-		Assert.assertTrue(actualResponse.jsonPath().get("id").equals("mosip.registration.sync"));
-		Assert.assertTrue(actualResponse.jsonPath().get("version").equals("1.0"));
-		Assert.assertTrue(actualResponse.jsonPath().get("response[0].status").equals("SUCCESS"));
-		Assert.assertTrue(actualResponse.jsonPath().get("response[0].registrationId").equals(regId));
-		validToken="";
-		return true;
+			Assert.assertTrue(actualResponse.jsonPath().get("id").equals("mosip.registration.sync"));
+			Assert.assertTrue(actualResponse.jsonPath().get("version").equals("1.0"));
+			Assert.assertTrue(actualResponse.jsonPath().get("response[0].status").equals("SUCCESS"));
+			Assert.assertTrue(actualResponse.jsonPath().get("response[0].registrationId").equals(regId));
+			validToken="";
+			return true;
 		}catch (AssertionError e) {
 			return false;
 		}
-		
+
 	}
 	/**
 	 * 
@@ -145,7 +145,7 @@ public class IntegMethods extends BaseTestCase {
 	 * Asserts the response and returns it
 	 */
 	public boolean UploadPacket(File packet) throws ParseException, FileNotFoundException, IOException {
-		
+
 		validToken= getToken("syncTokenGenerationFilePath");
 		boolean tokenStatus=apiRequests.validateToken(validToken);
 		while(!tokenStatus) {
@@ -154,12 +154,12 @@ public class IntegMethods extends BaseTestCase {
 		} 
 		Response actualResponse=apiRequests.regProcPacketUpload(packet, prop.getProperty("packetReceiverApi"),validToken);
 		try {
-		Assert.assertTrue(actualResponse.jsonPath().get("id").equals("mosip.registration.sync"));
-		Assert.assertTrue(actualResponse.jsonPath().get("version").equals("1.0"));
-		//Assert.assertTrue(actualResponse.jsonPath().get("response.status").equals("Packet is in PACKET_RECEIVED status"));
-		return true;
+			Assert.assertTrue(actualResponse.jsonPath().get("id").equals("mosip.registration.sync"));
+			Assert.assertTrue(actualResponse.jsonPath().get("version").equals("1.0"));
+			//Assert.assertTrue(actualResponse.jsonPath().get("response.status").equals("Packet is in PACKET_RECEIVED status"));
+			return true;
 		}catch (AssertionError e) {
-		return false;
+			return false;
 		}
 	}
 	/**
@@ -193,7 +193,7 @@ public class IntegMethods extends BaseTestCase {
 		boolean assertStatus=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
 		//clearFromDB(registrationID);
 		Assert.assertTrue(assertStatus);
-		
+
 		try {
 		}catch(AssertionError err) {
 			err.printStackTrace();
@@ -208,9 +208,9 @@ public class IntegMethods extends BaseTestCase {
 	public File decryptPacket(File file) {
 		File decryptedPacket=null;
 		JSONObject cryptographicRequest=encryptDecrypt.generateCryptographicData(file);
-		 centerId = file.getName().substring(0, 5);
-		 machineId = file.getName().substring(5, 10);
-		 try {
+		centerId = file.getName().substring(0, 5);
+		machineId = file.getName().substring(5, 10);
+		try {
 			regId = generateRegId(centerId, machineId,file.getName().substring(0,file.getName().lastIndexOf(".")));
 		} catch (java.text.ParseException e1) {
 			logger.error("Could Not Generate regId",e1);
@@ -219,7 +219,7 @@ public class IntegMethods extends BaseTestCase {
 			decryptedPacket=encryptDecrypt.decryptFile(cryptographicRequest, file.getParent(), file.getName());
 			System.out.println(decryptedPacket);
 		} catch (IOException | ZipException | ParseException e) {
-		logger.error("Could Not Decrypt The Packets",e);
+			logger.error("Could Not Decrypt The Packets",e);
 		}
 		return decryptedPacket;
 	}
@@ -252,9 +252,9 @@ public class IntegMethods extends BaseTestCase {
 				} catch (IOException e1) {
 					logger.error("Could not find the packet_meta_info.json", e1);
 				}
-		
+
 			}
-	
+
 		}
 	}
 	public File updateCheckSum(File decryptedPacket) {
@@ -277,7 +277,7 @@ public class IntegMethods extends BaseTestCase {
 				writer.print("");
 				writer.print(str);
 				writer.close();
-			
+
 			}
 		}
 		return decryptedPacket;
@@ -301,15 +301,64 @@ public class IntegMethods extends BaseTestCase {
 	}
 	public String generateRegId(String centerId,String machineId,String regId) throws java.text.ParseException {
 		String regID="";
-		
+
 		String packetCreatedDateTime = regId.substring(regId.length() - 14);
 
 		int number = 10000 + new Random().nextInt(90000);
 		String randomNumber = String.valueOf(number);
 
 		regID = centerId + machineId + randomNumber + packetCreatedDateTime.toString();
-		
+
 		return regID;
 	}
-	
+
+	public boolean asssignment(JSONObject requestJson) throws ParseException, FileNotFoundException, IOException {
+
+		validToken= getToken("getStatusTokenGenerationFilePath");
+		boolean tokenStatus=apiRequests.validateToken(validToken);
+		while(!tokenStatus) {
+			validToken = getToken("getStatusTokenGenerationFilePath");
+			tokenStatus=apiRequests.validateToken(validToken);
+		} 
+		Response actualResponse=apiRequests.regProcPostRequest(prop.getProperty("assignmentApi"),requestJson,MediaType.APPLICATION_JSON,validToken);
+		try {
+			Assert.assertTrue(actualResponse.jsonPath().get("id").equals("mosip.registration.assignment"));
+			Assert.assertTrue(actualResponse.jsonPath().get("version").equals("1.0"));
+			//Assert.assertTrue(actualResponse.jsonPath().get("response.status").equals("Packet is in PACKET_RECEIVED status"));
+			return true;
+		}catch (AssertionError e) {
+			return false;
+		}
+	}
+
+	public void decision(String testCase) throws ParseException, FileNotFoundException, IOException {
+		validToken = getToken("getStatusTokenGenerationFilePath");
+		Response actualResponse=null; 
+		String component="Decision";
+		JSONObject actualRequest=null;
+		JSONObject expectedResponse=null;
+		JSONObject requestToBeSent=null;
+		String configPath= apiRequests.getResourcePath() + folder+"/"+testCase+"/Decision";
+		File file=new File(configPath);
+		File[] folder=file.listFiles();
+		for(File f:folder) {
+			if(f.getName().toLowerCase().contains("request")) {
+				actualRequest=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+				requestToBeSent=(JSONObject) actualRequest.get("request");
+			}
+			else if(f.getName().toLowerCase().contains("response")) {
+				expectedResponse=(JSONObject) new JSONParser().parse(new FileReader(f.getPath()));
+			}
+		}
+		actualResponse = apiRequests.regProcPostRequest(prop.getProperty("decisionApi"),actualRequest,MediaType.APPLICATION_JSON,validToken);
+		outerKeys.add("responsetime");
+		boolean assertStatus=AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+		//clearFromDB(registrationID);
+		Assert.assertTrue(assertStatus);
+
+		try {
+		}catch(AssertionError err) {
+			err.printStackTrace();
+		}
+	}
 }
