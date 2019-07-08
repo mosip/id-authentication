@@ -14,9 +14,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.BodyHandler;
 
 /**
  * The Class PacketUploaderStage.
@@ -53,7 +51,7 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
-	
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -101,8 +99,8 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 	 *            the ctx
 	 */
 	public void processURL(RoutingContext ctx) {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				"", "PacketUploaderStage::processURL()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PacketUploaderStage::processURL()::entry");
 		JsonObject obj = ctx.getBodyAsJson();
 
 		MessageDTO messageDTO = new MessageDTO();
@@ -114,10 +112,11 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 				this.getClass().getSimpleName());
 		if (messageDTO.getIsValid()) {
 			sendMessage(messageDTO);
-			this.setResponse(ctx, "Packet with registrationId '" + obj.getString("rid")
-					+ "' has been forwarded to next stage");
-			regProcLogger.info(obj.getString("rid"), "Packet with registrationId '" + obj.getString("rid")
-					+ "' has been forwarded to next stage", null, null);
+			this.setResponse(ctx,
+					"Packet with registrationId '" + obj.getString("rid") + "' has been forwarded to next stage");
+			regProcLogger.info(obj.getString("rid"),
+					"Packet with registrationId '" + obj.getString("rid") + "' has been forwarded to next stage", null,
+					null);
 		} else {
 			this.setResponse(ctx,
 					"Packet with registrationId '" + obj.getString("rid") + "' has not been uploaded to file System");
@@ -126,8 +125,6 @@ public class PacketUploaderStage extends MosipVerticleAPIManager {
 					null, null);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				"", "PacketUploaderStage::processURL()::exit");
 
 	}
 

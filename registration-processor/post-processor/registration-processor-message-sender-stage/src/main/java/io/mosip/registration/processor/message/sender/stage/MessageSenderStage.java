@@ -294,8 +294,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
 					id, ApiName.AUDIT);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
-				"MessageSenderStage::process()::exit");
+
 		return object;
 	}
 
@@ -424,8 +423,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 		ResponseWrapper<?> responseWrapper;
 		TemplateResponseDto templateResponseDto = null;
 		ObjectMapper mapper = new ObjectMapper();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"MessageSenderStage::isTemplateAvailable():: TEMPLATES Api call started");
+
 		responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "", "",
 				ResponseWrapper.class);
 		templateResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),

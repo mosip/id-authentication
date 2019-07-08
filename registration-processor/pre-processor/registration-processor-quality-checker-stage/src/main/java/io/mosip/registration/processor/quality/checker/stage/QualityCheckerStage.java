@@ -288,8 +288,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 					moduleName, regId);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
-				"QualityCheckerStage::process()::exit");
+
 		return object;
 	}
 

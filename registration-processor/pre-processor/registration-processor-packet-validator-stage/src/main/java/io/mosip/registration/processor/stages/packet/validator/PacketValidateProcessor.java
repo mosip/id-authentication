@@ -420,8 +420,6 @@ public class PacketValidateProcessor {
 					moduleId, moduleName, registrationId);
 		}
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				description.getCode() + " -- " + registrationId, "PacketValidateProcessor::process()::exit");
 		return object;
 
 	}

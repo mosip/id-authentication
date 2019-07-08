@@ -117,8 +117,8 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 
 		registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.OSI_VALIDATE.toString());
 		registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
-//		osiValidator.registrationStatusDto = registrationStatusDto;
-//		umcValidator.setRegistrationStatusDto(registrationStatusDto);
+		// osiValidator.registrationStatusDto = registrationStatusDto;
+		// umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		try {
 			isValidUMC = umcValidator.isValidUMC(registrationId, registrationStatusDto);
 			if (isValidUMC) {
@@ -137,16 +137,16 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 					int retryCount = registrationStatusDto.getRetryCount() != null
 							? registrationStatusDto.getRetryCount() + 1
 							: 1;
-//					registrationStatusDto.setLatestTransactionStatusCode(
-//							osiValidator.registrationStatusDto.getLatestTransactionStatusCode());
+					// registrationStatusDto.setLatestTransactionStatusCode(
+					// osiValidator.registrationStatusDto.getLatestTransactionStatusCode());
 					registrationStatusDto.setRetryCount(retryCount);
 
-//					registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
-//					registrationStatusDto.setStatusCode(osiValidator.registrationStatusDto.getStatusCode());
+					// registrationStatusDto.setStatusComment(osiValidator.registrationStatusDto.getStatusComment());
+					// registrationStatusDto.setStatusCode(osiValidator.registrationStatusDto.getStatusCode());
 
 					description.setCode(PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode());
-					description.setMessage(PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage() + registrationId + "::"
-							+ "OSI(" + isValidOSI + ") is not valid");
+					description.setMessage(PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage() + registrationId
+							+ "::" + "OSI(" + isValidOSI + ") is not valid");
 				}
 			} else {
 				object.setIsValid(Boolean.FALSE);
@@ -166,7 +166,7 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			}
 
 			registrationStatusDto.setUpdatedBy(USER);
-			
+
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					description.getCode() + " -- " + registrationId, description.getMessage());
 		} catch (FSAdapterException e) {
@@ -228,20 +228,20 @@ public class OSIValidatorStage extends MosipVerticleAPIManager {
 			object.setIsValid(Boolean.FALSE);
 		} finally {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			if(isTransactionSuccessful)
+			if (isTransactionSuccessful)
 				description.setMessage(PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getMessage());
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
 			String eventType = isTransactionSuccessful ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 
 			/** Module-Id can be Both Succes/Error code */
-			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode() : description.getCode();
+			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_PKR_OSI_VALIDATE.getCode()
+					: description.getCode();
 			String moduleName = ModuleName.OSI_VALIDATOR.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, moduleId,
-					moduleName, registrationId);
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					moduleId, moduleName, registrationId);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				description.getCode() + " -- " + registrationId, "OSIValidatorStage::process()::exit");
+
 		return object;
 	}
 

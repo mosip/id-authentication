@@ -197,8 +197,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			}
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "PacketReceiverServiceImpl::validatePacket()::exit");
+
 		return messageDTO;
 	}
 
@@ -524,8 +523,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 					registrationId, ApiName.AUDIT);
 		}
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "PacketReceiverServiceImpl::processPacket()::exit");
 		return messageDTO;
 	}
 

@@ -146,9 +146,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 				headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 				HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
 						map, headers);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registartionId,
-						"SyncUploadEncryptionServiceImpl::uploadUinPacket()::Packet receiver service call started");
+
 				String result = (String) restClientService.postApi(ApiName.PACKETRECEIVER, "", "", requestEntity,
 						String.class);
 				if (result != null) {
@@ -174,9 +172,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registartionId,
 							packerGeneratorResDto.getMessage());
-					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REGISTRATIONID.toString(), "",
-							"SyncUploadEncryptionServiceImpl ::uploadUinPacket()::exit");
+
 					return packerGeneratorResDto;
 				}
 

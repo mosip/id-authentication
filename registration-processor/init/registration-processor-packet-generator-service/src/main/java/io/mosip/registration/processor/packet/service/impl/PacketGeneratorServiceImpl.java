@@ -128,9 +128,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
 						creationTime, request.getRegistrationType(), packetZipBytes);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), rid,
-						"PacketGeneratorServiceImpl ::createPacket()::exit");
+
 				return packerGeneratorResDto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

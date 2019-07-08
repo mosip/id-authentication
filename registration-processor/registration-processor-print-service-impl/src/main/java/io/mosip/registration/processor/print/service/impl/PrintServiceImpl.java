@@ -322,8 +322,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		String queryParamName = "type";
 		String queryParamValue = "all";
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"PrintServiceImpl::getIdRepoResponse():: RETRIEVEIDENTITYFROMRID GET API CALL STARTED");
+
 		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
 				pathsegments, queryParamName, queryParamValue, IdResponseDTO1.class);
 
@@ -332,8 +331,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 					idValue, PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.name());
 			throw new IDRepoResponseNull(PlatformErrorMessages.RPR_PRT_IDREPO_RESPONSE_NULL.getCode());
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"PrintServiceImpl::getIdRepoResponse():: RETRIEVEIDENTITYFROMRID GET API CALL ENDED Successfully");
+
 		return response;
 	}
 

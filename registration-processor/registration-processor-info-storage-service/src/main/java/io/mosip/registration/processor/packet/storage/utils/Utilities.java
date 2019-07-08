@@ -205,9 +205,6 @@ public class Utilities {
 			pathSegments.add(String.valueOf(uin));
 			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call Started");
-
 			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
 					IdResponseDTO1.class);
 			if (idResponseDto == null) {

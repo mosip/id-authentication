@@ -137,8 +137,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.EXTERNAL_INTEGRATION.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "ExternalStage::process():: EIS service Api call started");
+
 			Boolean temp = (Boolean) registrationProcessorRestService.postApi(ApiName.EISERVICE, "", "", requestdto,
 					Boolean.class);
 
@@ -207,9 +206,6 @@ public class ExternalStage extends MosipVerticleAPIManager {
 					moduleId, moduleName, registrationId);
 		}
 
-		regProcLogger.debug("", "", "sent to next stage --> ", object.toString());
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "ExternalStage::process()::exit");
 		return object;
 	}
 

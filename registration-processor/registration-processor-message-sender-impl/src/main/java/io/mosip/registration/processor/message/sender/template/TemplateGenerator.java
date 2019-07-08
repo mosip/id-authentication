@@ -85,23 +85,24 @@ public class TemplateGenerator {
 	public InputStream getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {
 
-		ResponseWrapper<?> responseWrapper=new ResponseWrapper<>();
-		TemplateResponseDto template=new TemplateResponseDto();
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto template = new TemplateResponseDto();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"TemplateGenerator::getTemplate()::entry");
-		
+
 		try {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
+
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "", "",
+					ResponseWrapper.class);
+			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+					TemplateResponseDto.class);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"TemplateGenerator::getTemplate():: TEMPLATES GET service Started ");
-		
-			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "","", ResponseWrapper.class);
-			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"TemplateGenerator::getTemplate():: TEMPLATES GET service Ended with response "+JsonUtil.objectMapperObjectToJson(template));
-		
+					"TemplateGenerator::getTemplate():: TEMPLATES GET service Ended with response "
+							+ JsonUtil.objectMapperObjectToJson(template));
+
 			InputStream fileTextStream = null;
 			if (template != null) {
 				InputStream stream = new ByteArrayInputStream(

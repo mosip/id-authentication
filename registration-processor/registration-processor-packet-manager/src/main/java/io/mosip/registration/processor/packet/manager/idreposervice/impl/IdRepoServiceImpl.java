@@ -81,12 +81,8 @@ public class IdRepoServiceImpl implements IdRepoService {
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<IdResponseDTO> response = new ResponseWrapper<>();
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"IdRepoServiceImpl::getUin():: IDREPOSITORY GET API CALL STARTED");
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"IdRepoServiceImpl::getUin():: IDREPOSITORY GET API CALL ENDED Successfully");
 
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();
@@ -141,13 +137,9 @@ public class IdRepoServiceImpl implements IdRepoService {
 
 		@SuppressWarnings("unchecked")
 		ResponseWrapper<IdResponseDTO> response = new ResponseWrapper<>();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"IdRepoServiceImpl::getIdJsonFromIDRepo():: IDREPOSITORY GET API CALL STARTED");
 
 		response = (ResponseWrapper<IdResponseDTO>) restClientService.getApi(ApiName.IDREPOSITORY, pathSegments, "", "",
 				ResponseWrapper.class);
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"IdRepoServiceImpl::getIdJsonFromIDRepo():: IDREPOSITORY GET API CALL ENDED Successfully");
 
 		if (response.getResponse() != null) {
 			Gson gsonObj = new Gson();

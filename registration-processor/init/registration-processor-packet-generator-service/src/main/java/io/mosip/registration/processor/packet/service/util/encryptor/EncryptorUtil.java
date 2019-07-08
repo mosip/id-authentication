@@ -213,8 +213,6 @@ public class EncryptorUtil {
 		ResponseWrapper<?> responseWrapper;
 		PublicKeyResponseDto publicKeyResponsedto = null;
 		ObjectMapper mapper = new ObjectMapper();
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"EncryptorUtil::encryptRSA()::Encryption service call started");
 
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
