@@ -22,12 +22,12 @@ For administrative purpose, the Registration centers, Devices and Machines are m
 
 ![User and Zone relationship diagram](_images/admin-userzone-diagram.jpg)
 
-	- All the entities are mapped only the leaf nodes of the zones. 
+- All the entities are mapped only the leaf nodes of the zones. 
 	
 **Zones diagram**
 
 ![Zones diagram](_images/admin-zones-diagram.jpg)	
 	
-	- Let's say we are splitting a zone to multiple sub-zones. During this time, new sub-zones are created first and the entities are mapped to the newly created zones. Then the old zone is deleted. 
-	
-	- When an API recieves the request, from the tokenID, the mapped zones are found out. From the zones value, the data is restricted in the business logic layer to return only the data, which the user is supposed to access. 
+- Let's say we are splitting a zone to multiple sub-zones. During this time, new sub-zones are created first and the entities are mapped to the newly created zones. Then the old zone is deleted. 
+
+- When an API recieves the request, from the tokenID, the mapped zones are found out. From the zones value, the data is restricted in the business logic layer to return only the data, which the user is supposed to access. 
