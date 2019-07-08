@@ -43,7 +43,7 @@ public class SendOTP extends BaseTestCase implements ITest{
 	private static Logger logger = Logger.getLogger(SendOTP.class);
 	protected String testCaseName = "";
 	private final String moduleName = "kernel";
-	private final String apiName = "SendOTP";
+	private final String apiName = "SendOtp";
 	private SoftAssert softAssert=new SoftAssert();
 	public JSONArray arr = new JSONArray();
 	boolean status = false;
@@ -75,7 +75,7 @@ public class SendOTP extends BaseTestCase implements ITest{
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	@Test(dataProvider="SendOTP")
-	public void getAllTemplateByTemplateTypeCode(String testcaseName) throws FileNotFoundException, IOException, ParseException
+	public void sendOtp(String testcaseName) throws FileNotFoundException, IOException, ParseException
     {
 		// getting request and expected response jsondata from json files.
 		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);
