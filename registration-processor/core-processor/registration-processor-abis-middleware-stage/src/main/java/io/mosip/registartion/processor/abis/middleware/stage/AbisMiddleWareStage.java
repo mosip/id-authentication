@@ -235,8 +235,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			object.setInternalError(false);
 			isTransactionSuccessful = true;
 			description = "Abis insertRequests sucessfully sent to Queue";
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
 		} catch (RegistrationProcessorUnCheckedException | RegistrationProcessorCheckedException e) {
 			object.setInternalError(true);
 			object.setIsValid(false);
@@ -274,8 +274,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisMiddlewareStage::process()::Exit");
+
 		return object;
 	}
 

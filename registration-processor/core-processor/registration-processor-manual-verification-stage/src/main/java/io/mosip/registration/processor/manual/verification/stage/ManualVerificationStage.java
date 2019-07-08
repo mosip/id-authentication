@@ -241,8 +241,6 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 					manualVerificationDTO.getRegId(), "ManualVerificationStage::processAssignment::success");
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"ManualVerificationStage::processAssignment::exit");
 
 	}
 
@@ -262,9 +260,9 @@ public class ManualVerificationStage extends MosipVerticleAPIManager {
 					env.getProperty(ManualVerificationConstants.MVS_APPLICATION_VERSION),
 					env.getProperty(ManualVerificationConstants.DATETIME_PATTERN));
 			this.setResponseWithDigitalSignature(ctx, responseData, APPLICATION_JSON);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "ManualVerificationStage::processDecision::success");
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"ManualVerificationStage::processDecision::exit");
 
 	}
 

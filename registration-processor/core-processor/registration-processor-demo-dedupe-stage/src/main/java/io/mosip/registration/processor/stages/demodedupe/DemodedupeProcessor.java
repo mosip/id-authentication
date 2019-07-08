@@ -208,8 +208,7 @@ public class DemodedupeProcessor {
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "DemoDedupeProcessor::success");
+
 			}
 
 			registrationStatusDto
@@ -267,6 +266,12 @@ public class DemodedupeProcessor {
 				object.setMessageBusAddress(MessageBusAddress.DEMO_DEDUPE_BUS_IN);
 				object.setInternalError(Boolean.TRUE);
 			}
+			if (object.getIsValid())
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "DemoDedupeProcessor::success");
+			else
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, "DemoDedupeProcessor::failure");
 
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
@@ -280,8 +285,7 @@ public class DemodedupeProcessor {
 					moduleId, moduleName, registrationId);
 
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "DemoDedupeStage::DemoDedupeProcessor::exit");
+
 		return object;
 	}
 

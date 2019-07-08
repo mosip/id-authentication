@@ -178,8 +178,6 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
 		}
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				regId, "AbisHandlerStage::process()::exit");
 		return object;
 	}
 

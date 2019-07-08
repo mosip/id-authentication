@@ -147,8 +147,8 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 							isTransactionSuccessful = false;
 							description = PlatformErrorMessages.BIOMETRIC_AUTHENTICATION_FAILED.getMessage()
 									+ BiometricAuthenticationConstants.FILENOTPRESENT;
-							regProcLogger.info(LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
-									description, "");
+							regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+									LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
 							registrationStatusDto.setStatusComment(description);
 						} else {
 							isTransactionSuccessful = true;
@@ -238,8 +238,7 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "BiometricAuthenticationStage::BiometricAuthenticationStage::exit");
+
 		return object;
 	}
 

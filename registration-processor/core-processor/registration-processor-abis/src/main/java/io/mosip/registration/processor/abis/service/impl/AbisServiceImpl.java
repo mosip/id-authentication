@@ -162,36 +162,33 @@ public class AbisServiceImpl implements AbisService {
 	private Document getCbeffDocument(String referenceId)
 			throws ApisResourceAccessException, ParserConfigurationException, SAXException, IOException {
 
-        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
-                referenceId, "AbisServiceImpl::getCbeffDocument()::entry");
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+				referenceId, "AbisServiceImpl::getCbeffDocument()::entry");
 		if (referenceId != null) {
 			List<String> pathSegments = new ArrayList<>();
-				pathSegments.add(referenceId);
+			pathSegments.add(referenceId);
 
+			byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "", byte[].class);
+			if (bytefile == null) {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
-						referenceId, "AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call started : ");
-				byte[] bytefile = (byte[]) restClientService.getApi(ApiName.BIODEDUPE, pathSegments, "", "",
-						byte[].class);
-				if (bytefile == null) {
-					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REFFERENCEID.toString(), referenceId,
-							"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended	and Byte file not found from BioDedupe api");
-				}
+						referenceId,
+						"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended	and cbeff file is not present for the referenceID");
+			}
 
-				if (bytefile != null) {
-					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-							LoggerFileConstant.REFFERENCEID.toString(), referenceId,
-							"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended and Got Byte file from BioDedupe api");
-					String byteFileStr = new String(bytefile);
+			if (bytefile != null) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REFFERENCEID.toString(),
+						referenceId,
+						"AbisServiceImpl::getCbeffDocument():: get BIODEDUPE service call ended and Got Byte file from BioDedupe api");
+				String byteFileStr = new String(bytefile);
 
-					InputSource is = new InputSource();
-					is.setCharacterStream(new StringReader(byteFileStr));
+				InputSource is = new InputSource();
+				is.setCharacterStream(new StringReader(byteFileStr));
 
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-					dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-					return dBuilder.parse(is);
-				}
+				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+				dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+				return dBuilder.parse(is);
+			}
 
 		} else {
 			throw new MissingMandatoryFieldsException(PlatformErrorMessages.MISSING_MANDATORY_FIELDS.getMessage());

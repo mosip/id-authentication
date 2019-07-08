@@ -447,10 +447,6 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		pathSegments.add(effectiveDate);
 		try {
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-					dto.getUserId(),
-					"ManualVerificationServiceImpl::checkUserIDExistsInMasterList()::get MASTER USERS service call started ");
-
 			responseWrapper = (ResponseWrapper<UserResponseDTOWrapper>) restClientService.getApi(ApiName.MASTER,
 					pathSegments, "", "", ResponseWrapper.class);
 
