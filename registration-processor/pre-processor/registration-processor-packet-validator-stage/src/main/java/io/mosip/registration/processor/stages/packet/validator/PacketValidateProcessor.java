@@ -420,16 +420,11 @@ public class PacketValidateProcessor {
 		JSONObject demographicIdentity= null;
 		String registrationId = registrationStatusDto.getRegistrationId();
 
-		if(packetMetaInfo == null){
-			registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
+		if(!fileValidation(packetMetaInfo, registrationStatusDto, packetValidationDto)) {
 			return false;
 		}
+
 		Identity identity = packetMetaInfo.getIdentity();
-
-		if (!fileValidation(identity, registrationStatusDto, packetValidationDto)) {
-			return false;
-		}
-
 		InputStream idJsonStream = fileSystemManager.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
 
@@ -554,13 +549,13 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean fileValidation(Identity identity, InternalRegistrationStatusDto registrationStatusDto, PacketValidationDto packetValidationDto) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+	private boolean fileValidation(PacketMetaInfo packetMetaInfo, InternalRegistrationStatusDto registrationStatusDto, PacketValidationDto packetValidationDto) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		if (env.getProperty(VALIDATEFILE).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			packetValidationDto.setFilesValidated(true);
 			return packetValidationDto.isFilesValidated();
 		}
 		FilesValidation filesValidation = new FilesValidation(fileSystemManager, registrationStatusDto);
-		packetValidationDto.setFilesValidated(filesValidation.filesValidation(registrationStatusDto.getRegistrationId(), identity));
+		packetValidationDto.setFilesValidated(filesValidation.filesValidation(registrationStatusDto.getRegistrationId(), packetMetaInfo));
 		if (!packetValidationDto.isFilesValidated())
 			packetValidationDto.setPacketValidaionFailure(" fileValidation failed ");
 		return packetValidationDto.isFilesValidated();

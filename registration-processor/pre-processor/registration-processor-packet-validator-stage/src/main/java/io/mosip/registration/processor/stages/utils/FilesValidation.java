@@ -8,6 +8,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
@@ -53,13 +54,18 @@ public class FilesValidation {
 	 * @throws ApisResourceAccessException 
 	 * @throws PacketDecryptionFailureException 
 	 */
-	public boolean filesValidation(String registrationId, Identity identity) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+	public boolean filesValidation(String registrationId, PacketMetaInfo packetMetaInfo) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+		if(packetMetaInfo == null){
+			registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
+			return false;
+		}
+
 		boolean filesValidated = false;
 
-		List<FieldValueArray> hashSequence = identity.getHashSequence1();
+		List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence1();
 		boolean isSequence1Validated = validateHashSequence(registrationId, hashSequence);
 
-		List<FieldValueArray> hashSequence2 = identity.getHashSequence2();
+		List<FieldValueArray> hashSequence2 = packetMetaInfo.getIdentity().getHashSequence2();
 		boolean isSequence2Validated = validateHashSequence(registrationId, hashSequence2);
 
 		if ((!isSequence1Validated) || (!isSequence2Validated)) {
