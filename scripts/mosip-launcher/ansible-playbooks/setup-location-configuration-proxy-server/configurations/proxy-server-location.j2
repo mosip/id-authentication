@@ -22,6 +22,7 @@
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_pass  http://{{ hostvars['localhost']['output_private_ip_dmz_' + env_name] | json_query('stdout')}}:{{ services.registration_processor_registration_status_port }}/registrationprocessor/v1/registrationstatus/;
 
     }
 
