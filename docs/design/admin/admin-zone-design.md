@@ -23,7 +23,6 @@ The registration centers can be added only to the leaf nodes in the zonal hierar
 
 ![User and Zone relationship diagram](_images/admin-userzone-diagram.jpg)
 
-- All the entities are mapped only the leaf nodes of the zones. 
 	
 **Zones diagram**
 
