@@ -506,7 +506,7 @@ public class PacketValidateProcessor {
 		}
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
 		// Sync list table
-		return validateRegIdAndTypeFromSyncTable(object,metadataList, identityIteratorUtil, packetValidationDto);
+		return validateRegIdAndTypeFromSyncTable(object.getRid(),metadataList, identityIteratorUtil, packetValidationDto);
 	}
 
 	private boolean uinPresentInIdRepo(String uin) throws ApisResourceAccessException, IOException {
@@ -514,9 +514,8 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean validateRegIdAndTypeFromSyncTable(MessageDTO object,List<FieldValue> metadataList,
+	private boolean validateRegIdAndTypeFromSyncTable(String regId,List<FieldValue> metadataList,
 			IdentityIteratorUtil identityIteratorUtil, PacketValidationDto packetValidationDto) {
-		String regId = object.getRid();
 		String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
 		List<SyncRegistrationEntity> syncRecordList = registrationRepositary.getSyncRecordsByRegIdAndRegType(regId,
 				regType.toUpperCase());
