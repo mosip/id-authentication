@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.0 r1840935">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="thinktime" elementType="Argument">
+            <stringProp name="Argument.name">thinktime</stringProp>
+            <stringProp name="Argument.value">5000</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="prereglink" elementType="Argument">
+            <stringProp name="Argument.name">prereglink</stringProp>
+            <stringProp name="Argument.value">devops.mosip.io/pre-registration/v1.0</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+        <collectionProp name="CookieManager.cookies"/>
+        <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+      </CookieManager>
+      <hashTree/>
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"></stringProp>
+        <stringProp name="HTTPSampler.port"></stringProp>
+        <stringProp name="HTTPSampler.protocol"></stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+        <stringProp name="HTTPSampler.path"></stringProp>
+        <stringProp name="HTTPSampler.concurrentPool">6</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+        <stringProp name="HTTPSampler.response_timeout"></stringProp>
+      </ConfigTestElement>
+      <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="false">
+        <stringProp name="delimiter">,</stringProp>
+        <stringProp name="fileEncoding"></stringProp>
+        <stringProp name="filename">C:/01.PROJECTS/01.MOSIP/02.SCRIPTS/02.Pre-Registration/Bookingslots.csv</stringProp>
+        <boolProp name="ignoreFirstLine">true</boolProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">true</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="variableNames">YYYY,MM,DD,FromTime,ToTime</stringProp>
+      </CSVDataSet>
+      <hashTree/>
+      <kg.apc.jmeter.threads.UltimateThreadGroup guiclass="kg.apc.jmeter.threads.UltimateThreadGroupGui" testclass="kg.apc.jmeter.threads.UltimateThreadGroup" testname="Pre_Reg_Enter_demographic_detail" enabled="true">
+        <collectionProp name="ultimatethreadgroupdata">
+          <collectionProp name="-949375025">
+            <stringProp name="49">1</stringProp>
+            <stringProp name="0">0</stringProp>
+            <stringProp name="53">5</stringProp>
+            <stringProp name="48873">180</stringProp>
+            <stringProp name="53">5</stringProp>
+          </collectionProp>
+          <collectionProp name="864996633">
+            <stringProp name="49">1</stringProp>
+            <stringProp name="53">5</stringProp>
+            <stringProp name="53">5</stringProp>
+            <stringProp name="48842">170</stringProp>
+            <stringProp name="53">5</stringProp>
+          </collectionProp>
+        </collectionProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <intProp name="LoopController.loops">-1</intProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+      </kg.apc.jmeter.threads.UltimateThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create form data" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+   &quot;id&quot;:&quot;mosip.pre-registration.demographic.create&quot;,&#xd;
+   &quot;ver&quot;:&quot;1.0&quot;,&#xd;
+   &quot;reqTime&quot;:&quot;2019-02-21T08:23:34.930Z&quot;,&#xd;
+   &quot;request&quot;:{  &#xd;
+      &quot;preRegistrationId&quot;:&quot;&quot;,&#xd;
+      &quot;createdBy&quot;:&quot;9738488286&quot;,&#xd;
+      &quot;createdDateTime&quot;:&quot;2019-02-21T08:23:34.930Z&quot;,&#xd;
+      &quot;updatedBy&quot;:&quot;&quot;,&#xd;
+      &quot;updatedDateTime&quot;:&quot;&quot;,&#xd;
+      &quot;langCode&quot;:&quot;fra&quot;,&#xd;
+      &quot;demographicDetails&quot;:{  &#xd;
+         &quot;identity&quot;:{  &#xd;
+            &quot;IDSchemaVersion&quot;:1,&#xd;
+            &quot;fullName&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;Shankar&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;َسهِسه&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;dateOfBirth&quot;:&quot;1989/01/01&quot;,&#xd;
+            &quot;gender&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;MLE&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;MLE&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;addressLine1&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;dresse est &quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;درِسسِ ِست &quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;residenceStatus&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;national&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;national&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;addressLine2&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;yuwue utter&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;يُوُِ ُتتِر&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;addressLine3&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;afterfh jdhdy&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;َفتِرفه جدهدي&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;region&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;RSK&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;RSK&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;province&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;KTA&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;KTA&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;city&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;KNT&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;KNT&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;localAdministrativeAuthority&quot;:[  &#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;fra&quot;,&#xd;
+                  &quot;value&quot;:&quot;MNAS&quot;&#xd;
+               },&#xd;
+               {  &#xd;
+                  &quot;language&quot;:&quot;ara&quot;,&#xd;
+                  &quot;value&quot;:&quot;MNAS&quot;&#xd;
+               }&#xd;
+            ],&#xd;
+            &quot;postalCode&quot;:&quot;767882&quot;,&#xd;
+            &quot;phone&quot;:&quot;9738488286&quot;,&#xd;
+            &quot;email&quot;:&quot;shaknarrrrr@gmail.com&quot;,&#xd;
+            &quot;CNIENumber&quot;:&quot;9738488286&quot;&#xd;
+         }&#xd;
+      }&#xd;
+   }&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${prereglink}</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/demographic/applications</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+            <stringProp name="ConstantTimer.delay">60000</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="accept" elementType="Header">
+                <stringProp name="Header.name">accept</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="Accept-Encoding" elementType="Header">
+                <stringProp name="Header.name">Accept-Encoding</stringProp>
+                <stringProp name="Header.value">gzip, deflate</stringProp>
+              </elementProp>
+              <elementProp name="Accept-Language" elementType="Header">
+                <stringProp name="Header.name">Accept-Language</stringProp>
+                <stringProp name="Header.value">en-US,en;q=0.9,ta;q=0.8</stringProp>
+              </elementProp>
+              <elementProp name="Content-Type" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="Connection" elementType="Header">
+                <stringProp name="Header.name">Connection</stringProp>
+                <stringProp name="Header.value">keep-alive</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Aggregate Report" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename">C:\01.PROJECTS\01.MOSIP\02.SCRIPTS\02.Pre-Registration\Results\Pre_Reg_Enter_demographic_detail_Benchmark_19mar1.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ResponseTimesOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Response Times Over Time" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">500</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.TransactionsPerSecondGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Transactions per Second" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">1000</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+      <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ThreadsStateOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Active Threads Over Time" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+        <longProp name="interval_grouping">500</longProp>
+        <boolProp name="graph_aggregated">false</boolProp>
+        <stringProp name="include_sample_labels"></stringProp>
+        <stringProp name="exclude_sample_labels"></stringProp>
+        <stringProp name="start_offset"></stringProp>
+        <stringProp name="end_offset"></stringProp>
+        <boolProp name="include_checkbox_state">false</boolProp>
+        <boolProp name="exclude_checkbox_state">false</boolProp>
+      </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
