@@ -3,6 +3,7 @@
 #### Background
 
 For administrative purpose, the Registration centers, Devices and Machines are mapped to the Zones. Each zone can have a specific administrator and only this administrator has the permissions to manage these devices.
+The registration centers can be added only to the leaf nodes in the zonal hierarchy. The devices and machines can be added to any level in the zonal hierarcy. 
 
 
 #### Solution
