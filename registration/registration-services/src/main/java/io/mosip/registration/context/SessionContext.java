@@ -462,6 +462,7 @@ public class SessionContext {
 				&& centerList.contains(userDTO.getRegCenterUser().getRegcntrId())) {
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER, false);
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+			sessionContext.mapObject.put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.DISABLE);
 		} else {
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER, true);
 			sessionContext.mapObject.put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
