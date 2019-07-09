@@ -2,7 +2,7 @@
 
   - name: Make Domain Name for Deployments Kubernetes cluster for {{ env_name }} environment persistant
     set_fact:
-      base_url: "https://{{ hostvars['localhost']['output_public_ip_deployments_cluster_' + env_name] | json_query('stdout')}}"
+      base_url: "https://{{ hostvars['localhost']['output_domain_name_proxy_server_' + env_name] | json_query('stdout')}}"
     # # when: item is defined
     # # with_items: 
     # #   - "output_public_ip_deployments_cluster_{{ env_name }}"
