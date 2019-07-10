@@ -116,7 +116,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 			Registration registration = registrationRepository.getOne(registrationID);
-			//registration.setStatusCode(clientStatusCode);
+			// registration.setStatusCode(clientStatusCode);
 			registration.setStatusTimestamp(timestamp);
 			registration.setClientStatusCode(clientStatusCode);
 			registration.setClientStatusTimestamp(timestamp);
@@ -232,7 +232,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		Registration reg = registrationRepository.getOne(packet.getFileName());
-		//reg.setStatusCode(packet.getPacketClientStatus());
+		// reg.setStatusCode(packet.getPacketClientStatus());
 		reg.setClientStatusCode(packet.getPacketClientStatus());
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
@@ -250,7 +250,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
 		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been ended");
-		
+
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
@@ -313,12 +313,12 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * java.lang.String)
 	 */
 	@Override
-	public List<Registration> get(Timestamp crDtimes, String clientStatus) {
+	public List<Registration> get(Timestamp crDtimes, String serverStatusCode) {
 
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Retriving Registrations based on crDtime and status");
 
-		return registrationRepository.findByCrDtimeBeforeAndServerStatusCode(crDtimes, clientStatus);
+		return registrationRepository.findByCrDtimeBeforeAndServerStatusCode(crDtimes, serverStatusCode);
 
 	}
 
