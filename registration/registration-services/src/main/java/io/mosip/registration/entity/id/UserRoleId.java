@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @Embeddable
 @Data
-public class UserRoleID implements Serializable {
+public class UserRoleId implements Serializable {
 
 	private static final long serialVersionUID = -8072043172665654382L;
 

@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import io.mosip.registration.entity.id.UserRoleID;
+import io.mosip.registration.entity.id.UserRoleId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +24,7 @@ import lombok.Setter;
 public class UserRole extends RegistrationCommonFields {
 
 	@EmbeddedId
-	private UserRoleID userRoleID;
+	private UserRoleId userRoleId;
 
 	@Column(name = "lang_code")
 	private String langCode;
