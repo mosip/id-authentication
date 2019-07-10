@@ -130,7 +130,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		} catch (Exception e1) {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e1.getMessage(), e1);
 		}
-		MosipUserDto mosipUserDto = buildDto(claims);
+		mosipUserDto = buildDto(claims);
 
 //		response = getValidatedUserResponse(token);
 //		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());

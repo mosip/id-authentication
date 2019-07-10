@@ -41,7 +41,7 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details
 	 */
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping
 	public ResponseWrapper<ApplicationResponseDto> getAllApplication() {

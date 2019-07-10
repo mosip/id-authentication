@@ -47,7 +47,7 @@ public class DeviceHistoryController {
 	 * @return DeviceHistoryResponseDto returning device history detail based on
 	 *         given Device ID, Language code and effective date time
 	 */
-	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
+	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR')")
 	@ResponseFilter
 	@GetMapping(value = "/{id}/{langcode}/{effdatetimes}")
 	@ApiOperation(value = "Retrieve all Device History Details for the given Languge Code, ID and Effective date time", notes = "Retrieve all Device Detail for given Languge Code and ID")

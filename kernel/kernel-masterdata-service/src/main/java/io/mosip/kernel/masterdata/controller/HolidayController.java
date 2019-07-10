@@ -55,7 +55,7 @@ public class HolidayController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	public ResponseWrapper<HolidayResponseDto> getAllHolidays() {
 		ResponseWrapper<HolidayResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.getAllHolidays());
@@ -159,7 +159,7 @@ public class HolidayController {
 	 * 
 	 * @return the response i.e. pages containing the holidays.
 	 */
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/all")
 	@ApiOperation(value = "Retrieve all the holidays with additional metadata", notes = "Retrieve all the holidays with the additional metadata")

@@ -79,7 +79,7 @@ public class PacketRejectionReasonController {
 	 */
 	@ResponseFilter
 	@GetMapping
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	public ResponseWrapper<PacketRejectionReasonResponseDto> getAllReasons() {
 
 		ResponseWrapper<PacketRejectionReasonResponseDto> responseWrapper = new ResponseWrapper<>();
