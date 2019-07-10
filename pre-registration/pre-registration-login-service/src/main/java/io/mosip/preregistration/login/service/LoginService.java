@@ -154,7 +154,7 @@ public class LoginService {
 				
 				
 				otpChannel=loginCommonUtil.validateUserId(otp.getUserId());
-				OtpUser user=new OtpUser(otp.getUserId(),otpChannel, appId, useridtype,null,context);
+				OtpUser user=new OtpUser(otp.getUserId().toLowerCase(),otpChannel, appId, useridtype,null,context);
 				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
@@ -207,9 +207,9 @@ public class LoginService {
 		try {
 			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
 				User user=userIdOtpRequest.getRequest();
-				userid=user.getUserId();
+				userid=user.getUserId().toLowerCase();
 				loginCommonUtil.validateOtpAndUserid(user);
-				UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
+				UserOtp userOtp=new UserOtp(user.getUserId().toLowerCase(), user.getOtp(), appId);
 				RequestWrapper<UserOtp> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(userOtp);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
