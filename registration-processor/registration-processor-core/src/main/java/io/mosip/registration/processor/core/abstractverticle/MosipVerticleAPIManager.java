@@ -64,7 +64,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Verticle",
 					future -> healthCheckHandler.senderHealthHandler(future, vertx, sendAddress));
 		}
-		if (servletPath.contains("packetvalidator") || servletPath.contains("osi") || servletPath.contains("demo") || servletPath.contains("bio") || servletPath.contains("uin") || servletPath.contains("quality")) {
+		if (servletPath.contains("packetvalidator") || servletPath.contains("osi") || servletPath.contains("demo") || servletPath.contains("bio") || servletPath.contains("uin") || servletPath.contains("quality") || servletPath.contains("abishandler")) {
 			healthCheckHandler.register("hdfscheck", healthCheckHandler::hdfsHealthChecker);
 			healthCheckHandler.register(servletPath.substring(servletPath.lastIndexOf("/")+1, servletPath.length()) + "Send", future -> {
 				healthCheckHandler.senderHealthHandler(future, vertx, sendAddress);
