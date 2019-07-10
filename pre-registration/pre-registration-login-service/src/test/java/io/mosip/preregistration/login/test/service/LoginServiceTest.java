@@ -109,6 +109,7 @@ public class LoginServiceTest {
 		requestMap.put("id",sendOtpId);
 		Mockito.when(authCommonUtil.createRequestMap(otpRequest)).thenReturn(requestMap);
 		Mockito.when(otpRequest.getRequest()).thenReturn(otp);
+		Mockito.when(otp.getUserId()).thenReturn("a@a.com");
 		Mockito.when(authCommonUtil.validateUserId(Mockito.any())).thenReturn(list);
 		Mockito.doReturn(responseEntity).when(authCommonUtil).callAuthService(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),Mockito.any(), Mockito.any());
 		Mockito.doReturn(mainResponseDTO).when(authCommonUtil).getMainResponseDto(Mockito.any());
