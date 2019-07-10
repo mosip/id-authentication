@@ -5,15 +5,11 @@ import java.util.Collections;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,6 +19,7 @@ import io.mosip.idrepository.core.dto.IdResponseDTO;
 import io.mosip.idrepository.core.exception.IdRepoAppUncheckedException;
 import io.mosip.idrepository.core.httpfilter.BaseIdRepoFilter;
 import io.mosip.idrepository.core.logger.IdRepoLogger;
+import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -33,7 +30,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  */
 @Component
-public class IdRepoFilter extends BaseIdRepoFilter {
+public final class IdRepoFilter extends BaseIdRepoFilter {
 
 	/** The Constant GET. */
 	private static final String GET = "GET";
@@ -53,9 +50,6 @@ public class IdRepoFilter extends BaseIdRepoFilter {
 	/** The mosip logger. */
 	Logger mosipLogger = IdRepoLogger.getLogger(IdRepoFilter.class);
 
-	/** The path matcher. */
-	AntPathMatcher pathMatcher = new AntPathMatcher();
-
 	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper;
@@ -68,38 +62,27 @@ public class IdRepoFilter extends BaseIdRepoFilter {
 	@Resource
 	private Map<String, String> id;
 
-	String uin;
-	
-
-
+	/* (non-Javadoc)
+	 * @see io.mosip.idrepository.core.httpfilter.BaseIdRepoFilter#buildResponse(javax.servlet.http.HttpServletRequest)
+	 */
 	@Override
-	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws IOException, ServletException {
+	protected final String buildResponse(HttpServletRequest request) {
 		if (request.getMethod().equals(GET) && (request.getParameterMap().size() > 1
 				|| (request.getParameterMap().size() == 1 && !request.getParameterMap().containsKey(TYPE)))) {
-			response.getWriter().write(buildErrorResponse());
+			try {
+				IdResponseDTO idResponse = new IdResponseDTO();
+				idResponse.setId(id.get(READ));
+				idResponse.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
+				ServiceError errors = new ServiceError(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
+						IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
+				idResponse.setErrors(Collections.singletonList(errors));
+				return mapper.writeValueAsString(idResponse);
+			} catch (IOException e) {
+				mosipLogger.error(IdRepoSecurityManager.getUser(), ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
+				throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UNKNOWN_ERROR);
+			}
 		} else {
-			filterChain.doFilter(request, response);
-		}
-	}
-
-	/**
-	 * Builds the error response.
-	 *
-	 * @return the string
-	 */
-	private String buildErrorResponse() {
-		try {
-			IdResponseDTO response = new IdResponseDTO();
-			response.setId(id.get(READ));
-			response.setVersion(env.getProperty(IdRepoConstants.APPLICATION_VERSION.getValue()));
-			ServiceError errors = new ServiceError(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
-					IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
-			response.setErrors(Collections.singletonList(errors));
-			return mapper.writeValueAsString(response);
-		} catch (IOException e) {
-			mosipLogger.error(uin, ID_REPO, ID_REPO_FILTER, "\n" + ExceptionUtils.getStackTrace(e));
-			throw new IdRepoAppUncheckedException(IdRepoErrorConstants.UNKNOWN_ERROR);
+			return null;
 		}
 	}
 

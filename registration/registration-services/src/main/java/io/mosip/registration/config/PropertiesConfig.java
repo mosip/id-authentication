@@ -17,7 +17,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 public class PropertiesConfig {
 	
 	private static final String GLOBAL_PARAM_PROPERTIES = 
-			"SELECT CODE, VAL from REG.GLOBAL_PARAM where IS_ACTIVE=TRUE";
+			"SELECT CODE, VAL FROM REG.GLOBAL_PARAM WHERE IS_ACTIVE=TRUE AND VAL IS NOT NULL";
 	
 	private static final String KEY = "CODE";
 	private static final String VALUE= "VAL";
@@ -31,6 +31,10 @@ public class PropertiesConfig {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
+	/**
+	 * Fetch all the active global param values from the DB and set it in a map
+	 * @return Collection of Global param values
+	 */
 	public Map<String,Object> getDBProps() {
 		return jdbcTemplate.query(GLOBAL_PARAM_PROPERTIES, new ResultSetExtractor<Map<String,Object>>(){
 		    @Override

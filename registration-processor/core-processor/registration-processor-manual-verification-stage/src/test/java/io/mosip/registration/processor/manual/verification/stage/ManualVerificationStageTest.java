@@ -26,6 +26,8 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -100,7 +102,7 @@ public class ManualVerificationStageTest{
 		}
 	};
 	@Before
-	public void setUp() throws IOException
+	public void setUp() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, java.io.IOException
 	{
 		ReflectionTestUtils.setField(manualverificationstage, "port", "8080");
 		ReflectionTestUtils.setField(manualverificationstage, "contextPath", "/registrationprocessor/v1/manualverification");
@@ -133,7 +135,7 @@ public class ManualVerificationStageTest{
 		manualverificationstage.start();
 	}
 	@Test
-	public void testAllProcess()
+	public void testAllProcess() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException
 	{
 		testBiometric();
 		testDemographic();
@@ -141,14 +143,14 @@ public class ManualVerificationStageTest{
 		testProcessDecision();
 		testProcessPacketInfo();
 	}
-	private void testBiometric()
+	private void testBiometric() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException
 	{
 		serviceID="bio";
 		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.biometric");
 		Mockito.when(env.getProperty("mosip.registration.processor.datetime.pattern")).thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		manualverificationstage.processBiometric(ctx);
 	}
-	private void testDemographic()
+	private void testDemographic() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException
 	{
 		serviceID="demo";
 		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.demographic");
@@ -173,7 +175,7 @@ public class ManualVerificationStageTest{
 		Mockito.when(manualAdjudicationService.updatePacketStatus(any(),any())).thenReturn(updatedManualVerificationDTO);
 		manualverificationstage.processDecision(ctx);
 	}
-	private void testProcessPacketInfo()
+	private void testProcessPacketInfo() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException
 	{
 		serviceID="packetinfo";
 		Mockito.when(env.getProperty(any())).thenReturn("mosip.manual.verification.packetinfo");
@@ -375,7 +377,6 @@ public class ManualVerificationStageTest{
 
 				if(serviceID=="bio") {
 					obj1.put("regId", "51130282650000320190117144316");
-					obj1.put("fileName", "APPLICANTPHOTO");
 				}else if(serviceID=="demo") {
 					obj1.put("regId", "51130282650000320190117144316");
 

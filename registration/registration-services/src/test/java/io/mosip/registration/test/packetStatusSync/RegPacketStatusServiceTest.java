@@ -44,13 +44,14 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.config.GlobalParamService;
 import io.mosip.registration.service.packet.impl.RegPacketStatusServiceImpl;
 import io.mosip.registration.service.security.AESEncryptionService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({  HMACUtils.class, ApplicationContext.class, SessionContext.class })
+@PrepareForTest({ HMACUtils.class, ApplicationContext.class, SessionContext.class })
 public class RegPacketStatusServiceTest {
 	private Map<String, Object> applicationMap = new HashMap<>();
 
@@ -68,12 +69,15 @@ public class RegPacketStatusServiceTest {
 	private RegPacketStatusServiceImpl packetStatusService;
 
 	@Mock
+	private GlobalParamService globalParamService;
+
+	@Mock
 	RegistrationDAO registrationDAO;
 
 	@Before
-	public void initiate() throws Exception{
+	public void initiate() throws Exception {
 		PowerMockito.mockStatic(HMACUtils.class);
-		
+
 		applicationMap.put(RegistrationConstants.REG_DELETION_CONFIGURED_DAYS, "5");
 		applicationMap.put("PRIMARY_LANGUAGE", "ENG");
 
@@ -123,6 +127,72 @@ public class RegPacketStatusServiceTest {
 		when(packetStatusDao.update(Mockito.any())).thenThrow(RuntimeException.class);
 		packetStatusService.packetSyncStatus("System");
 
+	}
+
+	@Test
+	public void packetSyncStatusSuccessTestWithEmptyPackets()
+			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
+		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
+		LinkedHashMap<String, String> registration = new LinkedHashMap<>();
+		registration.put("registrationId", "12345");
+		registration.put("statusCode", RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
+		registrations.add(registration);
+
+		LinkedHashMap<String, Object> response = new LinkedHashMap<>();
+		response.put(RegistrationConstants.PACKET_STATUS_READER_RESPONSE, registrations);
+
+		LinkedHashMap<String, String> registration12 = new LinkedHashMap<>();
+
+		registration12.put("registrationId", "12345");
+		registration12.put("statusCode", RegistrationConstants.PACKET_STATUS_CODE_PROCESSED + "123");
+		registrations.add(registration12);
+
+		List<Registration> list = new LinkedList<>();
+		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
+
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(), Mockito.anyString())).thenReturn(response);
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getSuccessResponseDTO());
+
+		when(packetStatusDao.update(Mockito.any())).thenThrow(RuntimeException.class);
+		packetStatusService.packetSyncStatus("System");
+	}
+
+	@Test
+	public void packetSyncStatusExceptionTest()
+			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
+
+		List<Registration> list = new LinkedList<>();
+		Registration regis = new Registration();
+		regis.setId("12345");
+		regis.setAckFilename("..//PacketStore/02-Jan-2019/2018782130000102012019115112_Ack.png");
+		regis.setClientStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
+		list.add(regis);
+		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
+
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(), Mockito.anyString()))
+				.thenThrow(SocketTimeoutException.class);
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getErrorResponseDTOs());
+
+		packetStatusService.packetSyncStatus("System");
+	}
+
+	@Test
+	public void packetSyncStatusRuntimeExceptionTest()
+			throws HttpClientErrorException, RegBaseCheckedException, SocketTimeoutException {
+
+		List<Registration> list = new LinkedList<>();
+		Registration regis = new Registration();
+		regis.setId("12345");
+		regis.setAckFilename("..//PacketStore/02-Jan-2019/2018782130000102012019115112_Ack.png");
+		regis.setClientStatusCode(RegistrationConstants.PACKET_STATUS_CODE_PROCESSED);
+		list.add(regis);
+		when(packetStatusDao.getPacketIdsByStatusUploaded()).thenReturn(list);
+
+		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyMap(), Mockito.anyString()))
+				.thenThrow(RuntimeException.class);
+		Assert.assertNotNull(packetStatusService.packetSyncStatus("System").getErrorResponseDTOs());
+
+		packetStatusService.packetSyncStatus("System");
 	}
 
 	@Test
@@ -194,7 +264,7 @@ public class RegPacketStatusServiceTest {
 			RegBaseCheckedException, JsonProcessingException, URISyntaxException {
 		PowerMockito.mockStatic(io.mosip.registration.context.ApplicationContext.class);
 		when(io.mosip.registration.context.ApplicationContext.map()).thenReturn(applicationMap);
-		
+
 		List<Registration> packetsToBeSynched = new ArrayList<>();
 		Registration reg = new Registration();
 		reg.setId("123456");
@@ -216,6 +286,9 @@ public class RegPacketStatusServiceTest {
 		Mockito.when(aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes()))
 				.thenReturn("aes".getBytes());
 		Mockito.when(HMACUtils.generateHash(Mockito.anyString().getBytes())).thenReturn("asa".getBytes());
+
+		Mockito.when(globalParamService.getGlobalParams()).thenReturn(new HashMap());
+
 		assertEquals("Success", packetStatusService.syncPacket("System").getSuccessResponseDTO().getMessage());
 	}
 

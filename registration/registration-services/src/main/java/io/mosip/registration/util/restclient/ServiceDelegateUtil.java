@@ -4,14 +4,12 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -458,21 +456,24 @@ public class ServiceDelegateUtil {
 		switch (loginMode) {
 		case PASSWORD:
 			AuthNUserPasswordDTO authNUserPasswordDTO = new AuthNUserPasswordDTO();
-			authNUserPasswordDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNUserPasswordDTO.setAppId(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 			authNUserPasswordDTO.setUserName(loginUserDTO.getUserId());
 			authNUserPasswordDTO.setPassword(loginUserDTO.getPassword());
 			authNRequestDTO.setRequest(authNUserPasswordDTO);
 			break;
 		case OTP:
 			AuthNUserOTPDTO authNUserOTPDTO = new AuthNUserOTPDTO();
-			authNUserOTPDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNUserOTPDTO.setAppId(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 			authNUserOTPDTO.setUserId(loginUserDTO.getUserId());
 			authNUserOTPDTO.setOtp(loginUserDTO.getOtp());
 			authNRequestDTO.setRequest(authNUserOTPDTO);
 			break;
 		default:
 			AuthNClientIDDTO authNClientIDDTO = new AuthNClientIDDTO();
-			authNClientIDDTO.setAppId(RegistrationConstants.REGISTRATION_CLIENT);
+			authNClientIDDTO.setAppId(
+					String.valueOf(ApplicationContext.map().get(RegistrationConstants.REGISTRATION_CLIENT)));
 			authNClientIDDTO.setClientId(clientId);
 			authNClientIDDTO.setSecretKey(secretKey);
 			authNRequestDTO.setRequest(authNClientIDDTO);
@@ -486,7 +487,7 @@ public class ServiceDelegateUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public AuthTokenDTO getAuthToken(LoginMode loginMode) throws RegBaseCheckedException {
+	public AuthTokenDTO getAuthToken(LoginMode loginMode, boolean haveToSaveAuthToken) throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Auth Token based on Login Mode");
@@ -496,7 +497,6 @@ public class ServiceDelegateUtil {
 			HttpHeaders responseHeader = null;
 			RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 			Map<String, String> requestParams = new HashMap<>();
-			String cookie = null;
 
 			// setting headers
 			HttpHeaders headers = new HttpHeaders();
@@ -545,22 +545,23 @@ public class ServiceDelegateUtil {
 				}
 			}
 
-			cookie = responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0);
-			Properties properties = new Properties();
-			properties.load(new StringReader(cookie.replaceAll(";", "\n")));
 			AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-			authTokenDTO.setCookie(cookie);
-			// authTokenDTO.setToken(properties.getProperty(RegistrationConstants.AUTH_AUTHORIZATION));
-			// authTokenDTO.setTokenMaxAge(Long.valueOf(properties.getProperty(RegistrationConstants.AUTH_MAX_AGE)));
+			authTokenDTO.setCookie(responseHeader.get(RegistrationConstants.AUTH_SET_COOKIE).get(0));
 			authTokenDTO.setLoginMode(loginMode.getCode());
 
-			if (loginMode.equals(LoginMode.CLIENTID)) {
-				ApplicationContext.setAuthTokenDTO(authTokenDTO);
-			} else {
-				if(null != SessionContext.getInstance()) {
-					SessionContext.setAuthTokenDTO(authTokenDTO);
+			if (haveToSaveAuthToken) {
+				if (loginMode.equals(LoginMode.CLIENTID)) {
+					ApplicationContext.setAuthTokenDTO(authTokenDTO);
+					LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+							"Completed fetching Auth Token based on Client ID");
 				} else {
-					return authTokenDTO;
+					if(null != SessionContext.getInstance()) {
+						SessionContext.setAuthTokenDTO(authTokenDTO);
+						LOGGER.info(LoggerConstants.LOG_SERVICE_DELEGATE_GET_TOKEN, APPLICATION_NAME, APPLICATION_ID,
+								"Completed fetching Auth Token based on login mode ::: " + loginMode );
+					} else {
+						return authTokenDTO;
+					}
 				}
 			}
 			

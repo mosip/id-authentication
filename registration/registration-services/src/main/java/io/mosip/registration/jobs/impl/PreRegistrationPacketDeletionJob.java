@@ -19,7 +19,28 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 /**
- * Delete the Pre-Registration Packets Based on the appointment date
+ * The {@code PreRegistrationPacketDeletionJob} Delete the Pre-Registration
+ * Packets Based on the appointment date
+ * 
+ * <p>
+ * The {@code PreRegistrationPacketDeletionJob} is to delete the
+ * pre-registration data from in local.
+ * </p>
+ * 
+ * <p>
+ * The PreRegistration packets will be deleted in configured folder (EX:
+ * PreRegistartion Packet Store).
+ * </p>
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author M1046564
  *

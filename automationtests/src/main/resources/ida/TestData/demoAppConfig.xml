@@ -1,0 +1,5 @@
+<dependency>
+	<groupId>io.mosip.authentication</groupId>
+	<artifactId>authentication-partnerdemo-service</artifactId>
+	<version>0.12.9</version>
+</dependency>

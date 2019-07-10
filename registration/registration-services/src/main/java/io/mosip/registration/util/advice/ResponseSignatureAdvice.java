@@ -8,7 +8,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -37,10 +36,12 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 
 /**
- * The Class ResponseSignatureAdvice will be called after a rest services call.
- *
+ * All the responses of the rest call services which are invoking from the
+ * reg-client will get signed from this class.
+ * 
  * @author Sreekar Chukka
- * @version 1.0
+ * @since 1.0.0
+ *
  */
 @Aspect
 @Component
@@ -66,21 +67,36 @@ public class ResponseSignatureAdvice {
 	private PolicySyncDAO policySyncDAO;
 
 	/**
-	 * Response signature.
-	 *
-	 * @param joinPoint the join point
-	 * @param result    the result
-	 * @return the map
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * <p>
+	 * It is an after returning method in which for each and everytime after
+	 * successfully invoking the
+	 * "io.mosip.registration.util.restclient.RestClientUtil.invoke()" method, this
+	 * method will be called.
+	 * </p>
+	 * 
+	 * Here we are passing three arguments as parameters
+	 * <ol>
+	 * <li>SignIn Key - Public Key from Kernel</li>
+	 * <li>Response - Signature from response header</li>
+	 * <li>Response Body - Getting from the Service response</li>
+	 * </ol>
+	 * 
+	 * The above three values are passed to the {@link SignatureUtil} where the
+	 * validation will happen for the response that we send
+	 * 
+	 * @param joinPoint - the JointPoint
+	 * @param result - the object result
+	 * @return the rest client response as {@link Map}
+	 * @throws RegBaseCheckedException - the exception class that handles all the checked exceptions
 	 */
 	@SuppressWarnings("unchecked")
 	@AfterReturning(pointcut = "execution(* io.mosip.registration.util.restclient.RestClientUtil.invoke(..))", returning = "result")
-	public Map<String, Object> responseSignatureValidation(JoinPoint joinPoint, Object result)
+	public synchronized Map<String, Object> responseSignatureValidation(JoinPoint joinPoint, Object result)
 			throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 				"Entering into response signature method");
-		
+
 		HttpHeaders responseHeader = null;
 		Object[] requestHTTPDTO = joinPoint.getArgs();
 		RequestHTTPDTO requestDto = (RequestHTTPDTO) requestHTTPDTO[0];
@@ -118,8 +134,7 @@ public class ResponseSignatureAdvice {
 				LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
 						"Getting public key");
 
-				 responseHeader =  (HttpHeaders) restClientResponse
-						.get(RegistrationConstants.REST_RESPONSE_HEADERS);
+				responseHeader = (HttpHeaders) restClientResponse.get(RegistrationConstants.REST_RESPONSE_HEADERS);
 
 				if (signatureUtil.validateWithPublicKey(
 						responseHeader.get(RegistrationConstants.RESPONSE_SIGNATURE).get(0),

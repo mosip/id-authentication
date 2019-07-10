@@ -32,7 +32,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.DocumentCategoryService#
+	 * @see io.mosip.registration.service.doc.category.DocumentCategoryService#
 	 * getDocumentCategories()
 	 */
 	@Override
@@ -46,7 +46,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.impl.DocumentCategoryService#
+	 * @see io.mosip.registration.service.doc.category.DocumentCategoryService#
 	 * getDocumentCategoriesByLangCode(java.lang.String)
 	 */
 	@Override

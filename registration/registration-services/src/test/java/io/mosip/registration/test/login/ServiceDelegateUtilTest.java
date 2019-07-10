@@ -79,6 +79,7 @@ public class ServiceDelegateUtilTest {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		Map<String, Object> globalParams = new HashMap<>();
 		globalParams.put(RegistrationConstants.USER_DTO, loginDto);
+		globalParams.put(RegistrationConstants.REGISTRATION_CLIENT, "registrationclient");
 		PowerMockito.when(ApplicationContext.map()).thenReturn(globalParams);
 	}
 
@@ -200,7 +201,7 @@ public class ServiceDelegateUtilTest {
 		PowerMockito.mockStatic(SessionContext.class);
 		PowerMockito.doNothing().when(SessionContext.class, "setAuthTokenDTO", Mockito.any());
 
-		delegateUtil.getAuthToken(LoginMode.PASSWORD);
+		delegateUtil.getAuthToken(LoginMode.PASSWORD, false);
 	}
 	
 	@Test(expected=RegBaseCheckedException.class)
@@ -220,7 +221,7 @@ public class ServiceDelegateUtilTest {
 		when(environment.getProperty("auth_by_otp.service.url")).thenReturn("https://integ.mosip.io/authmanager/v1.0/authenticate/useridOTP");
 		when(restClientUtil.invoke(Mockito.any(RequestHTTPDTO.class))).thenReturn(responseMap);
 
-		delegateUtil.getAuthToken(LoginMode.OTP);
+		delegateUtil.getAuthToken(LoginMode.OTP, true);
 	}
 	
 	@Test
@@ -237,7 +238,7 @@ public class ServiceDelegateUtilTest {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doNothing().when(ApplicationContext.class, "setAuthTokenDTO", Mockito.any(AuthTokenDTO.class));
 
-		delegateUtil.getAuthToken(LoginMode.CLIENTID);
+		delegateUtil.getAuthToken(LoginMode.CLIENTID, true);
 	}
 	
 	@Test(expected=RegBaseCheckedException.class)
@@ -252,7 +253,7 @@ public class ServiceDelegateUtilTest {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doNothing().when(ApplicationContext.class, "setAuthTokenDTO", Mockito.any(AuthTokenDTO.class));
 
-		delegateUtil.getAuthToken(LoginMode.CLIENTID);
+		delegateUtil.getAuthToken(LoginMode.CLIENTID, true);
 	}
 	
 	@Test(expected=RegBaseUncheckedException.class)
@@ -267,7 +268,7 @@ public class ServiceDelegateUtilTest {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doNothing().when(ApplicationContext.class, "setAuthTokenDTO", Mockito.any(AuthTokenDTO.class));
 
-		delegateUtil.getAuthToken(LoginMode.CLIENTID);
+		delegateUtil.getAuthToken(LoginMode.CLIENTID, true);
 	}
 	
 	@Test(expected=RegBaseCheckedException.class)
@@ -279,7 +280,7 @@ public class ServiceDelegateUtilTest {
 		PowerMockito.mockStatic(ApplicationContext.class);
 		PowerMockito.doNothing().when(ApplicationContext.class, "setAuthTokenDTO", Mockito.any(AuthTokenDTO.class));
 
-		delegateUtil.getAuthToken(LoginMode.CLIENTID);
+		delegateUtil.getAuthToken(LoginMode.CLIENTID, true);
 	}
 
 	@Test

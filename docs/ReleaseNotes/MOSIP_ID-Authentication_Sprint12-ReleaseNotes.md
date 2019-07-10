@@ -7,11 +7,11 @@
 |         |          |
 |----------|----------|
 SubmittedBy|Loganathan Sekar
-Date Raised | 06-JUNE-2019
+Date Raised | 20-JUNE-2019
 Impact of Release|NA
 Implementation Start Date |28-MAY-2019
 Implementation end date	|07-JUN-2019
-Jenkins Build #	|Min Version : 1520
+Jenkins Build #	|Min Version : 1654
 Objective & Scope of Release| Sprint12 & Scope: Refer the section 3
 Acceptance Criteria	| Unit Testing and Code Coverage > 90%
 Role/Job Title|Technical Lead
@@ -28,28 +28,28 @@ MOS-15815|Integration|Tech Story - Authentication & Authorization
 MOS-24075|New|As the MOSIP system - IDA, I should be able to integrate with VID service
 MOS-23068|New|Integrate with Audit changes/OTP Request/auth changes
 MOS-24076|New|Integrate with BioAPI, Integrate with IdObjectValidator
-
+MOS-25825|Enhancement|Demo normalization externalization for multiple languages
 
 ### 1.4 Prerequisites : <br><sub>Dependent module/component with their respective versions should be mentioned here</sub></br>
 Module|Component|Version|Description (If any)
 -----|-------------|----------------|--------------
-ID Repository|ID Repository Identity Service|0.12.5|Get Identity for UIN, Get Identity for RID
-ID Repository|ID Repository VID Service|0.12.5|Get UIN for VID
-Kernel|Kernel-Audit Service|0.12.5| 
-Kernel|Kernel OTP Validator Service|0.12.5|
-Kernel|Kernel AuthManager Service|0.12.5|Send OTP, Get RID for UserID, Authenticate with ClientId-SecretKey, Validate Token
-Kernel|Mail Notification Service|0.12.5|
-Kernel|SMS Notification Service|0.12.5|
-Kernel|Master Data Service|0.12.5|Titles, Gender, Templates
-Kernel|Kernel Crypto Manager service|0.12.5|Encrypt, Decrypt
-Kernel|Kernel Crypto Signature|0.12.5|Sign
-Kernel|Kernel UIN Validator|0.12.5|Java API
-Kernel|Kernel VID Validator|0.12.5|Java API
-Kernel|Kernel Pin Validator|0.12.5|Java API
-Kernel|ID Object Validator|0.12.5|Java API
-Kernel|Kernel ID Generator – VID|0.12.5|Java API
-Kernel|Kernel ID Generator – Token ID|0.12.5|Java API
-Kernel|Kernel Crypto Manager - KeyGenarator|0.12.5|Java API
+ID Repository|ID Repository Identity Service|0.12.10|Get Identity for UIN, Get Identity for RID
+ID Repository|ID Repository VID Service|0.12.10|Get UIN for VID
+Kernel|Kernel-Audit Service|0.12.10| 
+Kernel|Kernel OTP Validator Service|0.12.10|
+Kernel|Kernel AuthManager Service|0.12.10|Send OTP, Get RID for UserID, Authenticate with ClientId-SecretKey, Validate Token
+Kernel|Mail Notification Service|0.12.10|
+Kernel|SMS Notification Service|0.12.10|
+Kernel|Master Data Service|0.12.10|Titles, Gender, Templates
+Kernel|Kernel Crypto Manager service|0.12.10|Encrypt, Decrypt
+Kernel|Kernel Crypto Signature|0.12.10|Sign
+Kernel|Kernel UIN Validator|0.12.10|Java API
+Kernel|Kernel VID Validator|0.12.10|Java API
+Kernel|Kernel Pin Validator|0.12.10|Java API
+Kernel|ID Object Validator|0.12.10|Java API
+Kernel|Kernel ID Generator – Token ID|0.12.10|Java API
+Kernel|Kernel Crypto JCE|0.12.10|Java API - Encryptor
+Kernel|Kernel Bio API Provider|0.12.10|Java API - Mock BioAPI provider
 
 ### 1.5 Open Issues : <br><sub>List of Open Issues, which would be resolved or fixed in another release version, but same Sprint</sub></br>
 Open Items|Description
@@ -65,7 +65,15 @@ MOS-24329|DONE|Yes
 MOS-24325|DONE|Yes
 MOS-24348|DONE|Yes
 MOS-25385|DONE|Yes
-
+MOS-25644|DONE|Yes
+MOS-25623|DONE|Yes
+MOS-25527|DONE|Yes
+MOS-25486|DONE|Yes
+MOS-25485|DONE|Yes
+MOS-25477|DONE|Yes
+MOS-25480|DONE|Yes
+MOS-23156|DONE|Yes
+MOS-25487|DONE|Yes
 
 ### 1.7 Features Pending : <br><sub>List of Features (Requirement) which are still pending at the time of this release for current sprint only, specifying details and date/sprint in which it would be released</sub></br>
 Requirement Id|Description|Future Date / Sprint when expected to release | Reason
@@ -76,6 +84,8 @@ Requirement Id|Description|Future Date / Sprint when expected to release | Reaso
 ### 1.8 DB Changes :
 |DB Script Name|Description|
 |---------------|-------------|
+|ida-static_pin.sql|Removed ida.static_pin table|
+|ida-static_pin_h.sql|Removed ida.static_pin_h table|
 
 
 

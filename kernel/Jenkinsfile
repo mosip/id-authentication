@@ -17,7 +17,10 @@ node {
  containersToRun = ''
  containersNames = ''
  k8DevContext = 'mosip-dev-cluster'
-
+ def config_url=env.CONFIG_URL
+ def key_manager_vm_ip=env.KEY_MANAGER_VM_DEV_IP
+ def profile_env=env.PROFILE_ENV_DMZ
+ def registryAddress=env.REGISTRY_ADDRESS
 
  stage('------- Checkout --------') {
   dir(branch) {
@@ -90,6 +93,28 @@ stage('---------- SonarQube Analysis --------------') {
    pomFile = readMavenPom file: projectToBuild+'/pom.xml'
    dockerImagesTagVersion = pomFile.parent.version
    echo dockerImagesTagVersion
+	  
+	  
+      // Creating custom image for KeyManager
+    echo "Creating custom image for KeyManager"
+    sh "find . -name 'Dockerfile_DO_NOT_BUILD'> testdirectoryDockerFiles" // find keymanager dockerfile
+    locationOfDockerFiles = readFile("testdirectoryDockerFiles").split("\\r?\\n")
+    sh "rm -f testdirectoryDockerFiles"
+
+    //finding directory name for the Dockerfile_DO_NOT_BUILD
+    sh "dirname `find . -name 'Dockerfile_DO_NOT_BUILD'`> directoryDockerFiles"
+    locationOfDockerFileDirectory = readFile("directoryDockerFiles").split("\\r?\\n")
+    sh "rm -f directoryDockerFiles"
+    echo locationOfDockerFiles[0]  
+
+    docker.withRegistry(registryUrl, registryCredentials) {
+      def buildName = registryName+'/kernel-keymanager-service'+ ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      def modulePath = locationOfDockerFileDirectory[0].substring(2)
+      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[0] + ' --build-arg docker_registry_url='+registryName+' '+ modulePath)
+      newApp.push()
+      newApp.push 'latest'
+      sh "docker rmi $buildName" //removing local copy of docker image
+     }
  
    /*
      Checking if there is any Dockerfile present to build, if not, returning from this stage
@@ -107,6 +132,8 @@ stage('---------- SonarQube Analysis --------------') {
    sh "dirname `find . -name 'Dockerfile'`> directoryDockerFiles"
    locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
    sh "rm -f directoryDockerFiles"
+   echo locationOfDockerFiles[0]	  
+     
    /*
    If build paramerter is passed as Build All (All submodules have to be built)
    */
@@ -128,8 +155,10 @@ stage('---------- SonarQube Analysis --------------') {
      Getting path of the module to be built
      */
      modulePath = locationOfDockerFiles[i].substring(2);
-     updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     
+         updatedServices.add(moduleName)
+         updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+     
      /*
      Updating containersToRun List
      */
@@ -156,6 +185,7 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $registryName/$moduleName"
     }
    } 
+   
    else {
     /*
      If build paramerter is passed as Build Changes (Only changed submodules have to be built)
@@ -175,8 +205,10 @@ stage('---------- SonarQube Analysis --------------') {
      Getting path of the module to be built
      */
      modulePath = changedModulesLocation[i].substring(2);
-     updatedServices.add(moduleName)
-     updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+
+           updatedServices.add(moduleName)
+           updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
+   
      /*
      Updating containersToRun List
      */
@@ -201,7 +233,8 @@ stage('---------- SonarQube Analysis --------------') {
      sh "docker rmi $moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName:$dockerImagesTagVersion.$BUILD_NUMBER"
      sh "docker rmi $registryName/$moduleName"
-    }
+    
+	}
    }
 
     /*
@@ -294,6 +327,19 @@ stage('---------- SonarQube Analysis --------------') {
       echo "Getting list of all services" 
       sh "kubectl get pods"
     }
+	stage('Key-Manager Deployment'){
+			 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: registryCredentials,
+usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+sh """ssh  madmin@"${key_manager_vm_ip}" /bin/bash << EOF
+sudo docker login -u "${USERNAME}" -p "${PASSWORD}"  docker-registry.mosip.io:5000 
+sudo docker ps -aq | xargs sudo docker stop | xargs sudo docker rm
+sudo docker images -q | xargs sudo docker rmi
+echo "Echoing label_env"
+echo "${branch}"
+sudo docker run -tid --ulimit memlock=-1 -p 8088:8088 -v softhsm:/softhsm -e spring_config_url_env="${config_url}" -e spring_config_label_env="${branch}" -e active_profile_env="${profile_env}" --name keymanager "${registryAddress}"/kernel-keymanager-service
+EOF"""
+		}
+	}
  }
  
    // Catching the exception for triggering email

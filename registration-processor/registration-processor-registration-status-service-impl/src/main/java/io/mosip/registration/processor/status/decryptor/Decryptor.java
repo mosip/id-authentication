@@ -1,11 +1,11 @@
 package io.mosip.registration.processor.status.decryptor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -85,7 +85,6 @@ public class Decryptor {
 	public String decrypt(Object encryptedSyncMetaInfo, String referenceId, String timeStamp)
 			throws PacketDecryptionFailureException, ApisResourceAccessException {
 		String decryptedData = null;
-		InputStream outstream = null;
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
@@ -96,11 +95,11 @@ public class Decryptor {
 			String encryptedPacketString = encryptedSyncMetaInfo.toString();
 			CryptomanagerRequestDto cryptomanagerRequestDto = new CryptomanagerRequestDto();
 			RequestWrapper<CryptomanagerRequestDto> request = new RequestWrapper<>();
-			ResponseWrapper<CryptomanagerResponseDto> response = new ResponseWrapper<>();
+			ResponseWrapper<CryptomanagerResponseDto> response;
 			cryptomanagerRequestDto.setApplicationId(applicationId);
 			cryptomanagerRequestDto.setData(encryptedPacketString);
 			cryptomanagerRequestDto.setReferenceId(referenceId);
-			CryptomanagerResponseDto cryptomanagerResponseDto = new CryptomanagerResponseDto();
+			CryptomanagerResponseDto cryptomanagerResponseDto;
 
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
 			LocalDateTime time = LocalDateTime.parse(timeStamp, format);
@@ -117,10 +116,16 @@ public class Decryptor {
 
 			response = (ResponseWrapper<CryptomanagerResponseDto>) restClientService
 					.postApi(ApiName.DMZCRYPTOMANAGERDECRYPT, "", "", request, ResponseWrapper.class);
-			cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
-					CryptomanagerResponseDto.class);
-			byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
-			decryptedData = new String(decryptedPacket);
+			if (response.getResponse() != null) {
+				cryptomanagerResponseDto = mapper.readValue(mapper.writeValueAsString(response.getResponse()),
+						CryptomanagerResponseDto.class);
+				byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
+				decryptedData = new String(decryptedPacket);
+			}else {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+						"", IO_EXCEPTION);
+				throw new PacketDecryptionFailureException(response.getErrors().get(0).getErrorCode(),response.getErrors().get(0).getMessage());
+			}
 
 			isTransactionSuccessful = true;
 			description = DECRYPTION_SUCCESS;
@@ -137,7 +142,7 @@ public class Decryptor {
 					IO_EXCEPTION);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "Internal Error occurred ");
+					"", "Internal Error occurred " + ExceptionUtils.getStackTrace(e));
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = DECRYPTION_FAILURE + "" + "::" + httpClientException.getResponseBodyAsString();

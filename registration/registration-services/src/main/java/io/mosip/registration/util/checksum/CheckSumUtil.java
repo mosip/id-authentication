@@ -36,6 +36,11 @@ public class CheckSumUtil {
 //		CHECKSUM_MAP.put("registration-service.jar", "65gfhab67586cjhsabcjk78");
 	}
 	
+	/**
+	 * Gets the check sum map.
+	 *
+	 * @return the check sum map
+	 */
 	public static Map<String,String> getCheckSumMap() {
 		return CHECKSUM_MAP;
 	}

@@ -14,7 +14,8 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
- * This class gives the information of job process
+ * This class gives the information of job process like the jobs to be executed
+ * and jobs that were executed/completed using {@link JobExecutionContext}.
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -75,7 +76,8 @@ public class JobProcessListener extends JobListenerSupport {
 					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
+					RegistrationConstants.APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -102,7 +104,8 @@ public class JobProcessListener extends JobListenerSupport {
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
+					RegistrationConstants.APPLICATION_ID,
+					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

@@ -33,7 +33,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -51,6 +50,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
@@ -130,7 +130,7 @@ public class PrintStageTest {
 	private PrintService<Map<String, byte[]>> printService;
 
 	@Mock
-	public FileSystemAdapter filesystemAdapter;
+	public PacketManager filesystemAdapter;
 
 	@Mock
 	private UinValidator<String> uinValidatorImpl;
@@ -213,7 +213,7 @@ public class PrintStageTest {
 		QueueListener listener = new QueueListener() {
 			@Override
 			public void setListener(Message message) {
-				stage.consumerListener(message);
+			//	stage.consumerListener(message);
 			}
 		};
 
@@ -256,7 +256,7 @@ public class PrintStageTest {
 		ByteSequence byteSeq = new ByteSequence();
 		byteSeq.setData(response.getBytes());
 		amq.setContent(byteSeq);
-		stage.consumerListener(amq);
+		//stage.consumerListener(amq);
 		stage.deployVerticle();
 	}
 
@@ -266,7 +266,7 @@ public class PrintStageTest {
 		ByteSequence byteSeq = new ByteSequence();
 		byteSeq.setData(response.getBytes());
 		amq.setContent(byteSeq);
-		stage.consumerListener(amq);
+		//stage.consumerListener(amq);
 		stage.deployVerticle();
 	}
 
@@ -278,7 +278,7 @@ public class PrintStageTest {
 		byteSeq.setData("registration processor".getBytes());
 		amq.setContent(byteSeq);
 		PowerMockito.whenNew(String.class).withArguments(((ActiveMQBytesMessage) amq).getContent().data).thenThrow(exp);
-		stage.consumerListener(amq);
+	//	stage.consumerListener(amq);
 	}
 
 	@Test(expected = QueueConnectionNotFound.class)

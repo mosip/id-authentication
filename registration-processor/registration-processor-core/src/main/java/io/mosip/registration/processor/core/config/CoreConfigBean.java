@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,6 +16,7 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
@@ -28,6 +30,7 @@ import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 
 import org.springframework.context.annotation.Primary;
 
@@ -73,7 +76,7 @@ public class CoreConfigBean {
 			});
 			configLoader.get();
 		} catch (Exception exception) {
-			regProcLogger.error(this.getClass().getName(), "", "", exception.getMessage());
+			regProcLogger.error(this.getClass().getName(), "", "", ExceptionUtils.getStackTrace(exception));
 		}
 		return new PropertySourcesPlaceholderConfigurer();
 	}
@@ -134,5 +137,15 @@ public class CoreConfigBean {
 	@Bean
 	public DigitalSignatureUtility getDigitalSignatureUtility() {
 		return new DigitalSignatureUtility();
+	}
+	
+	@Bean
+	public LogDescription getLogDescription() {
+		return new LogDescription();
+	}
+	
+	@Bean
+	public RegistrationExceptionMapperUtil getRegistrationExceptionMapperUtil() {
+		return new RegistrationExceptionMapperUtil();
 	}
 }

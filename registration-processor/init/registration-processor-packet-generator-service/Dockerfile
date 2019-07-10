@@ -22,7 +22,7 @@ ENV spring_config_label_env=${spring_config_label}
 ENV spring_config_url_env=${spring_config_url}
 
 # change volume to whichever storage directory you want to use for this container.
-VOLUME /home/logs  home/ftp1/packet_generated/decrypted  home/ftp1/packet_generated/encrypted
+VOLUME /home/logs  /home/ftp1/packet_generated/decrypted  /home/ftp1/packet_generated/encrypted
 
 COPY ./target/registration-processor-packet-generator-service-*.jar registration-processor-packet-generator-service.jar
 EXPOSE 8082

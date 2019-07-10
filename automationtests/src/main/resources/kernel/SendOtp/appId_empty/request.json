@@ -1,0 +1,16 @@
+{
+  "id": "string",
+  "metadata": {},
+  "request": {
+    "appId": "",
+    "otpChannel": [
+      "mobile"
+    ],
+    "context":"auth-otp",
+    "templateVariables":{},
+    "userId": "9972388747",
+    "useridtype": "USERID"
+  },
+  "requesttime": "2019-04-29T07:01:24.692Z",
+  "version": "string"
+}

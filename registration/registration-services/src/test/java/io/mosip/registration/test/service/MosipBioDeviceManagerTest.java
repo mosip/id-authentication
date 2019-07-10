@@ -250,11 +250,20 @@ public class MosipBioDeviceManagerTest {
 
 	}
 
-	@Test(expected = RegBaseCheckedException.class)
+	@Test(expected = NullPointerException.class)
 	public void scan() throws RegBaseCheckedException {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
+		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
 		mosipBioDeviceManager.scan("deviceType");
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void scan1() throws RegBaseCheckedException {
+		Map<String, BioDevice> deviceRegistry = new HashMap<>();
+		deviceRegistry.put("deviceType", new BioDevice());
+		ReflectionTestUtils.setField(MosipBioDeviceManager.class, "deviceRegistry", deviceRegistry);
+		mosipBioDeviceManager.scan("deviceTyp");
 	}
 
 	@Test
@@ -263,7 +272,7 @@ public class MosipBioDeviceManagerTest {
 		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
 		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
 		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
-		mosipBioDeviceManager.getSingleBioExtract(captureResponseDto);
+		mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
 	}
 
 	@Test
@@ -272,7 +281,7 @@ public class MosipBioDeviceManagerTest {
 		CaptureResponseBioDto captureResponseBioDto = new CaptureResponseBioDto();
 		captureResponseBioDto.setCaptureResponseData(new CaptureResponsBioDataDto());
 		captureResponseDto.setMosipBioDeviceDataResponses(Arrays.asList(captureResponseBioDto));
-		mosipBioDeviceManager.extractSingleBiometricIsoTemplate(captureResponseDto);
+		mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
 	}
 
 	@Test
@@ -280,6 +289,16 @@ public class MosipBioDeviceManagerTest {
 		Map<String, BioDevice> deviceRegistry = new HashMap<>();
 		deviceRegistry.put("deviceType", new BioDevice());
 		mosipBioDeviceManager.deRegister("deviceType");
+	}
+
+	@Test
+	public void getBioDeviceTest() {
+		mosipBioDeviceManager.getBioDevice("type", "modality");
+	}
+
+	@Test
+	public void registerTest() {
+		mosipBioDeviceManager.register();
 	}
 
 }

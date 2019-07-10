@@ -3,8 +3,12 @@ package io.mosip.registration.dao;
 import java.util.List;
 import java.util.Set;
 
+import io.mosip.registration.entity.AppAuthenticationMethod;
+
 /**
- * DAO class for AppAuthentication
+ * This class is used to fetch the authentication related information from 
+ * the {@link AppAuthenticationMethod}. It fetches different modes of authentication based on
+ * authentication type and roles of user.
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -14,14 +18,15 @@ import java.util.Set;
 public interface AppAuthenticationDAO {
 
 	/**
-	 * This method is used to get the Login Mode
+	 * This method will fetch the list of authentication modes based on the
+	 * authentication type and set of roles
 	 * 
 	 * @param authType
-	 *            authentication type
+	 *            {@code String} authentication type [Login auth, Packet auth, Exception auth, EOD auth, Onboard auth]
 	 * @param roleList
-	 *            list of roles
+	 *            {@code List} list of user roles[Registration Officer, Registration supervisor, Registration Admin]
 	 * 
-	 * @return Map of Login modes along with the sequence
+	 * @return List of login modes
 	 */
 	List<String> getModesOfLogin(String authType, Set<String> roleList);
 

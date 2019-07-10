@@ -205,7 +205,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			user.setUpdBy(SessionContext.userContext().getUserId());
 			user.setUpdDtimes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 			user.setIsActive(true);
-			user.setLangCode("eng");
+			user.setLangCode(ApplicationContext.applicationLanguage());
 
 			machineMappingRepository.save(user);
 
@@ -238,7 +238,9 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
 
-			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddress(macAdres);
+			MachineMaster macAddressOfMachineMaster = machineMasterRepository
+					.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(macAdres,
+							ApplicationContext.applicationLanguage());
 
 			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getRegMachineSpecId().getId() != null) {
 
@@ -264,8 +266,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	@Override
 	public String getCenterID(String stationId) throws RegBaseCheckedException {
 
-		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-				"getCenterID() stationID --> " + stationId);
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "getCenterID() stationID --> " + stationId);
 
 		try {
 
@@ -285,6 +286,20 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 		} catch (RuntimeException runtimeException) {
 
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION,
+					runtimeException.getMessage());
+		}
+	}
+
+	@Override
+	public Timestamp getLastUpdatedTime(String usrId) {
+		try {
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"fetching userMachineMapping details from reposiotry....");
+			UserMachineMapping userMachineMapping = machineMappingRepository.findByUserMachineMappingIdUserID(usrId);
+			return userMachineMapping != null ? userMachineMapping.getCrDtime() : null;
+		} catch (RuntimeException runtimeException) {
+			
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION,
 					runtimeException.getMessage());
 		}

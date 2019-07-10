@@ -133,7 +133,15 @@ public abstract class BaseIDAFilter implements Filter {
 
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
-		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
+		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response) {
+			
+			@Override
+			public void flushBuffer() throws IOException {
+				// Avoiding flush and commit while data validation exception handling to set response header(response-signature) later in the filter. 
+				// Positive response does not invoke this
+				//super.flushBuffer();
+			}
+		};
 		try {
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
@@ -312,10 +320,10 @@ public abstract class BaseIDAFilter implements Filter {
 	/**
 	 * consumeRequest method is used to manipulate the request where the request is
 	 * first reached and along this all validation are done further after successful
-	 * decipher
+	 * decipher.
 	 *
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
-	 * @param requestBody
+	 * @param requestBody the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
@@ -435,11 +443,11 @@ public abstract class BaseIDAFilter implements Filter {
 
 	/**
 	 * mapResponse method is used to construct the response for the successful
-	 * authentication
+	 * authentication.
 	 *
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
 	 * @param responseWrapper {@link CharResponseWrapper}
-	 * @param requestTime
+	 * @param requestTime the request time
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -510,11 +518,11 @@ public abstract class BaseIDAFilter implements Filter {
 	}
 
 	/**
-	 * transformResponse used to manipulate the response if any
+	 * transformResponse used to manipulate the response if any.
 	 *
-	 * @param response the response body
+	 * @param responseMap the response map
 	 * @return the map
-	 * @throws IdAuthenticationAppException
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected Map<String, Object> transformResponse(Map<String, Object> responseMap)
 			throws IdAuthenticationAppException {

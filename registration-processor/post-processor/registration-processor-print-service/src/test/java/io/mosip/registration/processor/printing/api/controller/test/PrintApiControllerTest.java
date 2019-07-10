@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.printing.api.controller.test;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -8,12 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -23,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,7 +36,6 @@ import io.mosip.kernel.core.idvalidator.spi.RidValidator;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
-import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.printing.api.controller.PrintApiController;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
 import io.mosip.registration.processor.printing.api.dto.RequestDTO;
@@ -65,9 +63,6 @@ public class PrintApiControllerTest {
 	@Mock
 	private PrintServiceRequestValidator validator;
 
-	@Mock
-	private TokenValidator tokenValidator;
-
 	/** The rid validator. */
 	@Mock
 	private RidValidator<String> ridValidator;
@@ -83,12 +78,11 @@ public class PrintApiControllerTest {
 	private String json;
 
 	@Before
-	public void setup() throws JsonProcessingException {
+	public void setup() {
 		when(env.getProperty("mosip.registration.processor.print.service.id")).thenReturn("mosip.registration.print");
 		when(env.getProperty("mosip.registration.processor.datetime.pattern"))
 				.thenReturn("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		when(env.getProperty("mosip.registration.processor.application.version")).thenReturn("1.0");
-		doNothing().when(tokenValidator).validate(ArgumentMatchers.any(), ArgumentMatchers.any());
 
 		PrintRequest request = new PrintRequest();
 		request.setId("mosip.registration.print");
@@ -105,22 +99,83 @@ public class PrintApiControllerTest {
 		map.put("uinPdf", pdfbyte);
 	}
 
+	@WithUserDetails("reg-admin")
 	@Test
 	public void testpdfSuccess() throws Exception {
-		Mockito.when(printservice.getDocuments(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(map);
+		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
 
-		this.mockMvc.perform(post("/uincard")
-				.cookie(new Cookie("Authorization", json))
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(json))
+		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
+	@WithUserDetails("reg-admin")
 	@Test
 	public void testPdfFailure() throws Exception {
-		this.mockMvc.perform(post("/uincard")
-				.cookie(new Cookie("Authorization", json))
-				.contentType(MediaType.APPLICATION_JSON_VALUE))
+		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(status().isBadRequest());
 	}
+
+	@WithUserDetails("reg-admin")
+	@Test
+	public void testPdfIdTypeMissing() throws Exception {
+		PrintRequest request = new PrintRequest();
+		request.setId("mosip.registration.print");
+		RequestDTO dto = new RequestDTO();
+		dto.setIdValue("10003100030000720190416061449");
+		request.setRequest(dto);
+		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		request.setVersion("1.0");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		json = gson.toJson(request);
+		this.mockMvc.perform(post("/uincard")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+	}
+
+	@WithUserDetails("reg-admin")
+	@Test
+	public void testPdfIdValueMissing() throws Exception {
+		PrintRequest request = new PrintRequest();
+		request.setId("mosip.registration.print");
+		RequestDTO dto = new RequestDTO();
+		dto.setIdtype(IdType.RID);
+		request.setRequest(dto);
+		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		request.setVersion("1.0");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		json = gson.toJson(request);
+		this.mockMvc.perform(post("/uincard")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+	}
+
+	@WithUserDetails("reg-admin")
+	@Test
+	public void testPdfSuccessUIN() throws Exception {
+		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
+		PrintRequest request = new PrintRequest();
+		request.setId("mosip.registration.print");
+		RequestDTO dto = new RequestDTO();
+		dto.setIdtype(IdType.UIN);
+		dto.setIdValue("2812936908");
+		request.setRequest(dto);
+		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		request.setVersion("1.0");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		json = gson.toJson(request);
+		this.mockMvc.perform(post("/uincard")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+	}
+
+	@WithUserDetails("reg-admin")
+	@Test
+	public void testPdfRequestMissing() throws Exception {
+		PrintRequest request = new PrintRequest();
+		request.setId("mosip.registration.print");
+		request.setRequesttime("2019-03-15T09:08:38.548Z");
+		request.setVersion("1.0");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		json = gson.toJson(request);
+		this.mockMvc.perform(post("/uincard")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+	}
+
 }

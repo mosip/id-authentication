@@ -76,7 +76,8 @@ import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.validator.RegIdObjectValidator;
 
 /**
- * Class for creating the Resident Registration as zip file
+ * Implementation class of {@link PacketCreationService} for creating the
+ * Resident Registration as zip file
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
@@ -120,7 +121,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			String registrationCategory = registrationDTO.getRegistrationMetaDataDTO().getRegistrationCategory();
 			//validate the input against the schema, mandatory, pattern and master data. if any error then stop the rest of the process
 			//and display error message to the user.
-			if (registrationCategory != null && registrationCategory != RegistrationConstants.EMPTY) {
+			if (registrationCategory != null && !registrationCategory.equals(RegistrationConstants.EMPTY)) {
 
 				idObjectValidator.validateIdObject(registrationDTO.getDemographicDTO().getDemographicInfoDTO(),
 						registrationCategory);
@@ -146,8 +147,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			cbeffInBytes = registrationDTO.getBiometricDTO().getApplicantBiometricDTO().getExceptionFace().getFace();
 			if (cbeffInBytes != null) {
-				if (SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-						.equals(RegistrationConstants.ENABLE)) {
+				if (registrationDTO.isUpdateUINChild()) {
 					filesGeneratedForPacket.put(RegistrationConstants.PARENT
 							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
 				} else {
@@ -296,9 +296,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			cbeffInBytes = registrationDTO.getBiometricDTO().getIntroducerBiometricDTO().getExceptionFace()
 					.getFace();
 			if (cbeffInBytes != null) {
-				if (registrationDTO.isUpdateUINChild()
-						&& !SessionContext.map().get(RegistrationConstants.UIN_UPDATE_PARENTORGUARDIAN)
-								.equals(RegistrationConstants.ENABLE)) {
+				if (registrationDTO.isUpdateUINNonBiometric()
+						&& !registrationDTO.isUpdateUINChild()) {
 					filesGeneratedForPacket.put(RegistrationConstants.INDIVIDUAL
 							.concat(RegistrationConstants.PACKET_INTRODUCER_EXCEP_PHOTO_NAME), cbeffInBytes);
 				} else {
@@ -392,8 +391,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private void createFaceBIR(String personType, Map<String, String> birUUIDs, List<BIR> birs, byte[] image,
 			int qualityScore, String imageType) {
 		if (image != null) {
-			BIR bir = buildBIR(image, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
-					Arrays.asList(SingleType.FACE), Arrays.asList());
+			// TODO: Replace the stub image with original image once Face SDK is implemented
+			BIR bir = buildBIR(RegistrationConstants.STUB_FACE.getBytes(), CbeffConstant.FORMAT_OWNER,
+					CbeffConstant.FORMAT_TYPE_FACE, qualityScore, Arrays.asList(SingleType.FACE), Arrays.asList());
 
 			birs.add(bir);
 			birUUIDs.put(personType.concat(imageType).toLowerCase(), bir.getBdbInfo().getIndex());
@@ -488,7 +488,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	private List<String> getFingerSubType(String fingerType) {
 		List<String> fingerSubTypes = new ArrayList<>();
-
+		fingerType=fingerType.toLowerCase();
 		if (fingerType.startsWith(RegistrationConstants.LEFT.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.LEFT.value());
 			fingerType = fingerType.replace(RegistrationConstants.LEFT.toLowerCase(), RegistrationConstants.EMPTY);
@@ -496,7 +496,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			fingerSubTypes.add(SingleAnySubtypeType.RIGHT.value());
 			fingerType = fingerType.replace(RegistrationConstants.RIGHT.toLowerCase(), RegistrationConstants.EMPTY);
 		}
-
+		fingerType=fingerType.trim();
 		if (fingerType.equalsIgnoreCase(RegistrationConstants.THUMB.toLowerCase())) {
 			fingerSubTypes.add(SingleAnySubtypeType.THUMB.value());
 		} else {

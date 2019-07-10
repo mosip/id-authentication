@@ -9,7 +9,8 @@ import javax.persistence.Table;
 
 /**
  * 
- * The Entity Class for language
+ * This Entity Class contains list of languages that are being used in Registration
+ * The data for this table will come through sync from server master table 
  * 
  * @author Sreekar chukka
  * @since 1.0.0

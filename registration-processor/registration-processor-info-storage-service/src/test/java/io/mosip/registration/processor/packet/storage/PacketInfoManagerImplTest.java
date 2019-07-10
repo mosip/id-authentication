@@ -31,12 +31,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
@@ -55,6 +54,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
@@ -69,6 +69,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
@@ -78,7 +79,6 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 /**
  * The Class PacketInfoManagerImplTest.
@@ -114,7 +114,7 @@ public class PacketInfoManagerImplTest {
 
 	/** The filesystem adapter impl. */
 	@Mock
-	private FileSystemAdapter filesystemAdapterImpl;
+	private PacketManager filesystemAdapterImpl;
 
 	/** The reg abis ref repository. */
 	@Mock
@@ -157,6 +157,13 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
+	
+	@Mock
+	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetRepository;
+
+	@Mock
+	private LogDescription description;
+
 	/** The byte array. */
 	byte[] byteArray = null;
 
@@ -191,6 +198,8 @@ public class PacketInfoManagerImplTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(description.getMessage()).thenReturn("DESCRIPTION");
 		ClassLoader classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);
@@ -1060,5 +1069,19 @@ public class PacketInfoManagerImplTest {
 		assertEquals(batchId,"123312");
 	}
 
+	@Test
+	public void  saveRegLostUinDetTest() {
+		
+		packetInfoManagerImpl.saveRegLostUinDet("123","456");
+	}
+	
+	@Test(expected = UnableToInsertData.class)
+	public void dataAccessLayerExceptionTest() {
+		
+		Mockito.when(regLostUinDetRepository.save(any())).thenThrow(new DataAccessLayerException("", "", new UnableToInsertData()));
+
+		packetInfoManagerImpl.saveRegLostUinDet("123","456");
+		
+	}
 
 }

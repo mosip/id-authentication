@@ -22,7 +22,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -42,16 +41,20 @@ import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.ResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.SmsResponseDto;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.message.sender.MessageNotificationService;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.message.sender.constants.MessageSenderConstant;
+import io.mosip.registration.processor.message.sender.dto.MessageSenderDto;
 import io.mosip.registration.processor.message.sender.exception.ConfigurationNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.EmailIdNotFoundException;
 import io.mosip.registration.processor.message.sender.exception.PhoneNumberNotFoundException;
@@ -90,7 +93,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
@@ -128,9 +131,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	@Value("${registration.processor.updated.subject}")
 	private String uinUpdatedSubject;
 
-	/** The Constant TEMPLATES. */
-	private static final String TEMPLATES = "templates";
-
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
@@ -147,29 +147,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 
 	/** The Constant EMAIL_TYPE. */
 	private static final String EMAIL_TYPE = "EMAIL";
-
-	/** The is template available. */
-	private boolean isTemplateAvailable = false;
-
-	/** The sms template code. */
-	private NotificationTemplateCode smsTemplateCode = null;
-
-	/** The email template code. */
-	private NotificationTemplateCode emailTemplateCode = null;
-
-	/** The subject. */
-	private String subject = "";
-
-	/** The id type. */
-	private IdType idType = null;
-
-	/** The description. */
-	private String description = "";
-
-	private ObjectMapper mapper = new ObjectMapper();
-
-	/** The identity iterator util. */
-	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 
 	/** Mosip router for APIs */
 	@Autowired
@@ -209,7 +186,9 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.MESSAGE_SENDER_BUS);
 		boolean isTransactionSuccessful = false;
+		LogDescription description = new LogDescription();
 		String status;
+		MessageSenderDto messageSenderDto = new MessageSenderDto();
 		String id = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), id,
 				"MessageSenderStage::process()::entry");
@@ -225,6 +204,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 			List<FieldValue> metadataList = packetMetaInfo.getIdentity().getMetaData();
+			IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 			String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
 
 			NotificationTemplateType type = null;
@@ -241,15 +221,18 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				type = map.getTemplateType(status);
 			}
 			if (type != null) {
-				setTemplateAndSubject(type, regType);
+				setTemplateAndSubject(type, regType, messageSenderDto);
 			}
 
 			Map<String, Object> attributes = new HashMap<>();
 			String[] ccEMailList = null;
 
 			if (notificationTypes == null || notificationTypes.isEmpty()) {
-				description = "Message sender failed for registrationId " + id + "::"
-						+ PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode();
+				description.setMessage(MessageSenderConstant.MESSAGE_SENDER_FAILED + id + "::"
+						+ PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), object.getRid(),
+						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getMessage());
 				throw new ConfigurationNotFoundException(
 						PlatformErrorMessages.RPR_TEM_CONFIGURATION_NOT_FOUND.getCode());
 			}
@@ -259,52 +242,48 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				ccEMailList = notificationEmails.split("\\|");
 			}
 
-			sendNotification(id, attributes, ccEMailList, allNotificationTypes, regType);
+			sendNotification(id, attributes, ccEMailList, allNotificationTypes, regType, messageSenderDto);
 
 			isTransactionSuccessful = true;
-			description = "Notification sent successfully for registrationId " + id;
+			description.setMessage(MessageSenderConstant.MESSAGE_SENDER_NOTIF_SUCC + id);
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					id, "MessageSenderStage::process()::exit");
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					id, description);
-
-			registrationStatusDto.setStatusComment(description);
+			registrationStatusDto.setStatusComment(description.getMessage());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 
 			TransactionDto transactionDto = new TransactionDto(UUID.randomUUID().toString(),
-					registrationStatusDto.getRegistrationId(), null,
+					registrationStatusDto.getRegistrationId(),
+					registrationStatusDto.getLatestRegistrationTransactionId(),
 					registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
 					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
 
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
-			transactionDto.setReferenceIdType("updated registration record");
+			transactionDto.setReferenceIdType(MessageSenderConstant.REFERENCE_TYPE_ID);
 			transactionStatusService.addRegistrationTransaction(transactionDto);
 
 			object.setIsValid(Boolean.TRUE);
-
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					id, "MessageSenderStage::success");
 		} catch (EmailIdNotFoundException | PhoneNumberNotFoundException | TemplateGenerationFailedException
 				| ConfigurationNotFoundException e) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, e.getMessage() + ExceptionUtils.getStackTrace(e));
-			description = "Email/phone/template/notification type is missing for registrationId " + id + "::"
-					+ e.getMessage();
+			description.setMessage(MessageSenderConstant.MESAGE_SENDER_EPTN_MISSING + id + "::" + e.getMessage());
 		} catch (TemplateNotFoundException tnf) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, tnf.getMessage() + ExceptionUtils.getStackTrace(tnf));
-			description = "Template not found for notification with registrationId " + id + "::" + tnf.getMessage();
+			description.setMessage(MessageSenderConstant.MESAGE_SENDER_TEMP_MISSING + id + "::" + tnf.getMessage());
 		} catch (FSAdapterException e) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 					PlatformErrorMessages.RPR_TEM_PACKET_STORE_NOT_ACCESSIBLE.getMessage() + e.getMessage());
-			description = "The Packet store set by the System is not accessible" + id;
+			description.setMessage(MessageSenderConstant.MESAGE_SENDER_PACKET_STORE + id);
 		} catch (Exception ex) {
 			object.setInternalError(Boolean.TRUE);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					id, ex.getMessage() + ExceptionUtils.getStackTrace(ex));
-			description = "Internal error occurred while processing registrationId " + id + "::" + ex.getMessage();
+			description.setMessage(MessageSenderConstant.MESAGE_SENDER_INTERNAL_ERROR + id + "::" + ex.getMessage());
 		} finally {
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
@@ -312,8 +291,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			String eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, id,
-					ApiName.AUDIT);
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					id, ApiName.AUDIT);
 		}
 
 		return object;
@@ -331,23 +310,26 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @param allNotificationTypes
 	 *            the all notification types
 	 * @param regType
+	 * @param messageSenderDto
 	 * @throws Exception
 	 *             the exception
 	 */
 	private void sendNotification(String id, Map<String, Object> attributes, String[] ccEMailList,
-			String[] allNotificationTypes, String regType) throws Exception {
+			String[] allNotificationTypes, String regType, MessageSenderDto messageSenderDto) throws Exception {
 		for (String notificationType : allNotificationTypes) {
 
-			if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(smsTemplateCode.name())) {
+			if (notificationType.equalsIgnoreCase(SMS_TYPE) && isTemplateAvailable(messageSenderDto)) {
 
-				service.sendSmsNotification(smsTemplateCode.name(), id, idType, attributes, regType);
+				service.sendSmsNotification(messageSenderDto.getSmsTemplateCode().name(), id,
+						messageSenderDto.getIdType(), attributes, regType);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 						MessageSenderStatusMessage.SMS_NOTIFICATION_SUCCESS);
 
-			} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE) && isTemplateAvailable(emailTemplateCode.name())) {
+			} else if (notificationType.equalsIgnoreCase(EMAIL_TYPE) && isTemplateAvailable(messageSenderDto)) {
 
-				service.sendEmailNotification(emailTemplateCode.name(), id, idType, attributes, ccEMailList, subject,
-						null, regType);
+				service.sendEmailNotification(messageSenderDto.getEmailTemplateCode().name(), id,
+						messageSenderDto.getIdType(), attributes, ccEMailList, messageSenderDto.getSubject(), null,
+						regType);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), id,
 						MessageSenderStatusMessage.EMAIL_NOTIFICATION_SUCCESS);
 
@@ -363,55 +345,57 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @param templatetype
 	 *            the new template and subject
 	 * @param regType
+	 * @param messageSenderDto
 	 */
-	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType) {
+	private void setTemplateAndSubject(NotificationTemplateType templatetype, String regType,
+			MessageSenderDto messageSenderDto) {
 		switch (templatetype) {
 		case LOST_UIN:
-			smsTemplateCode = NotificationTemplateCode.RPR_UIN_LOST_SMS;
-			emailTemplateCode = NotificationTemplateCode.RPR_UIN_LOST_EMAIL;
-			idType = IdType.UIN;
-			subject = uinGeneratedSubject;
+			messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_LOST_UIN_SMS);
+			messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_LOST_UIN_EMAIL);
+			messageSenderDto.setIdType(IdType.UIN);
+			messageSenderDto.setSubject(uinGeneratedSubject);
 			break;
 		case UIN_CREATED:
-			smsTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_SMS;
-			emailTemplateCode = NotificationTemplateCode.RPR_UIN_GEN_EMAIL;
-			idType = IdType.UIN;
-			subject = uinGeneratedSubject;
+			messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_UIN_GEN_SMS);
+			messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_UIN_GEN_EMAIL);
+			messageSenderDto.setIdType(IdType.UIN);
+			messageSenderDto.setSubject(uinGeneratedSubject);
 			break;
 		case UIN_UPDATE:
 			if (regType.equalsIgnoreCase(RegistrationType.NEW.name())) {
-				smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
-				emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
-				idType = IdType.UIN;
-				subject = uinGeneratedSubject;
+				messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_UIN_UPD_SMS);
+				messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_UIN_UPD_EMAIL);
+				messageSenderDto.setIdType(IdType.UIN);
+				messageSenderDto.setSubject(uinGeneratedSubject);
 			} else if (regType.equalsIgnoreCase(RegistrationType.ACTIVATED.name())) {
-				smsTemplateCode = NotificationTemplateCode.RPR_UIN_REAC_SMS;
-				emailTemplateCode = NotificationTemplateCode.RPR_UIN_REAC_EMAIL;
-				idType = IdType.UIN;
-				subject = uinActivateSubject;
+				messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_UIN_REAC_SMS);
+				messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_UIN_REAC_EMAIL);
+				messageSenderDto.setIdType(IdType.UIN);
+				messageSenderDto.setSubject(uinActivateSubject);
 			} else if (regType.equalsIgnoreCase(RegistrationType.DEACTIVATED.name())) {
-				smsTemplateCode = NotificationTemplateCode.RPR_UIN_DEAC_SMS;
-				emailTemplateCode = NotificationTemplateCode.RPR_UIN_DEAC_EMAIL;
-				idType = IdType.UIN;
-				subject = uinDeactivateSubject;
+				messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_UIN_DEAC_SMS);
+				messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_UIN_DEAC_EMAIL);
+				messageSenderDto.setIdType(IdType.UIN);
+				messageSenderDto.setSubject(uinDeactivateSubject);
 			} else if (regType.equalsIgnoreCase(RegistrationType.UPDATE.name())) {
-				smsTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_SMS;
-				emailTemplateCode = NotificationTemplateCode.RPR_UIN_UPD_EMAIL;
-				idType = IdType.UIN;
-				subject = uinUpdatedSubject;
+				messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_UIN_UPD_SMS);
+				messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_UIN_UPD_EMAIL);
+				messageSenderDto.setIdType(IdType.UIN);
+				messageSenderDto.setSubject(uinUpdatedSubject);
 			}
 			break;
 		case DUPLICATE_UIN:
-			smsTemplateCode = NotificationTemplateCode.RPR_DUP_UIN_SMS;
-			emailTemplateCode = NotificationTemplateCode.RPR_DUP_UIN_EMAIL;
-			idType = IdType.RID;
-			subject = duplicateUinSubject;
+			messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_DUP_UIN_SMS);
+			messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_DUP_UIN_EMAIL);
+			messageSenderDto.setIdType(IdType.RID);
+			messageSenderDto.setSubject(duplicateUinSubject);
 			break;
 		case TECHNICAL_ISSUE:
-			smsTemplateCode = NotificationTemplateCode.RPR_TEC_ISSUE_SMS;
-			emailTemplateCode = NotificationTemplateCode.RPR_TEC_ISSUE_EMAIL;
-			idType = IdType.RID;
-			subject = reregisterSubject;
+			messageSenderDto.setSmsTemplateCode(NotificationTemplateCode.RPR_TEC_ISSUE_SMS);
+			messageSenderDto.setEmailTemplateCode(NotificationTemplateCode.RPR_TEC_ISSUE_EMAIL);
+			messageSenderDto.setIdType(IdType.RID);
+			messageSenderDto.setSubject(reregisterSubject);
 			break;
 		default:
 			break;
@@ -421,7 +405,7 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	/**
 	 * Checks if is template available.
 	 *
-	 * @param templateCode
+	 * @param messageSenderDto
 	 *            the template code
 	 * @return true, if is template available
 	 * @throws ApisResourceAccessException
@@ -432,25 +416,31 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	private boolean isTemplateAvailable(String templateCode) throws ApisResourceAccessException, IOException {
+	private boolean isTemplateAvailable(MessageSenderDto messageSenderDto)
+			throws ApisResourceAccessException, IOException {
 
 		List<String> pathSegments = new ArrayList<>();
-		pathSegments.add(TEMPLATES);
 		ResponseWrapper<?> responseWrapper;
 		TemplateResponseDto templateResponseDto = null;
-		responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MASTER, pathSegments, "", "",
+		ObjectMapper mapper = new ObjectMapper();
+
+		responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "", "",
 				ResponseWrapper.class);
 		templateResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 				TemplateResponseDto.class);
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"MessageSenderStage::isTemplateAvailable():: TEMPLATES Api call call  ended with response data : \"\r\n"
+						+ JsonUtil.objectMapperObjectToJson(templateResponseDto));
+
 		if (responseWrapper.getErrors() == null) {
 			templateResponseDto.getTemplates().forEach(dto -> {
-				if (dto.getTemplateTypeCode().equalsIgnoreCase(templateCode)) {
-					isTemplateAvailable = true;
+				if (dto.getTemplateTypeCode().equalsIgnoreCase(messageSenderDto.getSmsTemplateCode().name())) {
+					messageSenderDto.setTemplateAvailable(true);
 				}
 			});
 		}
-		return isTemplateAvailable;
+		return messageSenderDto.isTemplateAvailable();
 	}
 
 }

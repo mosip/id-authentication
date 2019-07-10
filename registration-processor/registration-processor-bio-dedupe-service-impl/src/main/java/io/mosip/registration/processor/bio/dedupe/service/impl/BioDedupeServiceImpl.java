@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISAbortException;
 import io.mosip.registration.processor.bio.dedupe.exception.ABISInternalError;
@@ -24,6 +24,7 @@ import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -38,6 +39,7 @@ import io.mosip.registration.processor.core.packet.dto.abis.AbisInsertResponseDt
 import io.mosip.registration.processor.core.packet.dto.abis.CandidatesDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
@@ -57,12 +59,6 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BioDedupeServiceImpl.class);
-
-	/** The abis insert request dto. */
-	private AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
-
-	/** The identify request dto. */
-	private AbisIdentifyRequestDto identifyRequestDto = new AbisIdentifyRequestDto();
 
 	/** The rest client service. */
 	@Autowired
@@ -93,10 +89,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 	/** The filesystem adapter impl. */
 	@Autowired
-	private FileSystemAdapter filesystemCephAdapterImpl;
-
-	/** The identity iterator util. */
-	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+	private PacketManager filesystemCephAdapterImpl;
 
 	private static final String ABIS_INSERT = "mosip.abis.insert";
 
@@ -109,13 +102,15 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 * insertBiometrics(java.lang.String)
 	 */
 	@Override
-	public String insertBiometrics(String registrationId) throws ApisResourceAccessException {
+	public String insertBiometrics(String registrationId) throws ApisResourceAccessException, IOException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::insertBiometrics()::entry");
 		String insertStatus = "failure";
 		String requestId = uuidGenerator();
 		String referenceId = uuidGenerator();
+
+		AbisInsertRequestDto abisInsertRequestDto = new AbisInsertRequestDto();
 		abisInsertRequestDto.setId(ABIS_INSERT);
 		abisInsertRequestDto.setRequestId(requestId);
 		abisInsertRequestDto.setReferenceId(referenceId);
@@ -128,10 +123,15 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		regAbisRefDto.setReg_id(registrationId);
 
 		packetInfoManager.saveAbisRef(regAbisRefDto);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::insertBiometrics():: BIODEDUPEPOTENTIAL POST SERVICE Started with request data : "+JsonUtil.objectMapperObjectToJson(abisInsertRequestDto));
+	
 		AbisInsertResponseDto authResponseDTO = (AbisInsertResponseDto) restClientService
 				.postApi(ApiName.BIODEDUPEINSERT, "", "", abisInsertRequestDto, AbisInsertResponseDto.class);
-
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::insertBiometrics():: BIODEDUPEPOTENTIAL POST SERVICE ended with reponse data : "+JsonUtil.objectMapperObjectToJson(authResponseDTO));
+	
 		if (authResponseDTO.getReturnValue() == 1)
 			insertStatus = "success";
 		else
@@ -180,7 +180,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	 * performDedupe(java.lang.String)
 	 */
 	@Override
-	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException {
+	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException, IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::performDedupe()::entry");
 		List<String> duplicates = new ArrayList<>();
@@ -190,6 +190,7 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		String referenceId = packetInfoManager.getReferenceIdByRid(registrationId).get(0);
 
+		AbisIdentifyRequestDto identifyRequestDto = new AbisIdentifyRequestDto();
 		identifyRequestDto.setId(ABIS_IDENTIFY);
 		identifyRequestDto.setVer("1.0");
 		identifyRequestDto.setRequestId(requestId);
@@ -201,9 +202,14 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 		identifyRequestDto.setTargetFPIR(targetFPIR);
 
 		// call Identify Api to get duplicate ids
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE Start with request data :  "+JsonUtil.objectMapperObjectToJson(identifyRequestDto));
+		
 		AbisIdentifyResponseDto responsedto = (AbisIdentifyResponseDto) restClientService
 				.postApi(ApiName.BIODEDUPEPOTENTIAL, "", "", identifyRequestDto, AbisIdentifyResponseDto.class);
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::performDedupe():: BIODEDUPEPOTENTIAL POST SERVICE ended with response data : "+JsonUtil.objectMapperObjectToJson(responsedto));
+		
 		if (responsedto != null) {
 
 			if (responsedto.getReturnValue() == 2) {
@@ -265,26 +271,70 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * (non-Javadoc) get cbef file based on registration Id
 	 * 
+	 * @see io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#
+	 * getFileByRegId( java.lang.String)
+	 */
+	@Override
+	public byte[] getFileByRegId(String registrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFileByRegId()::entry");
+		byte[] file = getFile(registrationId);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "BioDedupeServiceImpl::getFileByRegId()::exit");
+		return file;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * get cbef file based on abisRefId
 	 * @see
 	 * io.mosip.registration.processor.core.spi.biodedupe.BioDedupeService#getFile(
 	 * java.lang.String)
 	 */
 	@Override
-	public byte[] getFile(String registrationId) {
+	public byte[] getFileByAbisRefId(String abisRefId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), abisRefId,
+				"BioDedupeServiceImpl::getFileByAbisRefId()::entry");
+		String registrationId = "";
+		try {
+			List<String> registrationIds = packetInfoManager.getRidByReferenceId(abisRefId);
+			if (registrationIds == null || registrationIds.isEmpty()) {
+				throw new RegistrationProcessorUnCheckedException(
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getCode(),
+						PlatformErrorMessages.REGISTRATION_ID_NOT_FOUND.getMessage());
+			}
+			registrationId = registrationIds.get(0);
+		} catch (RegistrationProcessorUnCheckedException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					abisRefId, ExceptionUtils.getStackTrace(e));
+		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), abisRefId,
+				"BioDedupeServiceImpl::getFileByAbisRefId()::exit");
+		return getFile(registrationId);
+	}
+	
+	private byte[] getFile(String registrationId) {
+		byte[] file = null;
+		if (registrationId == null || registrationId.isEmpty()) {
+			return file;
+		}
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::entry");
-		byte[] file = null;
+		try {
 		InputStream packetMetaInfoStream = filesystemCephAdapterImpl.getFile(registrationId,
 				PacketFiles.PACKET_META_INFO.name());
 		PacketMetaInfo packetMetaInfo = null;
 		String applicantBiometricFileName = "";
-		try {
+
 			packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketMetaInfo.class);
 
 			List<FieldValueArray> hashSequence = packetMetaInfo.getIdentity().getHashSequence1();
+
+			IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
 			List<String> hashList = identityIteratorUtil.getHashSequence(hashSequence,
 					JsonConstant.APPLICANTBIOMETRICSEQUENCE);
 			if (hashList != null)
@@ -296,14 +346,19 @@ public class BioDedupeServiceImpl implements BioDedupeService {
 
 		} catch (UnsupportedEncodingException exp) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() + exp.getMessage());
-		} catch (IOException e) {
+					registrationId, PlatformErrorMessages.UNSUPPORTED_ENCODING.getMessage() + ExceptionUtils.getStackTrace(exp));
+		} catch (IOException | io.mosip.kernel.core.exception.IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage() + ExceptionUtils.getStackTrace(e));
+		} catch (Exception e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, PlatformErrorMessages.UNKNOWN_EXCEPTION.getMessage() +ExceptionUtils.getStackTrace(e));
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "BioDedupeServiceImpl::getFile()::exit");
 		return file;
+	
+		
 	}
 
 }

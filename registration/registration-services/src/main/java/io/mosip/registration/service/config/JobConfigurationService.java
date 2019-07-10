@@ -1,48 +1,54 @@
 package io.mosip.registration.service.config;
 
+import java.util.List;
 import java.util.Map;
 
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 
 /**
- * service for configuring jobs
+ * This interface manages all the jobs with respect to registration client application. 
+ * It pulls the list of active jobs and respective execution configuration from db table. 
+ * It creates the Scheduler object by setting the required jobs and initiate the process. 
+ * It provides the required functions to trigger the specific jobs at required time. And also providing additional method to manage the jobs.  
+ * It associates with JobTrigger and JobProcessListener to update the each state of a job into the table. 
+ * 
  * 
  * @author YASWANTH S
  * @since 1.0.0
- *
  */
 public interface JobConfigurationService {
 
 	/**
-	 * To get the list of {@link SyncJobDef}
-	 * 
+	 * Once this object has been created then it gets the list of jobs from database and prepare the scheduler object. 
+	 * If any jobs are missed to execute as per the configuration then those jobs would be triggered. 
 	 */
 	void initiateJobs();
 
 	/**
-	 * Start the jobs with sheduled Time
+	 * Once the application started, this method would be invoked to initiate the Scheduler to Start the jobs at the configured frequency. 
 	 * 
-	 * @return responseDTO for start jobs
+	 * @return responseDTO 
+	 * 			Contains success or failure response. 
 	 */
 	ResponseDTO startScheduler();
 
 	/**
-	 * Stop the jobs manually
+	 * It helps to stop the scheduler at required time.
 	 * 
 	 * @return responseDTO for stop jobs
 	 */
 	ResponseDTO stopScheduler();
 
 	/**
-	 * To fetch the details of currently running job details
+	 * To fetch the details of currently running job
 	 * 
 	 * @return list of job names currently executing if success
 	 */
 	ResponseDTO getCurrentRunningJobDetails();
 
 	/**
-	 * execute the specified job
+	 * It helps to execute the specified job at required time from UI application. 
 	 * 
 	 * @param jobId
 	 *            the job id
@@ -59,14 +65,14 @@ public interface JobConfigurationService {
 	ResponseDTO getLastCompletedSyncJobs();
 
 	/**
-	 * Get history of Sync Jobs from Sync Transaction
+	 * Get history of Sync Jobs from Sync Transaction table.
 	 * 
 	 * @return responseDTO for last transaction of each syncJob
 	 */
 	ResponseDTO getSyncJobsTransaction();
 
 	/**
-	 * Run all the jobs
+	 * It pulls all the jobs from table and forcefully execute it. 
 	 * 
 	 * @return response of job
 	 */
@@ -88,15 +94,36 @@ public interface JobConfigurationService {
 	
 	/**
 	 * Find whether scheduler running or not
-	 * @return is scheduler running
+	 * @return 
+	 * 		true, if application running.
+	 * 		false, if application not running. 
 	 */
 	boolean isSchedulerRunning();
 	
 	/**
-	 * Active Sync Job Map
-	 * @return active sync map
+	 * It returns the active Sync Job, which was fetched from DB.
+	 * 
+	 * @return 
+	 * 		Map contains the list of sync job names and the respective Job Object.
 	 */
 	Map<String, SyncJobDef> getActiveSyncJobMap();
+	
+	/**
+	 * It returns the offline Sync Job, which was fetched from DB.
+	 * 
+	 * @return 
+	 * 		List contains the list of sync job names .
+	 */
+	public List<String> getOfflineJobs();
+	
+	/**
+	 * It returns the Untagged Job, which was fetched from DB.
+	 * 
+	 * @return 
+	 * 		List contains the list of sync job names .
+	 */
+	public List<String> getUnTaggedJobs();
+
 	
 
 }

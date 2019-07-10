@@ -71,6 +71,10 @@ public class MosipBioDeviceManager {
 	private static final Logger LOGGER = AppConfig.getLogger(MosipBioDeviceManager.class);
 
 	/**
+	 * This method will prepare the device registry, device registry contains all the running biometric devices
+	 * <p> In order to prepare device registry it will loop through the specified ports and identify on which port
+	 * any particular biometric device is running</p>
+	 * 
 	 * Looks for all the configured ports available and initializes all the
 	 * Biometric devices and saves it for future access
 	 * 
@@ -98,97 +102,8 @@ public class MosipBioDeviceManager {
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
 
-					for (LinkedHashMap<String, String> deviceInfoResponseHash : deviceInfoResponseDtos) {
-
-						try {
-							deviceInfoResponse = mapper.readValue(mapper.writeValueAsString(deviceInfoResponseHash),
-									DeviceInfoResponseData.class);
-							auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND,
-									RegistrationConstants.APPLICATION_NAME,
-									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-
-						} catch (IOException exception) {
-							LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME,
-									APPLICATION_ID, String.format("%s -> Exception while mapping the response  %s",
-											exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
-							auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE,
-									RegistrationConstants.APPLICATION_NAME,
-									AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
-
-						}
-
-						if (StringUtils.isNotEmpty(deviceInfoResponse.getType())) {
-
-							/*
-							 * Creating new bio device object for each device from service
-							 */
-							BioDevice bioDevice = new BioDevice();
-							bioDevice.setDeviceSubType(deviceInfoResponse.getSubType());
-							bioDevice.setDeviceType(deviceInfoResponse.getType());
-							bioDevice.setRunningPort(port);
-							bioDevice.setRunningUrl(getRunningurl());
-							bioDevice.setMosipBioDeviceIntegrator(mosipBioDeviceIntegrator);
-
-							String deviceSubType = deviceInfoResponse.getSubType();
-							switch (deviceInfoResponse.getType().toUpperCase()) {
-
-							case MosipBioDeviceConstants.VALUE_FINGERPRINT:
-								if (StringUtils.isNotEmpty(deviceInfoResponse.getSubType())) {
-									deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + deviceSubType,
-											bioDevice);
-
-									// if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
-									// } else if
-									// (MosipBioDeviceConstants.VALUE_SLAP_LEFT.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SLAP_LEFT, bioDevice);
-									// }else if
-									// (MosipBioDeviceConstants.VALUE_SLAP_RIGHT.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SLAP_RIGHT, bioDevice);
-									// } else if
-									// (MosipBioDeviceConstants.VALUE_SLAP_THUMB.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_SLAP_THUMB, bioDevice);
-									// } else if
-									// (MosipBioDeviceConstants.VALUE_TOUCHLESS.equalsIgnoreCase(deviceSubType)) {
-									// deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_"
-									// + MosipBioDeviceConstants.VALUE_TOUCHLESS, bioDevice);
-									// }
-
-								}
-
-								break;
-							case MosipBioDeviceConstants.VALUE_FACE:
-
-								deviceRegistry.put(MosipBioDeviceConstants.VALUE_FACE, bioDevice);
-								LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-										bioDevice + " device type is being added in the device registery");
-								break;
-							case MosipBioDeviceConstants.VALUE_IRIS:
-
-								if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
-									deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
-											+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
-								} else if (MosipBioDeviceConstants.VALUE_DOUBLE.equalsIgnoreCase(deviceSubType)) {
-									deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
-											+ MosipBioDeviceConstants.VALUE_DOUBLE, bioDevice);
-								}
-								break;
-							case MosipBioDeviceConstants.VALUE_VEIN:
-								deviceRegistry.put(MosipBioDeviceConstants.VALUE_VEIN, bioDevice);
-								break;
-
-							default:
-								break;
-							}
-						} else {
-							LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-									"Device response is invalid for device running at port number" + port);
-						}
-					}
+					deviceInfoResponse = getDeviceInfoResponse(mapper, deviceInfoResponse, port,
+							deviceInfoResponseDtos);
 
 				}
 			} else {
@@ -198,6 +113,106 @@ public class MosipBioDeviceManager {
 		}
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 				"Exit init method for preparing device registery");
+	}
+
+	
+	/**
+	 * Gets the device info response.
+	 * 
+	 * @param mapper
+	 * @param deviceInfoResponse {@link DeviceInfoResponseData}
+	 * 				-Contains the details of a specific bio device
+	 * @param port
+	 * 				- The port in which the bio device is active
+	 * @param deviceInfoResponseDtos
+	 * 				- This list will contain the response that we receive after finding the device 
+	 * @return {@link DeviceInfoResponseData}
+	 */
+	private DeviceInfoResponseData getDeviceInfoResponse(ObjectMapper mapper, DeviceInfoResponseData deviceInfoResponse, int port,
+			List<LinkedHashMap<String, String>> deviceInfoResponseDtos) {
+		for (LinkedHashMap<String, String> deviceInfoResponseHash : deviceInfoResponseDtos) {
+
+			try {
+				deviceInfoResponse = mapper.readValue(mapper.writeValueAsString(deviceInfoResponseHash),
+						DeviceInfoResponseData.class);
+				auditFactory.audit(AuditEvent.MDM_DEVICE_FOUND, Components.MDM_DEVICE_FOUND,
+						RegistrationConstants.APPLICATION_NAME,
+						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
+			} catch (IOException exception) {
+				LOGGER.error(LoggerConstants.LOG_SERVICE_DELEGATE_UTIL_GET, APPLICATION_NAME,
+						APPLICATION_ID, String.format("%s -> Exception while mapping the response  %s",
+								exception.getMessage() + ExceptionUtils.getStackTrace(exception)));
+				auditFactory.audit(AuditEvent.MDM_NO_DEVICE_AVAILABLE, Components.MDM_NO_DEVICE_AVAILABLE,
+						RegistrationConstants.APPLICATION_NAME,
+						AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
+
+			}
+
+			creationOfBioDeviceObject(deviceInfoResponse, port);
+		}
+		return deviceInfoResponse;
+	}
+
+	/**
+	 * This method will save the device details into the device registry
+	 *
+	 * @param deviceInfoResponse 
+	 * 				the device info response
+	 * @param port 
+	 * 				the port number
+	 */
+	private void creationOfBioDeviceObject(DeviceInfoResponseData deviceInfoResponse, int port) {
+		
+		if (null != deviceInfoResponse && StringUtils.isNotEmpty(deviceInfoResponse.getType())) {
+
+			/*
+			 * Creating new bio device object for each device from service
+			 */
+			BioDevice bioDevice = new BioDevice();
+			bioDevice.setDeviceSubType(deviceInfoResponse.getSubType());
+			bioDevice.setDeviceType(deviceInfoResponse.getType());
+			bioDevice.setRunningPort(port);
+			bioDevice.setRunningUrl(getRunningurl());
+			bioDevice.setMosipBioDeviceIntegrator(mosipBioDeviceIntegrator);
+
+			String deviceSubType = deviceInfoResponse.getSubType();
+			switch (deviceInfoResponse.getType().toUpperCase()) {
+
+			case MosipBioDeviceConstants.VALUE_FINGERPRINT:
+				if (StringUtils.isNotEmpty(deviceInfoResponse.getSubType())) {
+					deviceRegistry.put(MosipBioDeviceConstants.VALUE_FINGERPRINT + "_" + deviceSubType,
+							bioDevice);
+				}
+
+				break;
+			case MosipBioDeviceConstants.VALUE_FACE:
+
+				deviceRegistry.put(MosipBioDeviceConstants.VALUE_FACE, bioDevice);
+				LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+						bioDevice + " device type is being added in the device registery");
+				break;
+			case MosipBioDeviceConstants.VALUE_IRIS:
+
+				if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
+					deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
+							+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
+				} else if (MosipBioDeviceConstants.VALUE_DOUBLE.equalsIgnoreCase(deviceSubType)) {
+					deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
+							+ MosipBioDeviceConstants.VALUE_DOUBLE, bioDevice);
+				}
+				break;
+			case MosipBioDeviceConstants.VALUE_VEIN:
+				deviceRegistry.put(MosipBioDeviceConstants.VALUE_VEIN, bioDevice);
+				break;
+
+			default:
+				break;
+			}
+		} else {
+			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+					"Device response is invalid for device running at port number" + port);
+		}
 	}
 
 	/**
@@ -216,7 +231,8 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * Triggers the capture based on the device type and returns the biometric value
+	 * Triggers the biometric capture based on the device type and returns the
+	 * biometric value from MDM
 	 * 
 	 * @param deviceType
 	 *            - The type of the device
@@ -248,7 +264,18 @@ public class MosipBioDeviceManager {
 
 	}
 
-	public byte[] getSingleBioExtract(CaptureResponseDto captureResponseDto) {
+	/**
+	 * This method will return the scanned biometric data
+	 * <p> When the biometric scan will happed the return will contain many detail such as 
+	 * device code, quality score this method will extract the scanned biometric from the captured
+	 * response</p>
+	 * 
+	 * 
+	 * @param captureResponseDto
+	 *            - Response Data object {@link CaptureResponseDto} which contains the captured biometrics from MDM
+	 * @return byte[] - captured bio image
+	 */
+	public byte[] getSingleBioValue(CaptureResponseDto captureResponseDto) {
 		byte[] capturedByte = null;
 		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
 				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
@@ -261,7 +288,15 @@ public class MosipBioDeviceManager {
 		return capturedByte;
 	}
 
-	public byte[] extractSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto) {
+	/**
+	 * This method will be used to get the scanned biometric value which 
+	 * will be returned from the bio service as response
+	 *  
+	 * @param captureResponseDto
+	 *            - Response object which contains the capture biometrics from MDM
+	 * @return byte[] - captured bio extract
+	 */
+	public byte[] getSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto) {
 		byte[] capturedByte = null;
 		if (null != captureResponseDto && captureResponseDto.getMosipBioDeviceDataResponses() != null
 				&& !captureResponseDto.getMosipBioDeviceDataResponses().isEmpty()) {
@@ -275,7 +310,8 @@ public class MosipBioDeviceManager {
 	}
 
 	/**
-	 * discovers the device for the given device type
+	 * This method will loop through the specified port to find the active devices
+	 * at any instant of time
 	 * 
 	 * @param deviceType
 	 *            - type of bio device
@@ -318,6 +354,12 @@ public class MosipBioDeviceManager {
 
 	}
 
+	/**
+	 * Used to remove any inactive devices from device registry
+	 * 
+	 * @param type
+	 *            - device type
+	 */
 	public void deRegister(String type) {
 		deviceRegistry.remove(type);
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
@@ -325,6 +367,12 @@ public class MosipBioDeviceManager {
 
 	}
 
+	/**
+	 * Gets the bio device.
+	 *
+	 * @param type - the type of device
+	 * @param modality - the modality
+	 */
 	public void getBioDevice(String type, String modality) {
 
 	}

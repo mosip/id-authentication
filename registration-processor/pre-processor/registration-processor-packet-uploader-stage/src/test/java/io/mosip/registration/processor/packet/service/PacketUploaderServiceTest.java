@@ -31,7 +31,6 @@ import com.jcraft.jsch.SftpException;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
@@ -43,15 +42,18 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.JschConnectionException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.SftpFileOperationException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
+import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
-import io.mosip.registration.processor.packet.uploader.decryptor.Decryptor;
-import io.mosip.registration.processor.packet.uploader.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.uploader.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.uploader.service.PacketUploaderService;
 import io.mosip.registration.processor.packet.uploader.service.impl.PacketUploaderServiceImpl;
@@ -98,7 +100,7 @@ public class PacketUploaderServiceTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The dto. */
 	MessageDTO dto = new MessageDTO();
@@ -117,6 +119,12 @@ public class PacketUploaderServiceTest {
 	private InputStream is;
 
 	private byte[] enrypteddata;
+	
+	@Mock
+	private LogDescription description;
+	
+	@Mock
+	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	@Mock
 	private VirusScanner<Boolean, InputStream> virusScannerService;
@@ -173,6 +181,8 @@ public class PacketUploaderServiceTest {
 		Mockito.doReturn(responseWrapper).when(auditLogRequestBuilder).createAuditRequestBuilder(
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase", ApiName.AUDIT);
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(description.getMessage()).thenReturn("hello");
 
 	}
 
@@ -184,7 +194,6 @@ public class PacketUploaderServiceTest {
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
 		Mockito.when(decryptor.decrypt(Mockito.any(), Mockito.any())).thenReturn(is);
 		Mockito.when(adapter.storePacket(Mockito.any(), Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket(Mockito.any());
 		Mockito.when(adapter.isPacketPresent(Mockito.any())).thenReturn(Boolean.TRUE);
 		Mockito.when(packetArchiver.archivePacket(Mockito.any(), Mockito.any())).thenReturn(Boolean.TRUE);
 		Mockito.when(fileManager.cleanUp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
@@ -200,7 +209,6 @@ public class PacketUploaderServiceTest {
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
 		Mockito.when(decryptor.decrypt(Mockito.any(), Mockito.any())).thenReturn(is);
 		Mockito.when(adapter.storePacket(Mockito.any(), Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket(Mockito.any());
 		Mockito.when(adapter.isPacketPresent(Mockito.any())).thenReturn(Boolean.TRUE);
 		Mockito.when(packetArchiver.archivePacket(Mockito.any(), Mockito.any())).thenReturn(Boolean.TRUE);
 		MessageDTO result = packetuploaderservice.validateAndUploadPacket(dto.getRid(), "PacketUploaderStage");
@@ -263,7 +271,7 @@ public class PacketUploaderServiceTest {
 
 	@Test
 	public void testPacketDecryptionException() throws PacketDecryptionFailureException, ApisResourceAccessException,
-			JschConnectionException, SftpFileOperationException {
+			JschConnectionException, SftpFileOperationException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);
 		Mockito.when(fileManager.getFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(enrypteddata);
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
@@ -275,14 +283,13 @@ public class PacketUploaderServiceTest {
 
 	@Test
 	public void testIOException() throws SftpException, JschConnectionException, SftpFileOperationException,
-			IOException, PacketDecryptionFailureException, ApisResourceAccessException {
+			IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		ReflectionTestUtils.setField(packetuploaderservice, "maxRetryCount", 3);
 		Mockito.when(registrationStatusService.getRegistrationStatus(Mockito.any())).thenReturn(entry);
 		Mockito.when(fileManager.getFile(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(enrypteddata);
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
 		Mockito.when(decryptor.decrypt(Mockito.any(), Mockito.any())).thenReturn(is);
 		Mockito.when(adapter.storePacket(Mockito.any(), Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket(Mockito.any());
 		Mockito.when(adapter.isPacketPresent(Mockito.any())).thenReturn(Boolean.TRUE);
 		Mockito.when(packetArchiver.archivePacket(Mockito.any(), Mockito.any())).thenThrow(new IOException());
 		MessageDTO result = packetuploaderservice.validateAndUploadPacket(dto.getRid(), "PacketUploaderStage");
@@ -297,7 +304,6 @@ public class PacketUploaderServiceTest {
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
 		Mockito.when(decryptor.decrypt(Mockito.any(), Mockito.any())).thenReturn(is);
 		Mockito.when(adapter.storePacket(Mockito.any(), Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket(Mockito.any());
 		Mockito.when(adapter.isPacketPresent(Mockito.any())).thenReturn(Boolean.TRUE);
 		Mockito.when(packetArchiver.archivePacket(Mockito.any(), Mockito.any())).thenReturn(Boolean.TRUE);
 		Mockito.when(fileManager.cleanUp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
@@ -314,7 +320,6 @@ public class PacketUploaderServiceTest {
 		Mockito.when(virusScannerService.scanFile(Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
 		Mockito.when(decryptor.decrypt(Mockito.any(), Mockito.any())).thenReturn(is);
 		Mockito.when(adapter.storePacket(Mockito.any(), Mockito.any(InputStream.class))).thenReturn(Boolean.TRUE);
-		Mockito.doNothing().when(adapter).unpackPacket(Mockito.any());
 		Mockito.when(adapter.isPacketPresent(Mockito.any())).thenReturn(Boolean.TRUE);
 		Mockito.when(packetArchiver.archivePacket(Mockito.any(), Mockito.any())).thenReturn(Boolean.FALSE);
 		// Mockito.when(fileManager.cleanUp(Mockito.any(),Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(Boolean.FALSE);

@@ -4,7 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * The Class ResponseDTO.
+ * The Class RequestDTO - response DTO containing additional fields for request
+ * field in {@code IdRequestDTO}.
  *
  * @author Manoj SP
  */
@@ -12,9 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class RequestDTO extends BaseRequestResponseDTO {
 
-	/** The registration id. */
 	private String registrationId;
 	
-	/** The UIN */
 	private String biometricReferenceId;
 }

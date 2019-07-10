@@ -5,6 +5,7 @@ package io.mosip.registration.processor.status.entity;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -225,7 +226,7 @@ public class SyncRegistrationEntity extends BaseRegistrationEntity {
 	 *            the new optional values
 	 */
 	public void setOptionalValues(byte[] optionalValues) {
-		this.optionalValues = optionalValues;
+		this.optionalValues = optionalValues!=null?optionalValues:null;
 	}
 
 	/**

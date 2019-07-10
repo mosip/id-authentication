@@ -75,15 +75,15 @@ The key **non-functional requirements** are
 -   Fetch the role specific list of screen id access from
     'reg.screen\_authorization' table.
 
--   RegistrationScreenAuthorizationDAO.java -- implement the DAO
+-   ScreenAuthorizationDAO.java -- implement the DAO
     specific logic into this component.
 
--   RegistrationScreenAuthorizationRepository -- create
-    'findByRegistrationScreenAuthorizationIdRoleCodeAndIsPermittedTrueAndIsActiveTrue'
+-   ScreenAuthorizationRepository -- create
+    'findByScreenAuthorizationIdRoleCodeInAndIsPermittedTrueAndIsActiveTrue'
     method to fetch the role specific data.
 
 -   Load the list of valid screen ids and role to the UserContext object
-    by invoking setSessionContext() method.
+    by invoking updateSessionContext() method.
 
  **Screen Render Validation:**
 

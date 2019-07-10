@@ -1,7 +1,5 @@
 package io.mosip.kernel.smsnotification.test.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -11,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -33,7 +30,8 @@ public class SmsNotificationServiceTest {
 	SmsNotificationServiceImpl service;
 
 	@MockBean
-	RestTemplateBuilder restTemplateBuilder;
+	RestTemplate restTemplate;
+	
 
 	@Value("${mosip.kernel.sms.api}")
 	String api;
@@ -63,20 +61,21 @@ public class SmsNotificationServiceTest {
 				.queryParam(SmsPropertyConstant.SENDER_ID.getProperty(), senderId)
 				.queryParam(SmsPropertyConstant.RECIPIENT_NUMBER.getProperty(), "8987876473")
 				.queryParam(SmsPropertyConstant.COUNTRY_CODE.getProperty(), countryCode);
-
-		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
-
+		
 		SmsServerResponseDto serverResponse = new SmsServerResponseDto();
 		serverResponse.setType("success");
 		SmsResponseDto dto = new SmsResponseDto();
 		dto.setStatus(serverResponse.getType());
 		dto.setMessage("Sms Request Sent");
-		when(restTemplateBuilder.build()).thenReturn(restTemplate);
 
 		when(restTemplate.getForEntity(sms.toUriString(), String.class))
 				.thenReturn(new ResponseEntity<>(serverResponse.toString(), HttpStatus.OK));
 
-		//assertThat(service.sendSmsNotification("8987876473", "your otp is 4646"), is(dto));
+		when(restTemplate.postForEntity(Mockito.anyString(), Mockito.eq(Mockito.any()), Object.class))
+				.thenReturn(new ResponseEntity<>(serverResponse, HttpStatus.OK));
+
+		// assertThat(service.sendSmsNotification("8987876473", "your otp is 4646"),
+		// is(dto));
 
 	}
 

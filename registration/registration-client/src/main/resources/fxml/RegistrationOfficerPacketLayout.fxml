@@ -74,13 +74,13 @@
                         <GridPane onMouseClicked="#createPacket" prefHeight="90.0" prefWidth="250.0" styleClass="newRegBtnStyle">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="90.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.0" minWidth="10.0" prefWidth="156.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="156.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label styleClass="newRegBtnStyle" text="%newregistration" GridPane.columnIndex="1" />
+                              <Label styleClass="newRegBtnStyle" text="%newregistration" wrapText="true" GridPane.columnIndex="1" />
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -95,13 +95,13 @@
                         <GridPane fx:id="uinUpdateGridPane" onMouseClicked="#updateUIN" prefHeight="90.0" prefWidth="25.0" styleClass="uinUpdateStyle">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="90.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.0" minWidth="10.0" prefWidth="156.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="156.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label styleClass="uinUpdateBtnStyle" text="%uinupdate" GridPane.columnIndex="1" />
+                              <Label styleClass="uinUpdateBtnStyle" text="%uinupdate" wrapText="true" GridPane.columnIndex="1" />
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                     <ImageView fx:id="uinUpdateImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -116,13 +116,13 @@
                         <GridPane fx:id="lostUINPane" onMouseClicked="#lostUIN" prefHeight="90.0" prefWidth="250.0" styleClass="uinUpdateStyle">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="90.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.0" minWidth="10.0" prefWidth="156.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="156.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label styleClass="uinUpdateBtnStyle" text="%lostuin" GridPane.columnIndex="1" />
+                              <Label styleClass="uinUpdateBtnStyle" text="%lostuin" wrapText="true" GridPane.columnIndex="1" />
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -169,7 +169,7 @@
                         <GridPane onMouseClicked="#syncData" styleClass="operationalPaneDetailsSync">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="90.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="178.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="178.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -177,8 +177,13 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%lastsynctemp" />
-                                    <Label styleClass="operationalTitle" text="%synchronizeData" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="12.0" prefWidth="205.0" spacing="2.0">
+                                       <children>
+                                          <Label alignment="TOP_LEFT" contentDisplay="TOP" styleClass="operationalDetails" text="%lastsynctemp" wrapText="true" />
+                                          <Label fx:id="lastSyncTime" styleClass="operationalDetails" />
+                                       </children>
+                                    </HBox>
+                                    <Label styleClass="operationalTitle" text="%synchronizeData" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -196,8 +201,8 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%downloadedtemp" />
-                                    <Label styleClass="operationalTitle" text="%downloadPreregistrationData" />
+                                    <Label fx:id="lastPreRegPacketDownloadedTime" styleClass="operationalDetails" text="%downloadedtemp" wrapText="true" />
+                                    <Label styleClass="operationalTitle" text="%downloadPreregistrationData" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -212,7 +217,7 @@
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="90.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="178.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="178.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -222,8 +227,8 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%notuploadedtemp" />
-                                    <Label styleClass="operationalTitle" text="%updateOperatorBiometrics" />
+                                    <Label fx:id="lastBiometricTime" styleClass="operationalDetails" text="%notuploadedtemp" wrapText="true" />
+                                    <Label styleClass="operationalTitle" text="%updateOperatorBiometrics" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -238,7 +243,7 @@
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="90.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="178.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="178.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -268,8 +273,8 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label fx:id="pendingApprovalCountLbl" styleClass="operationalDetails" text="%applications" />
-                                    <Label styleClass="operationalTitle" text="%pendingapproval" />
+                                    <Label fx:id="pendingApprovalCountLbl" styleClass="operationalDetails" text="%applications" wrapText="true" />
+                                    <Label styleClass="operationalTitle" text="%pendingapproval" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -284,7 +289,7 @@
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="90.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="178.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="178.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -294,8 +299,8 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label fx:id="reRegistrationCountLbl" styleClass="operationalDetails" text="%applications" />
-                                    <Label styleClass="operationalTitle" text="%reRegistration" />
+                                    <Label fx:id="reRegistrationCountLbl" styleClass="operationalDetails" text="%applications" wrapText="true" />
+                                    <Label styleClass="operationalTitle" text="%reRegistration" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -310,7 +315,7 @@
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="90.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="178.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="178.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -320,7 +325,7 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalTitle" text="%viewReport" />
+                                    <Label styleClass="operationalTitle" text="%viewReport" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -335,7 +340,7 @@
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="90.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="178.0" minWidth="10.0" prefWidth="178.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="178.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

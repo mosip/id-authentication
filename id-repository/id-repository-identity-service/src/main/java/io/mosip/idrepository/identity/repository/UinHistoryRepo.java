@@ -12,11 +12,20 @@ import io.mosip.idrepository.identity.entity.UinHistory;
  * @author Manoj SP
  */
 public interface UinHistoryRepo extends JpaRepository<UinHistory, String> {
+	
 	/**
-	 * Gets the uin by refId 
-	 * 
-	 * @param regId
-	 * @return the Uin 
+	 * Exists by reg id.
+	 *
+	 * @param regId the reg id
+	 * @return true, if successful
+	 */
+	boolean existsByRegId(String regId);
+	
+	/**
+	 * Gets the uin by refId .
+	 *
+	 * @param regId the reg id
+	 * @return the Uin
 	 */
 	@Query("select uinHash from UinHistory where regId = :regId")
 	String getUinHashByRid(@Param("regId") String regId);

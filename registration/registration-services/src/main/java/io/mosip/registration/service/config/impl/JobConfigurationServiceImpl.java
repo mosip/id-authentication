@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,7 +50,6 @@ import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dao.SyncJobControlDAO;
 import io.mosip.registration.dao.SyncTransactionDAO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.ResponseDTOForSync;
 import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJobDef;
@@ -138,6 +138,11 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Autowired
 	private JobProcessListener jobProcessListener;
 
+	private List<String> offlineJobs = new LinkedList<>(
+			Arrays.asList("DEL_J00013", "RDJ_J00010", "ADJ_J00012", "PVS_J00015"));
+
+	private List<String> unTaggedJobs = new LinkedList<>(Arrays.asList("PDS_J00003"));
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -151,7 +156,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		try {
 
 			/* Registration Client Config Sync */
-			restartableJobList.add("SCD_J00011");
+			// it contains the list of job id, once this job is successfully completed then
+			// application should be restarted to pick the updated config.
+			restartableJobList.add("RCS_J00005");
 
 			/* Get All Jobs */
 			List<SyncJobDef> jobDefs = getJobs();
@@ -417,7 +424,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * io.mosip.registration.service.config.JobConfigurationService#executeJob(java.
 	 * lang.String, java.lang.String)
 	 */
-	@Override
+
 	public ResponseDTO executeJob(String jobId, String triggerPoint) {
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -441,6 +448,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 					/* Execute all its child jobs */
 					baseJob.executeChildJob(jobId, syncJobMap);
+				} else {
+					/* Child Job's check */
+					syncJobMap.forEach((jobIdForChild, childJob) -> {
+						if (childJob.getParentSyncJobId() != null && childJob.getParentSyncJobId().equals(jobId)) {
+							baseJob.addToCompletedJobMap(jobIdForChild, RegistrationConstants.JOB_EXECUTION_FAILURE);
+						}
+					});
 				}
 			} else {
 				responseDTO = new ResponseDTO();
@@ -677,9 +691,6 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	}
 
-	@Autowired
-	ResponseDTOForSync responseDTOForSync;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -689,25 +700,31 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public ResponseDTO executeAllJobs() {
 		ResponseDTO responseDTO = new ResponseDTO();
-
+		BaseJob.successJob.clear();
 		BaseJob.clearCompletedJobMap();
-
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
-			if ((syncJob.getValue().getParentSyncJobId() == null
-					|| syncJob.getValue().getParentSyncJobId().equalsIgnoreCase("NULL"))
+			if ((!offlineJobs.contains(syncJob.getKey()) && !unTaggedJobs.contains(syncJob.getKey()))
+					&& (syncJob.getValue().getParentSyncJobId() == null
+							|| syncJob.getValue().getParentSyncJobId().equalsIgnoreCase("NULL"))
 					&& syncJob.getValue().getApiName() != null) {
 
-				ResponseDTO jobResponse = executeJob(syncJob.getKey(), RegistrationConstants.JOB_TRIGGER_POINT_USER);
-				if (jobResponse.getErrorResponseDTOs() != null) {
-					failureJobs.add(syncActiveJobMap.get(syncJob.getKey()).getName());
-					responseDTOForSync.getErrorJobs().add(syncJob.getKey());
-				} else {
-					responseDTOForSync.getSuccessJobs().add(syncJob.getKey());
-				}
+				String triggerPoint = getUserIdFromSession().equals(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM)
+						? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
+						: RegistrationConstants.JOB_TRIGGER_POINT_USER;
+
+				executeJob(syncJob.getKey(), triggerPoint);
+
 			}
 		}
+
+		/* Child Job's check */
+		BaseJob.getCompletedJobMap().forEach((jobId, status) -> {
+			if (!status.equalsIgnoreCase(RegistrationConstants.JOB_EXECUTION_SUCCESS)) {
+				failureJobs.add(syncActiveJobMap.get(jobId).getName());
+			}
+		});
 
 		if (!isEmpty(failureJobs)) {
 			setErrorResponse(responseDTO, failureJobs.toString().replace("[", "").replace("]", ""), null);
@@ -790,6 +807,14 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	@Override
 	public Map<String, SyncJobDef> getActiveSyncJobMap() {
 		return syncActiveJobMap;
+	}
+
+	public List<String> getOfflineJobs() {
+		return offlineJobs;
+	}
+
+	public List<String> getUnTaggedJobs() {
+		return unTaggedJobs;
 	}
 
 }

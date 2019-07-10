@@ -20,6 +20,7 @@ public interface BiFunctionWithBusinessException<T, U, R> {
 	 * @param t the first function argument
 	 * @param u the second function argument
 	 * @return the function result
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	R apply(T t, U u) throws IdAuthenticationBusinessException;
 

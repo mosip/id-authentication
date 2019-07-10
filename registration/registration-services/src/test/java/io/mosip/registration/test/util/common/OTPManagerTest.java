@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,29 +42,33 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 import io.mosip.registration.validator.OTPValidatorImpl;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAppHealthCheckUtil.class })
+@PrepareForTest({ RegistrationAppHealthCheckUtil.class, ApplicationContext.class })
 public class OTPManagerTest {
 
 	@InjectMocks
-	OTPManager otpManager;
+	private OTPManager otpManager;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@Mock
-	ServiceDelegateUtil serviceDelegateUtil;
+	private ServiceDelegateUtil serviceDelegateUtil;
 
 	@Mock
-	OTPValidatorImpl otpValidator;
+	private OTPValidatorImpl otpValidator;
 
 	@Mock
-	AuthenticationServiceImpl authenticationService;
+	private AuthenticationServiceImpl authenticationService;
 
-	@BeforeClass
-	public static void initialize() {
+	@Before
+	public void initialize() throws Exception {
+		PowerMockito.mockStatic(ApplicationContext.class);
+
 		Map<String, Object> applicationMap = new HashMap<>();
 		applicationMap.put(RegistrationConstants.OTP_CHANNELS, "EMAIL");
-		ApplicationContext.getInstance().setApplicationMap(applicationMap);
+		applicationMap.put(RegistrationConstants.REGISTRATION_CLIENT, "registrationclient");
+
+		PowerMockito.doReturn(applicationMap).when(ApplicationContext.class, "map");
 	}
 
 	@Test
@@ -109,13 +113,14 @@ public class OTPManagerTest {
 			throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 
 		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-		authTokenDTO.setToken("12345");
+		authTokenDTO.setCookie("12345");
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
-		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class))).thenReturn(authTokenDTO);
+		Mockito.when(serviceDelegateUtil.getAuthToken(Mockito.any(LoginMode.class), Mockito.anyBoolean()))
+				.thenReturn(authTokenDTO);
 
-		assertNotNull(otpManager.validateOTP("mosip", "12345"));
+		assertNotNull(otpManager.validateOTP("mosip", "12345", true));
 	}
 
 	@Test
@@ -125,9 +130,9 @@ public class OTPManagerTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 		Mockito.doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(serviceDelegateUtil)
-				.getAuthToken(Mockito.any(LoginMode.class));
+				.getAuthToken(Mockito.any(LoginMode.class), Mockito.anyBoolean());
 
-		assertNull(otpManager.validateOTP("mosip", "12345"));
+		assertNull(otpManager.validateOTP("mosip", "12345", true));
 	}
 
 	@Test
@@ -138,8 +143,8 @@ public class OTPManagerTest {
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(true);
 
 		Mockito.doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(serviceDelegateUtil)
-				.getAuthToken(Mockito.any(LoginMode.class));
-		assertNull(otpManager.validateOTP("mosip", "12345"));
+				.getAuthToken(Mockito.any(LoginMode.class), Mockito.anyBoolean());
+		assertNull(otpManager.validateOTP("mosip", "12345", true));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -192,7 +197,7 @@ public class OTPManagerTest {
 		PowerMockito.mockStatic(RegistrationAppHealthCheckUtil.class);
 		Mockito.when(RegistrationAppHealthCheckUtil.isNetworkAvailable()).thenReturn(false);
 
-		assertNotNull(otpManager.validateOTP("Key", "123456"));
+		assertNotNull(otpManager.validateOTP("Key", "123456", true));
 
 	}
 

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -14,11 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.QualityScore;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -34,6 +33,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -104,7 +104,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The core audit request builder. */
 	@Autowired
@@ -127,7 +127,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	private CbeffUtil cbeffUtil;
 
 	/** The registration status mapper util. */
-	private RegistrationExceptionMapperUtil registrationStatusMapperUtil = new RegistrationExceptionMapperUtil();
+	@Autowired
+	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(QualityCheckerStage.class);
@@ -144,20 +145,26 @@ public class QualityCheckerStage extends MosipVerticleManager {
 				MessageBusAddress.QUALITY_CHECKER_BUS_OUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.QUALITY_CHECKER_BUS_IN);
 		String regId = object.getRid();
 		String description = "";
-		Boolean isTransactionSuccessful = null;
+		Boolean isTransactionSuccessful = Boolean.FALSE;
 		InternalRegistrationStatusDto registrationStatusDto = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 				"QualityCheckerStage::process()::entry");
+
+		registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
+
 		try {
-			registrationStatusDto = registrationStatusService.getRegistrationStatus(regId);
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 			InputStream idJsonStream = adapter.getFile(regId,
 					PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -199,7 +206,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 				List<BIR> birList = cbeffUtil.convertBIRTypeToBIR(birTypeList);
 				int scoreCounter = 0;
 				for (BIR bir : birList) {
-					SingleType singleType = bir.getBdbInfo().getType().get(0);;
+					SingleType singleType = bir.getBdbInfo().getType().get(0);
+					;
 					List<String> subtype = bir.getBdbInfo().getSubtype();
 					Integer threshold = getThresholdBasedOnType(singleType, subtype);
 					QualityScore qualityScore = bioAPi.checkQuality(bir, null);
@@ -223,6 +231,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), regId, "QualityCheckerImpl::success");
 				}
 			}
 
@@ -276,8 +286,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, regId);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
-					"QualityCheckerStage::process()::exit");
+
 		}
 
 		return object;
@@ -286,8 +295,10 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	/**
 	 * Gets the threshold based on type.
 	 *
-	 * @param singleType the single type
-	 * @param subtype the subtype
+	 * @param singleType
+	 *            the single type
+	 * @param subtype
+	 *            the subtype
 	 * @return the threshold based on type
 	 */
 	private Integer getThresholdBasedOnType(SingleType singleType, List<String> subtype) {

@@ -15,7 +15,8 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * @author Ramadurai Pandian
+ * @author Ramadurai Saravana Pandian
+ * @author Raj Jha 
  *
  */
 @Configuration
@@ -24,7 +25,7 @@ public class SpringDataSourceConfig {
 	@Autowired
 	private Environment env;
 
-	@Value("${hikari.maximumPoolSize:100}")
+	@Value("${hikari.maximumPoolSize:25}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
 	private int validationTimeout;

@@ -40,7 +40,9 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
- * The BaseService class.
+ * This is a base class for service package. The common functionality across the 'services' classes are 
+ * implemented in this class to inherit this property at the required extended classes. 
+ * 
  */
 @Service
 public class BaseService {
@@ -133,7 +135,7 @@ public class BaseService {
 	 *
 	 * @return user id
 	 */
-	protected String getUserIdFromSession() {
+	public String getUserIdFromSession() {
 		String userId = null;
 		if (SessionContext.isSessionContextAvailable()) {
 			userId = SessionContext.userId();
@@ -271,7 +273,7 @@ public class BaseService {
 
 		ApplicationContext.getInstance();
 		// Check application map
-		if (ApplicationContext.map().isEmpty()) {
+		if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key)==null) {
 
 			// Load Global params if application map is empty
 			ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());

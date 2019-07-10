@@ -78,9 +78,8 @@ public class RegistrationSyncController {
 	@Autowired
 	private DigitalSignatureUtility digitalSignatureUtility;
 
-
 	private static final String REG_SYNC_SERVICE_ID = "mosip.registration.processor.registration.sync.id";
-	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.sync.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
@@ -112,9 +111,10 @@ public class RegistrationSyncController {
 					env.getProperty(REG_SYNC_SERVICE_ID), syncResponseList)) {
 				syncResponseList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
 			}
-			if(isEnabled) {
+			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
-				headers.add(RESPONSE_SIGNATURE,digitalSignatureUtility.getDigitalSignature(buildRegistrationSyncResponse(syncResponseList)));
+				headers.add(RESPONSE_SIGNATURE,
+						digitalSignatureUtility.getDigitalSignature(buildSignatureRegistrationSyncResponse(syncResponseList)));
 				return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
 			}
 
@@ -125,7 +125,7 @@ public class RegistrationSyncController {
 		}
 	}
 
-	public String buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
+	public RegSyncResponseDTO buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
 			throws JsonProcessingException {
 
 		RegSyncResponseDTO response = new RegSyncResponseDTO();
@@ -135,7 +135,46 @@ public class RegistrationSyncController {
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
 		List<SyncErrorDTO> syncErrorDTOList = new ArrayList<>();
-		List<SyncResponseDto> syncResponseList = new ArrayList<SyncResponseDto>();
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
+		for (SyncResponseDto syncResponseDto : syncResponseDtoList) {
+			if (syncResponseDto.getStatus().equals(ResponseStatusCode.SUCCESS.toString())) {
+				syncResponseList.add(syncResponseDto);
+			} else {
+				if (syncResponseDto instanceof SyncResponseFailureDto) {
+					SyncErrDTO errors = new SyncErrDTO(((SyncResponseFailureDto) syncResponseDto).getErrorCode(),
+							((SyncResponseFailureDto) syncResponseDto).getMessage());
+					errors.setRegistrationId(((SyncResponseFailureDto) syncResponseDto).getRegistrationId());
+					errors.setStatus(syncResponseDto.getStatus());
+
+					syncErrorDTOList.add(errors);
+				} else if (syncResponseDto instanceof SyncResponseFailDto) {
+					SyncErrorDTO errors = new SyncErrorDTO(((SyncResponseFailDto) syncResponseDto).getErrorCode(),
+							((SyncResponseFailDto) syncResponseDto).getMessage());
+					errors.setStatus(syncResponseDto.getStatus());
+					syncErrorDTOList.add(errors);
+				}
+			}
+		}
+		if (!syncErrorDTOList.isEmpty()) {
+			response.setErrors(syncErrorDTOList);
+		}
+		if (!syncResponseList.isEmpty()) {
+			response.setResponse(syncResponseList);
+		}
+		return response;
+	}
+	
+	public String buildSignatureRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
+			throws JsonProcessingException {
+
+		RegSyncResponseDTO response = new RegSyncResponseDTO();
+		if (Objects.isNull(response.getId())) {
+			response.setId(env.getProperty(REG_SYNC_SERVICE_ID));
+		}
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
+		List<SyncErrorDTO> syncErrorDTOList = new ArrayList<>();
+		List<SyncResponseDto> syncResponseList = new ArrayList<>();
 		for (SyncResponseDto syncResponseDto : syncResponseDtoList) {
 			if (syncResponseDto.getStatus().equals(ResponseStatusCode.SUCCESS.toString())) {
 				syncResponseList.add(syncResponseDto);
@@ -162,9 +201,7 @@ public class RegistrationSyncController {
 			response.setResponse(syncResponseList);
 		}
 		ObjectMapper objectMapper = new ObjectMapper();
-		String objectMapperResponse = null;
-		objectMapperResponse = objectMapper.writeValueAsString(response);
-		return objectMapperResponse;
+		return objectMapper.writeValueAsString(response);
 	}
 
 }

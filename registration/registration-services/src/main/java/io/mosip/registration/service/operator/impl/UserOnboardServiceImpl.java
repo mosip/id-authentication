@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -21,8 +22,6 @@ import javax.crypto.SecretKey;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -231,7 +230,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 						LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 								"User Onboarded authentication flag... :" + onboardAuthFlag);
 
-						if (true) {
+						if (onboardAuthFlag) {
 							responseDTO = save(biometricDTO);
 							LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 									RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);
@@ -258,8 +257,8 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 						RegistrationConstants.USER_ON_BOARDING_SUCCESS_MSG);
 			}
 
-		} catch (HttpClientErrorException | ResourceAccessException | RegBaseCheckedException | InvalidKeySpecException
-				| NoSuchAlgorithmException | IOException regBasedCheckedException) {
+		} catch (RegBaseCheckedException | InvalidKeySpecException | NoSuchAlgorithmException | IOException
+				| RuntimeException regBasedCheckedException) {
 			LOGGER.error(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
 					ExceptionUtils.getStackTrace(regBasedCheckedException));
 			setErrorResponse(responseDTO, RegistrationConstants.USER_ON_BOARDING_EXCEPTION, null);
@@ -384,6 +383,12 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 
 		return userOnbaordFlag;
 
+	}
+
+	@Override
+	public Timestamp getLastUpdatedTime(String usrId) {
+		
+		return userOnBoardDao.getLastUpdatedTime(usrId);
 	}
 
 }

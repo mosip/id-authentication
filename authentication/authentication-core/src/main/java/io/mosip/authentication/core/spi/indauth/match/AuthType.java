@@ -12,7 +12,6 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
-import io.mosip.authentication.core.spi.bioauth.util.BioMatcherUtil;
 
 /**
  * Auth type interface
@@ -38,7 +37,7 @@ public interface AuthType {
 	 * Gets the matching strategy.
 	 *
 	 * @param authReq             the auth req
-	 * @param languageInfoFetcher the language info fetcher
+	 * @param language the language
 	 * @return the matching strategy
 	 */
 	default Optional<String> getMatchingStrategy(AuthRequestDTO authReq, String language) {
@@ -49,8 +48,9 @@ public interface AuthType {
 	 * Gets the matching threshold.
 	 *
 	 * @param authReq             the auth req
-	 * @param languageInfoFetcher the language info fetcher
+	 * @param language the language
 	 * @param environment         the environment
+	 * @param idInfoFetcher the id info fetcher
 	 * @return the matching threshold
 	 */
 	public default Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, String language,
@@ -67,10 +67,12 @@ public interface AuthType {
 	 *
 	 * @param authRequestDTO      the auth request DTO
 	 * @param languageInfoFetcher the language info fetcher
+	 * @param bioMatcherUtil the bio matcher util
+	 * @param language the language
 	 * @return the match properties
 	 */
 	public default Map<String, Object> getMatchProperties(AuthRequestDTO authRequestDTO,
-			IdInfoFetcher languageInfoFetcher, BioMatcherUtil bioMatcherUtil, String language) {
+			IdInfoFetcher languageInfoFetcher, String language) {
 		return Collections.emptyMap();
 	}
 
@@ -86,7 +88,7 @@ public interface AuthType {
 	}
 
 	/**
-	 * Returns the set of given match types
+	 * Returns the set of given match types.
 	 *
 	 * @param supportedMatchTypes the supported match types
 	 * @return the sets the
@@ -123,7 +125,8 @@ public interface AuthType {
 	/**
 	 * Checks if is auth type info available.
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param authReq the auth req
+	 * @param idInfoFetcher the id info fetcher
 	 * @return true, if is auth type info available
 	 */
 	public default boolean isAuthTypeEnabled(AuthRequestDTO authReq, IdInfoFetcher idInfoFetcher) {
@@ -140,6 +143,11 @@ public interface AuthType {
 		return Collections.unmodifiableSet(getAuthTypeImpl().getAssociatedMatchTypes());
 	}
 
+	/**
+	 * Gets the auth type predicate.
+	 *
+	 * @return the auth type predicate
+	 */
 	public default Predicate<? super AuthTypeDTO> getAuthTypePredicate() {
 		return getAuthTypeImpl().getAuthTypePredicate();
 	}

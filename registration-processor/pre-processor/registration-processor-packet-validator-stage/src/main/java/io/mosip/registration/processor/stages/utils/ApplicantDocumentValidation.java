@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.applicantcategory.ApplicantCategory;
@@ -29,7 +30,7 @@ import io.mosip.registration.processor.packet.storage.utils.Utilities;
 /**
  * The Class ApplicantDocumentValidation.
  * 
- * M1039285
+ * @author Nagalakshmi
  */
 public class ApplicantDocumentValidation {
 
@@ -97,6 +98,8 @@ public class ApplicantDocumentValidation {
 	 *             the apis resource access exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws io.mosip.kernel.core.exception.IOException 
+	 * @throws PacketDecryptionFailureException 
 	 * @throws ParseException
 	 *             the parse exception
 	 * @throws ParseException
@@ -107,7 +110,7 @@ public class ApplicantDocumentValidation {
 	 *             the illegal argument exception
 	 */
 	public boolean validateDocument(String registrationId, String jsonString)
-			throws ApisResourceAccessException, IOException {
+			throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
 		boolean isApplicantDocumentVerified = false;
 		String applicantType = null;

@@ -30,7 +30,7 @@ import io.mosip.kernel.core.util.UUIDUtils;
 public class AuthTransactionBuilder {
 	
 	/**
-	 * 
+	 * Instantiates a new auth transaction builder.
 	 */
 	private AuthTransactionBuilder() {
 	}
@@ -52,27 +52,28 @@ public class AuthTransactionBuilder {
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(AuditHelper.class);
 	
-	/**  */
+	/** The auth request DTO. */
 	private AuthRequestDTO authRequestDTO;
 
-	/**  */
+	/** The uin. */
 	private String uin;
 
-	/**  */
+	/** The request type. */
 	private RequestType requestType;
 
-	/**  */
+	/** The static token id. */
 	private String staticTokenId;
 
-	/**  */
+	/** The is status. */
 	private boolean isStatus;
 
+	/** The otp request DTO. */
 	private OtpRequestDTO otpRequestDTO;
 	
 	/**
-	 * Set the AuthRequestDTO
+	 * Set the AuthRequestDTO.
 	 *
-	 * @param authRequestDTO 
+	 * @param authRequestDTO the auth request DTO
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withAuthRequest(AuthRequestDTO authRequestDTO) {
@@ -80,15 +81,21 @@ public class AuthTransactionBuilder {
 		return this;
 	}
 	
+	/**
+	 * With otp request.
+	 *
+	 * @param otpRequestDTO the otp request DTO
+	 * @return the auth transaction builder
+	 */
 	public AuthTransactionBuilder withOtpRequest(OtpRequestDTO otpRequestDTO) {
 		this.otpRequestDTO = otpRequestDTO;
 		return this;
 	}
 
 	/**
-	 * Set the UIN
+	 * Set the UIN.
 	 *
-	 * @param uin 
+	 * @param uin the uin
 	 * @return  {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withUin(String uin) {
@@ -97,9 +104,9 @@ public class AuthTransactionBuilder {
 	}
 
 	/**
-	 * Set the RequestType
+	 * Set the RequestType.
 	 *
-	 * @param requestType 
+	 * @param requestType the request type
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withRequestType(RequestType requestType) {
@@ -108,9 +115,9 @@ public class AuthTransactionBuilder {
 	}
 
 	/**
-	 * Set the static token
+	 * Set the static token.
 	 *
-	 * @param staticTokenId 
+	 * @param staticTokenId the static token id
 	 * @return {@code AuthTransactionBuilder} instance
 	 */
 	public AuthTransactionBuilder withStaticToken(String staticTokenId) {
@@ -119,10 +126,10 @@ public class AuthTransactionBuilder {
 	}
 
 	/**
-	 * 
+	 * With status.
 	 *
-	 * @param isStatus 
-	 * @return 
+	 * @param isStatus the is status
+	 * @return the auth transaction builder
 	 */
 	public AuthTransactionBuilder withStatus(boolean isStatus) {
 		this.isStatus = isStatus;
@@ -130,12 +137,11 @@ public class AuthTransactionBuilder {
 	}
 	
 	/**
-	 * Build {@code AutnTxn}
+	 * Build {@code AutnTxn}.
 	 *
-	 * @param idInfoFetcher 
-	 * @param env 
+	 * @param env the env
 	 * @return the instance of {@code AutnTxn}
-	 * @throws IdAuthenticationBusinessException 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	public AutnTxn build(Environment env) throws IdAuthenticationBusinessException {
 		try {
@@ -198,9 +204,9 @@ public class AuthTransactionBuilder {
 	/**
 	 * Creates UUID.
 	 *
-	 * @param uin 
-	 * @param env 
-	 * @return 
+	 * @param uin the uin
+	 * @param env the env
+	 * @return the string
 	 */
 	private String createId(String uin, PropertyResolver env) {
 		String currentDate = DateUtils.formatDate(new Date(),
@@ -209,6 +215,9 @@ public class AuthTransactionBuilder {
 		return UUIDUtils.getUUID(UUIDUtils.NAMESPACE_OID, uinAndDate).toString();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "AuthTransactionBuilder [authRequestDTO=" + authRequestDTO + ", uin=" + uin + ", requestType="

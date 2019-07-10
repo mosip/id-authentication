@@ -1,0 +1,10 @@
+{
+	"ref_id": "10002",
+	"log_desc": "Availability retrieved successfully for booking",
+	"event_id": "PRE_401",
+	"event_type": "BUSINESS",
+	"session_user_id": "9281616299",
+	"event_name": "RETRIEVE",
+	"module_name": "BOOKING_SERVICE",
+	"ref_id_type": "PRE_REGISTRATION_ID"
+}

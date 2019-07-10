@@ -2,7 +2,6 @@ package io.mosip.registration.processor.stages.osivalidator;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -23,15 +22,9 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
-import io.mosip.kernel.core.fsadapter.spi.FileSystemAdapter;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.registration.processor.core.auth.dto.AuthRequestDTO;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
-import io.mosip.registration.processor.core.auth.dto.AuthTypeDTO;
-import io.mosip.registration.processor.core.auth.dto.IdentityDTO;
-import io.mosip.registration.processor.core.auth.dto.IdentityInfoDTO;
-import io.mosip.registration.processor.core.auth.dto.PinInfo;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.RegistrationExceptionTypeCode;
 import io.mosip.registration.processor.core.constant.JsonConstant;
@@ -39,6 +32,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.BioTypeException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PacketStructure;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -46,16 +40,16 @@ import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.ServerError;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDto;
+import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.ABISHandlerUtil;
+import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
-import io.mosip.registration.processor.stages.osivalidator.utils.AuthUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -91,7 +85,7 @@ public class OSIValidator {
 
 	/** The adapter. */
 	@Autowired
-	private FileSystemAdapter adapter;
+	private PacketManager adapter;
 
 	/** The rest client service. */
 	@Autowired
@@ -108,33 +102,8 @@ public class OSIValidator {
 	@Autowired
 	ABISHandlerUtil abisHandlerUtil;
 
-	private JSONObject demographicIdentity;
-
-	private RegistrationProcessorIdentity regProcessorIdentityJson;
-
 	/** The Constant TRUE. */
-	private static final String TRUE = "true";
-
-	/** The registration status dto. */
-	InternalRegistrationStatusDto registrationStatusDto;
-
-	/** The auth request DTO. */
-	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-
-	/** The auth type DTO. */
-	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-
-	/** The identity DTO. */
-	IdentityDTO identityDTO = new IdentityDTO();
-
-	/** The identity info DTO. */
-	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-
-	/** The pin info. */
-	PinInfo pinInfo = new PinInfo();
-
-	/** The identity iterator util. */
-	IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+	private static final String ISTRUE = "true";
 
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
@@ -147,14 +116,11 @@ public class OSIValidator {
 	@Autowired
 	private Utilities utility;
 
-	RegistrationExceptionMapperUtil registrationExceptionMapperUtil = new RegistrationExceptionMapperUtil();
+	@Autowired
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil;
 
 	@Autowired
 	private AuthUtil authUtil;
-
-	/** The registration processor rest client service. */
-	@Autowired
-	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
 	/** The Constant APPLICATION_ID. */
 	public static final String IDA_APP_ID = "IDA";
@@ -168,8 +134,6 @@ public class OSIValidator {
 	public static final String INDIVIDUAL_TYPE_UIN = "UIN";
 
 	private static final String INDIVIDUAL_TYPE_USERID = "USERID";
-
-	
 
 	/**
 	 * Checks if is valid OSI.
@@ -188,15 +152,18 @@ public class OSIValidator {
 	 * @throws BioTypeException
 	 * @throws BiometricException
 	 * @throws NumberFormatException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 */
-	public boolean isValidOSI(String registrationId)
+	public boolean isValidOSI(String registrationId, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException {
+			ParserConfigurationException, SAXException, NumberFormatException, BiometricException, BioTypeException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidOSI()::entry");
 		boolean isValidOsi = false;
-		demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
-		regProcessorIdentityJson = utility.getRegistrationProcessorIdentityJson();
+		JSONObject demographicIdentity = utility.getDemographicIdentityJSONObject(registrationId);
+		RegistrationProcessorIdentity regProcessorIdentityJson = utility.getRegistrationProcessorIdentityJson();
 		Identity identity = osiUtils.getIdentity(registrationId);
 		/** Getting data from packet MetadataInfo */
 		RegOsiDto regOsi = osiUtils.getOSIDetailsFromMetaInfo(registrationId, identity);
@@ -211,7 +178,7 @@ public class OSIValidator {
 					registrationId, "Both Officer and Supervisor ID are not present in Packet");
 			return false;
 		} else {
-			boolean isActive = isActiveUserId(registrationId, regOsi, identity);
+			boolean isActive = isActiveUserId(registrationId, regOsi, identity, registrationStatusDto);
 			if (!isActive) {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
@@ -222,8 +189,10 @@ public class OSIValidator {
 						StatusMessage.SUPERVISOR_OR_OFFICER_WAS_INACTIVE);
 				return false;
 			}
-			if (((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId)))
-					&& (isValidIntroducer(registrationId)))
+			if (((isValidOperator(regOsi, registrationId, registrationStatusDto))
+					&& (isValidSupervisor(regOsi, registrationId, registrationStatusDto)))
+					&& (isValidIntroducer(registrationId, demographicIdentity, regProcessorIdentityJson,
+							registrationStatusDto)))
 				isValidOsi = true;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "OSIValidator::isValidOSI()::exit");
@@ -231,25 +200,25 @@ public class OSIValidator {
 		return isValidOsi;
 	}
 
-	private boolean isActiveUser(String officerId, String creationDate, String supervisorId)
-			throws ApisResourceAccessException {
+	private boolean isActiveUser(String officerId, String creationDate, String supervisorId,
+			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		boolean wasOfficerActiveDuringPCT = false;
 		boolean wasSupervisorActiveDuringPCT = false;
 		String statusMessage = "";
 		if (officerId != null && !officerId.isEmpty()) {
-			UserResponseDto officerResponse = isUserActive(officerId, creationDate);
+			UserResponseDto officerResponse = isUserActive(officerId, creationDate, registrationStatusDto);
 			if (officerResponse.getErrors() == null) {
 				wasOfficerActiveDuringPCT = officerResponse.getResponse().getUserResponseDto().get(0).getIsActive();
 				if (!wasOfficerActiveDuringPCT) {
 					statusMessage = statusMessage + " " + StatusMessage.OFFICER_NOT_ACTIVE;
-					this.registrationStatusDto.setStatusComment(statusMessage);
+					registrationStatusDto.setStatusComment(statusMessage);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.OFFICER_NOT_ACTIVE);
 				}
 			} else {
 				List<ServerError> errors = officerResponse.getErrors();
 				statusMessage = statusMessage + " " + "Officer : " + errors.get(0).getMessage();
-				this.registrationStatusDto.setStatusComment(statusMessage);
+				registrationStatusDto.setStatusComment(statusMessage);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
@@ -257,20 +226,20 @@ public class OSIValidator {
 		}
 
 		if (supervisorId != null && !supervisorId.isEmpty()) {
-			UserResponseDto supervisorResponse = isUserActive(supervisorId, creationDate);
+			UserResponseDto supervisorResponse = isUserActive(supervisorId, creationDate, registrationStatusDto);
 			if (supervisorResponse.getErrors() == null) {
 				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0)
 						.getIsActive();
 				if (!wasSupervisorActiveDuringPCT) {
 					statusMessage = statusMessage + " " + StatusMessage.SUPERVISOR_NOT_ACTIVE;
-					this.registrationStatusDto.setStatusComment(statusMessage);
+					registrationStatusDto.setStatusComment(statusMessage);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.SUPERVISOR_NOT_ACTIVE);
 				}
 			} else {
 				List<ServerError> errors = supervisorResponse.getErrors();
 				statusMessage = statusMessage + " " + "Supervisor : " + errors.get(0).getMessage();
-				this.registrationStatusDto.setStatusComment(statusMessage);
+				registrationStatusDto.setStatusComment(statusMessage);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
@@ -278,20 +247,25 @@ public class OSIValidator {
 		return wasSupervisorActiveDuringPCT || wasOfficerActiveDuringPCT;
 	}
 
-	private UserResponseDto isUserActive(String operatorId, String creationDate) throws ApisResourceAccessException {
+	private UserResponseDto isUserActive(String operatorId, String creationDate,
+			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		UserResponseDto userResponse;
-		List<String> pathSegments = new ArrayList<String>();
+		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(operatorId);
 		pathSegments.add(creationDate);
 		try {
+
 			userResponse = (UserResponseDto) restClientService.getApi(ApiName.USERDETAILS, pathSegments, "", "",
 					UserResponseDto.class);
-
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationStatusDto.getRegistrationId(),
+					"OSIValidator::isUserActive()::User Details Api ended with response data : "
+							+ JsonUtil.objectMapperObjectToJson(userResponse));
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				String result = httpClientException.getResponseBodyAsString();
-				this.registrationStatusDto.setStatusComment(result);
+				registrationStatusDto.setStatusComment(result);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
 				throw new ApisResourceAccessException(httpClientException.getResponseBodyAsString(),
@@ -299,7 +273,7 @@ public class OSIValidator {
 			} else if (e.getCause() instanceof HttpServerErrorException) {
 				HttpServerErrorException httpServerException = (HttpServerErrorException) e.getCause();
 				String result = httpServerException.getResponseBodyAsString();
-				this.registrationStatusDto.setStatusComment(result);
+				registrationStatusDto.setStatusComment(result);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", result);
 				throw new ApisResourceAccessException(httpServerException.getResponseBodyAsString(),
@@ -328,12 +302,16 @@ public class OSIValidator {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 * @throws ApisResourceAccessException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 * @throws Exception
-	 * @throws NumberFormatException
+	 * 
 	 */
-	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
+	private boolean isValidOperator(RegOsiDto regOsi, String registrationId,
+			InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+			BiometricException, BioTypeException, ParserConfigurationException, SAXException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		boolean isValid = false;
 		String officerId = regOsi.getOfficerId();
 		if (officerId != null) {
@@ -357,16 +335,15 @@ public class OSIValidator {
 			} else {
 				InputStream biometricStream = adapter.getFile(registrationId, officerBiometricFileName.toUpperCase());
 				byte[] officerbiometric = IOUtils.toByteArray(biometricStream);
-				isValid= validateUserBiometric(registrationId, officerId, officerbiometric,
-						INDIVIDUAL_TYPE_USERID);
+				isValid = validateUserBiometric(registrationId, officerId, officerbiometric, INDIVIDUAL_TYPE_USERID,
+						registrationStatusDto);
 			}
 
-		} else
+		} else {
 			isValid = true; // either officer or supervisor information is mandatory. Officer id can be null
-							// null
+		}
 		return isValid;
 	}
-
 
 	/**
 	 * Check biometric null.
@@ -392,6 +369,7 @@ public class OSIValidator {
 	 *            the reg osi
 	 * @param registrationId
 	 *            the registration id
+	 * @param registrationStatusDto
 	 * @return true, if is valid supervisor
 	 * @throws IOException
 	 * @throws SAXException
@@ -401,11 +379,15 @@ public class OSIValidator {
 	 * @throws NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException
 	 * @throws ApisResourceAccessException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 * @throws Exception
 	 */
-	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
+	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId,
+			InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			BiometricException, BioTypeException, ParserConfigurationException, SAXException {
+			BiometricException, BioTypeException, ParserConfigurationException, SAXException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidSupervisor()::entry");
 		String supervisorId = regOsi.getSupervisorId();
@@ -431,15 +413,17 @@ public class OSIValidator {
 							StatusMessage.PASSWORD_OTP_FAILURE);
 				}
 			} else {
-				InputStream biometricStream = adapter.getFile(registrationId, supervisorBiometricFileName.toUpperCase());
+				InputStream biometricStream = adapter.getFile(registrationId,
+						supervisorBiometricFileName.toUpperCase());
 				byte[] supervisorbiometric = IOUtils.toByteArray(biometricStream);
-				isValid= validateUserBiometric(registrationId, supervisorId, supervisorbiometric,
-						INDIVIDUAL_TYPE_USERID);
+				isValid = validateUserBiometric(registrationId, supervisorId, supervisorbiometric,
+						INDIVIDUAL_TYPE_USERID, registrationStatusDto);
 			}
 
-		} else
+		} else {
 			isValid = true; // either officer or supervisor information is mandatory. Supervisor id can be
 							// null
+		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidSupervisor()::exit");
 		return isValid;
@@ -452,6 +436,7 @@ public class OSIValidator {
 	 *            the reg osi
 	 * @param registrationId
 	 *            the registration id
+	 * @param registrationStatusDto
 	 * @return true, if is valid introducer
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
@@ -463,10 +448,14 @@ public class OSIValidator {
 	 * @throws InvalidKeySpecException
 	 * @throws BioTypeException
 	 * @throws BiometricException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 */
-	private boolean isValidIntroducer(String registrationId)
+	private boolean isValidIntroducer(String registrationId, JSONObject demographicIdentity,
+			RegistrationProcessorIdentity regProcessorIdentityJson, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException,
-			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 				registrationId, "OSIValidator::isValidIntroducer()::entry");
 
@@ -501,7 +490,8 @@ public class OSIValidator {
 					return false;
 				}
 
-				if (introducerUIN == null && validateIntroducerRid(introducerRID, registrationId)) {
+				if (introducerUIN == null
+						&& validateIntroducerRid(introducerRID, registrationId, registrationStatusDto)) {
 
 					introducerUinNumber = idRepoService.getUinByRid(introducerRID,
 							utility.getGetRegProcessorDemographicIdentity());
@@ -524,16 +514,17 @@ public class OSIValidator {
 								PacketStructure.BIOMETRIC + introducerBiometricsFileName.toUpperCase());
 						byte[] introducerbiometric = IOUtils.toByteArray(packetMetaInfoStream);
 						return validateUserBiometric(registrationId, introducerUIN, introducerbiometric,
-								INDIVIDUAL_TYPE_UIN);
-					}
-					else {
+								INDIVIDUAL_TYPE_UIN, registrationStatusDto);
+					} else {
 						registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-							.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
+								.getStatusCode(RegistrationExceptionTypeCode.PARENT_BIOMETRIC_NOT_IN_PACKET));
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-						registrationStatusDto.setStatusComment(StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET + registrationId);
-						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-							registrationId, StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
-					return false;
+						registrationStatusDto
+								.setStatusComment(StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET + registrationId);
+						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+								StatusMessage.PARENT_BIOMETRIC_NOT_IN_PACKET);
+						return false;
 					}
 				} else {
 					return false;
@@ -560,14 +551,8 @@ public class OSIValidator {
 	 *            the otp
 	 * @return true, if successful
 	 */
-	boolean validateOtpAndPwd(String password, String otp) {
-		if (password != null && password.equals(TRUE) || otp != null && otp.equals(TRUE)) {
-			return true;
-		} else {
-			return false;
-
-		}
-
+	boolean validateOtpAndPwd(String pwd, String otp) {
+		return (pwd != null && pwd.equals(ISTRUE) || otp != null && otp.equals(ISTRUE));
 	}
 
 	/**
@@ -590,6 +575,8 @@ public class OSIValidator {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws BioTypeException
 	 * @throws BiometricException
+	 * @throws io.mosip.kernel.core.exception.IOException
+	 * @throws PacketDecryptionFailureException
 	 */
 
 	/**
@@ -601,7 +588,9 @@ public class OSIValidator {
 	 *            the registration id
 	 * @param userbiometric
 	 *            biometric data in byte array
-	 * @param individualType user type
+	 * @param individualType
+	 *            user type
+	 * @param registrationStatusDto
 	 * @return true, if successful
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
@@ -615,34 +604,35 @@ public class OSIValidator {
 	 * @throws BiometricException
 	 */
 
-	private boolean validateUserBiometric(String registrationId, String userId, byte[] userbiometric, String individualType)
+	private boolean validateUserBiometric(String registrationId, String userId, byte[] userbiometric,
+			String individualType, InternalRegistrationStatusDto registrationStatusDto)
 			throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException,
-			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 
-			AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(userId, individualType,
-					userbiometric);
-			if (authResponseDTO.getErrors() == null || authResponseDTO.getErrors().isEmpty()) {
-				if (authResponseDTO.getResponse().isAuthStatus()) {
-					return true;
-				} else {
-					registrationStatusDto.setLatestTransactionStatusCode(
-							registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_FAILED));
-					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-					registrationStatusDto.setStatusComment(StatusMessage.AUTHENTICATION_FAILED);
-					return false;
-				}
-
+		AuthResponseDTO authResponseDTO = authUtil.authByIdAuthentication(userId, individualType, userbiometric);
+		if (authResponseDTO.getErrors() == null || authResponseDTO.getErrors().isEmpty()) {
+			if (authResponseDTO.getResponse().isAuthStatus()) {
+				return true;
 			} else {
-				List<io.mosip.registration.processor.core.auth.dto.ErrorDTO> errors = authResponseDTO.getErrors();
 				registrationStatusDto.setLatestTransactionStatusCode(
-						registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_ERROR));
+						registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_FAILED));
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				String result = errors.stream().map(s -> s.getErrorMessage()+" ").collect(Collectors.joining());
-				registrationStatusDto.setStatusComment(result);
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, result);
+				registrationStatusDto.setStatusComment(StatusMessage.AUTHENTICATION_FAILED);
 				return false;
 			}
+
+		} else {
+			List<io.mosip.registration.processor.core.auth.dto.ErrorDTO> errors = authResponseDTO.getErrors();
+			registrationStatusDto.setLatestTransactionStatusCode(
+					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.AUTH_ERROR));
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			String result = errors.stream().map(s -> s.getErrorMessage() + " ").collect(Collectors.joining());
+			registrationStatusDto.setStatusComment(result);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, result);
+			return false;
+		}
 
 	}
 
@@ -653,9 +643,11 @@ public class OSIValidator {
 	 *            the introducer rid
 	 * @param registrationId
 	 *            the registration id
+	 * @param registrationStatusDto
 	 * @return true, if successful
 	 */
-	private boolean validateIntroducerRid(String introducerRid, String registrationId) {
+	private boolean validateIntroducerRid(String introducerRid, String registrationId,
+			InternalRegistrationStatusDto registrationStatusDto) {
 		InternalRegistrationStatusDto introducerRegistrationStatusDto = registrationStatusService
 				.getRegistrationStatus(introducerRid);
 		if (introducerRegistrationStatusDto != null) {
@@ -702,11 +694,21 @@ public class OSIValidator {
 
 	}
 
-	private boolean isActiveUserId(String registrationId, RegOsiDto regOsi, Identity identity)
-			throws UnsupportedEncodingException, ApisResourceAccessException {
+	private boolean isActiveUserId(String registrationId, RegOsiDto regOsi, Identity identity,
+			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		boolean isValid = false;
 		String creationDate = osiUtils.getMetaDataValue(JsonConstant.CREATIONDATE, identity);
-		if (creationDate == null && StringUtils.isEmpty(creationDate)) {
+		if (creationDate != null && !(StringUtils.isEmpty(creationDate))) {
+
+			isValid = isActiveUser(regOsi.getOfficerId(), creationDate, regOsi.getSupervisorId(),
+					registrationStatusDto);
+			if (!isValid) {
+				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
+						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+			}
+
+		} else {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET));
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
@@ -714,13 +716,6 @@ public class OSIValidator {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "packet creationDate is null");
 
-		} else {
-			isValid = isActiveUser(regOsi.getOfficerId(), creationDate, regOsi.getSupervisorId());
-			if (!isValid) {
-				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
-						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-			}
 		}
 		return isValid;
 	}

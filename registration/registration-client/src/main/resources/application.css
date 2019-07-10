@@ -26,6 +26,10 @@
 	-fx-font-size: 1.2em;
 }
 
+.demoGraphicTextField:focused{
+	-fx-border-color: blue;
+}
+
 .dividerTypeOne{
 	-fx-border-width : 0.0 0.0 1.0 0.0;
 	-fx-border-color : #C9C9C9;
@@ -660,25 +664,26 @@ Working on new Css by taleev
   	-fx-background-color: #FFFFFF;
 	-fx-prompt-text-fill: #000000;	
 	-fx-font-size: 1.2em;
+	-fx-text-fill : #000000;
 }
 
 
 .demographicLangHeader{
-	-fx-font-size : 14.0px;
+	-fx-font-size : 1.4em;
 	-fx-text-fill : #2F3033;
 	-fx-font-weight: bold;
 }
 
 .demographicMiscTexts{
-	-fx-text-fill: #000000;	
-	-fx-font-size: 1.2em;
+	-fx-text-fill: #666666;	
+	-fx-font-size: 1.3em;
 }
 
 .demoGraphicFieldLabel{
 		-fx-background-color:#ffffff;
 		-fx-border-width: 0.0;
-		-fx-text-fill : black;
-		-fx-font-size: 1.3em;
+		-fx-text-fill : #666666;
+		-fx-font-size: 1em;
 		
 }
 
@@ -694,6 +699,7 @@ Working on new Css by taleev
 .demoGraphicFieldMessageLabel{
 		-fx-background-color:#ffffff;
 		-fx-text-fill : red;
+		-fx-font-size: 1em;
 }
 
 
@@ -765,7 +771,7 @@ Working on new Css by taleev
 	
 }
 
-#biometricPane{
+.biometricPaneSelected{
 	-fx-background-color : #F0F0F0;
 	-fx-border-color : #00A6E9;
 	-fx-border-width : 5;
@@ -1097,8 +1103,8 @@ Working on new Css by taleev
 }
 
 .headerFooter{
-	-fx-background-color : white;
-	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,5.4) , 5.0, 0.0 , 0.0 , 0.0 );
+	-fx-background-color: #FFFFFF;	
+	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
 
 .headerTexts{
@@ -1154,7 +1160,7 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.4) , 5.0, 0.0 , 0.0 , 0.0 );
 }
-#saveToDevice, #formValidationButton{
+#saveToDevice, #formValidationButton,#uploadBtn{
 	-fx-background-color : #FF4081;
 }
 /*Upload Packet page design ends */
@@ -1756,4 +1762,15 @@ Working on new Css by taleev
 	-fx-text-fill:White;
 	-fx-font-weight: bold;
 	}
+.authenticationErrorMsg{
+	-fx-font-size: 12.0px;
+}	
+.authenticationErrorMsgTitle{
+	-fx-font-size: 16.0px;
+	-fx-text-fill: #175768;
+}
+.authenticationPageTitle{
+	-fx-font-size: 18.0px;
+	-fx-text-fill: white;
+}
 

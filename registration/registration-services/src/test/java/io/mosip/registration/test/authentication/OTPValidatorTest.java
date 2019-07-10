@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.web.client.HttpClientErrorException;
@@ -42,8 +43,9 @@ public class OTPValidatorTest {
 	public void OtpValidateAuthTest()
 			throws HttpClientErrorException, SocketTimeoutException, RegBaseCheckedException {
 		AuthTokenDTO authTokenDTO = new AuthTokenDTO();
-		when(otpManager.validateOTP("mosip","12345")).thenReturn(authTokenDTO);
-		assertEquals(authTokenDTO, otpValidator.validate("mosip","12345"));
+		when(otpManager.validateOTP(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(authTokenDTO);
+		assertEquals(authTokenDTO, otpValidator.validate("mosip","12345", true));
 
 	}
 

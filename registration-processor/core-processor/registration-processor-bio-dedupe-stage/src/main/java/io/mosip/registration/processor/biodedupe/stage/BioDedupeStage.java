@@ -39,9 +39,6 @@ public class BioDedupeStage extends MosipVerticleAPIManager {
 
 	private MosipEventBus mosipEventBus = null;
 
-	/** The Constant INTERNAL_ERROR. */
-	private static final String INTERNAL_ERROR = "Internal error occurred in bio-dedupe stage while processing for registrationId ";
-
 	/**
 	 * Deploy verticle.
 	 */

@@ -26,6 +26,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDiscoveryService;
+import com.github.sarxos.webcam.WebcamLock;
 
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.device.webcam.impl.WebcamSarxosServiceImpl;
@@ -46,6 +47,9 @@ public class WebcamSarxosServiceTest {
 	private WebcamDiscoveryService discoveryService;
 	
 	@Mock
+	private WebcamLock webcamLock;
+	
+	@Mock
 	private Webcam webcam;
 	
 	@Before
@@ -57,6 +61,7 @@ public class WebcamSarxosServiceTest {
 	
 	@Test
 	public void testIsWebcamConnected() {
+		when(webcam.isOpen()).thenReturn(true);
 		assertThat(webcamSarxosServiceImpl.isWebcamConnected(), is(true));
 	}
 	
@@ -65,6 +70,7 @@ public class WebcamSarxosServiceTest {
 		PowerMockito.mockStatic(Webcam.class);
 		Webcam webcam = Mockito.mock(Webcam.class);
 		List<Webcam> webcams = new ArrayList<>();
+		when(webcam.getLock()).thenReturn(webcamLock);
 		when(webcam.getName()).thenReturn("Test-Cam");
 		when(webcam.getViewSize()).thenReturn(new Dimension(640, 480));
 		webcams.add(webcam);
@@ -79,6 +85,7 @@ public class WebcamSarxosServiceTest {
 		PowerMockito.mockStatic(Webcam.class);
 		Webcam webcam = Mockito.mock(Webcam.class);
 		List<Webcam> webcams = new ArrayList<>();
+		when(webcam.getLock()).thenReturn(webcamLock);
 		when(webcam.getName()).thenReturn("Logitech");
 		when(webcam.getViewSize()).thenReturn(new Dimension(640, 480));
 		webcams.add(webcam);

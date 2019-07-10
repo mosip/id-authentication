@@ -64,14 +64,13 @@ public class RegistrationStatusController {
 	TokenValidator tokenValidator;
 
 	private static final String REG_STATUS_SERVICE_ID = "mosip.registration.processor.registration.status.id";
-	private static final String REG_STATUS_APPLICATION_VERSION = "mosip.registration.processor.application.version";
+	private static final String REG_STATUS_APPLICATION_VERSION = "mosip.registration.processor.registration.status.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 
 	@Autowired
 	private Environment env;
 
-	Gson gson = new GsonBuilder().create();
 
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;
@@ -93,7 +92,8 @@ public class RegistrationStatusController {
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<Object> search(
 			@RequestBody(required = true) RegistrationStatusRequestDTO registrationStatusRequestDTO,
-			@CookieValue(value = "Authorization") String token) throws RegStatusAppException {
+			@CookieValue(value = "Authorization") String token)
+			throws RegStatusAppException {
 		tokenValidator.validate("Authorization=" + token, "registrationstatus");
 		try {
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,
@@ -103,7 +103,7 @@ public class RegistrationStatusController {
 			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE,
-						digitalSignatureUtility.getDigitalSignature(buildRegistrationStatusResponse(registrations)));
+						digitalSignatureUtility.getDigitalSignature(buildSignatureRegistrationStatusResponse(registrations)));
 				return ResponseEntity.status(HttpStatus.OK).headers(headers)
 						.body(buildRegistrationStatusResponse(registrations));
 			}
@@ -115,7 +115,20 @@ public class RegistrationStatusController {
 		}
 	}
 
-	public String buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
+	public RegStatusResponseDTO buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
+
+		RegStatusResponseDTO response = new RegStatusResponseDTO();
+		if (Objects.isNull(response.getId())) {
+			response.setId(env.getProperty(REG_STATUS_SERVICE_ID));
+		}
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
+		response.setResponse(registrations);
+		response.setErrors(null);
+		return response;
+	}
+	
+	public String buildSignatureRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
 
 		RegStatusResponseDTO response = new RegStatusResponseDTO();
 		if (Objects.isNull(response.getId())) {

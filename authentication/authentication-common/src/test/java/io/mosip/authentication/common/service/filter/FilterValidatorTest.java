@@ -251,7 +251,7 @@ public class FilterValidatorTest {
 			String detailMessage = e.getUndeclaredThrowable().getMessage();
 			String[] error = detailMessage.split("-->");
 			assertEquals("IDA-MPA-006", error[0].trim());
-			assertEquals("DEMO-authentiation usage not allowed as per policy", error[1].trim());
+			assertEquals("DEMO Authentication usage not allowed as per policy", error[1].trim());
 			assertTrue(e.getCause().getClass().equals(IdAuthenticationAppException.class));
 		}
 	}

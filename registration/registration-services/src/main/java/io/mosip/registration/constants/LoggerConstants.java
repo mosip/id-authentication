@@ -40,6 +40,9 @@ public class LoggerConstants {
 	private static final String UI_VALIDATIONS = APP_NAME + "VALIDATION - ";
 	private static final String REG_ID_MASTER_DATA_VALIDATOR = APP_NAME + "MASTER_DATA_VALIDATION - ";
 	private static final String PKT_UPLOAD= APP_NAME + "PACKET_UPLOAD - ";
+	private static final String PKT_STATUS_SYNC = APP_NAME + "PACKET_STATUS_SYNC - ";
+	private static final String RE_REGISTER_PKT = APP_NAME + "RE_REGISTER_PACKET - ";
+	private static final String REGISTER_PKT = APP_NAME + "REGISTERION_PACKET_APPROVAL - ";
 
 	// Session IDs' for logging
 	public static final String LOG_PKT_HANLDER = PKT_CREATION + "PACKET_HANDLER";
@@ -176,5 +179,11 @@ public class LoggerConstants {
 	public static final String ID_OBJECT_PATTERN_VALIDATOR = UI_VALIDATIONS + "ID_OBJECT_PATTERN_VALIDATOR";
 	
 	public static final String LOG_PACKET_UPLOAD = PKT_UPLOAD + "UPLOAD_CONTROLLER";
+	public static final String LOG_PKT_DELETE = PKT_STATUS_SYNC + "REG_PACKET_STATUS_SERVICE";
+	public static final String LOG_PKT_SYNC = PKT_STATUS_SYNC + "SYNC";
+	public static final String LOG_GET_RE_REGISTER_PKT = RE_REGISTER_PKT + "GET";
+	public static final String LOG_UPADTE_RE_REGISTER_PKT = RE_REGISTER_PKT + "UPDATE_STATUS";
+	public static final String LOG_GET_REGISTER_PKT = REGISTER_PKT + "GET";
+	public static final String LOG_UPADTE_REGISTER_PKT = REGISTER_PKT + "UPDATE_STATUS";
 
 }

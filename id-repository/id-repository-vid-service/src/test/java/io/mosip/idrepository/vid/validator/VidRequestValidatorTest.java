@@ -199,6 +199,7 @@ public class VidRequestValidatorTest {
 				.atZone(ZoneId.of(env.getProperty(IdRepoConstants.DATETIME_TIMEZONE.getValue()))).toLocalDateTime());
 		req.setRequest(request);
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test
@@ -243,6 +244,7 @@ public class VidRequestValidatorTest {
 		Mockito.when(policyProvider.getAllVidTypes()).thenReturn(value);
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		ReflectionTestUtils.invokeMethod(requestValidator, "validate", req, errors);
+		assertFalse(errors.hasErrors());
 	}
 
 	@Test
@@ -302,14 +304,14 @@ public class VidRequestValidatorTest {
 	@Test
 	public void testUinValid() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
-		ReflectionTestUtils.invokeMethod(requestValidator, "validateUin", "123456", errors);
+		ReflectionTestUtils.invokeMethod(requestValidator, "validateUin", 123456l, errors);
 	}
 	
 	@Test
 	public void testUinInValid() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 				String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "UIN")));
-		ReflectionTestUtils.invokeMethod(requestValidator, "validateUin", "123456", errors);
+		ReflectionTestUtils.invokeMethod(requestValidator, "validateUin", 123456l, errors);
 		errors.getAllErrors().forEach(error -> {
 			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), error.getCode());
 			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "UIN"),

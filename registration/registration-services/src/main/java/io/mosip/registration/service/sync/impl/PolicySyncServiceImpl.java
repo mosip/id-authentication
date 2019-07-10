@@ -1,5 +1,6 @@
 package io.mosip.registration.service.sync.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.REGISTRATION_PUBLIC_KEY_SYNC;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
@@ -29,7 +30,6 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dao.PolicySyncDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
-import io.mosip.registration.dto.PublicKeyResponse;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.KeyStore;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -38,7 +38,10 @@ import io.mosip.registration.service.sync.PolicySyncService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
- * it does the key policy synch
+ * 
+ * It provides the method to download the Mosip public key specific to the user's local machines and center specific and store 
+ * the same into local db for further usage during registration process. The key has expiry period. Based on the expiry period the 
+ * new key would be downloaded from the server through this service by triggering from batch process.  
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0
@@ -102,31 +105,40 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		return responseDTO;
 	}
 
+	/**
+	 * This method invokes the external service 'policysync' to download the public key with respect to local center and machine id combination. 
+	 * And store the key into the local database for further usage during registration process. 
+	 *
+	 * @param responseDTO the response DTO
+	 * @param centerMachineId the center machine id
+	 * @throws KeyManagementException the key management exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws java.security.NoSuchAlgorithmException the no such algorithm exception
+	 */
+	@SuppressWarnings("unchecked")
 	public synchronized void getPublicKey(ResponseDTO responseDTO, String centerMachineId)
 			throws KeyManagementException, IOException, java.security.NoSuchAlgorithmException {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				getCenterId(getStationId(getMacAddress())));
 		KeyStore keyStore = new KeyStore();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
-		Map<String, String> requestParams = new HashMap<String, String>();
+		Map<String, String> requestParams = new HashMap<>();
 		requestParams.put(RegistrationConstants.TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
 		requestParams.put(RegistrationConstants.REF_ID, centerMachineId);
 		try {
-			@SuppressWarnings("unchecked")
-			PublicKeyResponse<String> publicKeyResponse = (PublicKeyResponse<String>) serviceDelegateUtil.get(
-					RegistrationConstants.SERVICE_NAME, requestParams, false,
-					RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			LinkedHashMap<String, Object> publicKeySyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
+					.get(RegistrationConstants.SERVICE_NAME, requestParams, false,
+							RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			if (null != publicKeySyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
-			if (null != publicKeyResponse.getResponse() && !publicKeyResponse.getResponse().isEmpty()
-					&& publicKeyResponse.getResponse().size() > 0) {
-
+				LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) publicKeySyncResponse
+						.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE);
 				keyStore.setId(UUID.randomUUID().toString());
-				keyStore.setPublicKey(
-						publicKeyResponse.getResponse().get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
-				LocalDateTime issuedAt = DateUtils.parseToLocalDateTime(
-						publicKeyResponse.getResponse().get(RegistrationConstants.ISSUED_AT).toString());
-				LocalDateTime expiryAt = DateUtils.parseToLocalDateTime(
-						publicKeyResponse.getResponse().get(RegistrationConstants.EXPIRY_AT).toString());
+				keyStore.setPublicKey(responseMap.get(RegistrationConstants.PUBLIC_KEY).toString().getBytes());
+				LocalDateTime issuedAt = DateUtils
+						.parseToLocalDateTime(responseMap.get(RegistrationConstants.ISSUED_AT).toString());
+				LocalDateTime expiryAt = DateUtils
+						.parseToLocalDateTime(responseMap.get(RegistrationConstants.EXPIRY_AT).toString());
 				keyStore.setValidFromDtimes(Timestamp.valueOf(issuedAt));
 				keyStore.setValidTillDtimes(Timestamp.valueOf(expiryAt));
 				keyStore.setCreatedBy(getUserIdFromSession());
@@ -136,16 +148,22 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 						"synch the public key is completed");
+
 			} else {
-				List<LinkedHashMap<String, Object>> errorKey = publicKeyResponse.getErrors();
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setCode(RegistrationConstants.ERRORS);
-				errorResponseDTO.setMessage((String) errorKey.get(0).get(RegistrationConstants.ERROR_MSG));
+
+				errorResponseDTO.setMessage(publicKeySyncResponse.size() > 0
+						? ((List<LinkedHashMap<String, String>>) publicKeySyncResponse
+								.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
+						: "Public key Sync rest call Failure");
 				erResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(erResponseDTOs);
-				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-						(String) errorKey.get(0).get(RegistrationConstants.ERROR_MSG));
-
+				LOGGER.info(REGISTRATION_PUBLIC_KEY_SYNC, APPLICATION_NAME, APPLICATION_ID,
+						((publicKeySyncResponse.size() > 0)
+								? ((List<LinkedHashMap<String, String>>) publicKeySyncResponse
+										.get(RegistrationConstants.ERRORS)).get(0).get(RegistrationConstants.ERROR_MSG)
+								: "Public key Sync Restful service error"));
 			}
 
 		} catch (HttpClientErrorException | RegBaseCheckedException exception) {
@@ -191,7 +209,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 				}
 			} else {
-				fetchPolicy();
+				setErrorResponse(responseDTO, RegistrationConstants.INVALID_KEY, null);
 			}
 		} catch (RuntimeException runtimeException) {
 

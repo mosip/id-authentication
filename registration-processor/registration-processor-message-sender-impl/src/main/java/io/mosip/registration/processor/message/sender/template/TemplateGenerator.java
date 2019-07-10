@@ -35,6 +35,7 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 
 /**
  * The Class TemplateGenerator.
@@ -46,9 +47,6 @@ public class TemplateGenerator {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(TemplateGenerator.class);
-
-	/** The Constant TEMPLATES. */
-	private static final String TEMPLATES = "templates";
 
 	/** The resource loader. */
 	private String resourceLoader = "classpath";
@@ -66,7 +64,8 @@ public class TemplateGenerator {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
-	private ObjectMapper mapper=new ObjectMapper();
+	@Autowired
+	private ObjectMapper mapper;
 
 	/**
 	 * Gets the template.
@@ -86,22 +85,32 @@ public class TemplateGenerator {
 	public InputStream getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {
 
-		ResponseWrapper<?> responseWrapper;
-		TemplateResponseDto template=null;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto template = new TemplateResponseDto();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TemplateGenerator::getTemplate()::entry");
 
 		try {
 			List<String> pathSegments = new ArrayList<>();
-			pathSegments.add(TEMPLATES);
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
-			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MASTER, pathSegments, "","", ResponseWrapper.class);
-			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
+
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "", "",
+					ResponseWrapper.class);
+			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+					TemplateResponseDto.class);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"TemplateGenerator::getTemplate():: TEMPLATES GET service Ended with response "
+							+ JsonUtil.objectMapperObjectToJson(template));
+
 			InputStream fileTextStream = null;
 			if (template != null) {
 				InputStream stream = new ByteArrayInputStream(
 						template.getTemplates().iterator().next().getFileText().getBytes());
 				fileTextStream = getTemplateManager().merge(stream, attributes);
 			}
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"TemplateGenerator::getTemplate()::exit");
 			return fileTextStream;
 
 		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {

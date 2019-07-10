@@ -34,8 +34,10 @@ public enum RegistrationTransactionTypeCode {
     /** The print stage. */
     PRINT,
 	/** The reprocess. */
-	REPROCESS,
+	PACKET_REPROCESS,
 	/** The Quality Check*/
-	QUALITY_CHECK
+	QUALITY_CHECK,
+	/** The biometric Authentication*/
+	BIOMETRIC_AUTHENTICATION
 
 }
