@@ -27,7 +27,7 @@ import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.entity.UserDetail;
 import io.mosip.registration.entity.UserPassword;
 import io.mosip.registration.entity.UserRole;
-import io.mosip.registration.entity.id.UserRoleID;
+import io.mosip.registration.entity.id.UserRoleId;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.UserBiometricRepository;
 import io.mosip.registration.repositories.UserDetailRepository;
@@ -152,10 +152,10 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Deleting User role if exist....");
 			userDetailsResponse.getUserDetails().forEach(userRole -> {
 				userRole.getRoles().forEach(userRoleId -> {
-					UserRoleID roleId = new UserRoleID();
+					UserRoleId roleId = new UserRoleId();
 					roleId.setRoleCode(userRoleId);
 					roleId.setUsrId(userRole.getUserName());
-					userRoleRepository.deleteByUserRoleID(roleId);
+					userRoleRepository.deleteByUserRoleIdUsrId(userRole.getUserName());
 				});
 
 			});
@@ -213,10 +213,10 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				}
 				roles.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
 				role.getRoles().forEach(rol -> {
-					UserRoleID roleId = new UserRoleID();
+					UserRoleId roleId = new UserRoleId();
 					roleId.setRoleCode(rol);
 					roleId.setUsrId(role.getUserName());
-					roles.setUserRoleID(roleId);
+					roles.setUserRoleId(roleId);
 					userRoleRepository.save(roles);
 				});
 
