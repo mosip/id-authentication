@@ -22,7 +22,6 @@ alter table master.authentication_type add constraint fk_authtyp_lang foreign ke
 alter table master.biometric_attribute add constraint fk_bmattr_bmtyp foreign key (bmtyp_code, lang_code) references master.biometric_type(code , lang_code) on delete no action on update no action ;
 alter table master.biometric_attribute add constraint fk_bmattr_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.biometric_type add constraint fk_bmtyp_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
-alter table master.device_master add constraint fk_devicem_dspec foreign key (dspec_id, lang_code) references master.device_spec(id, lang_code) on delete no action on update no action ;
 alter table master.device_master add constraint fk_devicem_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.device_spec add constraint fk_dspec_dtyp foreign key (dtyp_code, lang_code) references master.device_type(code, lang_code) on delete no action on update no action ;
 alter table master.device_spec add constraint fk_dspec_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
@@ -38,14 +37,11 @@ alter table master.location add constraint fk_loc_lang foreign key (lang_code) r
 alter table master.loc_holiday add constraint fk_lochol_loc foreign key (location_code, lang_code) references master.location(code, lang_code) on delete no action on update no action ;
 alter table master.loc_holiday add constraint fk_lochol_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.authentication_method add constraint fk_authm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
-alter table master.machine_master add constraint fk_machm_mspec foreign key (mspec_id, lang_code) references master.machine_spec(id, lang_code) on delete no action on update no action ;
 alter table master.machine_master add constraint fk_machm_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.machine_spec add constraint fk_mspec_mtyp foreign key (mtyp_code, lang_code) references master.machine_type(code, lang_code) on delete no action on update no action ;
 alter table master.machine_spec add constraint fk_mspec_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.machine_type add constraint fk_mtyp_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.message_list add constraint fk_msglst_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
-alter table master.registration_center add constraint fk_regcntr_cntrtyp foreign key (cntrtyp_code, lang_code) references master.reg_center_type(code, lang_code) on delete no action on update no action ;
-alter table master.registration_center add constraint fk_regcntr_loc foreign key (location_code, lang_code) references master.location(code, lang_code) on delete no action on update no action ;
 alter table master.registration_center add constraint fk_regcntr_lang foreign key (lang_code) references master.language(code) on delete no action on update no action ;
 alter table master.reg_center_device add constraint fk_cntrdev_regcntr foreign key (regcntr_id, lang_code) references master.registration_center(id, lang_code) on delete no action on update no action ;
 alter table master.reg_center_device add constraint fk_cntrdev_devicem foreign key (device_id, lang_code) references master.device_master(id, lang_code) on delete no action on update no action ;
@@ -110,3 +106,59 @@ alter table master.applicant_valid_document add constraint fk_avaldoc_doccat for
 alter table master.tsp_licensekey_map add constraint fk_tsplkeym foreign key (license_key) references master.licensekey_list(license_key) on delete no action on update no action ;
 alter table master.licensekey_permission add constraint fk_lkeyper foreign key (license_key) references master.licensekey_list(license_key) on delete no action on update no action ;
 
+-- object: fk_zoneuser_zone | type: CONSTRAINT --
+-- ALTER TABLE master.zone_user DROP CONSTRAINT IF EXISTS fk_zoneuser_zone CASCADE;
+ALTER TABLE master.zone_user ADD CONSTRAINT fk_zoneuser_zone FOREIGN KEY (zone_code,lang_code)
+REFERENCES master.zone (code,lang_code) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_machm_mspec | type: CONSTRAINT --
+-- ALTER TABLE master.machine_master DROP CONSTRAINT IF EXISTS fk_machm_mspec CASCADE;
+ALTER TABLE master.machine_master ADD CONSTRAINT fk_machm_mspec FOREIGN KEY (mspec_id,lang_code)
+REFERENCES master.machine_spec (id,lang_code) MATCH SIMPLE
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_machm_zone | type: CONSTRAINT --
+-- ALTER TABLE master.machine_master DROP CONSTRAINT IF EXISTS fk_machm_zone CASCADE;
+ALTER TABLE master.machine_master ADD CONSTRAINT fk_machm_zone FOREIGN KEY (zone_code,lang_code)
+REFERENCES master.zone (code,lang_code) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_devicem_dspec | type: CONSTRAINT --
+-- ALTER TABLE master.device_master DROP CONSTRAINT IF EXISTS fk_devicem_dspec CASCADE;
+ALTER TABLE master.device_master ADD CONSTRAINT fk_devicem_dspec FOREIGN KEY (dspec_id,lang_code)
+REFERENCES master.device_spec (id,lang_code) MATCH SIMPLE
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_devicem_zone | type: CONSTRAINT --
+-- ALTER TABLE master.device_master DROP CONSTRAINT IF EXISTS fk_devicem_zone CASCADE;
+ALTER TABLE master.device_master ADD CONSTRAINT fk_devicem_zone FOREIGN KEY (zone_code,lang_code)
+REFERENCES master.zone (code,lang_code) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+
+-- object: fk_regcntr_cntrtyp | type: CONSTRAINT --
+-- ALTER TABLE master.registration_center DROP CONSTRAINT IF EXISTS fk_regcntr_cntrtyp CASCADE;
+ALTER TABLE master.registration_center ADD CONSTRAINT fk_regcntr_cntrtyp FOREIGN KEY (cntrtyp_code,lang_code)
+REFERENCES master.reg_center_type (code,lang_code) MATCH SIMPLE
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_regcntr_loc | type: CONSTRAINT --
+-- ALTER TABLE master.registration_center DROP CONSTRAINT IF EXISTS fk_regcntr_loc CASCADE;
+ALTER TABLE master.registration_center ADD CONSTRAINT fk_regcntr_loc FOREIGN KEY (location_code,lang_code)
+REFERENCES master.location (code,lang_code) MATCH SIMPLE
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: fk_regcntr_zone | type: CONSTRAINT --
+-- ALTER TABLE master.registration_center DROP CONSTRAINT IF EXISTS fk_regcntr_zone CASCADE;
+ALTER TABLE master.registration_center ADD CONSTRAINT fk_regcntr_zone FOREIGN KEY (zone_code,lang_code)
+REFERENCES master.zone (code,lang_code) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
