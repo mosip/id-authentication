@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -39,7 +37,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationExternalStat
  */
 @Component
 public class RegistrationStatusServiceImpl
-implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
 	/** The registration status dao. */
 	@Autowired
@@ -68,16 +66,11 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	 */
 	@Override
 	public InternalRegistrationStatusDto getRegistrationStatus(String registrationId) {
-		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationId, "RegistrationStatusServiceImpl::getRegistrationStatus()::entry");
 		try {
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
-			isTransactionSuccessful = true;
-
-			description.setMessage("Get registration status by registration id is successful");
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 					registrationId, "RegistrationStatusServiceImpl::getRegistrationStatus()::exit");
@@ -85,23 +78,10 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
 
-			description.setMessage("DataAccessLayerException while geting registration status for registration id "
-					+ registrationId + "::" + e.getMessage());
-
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-
-			String eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, registrationId,
-					ApiName.AUDIT);
 		}
 	}
 
@@ -115,7 +95,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	@Override
 	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
+		LogDescription description = new LogDescription();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::addRegistrationStatus()::entry");
@@ -171,7 +151,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 				registrationStatusDto.getRegistrationId(),
 				"RegistrationStatusServiceImpl::updateRegistrationStatus()::entry");
 		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
+		LogDescription description = new LogDescription();
 		String transactionId = generateId();
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 		TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
@@ -225,38 +205,23 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	 */
 	@Override
 	public List<InternalRegistrationStatusDto> getByStatus(String status) {
-		boolean isTransactionSuccessful = false;
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getByStatus()::entry");
-		LogDescription description=new LogDescription();
 
 		try {
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getEnrolmentStatusByStatusCode(status);
-			isTransactionSuccessful = true;
-			description.setMessage("Get list of registration status by status successfully");
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"RegistrationStatusServiceImpl::getByStatus()::exit");
 			return convertEntityListToDtoList(registrationStatusEntityList);
 		} catch (DataAccessLayerException e) {
 
-			description.setMessage("DataAccessLayerException while Geting list of registration status by status" + "::"
-					+ e.getMessage());
-
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-
-			String eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 
 	}
@@ -270,10 +235,9 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	 */
 	@Override
 	public List<RegistrationStatusDto> getByIds(List<RegistrationStatusSubRequestDto> requestIds) {
-		boolean isTransactionSuccessful = false;
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getByIds()::entry");
-		LogDescription description=new LogDescription();
 
 		try {
 			List<String> registrationIds = new ArrayList<>();
@@ -283,8 +247,6 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 			}
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getByIds(registrationIds);
-			isTransactionSuccessful = true;
-			description.setMessage("Get list of registration status by registration id successfully");
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"RegistrationStatusServiceImpl::getByIds()::exit");
@@ -292,21 +254,10 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 
 		} catch (DataAccessLayerException e) {
 
-			description.setMessage("DataAccessLayerException while Geting list of registration status " + "::" + e.getMessage());
-
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-
-			String eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString(), ApiName.AUDIT);
 		}
 	}
 
@@ -474,72 +425,46 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 	 */
 	public List<InternalRegistrationStatusDto> getUnProcessedPackets(Integer fetchSize, long elapseTime,
 			Integer reprocessCount, List<String> status) {
-		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getReprocessPacket()::entry");
 		try {
 			List<RegistrationStatusEntity> entityList = registrationStatusDao.getUnProcessedPackets(fetchSize,
 					elapseTime, reprocessCount, status);
 
-			isTransactionSuccessful = true;
-			description.setMessage("Get list of reprocess packets successful");
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"RegistrationStatusServiceImpl::getReprocessPacket()::exit");
 
 			return convertEntityListToDtoList(entityList);
 
 		} catch (DataAccessException | DataAccessLayerException e) {
-			description.setMessage("DataAccessLayerException while fetching Reprocess Packets");
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, "",
-					ApiName.AUDIT);
 		}
 	}
 
 	@Override
 	public Integer getUnProcessedPacketsCount(long elapseTime, Integer reprocessCount, List<String> status) {
-		boolean isTransactionSuccessful = false;
-		LogDescription description=new LogDescription();
+
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationStatusServiceImpl::getUnProcessedPacketsCount()::entry");
 		try {
 			int count = registrationStatusDao.getUnProcessedPacketsCount(elapseTime, reprocessCount, status);
 
-			isTransactionSuccessful = true;
-			description.setMessage("Get list of reprocess packets successful");
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"RegistrationStatusServiceImpl::getUnProcessedPacketsCount()::exit");
 
 			return count;
 
 		} catch (DataAccessException | DataAccessLayerException e) {
-			description.setMessage("DataAccessLayerException while fetching Reprocess Packets");
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new TablenotAccessibleException(
 					PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
-		} finally {
-			String eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			String eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
-					: EventName.EXCEPTION.toString();
-			String eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, "",
-					ApiName.AUDIT);
 		}
 	}
 
