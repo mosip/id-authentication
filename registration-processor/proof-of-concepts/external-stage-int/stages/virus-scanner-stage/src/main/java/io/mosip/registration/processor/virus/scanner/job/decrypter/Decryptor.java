@@ -47,7 +47,7 @@ public class Decryptor {
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
-	private static final String DECRYPTION_SUCCESS = "Decryption success for RegistrationId : {}";
+	private static final String DECRYPTION_SUCCESS = "Decryption success";
 
 	/**
 	 * This method consumes inputStream of encrypted packet and registrationId as
