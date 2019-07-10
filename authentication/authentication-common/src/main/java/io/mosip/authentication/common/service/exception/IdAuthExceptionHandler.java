@@ -153,9 +153,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			if (e.getCause() instanceof BaseCheckedException
 					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
 				e = e.getCause();
-			} else if (ex instanceof BaseCheckedException) {
-				e = new IdAuthenticationAppException(((BaseCheckedException) ex).getErrorCode(),
-						((BaseCheckedException) ex).getErrorText());
+			} else if (ex.getCause() instanceof BaseCheckedException) {
+				e = new IdAuthenticationAppException((ex).getErrorCode(),
+						(ex).getErrorText());
 				break;
 			} else {
 				break;
