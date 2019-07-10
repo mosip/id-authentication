@@ -27,14 +27,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The {@code OTPAuthController} use to send request to generate otp.
+ * The {@code InternalOTPController} use to send request to generate otp.
  * 
- * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 @RestController
 public class InternalOTPController {
-
-	
 
 	private static final String GENERATE_OTP = "generateOTP";
 
@@ -57,11 +55,11 @@ public class InternalOTPController {
 	 *
 	 * @param otpRequestDto as request body
 	 * @param errors        associate error
-	 * @param partnerId the partner id
-	 * @param mispLK the misp LK
+	 * @param partnerId     the partner id
+	 * @param mispLK        the misp LK
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException the id authentication app exception
-	 * @throws IDDataValidationException the ID data validation exception
+	 * @throws IDDataValidationException    the ID data validation exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
 	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

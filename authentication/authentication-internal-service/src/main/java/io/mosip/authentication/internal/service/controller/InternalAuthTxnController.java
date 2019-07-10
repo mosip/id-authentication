@@ -40,9 +40,9 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
- * The {@code OTPAuthController} use to send request to generate otp.
+ * The {@code InternalAuthTxnController} use to fetch Auth Transaction
  * 
- * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 @RestController
 public class InternalAuthTxnController {
@@ -72,8 +72,7 @@ public class InternalAuthTxnController {
 	}
 
 	/**
-	 * send OtpRequestDTO request to generate OTP and received OtpResponseDTO as
-	 * output.
+	 * To fetch Auth Transactions details based on Individual's details
 	 *
 	 * @param otpRequestDto as request body
 	 * @param errors        associate error

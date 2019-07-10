@@ -4,6 +4,11 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * 
+ * @author Dinesh Karuppiah.T
+ *
+ */
 @Data
 public class AutnTxnResponseDto {
 

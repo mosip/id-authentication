@@ -19,7 +19,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  * @author Manoj SP
  */
 @Component
-public class BaseOTPFilter extends IdAuthFilter {
+public class BaseInternalFilter extends IdAuthFilter {
 
 
 	/* (non-Javadoc)
