@@ -186,6 +186,10 @@ spec:
         backend:
           serviceName: registration-processor-quality-checker-stage
           servicePort: 9072
+      - path: /registrationprocessor/v1/abishandler
+        backend:
+          serviceName: registration-processor-abis-handler-stage
+          servicePort: 9071
       - path: /registrationprocessor/v1/external
         backend:
           serviceName: registration-processor-external-stage
