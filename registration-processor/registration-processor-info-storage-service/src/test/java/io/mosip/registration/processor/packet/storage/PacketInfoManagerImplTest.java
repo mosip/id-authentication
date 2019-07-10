@@ -69,6 +69,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
@@ -158,8 +159,11 @@ public class PacketInfoManagerImplTest {
 	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
 	
 	@Mock
+	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetRepository;
+
+	@Mock
 	private LogDescription description;
-	
+
 	/** The byte array. */
 	byte[] byteArray = null;
 
@@ -1065,5 +1069,19 @@ public class PacketInfoManagerImplTest {
 		assertEquals(batchId,"123312");
 	}
 
+	@Test
+	public void  saveRegLostUinDetTest() {
+		
+		packetInfoManagerImpl.saveRegLostUinDet("123","456");
+	}
+	
+	@Test(expected = UnableToInsertData.class)
+	public void dataAccessLayerExceptionTest() {
+		
+		Mockito.when(regLostUinDetRepository.save(any())).thenThrow(new DataAccessLayerException("", "", new UnableToInsertData()));
+
+		packetInfoManagerImpl.saveRegLostUinDet("123","456");
+		
+	}
 
 }

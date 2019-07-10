@@ -55,6 +55,8 @@ public class CheckSumGeneration {
 	 * @return the byte[]
 	 */
 	public byte[] generateIdentityHash(List<FieldValueArray> hashSequence, String registrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "CheckSumGeneration::generateIdentityHash::entry");
 	    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         for (FieldValueArray fieldValueArray : hashSequence) {
@@ -73,7 +75,8 @@ public class CheckSumGeneration {
 			}
 		}
         byte[] dataByte = HMACUtils.generateHash(outputStream.toByteArray());
-
+        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "CheckSumGeneration::generateIdentityHash::exit");
 		return HMACUtils.digestAsPlainText(dataByte).getBytes();
 
 	}

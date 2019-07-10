@@ -23,6 +23,7 @@ variable "secrets_htpasswd_file" {
 resource "helm_release" "docker_registry" {
     name      = "docker-registry"
     chart     = "../../../helm-charts/docker-registry"
+	timeout   = "900"
 	
 	set {
         name = "secrets.htpasswd"
@@ -41,7 +42,7 @@ resource "helm_release" "docker_registry" {
 
     set_string {
         name = "Docker.Registry.Url"
-        value = "${var.domain_name}/docker-registry"
+        value = "${var.domain_name}"
     }
     set_string {
         name = "Docker.Registry.Username"

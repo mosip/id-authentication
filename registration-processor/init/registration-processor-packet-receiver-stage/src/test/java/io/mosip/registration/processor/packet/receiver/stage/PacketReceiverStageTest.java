@@ -26,6 +26,8 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
+import io.mosip.registration.processor.packet.receiver.dto.PacketReceiverResponseDTO;
 import io.mosip.registration.processor.packet.receiver.exception.handler.PacketReceiverExceptionHandler;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.vertx.core.Handler;
@@ -150,8 +152,9 @@ public class PacketReceiverStageTest {
 
 	@Test
 	public void testFailure() {
+		PacketReceiverResponseDTO packetReceiverResponseDTO = new PacketReceiverResponseDTO();
 		Mockito.when(exceptionhandler.handler(ctx.failure()))
-		.thenReturn("{\"response\":{\"status\":\"error\"},\"responsetime\":\"2019-05-15T05:55:07.490Z\"}");
+		.thenReturn(packetReceiverResponseDTO);
 		Mockito.when(signatureResponse.getData()).thenReturn("gdshgsahjhghgsad");
 		packetReceiverStage.failure(ctx);
 	}

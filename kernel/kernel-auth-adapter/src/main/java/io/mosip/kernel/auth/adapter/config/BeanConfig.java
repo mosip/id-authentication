@@ -31,17 +31,15 @@ public class BeanConfig {
 
 	@Bean
 	public RestTemplate restTemplate() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
-				.build();
-		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-		 SSLContextBuilder sslCtx = new SSLContextBuilder();
-		 sslCtx.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-		CloseableHttpClient httpClient = HttpClients.custom().setSSLContext(sslCtx.build())
-				.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
+//		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+//		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy)
+//				.build();
+//		SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+//		CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
+//		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+//		requestFactory.setHttpClient(httpClient);		
+//		RestTemplate restTemplate = new RestTemplate(requestFactory);
+		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setInterceptors(Collections.singletonList(new RestTemplateInterceptor()));
 		return restTemplate;
 	}

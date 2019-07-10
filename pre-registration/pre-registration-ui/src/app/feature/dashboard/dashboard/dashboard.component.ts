@@ -20,6 +20,8 @@ import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { FilesModel } from 'src/app/shared/models/demographic-model/files.model';
 import { LogService } from 'src/app/shared/logger/log.service';
+import LanguageFactory from 'src/assets/i18n';
+// import { ErrorService } from 'src/app/shared/error/error.service';
 
 /**
  * @description This is the dashbaord component which displays all the users linked to the login id
@@ -78,7 +80,7 @@ export class DashBoardComponent implements OnInit {
     private autoLogout: AutoLogoutService,
     private translate: TranslateService,
     private configService: ConfigService,
-    private loggerService: LogService
+    private loggerService: LogService // private errorService: ErrorService
   ) {
     this.translate.use(this.primaryLangCode);
     localStorage.setItem('modifyDocument', 'false');
@@ -101,10 +103,9 @@ export class DashBoardComponent implements OnInit {
       this.autoLogout.getValues(this.primaryLangCode);
       this.autoLogout.continueWatching();
     }
-
-    this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
-      if (response['dashboard']) this.secondaryLanguagelabels = response['dashboard'].discard;
-    });
+    let factory = new LanguageFactory(this.primaryLangCode);
+    let response = factory.getCurrentlanguage();
+    this.secondaryLanguagelabels = response['dashboard'].discard;
     this.regService.setSameAs('');
   }
 
@@ -162,7 +163,8 @@ export class DashBoardComponent implements OnInit {
           this.onError();
         }
       },
-      () => {
+      error => {
+        this.loggerService.error('dashboard', error);
         this.onError();
         this.isFetched = true;
       },
@@ -239,7 +241,6 @@ export class DashBoardComponent implements OnInit {
 
     let primaryIndex = 0;
     let secondaryIndex = 1;
-    //new dashboard api applicantResponse['demographicMetadata']
     let lang =
       applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][0]['language'];
     if (lang !== this.primaryLangCode) {
@@ -248,7 +249,6 @@ export class DashBoardComponent implements OnInit {
     }
     const applicant: Applicant = {
       applicationID: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.preId],
-      //new dashboard api ['demographicMetadata']
       name:
         applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][primaryIndex][
           'value'
@@ -264,12 +264,10 @@ export class DashBoardComponent implements OnInit {
         : '-',
       status: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.applicant.statusCode],
       regDto: applicantResponse[appConstants.DASHBOARD_RESPONSE_KEYS.bookingRegistrationDTO.dto],
-      //new dashboard api ['demographicMetadata']
       nameInSecondaryLanguage:
         applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.fullname][
           secondaryIndex
         ]['value'],
-      //new dashboard api ['demographicMetadata']
       postalCode: applicantResponse['demographicMetadata'][appConstants.DASHBOARD_RESPONSE_KEYS.applicant.postalCode]
     };
 
@@ -615,12 +613,9 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private getErrorLabels() {
-    return new Promise(resolve => {
-      this.dataStorageService.getSecondaryLanguageLabels(this.primaryLangCode).subscribe(response => {
-        this.errorLanguagelabels = response['error'];
-        resolve(true);
-      });
-    });
+    let factory = new LanguageFactory(this.primaryLangCode);
+    let response = factory.getCurrentlanguage();
+    this.errorLanguagelabels = response['error'];
   }
 
   /**
@@ -630,12 +625,14 @@ export class DashBoardComponent implements OnInit {
    * @memberof DashBoardComponent
    */
   private async onError(error?: any) {
-    // if invalid token hten message = "invlaid something" else message = "regular message"
     await this.getErrorLabels();
     let message = this.errorLanguagelabels.error;
+    // this.titleOnError = this.errorLanguagelabels.errorLabel;
+    // this.errorService.onError(this.titleOnError, message, error, this.errorLanguagelabels);
     this.titleOnError = this.errorLanguagelabels.errorLabel;
     if (
-      error && error[appConstants.ERROR] &&
+      error &&
+      error[appConstants.ERROR] &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorLanguagelabels.tokenExpiredLogout;

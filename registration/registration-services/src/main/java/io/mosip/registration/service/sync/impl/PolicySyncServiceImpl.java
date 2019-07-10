@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -123,13 +121,11 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
 				getCenterId(getStationId(getMacAddress())));
 		KeyStore keyStore = new KeyStore();
-		ObjectMapper objectMapper = new ObjectMapper();
 		List<ErrorResponseDTO> erResponseDTOs = new ArrayList<>();
-		Map<String, String> requestParams = new HashMap<String, String>();
+		Map<String, String> requestParams = new HashMap<>();
 		requestParams.put(RegistrationConstants.TIME_STAMP, DateUtils.getUTCCurrentDateTimeString());
 		requestParams.put(RegistrationConstants.REF_ID, centerMachineId);
 		try {
-			@SuppressWarnings("unchecked")
 			LinkedHashMap<String, Object> publicKeySyncResponse = (LinkedHashMap<String, Object>) serviceDelegateUtil
 					.get(RegistrationConstants.SERVICE_NAME, requestParams, false,
 							RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
@@ -213,7 +209,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 
 				}
 			} else {
-				fetchPolicy();
+				setErrorResponse(responseDTO, RegistrationConstants.INVALID_KEY, null);
 			}
 		} catch (RuntimeException runtimeException) {
 

@@ -7,7 +7,7 @@ This project(and readme) is in progress and will be updated frequently.
 This will enable the one-click deployment of MOSIP.
 
 ## Pre-requisite
-* RHEL7.5 with Ansible 2.7.9
+* RHEL7.6 with Ansible 2.7.9
 * Make sure you have forked/mirrored mosip repository and mosip-configuration repository, and created a same branch in both the repositories, because the code that will be deployed will be looking for configuration from same named branch. Lets say, if you have created a new branch named `mydevbranch` in mosip repository, create a branch named `mydevbranch` in mosip-configuration also.
 
 ## Usage
@@ -46,9 +46,7 @@ After installation of Ansible on RHEL based system,  clone this project and navi
 
 **RUN THE SCRIPTS USING ROOT USER**
 
-5. Run `ansible-playbook ansible-playbooks/setup-workstation.yml` to make host machine ready for further process. This step will install __Terraform__, __GIT__, __Kubectl__,  __pip__,  __pipmodules__ and __helm__
-
-6. Once the above changes are done, run `ansible-playbook ansible-playbooks/complete-setup.yml`. This will create and configure the entire setup for you, including devops and deployments box.
+5. Once the above changes are done, run `ansible-playbook ansible-playbooks/complete-setup.yml`. This will create and configure the entire setup for you, including devops and deployments box.
 
 **IMPORTANT NOTE**
 If you want to setup the entire script again for some other setup, please clone a fresh copy of files from github, because the scripts will detect that you want to change previous configuration and will start deleting previously created and configured infrastructure.
@@ -59,7 +57,14 @@ Deployments info file will be named /usr/local/deployments-box-information-<env-
 
 **After the setup you will see init-all-modules pipeline in jenkins that has been setup, trigger it aganinst any environment by choosing from dropdown, and it will deploy all the k8 and non k8 services.**
 
-If you already have DevOps setup ready and you have to setup only deployments infra and CI/CD, you can comment out ` - import_playbook: ./setup-devops/setup-devops.yml` from `scripts/mosip-launcher/ansible-playbooks/complete-setup.yml` file, but be informed, this script will ask you information about your DevOps setup and also you have to take care of plugins you need to install and permissions needed for Jenkinsfile etc. (you can get this information from scripts/mosip-launcher/helm-charts/jenkins/values.yaml file ) in your DevOps setup.
+If you already have DevOps setup and you have to setup only deployments infra and CI/CD, you can comment out ` - import_playbook: ./setup-devops/setup-devops.yml` from `scripts/mosip-launcher/ansible-playbooks/complete-setup.yml` file, but be informed, this script will ask you information about your DevOps setup and also you have to take care of plugins you need to install and permissions needed for Jenkinsfile etc. (you can get this information from scripts/mosip-launcher/helm-charts/jenkins/values.yaml file ) in your DevOps setup. InitJenkinsfile(in root of MOSIP code), uses few environment variables, that you have to  setup manually in this scenario. These variables are:
+```
+def server = Artifactory.server env.artifactoryServerId // your artifactory server id
+def gitCredentialsId = env.scmRepoCredentials // your git provider credential id
+def gitUrl =env.scmUrl // your git url 
+def registryUrl = env.dockerRegistryUrl // set your docker registry url
+def registryCredentials = env.dockerRegistryCredentials // docker registry credentials
+```
 
 ## Authors
   This Module is authored by [Swati Kp](https://github.com/Swatikp) and [Ajit Singh](https://github.com/as-ajitsingh)

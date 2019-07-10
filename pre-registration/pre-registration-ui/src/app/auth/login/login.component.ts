@@ -8,6 +8,7 @@ import { DataStorageService } from 'src/app/core/services/data-storage.service';
 import { RegistrationService } from 'src/app/core/services/registration.service';
 import { ConfigService } from 'src/app/core/services/config.service';
 import * as appConstants from '../../app.constants';
+import LanguageFactory from '../../../assets/i18n';
 
 @Component({
   selector: 'app-login',
@@ -68,9 +69,12 @@ export class LoginComponent implements OnInit {
   }
 
   loadValidationMessages() {
-    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      this.validationMessages = response['login'];
-    });
+    // this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+    //   this.validationMessages = response['login'];
+    // });
+    let factory = new LanguageFactory(localStorage.getItem('langCode'));
+    let response = factory.getCurrentlanguage();
+    this.validationMessages = response['login'];
   }
 
   loginIdValidator() {
@@ -275,28 +279,51 @@ export class LoginComponent implements OnInit {
 
   showOtpMessage() {
     this.inputOTP = '';
-    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      const message = {
-        case: 'MESSAGE',
-        message: response['message']['login']['msg3']
-      };
-      const dialogRef = this.dialog.open(DialougComponent, {
-        width: '350px',
-        data: message
-      });
+    let factory = new LanguageFactory(localStorage.getItem('langCode'));
+    let response = factory.getCurrentlanguage();
+    let otpmessage = response['message']['login']['msg3'];
+    const message = {
+      case: 'MESSAGE',
+      message: otpmessage
+    };
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: '350px',
+      data: message
     });
+
+    // this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+    //   const message = {
+    //     case: 'MESSAGE',
+    //     message: response['message']['login']['msg3']
+    //   };
+    //   const dialogRef = this.dialog.open(DialougComponent, {
+    //     width: '350px',
+    //     data: message
+    //   });
+    // });
   }
 
   showErrorMessage() {
-    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      const message = {
-        case: 'MESSAGE',
-        message: response['error']['error']
-      };
-      const dialogRef = this.dialog.open(DialougComponent, {
-        width: '350px',
-        data: message
-      });
+    let factory = new LanguageFactory(localStorage.getItem('langCode'));
+    let response = factory.getCurrentlanguage();
+    let errormessage = response['error']['error'];
+    const message = {
+      case: 'MESSAGE',
+      message: errormessage
+    };
+    const dialogRef = this.dialog.open(DialougComponent, {
+      width: '350px',
+      data: message
     });
+    // this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
+    //   const message = {
+    //     case: 'MESSAGE',
+    //     message: response['error']['error']
+    //   };
+    //   const dialogRef = this.dialog.open(DialougComponent, {
+    //     width: '350px',
+    //     data: message
+    //   });
+    // });
   }
 }

@@ -66,8 +66,9 @@ public class AuthenticationServiceTest {
 		authenticationBaseValidators.add(otpValidator);
 		authenticationServiceImpl.setAuthenticationBaseValidator(authenticationBaseValidators);
 		AuthTokenDTO authTokenDTO =new AuthTokenDTO();
-		when(otpValidator.validate("mosip", "12345")).thenReturn(authTokenDTO);
-		assertNotNull(authenticationServiceImpl.authValidator("otp", "mosip", "12345"));
+		when(otpValidator.validate(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(authTokenDTO);
+		assertNotNull(authenticationServiceImpl.authValidator("otp", "mosip", "12345", true));
 	}
 	
 	@Test

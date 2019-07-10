@@ -8,6 +8,8 @@ import java.security.SecureRandom;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.codec.binary.Base64;
+
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.util.constant.HMACUtilConstants;
 
@@ -124,6 +126,26 @@ public final class HMACUtils {
 		byte[] randomBytes = new byte[bytes];
 		random.nextBytes(randomBytes);
 		return randomBytes;
+	}
+
+	/**
+	 * Encodes to BASE64 String
+	 * 
+	 * @param data data to encode
+	 * @return encoded data
+	 */
+	public static String encodeBase64String(byte[] data) {
+		return Base64.encodeBase64String(data);
+	}
+
+	/**
+	 * Decodes from BASE64
+	 * 
+	 * @param data data to decode
+	 * @return decoded data
+	 */
+	public static byte[] decodeBase64(String data) {
+		return Base64.decodeBase64(data);
 	}
 
 	/*

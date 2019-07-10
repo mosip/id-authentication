@@ -14,6 +14,7 @@ public class LocationDTO extends BaseDTO {
 	protected String region;
 	protected String city;
 	protected String province;
+	protected String localAdministrativeAuthority;
 	protected String postalCode;
 
 	/**
@@ -59,6 +60,20 @@ public class LocationDTO extends BaseDTO {
 	 */
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	/**
+	 * @return the localAdministrativeAuthority
+	 */
+	public String getLocalAdministrativeAuthority() {
+		return localAdministrativeAuthority;
+	}
+
+	/**
+	 * @param localAdministrativeAuthority the localAdministrativeAuthority to set
+	 */
+	public void setLocalAdministrativeAuthority(String localAdministrativeAuthority) {
+		this.localAdministrativeAuthority = localAdministrativeAuthority;
 	}
 
 	/**

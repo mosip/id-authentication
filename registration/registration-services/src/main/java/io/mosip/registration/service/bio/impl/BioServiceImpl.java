@@ -112,7 +112,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
 			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 			fingerprintDetailsDTO.setFingerPrint(isoTemplate);
-			fingerprintDetailsDTO.setFingerType("index");
+			fingerprintDetailsDTO.setFingerType("Right little");
 			fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 			authenticationValidatorDTO.setUserId(userId);

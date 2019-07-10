@@ -43,6 +43,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   showMorning: boolean;
   showAfternoon: boolean;
   disableContinueButton = false;
+  spinner = true;
   DAYS: any;
 
   constructor(
@@ -193,6 +194,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   getSlotsforCenter(id) {
     this.dataService.getAvailabilityData(id).subscribe(
       response => {
+        this.spinner = false;
         if (response['response']) {
           this.formatJson(response['response'].centerDetails);
         } else if (response[appConstants.NESTED_ERROR]) {
@@ -312,7 +314,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
               this.router.navigateByUrl(url);
             });
         } else {
-          this.displayMessage('Error', this.errorlabels.error, '');
+          this.displayMessage('Error', this.errorlabels.error, { error: response });
         }
       },
       error => {
@@ -322,21 +324,39 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   displayMessage(title: string, message: string, error: any) {
+    this.spinner = false;
     this.disableContinueButton = false;
     if (
       error &&
+      error[appConstants.ERROR] &&
       error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorlabels.tokenExpiredLogout;
       title = '';
+    } else if (
+      error &&
+      error[appConstants.ERROR] &&
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.slotNotAvailable
+    ) {
+      message = this.errorlabels.slotNotAvailable;
     }
     const messageObj = {
       case: 'MESSAGE',
       title: title,
       message: message
     };
-    this.openDialog(messageObj, '250px');
+    const dialogRef = this.openDialog(messageObj, '250px');
+    dialogRef.afterClosed().subscribe(() => {
+      if (
+        error &&
+        error[appConstants.ERROR] &&
+        error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.slotNotAvailable
+      ) {
+        window.history.back();
+      }
+    });
   }
+
   openDialog(data, width) {
     const dialogRef = this.dialog.open(DialougComponent, {
       width: width,

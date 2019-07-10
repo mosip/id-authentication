@@ -292,6 +292,7 @@ public class PacketValidateProcessorTest {
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
 		FieldValueArray hashsequence2 = new FieldValueArray();
+		hashsequence2.setLabel(PacketFiles.OTHERFILES.name());
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -336,9 +337,8 @@ public class PacketValidateProcessorTest {
 		reverseDatasyncReponseDTO.setAlreadyStoredPreRegIds("2");
 		reverseDatasyncReponseDTO.setCountOfStoredPreRegIds("2");
 		reverseDatasyncReponseDTO.setTransactionId("07e3cea5-251d-11e9-a794-af3f5a85c414");
-		mainResponseDTO.setErr(null);
-		mainResponseDTO.setStatus(true);
-		mainResponseDTO.setResTime("2019-01-31T05:57:02.816Z");
+		mainResponseDTO.setErrors(null);
+		mainResponseDTO.setResponsetime("2019-01-31T05:57:02.816Z");
 		mainResponseDTO.setResponse(reverseDatasyncReponseDTO);
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");
@@ -502,6 +502,7 @@ public class PacketValidateProcessorTest {
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
 		FieldValueArray hashsequence2 = new FieldValueArray();
+		hashsequence2.setLabel(PacketFiles.OTHERFILES.name());
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -589,6 +590,7 @@ public class PacketValidateProcessorTest {
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
 		FieldValueArray hashsequence2 = new FieldValueArray();
+		hashsequence2.setLabel(PacketFiles.OTHERFILES.name());
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -814,9 +816,8 @@ public class PacketValidateProcessorTest {
 		ExceptionJSONInfoDTO exceptionJsonInfoDto = new ExceptionJSONInfoDTO();
 		exceptionJsonInfoDto.setErrorCode("PRG_CORE_REQ_001");
 		exceptionJsonInfoDto.setMessage("INVALID_REQUEST_ID");
-		mainResponseDTO.setErr(exceptionJsonInfoDto);
-		mainResponseDTO.setStatus(true);
-		mainResponseDTO.setResTime("2019-01-31T05:57:02.816Z");
+		mainResponseDTO.setErrors(Arrays.asList(exceptionJsonInfoDto));
+		mainResponseDTO.setResponsetime("2019-01-31T05:57:02.816Z");
 		mainResponseDTO.setResponse(null);
 		List<String> preRegIds = new ArrayList<>();
 		preRegIds.add("12345678");

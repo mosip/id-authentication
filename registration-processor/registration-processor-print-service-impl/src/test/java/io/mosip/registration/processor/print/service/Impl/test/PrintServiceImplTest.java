@@ -232,7 +232,7 @@ public class PrintServiceImplTest {
 	}
 	
 	@Test
-	public void testPdfGeneratedwithRIDSuccess() throws IdRepoAppException, ApisResourceAccessException {
+	public void testPdfGeneratedwithRIDSuccess() throws IdRepoAppException, ApisResourceAccessException, IOException {
 		List<String> uinList = new ArrayList<>();
 		uinList.add("2046958192");
 		Map<String, String> map1 = new HashMap<>();
@@ -248,9 +248,10 @@ public class PrintServiceImplTest {
 	 * Test UIN not found.
 	 * @throws ApisResourceAccessException 
 	 * @throws IdRepoAppException 
+	 * @throws IOException 
 	 */
 	@Test(expected = PDFGeneratorException.class)
-	public void testUINNotFound() throws IdRepoAppException, ApisResourceAccessException {
+	public void testUINNotFound() throws IdRepoAppException, ApisResourceAccessException, IOException {
 		List<String> uinList = new ArrayList<>();
 		uinList.add(null);
 		Map<String, String> map1 = new HashMap<>();
@@ -286,9 +287,10 @@ public class PrintServiceImplTest {
 	 * Test PDF generator exception.
 	 * @throws ApisResourceAccessException 
 	 * @throws IdRepoAppException 
+	 * @throws IOException 
 	 */
 	@Test(expected = PDFGeneratorException.class)
-	public void testPDFGeneratorException() throws IdRepoAppException, ApisResourceAccessException {
+	public void testPDFGeneratorException() throws IdRepoAppException, ApisResourceAccessException, IOException {
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
 		Mockito.doThrow(e).when(uinCardGenerator).generateUinCard(any(), any());
 		
@@ -306,9 +308,11 @@ public class PrintServiceImplTest {
 	 *
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
+	 * @throws IdRepoAppException 
 	 */
 	@Test(expected = PDFGeneratorException.class)
-	public void testApiResourceException() throws ApisResourceAccessException {
+	public void testApiResourceException() throws ApisResourceAccessException, IdRepoAppException, IOException {
 		ApisResourceAccessException e = new ApisResourceAccessException();
 		Mockito.doThrow(e).when(restClientService).getApi(any(), any(), any(), any(), any());
 

@@ -103,6 +103,12 @@ public enum PacketFiles {
 	INTRODUCERFINGERPRINTYPE,
 	/** The introduceriristype. */
 	INTRODUCERIRISTYPE,
-
-	APPLICANT_BIO_CBEFF, PACKET_DATA_HASH, PACKET_OSI_HASH
+	/** The applicantBioCbeff. */
+	APPLICANT_BIO_CBEFF,
+	/** The packetDataHash. */
+	PACKET_DATA_HASH,
+	/** The packetOsiHash. */
+	PACKET_OSI_HASH,
+	/** The otherFiles. */
+	OTHERFILES
 }

@@ -177,6 +177,12 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 					packetUploadService.uploadAllSyncedPackets();
 					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
 							"uploadAllSyncedPackets completed");
+					
+					/*sync packet status after packet upload*/
+					packetStatusService.packetSyncStatus(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+					LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+							"packetSyncStatus completed");
+					
 					auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.PACKETS_UPLOADED, "REGISTRATION",
 							AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 
@@ -226,9 +232,8 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 					globalParamDAO.saveAll(Arrays.asList(globalParam));
 				}
 
-				updateAllSyncJobs(true);
 				LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-						"Step 1  Enabled all sync jobs after remap success");
+						"cleanUpCenterSpecificData remap successfully completed");
 			}
 		}
 	}

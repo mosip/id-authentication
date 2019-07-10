@@ -48,6 +48,7 @@ import io.mosip.registration.processor.status.dto.RegistrationStatusSubRequestDt
 import io.mosip.registration.processor.status.dto.RegistrationSyncRequestDTO;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncResponseDto;
+import io.mosip.registration.processor.status.dto.SyncResponseFailDto;
 import io.mosip.registration.processor.status.dto.SyncResponseFailureDto;
 import io.mosip.registration.processor.status.dto.SyncResponseSuccessDto;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
@@ -253,6 +254,20 @@ public class RegistrationStatusAndSyncControllerTest {
 		List<SyncResponseDto> syncResponseDtoList = new ArrayList<>();
 		syncResponseFailureDto.setStatus("SUCCESS");
 		syncResponseDtoList.add(syncResponseFailureDto);
+		registrationSyncController.buildRegistrationSyncResponse(syncResponseDtoList);
+
+	}
+	@Test
+	public void testBuildRegistrationSyncResponse1() throws JsonProcessingException {
+		List<SyncResponseDto> syncResponseDtoList = new ArrayList<>();
+		SyncResponseFailDto syncResponseFailDto = new SyncResponseFailDto();
+		SyncResponseFailureDto syncResponseDto = new SyncResponseFailureDto();
+		
+		syncResponseDto.setStatus("Fail");
+		syncResponseDtoList.add(syncResponseDto);
+		
+		syncResponseFailDto.setStatus("Fail");
+		syncResponseDtoList.add(syncResponseFailDto);
 		registrationSyncController.buildRegistrationSyncResponse(syncResponseDtoList);
 
 	}

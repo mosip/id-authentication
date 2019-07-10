@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.code;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum RegistrationExceptionTypeCode.
  */
@@ -176,6 +177,7 @@ public enum RegistrationExceptionTypeCode {
 	/** The packet uin generation failed. */
 	PACKET_UIN_GENERATION_FAILED,
 
+	/** The packet uin generation id repo error. */
 	PACKET_UIN_GENERATION_ID_REPO_ERROR,
 
 	/** The invocation target exception. */
@@ -244,7 +246,7 @@ public enum RegistrationExceptionTypeCode {
 	/** The password otp failure. */
 	PASSWORD_OTP_FAILURE,
 
-	/** The biometric exception */
+	/**  The biometric exception. */
 	BIOMETRIC_EXCEPTION
 
 }

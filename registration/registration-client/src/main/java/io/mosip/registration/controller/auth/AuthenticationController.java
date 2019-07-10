@@ -212,12 +212,13 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
+		
 		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId(), true)) {
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
 					if (fetchUserRole(otpUserId.getText())) {
 						if (null != authenticationService.authValidator(RegistrationConstants.OTP, otpUserId.getText(),
-								otp.getText())) {
+								otp.getText(), haveToSaveAuthToken(otpUserId.getText()))) {
 							userAuthenticationTypeListValidation.remove(0);
 							userNameField = otpUserId.getText();
 							if (!isEODAuthentication) {
@@ -237,7 +238,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				}
 			} else {
 				if (null != authenticationService.authValidator(RegistrationConstants.OTP, otpUserId.getText(),
-						otp.getText())) {
+						otp.getText(), haveToSaveAuthToken(otpUserId.getText()))) {
 					if (!isEODAuthentication) {
 						getOSIData().setOperatorAuthenticatedByPIN(true);
 					}
@@ -1020,6 +1021,10 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		authList.removeIf(auth -> authList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(flag)
 				&& auth.equalsIgnoreCase(authCode));
+	}
+
+	private boolean haveToSaveAuthToken(String userId) {
+		return SessionContext.userId().equals(userId);
 	}
 
 }

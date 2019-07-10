@@ -92,6 +92,7 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 				Dimension[] nonStandardResolutions = new Dimension[] { requiredDimension };
 				webcam.setCustomViewSizes(nonStandardResolutions);
 				webcam.setViewSize(requiredDimension);
+				webcam.getLock().disable();
 				webcam.open();
 				Webcam.getDiscoveryService().stop();
 			}

@@ -10,7 +10,7 @@
 
     - name: Make Jenkins URL persistant
       set_fact:
-        jenkins_url: "https://{{ devops_cluster_dns }}/jenkins"
+        jenkins_url: "{{ devops_cluster_dns }}/jenkins"
       when: devops_cluster_dns is defined
 
     - name: Make Jenkins URL persistant
@@ -47,7 +47,7 @@
 
     - name: Make Docker registry URL persistant
       set_fact:
-        docker_registry_url: "https://{{ devops_cluster_dns }}/docker-registry"
+        docker_registry_url: "{{ devops_cluster_dns }}"
       when: devops_cluster_dns is defined
 
     - name: Make Docker registry URL persistant
@@ -84,7 +84,7 @@
 
     - name: Make Jfrog URL persistant
       set_fact:
-        jfrog_url: "https://{{ devops_cluster_dns }}/jfrog"
+        jfrog_url: "{{ devops_cluster_dns }}/artifactory"
       when: devops_cluster_dns is defined
 
     - name: Make Jfrog URL persistant

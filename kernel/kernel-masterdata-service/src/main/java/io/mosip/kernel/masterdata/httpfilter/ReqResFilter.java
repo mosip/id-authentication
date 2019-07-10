@@ -33,7 +33,7 @@ public class ReqResFilter implements Filter {
 		ContentCachingRequestWrapper requestWrapper = null;
 		ContentCachingResponseWrapper responseWrapper = null;
 
-		try {
+
 			if (httpServletRequest.getRequestURI().endsWith(".stream")) {
 				chain.doFilter(request, response);
 				return;
@@ -42,10 +42,7 @@ public class ReqResFilter implements Filter {
 			responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
 			chain.doFilter(requestWrapper, responseWrapper);
 			responseWrapper.copyBodyToResponse();
-		} catch (Exception e) {
-			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
-			mosipLogger.error("", "", "", e.getMessage());
-		}
+
 	}
 
 	@Override

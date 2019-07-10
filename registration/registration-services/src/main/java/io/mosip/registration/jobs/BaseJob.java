@@ -1,9 +1,9 @@
 package io.mosip.registration.jobs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -16,17 +16,15 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * The class BaseJob was a quartzJobBean which gives the information of job and
- * its functionalities.This class will get all the active jobids and run that particular jobs
- * by calling that services.
+ * its functionalities.This class will get all the active jobids and run that
+ * particular jobs by calling that services.
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -58,9 +56,10 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	protected ResponseDTO responseDTO;
 
-	private static  Map<String,String> completedJobMap = new HashMap<>();
-	
-	
+	private static Map<String, String> completedJobMap = new HashMap<>();
+
+	public static final List<String> successJob = new ArrayList<>();
+
 	/**
 	 * LOGGER for logging
 	 */
@@ -79,7 +78,17 @@ public abstract class BaseJob extends QuartzJobBean {
 	}
 
 	/**
-	 * To execute the specified Job invocation
+	 * The executeJob will execute the service class defined in the functionality.
+	 * 
+	 * As after executing the service it will update the job execution information
+	 * in sync_transaction and in sync_control tables.
+	 * 
+	 * If service response is success : It will update the status
+	 * JOB_EXECUTION_SUCCESS in sync_transaction and in sync_control.
+	 * 
+	 * If service response is failure : It will update the status
+	 * JOB_EXECUTION_FAILURE in sync_transaction.
+	 * 
 	 * 
 	 * @param triggerPoint
 	 *            the triggered person
@@ -90,8 +99,21 @@ public abstract class BaseJob extends QuartzJobBean {
 	public abstract ResponseDTO executeJob(String triggerPoint, String jobId);
 
 	/**
-	 * If there is any job called by the currently running job then this 
-	 * method will gets called to finish the child jobs first
+	 * The executeChildJob will check for any parent jobs associated to the current
+	 * job.
+	 * 
+	 * If current job has any parent job : The Parent job will internally call
+	 * {@value executeJob} and continues same as executing the service class defined
+	 * in the functionality which and continue for the same.
+	 * 
+	 * As after executing the service it will update the job execution information
+	 * in sync_transaction and in sync_control tables.
+	 * 
+	 * If service response is success : It will update the status
+	 * JOB_EXECUTION_SUCCESS in sync_transaction and in sync_control.
+	 * 
+	 * If service response is failure : It will update the status
+	 * JOB_EXECUTION_FAILURE in sync_transaction.
 	 * 
 	 * @param currentJobID
 	 *            current job executing
@@ -112,8 +134,8 @@ public abstract class BaseJob extends QuartzJobBean {
 					/* Parent SyncJob */
 					BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(childJob.getApiName());
 
-					removeCompletedJobInMap(currentJobID);
-					
+					removeCompletedJobInMap(childJob.getId());
+
 					/* Response of parentBaseJob */
 					ResponseDTO childJobResponseDTO = parentBaseJob
 							.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM, childJob.getId());
@@ -141,63 +163,49 @@ public abstract class BaseJob extends QuartzJobBean {
 	}
 
 	/**
-	 * Once all the jobs are completed then this method will save this transaction in the table
-	 * @param responseDTO - the {@link ResponseDTO}
-	 * @param triggerPoint - the trigger point which indicates whether manual or batch jobs
-	 * @param syncJobId - the sync job ID
-	 * @return the {@link ResponseDTO} after updating the sync transaction
+	 * The syncTransactionUpdate will update the job execution information for sync_transaction and sync_control in database.
+	 * 
+	 * If response in a parameter is success : It will update the status
+	 * JOB_EXECUTION_SUCCESS in sync_transaction and in sync_control.
+	 * 
+	 * If service response is failure or null: It will update the status
+	 * JOB_EXECUTION_FAILURE in sync_transaction.
+	 * 
+	 * @param responseDTO
+	 *            - the {@link ResponseDTO}
+	 * @param triggerPoint
+	 *            - the trigger point which indicates whether manual or batch jobs
+	 * @param syncJobId
+	 *            - the sync job ID
 	 */
-	public synchronized ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint,
-			String syncJobId) {
+	public synchronized void syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint, String syncJobId) {
 
+		String status = (responseDTO != null && responseDTO.getSuccessResponseDTO() != null)
+				? RegistrationConstants.JOB_EXECUTION_SUCCESS
+				: RegistrationConstants.JOB_EXECUTION_FAILURE;
 		try {
-			if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
 
-				/* Insert Sync Transaction of executed with Success */
-				SyncTransaction syncTransaction = syncManager.createSyncTransaction(
-						RegistrationConstants.JOB_EXECUTION_SUCCESS, RegistrationConstants.JOB_EXECUTION_SUCCESS,
-						triggerPoint, syncJobId);
+			addToCompletedJobMap(syncJobId, status);
 
-				addToCompletedJobMap(syncJobId, RegistrationConstants.JOB_EXECUTION_SUCCESS);
+			/* Insert Sync Transaction of executed with Success/failure */
+			SyncTransaction syncTransaction = syncManager.createSyncTransaction(status, status, triggerPoint,
+					syncJobId);
+
+			if (RegistrationConstants.JOB_EXECUTION_SUCCESS.equals(status)) {
 				/* Insert Sync Control transaction */
 				syncManager.createSyncControlTransaction(syncTransaction);
-
-				Map<String, Object> attributes = new WeakHashMap<>();
-				attributes.put(RegistrationConstants.SYNC_TRANSACTION, syncTransaction);
-
-				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				successResponseDTO.setOtherAttributes(attributes);
-
-			} else {
-
-				/* Insert Sync Transaction of executed with failure */
-				syncManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILURE,
-						RegistrationConstants.JOB_EXECUTION_FAILURE, triggerPoint, syncJobId);
-				addToCompletedJobMap(syncJobId, RegistrationConstants.JOB_EXECUTION_FAILURE);
 			}
+
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 
 			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					regBaseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseUncheckedException));
-			if (responseDTO == null) {
-				responseDTO = new ResponseDTO();
-			}
-			LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
-
-			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setInfoType(RegistrationConstants.ERROR);
-			errorResponseDTO.setMessage(regBaseUncheckedException.getMessage());
-
-			errorResponseDTOs.add(errorResponseDTO);
-
-			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 
 		}
 
-		return responseDTO;
-
 	}
+
 
 	protected synchronized String loadContext(JobExecutionContext context) {
 		try {
@@ -243,9 +251,9 @@ public abstract class BaseJob extends QuartzJobBean {
 
 		/* Get Current JobId */
 		String currentJobId = jobManager.getJobId(context);
-		
+
 		removeCompletedJobInMap(currentJobId);
-			
+
 		return currentJobId;
 
 	}
@@ -255,19 +263,23 @@ public abstract class BaseJob extends QuartzJobBean {
 			this.applicationContext = applicationContext;
 		}
 	}
-	
-	public void addToCompletedJobMap(String jobId,String status) {
+
+	public void addToCompletedJobMap(String jobId, String status) {
 		completedJobMap.put(jobId, status);
+		if (status.contains("success")) {
+			successJob.add(jobId);
+		}
 	}
-	
-	public static Map<String,String> getCompletedJobMap(){
+
+	public static Map<String, String> getCompletedJobMap() {
 		return completedJobMap;
 	}
-	public static void clearCompletedJobMap(){
+
+	public static void clearCompletedJobMap() {
 		completedJobMap.clear();
 	}
-	
-	public static void removeCompletedJobInMap(String jobId){
+
+	public static void removeCompletedJobInMap(String jobId) {
 		completedJobMap.remove(jobId);
 	}
 

@@ -71,10 +71,23 @@ deploymentsAndServices:
        servicePath: /v1/cryptomanager
        servicePort: 8087
        dockerImageName: kernel-cryptomanager-service
+    kernel-signature-service:
+       servicePath: /v1/signature
+       servicePort: 8092
+       dockerImageName: kernel-signature-service
     kernel-uingenerator-service:
-       servicePath: /v1/cryptomanager
+       servicePath: /v1/uingenerator
        servicePort: 8080
        dockerImageName: kernel-uingenerator-service
+       overideCommonEnvironmentVariables: true
+    #    environmentVariables:
+    #         - name: spring.cloud.config.label
+    #           value: 
+    #         - name: spring.profiles.active
+    #           value: 
+    #         - name: spring.cloud.config.uri
+    #           value: 
+
     kernel-auditmanager-service:
        servicePath: /v1/auditmanager
        servicePort: 8081
@@ -236,7 +249,7 @@ deploymentsAndServices:
               valueFrom:
                 secretKeyRef:
                   name: config-server-keystore-values-secret
-                  key: secret
+                  key: alias
         volumes:
             config-server-secret-volume:
                 name: config-server-secret #secret with same name must be created
@@ -252,11 +265,11 @@ deploymentsAndServices:
     
 
 deploymentsOnly:
-    registartion-processor-abis-middleware-stage:
+    registration-processor-abis-middleware-stage:
         ports:
             eventbus-port: 5888
             hazelcast-port: 5701
-        dockerImageName: registartion-processor-abis-middleware-stage
+        dockerImageName: registration-processor-abis-middleware-stage
     registration-processor-abis-handler-stage:
         ports:
             eventbus-port: 5726

@@ -8,12 +8,14 @@ import java.util.TimeZone;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.ResponseStatusCode;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -51,16 +53,22 @@ public class RegistrationSyncRequestValidator {
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
 
+	/** The Constant REG_SYNC_APPLICATION_VERSION. */
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.sync.version";
 
 	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The grace period. */
+	@Value("${mosip.registration.processor.grace.period}")
+	private int gracePeriod;
+
 	/** The id. */
 	// @Resource
 	private Map<String, String> id = new HashMap<>();
 
+	/** The request. */
 	RegistrationSyncRequestDTO request;
 
 	/*
@@ -70,8 +78,19 @@ public class RegistrationSyncRequestValidator {
 	 * org.springframework.validation.Errors)
 	 */
 
+	/**
+	 * Validate.
+	 *
+	 * @param target the target
+	 * @param serviceId the service id
+	 * @param synchResponseList the synch response list
+	 * @return true, if successful
+	 */
 	public boolean validate(Object target, String serviceId, List<SyncResponseDto> synchResponseList) {
 		boolean isValid = false;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationSyncRequestValidator::validate()::entry");
+
 		id.put("sync", serviceId);
 		request = (RegistrationSyncRequestDTO) target;
 		if (validateReqTime(request.getRequesttime(), synchResponseList)
@@ -79,17 +98,18 @@ public class RegistrationSyncRequestValidator {
 				&& validateVersion(request.getVersion(), synchResponseList)) {
 			isValid = true;
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationSyncRequestValidator::validate()::exit");
+
 		return isValid;
 	}
 
 	/**
 	 * Validate id.
 	 *
-	 * @param id
-	 *            the id
-	 * @param errors
-	 *            the errors
-	 * @throws RegStatusValidationException
+	 * @param id            the id
+	 * @param syncResponseList the sync response list
+	 * @return true, if successful
 	 */
 	private boolean validateId(String id, List<SyncResponseDto> syncResponseList) {
 		if (Objects.isNull(id)) {
@@ -121,11 +141,9 @@ public class RegistrationSyncRequestValidator {
 	/**
 	 * Validate ver.
 	 *
-	 * @param ver
-	 *            the ver
-	 * @param errors
-	 *            the errors
-	 * @throws RegStatusValidationException
+	 * @param ver            the ver
+	 * @param syncResponseList the sync response list
+	 * @return true, if successful
 	 */
 	private boolean validateVersion(String ver, List<SyncResponseDto> syncResponseList) {
 		String version = env.getProperty(REG_SYNC_APPLICATION_VERSION);
@@ -158,11 +176,9 @@ public class RegistrationSyncRequestValidator {
 	/**
 	 * Validate req time.
 	 *
-	 * @param timestamp
-	 *            the timestamp
-	 * @param errors
-	 *            the errors
-	 * @throws RegStatusValidationException
+	 * @param timestamp            the timestamp
+	 * @param syncResponseList the sync response list
+	 * @return true, if successful
 	 */
 	private boolean validateReqTime(String timestamp, List<SyncResponseDto> syncResponseList) {
 		if (Objects.isNull(timestamp)) {
@@ -180,16 +196,24 @@ public class RegistrationSyncRequestValidator {
 					DateTimeFormatterFactory timestampFormat = new DateTimeFormatterFactory(
 							env.getProperty(DATETIME_PATTERN));
 					timestampFormat.setTimeZone(TimeZone.getTimeZone(env.getProperty(DATETIME_TIMEZONE)));
-					if (!DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter()).isBeforeNow()) {
+					if (!(DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+							.isAfter(new DateTime().minusSeconds(gracePeriod))
+							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
+									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
 
 						SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();
 
 						syncResponseFailureDto.setStatus(ResponseStatusCode.FAILURE.toString());
+
 						syncResponseFailureDto.setMessage(String
 								.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(), TIMESTAMP));
 						syncResponseFailureDto
 								.setErrorCode(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getCode());
 						syncResponseList.add(syncResponseFailureDto);
+						regProcLogger.error(REGISTRATION_SERVICE, "RegistrationSyncRequestValidator", "validateReqTime",
+								"\n" + String.format(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER.getMessage(),
+										TIMESTAMP));
+
 						return false;
 					} else {
 						return true;
@@ -199,7 +223,7 @@ public class RegistrationSyncRequestValidator {
 					return false;
 				}
 			} catch (IllegalArgumentException e) {
-				regProcLogger.error(REGISTRATION_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
+				regProcLogger.error(REGISTRATION_SERVICE, "RegistrationSyncRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
 
 				SyncResponseFailDto syncResponseFailureDto = new SyncResponseFailDto();

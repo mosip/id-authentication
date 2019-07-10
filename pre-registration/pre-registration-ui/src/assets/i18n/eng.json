@@ -345,7 +345,7 @@
   "documents": {
     "title_document": "Upload Documents",
     "text_filetype": "Allowed file type ",
-    "text_filesize": "allowed file size",
+    "text_filesize": "and allowed file size",
     "action_browse": "BROWSE",
     "action_back": "BACK",
     "action_skip": "SKIP",
@@ -577,7 +577,8 @@
     "dateOfBirth": "Entered date of birth is invalid",
     "CNIENumber": "Entered CNIE Number is invalid",
     "tokenExpiredLogout": "You have been LoggedOut due to inactivity.",
-    "errorLabel":"ERROR"
+    "slotNotAvailable": "Appointment booking/re-booking cannot be done as the requested slot is not available. Please select another slot or try again later",
+    "errorLabel": "ERROR"
   },
   "residentTypesMapping": {
     "NFR": "National",
