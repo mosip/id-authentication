@@ -78,8 +78,9 @@ section {
   display: flex;
 }
 .centers-wrapper {
-  width: 60vw;
-  padding: 0 1rem 0 0;
+  margin-left: 25px;
+  margin-right: 2vw;
+  width: 55%;
 }
 
 .centers-list ul {
@@ -106,14 +107,13 @@ input[type='radio'] {
 }
 
 .map {
-  height: 60vh;
-  padding: 0 1rem;
-  display: flex;
-}
+  width: 40%;
+    display: flex;
+  }
 
 .container {
   display: flex;
-  padding: 10px 2rem;
+  margin-bottom: 60px;
 }
 
 .user-back-btn {
@@ -160,6 +160,7 @@ input[type='radio'] {
 .center_selection-intial-recommendation-container {
   display: flex;
   align-items: center;
+  margin-top:7px;
 }
 .center_selection-center_recommendation-display {
   color: #30badd;
