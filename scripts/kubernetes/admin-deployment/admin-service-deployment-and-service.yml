@@ -35,7 +35,7 @@ spec:
         - name: spring.profiles.active
           value: dev
         - name: spring.cloud.config.label
-          value: 0.12.0_ADMIN
+          value: 0.11.0
         - name: spring.cloud.config.uri
           value: http://kernel-config-server:51000/config
         ports:

@@ -74,7 +74,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
 		return filter;
 	}
-	
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {

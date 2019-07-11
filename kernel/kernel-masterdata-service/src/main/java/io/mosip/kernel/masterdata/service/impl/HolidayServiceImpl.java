@@ -8,10 +8,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -22,8 +18,6 @@ import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -211,8 +205,7 @@ public class HolidayServiceImpl implements HolidayService {
 	/**
 	 * Bind {@link HolidayUpdateDto} dto to {@link Map}
 	 * 
-	 * @param dto
-	 *            input {@link HolidayUpdateDto}
+	 * @param dto input {@link HolidayUpdateDto}
 	 * @return {@link Map} with the named parameter and value
 	 */
 	private Map<String, Object> bindDtoToMap(HolidayUpdateDto dto) {
@@ -243,8 +236,7 @@ public class HolidayServiceImpl implements HolidayService {
 	/**
 	 * Bind the {@link HolidayUpdateDto} to {@link HolidayIDDto}
 	 * 
-	 * @param dto
-	 *            input {@link HolidayUpdateDto} to be bind
+	 * @param dto input {@link HolidayUpdateDto} to be bind
 	 * @return {@link HolidayIDDto} holiday id
 	 */
 	private HolidayIDDto mapToHolidayIdDto(HolidayUpdateDto dto) {
@@ -261,33 +253,5 @@ public class HolidayServiceImpl implements HolidayService {
 		idDto.setLocationCode(dto.getLocationCode());
 		idDto.setLangCode(dto.getLangCode());
 		return idDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.HolidayService#getHolidays(int, int,
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public PageDto<HolidayExtnDto> getHolidays(int pageNumber, int pageSize, String sortBy, String orderBy) {
-		List<HolidayExtnDto> holidays = null;
-		PageDto<HolidayExtnDto> pageDto = null;
-		try {
-			Page<Holiday> pageData = holidayRepository
-					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
-			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
-				holidays = MapperUtils.mapAll(pageData.getContent(), HolidayExtnDto.class);
-				pageDto = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(), pageData.getTotalElements(),
-						holidays);
-			} else {
-				throw new DataNotFoundException(HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorCode(),
-						HolidayErrorCode.HOLIDAY_NOTFOUND.getErrorMessage());
-			}
-		} catch (DataAccessException | DataAccessLayerException dataAccessException) {
-			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
-					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
-		}
-		return pageDto;
 	}
 }

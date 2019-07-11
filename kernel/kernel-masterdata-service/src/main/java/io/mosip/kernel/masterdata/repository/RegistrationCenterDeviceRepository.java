@@ -32,8 +32,5 @@ public interface RegistrationCenterDeviceRepository
 
 	@Query("FROM RegistrationCenterDevice rd where rd.registrationCenterDevicePk.regCenterId = ?1 AND (rd.isDeleted is null or rd.isDeleted=false) and rd.isActive = true")
 	List<RegistrationCenterDevice> findByRegCenterIdAndIsDeletedFalseOrIsDeletedIsNull(String regCenterId);
-	
-	@Query(value="select count(*) from master.reg_center_device where regcntr_id=?1 and (is_deleted is null or is_deleted=false);",nativeQuery=true)
-	Long countCenterDevices(String centerId); 
 
 }

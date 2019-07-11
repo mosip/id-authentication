@@ -9,18 +9,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
@@ -255,37 +249,6 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		responseDto.setCode(code);
 		return responseDto;
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
-	 * getAllDocCategories(int, int, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public PageDto<DocumentCategoryExtnDto> getAllDocCategories(int pageNumber, int pageSize, String sortBy,
-			String orderBy) {
-		List<DocumentCategoryExtnDto> docCategories = null;
-		PageDto<DocumentCategoryExtnDto> docCategoriesPages = null;
-		try {
-			Page<DocumentCategory> pageData = documentCategoryRepository
-					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
-			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
-				docCategories = MapperUtils.mapAll(pageData.getContent(), DocumentCategoryExtnDto.class);
-				docCategoriesPages = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(),
-						pageData.getTotalElements(), docCategories);
-			} else {
-				throw new DataNotFoundException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
-			}
-		} catch (DataAccessException | DataAccessLayerException e) {
-			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
-					e.getMessage() + ExceptionUtils.parseException(e));
-		}
-		return docCategoriesPages;
 	}
 
 }

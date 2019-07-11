@@ -1,7 +1,6 @@
 package io.mosip.admin.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ public class MasterDataCardController {
 	private MasterDataCardService masterDataCardService;
 
 	@GetMapping("/{langCode}")
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	//@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	public ResponseWrapper<MasterDataCardResponseDto> getMasterCards(@PathVariable("langCode") String langCode) {
 		ResponseWrapper<MasterDataCardResponseDto> responseWrapper = new ResponseWrapper<>();
 		MasterDataCardResponseDto masterDataCards = masterDataCardService.getMasterdataCards(langCode);

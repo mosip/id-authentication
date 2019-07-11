@@ -45,7 +45,6 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 	@Autowired
 	private RegistrationCenterMachineHistoryRepository registrationCenterMachineHistoryRepository;
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -122,7 +121,5 @@ public class RegistrationCenterMachineServiceImpl implements RegistrationCenterM
 		}
 		return registrationCenterMachineID;
 	}
-
-	
 
 }

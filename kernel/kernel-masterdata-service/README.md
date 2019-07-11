@@ -10,7 +10,7 @@ Default Port and Context Path
 
 ```
 server.port=8086
-server.servlet.path=/v1/masterdata
+server.servlet.path=/masterdata
 
 ```
 

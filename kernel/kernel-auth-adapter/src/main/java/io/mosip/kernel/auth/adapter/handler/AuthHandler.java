@@ -87,9 +87,6 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
 	
-	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/r2/v1/authmanager/authorize/admin/validateToken}")
-	private String adminValidateUrl;
-	
 	@Value("${auth.jwt.base:Mosip-Token}")
 	private String authJwtBase;
 	
@@ -111,18 +108,6 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		String token = null;
 		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
 		token = authToken.getToken();
-		MosipUserDto mosipUserDto = null;
-		//added for keycloak impl
-		if (token.startsWith(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX)) {
-             
-             response = getKeycloakValidatedUserResponse(token);
-		}else {
-		response = getValidatedUserResponse(token);
-		}
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
-		}
 
 		Claims claims;
 		try {
@@ -130,7 +115,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		} catch (Exception e1) {
 			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e1.getMessage(), e1);
 		}
-		mosipUserDto = buildDto(claims);
+		MosipUserDto mosipUserDto = buildDto(claims);
 
 //		response = getValidatedUserResponse(token);
 //		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
@@ -200,17 +185,6 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
 			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
-		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
-		}
-	}
-	
-	private ResponseEntity<String> getKeycloakValidatedUserResponse(String token) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
-		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
-		try {
-			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.GET, entity, String.class);
 		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
 		}

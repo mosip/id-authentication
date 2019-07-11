@@ -1,9 +1,7 @@
 package io.mosip.admin.navigation.controller;
 
-import static io.mosip.admin.navigation.constant.LoginUri.INVALIDATE_TOKEN;
-import static io.mosip.admin.navigation.constant.LoginUri.SEND_OTP;
-import static io.mosip.admin.navigation.constant.LoginUri.VALIDATE_OTP;
 import static io.mosip.admin.navigation.constant.LoginUri.VALIDATE_USER;
+import static io.mosip.admin.navigation.constant.LoginUri.INVALIDATE_TOKEN;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 import java.io.IOException;
@@ -27,8 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.mosip.admin.navigation.constant.LoginErrorCode;
-import io.mosip.admin.navigation.dto.OtpUserDTO;
-import io.mosip.admin.navigation.dto.UserOtpDTO;
 import io.mosip.admin.navigation.dto.UserRequestDTO;
 import io.mosip.admin.navigation.dto.UserResponseDTO;
 import io.mosip.admin.navigation.exception.AdminServiceException;
@@ -54,10 +50,6 @@ public class LoginController {
     private String pwdUri;
     @Value("${mosip.admin.navigation.invalidateToken-uri}")
     private String invalidateTokenUri;
-    @Value("${mosip.admin.navigation.sendOTP-uri}")
-    private String sendOTPUri;
-    @Value("${mosip.admin.navigation.validateOTP-uri}")
-    private String validateOTPUri;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -101,39 +93,6 @@ public class LoginController {
 		HttpMethod.POST,
 		entity,
 		String.class);
-	mapper.registerModule(new JavaTimeModule());
-	return mapper.readValue(httpResponse.getBody(),
-		new TypeReference<ResponseWrapper<UserResponseDTO>>() {
-		});
-    }
-    
-    @PostMapping(value = SEND_OTP)
-    public ResponseWrapper<UserResponseDTO> sendOTP(
-	    @RequestBody @Valid RequestWrapper<OtpUserDTO> request)	throws IOException {
-
-	HttpEntity<String> httpResponse = restTemplate.exchange(
-		baseUri.concat(authmanagerUri).concat(sendOTPUri),
-		HttpMethod.POST,
-		new HttpEntity<RequestWrapper<OtpUserDTO>>(request),
-		String.class);
-	mapper.registerModule(new JavaTimeModule());
-	return mapper.readValue(httpResponse.getBody(),
-		new TypeReference<ResponseWrapper<UserResponseDTO>>() {
-		});
-    }
-    
-    @PostMapping(value = VALIDATE_OTP)
-    public ResponseWrapper<UserResponseDTO> validateOTP(
-	    @RequestBody @Valid RequestWrapper<UserOtpDTO> request,
-	    HttpServletResponse res) throws IOException {
-
-	HttpEntity<String> httpResponse = restTemplate.exchange(
-		baseUri.concat(authmanagerUri).concat(validateOTPUri),
-		HttpMethod.POST,
-		new HttpEntity<RequestWrapper<UserOtpDTO>>(request),
-		String.class);
-	HttpHeaders headers = httpResponse.getHeaders();
-	res.addHeader(SET_COOKIE, headers.getFirst(SET_COOKIE));
 	mapper.registerModule(new JavaTimeModule());
 	return mapper.readValue(httpResponse.getBody(),
 		new TypeReference<ResponseWrapper<UserResponseDTO>>() {

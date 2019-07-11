@@ -6,10 +6,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -17,9 +13,7 @@ import io.mosip.kernel.masterdata.constant.GenderTypeErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.GenderExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.Gender;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -211,34 +205,6 @@ public class GenderTypeServiceImpl implements GenderTypeService {
 
 		return statusResponseDto;
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.GenderTypeService#getGenderTypes(int,
-	 * int, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public PageDto<GenderExtnDto> getGenderTypes(int pageNumber, int pageSize, String sortBy, String orderBy) {
-		List<GenderExtnDto> genderTypes = null;
-		PageDto<GenderExtnDto> genderTypesPages = null;
-		try {
-			Page<Gender> pageData = genderTypeRepository
-					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
-			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
-				genderTypes = MapperUtils.mapAll(pageData.getContent(), GenderExtnDto.class);
-				genderTypesPages = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(),
-						pageData.getTotalElements(), genderTypes);
-			} else {
-				throw new DataNotFoundException(GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorCode(),
-						GenderTypeErrorCode.GENDER_TYPE_NOT_FOUND.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorCode(),
-					GenderTypeErrorCode.GENDER_TYPE_FETCH_EXCEPTION.getErrorMessage());
-		}
-		return genderTypesPages;
 	}
 
 }
