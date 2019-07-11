@@ -19,10 +19,7 @@ import org.xml.sax.SAXException;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.biometric.authentication.constants.BiometricAuthenticationConstants;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.abstractverticle.*;
 import io.mosip.registration.processor.core.auth.dto.AuthResponseDTO;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -56,7 +53,7 @@ import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @Service
-public class BiometricAuthenticationStage extends MosipVerticleManager {
+public class BiometricAuthenticationStage extends MosipVerticleAPIManager {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(BiometricAuthenticationStage.class);
 
 	@Autowired
@@ -83,11 +80,29 @@ public class BiometricAuthenticationStage extends MosipVerticleManager {
 
 	@Value("${mosip.kernel.applicant.type.age.limit}")
 	private String ageLimit;
+	
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
+	/** The mosip event bus. */
+	MosipEventBus mosipEventBus = null;
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
 
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.BIOMETRIC_AUTHENTICATION_BUS_IN,
 				MessageBusAddress.BIOMETRIC_AUTHENTICATION_BUS_OUT);
+	}
+	
+	@Override
+	public void start(){
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.BIOMETRIC_AUTHENTICATION_BUS_IN,
+				MessageBusAddress.BIOMETRIC_AUTHENTICATION_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	@Override

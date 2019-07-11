@@ -82,7 +82,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 						healthCheckHandler.consumerHealthHandler(future, vertx, consumeAddress);
 					});
 		}
-		if (servletPath.contains("external")) {
+		if (servletPath.contains("external")  || servletPath.contains("bioauth")) {
 			healthCheckHandler.register(
 					servletPath.substring(servletPath.lastIndexOf("/") + 1, servletPath.length()) + "Send", future -> {
 						healthCheckHandler.senderHealthHandler(future, vertx, sendAddress);
@@ -117,7 +117,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 
 	/**
 	 * This method creates server for vertx web application
-	 * 
+	 *
 	 * @param router
 	 * @param port
 	 */
@@ -127,7 +127,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 
 	/**
 	 * This method returns a response to the routing context
-	 * 
+	 *
 	 * @param ctx
 	 * @param object
 	 */
@@ -139,7 +139,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 
 	/**
 	 * This method returns a response to the routing context
-	 * 
+	 *
 	 * @param ctx
 	 * @param object
 	 * @param contentType
