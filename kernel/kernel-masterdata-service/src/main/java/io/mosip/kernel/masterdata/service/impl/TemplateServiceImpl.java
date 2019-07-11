@@ -20,6 +20,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -29,7 +31,10 @@ import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * 
@@ -49,6 +54,12 @@ public class TemplateServiceImpl implements TemplateService {
 	private List<TemplateDto> templateDtoList;
 
 	private TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+	
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+	
+	@Autowired
+	private MasterdataSearchHelper masterDataSearchHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -265,5 +276,24 @@ public class TemplateServiceImpl implements TemplateService {
 							+ ExceptionUtils.parseException(exception));
 		}
 		return pageDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#searchTemplates(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto) {
+		PageResponseDto<TemplateExtnDto> pageDto = new PageResponseDto<>();
+		List<TemplateExtnDto> templates = null;
+		if (filterTypeValidator.validate(TemplateExtnDto.class, searchDto.getFilters())) {
+			Page<Template> page = masterDataSearchHelper.searchMasterdata(Template.class, searchDto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				templates = MapperUtils.mapAll(page.getContent(), TemplateExtnDto.class);
+				pageDto.setData(templates);
+			}
+		}
+		return pageDto;
+		
 	}
 }

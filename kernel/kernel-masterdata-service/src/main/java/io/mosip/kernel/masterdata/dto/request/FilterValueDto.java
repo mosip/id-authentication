@@ -21,4 +21,6 @@ public class FilterValueDto {
 	@NotBlank
 	@ValidLangCode
 	private String languageCode;
+	@NotNull
+	private String text;
 }

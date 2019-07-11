@@ -17,6 +17,10 @@ import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
 import io.swagger.annotations.Api;
@@ -80,7 +84,7 @@ public class MachineTypeController {
 	 *            the order to be used
 	 * @return the response i.e. pages containing the machine types.
 	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+    @PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping("/machinetypes/all")
 	@ApiOperation(value = "Retrieve all the machine types with additional metadata", notes = "Retrieve all the machine types with the additional metadata")
@@ -97,4 +101,36 @@ public class MachineTypeController {
 		return responseWrapper;
 	}
 
+	/**
+	 * Api to search Machine Types.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link MachineTypeExtnDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/machinetypes/search")
+	@ApiOperation(value = "Api to search Machine Types")
+	public ResponseWrapper<PageResponseDto<MachineTypeExtnDto>> searchMachineType(
+			@ApiParam(value = "Request DTO to search Machine Types") @RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<MachineTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machinetypeService.searchMachineType(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Api to filter Machine Types based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/machinetypes/filtervalues")
+	public ResponseWrapper<FilterResponseDto> machineTypesFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machinetypeService.machineTypesFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
 }

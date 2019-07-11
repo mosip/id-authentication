@@ -28,5 +28,8 @@ public class MasterDataConstant {
 	public static final String LAA = "laa";
 	public static final String LAA_FULL_NAME = "Local Administrative Authority";
 	public static final String HIERARCHY_NAME = "hierarchyName";
+	public static final String ZONE = "zone";
+	public static final String ZONE_CODE = "zoneCode";
+	public static final String HIERARCHY_LEVEL = "hierarchyLevel";
 
 }

@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.dto.getresponse.extn;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -28,6 +27,7 @@ public class DeviceExtnDto extends BaseDto {
 	/**
 	 * Field for device id
 	 */
+	@FilterType(types = { FilterTypeEnum.EQUALS})
 	@NotBlank
 	@Size(min = 1, max = 36)
 	@ApiModelProperty(value = "id", required = true, dataType = "java.lang.String")
@@ -80,13 +80,6 @@ public class DeviceExtnDto extends BaseDto {
 	@Size(min = 1, max = 3)
 	@ApiModelProperty(value = "langCode", required = true, dataType = "java.lang.String")
 	private String langCode;
-	
-	/**
-	 * Field for is active
-	 */
-	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
-	@NotNull
-	private Boolean isActive;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime validityDateTime;

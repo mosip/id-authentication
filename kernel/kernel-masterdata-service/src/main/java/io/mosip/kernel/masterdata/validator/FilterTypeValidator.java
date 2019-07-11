@@ -50,9 +50,10 @@ public class FilterTypeValidator {
 		if (validateColumnAndTypes(filter.getColumnName(), filter.getType())) {
 			Field[] childFields = target.getDeclaredFields();
 			Field[] superFields = target.getSuperclass().getDeclaredFields();
-			List<Field> fieldList=new ArrayList<>();
+			List<Field> fieldList = new ArrayList<>();
 			fieldList.addAll(Arrays.asList(childFields));
-			fieldList.addAll(Arrays.asList(superFields));
+			if (superFields != null)
+				fieldList.addAll(Arrays.asList(superFields));
 			Optional<Field> field = fieldList.stream().filter(i -> i.getName().equalsIgnoreCase(filter.getColumnName()))
 					.findFirst();
 			if (!field.isPresent()) {

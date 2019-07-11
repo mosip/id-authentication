@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -108,7 +109,7 @@ public class MachineController {
 	 * 
 	 * @return MachineResponseDto all machines details {@link MachineResponseDto}
 	 */
-	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
 	@GetMapping(value = "/machines")
 	@ApiOperation(value = "Retrieve all Machine Details", notes = "Retrieve all Machine Detail")
@@ -154,7 +155,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@PostMapping("/machines")
 	@ApiOperation(value = "Service to save Machine", notes = "Saves Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 201, message = "When Machine successfully created"),
@@ -177,7 +178,7 @@ public class MachineController {
 	 *         {@link ResponseEntity}
 	 */
 	@ResponseFilter
-	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@PutMapping("/machines")
 	@ApiOperation(value = "Service to update Machine", notes = "update Machine Detail and return Machine id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When Machine successfully udated"),
@@ -201,7 +202,7 @@ public class MachineController {
 	 * @return MachineResponseDto all machines details those are mapped with given
 	 *         registration Id {@link MachineResponseDto}
 	 */
-	// @PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "/machines/mappedmachines/{regCenterId}")
 	@ApiOperation(value = "Retrieve all Machines which are mapped to given Registration Center Id", notes = "Retrieve all Machines which are mapped to given Registration Center Id")

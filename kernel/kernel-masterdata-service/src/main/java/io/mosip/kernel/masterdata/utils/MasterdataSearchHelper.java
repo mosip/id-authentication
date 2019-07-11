@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,6 +36,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -79,7 +81,7 @@ public class MasterdataSearchHelper {
 	 * 
 	 * @return {@link Page} of entity
 	 */
-	public <E> Page<E> searchMasterdata(Class<E> entity, SearchDto searchDto, List<SearchFilter> optionalFilters) {
+	public <E> Page<E> searchMasterdata(Class<E> entity, SearchDto searchDto, OptionalFilter[] optionalFilters) {
 		long rows = 0l;
 		List<E> result;
 		Objects.requireNonNull(entity, ENTITY_IS_NULL);
@@ -91,8 +93,8 @@ public class MasterdataSearchHelper {
 		// count query
 		countQuery.select(criteriaBuilder.count(countQuery.from(entity)));
 		// applying filters
-		filterQuery(criteriaBuilder, rootQuery, selectQuery, countQuery, searchDto.getFilters(), optionalFilters,
-				searchDto.getLanguageCode());
+		filterQuery(criteriaBuilder, rootQuery, selectQuery, countQuery, searchDto.getFilters(),
+				searchDto.getLanguageCode(), optionalFilters);
 
 		// applying sorting
 		sortQuery(criteriaBuilder, rootQuery, selectQuery, searchDto.getSort());
@@ -140,31 +142,39 @@ public class MasterdataSearchHelper {
 	 *            language code if applicable
 	 */
 	private <E> void filterQuery(CriteriaBuilder builder, Root<E> root, CriteriaQuery<E> selectQuery,
-			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, List<SearchFilter> optionalFilters,
-			String langCode) {
-		List<Predicate> predicates = new ArrayList<>();
-		List<Predicate> optionalPredicates = new ArrayList<>();
+			CriteriaQuery<Long> countQuery, List<SearchFilter> filters, String langCode,
+			OptionalFilter[] optionalFilters) {
+		final List<Predicate> predicates = new ArrayList<>();
 		if (filters != null && !filters.isEmpty()) {
-			predicates = filters.stream().filter(this::validateFilters).map(i -> buildFilters(builder, root, i))
-					.filter(Objects::nonNull).collect(Collectors.toList());
+			filters.stream().filter(this::validateFilters).map(i -> buildFilters(builder, root, i))
+					.filter(Objects::nonNull).collect(Collectors.toCollection(() -> predicates));
 		}
 
-		if (optionalFilters != null && !optionalFilters.isEmpty()) {
-			optionalPredicates = optionalFilters.stream().filter(this::validateFilters)
-					.map(i -> buildFilters(builder, root, i)).filter(Objects::nonNull).collect(Collectors.toList());
+		if (optionalFilters != null && optionalFilters.length != 0) {
+			Arrays.stream(optionalFilters).forEach(i -> buildOptionalFilter(builder, root, i, predicates));
+
 		}
 		Predicate langCodePredicate = setLangCode(builder, root, langCode);
 		if (langCodePredicate != null) {
 			predicates.add(langCodePredicate);
 		}
-		if (!optionalPredicates.isEmpty()) {
-			Predicate orPredicate = builder.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
-			predicates.add(orPredicate);
-		}
 		if (!predicates.isEmpty()) {
 			Predicate whereClause = builder.and(predicates.toArray(new Predicate[predicates.size()]));
 			selectQuery.where(whereClause);
 			countQuery.where(whereClause);
+		}
+	}
+
+	private <E> void buildOptionalFilter(CriteriaBuilder builder, Root<E> root, final OptionalFilter optionalFilters,
+			List<Predicate> predicates) {
+		if (optionalFilters.getFilters() != null && !optionalFilters.getFilters().isEmpty()) {
+			List<Predicate> optionalPredicates = optionalFilters.getFilters().stream().filter(this::validateFilters)
+					.map(i -> buildFilters(builder, root, i)).filter(Objects::nonNull).collect(Collectors.toList());
+			if (!optionalPredicates.isEmpty()) {
+				Predicate orPredicate = builder
+						.or(optionalPredicates.toArray(new Predicate[optionalPredicates.size()]));
+				predicates.add(orPredicate);
+			}
 		}
 	}
 
@@ -357,6 +367,9 @@ public class MasterdataSearchHelper {
 			}
 			if (Boolean.class.getName().equals(fieldType)) {
 				return Boolean.valueOf(value);
+			}
+			if (Short.class.getName().equals(fieldType)) {
+				return Short.valueOf(value);
 			}
 		}
 		return value;

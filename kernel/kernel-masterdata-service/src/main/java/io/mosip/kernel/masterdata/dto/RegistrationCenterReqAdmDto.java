@@ -90,5 +90,7 @@ public class RegistrationCenterReqAdmDto {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime lunchEndTime;
+	
+	private String zoneCode;
 
 }

@@ -87,5 +87,7 @@ public class RegistrationCenterDto {
 
 	@NotNull
 	private Boolean isActive;
+	
+	private String zoneCode;
 
 }

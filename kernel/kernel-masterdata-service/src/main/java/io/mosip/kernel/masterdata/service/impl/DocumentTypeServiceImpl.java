@@ -237,8 +237,12 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return pageDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#documentTypeFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#
+	 * documentTypeFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
 	 */
 	@Override
 	public FilterResponseDto documentTypeFilterValues(FilterValueDto filterValueDto) {
@@ -261,16 +265,19 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		return filterResponseDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.DocumentTypeService#searchDocumentTypes(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.DocumentTypeService#searchDocumentTypes(io
+	 * .mosip.kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
 	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto) {
 		PageResponseDto<DocumentTypeExtnDto> pageDto = new PageResponseDto<>();
 		List<DocumentTypeExtnDto> doumentTypes = null;
 		if (filterTypeValidator.validate(DocumentTypeExtnDto.class, dto.getFilters())) {
-			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto,
-					Collections.emptyList());
+			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				PageUtils.pageResponse(page);
 				doumentTypes = MapperUtils.mapAll(page.getContent(), DocumentTypeExtnDto.class);

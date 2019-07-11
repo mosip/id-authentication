@@ -22,6 +22,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TitleService;
 import io.swagger.annotations.Api;
@@ -164,4 +166,22 @@ public class TitleController {
 		return responseWrapper;
 	}
 
+	/**
+	 * Search titles.
+	 *
+	 * @param request
+	 *            the request
+	 * @return response wrapper
+	 */
+	@ResponseFilter
+	@GetMapping("/search")
+	@ApiOperation(value = "Search title details")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of titles"),
+			@ApiResponse(code = 500, message = "Error occured while searching title") })
+	public ResponseWrapper<PageResponseDto<TitleExtnDto>> searchTitles(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.searchTitles(request.getRequest()));
+		return responseWrapper;
+	}
 }

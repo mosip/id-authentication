@@ -86,10 +86,13 @@ public interface LocationRepository extends BaseRepository<Location, CodeAndLang
 	 */
 	@Query("SELECT distinct l.code FROM Location l where l.parentLocCode=?1 GROUP BY l.code")
 	List<String> findDistinctByparentLocCode(String parentLocCode);
-	
-	@Query(value="select distinct name from master.location where hierarchy_level = ?1 and lang_code = ?2",nativeQuery=true)
-	List<String> filterByDistinctHierarchyLevel(int hierarchyLevel,String langCode);
-	
-	@Query(value="select name from master.location where hierarchy_level = ?1 and lang_code = ?2",nativeQuery=true)
-	List<String> filterByHierarchyLevel(int hierarchyLevel,String langCode);
+
+	@Query(value = "select distinct name from master.location where hierarchy_level = ?1 and lang_code = ?2", nativeQuery = true)
+	List<String> filterByDistinctHierarchyLevel(int hierarchyLevel, String langCode);
+
+	@Query(value = "select name from master.location where hierarchy_level = ?1 and lang_code = ?2", nativeQuery = true)
+	List<String> filterByHierarchyLevel(int hierarchyLevel, String langCode);
+
+	@Query(value = "FROM Location l where (l.isDeleted is null or l.isDeleted=false)")
+	List<Location> findAllNonDeleted();
 }

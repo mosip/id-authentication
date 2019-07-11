@@ -5,6 +5,8 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -101,5 +103,13 @@ public interface TitleService {
 	 *             when data not fetched from DB
 	 */
 	PageDto<TitleExtnDto> getTitles(int pageNumber, int pageSize, String sortBy, String orderBy);
+	
+	/**
+	 * Search titles.
+	 *
+	 * @param searchDto the search dto
+	 * @return {@link PageResponseDto} the page response dto
+	 */
+	PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto);
 
 }

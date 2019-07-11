@@ -57,6 +57,7 @@ import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
@@ -418,7 +419,7 @@ public class MachineServiceImpl implements MachineService {
 
 					Page<MachineType> machineTypes = masterdataSearchHelper.searchMasterdata(MachineType.class,
 							new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
-							Collections.emptyList());
+							null);
 					List<SearchFilter> machineCodeFilter = buildMachineTypeSearchFilter(machineTypes.getContent());
 					if (machineCodeFilter.isEmpty()) {
 						throw new DataNotFoundException(
@@ -429,8 +430,7 @@ public class MachineServiceImpl implements MachineService {
 					}
 					Page<MachineSpecification> machineSpecification = masterdataSearchHelper.searchMasterdata(
 							MachineSpecification.class,
-							new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null),
-							Collections.emptyList());
+							new SearchDto(machineCodeFilter, Collections.emptyList(), new Pagination(), null), null);
 
 					removeList.add(filter);
 					addList.addAll(buildMachineSpecificationSearchFilter(machineSpecification.getContent()));
@@ -448,7 +448,9 @@ public class MachineServiceImpl implements MachineService {
 		dto.getFilters().removeAll(removeList);
 
 		if (filterValidator.validate(MachineExtnDto.class, dto.getFilters())) {
-			Page<Machine> page = masterdataSearchHelper.searchMasterdata(Machine.class, dto, addList);
+			OptionalFilter optionalFilter = new OptionalFilter(addList);
+			Page<Machine> page = masterdataSearchHelper.searchMasterdata(Machine.class, dto,
+					new OptionalFilter[] { optionalFilter });
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
 				machines = MapperUtils.mapAll(page.getContent(), MachineExtnDto.class);

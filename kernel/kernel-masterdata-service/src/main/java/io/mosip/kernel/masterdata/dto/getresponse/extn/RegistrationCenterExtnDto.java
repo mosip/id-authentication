@@ -91,4 +91,8 @@ public class RegistrationCenterExtnDto extends BaseDto {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime lunchEndTime;
+	
+	@FilterType(types= {FilterTypeEnum.EQUALS,FilterTypeEnum.STARTSWITH,FilterTypeEnum.CONTAINS})
+	@Size(min = 1, max = 36)
+	private String zoneCode;
 }

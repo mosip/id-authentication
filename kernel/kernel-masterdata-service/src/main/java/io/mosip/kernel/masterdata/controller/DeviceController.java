@@ -24,7 +24,6 @@ import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -132,9 +131,9 @@ public class DeviceController {
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(deviceRequestDto.getRequest()));
 		return responseWrapper;
-		
+
 	}
-	
+
 	/**
 	 * API to update an existing row of Device data
 	 * 
@@ -200,19 +199,18 @@ public class DeviceController {
 			@ApiResponse(code = 404, message = "When No Device Details not mapped with the Given Registation Center ID"),
 			@ApiResponse(code = 500, message = "While retrieving Device Detail any error occured") })
 	public ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> getDevicesByRegistrationCenter(
-			@PathVariable("regCenterId") String regCenterId, 
-			@RequestParam(name="pageNumber", defaultValue="0") @ApiParam(value="page number for the requested data", defaultValue="0") int page,
-			@RequestParam(name="pageSize", defaultValue="10") @ApiParam(value="page size for the requested data", defaultValue="1")int size, 
-			@RequestParam(name="orderBy", defaultValue="cr_dtimes") 
-			@ApiParam(value="sort the requested data based on param value", defaultValue="createdDateTime")String orderBy,
-			@RequestParam(name="direction", defaultValue="DESC") @ApiParam(value="order the requested data based on param", defaultValue="DESC") String direction) {
+			@PathVariable("regCenterId") String regCenterId,
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number for the requested data", defaultValue = "0") int page,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "1") int size,
+			@RequestParam(name = "orderBy", defaultValue = "cr_dtimes") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String orderBy,
+			@RequestParam(name = "direction", defaultValue = "DESC") @ApiParam(value = "order the requested data based on param", defaultValue = "DESC") String direction) {
 
 		ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper
 				.setResponse(deviceService.getDevicesByRegistrationCenter(regCenterId, page, size, orderBy, direction));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Api to search Device based on filters provided.
 	 * 
@@ -229,7 +227,7 @@ public class DeviceController {
 		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
 		return responseWrapper;
 	}
-	
+
 	/**
 	 * Api to filter Device based on column and type provided.
 	 * 
@@ -245,5 +243,5 @@ public class DeviceController {
 		responseWrapper.setResponse(deviceService.deviceFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
-	
+
 }

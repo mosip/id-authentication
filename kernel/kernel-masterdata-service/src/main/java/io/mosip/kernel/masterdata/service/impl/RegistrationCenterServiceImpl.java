@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -63,10 +64,12 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
@@ -79,10 +82,13 @@ import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LocationUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
@@ -152,6 +158,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+
+	@Autowired
+	private LocationUtils locationUtils;
+
+	@Autowired
+	private LocationRepository locationRepository;
+
+	@Autowired
+	private ZoneUtils zoneUtils;
+
 	/**
 	 * get list of languages supported by MOSIP from configuration file
 	 */
@@ -935,7 +951,11 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenterSearchDto> registrationCenters = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
-		List<SearchFilter> optionalFilters = new ArrayList<>();
+		List<SearchFilter> locationFilter = new ArrayList<>();
+		List<SearchFilter> zoneFilter = new ArrayList<>();
+		List<Zone> zones = null;
+		List<Location> locations = locationRepository.findAllNonDeleted();
+		boolean flag = true;
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
@@ -944,28 +964,44 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			if (isLocationSearch(filter.getColumnName())) {
 				Location location = locationSearch(filter);
 				if (location != null) {
-					List<String> locationCodes = locationService.getChildList(location.getCode());
-					optionalFilters.addAll(buildLocationSearchFilter(locationCodes));
+					List<Location> childs = locationUtils.getDescedants(locations, location);
+					locationFilter.addAll(buildLocationSearchFilter(childs));
 				}
 				removeList.add(filter);
-			}
-			if (MasterDataConstant.POSTAL_CODE.equalsIgnoreCase(column)) {
-				Location location = locationSearch(filter);
-				if (location != null) {
-					addList.addAll(buildLocationSearchFilter(Arrays.asList(location.getCode())));
+			} /*
+				 * if (MasterDataConstant.POSTAL_CODE.equalsIgnoreCase(column)) { Location
+				 * location = locationSearch(filter); if (location != null) {
+				 * addList.addAll(buildLocationSearchFilter(Arrays.asList(location))); }
+				 * removeList.add(filter); }
+				 */
+			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
+				Zone zone = getZone(filter);
+				if (zone != null) {
+					zones = zoneUtils.getZones(zone);
+					zoneFilter.addAll(buildZoneFilter(zones));
 				}
 				removeList.add(filter);
+				flag = false;
 			}
+		}
+		if (flag) {
+			zones = zoneUtils.getUserZones();
+			if (zones != null && !zones.isEmpty())
+				zoneFilter.addAll(buildZoneFilter(zones));
+			else
+				throw new MasterDataServiceException("XXX", "User is not tagged to zone");
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
 		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters())) {
+			OptionalFilter optionalFilter = new OptionalFilter(locationFilter);
+			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
-					optionalFilters);
+					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
 				registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterSearchDto.class);
-				setCenterMetadata(registrationCenters);
+				setCenterMetadata(registrationCenters, locations, zones);
 				pageDto.setData(registrationCenters);
 			}
 		}
@@ -978,7 +1014,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * @param addList
 	 *            filter to be added for further operation
 	 * @param removeList
-	 *            filter to be removed from further operrations
+	 *            filter to be removed from further operations
 	 * @param filter
 	 *            list of request search filters
 	 */
@@ -987,8 +1023,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		if (filterTypeValidator.validate(RegistrationCenterTypeExtnDto.class, Arrays.asList(filter))) {
 			Page<RegistrationCenterType> regtypes = masterdataSearchHelper.searchMasterdata(
 					RegistrationCenterType.class,
-					new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null),
-					Collections.emptyList());
+					new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
 			if (regtypes.hasContent()) {
 				removeList.add(filter);
 				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
@@ -1009,18 +1044,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	private Location locationSearch(SearchFilter filter) {
 		SearchFilter filter2 = new SearchFilter();
-		filter2.setColumnName(MasterDataConstant.HIERARCHY_NAME);
-		filter2.setType(FilterTypeEnum.CONTAINS.name());
-		if (MasterDataConstant.LAA.equalsIgnoreCase(filter.getColumnName()))
-			filter2.setValue(MasterDataConstant.LAA_FULL_NAME);
-		else
-			filter2.setValue(filter.getColumnName().toLowerCase());
+		filter2.setColumnName(MasterDataConstant.HIERARCHY_LEVEL);
+		filter2.setType(FilterTypeEnum.EQUALS.name());
+		filter2.setValue(getHierarchyLevel(filter.getColumnName()));
 		filter.setColumnName(MasterDataConstant.NAME);
-
 		if (filterTypeValidator.validate(LocationExtnDto.class, Arrays.asList(filter, filter2))) {
 			Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
 					new SearchDto(Arrays.asList(filter, filter2), Collections.emptyList(), new Pagination(), null),
-					Collections.emptyList());
+					null);
 			if (locations.hasContent()) {
 				return locations.getContent().get(0);
 			} else {
@@ -1031,6 +1062,26 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 		}
 		return null;
+	}
+
+	public String getHierarchyLevel(String columnName) {
+		if (columnName != null) {
+			switch (columnName.toLowerCase()) {
+			case MasterDataConstant.POSTAL_CODE:
+				return "5";
+			case MasterDataConstant.LAA:
+				return "4";
+			case MasterDataConstant.CITY:
+				return "3";
+			case MasterDataConstant.PROVINCE:
+				return "2";
+			case MasterDataConstant.REGION:
+				return "1";
+			default:
+				return "0";
+			}
+		}
+		return "0";
 	}
 
 	/**
@@ -1055,9 +1106,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 *            list of location codes
 	 * @return list of search filter
 	 */
-	private List<SearchFilter> buildLocationSearchFilter(List<String> location) {
+	private List<SearchFilter> buildLocationSearchFilter(List<Location> location) {
 		if (location != null && !location.isEmpty())
-			return location.stream().filter(Objects::nonNull).map(this::buildLocationFilter)
+			return location.stream().filter(Objects::nonNull).map(Location::getCode).map(this::buildLocationFilter)
 					.collect(Collectors.toList());
 		return Collections.emptyList();
 	}
@@ -1093,6 +1144,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return filter;
 	}
 
+	private SearchFilter buildZoneFilter(String zoneCode) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.ZONE_CODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(zoneCode);
+		return filter;
+	}
+
 	/**
 	 * Method to check whether columnName is belong to location
 	 * 
@@ -1110,6 +1169,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			return true;
 		case MasterDataConstant.LAA:
 			return true;
+		case MasterDataConstant.POSTAL_CODE:
+			return true;
 		default:
 			return false;
 		}
@@ -1122,12 +1183,22 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * 
 	 * @param dto
 	 *            response to be mapped
-	 * @return true if successfull otherwise exception
+	 * @return true if successful otherwise exception
 	 */
 
-	public void setCenterMetadata(List<RegistrationCenterSearchDto> list) {
+	public void setCenterMetadata(List<RegistrationCenterSearchDto> list, List<Location> locations, List<Zone> zones) {
 		list.parallelStream().filter(this::setDevices).filter(this::setMachines).filter(this::setRegistrationCenterType)
-				.forEach(this::setUsers);
+				.filter(this::setUsers).filter(i -> setHolidayMetadata(i, locations))
+				.filter(i -> setLocationMetadata(i, locations)).forEach(i -> setZoneMetadata(i, zones));
+	}
+
+	public void setZoneMetadata(RegistrationCenterSearchDto centers, List<Zone> zones) {
+		Optional<Zone> zone = zones.stream()
+				.filter(i -> i.getCode().equals(centers.getZoneCode()) && i.getLangCode().equals(centers.getLangCode()))
+				.findFirst();
+		if (zone.isPresent()) {
+			centers.setZone(zone.get().getName());
+		}
 	}
 
 	/**
@@ -1190,6 +1261,41 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return true;
 	}
 
+	private boolean setLocationMetadata(RegistrationCenterSearchDto center, List<Location> locations) {
+		Optional<Location> optional = locations.parallelStream().filter(
+				i -> i.getCode().equals(center.getLocationCode()) && i.getLangCode().equals(center.getLangCode()))
+				.findFirst();
+		if (optional.isPresent()) {
+			Location location = optional.get();
+			List<Location> list = locationUtils.getAncestors(locations, location);
+			if (list != null && !list.isEmpty()) {
+				for (Location l : list) {
+					short level = l.getHierarchyLevel();
+					switch (level) {
+					case 3:
+						center.setCity(l.getName());
+						break;
+					case 2:
+						center.setProvince(l.getName());
+						break;
+					case 1:
+						center.setRegion(l.getName());
+						break;
+					case 5:
+						center.setPostalCode(l.getName());
+						break;
+					case 4:
+						center.setLocalAdminAuthority(l.getName());
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Method to fetch registration center type and set the response to registration
 	 * center response dto
@@ -1207,6 +1313,39 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
+		}
+		return true;
+	}
+
+	private Zone getZone(SearchFilter filter) {
+		filter.setColumnName(MasterDataConstant.NAME);
+		Page<Zone> locations = masterdataSearchHelper.searchMasterdata(Zone.class,
+				new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
+		if (locations.hasContent()) {
+			return locations.getContent().get(0);
+		} else {
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_ZONE_AVAILABLE.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.NO_ZONE_AVAILABLE.getErrorMessage(), filter.getValue()));
+		}
+	}
+
+	private List<SearchFilter> buildZoneFilter(List<Zone> zones) {
+		if (zones != null && !zones.isEmpty()) {
+			return zones.stream().filter(Objects::nonNull).map(Zone::getCode).distinct().map(this::buildZoneFilter)
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	public boolean setHolidayMetadata(RegistrationCenterSearchDto center, List<Location> locations) {
+		if (locations != null && !locations.isEmpty()) {
+			Optional<Location> location = locations.stream()
+					.filter(i -> center.getHolidayLocationCode().equals(i.getCode())
+							&& center.getLangCode().equals(i.getLangCode()))
+					.findFirst();
+			if (location.isPresent()) {
+				center.setHolidayLocation(location.get().getName());
+			}
 		}
 		return true;
 	}

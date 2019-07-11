@@ -3,8 +3,11 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 
@@ -97,5 +100,13 @@ public interface TemplateService {
 	 * @return the response i.e. pages containing the templates.
 	 */
 	public PageDto<TemplateExtnDto> getTemplates(int pageNumber, int pageSize, String sortBy, String orderBy);
+
+	/**
+	 * Search templates.
+	 *
+	 * @param searchDto the search dto
+	 * @return {@link PageResponseDto}the page response dto
+	 */
+	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto);
 
 }

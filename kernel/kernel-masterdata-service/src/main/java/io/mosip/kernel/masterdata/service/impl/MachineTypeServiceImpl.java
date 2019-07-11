@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,13 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -23,7 +30,11 @@ import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * This class have methods to save a Machine Type Details
@@ -40,6 +51,18 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@Autowired
 	MachineTypeRepository machineTypeRepository;
+
+	/**
+	 * Reference to {@link FilterTypeValidator}.
+	 */
+	@Autowired
+	private FilterTypeValidator filterValidator;
+
+	/**
+	 * Referencr to {@link MasterdataSearchHelper}.
+	 */
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -95,6 +118,45 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 							+ ExceptionUtils.parseException(e));
 		}
 		return machineTypesPages;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineTypeService#searchMachineType(io.
+	 * mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageResponseDto<MachineTypeExtnDto> searchMachineType(SearchDto dto) {
+		PageResponseDto<MachineTypeExtnDto> pageDto = new PageResponseDto<>();
+		List<MachineTypeExtnDto> machineTypes = null;
+		List<SearchFilter> addList = new ArrayList<>();
+		if (filterValidator.validate(MachineExtnDto.class, dto.getFilters())) {
+			OptionalFilter optionalFilter = new OptionalFilter(addList);
+			Page<MachineType> page = masterdataSearchHelper.searchMasterdata(MachineType.class, dto,
+					new OptionalFilter[] { optionalFilter });
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				machineTypes = MapperUtils.mapAll(page.getContent(), MachineTypeExtnDto.class);
+				pageDto.setData(machineTypes);
+			}
+
+		}
+		return pageDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.MachineTypeService#
+	 * machineTypesFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
+	 */
+	@Override
+	public FilterResponseDto machineTypesFilterValues(FilterValueDto filterValueDto) {
+
+		return null;
 	}
 
 }

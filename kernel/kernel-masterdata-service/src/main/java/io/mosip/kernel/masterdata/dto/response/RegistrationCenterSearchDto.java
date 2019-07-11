@@ -62,6 +62,8 @@ public class RegistrationCenterSearchDto extends BaseDto {
 
 	@Size(min = 1, max = 36)
 	private String holidayLocationCode;
+	
+	private String holidayLocation;
 
 	@Size(min = 1, max = 16)
 	private String contactPhone;
@@ -101,14 +103,18 @@ public class RegistrationCenterSearchDto extends BaseDto {
 
 	private long users;
 
-	private String province = "TOBE DONE";
+	private String province;
 
-	private String region = "TOBE DONE";
+	private String region;
 
-	private String postalCode = "TOBE DONE";
+	private String postalCode;
 
-	private String localAdminAuthority = "TOBE DONE";
+	private String localAdminAuthority;
 
-	private String city = "TOBE DONE";
+	private String city;
+	
+	private String zoneCode;
+	
+	private String zone;
 
 }

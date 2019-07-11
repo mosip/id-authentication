@@ -27,7 +27,8 @@ public enum RegistrationCenterErrorCode {
 	REGISTRATION_CENTER_FORMATE_EXCEPTION("KER-MSD-307", "Latitude or Longitude must have minimum 4 digits after decimal"),
 	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database"),
 	NO_LOCATION_DATA_AVAILABLE("KER-MSD-320","No Location found for value %s"),
-	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s");
+	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s"),
+	NO_ZONE_AVAILABLE("KER-MSD-XXX","No Zone found for value %s");
 
 	private final String errorCode;
 	private final String errorMessage;
