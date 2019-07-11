@@ -7,8 +7,7 @@ public enum MachineSpecificationErrorCode {
 			"Error occurred while inserting Machine Specification details"),
 	MACHINE_SPECIFICATION_UPDATE_EXCEPTION("KER-MSD-085",
 			"Error occurred while updating Machine Specification details"),
-	MACHINE_SPECIFICATION_FETCH_EXCEPTION("KER-MSD-087",
-			"Error occurred while fetching Machine Specification details"),
+
 	MACHINE_SPECIFICATION_DELETE_EXCEPTION("KER-MSD-086",
 			"Error occurred while deleteding Machine Specification details"),
 

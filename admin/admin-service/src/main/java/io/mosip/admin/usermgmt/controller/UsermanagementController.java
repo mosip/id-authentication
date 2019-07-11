@@ -9,7 +9,6 @@ package io.mosip.admin.usermgmt.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +48,6 @@ public class UsermanagementController {
 	private UsermanagementService userRegistrationService;
 
 	@ResponseFilter
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping(value = "/register", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<UserRegistrationResponseDto> register(
 			@ApiParam("Basic User Details") @RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userRegistrationRequestDto) {
@@ -59,7 +57,6 @@ public class UsermanagementController {
 	}
 
 	@ResponseFilter
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping(value = "/rid", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<RidVerificationResponseDto> ridVerification(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<RidVerificationRequestDto> ridRequestDto) {
@@ -69,7 +66,6 @@ public class UsermanagementController {
 	}
 	
 	@ResponseFilter
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@PostMapping(value = "/password", produces = "application/json", consumes = "application/json")
 	public ResponseWrapper<UserPasswordResponseDto> addPassword(@ApiParam("Rid and username details")
 			@RequestBody @Valid RequestWrapper<UserPasswordRequestDto> request) {

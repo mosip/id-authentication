@@ -11,26 +11,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.GenderTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.GenderExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller class for fetching gender data from DB
@@ -143,36 +137,6 @@ public class GenderTypeController {
 	public ResponseWrapper<StatusResponseDto> valdiateGenderName(@PathVariable("gendername") String genderName) {
 		ResponseWrapper<StatusResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.validateGender(genderName));
-		return responseWrapper;
-	}
-
-	/**
-	 * This controller method provides with all gender types.
-	 * 
-	 * @param page
-	 *            the page number
-	 * @param size
-	 *            the size of each page
-	 * @param sort
-	 *            the attributes by which it should be ordered
-	 * @param order
-	 *            the order to be used
-	 * 
-	 * @return the response i.e. pages containing the data
-	 */
-	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
-	@ResponseFilter
-	@GetMapping("/gendertypes/all")
-	@ApiOperation(value = "Retrieve all the genders with additional metadata", notes = "Retrieve all the genders with the additional metadata")
-	@ApiResponses({ @ApiResponse(code = 200, message = "list of gender types"),
-			@ApiResponse(code = 500, message = "Error occured while retrieving gender types") })
-	public ResponseWrapper<PageDto<GenderExtnDto>> getAllGenders(
-			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
-			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
-			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
-			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
-		ResponseWrapper<PageDto<GenderExtnDto>> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(genderTypeService.getGenderTypes(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
 }

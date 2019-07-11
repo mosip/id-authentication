@@ -31,15 +31,12 @@ import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
-import io.mosip.kernel.auth.dto.UserDetailsDto;
-import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
-import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.DataStore;
@@ -322,17 +319,5 @@ public class DBDataStore implements DataStore {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-@Override
-public ValidationResponseDto validateUserName(String userId) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Override
-public UserDetailsResponseDto getUserDetailBasedOnUid(List<String> userId) {
-	// TODO Auto-generated method stub
-	return null;
-}
 
 }

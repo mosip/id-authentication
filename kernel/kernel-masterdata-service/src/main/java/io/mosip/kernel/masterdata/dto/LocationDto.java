@@ -9,8 +9,6 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import io.mosip.kernel.masterdata.validator.CustomIntegerDeserializer;
-import io.mosip.kernel.masterdata.validator.FilterType;
-import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.Data;
 

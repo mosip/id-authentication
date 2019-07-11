@@ -1,7 +1,6 @@
 package io.mosip.admin.securitypolicy.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,6 @@ public class SecurityPolicyController {
 	@Autowired
 	private SecurityPolicyService securityPolicyService;
 
-	//@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@GetMapping("/authfactors/{userId}")
 	public ResponseWrapper<AuthFactorsDto> getAuthenticationFactorForUser(@PathVariable("userId") String userId) {
 		ResponseWrapper<AuthFactorsDto> responseWrapper=new ResponseWrapper<>();

@@ -3,7 +3,6 @@
 * [Account Management](#account-management)
 * [User Management](#user-management)
 * [UIN Services](#uin-services)
-* [Entity UI Specifications](#entityui-specs)
 
 
 # Login
@@ -1300,7 +1299,3 @@ Error Responses
 }
 
 ```
-
-# Entity UI Specifications
-
-* [GET /ui/authfactors](#get-securityauthfactors)

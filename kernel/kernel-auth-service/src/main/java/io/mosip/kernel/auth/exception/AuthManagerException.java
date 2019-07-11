@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 package io.mosip.kernel.auth.exception;
 
 /**
@@ -49,4 +51,3 @@ public class AuthManagerException extends RuntimeException {
 		this.errorCode = errorCode;
 	}
 }
-
