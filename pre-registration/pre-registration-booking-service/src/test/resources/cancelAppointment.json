@@ -1,0 +1,13 @@
+{
+		"id": "mosip.pre-registration.booking.book",
+		"ver" : "1.0",
+		"reqTime" : "2018-10-17T07:22:57.086+0000",
+		"request" :
+		{
+			"pre_registration_id":"23587986034785",
+			"registration_center_id":"1",
+			"reg_date":"2018-12-17",
+			"time-slot-from":"09:00",
+            "time-slot-to":"09:13"
+		}
+}

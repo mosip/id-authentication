@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="onboardUser" styleClass="onboardUserParentPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.UserOnboardController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="90.0" valignment="CENTER" />
+      <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" valignment="CENTER" />
+  </rowConstraints>
+   <children>
+      <GridPane>
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" percentWidth="55.0" />
+            <ColumnConstraints halignment="LEFT" percentWidth="20.0" />
+            <ColumnConstraints halignment="LEFT" percentWidth="25.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="25.0" vgrow="ALWAYS" />
+          <RowConstraints percentHeight="13.0" vgrow="ALWAYS" />
+          <RowConstraints percentHeight="62.0" vgrow="ALWAYS" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="operatorName" styleClass="useronBoardLinkDesc" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin></Label>
+            <GridPane onMouseClicked="#initUserOnboard" styleClass="onboardUserPaneStyle" GridPane.columnIndex="1" GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label graphicTextGap="15.0" styleClass="useronBoardLink" text="%getOnboarded">
+                     <graphic>
+                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/GetOnboarded.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <GridPane.margin>
+                        <Insets left="30.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+      <Label styleClass="powerdBy" text="© 2019, Powered by MOSIP" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+   </children>
+</GridPane>

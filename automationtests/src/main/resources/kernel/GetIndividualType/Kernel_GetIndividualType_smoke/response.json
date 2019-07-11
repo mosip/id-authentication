@@ -1,0 +1,47 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-11T07:33:13.935Z",
+  "metadata": null,
+  "response": {
+    "individualTypes": [
+      {
+        "code": "FR",
+        "langCode": "eng",
+        "name": "Foreigner",
+        "isActive": true
+      },
+      {
+        "code": "NFR",
+        "langCode": "eng",
+        "name": "Non-Foreigner",
+        "isActive": true
+      },
+      {
+        "code": "FR",
+        "langCode": "ara",
+        "name": "أجنبي",
+        "isActive": true
+      },
+      {
+        "code": "NFR",
+        "langCode": "ara",
+        "name": "غير أجنبي",
+        "isActive": true
+      },
+      {
+        "code": "FR",
+        "langCode": "fra",
+        "name": "Étranger",
+        "isActive": true
+      },
+      {
+        "code": "NFR",
+        "langCode": "fra",
+        "name": "Non-étranger",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": null
+}

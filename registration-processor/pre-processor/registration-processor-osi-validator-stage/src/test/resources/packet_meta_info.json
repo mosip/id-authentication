@@ -1,0 +1,298 @@
+{
+  "identity" : {
+    "biometric" : {
+      "applicant" : {
+        "leftEye" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "c995b822-349c-4a5b-b02d-f87c723ea8cd",
+          "type" : "iris",
+          "qualityScore" : 90.5,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "rightEye" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "b4b280d3-64d2-4521-a7c8-4b2b84821375",
+          "type" : "iris",
+          "qualityScore" : 50.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "leftThumb" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "14989b91-57b2-4ce8-839e-e71290532c67",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "rightThumb" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "daaa0a7c-7f63-41a7-9693-b80178657035",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "leftIndex" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "93894808-0a99-4e88-ba3d-af2c9fef40cf",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "leftMiddle" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "d34ddedf-f234-44a1-bf55-8f7397c3c319",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "leftRing" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "90a77e58-f115-4d3d-9c15-67b9f19a1f96",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "leftLittle" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "34219a2f-66c5-4295-86e2-0444ac438423",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "rightIndex" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "b0a4d7a9-12ed-4872-8743-6c0abdb46332",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "rightMiddle" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "05c94222-1f5a-43ad-975a-d2d565b48f4c",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "rightRing" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "25756669-9eac-403b-8f7c-62067e6c29ed",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        },
+        "rightLittle" : {
+          "language" : "eng",
+          "label" : "label",
+          "imageName" : "45acab2b-fa23-4768-99ce-66c16c8cc085",
+          "type" : "fingerprint",
+          "qualityScore" : 90.0,
+          "numRetry" : 0,
+          "forceCaptured" : false
+        }
+      },
+      "introducer" : {
+        "introducerFingerprint" : null,
+        "introducerIris" : null,
+        "introducerImage" : null
+      }
+    },
+    "exceptionBiometrics" : [ ],
+    "applicantPhotograph" : {
+      "language" : "eng",
+      "label" : "label",
+      "photographName" : "Applicant Photograph",
+      "numRetry" : 0,
+      "qualityScore" : 0.0
+    },
+    "exceptionPhotograph" : null,
+    "documents" : [ {
+      "documentName" : "POI_Proof of adress",
+      "documentCategory" : "Proof of adress",
+      "documentOwner" : null,
+      "documentType" : "PoI"
+    }, {
+      "documentName" : "POA_Proof of adress",
+      "documentCategory" : "Proof of adress",
+      "documentOwner" : null,
+      "documentType" : "PoA"
+    }, {
+      "documentName" : "POR_Proof of adress",
+      "documentCategory" : "Proof of adress",
+      "documentOwner" : null,
+      "documentType" : "PoR"
+    }, {
+      "documentName" : "DOB_Proof of adress",
+      "documentCategory" : "Proof of adress",
+      "documentOwner" : null,
+      "documentType" : "PoB"
+    } ],
+    "metaData" : [ {
+      "label" : "geoLocLatitude",
+      "value" : "13.0049"
+    }, {
+      "label" : "geoLoclongitude",
+      "value" : "80.24492"
+    }, {
+      "label" : "registrationType",
+      "value" : "New"
+    }, {
+      "label" : "applicantType",
+      "value" : "Adult"
+    }, {
+      "label" : "preRegistrationId",
+      "value" : ""
+    }, {
+      "label" : "registrationId",
+      "value" : "63764233960004620190123211111"
+    }, {
+      "label" : "registrationIdHash",
+      "value" : "31045579DD7F8B308BD9340BB96D56337A1E88157F9E6BC6D6EFFBBEF0B46DD7"
+    }, {
+      "label" : "machineId",
+      "value" : "12334"
+    }, {
+      "label" : "dongleId",
+      "value" : "67890"
+    }, {
+      "label" : "macId",
+      "value" : "00-FF-D3-E3-9A-27"
+    }, {
+      "label" : "centerId",
+      "value" : "54321"
+    }, {
+      "label" : "uin",
+      "value" : null
+    }, {
+      "label" : "previousRID",
+      "value" : null
+    }, {
+      "label" : "introducerType",
+      "value" : null
+    }, {
+      "label" : "introducerRID",
+      "value" : null
+    }, {
+      "label" : "introducerRIDHash",
+      "value" : null
+    }, {
+      "label" : "introducerUIN",
+      "value" : null
+    }, {
+      "label" : "introducerUINHash",
+      "value" : null
+    }, {
+      "label" : "officerFingerprintType",
+      "value" : null
+    }, {
+      "label" : "officerIrisType",
+      "value" : null
+    }, {
+      "label" : "supervisorFingerprintType",
+      "value" : null
+    }, {
+      "label" : "supervisorIrisType",
+      "value" : null
+    }, {
+      "label" : "introducerFingerprintType",
+      "value" : null
+    }, {
+      "label" : "introducerIrisType",
+      "value" : null
+    }, {
+      "label" : "creationDate",
+      "value" : "2019-01-23T21:11:15.463Z"
+    } ],
+    "osiData" : [ {
+      "label" : "officerId",
+      "value" : "mosip"
+    }, {
+      "label" : "officerBiometricFileName",
+      "value" : null
+    }, {
+      "label" : "supervisorId",
+      "value" : null
+    }, {
+      "label" : "supervisorBiometricFileName",
+      "value" : null
+    }, {
+      "label" : "supervisorPassword",
+      "value" : "false"
+    }, {
+      "label" : "officerPassword",
+      "value" : "true"
+    }, {
+      "label" : "supervisorPIN",
+      "value" : null
+    }, {
+      "label" : "officerPIN",
+      "value" : null
+    }, {
+      "label" : "supervisorFaceImage",
+      "value" : null
+    }, {
+      "label" : "officerFaceImage",
+      "value" : null
+    }, {
+      "label" : "supervisorOTPAuthentication",
+      "value" : "false"
+    }, {
+      "label" : "officerOTPAuthentication",
+      "value" : "false"
+    } ],
+    "hashSequence" : [ {
+      "label" : "applicantBiometricSequence",
+      "value" : [ "applicant_bio_CBEFF" ]
+    }, {
+      "label" : "introducerBiometricSequence",
+      "value" : [ ]
+    }, {
+      "label" : "applicantDemographicSequence",
+      "value" : [ "ID", "POI_Proof of adress", "POA_Proof of adress", "POR_Proof of adress", "DOB_Proof of adress", "Applicant Photograph" ]
+    } ],
+    "capturedRegisteredDevices" : [ {
+      "label" : "fingerprint",
+      "value" : "123455YRHTIFHKJI8U90U2334"
+    }],
+    "capturedNonRegisteredDevices" : [ {
+      "label" : "fingerprint",
+      "value" : "trergrfrfrfrfrw21313113"
+    }, {
+      "label" : "iris",
+      "value" : "313rq342s4s3gg5g54bth5j4j64j64"
+    }, {
+      "label" : "gps",
+      "value" : "8yjh98q78njh7t62hbkjkjqhkjqbqhhkh"
+    }, {
+      "label" : "photo",
+      "value" : "11331oiu31y8bahagyaftfafahfakhfagk"
+    } ],
+    "checkSum" : [ {
+      "label" : "registration-service.jar",
+      "value" : "65gfhab67586cjhsabcjk78"
+    }, {
+      "label" : "registration-ui.jar",
+      "value" : "uygdfajkdjkHHD56TJHASDJKA"
+    } ]
+  }
+}

@@ -1,0 +1,12 @@
+[
+{
+"hierarchyCode":"region",
+"invalidhierarchyCode":"123abc$#",
+"langCode":"eng",
+"invalidlangCode":"123abc$#",
+"code":"RSK",
+"invalidcode":"123abc$#",
+"invaliddocCode":"123abc$#",
+"masterSyncDetails":"MDS_J00001"
+}
+]

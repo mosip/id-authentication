@@ -1,0 +1,15 @@
+<div class="sidebar-container">
+  <div id="sidebar"[ngStyle]="{ display: getDisplay() }">
+      <mat-card class="sidebar">
+          <ul>
+            <li *ngFor="let item of menuItems; let i = index;" [ngClass]="selectedItem === i ? 'selected' : ''" (click)="changeSelection(i)">
+              <i class="material-icons">apps</i>&nbsp;<span class="icon">{{item}}</span>
+            </li>
+          </ul>
+        </mat-card>
+  </div>
+  <div class="toggle">
+      <button  mat-mini-fab id="toggle-forward" class="toggle-button"(click)="showMenu()"><mat-icon class="icon">arrow_forward</mat-icon></button>
+      <button  mat-mini-fab id="toggle-back" class="toggle-button" (click)="hideMenu()"><mat-icon class="icon">arrow_back</mat-icon></button>
+  </div>
+</div>

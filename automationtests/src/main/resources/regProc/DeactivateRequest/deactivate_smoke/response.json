@@ -1,0 +1,11 @@
+{
+    "id": "mosip.registration.packetgenerator",
+    "version": "1.0",
+    "responsetime": "2019-06-28T07:31:42.974Z",
+    "response": {
+        "registrationId": "10001100010007020190628073140",
+        "status": "SUCCESS",
+        "message": "Packet created and uploaded"
+    },
+    "errors": null
+}

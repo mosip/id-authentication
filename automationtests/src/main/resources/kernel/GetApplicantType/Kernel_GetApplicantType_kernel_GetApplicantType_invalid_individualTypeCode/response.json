@@ -1,0 +1,13 @@
+{
+  "id": "getapplicanttype.code",
+  "version": "V1.0",
+  "responsetime": "2019-04-17T11:41:48.977Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-MSD-147",
+      "message": "Applicant Type data does not exist"
+    }
+  ]
+}

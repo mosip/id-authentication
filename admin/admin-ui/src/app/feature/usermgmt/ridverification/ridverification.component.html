@@ -1,0 +1,17 @@
+<div>
+    <span class="title-word"><mat-icon class="arrow">keyboard_backspace</mat-icon>
+     User Rid</span>
+      <hr  class="horizontal-line">
+</div>
+<div class="form-container">
+  <form [formGroup]="userRidVerificationForm" (ngSubmit)="onSubmit()">
+    <div class="input-field">
+    <mat-form-field>
+      <input formControlName="rid" matInput placeholder="RID"/>
+    </mat-form-field>
+    </div>
+    <div class="button-container">
+        <button mat-raised-button class="proceed-button" type="submit">Submit</button>
+    </div>
+  </form>
+</div>

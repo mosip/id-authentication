@@ -1,0 +1,18 @@
+{
+  "id": null,
+  "version": null,
+  "responsetime": "2019-04-17T10:14:53.237Z",
+  "metadata": null,
+  "response": {
+    "applicationtypes": [
+      {
+        "code": "1111",
+        "name": "Pre_Reg",
+        "description": "string",
+        "langCode": "eng",
+        "isActive": true
+      }
+    ]
+  },
+  "errors": null
+}

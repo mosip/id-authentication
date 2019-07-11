@@ -1,0 +1,12 @@
+{
+	"response" : null,
+    "errors": [
+        {
+            "errorCode": "RPR-MVS-020",
+            "message": "Match Type is Invalid"
+        }
+    ],
+    "id": "mosip.manual.verification.assignment",
+    "version": "1.0",
+    "responsetime": "2019-05-18T07:56:16.889Z"
+}

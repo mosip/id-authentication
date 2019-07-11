@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.appointment.cancel",
+    "version": "1.0",
+    "responsetime": "2019-05-18T04:43:50.583Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_BOOK_RCI_018",
+            "message": "Appointment cannot be canceled"
+        }
+    ]
+}

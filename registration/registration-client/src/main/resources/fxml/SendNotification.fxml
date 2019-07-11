@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="287.0" prefWidth="532.0" styleClass="sendNotificationPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.reg.SendNotificationController">
+   <children>
+      <Label layoutX="24.0" layoutY="28.0" prefHeight="27.0" prefWidth="263.0" text="%email/smsAck" />
+      <TextField id="emailId" fx:id="email" layoutX="124.0" layoutY="91.0" prefHeight="39.0" prefWidth="270.0" promptText="%enterEmail" styleClass="ackTextField" />
+      <TextField id="mobileNo" fx:id="mobile" layoutX="124.0" layoutY="143.0" prefHeight="39.0" prefWidth="270.0" promptText="%enterMobile" styleClass="ackTextField" />
+      <Button fx:id="send" layoutX="212.0" layoutY="206.0" mnemonicParsing="false" onAction="#sendNotification" prefHeight="39.0" prefWidth="105.0" styleClass="ackPageButton" text="%send" />
+      <ImageView fx:id="emailIcon" fitHeight="25.0" fitWidth="25.0" layoutX="84.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Email.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="mobileIcon" fitHeight="25.0" fitWidth="25.0" layoutX="84.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/EnterMobile.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="28.0" fitWidth="28.0" layoutX="490.0" layoutY="14.0" onMouseClicked="#closeWindow" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Close.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

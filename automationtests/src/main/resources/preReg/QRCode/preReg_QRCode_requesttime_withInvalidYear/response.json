@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.qrcode.generate",
+    "version": "1.0",
+    "responsetime": "2019-05-20T12:36:32.765Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_CORE_REQ_013",
+            "message": "Request date should be current date"
+        }
+    ]
+}

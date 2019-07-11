@@ -1,0 +1,79 @@
+.form-container{
+ margin-top: 3rem;
+ display: flex;
+ justify-content: center;
+}
+
+.login-form{
+  align-items: center;
+}
+.input-full-width{
+  width: 18em;
+  padding:30px;
+}
+.input-full{
+  width: 18em;
+  padding: 30px;
+}
+
+.button-container {
+    padding-top: 2em;
+    padding-right: 1.4rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .proceed-button {
+    background-color: rgb(27, 27, 27);
+    color: rgb(197, 116, 116);
+    border-radius: 0;
+    padding-left: 20px;
+    padding-right: 25px;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+  .cancel-button {
+   background-color: gray;
+    border-radius: 0;
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-top: 10px;
+  }
+  .horizontal-line{
+    width:90%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  mat-icon {
+    vertical-align: middle;
+  }
+  .title{
+    margin-top:3em;
+  }
+  .title-word{
+    margin-left:2em;
+    font-size: 1em;
+    font-weight: bold;
+  }
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
+  
+  input[type=number] {
+      -moz-appearance:textfield;
+  }
+  .mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+  }
+
+  .gender-radio{
+    float: right;
+   padding:20px;
+  }
+ .select-field{
+  width: 18em;
+  padding-left: 30px;
+ }

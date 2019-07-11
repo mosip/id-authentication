@@ -1,0 +1,16 @@
+{
+	"transactionID": "5743320133",
+	"version": "1.0",
+	"id": "mosip.identity.kyc",
+	"errors": [
+		{
+			"errorCode": "IDA-MLC-002",
+			"errorMessage": "Error message",
+			"actionMessage": "$IGNORE$"
+		}
+	],
+	"responseTime": "2019-04-24T16:31:38.547+05:30",
+	"response": {
+		"kycStatus": false
+	}
+}

@@ -1,0 +1,2 @@
+Cher $name,
+Votre authentification UIN $uin utilisant $authType le $date à $time Hrs $status sur un périphérique déployé par "MOSIP Services".

@@ -1,0 +1,74 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-content>
+      <form
+        class="auth-form"
+        [formGroup]="authenticationForm"
+        (ngSubmit)="onSubmit(authenticationForm.value)"
+      >
+        <div *ngIf="showPassword">
+          <mat-form-field class="input-full-width">
+            <input
+              matInput
+              type="password"
+              placeholder="PASSWORD"
+              #password
+              formControlName="password"
+              (focusout)="validateUserPassword(password.value)"
+            />
+          </mat-form-field>
+          <div class="validation" *ngIf="errorMessage">Invaild Password</div>
+          <div
+            class="validation"
+            *ngIf="
+              authenticationForm.controls['password'].invalid &&
+              authenticationForm.controls['password'].touched
+            "
+          >
+            Password is required
+          </div>
+          <div class="forgot-password-link">
+            <div class="forgot-password-link" (click)="onForgotPassword()">
+              <a>Forgot Password</a>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="showOtp">
+          <mat-form-field class="input-full-width">
+            <input
+              matInput
+              type="text"
+              placeholder="ENTER OTP"
+              #otp
+              formControlName="otp"
+              (focusout)="validateUserOtp(otp.value)"
+            />
+          </mat-form-field>
+          <div class="validation" *ngIf="otpErrorMessage">Invaild OTP</div>
+          <div
+            class="validation"
+            *ngIf="
+              authenticationForm.controls['otp'].invalid &&
+              authenticationForm.controls['otp'].touched
+            "
+          >
+            OTP must be entered
+          </div>
+          <div class="valid-timer">
+            <span class="valid-text">Valid :</span><span id="timer">02:00</span>
+          </div>
+        </div>
+        <div class="button-container">
+          <button
+            type="submit"
+            mat-raised-button
+            class="login-button"
+            [disabled]="!buttonDisabled"
+          >
+            Login
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

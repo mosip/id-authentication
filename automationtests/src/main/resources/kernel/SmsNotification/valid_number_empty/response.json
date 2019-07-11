@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-04-25T07:14:03.103Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-NOS-001",
+      "message": "request.number must not be blank"
+    }
+  ]
+}

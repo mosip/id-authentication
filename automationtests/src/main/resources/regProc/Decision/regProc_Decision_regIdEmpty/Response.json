@@ -1,0 +1,12 @@
+{
+	"response" : null,
+    "errors": [
+        { 
+            "errorCode": "RPR-MVS-016",
+            "message": "Reg Id should not be null or empty"
+          }
+    ],
+    "id": "mosip.manual.verification.decision",
+    "version": "1.0",
+    "responsetime": "2019-05-18T10:40:45.073Z"
+}

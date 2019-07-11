@@ -1,0 +1,25 @@
+testdata:
+  IdRepository_RetrieveIdentity_With Valid Smoke Rid:
+    input.rid:
+      rid: $RID$
+    output.output-1-expected-y-res:
+      output.1.res.version: $version$
+      output.1.res.status: ACTIVATED
+      output.1.res.timestamp: $IGNORE$
+      
+  IdRepository_RetrieveIdentity_With Deactivted UIN:
+    input.rid:
+      rid: $RID:WITH:Deactivated$
+    output.output-1-expected-y-res:
+      output.1.res.version: $version$
+      output.1.res.status: DEACTIVATED
+      output.1.res.timestamp: $IGNORE$      
+  
+  IdRepository_RetrieveIdentity_With InValid Rid:
+    input.rid:
+      rid: $TestData:rid_invalid$
+    output.output-1-expected-err-res:
+      output.1.res.err.version: $version$
+      output.1.res.err.responsetime: $IGNORE$
+      output.1.res.err.errormessage: $errors:InvalidRegistrationId:errorMessage$
+      output.1.res.err.errorCode: $errors:InvalidRegistrationId:errorCode$

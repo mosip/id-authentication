@@ -1,0 +1,1106 @@
+testdata:
+  Authentication_Demographic_Gender_With both language_smoke_For UIN_Pos_01:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.languagegender1: $TestData:primary_lang_code$   
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$ 
+  
+  Authentication_Demographic_Gender_With arabic language_smoke_For UIN_Pos_02:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$ 
+      identityReq.languagegender1: $REMOVE$   
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$ 
+  
+  Authentication_Demographic_Gender_With french language_smoke_For UIN_Pos_03:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.languagegender0: $TestData:primary_lang_code$
+      identityReq.valuegender1: $REMOVE$ 
+      identityReq.languagegender1: $REMOVE$   
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$ 
+         
+  Authentication_Demographic_Gender_Invalid UIN_Neg_04:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $TestData:uin_invalid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: الذكر
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
+      output.1.response.n.err.actionMessage: $errors:InvalidUIN:actionMessage$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid reqTime_For UIN_Neg_05:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid_reqTime_greaterthan24hrs_For UIN_Neg_06:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$HOUR+25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$HOUR+25
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid_reqTime_lessthan24hrs_For UIN_Neg_07:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$HOUR-25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$HOUR+25
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid individualIdType_For UIN_Neg_08:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid version_Neg_For UIN_09:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender0:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid txnID_Neg_For UIN_10:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender0:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$
+      output.1.response.n.err.errorCode: $IGNORE$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid UIN which is not as per defintion_For UIN_Neg_11:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $TestData:uin_invalid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: الذكر
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidUIN:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid reqTime which is not as per defintion_For UIN_Neg_12:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid individualIdType which is not as per definition_For UIN_Neg_13:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid version which is not as per defintion_For UIN_Neg_14:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid txnID which is not as per definition_For UIN_Neg_15:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $TestData:indvId_invalid$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$
+      output.1.response.n.err.errorCode: $IGNORE$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing UIN_Neg_16:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: الذكر
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing reqTime_For UIN_Neg_17:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $REMOVE$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing individualIdType_For UIN_Neg_18:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.individualIdType: $REMOVE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing version_For UIN_Neg_19:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing txnID_For UIN_Neg_20:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $RANDOM:N:10$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+     
+  Authentication_Demographic_Gender_No authentication type is selected_Neg_22:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1:  $REMOVE$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
+      output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Gender mismatch for UIN_Neg_23:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN:WITH:GenderFLE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1:  $REMOVE$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Demo_GenderMismatch:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Demo_GenderMismatch:errorCode$
+      output.1.response.n.err.actionMessage: $errors:Demo_GenderMismatch:actionMessage$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$ 
+      
+  Authentication_Demographic_Gender_Gender mismatch for VID_Neg_24:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID:WHERE:UIN:WITH:GenderFLE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $TestData:male_gender_secondary_valid$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1:  $REMOVE$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Demo_GenderMismatch:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Demo_GenderMismatch:errorCode$
+      output.1.response.n.err.actionMessage: $errors:Demo_GenderMismatch:actionMessage$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_fail_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$ 
+      
+  Authentication_Demographic_Gender_Deactivated UIN_Neg_25:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN:WITH:Deactivated$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1:  $REMOVE$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:DeactivatedUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:DeactivatedUIN:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_With both language_smoke_For VID_Pos_26:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.languagegender1: $TestData:primary_lang_code$    
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$ 
+  
+  Authentication_Demographic_Gender_With arabic language_smoke_For VID_Pos_27:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $REMOVE$
+      identityReq.languagegender0: $REMOVE$
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$ 
+      identityReq.languagegender1: $REMOVE$   
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$ 
+  
+  Authentication_Demographic_Gender_With french language_smoke_For VID_Pos_28:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $REMOVE$
+      identityReq.languagegender0: $REMOVE$
+      identityReq.valuegender1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      identityReq.languagegender1: $TestData:primary_lang_code$    
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: BOOLEAN:true
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+         
+  Authentication_Demographic_Gender_Invalid VID_Neg_29:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $TestData:vid_invalid$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$ 
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: الذكر
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid reqTime_For VID_Neg_30:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid_reqTime_greaterthan24hrs_For VID_Neg_31:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$HOUR+25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid_reqTime_lessthan24hrs_For VID_Neg_32:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$HOUR-25
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.1.response.n.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid individualIdType_For VID_Neg_33:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: avc
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid version_Neg_For VID_34:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid txnID_Neg_For VID_35:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$
+      output.1.response.n.err.errorCode: $IGNORE$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid VID which is not as per defintion_For VID_Neg_36:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $TestData:uin_invalid$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: الذكر
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidVID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidVID:errorCode$
+      output.1.response.n.err.actionMessage: $errors:InvalidVID:actionMessage$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid reqTime which is not as per defintion_For VID_Neg_37:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid individualIdType which is not as per definition_For VID_Neg_38:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid version which is not as per defintion_For VID_Neg_39:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Invalid txnID which is not as per definition_For VID_Neg_39:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $TestData:indvId_invalid$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $IGNORE$
+      output.1.response.n.err.errorCode: $IGNORE$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing VID_Neg_40:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: الذكر
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingUIN:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing reqTime_For VID_Neg_41:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $REMOVE$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime:  $TIMESTAMPZ$
+      output.1.response.n.err.errorMessage: $errors:MissingrequestTime:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingrequestTime:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing individualIdType_For VID_Neg_42:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.individualIdType: $REMOVE$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingindividualIdType:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing version_For VID_Neg_43:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+      AuthReq.version: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:Missingversion:errorMessage$
+      output.1.response.n.err.errorCode: $errors:Missingversion:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      
+  Authentication_Demographic_Gender_Missing txnID_For VID_Neg_45:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1: $REMOVE$  
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $RANDOM:N:10$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:MissingtransactionID:errorMessage$
+      output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+  
+  Authentication_Demographic_Gender_No authentication type is selected_for VID_Neg_46:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $VID$
+      AuthReq.individualIdType: VID
+      AuthReq.demo: BOOLEAN:false
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.valuegender0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      identityReq.languagegender0: $TestData:secondary_lang_code$
+      identityReq.valuegender1: $REMOVE$
+      identityReq.languagegender1:  $REMOVE$ 
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+    output.output-1-expected-n-error-res:
+      output.1.response.n.err.status: BOOLEAN:false
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.n.err.errorMessage: $errors:NoAuthTypeSelected:errorMessage$
+      output.1.response.n.err.errorCode: $errors:NoAuthTypeSelected:errorCode$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
