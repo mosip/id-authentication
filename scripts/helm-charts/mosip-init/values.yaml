@@ -76,7 +76,7 @@ deploymentsAndServices:
        servicePort: 8092
        dockerImageName: kernel-signature-service
     kernel-uingenerator-service:
-       servicePath: /v1/cryptomanager
+       servicePath: /v1/uingenerator
        servicePort: 8080
        dockerImageName: kernel-uingenerator-service
        overideCommonEnvironmentVariables: true
