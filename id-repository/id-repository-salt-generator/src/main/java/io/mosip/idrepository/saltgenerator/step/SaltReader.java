@@ -59,10 +59,8 @@ public class SaltReader implements ItemReader<SaltEntity> {
 			SaltEntity entity = new SaltEntity();
 			entity.setId(startSeq);
 			entity.setSalt(CryptoUtil.encodeBase64String(HMACUtils.generateSalt()));
-			entity.setCreatedBy("IdRepoSaltGenerator");
+			entity.setCreatedBy("System");
 			entity.setCreateDtimes(DateUtils.getUTCCurrentDateTime());
-			entity.setUpdatedBy("IdRepoSaltGenerator");
-			entity.setUpdatedDtimes(DateUtils.getUTCCurrentDateTime());
 			mosipLogger.debug("ID_REPO_SALT_GENERATOR", "SaltReader", "Entity with id created - ",
 					String.valueOf(startSeq));
 			startSeq = startSeq + 1;

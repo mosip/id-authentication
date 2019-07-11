@@ -14,7 +14,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeLangCodeAndRsnCatCodeID;
 
 /**
- * The Entity Class for ReasonList.
+ * This Entity Class contains list of reasons [Invalid Address, Gender-Photo Mismatch...] 
+ * that are listed during Registration Approval/Rejection with respect to language code .
+ * The data for this table will come through sync from server master table.
  *
  * @author Sreekar chukka
  * @since 1.0.0

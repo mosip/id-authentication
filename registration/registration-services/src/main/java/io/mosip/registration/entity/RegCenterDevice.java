@@ -13,7 +13,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.RegCenterDeviceId;
 
 /**
- * The Entity Class for Reg Center Device .
+ * This Entity Class contains list of device ids which are mapped to corresponding center id .
+ * The data for this table will come through sync from server master table.
  *
  * @author Brahmananda Reddy
  * @since 1.0.0

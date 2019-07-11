@@ -24,10 +24,12 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
@@ -36,6 +38,7 @@ import io.mosip.registration.processor.core.exception.RegistrationProcessorUnChe
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
@@ -64,6 +67,8 @@ import lombok.Data;
 @Component
 @Data
 public class Utilities {
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(Utilities.class);
 
 	private static final String UIN = "UIN";
 	public static final String FILE_SEPARATOR = "\\";
@@ -114,8 +119,6 @@ public class Utilities {
 	@Autowired
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	JSONObject idJson = null;
-
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
@@ -147,6 +150,9 @@ public class Utilities {
 	 */
 	public int getApplicantAge(String registrationId) throws IOException, ApisResourceAccessException,
 			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				registrationId, "Utilities::getApplicantAge()::entry");
+
 		RegistrationProcessorIdentity regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String ageKey = regProcessorIdentityJson.getIdentity().getAge().getValue();
 		String dobKey = regProcessorIdentityJson.getIdentity().getDob().getValue();
@@ -155,17 +161,26 @@ public class Utilities {
 		String applicantDob = JsonUtil.getJSONValue(demographicIdentity, dobKey);
 		Integer applicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
 		if (applicantDob != null) {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					registrationId, "Utilities::getApplicantAge()::exit when applicantDob is not null");
 			return calculateAge(applicantDob);
 		} else if (applicantAge != null) {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					registrationId, "Utilities::getApplicantAge()::exit when applicantAge is not null");
 			return applicantAge;
 
 		} else {
 			Long uin = getUIn(registrationId);
 			JSONObject identityJSONOject = retrieveIdrepoJson(uin);
 			String idRepoApplicantDob = JsonUtil.getJSONValue(identityJSONOject, dobKey);
-			if (idRepoApplicantDob != null)
+			if (idRepoApplicantDob != null) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+						registrationId, "Utilities::getApplicantAge()::exit when ID REPO applicantDob is not null");
 				return calculateAge(idRepoApplicantDob);
+			}
 			Integer idRepoApplicantAge = JsonUtil.getJSONValue(demographicIdentity, ageKey);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+					registrationId, "Utilities::getApplicantAge()::exit when ID REPO applicantAge is not null");
 			return idRepoApplicantAge != null ? idRepoApplicantAge : 0;
 
 		}
@@ -179,27 +194,40 @@ public class Utilities {
 	 * @return
 	 * @throws ApisResourceAccessException
 	 * @throws IdRepoAppException
+	 * @throws IOException
 	 */
-	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException {
+	public JSONObject retrieveIdrepoJson(Long uin) throws ApisResourceAccessException, IdRepoAppException, IOException {
 
 		if (uin != null) {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+					"Utilities::retrieveIdrepoJson()::entry");
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(String.valueOf(uin));
-			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN,
-					pathSegments, "", "", IdResponseDTO1.class);
-			if (idResponseDto == null)
+			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+
+			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathSegments, "", "",
+					IdResponseDTO1.class);
+			if (idResponseDto == null) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+						"Utilities::retrieveIdrepoJson()::exit idResponseDto is null");
 				return null;
+			}
 			if (!idResponseDto.getErrors().isEmpty()) {
 				List<ErrorDTO> error = idResponseDto.getErrors();
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+						"Utilities::retrieveIdrepoJson():: error with error message " + error.get(0).getMessage());
 				throw new IdRepoAppException(error.get(0).getMessage());
 			}
 
 			idResponseDto.getResponse().getIdentity();
 			ObjectMapper objMapper = new ObjectMapper();
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+					"Utilities::retrieveIdrepoJson():: IDREPOGETIDBYUIN GET service call ended Successfully");
 			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
 
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+				"Utilities::retrieveIdrepoJson()::exit UIN is null");
 		return null;
 	}
 
@@ -214,6 +242,9 @@ public class Utilities {
 		List<AbisQueueDetails> abisQueueDetailsList = new ArrayList<>();
 		String registrationProcessorAbis = Utilities.getJson(configServerFileStorageURL, registrationProcessorAbisJson);
 		JSONObject regProcessorAbisJson;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"Utilities::getAbisQueueDetails()::entry");
+
 		try {
 			regProcessorAbisJson = JsonUtil.objectMapperReadValue(registrationProcessorAbis, JSONObject.class);
 
@@ -246,6 +277,9 @@ public class Utilities {
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"Utilities::getAbisQueueDetails()::exit");
+
 		return abisQueueDetailsList;
 
 	}
@@ -258,9 +292,15 @@ public class Utilities {
 	 * @throws IOException
 	 */
 	public RegistrationProcessorIdentity getRegistrationProcessorIdentityJson() throws IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"Utilities::getRegistrationProcessorIdentityJson()::entry");
+
 		String getIdentityJsonString = Utilities.getJson(configServerFileStorageURL, getRegProcessorIdentityJson);
 		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"Utilities::getRegistrationProcessorIdentityJson()::exit");
 		return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, RegistrationProcessorIdentity.class);
+
 	}
 
 	/**
@@ -275,6 +315,8 @@ public class Utilities {
 	 */
 	public JSONObject getDemographicIdentityJSONObject(String registrationId) throws IOException,
 			PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getDemographicIdentityJSONObject()::entry");
 
 		InputStream idJsonStream = adapter.getFile(registrationId,
 				PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.ID.name());
@@ -284,8 +326,15 @@ public class Utilities {
 		JSONObject demographicIdentity = JsonUtil.getJSONObject(demographicIdentityJson,
 				getRegProcessorDemographicIdentity);
 
-		if (demographicIdentity == null)
+		if (demographicIdentity == null) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "Utilities::getDemographicIdentityJSONObject():: error with error message "
+							+ PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		}
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getDemographicIdentityJSONObject()::exit");
 
 		return demographicIdentity;
 
@@ -304,31 +353,57 @@ public class Utilities {
 	 */
 	public Long getUIn(String registrationId) throws IOException, PacketDecryptionFailureException,
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getUIn()::entry");
+
 		JSONObject demographicIdentity = getDemographicIdentityJSONObject(registrationId);
-		if (demographicIdentity == null)
+		if (demographicIdentity == null) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "Utilities::getUIn():: error with error message "
+							+ PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 			throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+		}
 		Number number = JsonUtil.getJSONValue(demographicIdentity, UIN);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getUIn()::exit");
+
 		return number != null ? number.longValue() : null;
 
 	}
 
 	public String getElapseStatus(InternalRegistrationStatusDto registrationStatusDto, String transactionType) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"Utilities::getElapseStatus()::entry");
 
 		if (registrationStatusDto.getLatestTransactionTypeCode().equalsIgnoreCase(transactionType)) {
 			LocalDateTime createdDateTime = registrationStatusDto.getCreateDateTime();
 			LocalDateTime currentDateTime = LocalDateTime.now();
 			Duration duration = Duration.between(createdDateTime, currentDateTime);
 			long secondsDiffernce = duration.getSeconds();
-			if (secondsDiffernce > elapseTime)
+			if (secondsDiffernce > elapseTime) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+						"Utilities::getElapseStatus()::exit and value is:  " + RE_PROCESSING);
+
 				return RE_PROCESSING;
-			else
+			} else {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+						"Utilities::getElapseStatus()::exit and value is:  " + HANDLER);
+
 				return HANDLER;
+			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"Utilities::getElapseStatus()::exit and value is:  " + NEW_PACKET);
+
 		return NEW_PACKET;
 	}
 
 	public String getLatestTransactionId(String registrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getLatestTransactionId()::entry");
 		RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getLatestTransactionId()::exit");
 		return entity != null ? entity.getLatestRegistrationTransactionId() : null;
 
 	}
@@ -340,36 +415,60 @@ public class Utilities {
 	 * @return
 	 * @throws ApisResourceAccessException
 	 * @throws IdRepoAppException
+	 * @throws IOException
 	 */
-	public JSONObject retrieveUIN(String regId) throws ApisResourceAccessException, IdRepoAppException {
+	public JSONObject retrieveUIN(String regId) throws ApisResourceAccessException, IdRepoAppException, IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "Utilities::retrieveUIN()::entry");
 
 		if (regId != null) {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(regId);
-			IdResponseDTO1 idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
-					pathSegments, "", "", IdResponseDTO1.class);
-			if (!idResponseDto.getErrors().isEmpty())
+			IdResponseDTO1 idResponseDto = new IdResponseDTO1();
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, "Utilities::retrieveUIN():: RETRIEVEIDENTITYFROMRID GET service call Started");
+
+			idResponseDto = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathSegments, "",
+					"", IdResponseDTO1.class);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+					"Utilities::retrieveUIN():: RETRIEVEIDENTITYFROMRID GET service call ended successfully");
+
+			if (!idResponseDto.getErrors().isEmpty()) {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), regId,
+						"Utilities::retrieveUIN():: error with error message "
+								+ PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + " "
+								+ idResponseDto.getErrors().toString());
 				throw new IdRepoAppException(
 						PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage() + idResponseDto.getErrors().toString());
-
+			}
 			ObjectMapper objMapper = new ObjectMapper();
 			return objMapper.convertValue(idResponseDto.getResponse().getIdentity(), JSONObject.class);
 
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "Utilities::retrieveUIN()::exit regId is null");
 
 		return null;
 	}
 
 	public PacketMetaInfo getPacketMetaInfo(String registrationId) throws PacketDecryptionFailureException,
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getPacketMetaInfo():: entry");
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKET_META_INFO.name());
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getPacketMetaInfo():: exit");
 		return (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, PacketMetaInfo.class);
 	}
 
 	public List<Documents> getAllDocumentsByRegId(String regId) throws IOException, PacketDecryptionFailureException,
 			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
-		List<Documents> applicantDocuments = new ArrayList<>();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "Utilities::getAllDocumentsByRegId():: entry");
 
+		List<Documents> applicantDocuments = new ArrayList<>();
+		JSONObject idJson = null;
 		idJson = getDemographicIdentityJSONObject(regId);
 		regProcessorIdentityJson = getRegistrationProcessorIdentityJson();
 		String proofOfAddressLabel = regProcessorIdentityJson.getIdentity().getPoa().getValue();
@@ -403,41 +502,62 @@ public class Utilities {
 			applicantDocuments.add(
 					getIdDocumnet(regId, PacketFiles.BIOMETRIC.name(), applicantBiometric, applicantBiometricLabel));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "Utilities::getAllDocumentsByRegId():: exit");
+
 		return applicantDocuments;
 	}
 
 	private Documents getIdDocumnet(String registrationId, String folderPath, JSONObject idDocObj, String idDocLabel)
 			throws IOException, PacketDecryptionFailureException, ApisResourceAccessException,
 			io.mosip.kernel.core.exception.IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getIdDocumnet():: entry");
+
 		Documents documentsInfoDto = new Documents();
-		;
 		InputStream poiStream = adapter.getFile(registrationId, folderPath + FILE_SEPARATOR + idDocObj.get("value"));
 		documentsInfoDto.setValue(CryptoUtil.encodeBase64(IOUtils.toByteArray(poiStream)));
 		documentsInfoDto.setCategory(idDocLabel);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "Utilities::getIdDocumnet():: exit");
+
 		return documentsInfoDto;
 	}
 
 	private int calculateAge(String applicantDob) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"Utilities::calculateAge():: entry");
+
 		DateFormat sdf = new SimpleDateFormat(dobFormat);
 		Date birthDate = null;
 		try {
 			birthDate = sdf.parse(applicantDob);
 
 		} catch (ParseException e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "Utilities::calculateAge():: error with error message "
+							+ PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage());
 			throw new ParsingException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getCode(), e);
 		}
 		LocalDate ld = new java.sql.Date(birthDate.getTime()).toLocalDate();
 		Period p = Period.between(ld, LocalDate.now());
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"Utilities::calculateAge():: exit");
+
 		return p.getYears();
 
 	}
 
 	private String validateAbisQueueJsonAndReturnValue(JSONObject jsonObject, String key) {
+
 		String value = JsonUtil.getJSONValue(jsonObject, key);
-		if (value == null)
+		if (value == null) {
+
 			throw new RegistrationProcessorUnCheckedException(
 					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getCode(),
 					PlatformErrorMessages.ABIS_QUEUE_JSON_VALIDATION_FAILED.getMessage() + "::" + key);
+		}
+
 		return value;
 	}
 

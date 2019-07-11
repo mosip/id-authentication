@@ -4,24 +4,24 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
+
 /**
  * 
  * @author Girish Yarru
  *
  * @param <T>
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @ToString
-public class MainRequestDTO<T> implements Serializable{
+public class MainRequestDTO<T> implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -889792322042255010L;
-
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -4966448852014107698L;
 
 	/**
 	 * Id
@@ -31,26 +31,19 @@ public class MainRequestDTO<T> implements Serializable{
 	/**
 	 * version
 	 */
-	@ApiModelProperty(value = "request ver", position = 2)
-	private String ver;
+	@ApiModelProperty(value = "request version", position = 2)
+	private String version;
 	/**
 	 * Request Date Time
 	 */
+
 	@ApiModelProperty(value = "request time", position = 3)
-	private Date reqTime;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+	private Date requesttime;
 	/**
 	 * Request Object
 	 */
 	@ApiModelProperty(value = "request", position = 4)
 	private T request;
-	
-	public Date getReqTime() {
-		if(reqTime!=null)
-			return new Date(reqTime.getTime());
-		return null;
-	}
 
-	public void setReqTime(Date reqTime) {
-		this.reqTime=reqTime!=null?new Date(reqTime.getTime()):null;
-	}
 }

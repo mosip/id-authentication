@@ -13,7 +13,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity Class for BiometricType.
+ * This entity class contains the  list of biometric type[Fingerprint, Iris, Photo] with respect to language code 
+ *The data for this table will come through sync from server master table
  *
  * @author Sreekar Chukka
  * @since 1.0.0

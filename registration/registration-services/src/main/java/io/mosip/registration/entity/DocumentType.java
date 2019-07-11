@@ -12,7 +12,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity Class for DocumentType.
+ * This Entity Class contains list of document types that are allowed for uploading documents 
+ * in Registration with respect to language code 
+ * The data for this table will come through sync from server master table 
  * 
  * @author Sreekar Chukka
  * @version 1.0

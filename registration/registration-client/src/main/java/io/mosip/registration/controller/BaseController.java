@@ -36,9 +36,11 @@ import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
+import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
 import io.mosip.registration.controller.reg.HeaderController;
+import io.mosip.registration.controller.reg.HomeController;
 import io.mosip.registration.controller.reg.PacketHandlerController;
 import io.mosip.registration.controller.reg.RegistrationPreviewController;
 import io.mosip.registration.device.fp.FingerprintFacade;
@@ -80,7 +82,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -147,7 +148,14 @@ public class BaseController {
 
 	@Autowired
 	private HeaderController headerController;
+	
+	@Autowired
+	private WebCameraController webCameraController;
+	
+	@Autowired
+	private HomeController homeController;
 
+	
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
@@ -256,6 +264,8 @@ public class BaseController {
 		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 		alert.showAndWait();
 	}
 
@@ -277,6 +287,8 @@ public class BaseController {
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 		alert.showAndWait();
 	}
 
@@ -381,6 +393,7 @@ public class BaseController {
 	 * Opens the home page screen.
 	 */
 	public void goToHomePage() {
+		webCameraController.closeWebcam();
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -418,6 +431,7 @@ public class BaseController {
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
+		webCameraController.closeWebcam();
 		clearRegistrationData();
 		clearOnboardData();
 		goToHomePage();
@@ -901,28 +915,45 @@ public class BaseController {
 			message += RegistrationConstants.NEW_LINE + RegistrationUIConstants.REMAP_CLICK_OK;
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
-			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
-
 			disableHomePage(true);
+			
+			Service<String> service = new Service<String>() {
+				@Override
+				protected Task<String> createTask() {
+					return new Task<String>() {
+
+						@Override
+						protected String call() {
+
+							packetHandlerController.getProgressIndicator().setVisible(true);
+							
+							
+							for (int i = 1; i <= 4; i++) {
+								/* starts the remap process */
+								centerMachineReMapService.handleReMapProcess(i);
+								this.updateProgress(i, 4);
+							}
+							LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
+									"center remap process completed");
+							return null;
+						}
+					};
+				}
+			};
+			packetHandlerController.getProgressIndicator().progressProperty().bind(service.progressProperty());
 
 			service.restart();
 
 			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 				@Override
 				public void handle(WorkerStateEvent t) {
-					service.reset();
-					disableHomePage(false);
-					packetHandlerController.getProgressIndicator().setVisible(false);
-
-					if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
-						generateAlert(RegistrationConstants.ALERT_INFORMATION,
-								RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
-						headerController.logoutCleanUp();
-					} else {
-						generateAlert(RegistrationConstants.ALERT_INFORMATION,
-								RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
-					}
-
+					handleRemapResponse(service);
+				}
+			});
+			service.setOnFailed(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent t) {
+					handleRemapResponse(service);
 				}
 			});
 
@@ -930,39 +961,27 @@ public class BaseController {
 		return isRemapped;
 	}
 
-	private void disableHomePage(boolean isDisabled) {
-		GridPane HomePageRoot = null;
-		try {
-			HomePageRoot = BaseController.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
-		} catch (IOException ioException) {
+	private void handleRemapResponse(Service<String> service) {
+		service.reset();
+		disableHomePage(false);
+		packetHandlerController.getProgressIndicator().setVisible(false);
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+		if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION,
+					RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+			headerController.logoutCleanUp();
+		} else {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION,
+					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
 		}
+	}
+	
+	private void disableHomePage(boolean isDisabled) {
 
-		HomePageRoot.setDisable(isDisabled);
+		if (null != homeController.getMainBox())
+			homeController.getMainBox().setDisable(isDisabled);
 
 	}
-
-	Service<String> service = new Service<String>() {
-		@Override
-		protected Task<String> createTask() {
-			return new Task<String>() {
-
-				@Override
-				protected String call() {
-
-					packetHandlerController.getProgressIndicator().setVisible(true);
-					for (int i = 1; i <= 4; i++) {
-						/* starts the remap process */
-						centerMachineReMapService.handleReMapProcess(i);
-						this.updateProgress(i, 4);
-					}
-
-					return null;
-				}
-			};
-		}
-	};
 
 	/**
 	 * Checks if is packets pending for EOD.

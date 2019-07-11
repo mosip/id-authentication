@@ -12,7 +12,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity Class for DocumentCategory.
+ * This Entity Class contains list of document categories[Proof Of Address, Proof Of Identity...] 
+ * which will be displayed in UI with respect to language code.
+ * The data for this table will come through sync from server master table 
  * 
  * @author Sreekar Chukka
  * @version 1.0

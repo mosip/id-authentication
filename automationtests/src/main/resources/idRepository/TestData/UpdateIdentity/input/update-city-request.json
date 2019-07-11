@@ -1,0 +1,26 @@
+{
+	"id": "mosip.id.update",
+	"request": {
+		"registrationId": "27847657360002520190205113339",
+
+		"identity": {
+		"UIN": 6738521981,
+        "city": [
+				{
+					"language": "eng",
+					"value": "MOROCCO"
+				},
+				{
+					"language": "ara",
+					"value": "المغرب"
+				},
+				{
+					"language": "fra",
+					"value": "MOROCCO"
+				}
+			]
+		}
+	},
+	"requesttime": "2018-02-05T06:12:25.288Z",
+	"version": "v1"
+}

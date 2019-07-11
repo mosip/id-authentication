@@ -13,7 +13,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.WordAndLanguageCodeID;
 
 /**
- * The Entity Class for blacklisted words.
+ * This Entity Class contains the list of words which were not allowed during Registration process 
+ * with respect to language code.
+ * The data for this table will come through sync from server master table
  * 
  * @author Sreekar Chukka
  * @since 1.0.0

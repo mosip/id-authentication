@@ -5,16 +5,17 @@ import java.util.List;
 import io.mosip.registration.entity.Gender;
 
 /**
- * DAO class for Gender
+ * This class is used to fetch the gender details from {@link Gender} table.
  * 
  * @author Brahmananda Reddy
  *
  */
 public interface GenderDAO {
+	
 	/**
-	 * method to fetch the genders
+	 * This method is used to fetch the gender details.
 	 * 
-	 * @return the{@link List} of gender
+	 * @return the list of gender
 	 */
 
 	List<Gender> getGenders();

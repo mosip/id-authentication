@@ -1,5 +1,6 @@
 package io.mosip.registration.service.config;
 
+import java.util.List;
 import java.util.Map;
 
 import io.mosip.registration.dto.ResponseDTO;
@@ -40,7 +41,7 @@ public interface JobConfigurationService {
 	ResponseDTO stopScheduler();
 
 	/**
-	 * To fetch the details of currently running job details
+	 * To fetch the details of currently running job
 	 * 
 	 * @return list of job names currently executing if success
 	 */
@@ -106,6 +107,23 @@ public interface JobConfigurationService {
 	 * 		Map contains the list of sync job names and the respective Job Object.
 	 */
 	Map<String, SyncJobDef> getActiveSyncJobMap();
+	
+	/**
+	 * It returns the offline Sync Job, which was fetched from DB.
+	 * 
+	 * @return 
+	 * 		List contains the list of sync job names .
+	 */
+	public List<String> getOfflineJobs();
+	
+	/**
+	 * It returns the Untagged Job, which was fetched from DB.
+	 * 
+	 * @return 
+	 * 		List contains the list of sync job names .
+	 */
+	public List<String> getUnTaggedJobs();
+
 	
 
 }

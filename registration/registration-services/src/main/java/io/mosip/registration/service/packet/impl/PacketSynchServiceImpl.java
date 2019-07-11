@@ -50,9 +50,11 @@ import io.mosip.registration.service.security.AESEncryptionService;
 import io.mosip.registration.service.sync.PacketSynchService;
 
 /**
- * This class invokes the external MOSIP service 'Packet Sync' to sync the packet ids, which are ready for upload to the server from client.   
- * The packet upload can't be done, without synching the packet ids to the server. 
- * While sending this request, the data would be encrypted using MOSIP public key and same can be decrypted at Server end using the respective private key.  
+ * This class invokes the external MOSIP service 'Packet Sync' to sync the
+ * packet ids, which are ready for upload to the server from client. The packet
+ * upload can't be done, without synching the packet ids to the server. While
+ * sending this request, the data would be encrypted using MOSIP public key and
+ * same can be decrypted at Server end using the respective private key.
  * 
  * @author saravanakumar gnanaguru
  *
@@ -65,7 +67,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 
 	@Autowired
 	protected AuditManagerService auditFactory;
-	
+
 	@Autowired
 	private AESEncryptionService aesEncryptionService;
 
@@ -73,7 +75,10 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.PacketSynchService#packetSync(java.util.List)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.sync.PacketSynchService#packetSync(java.util.
+	 * List)
 	 */
 	@Override
 	public String packetSync(List<PacketStatusDTO> packetsToBeSynched) throws RegBaseCheckedException {
@@ -90,7 +95,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 			if (!packetsToBeSynched.isEmpty()) {
 				for (PacketStatusDTO packetToBeSynch : packetsToBeSynched) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
-					syncDto.setLangCode(String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
+					syncDto.setLangCode(
+							String.valueOf(ApplicationContext.map().get(RegistrationConstants.PRIMARY_LANGUAGE)));
 					syncDto.setRegistrationId(packetToBeSynch.getFileName());
 					syncDto.setRegistrationType(packetToBeSynch.getPacketStatus().toUpperCase());
 					syncDto.setPacketHashValue(packetToBeSynch.getPacketHash());
@@ -105,8 +111,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				registrationPacketSyncDTO.setId(RegistrationConstants.PACKET_SYNC_STATUS_ID);
 				registrationPacketSyncDTO.setVersion(RegistrationConstants.PACKET_SYNC_VERSION);
 				responseDTO = syncPacketsToServer(
-						CryptoUtil.encodeBase64(
-								aesEncryptionService.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
+						CryptoUtil.encodeBase64(aesEncryptionService
+								.encrypt(javaObjectToJsonString(registrationPacketSyncDTO).getBytes())),
 						RegistrationConstants.JOB_TRIGGER_POINT_USER);
 			}
 			if (responseDTO.getSuccessResponseDTO() != null) {
@@ -134,7 +140,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				}
 				updateSyncStatus(synchedPackets);
 			} else {
-				syncErrorStatus=RegistrationConstants.SYNC_FAILURE;
+				syncErrorStatus = RegistrationConstants.SYNC_FAILURE;
 			}
 		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
@@ -150,29 +156,39 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		return syncErrorStatus;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.PacketSynchService#fetchPacketsToBeSynched()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.sync.PacketSynchService#fetchPacketsToBeSynched
+	 * ()
 	 */
 	@Override
 	public List<PacketStatusDTO> fetchPacketsToBeSynched() {
 		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
 		List<PacketStatusDTO> idsToBeSynched = new ArrayList<>();
-		List<Registration> packetsToBeSynched = syncRegistrationDAO
-				.fetchPacketsToUpload(RegistrationConstants.PACKET_STATUS_UPLOAD,RegistrationConstants.SERVER_STATUS_RESEND);
+		List<Registration> packetsToBeSynched = syncRegistrationDAO.fetchPacketsToUpload(
+				RegistrationConstants.PACKET_STATUS_UPLOAD, RegistrationConstants.SERVER_STATUS_RESEND);
 		packetsToBeSynched.forEach(reg -> {
-			PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
-			packetStatusDTO.setFileName(reg.getId());
-			packetStatusDTO.setPacketClientStatus(reg.getClientStatusCode());
-			packetStatusDTO.setClientStatusComments(reg.getClientStatusComments());
-			packetStatusDTO.setPacketServerStatus(reg.getServerStatusCode());
-			packetStatusDTO.setPacketPath(reg.getAckFilename());
-			packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
-			packetStatusDTO.setPacketStatus(reg.getStatusCode());
-			packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
-			packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
-			packetStatusDTO.setCreatedTime(new SimpleDateFormat("dd-MM-yyyy").format(reg.getCrDtime()));
-			idsToBeSynched.add(packetStatusDTO);
+			if (reg.getServerStatusCode() == null
+					|| (reg.getClientStatusTimestamp() != null && reg.getServerStatusTimestamp() != null
+							&& !(RegistrationConstants.SERVER_STATUS_RESEND.equalsIgnoreCase(reg.getServerStatusCode())
+									&& reg.getClientStatusTimestamp().after(reg.getServerStatusTimestamp())))) {
+
+				PacketStatusDTO packetStatusDTO = new PacketStatusDTO();
+				packetStatusDTO.setFileName(reg.getId());
+				packetStatusDTO.setPacketClientStatus(reg.getClientStatusCode());
+				packetStatusDTO.setClientStatusComments(reg.getClientStatusComments());
+				packetStatusDTO.setPacketServerStatus(reg.getServerStatusCode());
+				packetStatusDTO.setPacketPath(reg.getAckFilename());
+				packetStatusDTO.setUploadStatus(reg.getFileUploadStatus());
+				packetStatusDTO.setPacketStatus(reg.getStatusCode());
+				packetStatusDTO.setSupervisorStatus(reg.getClientStatusCode());
+				packetStatusDTO.setSupervisorComments(reg.getClientStatusComments());
+				packetStatusDTO.setCreatedTime(new SimpleDateFormat("dd-MM-yyyy").format(reg.getCrDtime()));
+				idsToBeSynched.add(packetStatusDTO);
+			}
 		});
 		return idsToBeSynched;
 	}
@@ -203,14 +219,14 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				}
 				successResponseDTO.setOtherAttributes(statusMap);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
-			} else if(response.get("errors") != null) {
+			} else if (response.get("errors") != null) {
 				List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 				errorResponseDTO.setMessage(response.get("errors").toString());
 				errorResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-						response.get("errors").toString());
+				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+						APPLICATION_ID, response.get("errors").toString());
 			}
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
@@ -288,23 +304,36 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 		return packetSync(packetsToBeSynched);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.service.sync.PacketSynchService#syncAllPackets()
 	 */
 	@Override
 	public void syncAllPackets() throws RegBaseCheckedException {
-		List<PacketStatusDTO> packetsToBeSynched = fetchPacketsToBeSynched();
-		packetSync(packetsToBeSynched);
-
+		List<PacketStatusDTO> idsToBeSynched = new ArrayList<>();
+		List<Registration> packetsToBeSynched = syncRegistrationDAO.fetchPacketsToUpload(
+				RegistrationConstants.PACKET_STATUS_UPLOAD, RegistrationConstants.SERVER_STATUS_RESEND);
+		if (null != packetsToBeSynched && !packetsToBeSynched.isEmpty()) {
+			for (Registration registration : packetsToBeSynched) {
+				idsToBeSynched.add(packetStatusDtoPreperation(registration));
+			}
+		}
+		if (!idsToBeSynched.isEmpty())
+			packetSync(idsToBeSynched);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.PacketSynchService#fetchSynchedPacket(java.lang.String)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.sync.PacketSynchService#fetchSynchedPacket(java
+	 * .lang.String)
 	 */
 	@Override
 	public Boolean fetchSynchedPacket(String rId) {
-		Registration reg = syncRegistrationDAO.getRegistrationById(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), rId);
+		Registration reg = syncRegistrationDAO
+				.getRegistrationById(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), rId);
 		return reg != null && !reg.getId().isEmpty();
 	}
 }

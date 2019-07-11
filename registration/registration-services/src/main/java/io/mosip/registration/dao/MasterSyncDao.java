@@ -18,7 +18,9 @@ import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.ValidDocument;
 
 /**
- * The Interface MasterSyncDao.
+ * This class is used to store the master data details like Location, gender,Registration center, 
+ * Document types,category etc., in the respective Databases. This class is also used to fetch any 
+ * of the master data details from the DB.
  *
  * @author Sreekar Chukka
  * @since 1.0.0
@@ -26,20 +28,22 @@ import io.mosip.registration.entity.ValidDocument;
 public interface MasterSyncDao {
 
 	/**
-	 * Gets the master sync status.
+	 * This method is used to fetch a job detail of a paticular job id.
 	 *
 	 * @param synccontrol
-	 *            the synccontrol
+	 *            the {@link SyncControl} entity
 	 * @return the master sync status
 	 */
 	public SyncControl syncJobDetails(String synccontrol);
 
 	/**
-	 * inserting master sync data into the database using entity.
+	 * All the master data such as Location, gender,Registration center, Document types,category etc., 
+	 * will be saved in the DB(These details will be getting from the MasterSync service)
 	 *
 	 * @param masterSyncDto
-	 *            the master sync dto
+	 *            All the master details will be available in the {@link MasterDataResponseDto}
 	 * @return the string
+	 * 			- Returns the Success or Error response
 	 */
 	public String save(MasterDataResponseDto masterSyncDto);
 
@@ -152,13 +156,29 @@ public interface MasterSyncDao {
 	 */
 	List<BiometricAttribute> getBiometricType(String langCode, List<String> biometricType);
 
+	/**
+	 * Get all the active languages
+	 * @return List of {@link Language}
+	 */
 	List<Language> getActiveLanguages();
 
+	/**
+	 * Get all the active genders
+	 * @return list of active {@link Gender}
+	 */
 	List<Gender> getGenders();
 
+	/**
+	 * Get all the active document category from the DB
+	 * @return List of active {@link DocumentCategory}
+	 */
 	List<DocumentCategory> getDocumentCategory();
 
 
+	/**
+	 * Get all the active locations from the DB
+	 * @return list of active {@link Location}
+	 */
 	List<Location> getLocationDetails();
 	
 

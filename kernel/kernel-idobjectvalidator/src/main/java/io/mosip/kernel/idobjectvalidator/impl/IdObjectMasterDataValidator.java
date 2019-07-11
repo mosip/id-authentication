@@ -131,15 +131,6 @@ public class IdObjectMasterDataValidator implements IdObjectValidator {
 		loadLocationDetails();
 		loadDocCategories();
 		loadDocTypes();
-		
-		//TODO sysout is added for logging purpose. need to be removed be end of Sprint 12
-		System.out.println("MasterData loaded:");
-		System.out.println(languageList);
-		System.out.println(genderMap);
-		System.out.println(locationHierarchyDetails);
-		System.out.println(locationDetails);
-		System.out.println(docCatMap);
-		System.out.println(docTypeMap);
 	}
 	
 	/* (non-Javadoc)

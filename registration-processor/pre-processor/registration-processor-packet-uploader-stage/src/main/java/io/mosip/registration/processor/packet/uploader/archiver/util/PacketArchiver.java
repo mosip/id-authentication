@@ -62,8 +62,7 @@ public class PacketArchiver {
 				
 				description = "Packet successfully archived for registrationId " + registrationId;
 				isTransactionSuccessful = true;
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, "PacketArchiver::archivePacket()::exit");
+				
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 						registrationId, description);
 			} else {
@@ -88,6 +87,8 @@ public class PacketArchiver {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId, ApiName.AUDIT);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "PacketArchiver::archivePacket()::exit");
 		return isTransactionSuccessful;
 	}
 

@@ -6,7 +6,7 @@ import java.util.List;
 import io.mosip.registration.entity.SyncTransaction;
 
 /**
- * To save and update batch process
+ * To save and update the Sync Transactions in the DB
  * 
  * @author Dinesh Ashokan
  * 

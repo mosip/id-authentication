@@ -61,18 +61,19 @@ public class Vid {
 	private LocalDateTime createdDTimes;
 
 	/** The value to hold updated By */
-	@Column(name = "upd_by")
+	@Column(name = "upd_by", nullable = true)
 	private String updatedBy;
 
 	/** The value to hold updated Time */
-	@Column(name = "upd_dtimes")
+	@Column(name = "upd_dtimes", nullable = true)
 	private LocalDateTime updatedDTimes;
 
 	/** The boolean of isDeleted */
+	@Column(nullable = true)
 	private boolean isDeleted;
 
 	/** The value to hold deleted DTimes */
-	@Column(name = "del_dtimes")
+	@Column(name = "del_dtimes", nullable = true)
 	private LocalDateTime deletedDTimes;
 
 }

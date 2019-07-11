@@ -3,8 +3,6 @@ package io.mosip.registration.processor.packet.upload.service.impl;
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,13 +12,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -40,10 +35,10 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.packet.service.dto.PacketReceiverResponseDTO;
@@ -101,8 +96,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	private static final String REG_SYNC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String SYNCSTATUSCOMMENT = "UIN Reactivation and Deactivation By External Resources";
-	private static final String UPLOADSTATUSCOMMENT = "RECEIVED";
-	private static final String EXTENSION_OF_FILE=".zip";
+	private static final String EXTENSION_OF_FILE = ".zip";
 
 	/*
 	 * (non-Javadoc)
@@ -111,27 +105,29 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 	 * SyncUploadEncryptionService#uploadUinPacket(java.io.File, java.lang.String,
 	 * java.lang.String)
 	 */
-	public PacketGeneratorResDto uploadUinPacket(String registartionId, String creationTime, String regType,byte[] packetZipBytes)
-			throws RegBaseCheckedException {
+	public PacketGeneratorResDto uploadUinPacket(String registartionId, String creationTime, String regType,
+			byte[] packetZipBytes) throws RegBaseCheckedException {
 		PacketGeneratorResDto packerGeneratorResDto = new PacketGeneratorResDto();
 
 		String syncStatus = "";
 
 		InputStream decryptedFileStream = null;
 		try {
-			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "SyncUploadEncryptionServiceImpl ::uploadUinPacket()::entry");
 			decryptedFileStream = new ByteArrayInputStream(packetZipBytes);
 
-			byte[] encryptedbyte=encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId, creationTime);
+			byte[] encryptedbyte = encryptorUtil.encryptUinUpdatePacket(decryptedFileStream, registartionId,
+					creationTime);
 			ByteArrayResource contentsAsResource = new ByteArrayResource(encryptedbyte) {
-		        @Override
-		        public String getFilename() {
-		            return registartionId+EXTENSION_OF_FILE; 
-		        }
-		    };
+				@Override
+				public String getFilename() {
+					return registartionId + EXTENSION_OF_FILE;
+				}
+			};
 
-			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId, regType, encryptedbyte,creationTime);
-			
+			RegSyncResponseDTO regSyncResponseDTO = packetSync(registartionId, regType, encryptedbyte, creationTime);
+
 			if (regSyncResponseDTO != null) {
 				List<SyncResponseDto> synList = regSyncResponseDTO.getResponse();
 				if (synList != null) {
@@ -140,7 +136,9 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 				}
 			}
 			if (SUCCESS.equalsIgnoreCase(syncStatus)) {
-
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registartionId,
+						"Packet Generator sync successfull");
 				PacketReceiverResponseDTO packetReceiverResponseDTO = null;
 				LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 				map.add("file", contentsAsResource);
@@ -148,23 +146,36 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 				headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 				HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
 						map, headers);
+
 				String result = (String) restClientService.postApi(ApiName.PACKETRECEIVER, "", "", requestEntity,
 						String.class);
 				if (result != null) {
 					packetReceiverResponseDTO = gson.fromJson(result, PacketReceiverResponseDTO.class);
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registartionId,
+							"SyncUploadEncryptionServiceImpl::uploadUinPacket()::Packet receiver service  call ended with response data : "
+									+ JsonUtil.objectMapperObjectToJson(packetReceiverResponseDTO));
+
 					String uploadStatus = packetReceiverResponseDTO.getResponse().getStatus();
 					packerGeneratorResDto.setRegistrationId(registartionId);
 					if (uploadStatus.equalsIgnoreCase(RegistrationStatusCode.PROCESSING.toString())) {
 						packerGeneratorResDto.setStatus(uploadStatus);
-					} else if(uploadStatus.contains(PACKET_RECEIVED)){
+					} else if (uploadStatus.contains(PACKET_RECEIVED)) {
 						packerGeneratorResDto.setStatus(SUCCESS);
-					}else {
+						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registartionId,
+								"Packet Generator packet created and uploaded::success");
+					} else {
 						packerGeneratorResDto.setStatus(uploadStatus);
 					}
 					packerGeneratorResDto.setMessage("Packet created and uploaded");
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), registartionId,
+							packerGeneratorResDto.getMessage());
+
 					return packerGeneratorResDto;
 				}
-				
+
 			}
 
 		} catch (FileNotFoundException e) {
@@ -221,16 +232,17 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			RegistrationSyncRequestDTO registrationSyncRequestDTO = new RegistrationSyncRequestDTO();
 			List<SyncRegistrationDto> syncDtoList = new ArrayList<>();
 			SyncRegistrationDto syncDto = new SyncRegistrationDto();
-			
+
 			// Calculate HashSequense for the enryptedUinZipFile file
 			HMACUtils.update(enryptedUinZipFile);
 			String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
-			
-			//Prepare RegistrationSyncRequestDTO 
+
+			// Prepare RegistrationSyncRequestDTO
 			registrationSyncRequestDTO.setId(env.getProperty(REG_SYNC_SERVICE_ID));
 			registrationSyncRequestDTO.setVersion(env.getProperty(REG_SYNC_APPLICATION_VERSION));
-			registrationSyncRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-			
+			registrationSyncRequestDTO
+					.setRequesttime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+
 			syncDto.setLangCode("eng");
 			syncDto.setRegistrationId(regId);
 			syncDto.setSyncType(regType);
@@ -238,25 +250,35 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			syncDto.setPacketSize(BigInteger.valueOf(enryptedUinZipFile.length));
 			syncDto.setSupervisorStatus(SupervisorStatus.APPROVED.toString());
 			syncDto.setSupervisorComment(SYNCSTATUSCOMMENT);
-			
+
 			syncDtoList.add(syncDto);
 			registrationSyncRequestDTO.setRequest(syncDtoList);
-			
-			String requestObject = encryptorUtil.encrypt(JsonUtils.javaObjectToJsonString(registrationSyncRequestDTO).getBytes(), regId, creationTime);
-			
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId,
+					"SyncUploadEncryptionServiceImpl::packetSync()::Sync service call started with request data : "
+							+ JsonUtil.objectMapperObjectToJson(registrationSyncRequestDTO));
+
+			String requestObject = encryptorUtil.encrypt(
+					JsonUtils.javaObjectToJsonString(registrationSyncRequestDTO).getBytes(), regId, creationTime);
+
 			String centerId = regId.substring(0, centerIdLength);
 			String machineId = regId.substring(centerIdLength, machineIdLength);
 			String refId = centerId + "_" + machineId;
-			
+
 			LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 			headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			headers.add("Center-Machine-RefId", refId);
 			headers.add("timestamp", creationTime);
-			
+
 			HttpEntity<Object> requestEntity = new HttpEntity<Object>(javaObjectToJsonString(requestObject), headers);
-			String response = (String) restClientService.postApi(ApiName.SYNCSERVICE, "", "", requestEntity, String.class,
-					MediaType.APPLICATION_JSON);
+			String response = (String) restClientService.postApi(ApiName.SYNCSERVICE, "", "", requestEntity,
+					String.class, MediaType.APPLICATION_JSON);
 			regSyncResponseDTO = new Gson().fromJson(response, RegSyncResponseDTO.class);
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId,
+					"SyncUploadEncryptionServiceImpl::packetSync()::Sync service call ended with response data : "
+							+ JsonUtil.objectMapperObjectToJson(regSyncResponseDTO));
+
 		} catch (FileNotFoundException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					regId,
@@ -269,7 +291,7 @@ public class SyncUploadEncryptionServiceImpl implements SyncUploadEncryptionServ
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_API_RESOURCE_NOT_AVAILABLE, e);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException | JsonProcessingException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_INVALID_KEY_ILLEGAL_ARGUMENT, e);
-		}  
+		}
 		return regSyncResponseDTO;
 	}
 

@@ -1,0 +1,2009 @@
+<html>
+<head>
+<title>TestNG:  Kernel Tests</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>Kernel Tests</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>386/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Fri Jul 05 17:04:24 IST 2019</td>
+</tr>
+<tr><td>Total time:</td><td>610 seconds (610836 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_FetchLicenseKeyPermissions_invalid_lincenseKey()'><b>Kernel_FetchLicenseKeyPermissions_invalid_lincenseKey</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_FetchLicenseKeyPermissions_invalid_lincenseKey</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_FetchLicenseKeyPermissions_invalid_tspId()'><b>Kernel_FetchLicenseKeyPermissions_invalid_tspId</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_FetchLicenseKeyPermissions_invalid_tspId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_FetchLicenseKeyPermissions_response_time()'><b>Kernel_FetchLicenseKeyPermissions_response_time</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_FetchLicenseKeyPermissions_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions()'><b>Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_GenerateLicenseKey_invalid_licenseExpiryTime_generateLicenceKey()'><b>Kernel_GenerateLicenseKey_invalid_licenseExpiryTime_generateLicenceKey</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_GenerateLicenseKey_invalid_licenseExpiryTime_generateLicenceKey</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_GenerateLicenseKey_invalid_timeFormat2()'><b>Kernel_GenerateLicenseKey_invalid_timeFormat2</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_GenerateLicenseKey_invalid_timeFormat2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_GenerateLicenseKey_invalid_tspId_generateLicenceKey()'><b>Kernel_GenerateLicenseKey_invalid_tspId_generateLicenceKey</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_GenerateLicenseKey_invalid_tspId_generateLicenceKey</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_GenerateLicenseKey_response_time()'><b>Kernel_GenerateLicenseKey_response_time</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_GenerateLicenseKey_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_GenerateLicenseKey_smoke_generateLicenceKey()'><b>Kernel_GenerateLicenseKey_smoke_generateLicenceKey</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_GenerateLicenseKey_smoke_generateLicenceKey</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_DOB_lessThanAYear()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_DOB_lessThanAYear</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_DOB_lessThanAYear</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_ADL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_ADL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_ADL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_ADL_true()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_ADL_true</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_ADL_true</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_CHL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_CHL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_CHL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_CHL_True()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_CHL_True</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_FR_CHL_True</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_ADL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_ADL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_ADL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_ADL_true()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_ADL_true</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_ADL_true</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_CHL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_CHL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_CHL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_CHL_true()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_CHL_true</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_FLE_NFR_CHL_true</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_Future_date_as_DOB()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_Future_date_as_DOB</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_Future_date_as_DOB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_ADL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_ADL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_ADL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_ADL_True()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_ADL_True</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_ADL_True</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_CHL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_CHL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_MLE_FR_CHL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_ADL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_ADL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_ADL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_ADL_True()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_ADL_True</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_ADL_True</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_CHL_False()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_CHL_False</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_CHL_False</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_CHL_True()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_CHL_True</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_MLE_NFR_CHL_True</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_invalid_biometricAvailable()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_invalid_biometricAvailable</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_invalid_biometricAvailable</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_invalid_dateofbirth()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_invalid_dateofbirth</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_invalid_dateofbirth</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_invalid_genderCode()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_invalid_genderCode</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_invalid_genderCode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_invalid_individualTypeCode()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_invalid_individualTypeCode</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_invalid_individualTypeCode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_response_time()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_response_time</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetApplicantType.Kernel_GetApplicantType_kernel_GetApplicantType_smoke()'><b>Kernel_GetApplicantType_kernel_GetApplicantType_smoke</b><br>Test class: io.mosip.kernel.tests.GetApplicantType (Kernel_GetApplicantType_kernel_GetApplicantType_smoke)<br>Parameters: Kernel_GetApplicantType_kernel_GetApplicantType_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetApplicantType@52e677af</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDeviceHistory.Kernel_GetDeviceHistory_invalid_effdatetimes()'><b>Kernel_GetDeviceHistory_invalid_effdatetimes</b><br>Test class: io.mosip.kernel.tests.GetDeviceHistory (Kernel_GetDeviceHistory_smoke_1)<br>Parameters: Kernel_GetDeviceHistory_invalid_effdatetimes</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDeviceHistory@35083305</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDeviceHistory.Kernel_GetDeviceHistory_invalid_effdatetimes_format_2()'><b>Kernel_GetDeviceHistory_invalid_effdatetimes_format_2</b><br>Test class: io.mosip.kernel.tests.GetDeviceHistory (Kernel_GetDeviceHistory_smoke_1)<br>Parameters: Kernel_GetDeviceHistory_invalid_effdatetimes_format_2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDeviceHistory@35083305</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDeviceHistory.Kernel_GetDeviceHistory_invalid_effdatetimes_format_3()'><b>Kernel_GetDeviceHistory_invalid_effdatetimes_format_3</b><br>Test class: io.mosip.kernel.tests.GetDeviceHistory (Kernel_GetDeviceHistory_smoke_1)<br>Parameters: Kernel_GetDeviceHistory_invalid_effdatetimes_format_3</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDeviceHistory@35083305</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDeviceHistory.Kernel_GetDeviceHistory_invalid_id()'><b>Kernel_GetDeviceHistory_invalid_id</b><br>Test class: io.mosip.kernel.tests.GetDeviceHistory (Kernel_GetDeviceHistory_smoke_1)<br>Parameters: Kernel_GetDeviceHistory_invalid_id</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDeviceHistory@35083305</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDeviceHistory.Kernel_GetDeviceHistory_invalid_langcode()'><b>Kernel_GetDeviceHistory_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.GetDeviceHistory (Kernel_GetDeviceHistory_smoke_1)<br>Parameters: Kernel_GetDeviceHistory_invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDeviceHistory@35083305</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDeviceHistory.Kernel_GetDeviceHistory_response_time()'><b>Kernel_GetDeviceHistory_response_time</b><br>Test class: io.mosip.kernel.tests.GetDeviceHistory (Kernel_GetDeviceHistory_smoke_1)<br>Parameters: Kernel_GetDeviceHistory_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDeviceHistory@35083305</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDeviceHistory.Kernel_GetDeviceHistory_smoke_1()'><b>Kernel_GetDeviceHistory_smoke_1</b><br>Test class: io.mosip.kernel.tests.GetDeviceHistory (Kernel_GetDeviceHistory_smoke_1)<br>Parameters: Kernel_GetDeviceHistory_smoke_1</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.GetDeviceHistory@35083305</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_invalid_applicantId()'><b>Kernel_GetDocType_DocCatByAppID_invalid_applicantId</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_invalid_applicantId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_invalid_languages()'><b>Kernel_GetDocType_DocCatByAppID_invalid_languages</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_invalid_languages</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_langcode_threeLanguageCodes()'><b>Kernel_GetDocType_DocCatByAppID_langcode_threeLanguageCodes</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_langcode_threeLanguageCodes</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_langcode_twoLanguageCodes()'><b>Kernel_GetDocType_DocCatByAppID_langcode_twoLanguageCodes</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_langcode_twoLanguageCodes</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_responsetime()'><b>Kernel_GetDocType_DocCatByAppID_responsetime</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_responsetime</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_smoke()'><b>Kernel_GetDocType_DocCatByAppID_smoke</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_validatingRequest()'><b>Kernel_GetDocType_DocCatByAppID_validatingRequest</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_validatingRequest</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByAppID.Kernel_GetDocType_DocCatByAppID_validatingResponse()'><b>Kernel_GetDocType_DocCatByAppID_validatingResponse</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByAppID (Kernel_GetDocType_DocCatByAppID_validatingResponse)<br>Parameters: Kernel_GetDocType_DocCatByAppID_validatingResponse</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByAppID@8e0379d</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByLangCode.Kernel_GetDocType_DocCatByLangCode_invalid_languagecode()'><b>Kernel_GetDocType_DocCatByLangCode_invalid_languagecode</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByLangCode (Kernel_GetDocType_DocCatByLangCode_smoke)<br>Parameters: Kernel_GetDocType_DocCatByLangCode_invalid_languagecode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByLangCode@341b80b2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByLangCode.Kernel_GetDocType_DocCatByLangCode_lang_code_ara()'><b>Kernel_GetDocType_DocCatByLangCode_lang_code_ara</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByLangCode (Kernel_GetDocType_DocCatByLangCode_smoke)<br>Parameters: Kernel_GetDocType_DocCatByLangCode_lang_code_ara</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByLangCode@341b80b2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByLangCode.Kernel_GetDocType_DocCatByLangCode_lang_code_fra()'><b>Kernel_GetDocType_DocCatByLangCode_lang_code_fra</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByLangCode (Kernel_GetDocType_DocCatByLangCode_smoke)<br>Parameters: Kernel_GetDocType_DocCatByLangCode_lang_code_fra</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByLangCode@341b80b2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetDocTypeDocCatByLangCode.Kernel_GetDocType_DocCatByLangCode_smoke()'><b>Kernel_GetDocType_DocCatByLangCode_smoke</b><br>Test class: io.mosip.kernel.tests.GetDocTypeDocCatByLangCode (Kernel_GetDocType_DocCatByLangCode_smoke)<br>Parameters: Kernel_GetDocType_DocCatByLangCode_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetDocTypeDocCatByLangCode@341b80b2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_city()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_city</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_city</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_country()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_country</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_country</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_localAuthority()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_localAuthority</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_localAuthority</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_provinace()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_provinace</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_provinace</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_region()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_region</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_By_region</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_invalid_langcode()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_invalid_locationcode()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_invalid_locationcode</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_invalid_locationcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_response_time()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_response_time</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode.Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke()'><b>Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke</b><br>Test class: io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode (Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke)<br>Parameters: Kernel_GetImmediateChildrenByLocCodeAndLangCode_smoke</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.GetImmediateChildrenByLocCodeAndLangCode@55a1c291</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetIndividualType.Kernel_GetIndividualType_smoke()'><b>Kernel_GetIndividualType_smoke</b><br>Test class: io.mosip.kernel.tests.GetIndividualType (Kernel_GetIndividualType_smoke)<br>Parameters: Kernel_GetIndividualType_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetIndividualType@2145433b</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetListOfRoles.Kernel_GetListOfRoles_smoke()'><b>Kernel_GetListOfRoles_smoke</b><br>Test class: io.mosip.kernel.tests.GetListOfRoles (Kernel_GetListOfRoles_smoke)<br>Parameters: Kernel_GetListOfRoles_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetListOfRoles@2890c451</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_TimeStamp_morethan_closingTime()'><b>Kernel_GetRegCenterByID_TimeStamp_morethan_closingTime</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_TimeStamp_morethan_closingTime</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_TimeStamp_onHoliday()'><b>Kernel_GetRegCenterByID_TimeStamp_onHoliday</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_TimeStamp_onHoliday</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_closingTime()'><b>Kernel_GetRegCenterByID_timestamp_closingTime</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_closingTime</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_format_2()'><b>Kernel_GetRegCenterByID_timestamp_format_2</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_format_2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_format_3()'><b>Kernel_GetRegCenterByID_timestamp_format_3</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_format_3</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_invalid_id()'><b>Kernel_GetRegCenterByID_timestamp_invalid_id</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_invalid_id</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_invalid_langCode()'><b>Kernel_GetRegCenterByID_timestamp_invalid_langCode</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_invalid_langCode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_invalid_timestamp()'><b>Kernel_GetRegCenterByID_timestamp_invalid_timestamp</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_invalid_timestamp</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_lessThan_openeningTime()'><b>Kernel_GetRegCenterByID_timestamp_lessThan_openeningTime</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_lessThan_openeningTime</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_openeningTime()'><b>Kernel_GetRegCenterByID_timestamp_openeningTime</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_openeningTime</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_response_time()'><b>Kernel_GetRegCenterByID_timestamp_response_time</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegCenterByIDTimestamp.Kernel_GetRegCenterByID_timestamp_smoke()'><b>Kernel_GetRegCenterByID_timestamp_smoke</b><br>Test class: io.mosip.kernel.tests.GetRegCenterByIDTimestamp (Kernel_GetRegCenterByID_timestamp_smoke)<br>Parameters: Kernel_GetRegCenterByID_timestamp_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegCenterByIDTimestamp@40e6dfe1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_2()'><b>Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_2</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_3()'><b>Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_3</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_effdatetimes_format_3</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_invalid_deviceid()'><b>Kernel_GetRegistrationCenterDeviceHistory_invalid_deviceid</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_invalid_deviceid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_invalid_effdatetimes()'><b>Kernel_GetRegistrationCenterDeviceHistory_invalid_effdatetimes</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_invalid_effdatetimes</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_invalid_regcenterid()'><b>Kernel_GetRegistrationCenterDeviceHistory_invalid_regcenterid</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_invalid_regcenterid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_response_time()'><b>Kernel_GetRegistrationCenterDeviceHistory_response_time</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_smoke_2()'><b>Kernel_GetRegistrationCenterDeviceHistory_smoke_2</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_smoke_2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory.Kernel_GetRegistrationCenterDeviceHistory_updatedDate()'><b>Kernel_GetRegistrationCenterDeviceHistory_updatedDate</b><br>Test class: io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory (Kernel_GetRegistrationCenterDeviceHistory_updatedDate)<br>Parameters: Kernel_GetRegistrationCenterDeviceHistory_updatedDate</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRegistrationCenterDeviceHistory@1b083826</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUsersBasedOnRegCenter.Kernel_GetusersBasedOnRegCenter_invalid_regid()'><b>Kernel_GetusersBasedOnRegCenter_invalid_regid</b><br>Test class: io.mosip.kernel.tests.GetUsersBasedOnRegCenter (Kernel_GetusersBasedOnRegCenter_smoke)<br>Parameters: Kernel_GetusersBasedOnRegCenter_invalid_regid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUsersBasedOnRegCenter@482cd91f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUsersBasedOnRegCenter.Kernel_GetusersBasedOnRegCenter_response_time()'><b>Kernel_GetusersBasedOnRegCenter_response_time</b><br>Test class: io.mosip.kernel.tests.GetUsersBasedOnRegCenter (Kernel_GetusersBasedOnRegCenter_smoke)<br>Parameters: Kernel_GetusersBasedOnRegCenter_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUsersBasedOnRegCenter@482cd91f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUsersBasedOnRegCenter.Kernel_GetusersBasedOnRegCenter_smoke()'><b>Kernel_GetusersBasedOnRegCenter_smoke</b><br>Test class: io.mosip.kernel.tests.GetUsersBasedOnRegCenter (Kernel_GetusersBasedOnRegCenter_smoke)<br>Parameters: Kernel_GetusersBasedOnRegCenter_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUsersBasedOnRegCenter@482cd91f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_MapLicenseKeyPermission_invalid_licenseKey()'><b>Kernel_MapLicenseKeyPermission_invalid_licenseKey</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_MapLicenseKeyPermission_invalid_licenseKey</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_MapLicenseKeyPermission_invalid_permissions()'><b>Kernel_MapLicenseKeyPermission_invalid_permissions</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_MapLicenseKeyPermission_invalid_permissions</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_MapLicenseKeyPermission_invalid_tspId()'><b>Kernel_MapLicenseKeyPermission_invalid_tspId</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_MapLicenseKeyPermission_invalid_tspId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_MapLicenseKeyPermission_licenseKey_missing()'><b>Kernel_MapLicenseKeyPermission_licenseKey_missing</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_MapLicenseKeyPermission_licenseKey_missing</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_MapLicenseKeyPermission_response_time()'><b>Kernel_MapLicenseKeyPermission_response_time</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_MapLicenseKeyPermission_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_MapLicenseKeyPermission_smoke()'><b>Kernel_MapLicenseKeyPermission_smoke</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_MapLicenseKeyPermission_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.LicenseKeyController.Kernel_MapLicenseKeyPermission_tspId_missing()'><b>Kernel_MapLicenseKeyPermission_tspId_missing</b><br>Test class: io.mosip.kernel.tests.LicenseKeyController (Kernel_FetchLicenseKeyPermissions_smoke_FetchLicenseKeyPermissions)<br>Parameters: Kernel_MapLicenseKeyPermission_tspId_missing</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.LicenseKeyController@123f1134</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncConfigurations.Kernel_SyncConfigurations_smoke()'><b>Kernel_SyncConfigurations_smoke</b><br>Test class: io.mosip.kernel.tests.SyncConfigurations (Kernel_SyncConfigurations_smoke)<br>Parameters: Kernel_SyncConfigurations_smoke</td>
+<td></td>
+<td>3</td>
+<td>io.mosip.kernel.tests.SyncConfigurations@2b546384</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINGeneration.Kernel_UINGeneration_smoke()'><b>Kernel_UINGeneration_smoke</b><br>Test class: io.mosip.kernel.tests.UINGeneration (Kernel_UINGeneration_smoke)<br>Parameters: Kernel_UINGeneration_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UINGeneration@2c34f934</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusCheck.Kernel_UINStatusCheck_smoke()'><b>Kernel_UINStatusCheck_smoke</b><br>Test class: io.mosip.kernel.tests.UINStatusCheck (Kernel_UINStatusCheck_smoke)<br>Parameters: Kernel_UINStatusCheck_smoke</td>
+<td></td>
+<td>20</td>
+<td>io.mosip.kernel.tests.UINStatusCheck@12d3a4e9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusUpdate.Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued()'><b>Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued</b><br>Test class: io.mosip.kernel.tests.UINStatusUpdate (Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned)<br>Parameters: Kernel_UINStatusUpdate_UIN_Status_AssignedToIssued</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UINStatusUpdate@240237d2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusUpdate.Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused()'><b>Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused</b><br>Test class: io.mosip.kernel.tests.UINStatusUpdate (Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned)<br>Parameters: Kernel_UINStatusUpdate_UIN_Status_AssignedToUnused</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UINStatusUpdate@240237d2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusUpdate.Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned()'><b>Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned</b><br>Test class: io.mosip.kernel.tests.UINStatusUpdate (Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned)<br>Parameters: Kernel_UINStatusUpdate_UIN_Status_IssuedToAssigned</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UINStatusUpdate@240237d2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusUpdate.Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned()'><b>Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned</b><br>Test class: io.mosip.kernel.tests.UINStatusUpdate (Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned)<br>Parameters: Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned</td>
+<td></td>
+<td>16</td>
+<td>io.mosip.kernel.tests.UINStatusUpdate@240237d2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusUpdate.Kernel_UINStatusUpdate_UIN_Status_empty_status()'><b>Kernel_UINStatusUpdate_UIN_Status_empty_status</b><br>Test class: io.mosip.kernel.tests.UINStatusUpdate (Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned)<br>Parameters: Kernel_UINStatusUpdate_UIN_Status_empty_status</td>
+<td></td>
+<td>15</td>
+<td>io.mosip.kernel.tests.UINStatusUpdate@240237d2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusUpdate.Kernel_UINStatusUpdate_UIN_Status_empty_uin()'><b>Kernel_UINStatusUpdate_UIN_Status_empty_uin</b><br>Test class: io.mosip.kernel.tests.UINStatusUpdate (Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned)<br>Parameters: Kernel_UINStatusUpdate_UIN_Status_empty_uin</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UINStatusUpdate@240237d2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UINStatusUpdate.Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused()'><b>Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused</b><br>Test class: io.mosip.kernel.tests.UINStatusUpdate (Kernel_UINStatusUpdate_UIN_Status_UnusedToAssigned)<br>Parameters: Kernel_UINStatusUpdate_UIN_Status_smoke_IssuedToUnused</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UINStatusUpdate@240237d2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateGenderByName.Kernel_ValidateGenderByName_Name_Female()'><b>Kernel_ValidateGenderByName_Name_Female</b><br>Test class: io.mosip.kernel.tests.ValidateGenderByName (Kernel_ValidateGenderByName_smoke_Male)<br>Parameters: Kernel_ValidateGenderByName_Name_Female</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateGenderByName@25a65b77</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateGenderByName.Kernel_ValidateGenderByName_invalid_gendername()'><b>Kernel_ValidateGenderByName_invalid_gendername</b><br>Test class: io.mosip.kernel.tests.ValidateGenderByName (Kernel_ValidateGenderByName_smoke_Male)<br>Parameters: Kernel_ValidateGenderByName_invalid_gendername</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateGenderByName@25a65b77</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateGenderByName.Kernel_ValidateGenderByName_response_time()'><b>Kernel_ValidateGenderByName_response_time</b><br>Test class: io.mosip.kernel.tests.ValidateGenderByName (Kernel_ValidateGenderByName_smoke_Male)<br>Parameters: Kernel_ValidateGenderByName_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateGenderByName@25a65b77</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateGenderByName.Kernel_ValidateGenderByName_smoke_Male()'><b>Kernel_ValidateGenderByName_smoke_Male</b><br>Test class: io.mosip.kernel.tests.ValidateGenderByName (Kernel_ValidateGenderByName_smoke_Male)<br>Parameters: Kernel_ValidateGenderByName_smoke_Male</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateGenderByName@25a65b77</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateLocationByName.Kernel_ValidateLocationByName_Region()'><b>Kernel_ValidateLocationByName_Region</b><br>Test class: io.mosip.kernel.tests.ValidateLocationByName (Kernel_ValidateLocationByName_smoke_country)<br>Parameters: Kernel_ValidateLocationByName_Region</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateLocationByName@2ed0fbae</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateLocationByName.Kernel_ValidateLocationByName_city()'><b>Kernel_ValidateLocationByName_city</b><br>Test class: io.mosip.kernel.tests.ValidateLocationByName (Kernel_ValidateLocationByName_smoke_country)<br>Parameters: Kernel_ValidateLocationByName_city</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateLocationByName@2ed0fbae</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateLocationByName.Kernel_ValidateLocationByName_invalid_locationname()'><b>Kernel_ValidateLocationByName_invalid_locationname</b><br>Test class: io.mosip.kernel.tests.ValidateLocationByName (Kernel_ValidateLocationByName_smoke_country)<br>Parameters: Kernel_ValidateLocationByName_invalid_locationname</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateLocationByName@2ed0fbae</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateLocationByName.Kernel_ValidateLocationByName_localAuthority()'><b>Kernel_ValidateLocationByName_localAuthority</b><br>Test class: io.mosip.kernel.tests.ValidateLocationByName (Kernel_ValidateLocationByName_smoke_country)<br>Parameters: Kernel_ValidateLocationByName_localAuthority</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateLocationByName@2ed0fbae</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateLocationByName.Kernel_ValidateLocationByName_province()'><b>Kernel_ValidateLocationByName_province</b><br>Test class: io.mosip.kernel.tests.ValidateLocationByName (Kernel_ValidateLocationByName_smoke_country)<br>Parameters: Kernel_ValidateLocationByName_province</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateLocationByName@2ed0fbae</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateLocationByName.Kernel_ValidateLocationByName_response_time()'><b>Kernel_ValidateLocationByName_response_time</b><br>Test class: io.mosip.kernel.tests.ValidateLocationByName (Kernel_ValidateLocationByName_smoke_country)<br>Parameters: Kernel_ValidateLocationByName_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateLocationByName@2ed0fbae</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.ValidateLocationByName.Kernel_ValidateLocationByName_smoke_country()'><b>Kernel_ValidateLocationByName_smoke_country</b><br>Test class: io.mosip.kernel.tests.ValidateLocationByName (Kernel_ValidateLocationByName_smoke_country)<br>Parameters: Kernel_ValidateLocationByName_smoke_country</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.ValidateLocationByName@2ed0fbae</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_invalid_otp_length()'><b>Kernel_otpGenerate_invalid_otp_length</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_invalid_otp_length</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_key_empty()'><b>Kernel_otpGenerate_key_empty</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_key_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_key_frozen()'><b>Kernel_otpGenerate_key_frozen</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_key_frozen</td>
+<td></td>
+<td>1</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_key_length_2()'><b>Kernel_otpGenerate_key_length_2</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_key_length_2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_key_length_3()'><b>Kernel_otpGenerate_key_length_3</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_key_length_3</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_key_length_64()'><b>Kernel_otpGenerate_key_length_64</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_key_length_64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_key_length_65()'><b>Kernel_otpGenerate_key_length_65</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_key_length_65</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_key_regenrate_otp()'><b>Kernel_otpGenerate_key_regenrate_otp</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_key_regenrate_otp</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_response_time()'><b>Kernel_otpGenerate_response_time</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_smoke()'><b>Kernel_otpGenerate_smoke</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OtpGenerate.Kernel_otpGenerate_used_otp()'><b>Kernel_otpGenerate_used_otp</b><br>Test class: io.mosip.kernel.tests.OtpGenerate (Kernel_otpGenerate_used_otp)<br>Parameters: Kernel_otpGenerate_used_otp</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OtpGenerate@7d68ef40</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_allValid_smoke()'><b>kernel_AuditLog_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_allValid_smoke_removing_optional_fields()'><b>kernel_AuditLog_allValid_smoke_removing_optional_fields</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: allValid_smoke_removing_optional_fields</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_actionTimeStamp_diff_format()'><b>kernel_AuditLog_invalid_actionTimeStamp_diff_format</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_actionTimeStamp_diff_format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationId_above64()'><b>kernel_AuditLog_invalid_applicationId_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationId_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationId_blank()'><b>kernel_AuditLog_invalid_applicationId_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationId_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationName_above128()'><b>kernel_AuditLog_invalid_applicationName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_applicationName_blank()'><b>kernel_AuditLog_invalid_applicationName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_applicationName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_createdBy_Removing required Data()'><b>kernel_AuditLog_invalid_createdBy_Removing required Data</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_createdBy_Removing required Data</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_createdBy_above256()'><b>kernel_AuditLog_invalid_createdBy_above256</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_createdBy_above256</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_createdBy_blank()'><b>kernel_AuditLog_invalid_createdBy_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_createdBy_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventId_above64()'><b>kernel_AuditLog_invalid_eventId_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventId_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventId_blank()'><b>kernel_AuditLog_invalid_eventId_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventId_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventName_above128()'><b>kernel_AuditLog_invalid_eventName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventName_blank()'><b>kernel_AuditLog_invalid_eventName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventType_above64()'><b>kernel_AuditLog_invalid_eventType_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventType_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_eventType_blank()'><b>kernel_AuditLog_invalid_eventType_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_eventType_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostIp_above16()'><b>kernel_AuditLog_invalid_hostIp_above16</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostIp_above16</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostIp_blank()'><b>kernel_AuditLog_invalid_hostIp_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostIp_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostName_above128()'><b>kernel_AuditLog_invalid_hostName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_hostName_blank()'><b>kernel_AuditLog_invalid_hostName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_hostName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_idType_above64()'><b>kernel_AuditLog_invalid_idType_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_idType_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_idType_blank()'><b>kernel_AuditLog_invalid_idType_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_idType_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_id_above64()'><b>kernel_AuditLog_invalid_id_above64</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_id_above64</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_id_blank()'><b>kernel_AuditLog_invalid_id_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_id_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_requestBody_format()'><b>kernel_AuditLog_invalid_requestBody_format</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_requestBody_format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserId_above256()'><b>kernel_AuditLog_invalid_sessionUserId_above256</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserId_above256</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserId_blank()'><b>kernel_AuditLog_invalid_sessionUserId_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserId_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserName_above128()'><b>kernel_AuditLog_invalid_sessionUserName_above128</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserName_above128</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.AuditLog.kernel_AuditLog_invalid_sessionUserName_blank()'><b>kernel_AuditLog_invalid_sessionUserName_blank</b><br>Test class: io.mosip.kernel.tests.AuditLog (kernel_AuditLog_invalid_sessionUserName_blank)<br>Parameters: invalid_sessionUserName_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.AuditLog@57d5872c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_MachineId_length_11()'><b>kernel_CentetMachineUserMappingToMasterData_MachineId_length_11</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_MachineId_length_11</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_UserId_length_37()'><b>kernel_CentetMachineUserMappingToMasterData_UserId_length_37</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_UserId_length_37</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_centerId_length_11()'><b>kernel_CentetMachineUserMappingToMasterData_centerId_length_11</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_centerId_length_11</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_empty_IsActive()'><b>kernel_CentetMachineUserMappingToMasterData_empty_IsActive</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_empty_IsActive</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_empty_MachineId()'><b>kernel_CentetMachineUserMappingToMasterData_empty_MachineId</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_empty_MachineId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_empty_RegCenterId()'><b>kernel_CentetMachineUserMappingToMasterData_empty_RegCenterId</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_empty_RegCenterId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_empty_UserId()'><b>kernel_CentetMachineUserMappingToMasterData_empty_UserId</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_empty_UserId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_invalid_cntrId()'><b>kernel_CentetMachineUserMappingToMasterData_invalid_cntrId</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_invalid_cntrId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_invalid_isActive()'><b>kernel_CentetMachineUserMappingToMasterData_invalid_isActive</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_invalid_isActive</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_invalid_langCode()'><b>kernel_CentetMachineUserMappingToMasterData_invalid_langCode</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_invalid_langCode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_invalid_machineId()'><b>kernel_CentetMachineUserMappingToMasterData_invalid_machineId</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_invalid_machineId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_invalid_usrId()'><b>kernel_CentetMachineUserMappingToMasterData_invalid_usrId</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_invalid_usrId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_response_time()'><b>kernel_CentetMachineUserMappingToMasterData_response_time</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_smoke()'><b>kernel_CentetMachineUserMappingToMasterData_smoke</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.CentetMachineUserMappingToMasterData.kernel_CentetMachineUserMappingToMasterData_updateExisting()'><b>kernel_CentetMachineUserMappingToMasterData_updateExisting</b><br>Test class: io.mosip.kernel.tests.CentetMachineUserMappingToMasterData (kernel_CentetMachineUserMappingToMasterData_UserId_length_37)<br>Parameters: kernel_CentetMachineUserMappingToMasterData_updateExisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.CentetMachineUserMappingToMasterData@667a738</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EmailNotification.kernel_EmailNotification_invalid_mailContent_empty()'><b>kernel_EmailNotification_invalid_mailContent_empty</b><br>Test class: io.mosip.kernel.tests.EmailNotification (kernel_EmailNotification_valid_smoke_withoutmailCc)<br>Parameters: invalid_mailContent_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EmailNotification@36f0f1be</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EmailNotification.kernel_EmailNotification_invalid_mailSubject_empty()'><b>kernel_EmailNotification_invalid_mailSubject_empty</b><br>Test class: io.mosip.kernel.tests.EmailNotification (kernel_EmailNotification_valid_smoke_withoutmailCc)<br>Parameters: invalid_mailSubject_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EmailNotification@36f0f1be</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EmailNotification.kernel_EmailNotification_invalid_mailTo_empty()'><b>kernel_EmailNotification_invalid_mailTo_empty</b><br>Test class: io.mosip.kernel.tests.EmailNotification (kernel_EmailNotification_valid_smoke_withoutmailCc)<br>Parameters: invalid_mailTo_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EmailNotification@36f0f1be</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EmailNotification.kernel_EmailNotification_valid_smoke()'><b>kernel_EmailNotification_valid_smoke</b><br>Test class: io.mosip.kernel.tests.EmailNotification (kernel_EmailNotification_valid_smoke_withoutmailCc)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EmailNotification@36f0f1be</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EmailNotification.kernel_EmailNotification_valid_smoke_withoutAttachment()'><b>kernel_EmailNotification_valid_smoke_withoutAttachment</b><br>Test class: io.mosip.kernel.tests.EmailNotification (kernel_EmailNotification_valid_smoke_withoutmailCc)<br>Parameters: valid_smoke_withoutAttachment</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EmailNotification@36f0f1be</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EmailNotification.kernel_EmailNotification_valid_smoke_withoutmailCc()'><b>kernel_EmailNotification_valid_smoke_withoutmailCc</b><br>Test class: io.mosip.kernel.tests.EmailNotification (kernel_EmailNotification_valid_smoke_withoutmailCc)<br>Parameters: valid_smoke_withoutmailCc</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EmailNotification@36f0f1be</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_allValid_smoke()'><b>kernel_EncrptionDecryption_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_appID_diff in encrypt and decrypt()'><b>kernel_EncrptionDecryption_invalid_appID_diff in encrypt and decrypt</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_appID_diff in encrypt and decrypt</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_applicationId_encryption()'><b>kernel_EncrptionDecryption_invalid_applicationId_encryption</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_applicationId_encryption</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_data_diff in encrypt and decrypt()'><b>kernel_EncrptionDecryption_invalid_data_diff in encrypt and decrypt</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_data_diff in encrypt and decrypt</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_data_encryption()'><b>kernel_EncrptionDecryption_invalid_data_encryption</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_data_encryption</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_diff_timeStamp before the encrypt timeStamp()'><b>kernel_EncrptionDecryption_invalid_diff_timeStamp before the encrypt timeStamp</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_diff_timeStamp before the encrypt timeStamp</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_refId_diff in encrypt and decrypt()'><b>kernel_EncrptionDecryption_invalid_refId_diff in encrypt and decrypt</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_refId_diff in encrypt and decrypt</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_referenceId_encryption()'><b>kernel_EncrptionDecryption_invalid_referenceId_encryption</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_referenceId_encryption</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_invalid_timeStamp_encryption()'><b>kernel_EncrptionDecryption_invalid_timeStamp_encryption</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: invalid_timeStamp_encryption</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.EncrptionDecryption.kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp()'><b>kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp</b><br>Test class: io.mosip.kernel.tests.EncrptionDecryption (kernel_EncrptionDecryption_smoke_diff_timeStamp_after the encrypt timeStamp)<br>Parameters: smoke_diff_timeStamp_after the encrypt timeStamp</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.EncrptionDecryption@157632c9</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDeviceSpec.kernel_FetchDeviceSpec_allValid_smoke_with_lang()'><b>kernel_FetchDeviceSpec_allValid_smoke_with_lang</b><br>Test class: io.mosip.kernel.tests.FetchDeviceSpec (kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType)<br>Parameters: allValid_smoke_with_lang</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchDeviceSpec@275710fc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDeviceSpec.kernel_FetchDeviceSpec_allValid_smoke_with_lang_and_deviceType()'><b>kernel_FetchDeviceSpec_allValid_smoke_with_lang_and_deviceType</b><br>Test class: io.mosip.kernel.tests.FetchDeviceSpec (kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType)<br>Parameters: allValid_smoke_with_lang_and_deviceType</td>
+<td></td>
+<td>9</td>
+<td>io.mosip.kernel.tests.FetchDeviceSpec@275710fc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDeviceSpec.kernel_FetchDeviceSpec_invalid_devicetypecode_unexisting()'><b>kernel_FetchDeviceSpec_invalid_devicetypecode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchDeviceSpec (kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType)<br>Parameters: invalid_devicetypecode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDeviceSpec@275710fc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDeviceSpec.kernel_FetchDeviceSpec_invalid_langcode_blank_with_deviceType()'><b>kernel_FetchDeviceSpec_invalid_langcode_blank_with_deviceType</b><br>Test class: io.mosip.kernel.tests.FetchDeviceSpec (kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType)<br>Parameters: invalid_langcode_blank_with_deviceType</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDeviceSpec@275710fc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDeviceSpec.kernel_FetchDeviceSpec_invalid_langcode_unexisting()'><b>kernel_FetchDeviceSpec_invalid_langcode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchDeviceSpec (kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType)<br>Parameters: invalid_langcode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDeviceSpec@275710fc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDeviceSpec.kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType()'><b>kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType</b><br>Test class: io.mosip.kernel.tests.FetchDeviceSpec (kernel_FetchDeviceSpec_invalid_langcode_unexisting_with_deviceType)<br>Parameters: invalid_langcode_unexisting_with_deviceType</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDeviceSpec@275710fc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDevice.kernel_FetchDevice_allValid_smoke_with_lang()'><b>kernel_FetchDevice_allValid_smoke_with_lang</b><br>Test class: io.mosip.kernel.tests.FetchDevice (kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType)<br>Parameters: allValid_smoke_with_lang</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchDevice@400cff1a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDevice.kernel_FetchDevice_allValid_smoke_with_lang_and_deviceType()'><b>kernel_FetchDevice_allValid_smoke_with_lang_and_deviceType</b><br>Test class: io.mosip.kernel.tests.FetchDevice (kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType)<br>Parameters: allValid_smoke_with_lang_and_deviceType</td>
+<td></td>
+<td>10</td>
+<td>io.mosip.kernel.tests.FetchDevice@400cff1a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDevice.kernel_FetchDevice_invalid_deviceType_unexisting()'><b>kernel_FetchDevice_invalid_deviceType_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchDevice (kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType)<br>Parameters: invalid_deviceType_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDevice@400cff1a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDevice.kernel_FetchDevice_invalid_languagecode_blank_with_deviceType()'><b>kernel_FetchDevice_invalid_languagecode_blank_with_deviceType</b><br>Test class: io.mosip.kernel.tests.FetchDevice (kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType)<br>Parameters: invalid_languagecode_blank_with_deviceType</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDevice@400cff1a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDevice.kernel_FetchDevice_invalid_languagecode_unexisting()'><b>kernel_FetchDevice_invalid_languagecode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchDevice (kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType)<br>Parameters: invalid_languagecode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDevice@400cff1a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDevice.kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType()'><b>kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType</b><br>Test class: io.mosip.kernel.tests.FetchDevice (kernel_FetchDevice_invalid_languagecode_unexisting_with_deviceType)<br>Parameters: invalid_languagecode_unexisting_with_deviceType</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDevice@400cff1a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchGenderType.kernel_FetchGenderType_allValid_smoke_get()'><b>kernel_FetchGenderType_allValid_smoke_get</b><br>Test class: io.mosip.kernel.tests.FetchGenderType (kernel_FetchGenderType_invalid_langcode_unexisting)<br>Parameters: allValid_smoke_get</td>
+<td></td>
+<td>9</td>
+<td>io.mosip.kernel.tests.FetchGenderType@52aa2946</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchGenderType.kernel_FetchGenderType_allValid_smoke_lang()'><b>kernel_FetchGenderType_allValid_smoke_lang</b><br>Test class: io.mosip.kernel.tests.FetchGenderType (kernel_FetchGenderType_invalid_langcode_unexisting)<br>Parameters: allValid_smoke_lang</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.FetchGenderType@52aa2946</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchGenderType.kernel_FetchGenderType_invalid_langcode_unexisting()'><b>kernel_FetchGenderType_invalid_langcode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchGenderType (kernel_FetchGenderType_invalid_langcode_unexisting)<br>Parameters: invalid_langcode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchGenderType@52aa2946</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchHolidays.kernel_FetchHolidays_allValid_smoke_get()'><b>kernel_FetchHolidays_allValid_smoke_get</b><br>Test class: io.mosip.kernel.tests.FetchHolidays (kernel_FetchHolidays_invalid_langcode_unexisting)<br>Parameters: allValid_smoke_get</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.FetchHolidays@4de5031f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchHolidays.kernel_FetchHolidays_allValid_smoke_with Id()'><b>kernel_FetchHolidays_allValid_smoke_with Id</b><br>Test class: io.mosip.kernel.tests.FetchHolidays (kernel_FetchHolidays_invalid_langcode_unexisting)<br>Parameters: allValid_smoke_with Id</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.FetchHolidays@4de5031f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchHolidays.kernel_FetchHolidays_allValid_smoke_with Id and langCode()'><b>kernel_FetchHolidays_allValid_smoke_with Id and langCode</b><br>Test class: io.mosip.kernel.tests.FetchHolidays (kernel_FetchHolidays_invalid_langcode_unexisting)<br>Parameters: allValid_smoke_with Id and langCode</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchHolidays@4de5031f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchHolidays.kernel_FetchHolidays_invalid_holidayid_unexisting()'><b>kernel_FetchHolidays_invalid_holidayid_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchHolidays (kernel_FetchHolidays_invalid_langcode_unexisting)<br>Parameters: invalid_holidayid_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchHolidays@4de5031f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchHolidays.kernel_FetchHolidays_invalid_holidayid_unexisting with langCode()'><b>kernel_FetchHolidays_invalid_holidayid_unexisting with langCode</b><br>Test class: io.mosip.kernel.tests.FetchHolidays (kernel_FetchHolidays_invalid_langcode_unexisting)<br>Parameters: invalid_holidayid_unexisting with langCode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchHolidays@4de5031f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchHolidays.kernel_FetchHolidays_invalid_langcode_unexisting()'><b>kernel_FetchHolidays_invalid_langcode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchHolidays (kernel_FetchHolidays_invalid_langcode_unexisting)<br>Parameters: invalid_langcode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchHolidays@4de5031f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachineHistory.kernel_FetchMachineHistory_allValid_smoke()'><b>kernel_FetchMachineHistory_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchMachineHistory (kernel_FetchMachineHistory_invalid_langcode_unexisting in DB)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>10</td>
+<td>io.mosip.kernel.tests.FetchMachineHistory@3bbc39f8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachineHistory.kernel_FetchMachineHistory_invalid_effdatetimes_before effective date()'><b>kernel_FetchMachineHistory_invalid_effdatetimes_before effective date</b><br>Test class: io.mosip.kernel.tests.FetchMachineHistory (kernel_FetchMachineHistory_invalid_langcode_unexisting in DB)<br>Parameters: invalid_effdatetimes_before effective date</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchMachineHistory@3bbc39f8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachineHistory.kernel_FetchMachineHistory_invalid_effdatetimes_invalid Date format()'><b>kernel_FetchMachineHistory_invalid_effdatetimes_invalid Date format</b><br>Test class: io.mosip.kernel.tests.FetchMachineHistory (kernel_FetchMachineHistory_invalid_langcode_unexisting in DB)<br>Parameters: invalid_effdatetimes_invalid Date format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchMachineHistory@3bbc39f8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachineHistory.kernel_FetchMachineHistory_invalid_id_unexisting()'><b>kernel_FetchMachineHistory_invalid_id_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchMachineHistory (kernel_FetchMachineHistory_invalid_langcode_unexisting in DB)<br>Parameters: invalid_id_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchMachineHistory@3bbc39f8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachineHistory.kernel_FetchMachineHistory_invalid_langcode_unexisting in DB()'><b>kernel_FetchMachineHistory_invalid_langcode_unexisting in DB</b><br>Test class: io.mosip.kernel.tests.FetchMachineHistory (kernel_FetchMachineHistory_invalid_langcode_unexisting in DB)<br>Parameters: invalid_langcode_unexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchMachineHistory@3bbc39f8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachine.kernel_FetchMachine_allValid_smoke_get()'><b>kernel_FetchMachine_allValid_smoke_get</b><br>Test class: io.mosip.kernel.tests.FetchMachine (kernel_FetchMachine_invalid_langcode_unexisting_with_id)<br>Parameters: allValid_smoke_get</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchMachine@5ea434c8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachine.kernel_FetchMachine_allValid_smoke_with_lang()'><b>kernel_FetchMachine_allValid_smoke_with_lang</b><br>Test class: io.mosip.kernel.tests.FetchMachine (kernel_FetchMachine_invalid_langcode_unexisting_with_id)<br>Parameters: allValid_smoke_with_lang</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchMachine@5ea434c8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachine.kernel_FetchMachine_allValid_smoke_with_lang and id()'><b>kernel_FetchMachine_allValid_smoke_with_lang and id</b><br>Test class: io.mosip.kernel.tests.FetchMachine (kernel_FetchMachine_invalid_langcode_unexisting_with_id)<br>Parameters: allValid_smoke_with_lang and id</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchMachine@5ea434c8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachine.kernel_FetchMachine_invalid_id_unexisting()'><b>kernel_FetchMachine_invalid_id_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchMachine (kernel_FetchMachine_invalid_langcode_unexisting_with_id)<br>Parameters: invalid_id_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchMachine@5ea434c8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachine.kernel_FetchMachine_invalid_langcode_unexisting()'><b>kernel_FetchMachine_invalid_langcode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchMachine (kernel_FetchMachine_invalid_langcode_unexisting_with_id)<br>Parameters: invalid_langcode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchMachine@5ea434c8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchMachine.kernel_FetchMachine_invalid_langcode_unexisting_with_id()'><b>kernel_FetchMachine_invalid_langcode_unexisting_with_id</b><br>Test class: io.mosip.kernel.tests.FetchMachine (kernel_FetchMachine_invalid_langcode_unexisting_with_id)<br>Parameters: invalid_langcode_unexisting_with_id</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchMachine@5ea434c8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHistory.kernel_FetchRegCentHistory_allValid_smoke()'><b>kernel_FetchRegCentHistory_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHistory (kernel_FetchRegCentHistory_invalid_registrationCenterId_unexisting)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>10</td>
+<td>io.mosip.kernel.tests.FetchRegCentHistory@29f69090</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHistory.kernel_FetchRegCentHistory_invalid_effectiveDate_before_effective_date()'><b>kernel_FetchRegCentHistory_invalid_effectiveDate_before_effective_date</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHistory (kernel_FetchRegCentHistory_invalid_registrationCenterId_unexisting)<br>Parameters: invalid_effectiveDate_before_effective_date</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCentHistory@29f69090</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHistory.kernel_FetchRegCentHistory_invalid_effectiveDate_invalid Date format()'><b>kernel_FetchRegCentHistory_invalid_effectiveDate_invalid Date format</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHistory (kernel_FetchRegCentHistory_invalid_registrationCenterId_unexisting)<br>Parameters: invalid_effectiveDate_invalid Date format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCentHistory@29f69090</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHistory.kernel_FetchRegCentHistory_invalid_langcode_unexisting in DB()'><b>kernel_FetchRegCentHistory_invalid_langcode_unexisting in DB</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHistory (kernel_FetchRegCentHistory_invalid_registrationCenterId_unexisting)<br>Parameters: invalid_langcode_unexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCentHistory@29f69090</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHistory.kernel_FetchRegCentHistory_invalid_registrationCenterId_unexisting()'><b>kernel_FetchRegCentHistory_invalid_registrationCenterId_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHistory (kernel_FetchRegCentHistory_invalid_registrationCenterId_unexisting)<br>Parameters: invalid_registrationCenterId_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCentHistory@29f69090</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHolidays.kernel_FetchRegCentHolidays_allValid_smoke()'><b>kernel_FetchRegCentHolidays_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHolidays (kernel_FetchRegCentHolidays_invalid_year_unexisting)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>10</td>
+<td>io.mosip.kernel.tests.FetchRegCentHolidays@568bf312</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHolidays.kernel_FetchRegCentHolidays_invalid_langcode_unexisting()'><b>kernel_FetchRegCentHolidays_invalid_langcode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHolidays (kernel_FetchRegCentHolidays_invalid_year_unexisting)<br>Parameters: invalid_langcode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCentHolidays@568bf312</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHolidays.kernel_FetchRegCentHolidays_invalid_registrationcenterid_unexisting()'><b>kernel_FetchRegCentHolidays_invalid_registrationcenterid_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHolidays (kernel_FetchRegCentHolidays_invalid_year_unexisting)<br>Parameters: invalid_registrationcenterid_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCentHolidays@568bf312</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCentHolidays.kernel_FetchRegCentHolidays_invalid_year_unexisting()'><b>kernel_FetchRegCentHolidays_invalid_year_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCentHolidays (kernel_FetchRegCentHolidays_invalid_year_unexisting)<br>Parameters: invalid_year_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCentHolidays@568bf312</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_allValid_smoke_get()'><b>kernel_FetchRegCent_allValid_smoke_get</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: allValid_smoke_get</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_allValid_smoke_with hierarchy and name()'><b>kernel_FetchRegCent_allValid_smoke_with hierarchy and name</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: allValid_smoke_with hierarchy and name</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_allValid_smoke_with loc and lang()'><b>kernel_FetchRegCent_allValid_smoke_with loc and lang</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: allValid_smoke_with loc and lang</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_allValid_smoke_with name list()'><b>kernel_FetchRegCent_allValid_smoke_with name list</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: allValid_smoke_with name list</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_allValid_smoke_with proximity distance()'><b>kernel_FetchRegCent_allValid_smoke_with proximity distance</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: allValid_smoke_with proximity distance</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_allValid_smoke_with_lang and id()'><b>kernel_FetchRegCent_allValid_smoke_with_lang and id</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: allValid_smoke_with_lang and id</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_hierarchylevel_unexisting with nameList()'><b>kernel_FetchRegCent_invalid_hierarchylevel_unexisting with nameList</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_hierarchylevel_unexisting with nameList</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_hierarchylevel_unexisting_with name()'><b>kernel_FetchRegCent_invalid_hierarchylevel_unexisting_with name</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_hierarchylevel_unexisting_with name</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_id_unexisting()'><b>kernel_FetchRegCent_invalid_id_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_id_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_langcode_unexisting with name List()'><b>kernel_FetchRegCent_invalid_langcode_unexisting with name List</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_langcode_unexisting with name List</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_langcode_unexisting with proxDist()'><b>kernel_FetchRegCent_invalid_langcode_unexisting with proxDist</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_langcode_unexisting with proxDist</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_langcode_unexisting_with_id()'><b>kernel_FetchRegCent_invalid_langcode_unexisting_with_id</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_langcode_unexisting_with_id</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_langcode_unexisting_with_locationCode()'><b>kernel_FetchRegCent_invalid_langcode_unexisting_with_locationCode</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_langcode_unexisting_with_locationCode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_langcode_with hierarchy and name()'><b>kernel_FetchRegCent_invalid_langcode_with hierarchy and name</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_langcode_with hierarchy and name</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_latitude_unexisting()'><b>kernel_FetchRegCent_invalid_latitude_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_latitude_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_locationcode_unexisting()'><b>kernel_FetchRegCent_invalid_locationcode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_locationcode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_longitude_unexisting()'><b>kernel_FetchRegCent_invalid_longitude_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_longitude_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_name_unexisting in location(location name)()'><b>kernel_FetchRegCent_invalid_name_unexisting in location(location name)</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_name_unexisting in location(location name)</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_name_with name List()'><b>kernel_FetchRegCent_invalid_name_with name List</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_name_with name List</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_name_with name List 1 valid 1 invalid()'><b>kernel_FetchRegCent_invalid_name_with name List 1 valid 1 invalid</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_name_with name List 1 valid 1 invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegCent.kernel_FetchRegCent_invalid_proximitydistance_negative()'><b>kernel_FetchRegCent_invalid_proximitydistance_negative</b><br>Test class: io.mosip.kernel.tests.FetchRegCent (kernel_FetchRegCent_invalid_proximitydistance_negative)<br>Parameters: invalid_proximitydistance_negative</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegCent@4ae3c1cd</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegcentMachUserMaping.kernel_FetchRegcentMachUserMaping_allValid_smoke()'><b>kernel_FetchRegcentMachUserMaping_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchRegcentMachUserMaping (kernel_FetchRegcentMachUserMaping_invalid_userid_existing)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchRegcentMachUserMaping@ca263c2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegcentMachUserMaping.kernel_FetchRegcentMachUserMaping_invalid_effdtimes_before existing time()'><b>kernel_FetchRegcentMachUserMaping_invalid_effdtimes_before existing time</b><br>Test class: io.mosip.kernel.tests.FetchRegcentMachUserMaping (kernel_FetchRegcentMachUserMaping_invalid_userid_existing)<br>Parameters: invalid_effdtimes_before existing time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegcentMachUserMaping@ca263c2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegcentMachUserMaping.kernel_FetchRegcentMachUserMaping_invalid_machineid_unexisting()'><b>kernel_FetchRegcentMachUserMaping_invalid_machineid_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegcentMachUserMaping (kernel_FetchRegcentMachUserMaping_invalid_userid_existing)<br>Parameters: invalid_machineid_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegcentMachUserMaping@ca263c2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegcentMachUserMaping.kernel_FetchRegcentMachUserMaping_invalid_registrationcenterid_unexisting()'><b>kernel_FetchRegcentMachUserMaping_invalid_registrationcenterid_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchRegcentMachUserMaping (kernel_FetchRegcentMachUserMaping_invalid_userid_existing)<br>Parameters: invalid_registrationcenterid_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegcentMachUserMaping@ca263c2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRegcentMachUserMaping.kernel_FetchRegcentMachUserMaping_invalid_userid_existing()'><b>kernel_FetchRegcentMachUserMaping_invalid_userid_existing</b><br>Test class: io.mosip.kernel.tests.FetchRegcentMachUserMaping (kernel_FetchRegcentMachUserMaping_invalid_userid_existing)<br>Parameters: invalid_userid_existing</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRegcentMachUserMaping@ca263c2</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTemplate.kernel_FetchTemplate_allValid_smoke_Get()'><b>kernel_FetchTemplate_allValid_smoke_Get</b><br>Test class: io.mosip.kernel.tests.FetchTemplate (kernel_FetchTemplate_invalid_templatetypecode_unexisting)<br>Parameters: allValid_smoke_Get</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchTemplate@45f45fa1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTemplate.kernel_FetchTemplate_allValid_smoke_with_lang()'><b>kernel_FetchTemplate_allValid_smoke_with_lang</b><br>Test class: io.mosip.kernel.tests.FetchTemplate (kernel_FetchTemplate_invalid_templatetypecode_unexisting)<br>Parameters: allValid_smoke_with_lang</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.FetchTemplate@45f45fa1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTemplate.kernel_FetchTemplate_allValid_smoke_with_lang_and_templatetypecode()'><b>kernel_FetchTemplate_allValid_smoke_with_lang_and_templatetypecode</b><br>Test class: io.mosip.kernel.tests.FetchTemplate (kernel_FetchTemplate_invalid_templatetypecode_unexisting)<br>Parameters: allValid_smoke_with_lang_and_templatetypecode</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.FetchTemplate@45f45fa1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTemplate.kernel_FetchTemplate_invalid_langcode_blank_with_templatetypecode()'><b>kernel_FetchTemplate_invalid_langcode_blank_with_templatetypecode</b><br>Test class: io.mosip.kernel.tests.FetchTemplate (kernel_FetchTemplate_invalid_templatetypecode_unexisting)<br>Parameters: invalid_langcode_blank_with_templatetypecode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchTemplate@45f45fa1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTemplate.kernel_FetchTemplate_invalid_langcode_unexisting()'><b>kernel_FetchTemplate_invalid_langcode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchTemplate (kernel_FetchTemplate_invalid_templatetypecode_unexisting)<br>Parameters: invalid_langcode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchTemplate@45f45fa1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTemplate.kernel_FetchTemplate_invalid_langcode_unexisting_with_templatetypecode()'><b>kernel_FetchTemplate_invalid_langcode_unexisting_with_templatetypecode</b><br>Test class: io.mosip.kernel.tests.FetchTemplate (kernel_FetchTemplate_invalid_templatetypecode_unexisting)<br>Parameters: invalid_langcode_unexisting_with_templatetypecode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchTemplate@45f45fa1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTemplate.kernel_FetchTemplate_invalid_templatetypecode_unexisting()'><b>kernel_FetchTemplate_invalid_templatetypecode_unexisting</b><br>Test class: io.mosip.kernel.tests.FetchTemplate (kernel_FetchTemplate_invalid_templatetypecode_unexisting)<br>Parameters: invalid_templatetypecode_unexisting</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchTemplate@45f45fa1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode.kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_invalid_code()'><b>kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_invalid_code</b><br>Test class: io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode (kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_smoke)<br>Parameters: Kernel_GetAllTemplateByTemplateTypeCode_invalid_code</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode@534df152</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode.kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_response_time()'><b>kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_response_time</b><br>Test class: io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode (kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_smoke)<br>Parameters: Kernel_GetAllTemplateByTemplateTypeCode_response_time</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode@534df152</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode.kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_smoke()'><b>kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_smoke</b><br>Test class: io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode (kernel_GetAllTemplateByTemplateTypeCode_Kernel_GetAllTemplateByTemplateTypeCode_smoke)<br>Parameters: Kernel_GetAllTemplateByTemplateTypeCode_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetAllTemplateByTemplateTypeCode@534df152</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRIDByUserId.kernel_GetRIDByUserIDAndAppID_appid_invalid()'><b>kernel_GetRIDByUserIDAndAppID_appid_invalid</b><br>Test class: io.mosip.kernel.tests.GetRIDByUserId (kernel_GetRIDByUserIDAndAppID_userid_invalid)<br>Parameters: appid_invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRIDByUserId@105fece7</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRIDByUserId.kernel_GetRIDByUserIDAndAppID_smoke()'><b>kernel_GetRIDByUserIDAndAppID_smoke</b><br>Test class: io.mosip.kernel.tests.GetRIDByUserId (kernel_GetRIDByUserIDAndAppID_userid_invalid)<br>Parameters: smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRIDByUserId@105fece7</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetRIDByUserId.kernel_GetRIDByUserIDAndAppID_userid_invalid()'><b>kernel_GetRIDByUserIDAndAppID_userid_invalid</b><br>Test class: io.mosip.kernel.tests.GetRIDByUserId (kernel_GetRIDByUserIDAndAppID_userid_invalid)<br>Parameters: userid_invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetRIDByUserId@105fece7</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_eff_dtimes_invalidFormat()'><b>kernel_GetUserHistory_eff_dtimes_invalidFormat</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: eff_dtimes_invalidFormat</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_firstUpdateDate()'><b>kernel_GetUserHistory_firstUpdateDate</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: firstUpdateDate</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_futureDate()'><b>kernel_GetUserHistory_futureDate</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: futureDate</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_id_invalid()'><b>kernel_GetUserHistory_id_invalid</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: id_invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_secondUpdateDate()'><b>kernel_GetUserHistory_secondUpdateDate</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: secondUpdateDate</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_smoke()'><b>kernel_GetUserHistory_smoke</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_timeformat_2()'><b>kernel_GetUserHistory_timeformat_2</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: timeformat_2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_timeformat_3()'><b>kernel_GetUserHistory_timeformat_3</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: timeformat_3</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.GetUserHistory.kernel_GetUserHistory_validating_request()'><b>kernel_GetUserHistory_validating_request</b><br>Test class: io.mosip.kernel.tests.GetUserHistory (kernel_GetUserHistory_validating_request)<br>Parameters: validating_request</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.GetUserHistory@3ec300f1</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_allValid_smoke_generation()'><b>kernel_OTP_allValid_smoke_generation</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: allValid_smoke_generation</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_allValid_smoke_validation()'><b>kernel_OTP_allValid_smoke_validation</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: allValid_smoke_validation</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_KEY_Empty()'><b>kernel_OTP_invalid_KEY_Empty</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_KEY_Empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_KEY_Length2()'><b>kernel_OTP_invalid_KEY_Length2</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_KEY_Length2</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_KEY_blocked()'><b>kernel_OTP_invalid_KEY_blocked</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_KEY_blocked</td>
+<td></td>
+<td>2</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_KEY_otherKey()'><b>kernel_OTP_invalid_KEY_otherKey</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_KEY_otherKey</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_OTP_alphanumeric()'><b>kernel_OTP_invalid_OTP_alphanumeric</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_OTP_alphanumeric</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_OTP_blocks_user()'><b>kernel_OTP_invalid_OTP_blocks_user</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_OTP_blocks_user</td>
+<td></td>
+<td>2</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_OTP_empty()'><b>kernel_OTP_invalid_OTP_empty</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_OTP_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_OTP_expired()'><b>kernel_OTP_invalid_OTP_expired</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_OTP_expired</td>
+<td></td>
+<td>181</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_OTP_incorrect()'><b>kernel_OTP_invalid_OTP_incorrect</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_OTP_incorrect</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.OTP.kernel_OTP_invalid_key_Length65()'><b>kernel_OTP_invalid_key_Length65</b><br>Test class: io.mosip.kernel.tests.OTP (kernel_OTP_invalid_OTP_incorrect)<br>Parameters: invalid_key_Length65</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.OTP@5b0abc94</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.RIDGenerator.kernel_RIDGenerator_invalid_centerid_ blank()'><b>kernel_RIDGenerator_invalid_centerid_ blank</b><br>Test class: io.mosip.kernel.tests.RIDGenerator (kernel_RIDGenerator_smoke_valid_machineId and centerId)<br>Parameters: invalid_centerid_ blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.RIDGenerator@75c072cb</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.RIDGenerator.kernel_RIDGenerator_invalid_centerid_length above 5()'><b>kernel_RIDGenerator_invalid_centerid_length above 5</b><br>Test class: io.mosip.kernel.tests.RIDGenerator (kernel_RIDGenerator_smoke_valid_machineId and centerId)<br>Parameters: invalid_centerid_length above 5</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.RIDGenerator@75c072cb</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.RIDGenerator.kernel_RIDGenerator_invalid_centerid_length below 5()'><b>kernel_RIDGenerator_invalid_centerid_length below 5</b><br>Test class: io.mosip.kernel.tests.RIDGenerator (kernel_RIDGenerator_smoke_valid_machineId and centerId)<br>Parameters: invalid_centerid_length below 5</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.RIDGenerator@75c072cb</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.RIDGenerator.kernel_RIDGenerator_invalid_machineid_blank()'><b>kernel_RIDGenerator_invalid_machineid_blank</b><br>Test class: io.mosip.kernel.tests.RIDGenerator (kernel_RIDGenerator_smoke_valid_machineId and centerId)<br>Parameters: invalid_machineid_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.RIDGenerator@75c072cb</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.RIDGenerator.kernel_RIDGenerator_invalid_machineid_length above 5()'><b>kernel_RIDGenerator_invalid_machineid_length above 5</b><br>Test class: io.mosip.kernel.tests.RIDGenerator (kernel_RIDGenerator_smoke_valid_machineId and centerId)<br>Parameters: invalid_machineid_length above 5</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.RIDGenerator@75c072cb</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.RIDGenerator.kernel_RIDGenerator_invalid_machineid_length below 5()'><b>kernel_RIDGenerator_invalid_machineid_length below 5</b><br>Test class: io.mosip.kernel.tests.RIDGenerator (kernel_RIDGenerator_smoke_valid_machineId and centerId)<br>Parameters: invalid_machineid_length below 5</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.RIDGenerator@75c072cb</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.RIDGenerator.kernel_RIDGenerator_smoke_valid_machineId and centerId()'><b>kernel_RIDGenerator_smoke_valid_machineId and centerId</b><br>Test class: io.mosip.kernel.tests.RIDGenerator (kernel_RIDGenerator_smoke_valid_machineId and centerId)<br>Parameters: smoke_valid_machineId and centerId</td>
+<td></td>
+<td>1</td>
+<td>io.mosip.kernel.tests.RIDGenerator@75c072cb</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_USERID_empty()'><b>kernel_SendOTP_USERID_empty</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: USERID_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_appId_empty()'><b>kernel_SendOTP_appId_empty</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: appId_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_appId_invalid()'><b>kernel_SendOTP_appId_invalid</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: appId_invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_channel_Email()'><b>kernel_SendOTP_channel_Email</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: channel_Email</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_channel_MOBILE()'><b>kernel_SendOTP_channel_MOBILE</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: channel_MOBILE</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_context_empty()'><b>kernel_SendOTP_context_empty</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: context_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_context_invalid()'><b>kernel_SendOTP_context_invalid</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: context_invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_invalid_OTPChannel()'><b>kernel_SendOTP_invalid_OTPChannel</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: invalid_OTPChannel</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_otpChannel_empty()'><b>kernel_SendOTP_otpChannel_empty</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: otpChannel_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_smoke()'><b>kernel_SendOTP_smoke</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_userId_invalid()'><b>kernel_SendOTP_userId_invalid</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: userId_invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_useridtype_empty()'><b>kernel_SendOTP_useridtype_empty</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: useridtype_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SendOTP.kernel_SendOTP_useridtype_invalid()'><b>kernel_SendOTP_useridtype_invalid</b><br>Test class: io.mosip.kernel.tests.SendOTP (kernel_SendOTP_userId_invalid)<br>Parameters: useridtype_invalid</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SendOTP@1f1c7bf6</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SmsNotification.kernel_SmsNotification_invalid_message_empty()'><b>kernel_SmsNotification_invalid_message_empty</b><br>Test class: io.mosip.kernel.tests.SmsNotification (kernel_SmsNotification_valid_smoke)<br>Parameters: invalid_message_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SmsNotification@25b485ba</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SmsNotification.kernel_SmsNotification_invalid_number()'><b>kernel_SmsNotification_invalid_number</b><br>Test class: io.mosip.kernel.tests.SmsNotification (kernel_SmsNotification_valid_smoke)<br>Parameters: invalid_number</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SmsNotification@25b485ba</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SmsNotification.kernel_SmsNotification_valid_number_empty()'><b>kernel_SmsNotification_valid_number_empty</b><br>Test class: io.mosip.kernel.tests.SmsNotification (kernel_SmsNotification_valid_smoke)<br>Parameters: valid_number_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SmsNotification@25b485ba</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SmsNotification.kernel_SmsNotification_valid_smoke()'><b>kernel_SmsNotification_valid_smoke</b><br>Test class: io.mosip.kernel.tests.SmsNotification (kernel_SmsNotification_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SmsNotification@25b485ba</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_allvalid_smoke_with_regcenterId and keyIndex()'><b>kernel_SyncMDataWithKeyIndexRegCentId_allvalid_smoke_with_regcenterId and keyIndex</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: allvalid_smoke_with_regcenterId and keyIndex</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_keyIndex blank()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_keyIndex blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_keyIndex blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_keyIndex nonexisting in DB()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_keyIndex nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_keyIndex nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_keyIndex of diff machine()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_keyIndex of diff machine</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_keyIndex of diff machine</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_lastupdated_blank()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_lastupdated_blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_lastupdated_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_lastupdated_diff format()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_lastupdated_diff format</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_lastupdated_diff format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_lastupdated_future date()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_lastupdated_future date</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_lastupdated_future date</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_macaddress blank()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_macaddress blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_macaddress blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_macaddress nonexisting in DB()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_macaddress nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_macaddress nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_macaddress of diff machine()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_macaddress of diff machine</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_macaddress of diff machine</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_regcenterId mapped to diff machine()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_regcenterId mapped to diff machine</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_regcenterId mapped to diff machine</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_regcenterId nonexisting in DB()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_regcenterId nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_regcenterId nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber blank()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_serialnumber blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber nonexisting in DB()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_serialnumber nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId.kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine()'><b>kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId (kernel_SyncMDataWithKeyIndexRegCentId_invalid_serialnumber of diff machine)<br>Parameters: invalid_serialnumber of diff machine</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndexRegCentId@20d3d15a</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_allvalid_smoke_with keyIndex()'><b>kernel_SyncMDataWithKeyIndex_allvalid_smoke_with keyIndex</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: allvalid_smoke_with keyIndex</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_keyIndex blank()'><b>kernel_SyncMDataWithKeyIndex_invalid_keyIndex blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_keyIndex blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_keyIndex nonexisting in DB()'><b>kernel_SyncMDataWithKeyIndex_invalid_keyIndex nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_keyIndex nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_keyIndex of diff machine()'><b>kernel_SyncMDataWithKeyIndex_invalid_keyIndex of diff machine</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_keyIndex of diff machine</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_lastupdated_blank()'><b>kernel_SyncMDataWithKeyIndex_invalid_lastupdated_blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_lastupdated_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_lastupdated_diff format()'><b>kernel_SyncMDataWithKeyIndex_invalid_lastupdated_diff format</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_lastupdated_diff format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_lastupdated_future date()'><b>kernel_SyncMDataWithKeyIndex_invalid_lastupdated_future date</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_lastupdated_future date</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_macaddress blank()'><b>kernel_SyncMDataWithKeyIndex_invalid_macaddress blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_macaddress blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_macaddress nonexisting in DB()'><b>kernel_SyncMDataWithKeyIndex_invalid_macaddress nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_macaddress nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_macaddress of diff machine()'><b>kernel_SyncMDataWithKeyIndex_invalid_macaddress of diff machine</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_macaddress of diff machine</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_serialnumber blank()'><b>kernel_SyncMDataWithKeyIndex_invalid_serialnumber blank</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_serialnumber blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_serialnumber nonexisting in DB()'><b>kernel_SyncMDataWithKeyIndex_invalid_serialnumber nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_serialnumber nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncMDataWithKeyIndex.kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine()'><b>kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine</b><br>Test class: io.mosip.kernel.tests.SyncMDataWithKeyIndex (kernel_SyncMDataWithKeyIndex_invalid_serialnumber of diff machine)<br>Parameters: invalid_serialnumber of diff machine</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncMDataWithKeyIndex@214b199c</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncPublicKeyToRegClient.kernel_SyncPublicKeyToRegClient_allValid_smoke()'><b>kernel_SyncPublicKeyToRegClient_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.SyncPublicKeyToRegClient (kernel_SyncPublicKeyToRegClient_invalid_timeStamp_format)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>4</td>
+<td>io.mosip.kernel.tests.SyncPublicKeyToRegClient@2893de87</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncPublicKeyToRegClient.kernel_SyncPublicKeyToRegClient_invalid_applicationId_non-existing()'><b>kernel_SyncPublicKeyToRegClient_invalid_applicationId_non-existing</b><br>Test class: io.mosip.kernel.tests.SyncPublicKeyToRegClient (kernel_SyncPublicKeyToRegClient_invalid_timeStamp_format)<br>Parameters: invalid_applicationId_non-existing</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncPublicKeyToRegClient@2893de87</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.SyncPublicKeyToRegClient.kernel_SyncPublicKeyToRegClient_invalid_timeStamp_format()'><b>kernel_SyncPublicKeyToRegClient_invalid_timeStamp_format</b><br>Test class: io.mosip.kernel.tests.SyncPublicKeyToRegClient (kernel_SyncPublicKeyToRegClient_invalid_timeStamp_format)<br>Parameters: invalid_timeStamp_format</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.SyncPublicKeyToRegClient@2893de87</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.TokenIdGenerator.kernel_TokenIdGenerator_allValid_smoke_validate tokenId length is 36()'><b>kernel_TokenIdGenerator_allValid_smoke_validate tokenId length is 36</b><br>Test class: io.mosip.kernel.tests.TokenIdGenerator (kernel_TokenIdGenerator_invalid_uin_blank)<br>Parameters: allValid_smoke_validate tokenId length is 36</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.TokenIdGenerator@55ca8de8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.TokenIdGenerator.kernel_TokenIdGenerator_allValid_smoke_with_UIN and PartnerId()'><b>kernel_TokenIdGenerator_allValid_smoke_with_UIN and PartnerId</b><br>Test class: io.mosip.kernel.tests.TokenIdGenerator (kernel_TokenIdGenerator_invalid_uin_blank)<br>Parameters: allValid_smoke_with_UIN and PartnerId</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.TokenIdGenerator@55ca8de8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.TokenIdGenerator.kernel_TokenIdGenerator_invalid_partnercode_blank()'><b>kernel_TokenIdGenerator_invalid_partnercode_blank</b><br>Test class: io.mosip.kernel.tests.TokenIdGenerator (kernel_TokenIdGenerator_invalid_uin_blank)<br>Parameters: invalid_partnercode_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.TokenIdGenerator@55ca8de8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.TokenIdGenerator.kernel_TokenIdGenerator_invalid_uin_blank()'><b>kernel_TokenIdGenerator_invalid_uin_blank</b><br>Test class: io.mosip.kernel.tests.TokenIdGenerator (kernel_TokenIdGenerator_invalid_uin_blank)<br>Parameters: invalid_uin_blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.TokenIdGenerator@55ca8de8</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_allValid_smoke()'><b>kernel_UploadPublickey_allValid_smoke</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: allValid_smoke</td>
+<td></td>
+<td>7</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_allValid_smoke_duplicate publicKey()'><b>kernel_UploadPublickey_allValid_smoke_duplicate publicKey</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: allValid_smoke_duplicate publicKey</td>
+<td></td>
+<td>6</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_invalid_name blank()'><b>kernel_UploadPublickey_invalid_name blank</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: invalid_name blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_invalid_name nonexisting in DB()'><b>kernel_UploadPublickey_invalid_name nonexisting in DB</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: invalid_name nonexisting in DB</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_invalid_name null()'><b>kernel_UploadPublickey_invalid_name null</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: invalid_name null</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_invalid_publicKey blank()'><b>kernel_UploadPublickey_invalid_publicKey blank</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: invalid_publicKey blank</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_invalid_publicKey null()'><b>kernel_UploadPublickey_invalid_publicKey null</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: invalid_publicKey null</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.UploadPublickey.kernel_UploadPublickey_invalid_publicKey_diff from previous()'><b>kernel_UploadPublickey_invalid_publicKey_diff from previous</b><br>Test class: io.mosip.kernel.tests.UploadPublickey (kernel_UploadPublickey_invalid_publicKey_diff from previous)<br>Parameters: invalid_publicKey_diff from previous</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.UploadPublickey@5d740a0f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAttribute.kernel_fetchBiometricAttribute_invalid_biometrictypecode()'><b>kernel_fetchBiometricAttribute_invalid_biometrictypecode</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAttribute (kernel_fetchBiometricAttribute_valid_smoke)<br>Parameters: invalid_biometrictypecode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBiometricAttribute@6ee12bac</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAttribute.kernel_fetchBiometricAttribute_invalid_biometrictypecode_empty()'><b>kernel_fetchBiometricAttribute_invalid_biometrictypecode_empty</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAttribute (kernel_fetchBiometricAttribute_valid_smoke)<br>Parameters: invalid_biometrictypecode_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBiometricAttribute@6ee12bac</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAttribute.kernel_fetchBiometricAttribute_invalid_langcode()'><b>kernel_fetchBiometricAttribute_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAttribute (kernel_fetchBiometricAttribute_valid_smoke)<br>Parameters: invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBiometricAttribute@6ee12bac</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAttribute.kernel_fetchBiometricAttribute_invalid_langcode_empty()'><b>kernel_fetchBiometricAttribute_invalid_langcode_empty</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAttribute (kernel_fetchBiometricAttribute_valid_smoke)<br>Parameters: invalid_langcode_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBiometricAttribute@6ee12bac</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAttribute.kernel_fetchBiometricAttribute_valid_smoke()'><b>kernel_fetchBiometricAttribute_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAttribute (kernel_fetchBiometricAttribute_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>12</td>
+<td>io.mosip.kernel.tests.FetchBiometricAttribute@6ee12bac</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAuthType.kernel_fetchBiometricAuthType_invalid_langcode()'><b>kernel_fetchBiometricAuthType_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAuthType (kernel_fetchBiometricAuthType_valid_smoke)<br>Parameters: invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBiometricAuthType@55040f2f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAuthType.kernel_fetchBiometricAuthType_invalid_langcode_empty()'><b>kernel_fetchBiometricAuthType_invalid_langcode_empty</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAuthType (kernel_fetchBiometricAuthType_valid_smoke)<br>Parameters: invalid_langcode_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBiometricAuthType@55040f2f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBiometricAuthType.kernel_fetchBiometricAuthType_valid_smoke()'><b>kernel_fetchBiometricAuthType_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchBiometricAuthType (kernel_fetchBiometricAuthType_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>8</td>
+<td>io.mosip.kernel.tests.FetchBiometricAuthType@55040f2f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBlackListedWord.kernel_fetchBlackListedWord_invalid_langcode()'><b>kernel_fetchBlackListedWord_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.FetchBlackListedWord (kernel_fetchBlackListedWord_valid_smoke)<br>Parameters: invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBlackListedWord@64c87930</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchBlackListedWord.kernel_fetchBlackListedWord_valid_smoke()'><b>kernel_fetchBlackListedWord_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchBlackListedWord (kernel_fetchBlackListedWord_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchBlackListedWord@64c87930</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDocumentCategories.kernel_fetchDocumentCategories_invalid_code_notpresent()'><b>kernel_fetchDocumentCategories_invalid_code_notpresent</b><br>Test class: io.mosip.kernel.tests.FetchDocumentCategories (kernel_fetchDocumentCategories_valid_smoke_langcodeandCode)<br>Parameters: invalid_code_notpresent</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDocumentCategories@525f1e4e</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDocumentCategories.kernel_fetchDocumentCategories_invalid_langcode()'><b>kernel_fetchDocumentCategories_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.FetchDocumentCategories (kernel_fetchDocumentCategories_valid_smoke_langcodeandCode)<br>Parameters: invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDocumentCategories@525f1e4e</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDocumentCategories.kernel_fetchDocumentCategories_valid_smoke_langcode()'><b>kernel_fetchDocumentCategories_valid_smoke_langcode</b><br>Test class: io.mosip.kernel.tests.FetchDocumentCategories (kernel_fetchDocumentCategories_valid_smoke_langcodeandCode)<br>Parameters: valid_smoke_langcode</td>
+<td></td>
+<td>9</td>
+<td>io.mosip.kernel.tests.FetchDocumentCategories@525f1e4e</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDocumentCategories.kernel_fetchDocumentCategories_valid_smoke_langcodeandCode()'><b>kernel_fetchDocumentCategories_valid_smoke_langcodeandCode</b><br>Test class: io.mosip.kernel.tests.FetchDocumentCategories (kernel_fetchDocumentCategories_valid_smoke_langcodeandCode)<br>Parameters: valid_smoke_langcodeandCode</td>
+<td></td>
+<td>9</td>
+<td>io.mosip.kernel.tests.FetchDocumentCategories@525f1e4e</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDocumentTypes.kernel_fetchDocumentTypes_invalid_documentcategorycode_notpresent()'><b>kernel_fetchDocumentTypes_invalid_documentcategorycode_notpresent</b><br>Test class: io.mosip.kernel.tests.FetchDocumentTypes (kernel_fetchDocumentTypes_valid_smoke)<br>Parameters: invalid_documentcategorycode_notpresent</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDocumentTypes@75f9eccc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDocumentTypes.kernel_fetchDocumentTypes_invalid_langcode_notpresent()'><b>kernel_fetchDocumentTypes_invalid_langcode_notpresent</b><br>Test class: io.mosip.kernel.tests.FetchDocumentTypes (kernel_fetchDocumentTypes_valid_smoke)<br>Parameters: invalid_langcode_notpresent</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDocumentTypes@75f9eccc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchDocumentTypes.kernel_fetchDocumentTypes_valid_smoke()'><b>kernel_fetchDocumentTypes_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchDocumentTypes (kernel_fetchDocumentTypes_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchDocumentTypes@75f9eccc</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchIDlist.kernel_fetchIDlist_invalid_langcode()'><b>kernel_fetchIDlist_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.FetchIDlist (kernel_fetchIDlist_valid_smoke)<br>Parameters: invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchIDlist@67e2d983</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchIDlist.kernel_fetchIDlist_valid_smoke()'><b>kernel_fetchIDlist_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchIDlist (kernel_fetchIDlist_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchIDlist@67e2d983</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchLocationHierarchy.kernel_fetchLocationHierarchy_invalid_langcode_empty()'><b>kernel_fetchLocationHierarchy_invalid_langcode_empty</b><br>Test class: io.mosip.kernel.tests.FetchLocationHierarchy (kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode)<br>Parameters: invalid_langcode_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchLocationHierarchy@5d47c63f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchLocationHierarchy.kernel_fetchLocationHierarchy_invalid_langcode_notpresent()'><b>kernel_fetchLocationHierarchy_invalid_langcode_notpresent</b><br>Test class: io.mosip.kernel.tests.FetchLocationHierarchy (kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode)<br>Parameters: invalid_langcode_notpresent</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchLocationHierarchy@5d47c63f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchLocationHierarchy.kernel_fetchLocationHierarchy_invalid_langcode_withlangcodeOnly_notpresent()'><b>kernel_fetchLocationHierarchy_invalid_langcode_withlangcodeOnly_notpresent</b><br>Test class: io.mosip.kernel.tests.FetchLocationHierarchy (kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode)<br>Parameters: invalid_langcode_withlangcodeOnly_notpresent</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchLocationHierarchy@5d47c63f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchLocationHierarchy.kernel_fetchLocationHierarchy_invalid_locationcode_notpresent()'><b>kernel_fetchLocationHierarchy_invalid_locationcode_notpresent</b><br>Test class: io.mosip.kernel.tests.FetchLocationHierarchy (kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode)<br>Parameters: invalid_locationcode_notpresent</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchLocationHierarchy@5d47c63f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchLocationHierarchy.kernel_fetchLocationHierarchy_valid_smoke()'><b>kernel_fetchLocationHierarchy_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchLocationHierarchy (kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchLocationHierarchy@5d47c63f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchLocationHierarchy.kernel_fetchLocationHierarchy_valid_smoke_locationHierarchy()'><b>kernel_fetchLocationHierarchy_valid_smoke_locationHierarchy</b><br>Test class: io.mosip.kernel.tests.FetchLocationHierarchy (kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode)<br>Parameters: valid_smoke_locationHierarchy</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchLocationHierarchy@5d47c63f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchLocationHierarchy.kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode()'><b>kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode</b><br>Test class: io.mosip.kernel.tests.FetchLocationHierarchy (kernel_fetchLocationHierarchy_valid_smoke_withonlylangcode)<br>Parameters: valid_smoke_withonlylangcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchLocationHierarchy@5d47c63f</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRejectionReason.kernel_fetchRejectionReason_invalid_langcode()'><b>kernel_fetchRejectionReason_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.FetchRejectionReason (kernel_fetchRejectionReason_valid_smoke)<br>Parameters: invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRejectionReason@589b3632</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRejectionReason.kernel_fetchRejectionReason_invalid_langcode_empty()'><b>kernel_fetchRejectionReason_invalid_langcode_empty</b><br>Test class: io.mosip.kernel.tests.FetchRejectionReason (kernel_fetchRejectionReason_valid_smoke)<br>Parameters: invalid_langcode_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRejectionReason@589b3632</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRejectionReason.kernel_fetchRejectionReason_invalid_reasoncategorycode()'><b>kernel_fetchRejectionReason_invalid_reasoncategorycode</b><br>Test class: io.mosip.kernel.tests.FetchRejectionReason (kernel_fetchRejectionReason_valid_smoke)<br>Parameters: invalid_reasoncategorycode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRejectionReason@589b3632</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRejectionReason.kernel_fetchRejectionReason_invalid_reasoncategorycode_empty()'><b>kernel_fetchRejectionReason_invalid_reasoncategorycode_empty</b><br>Test class: io.mosip.kernel.tests.FetchRejectionReason (kernel_fetchRejectionReason_valid_smoke)<br>Parameters: invalid_reasoncategorycode_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRejectionReason@589b3632</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchRejectionReason.kernel_fetchRejectionReason_valid_smoke()'><b>kernel_fetchRejectionReason_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchRejectionReason (kernel_fetchRejectionReason_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchRejectionReason@589b3632</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTitle.kernel_fetchTitle_invalid_langcode()'><b>kernel_fetchTitle_invalid_langcode</b><br>Test class: io.mosip.kernel.tests.FetchTitle (kernel_fetchTitle_valid_smoke)<br>Parameters: invalid_langcode</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchTitle@4c6e276e</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTitle.kernel_fetchTitle_invalid_langcode_empty()'><b>kernel_fetchTitle_invalid_langcode_empty</b><br>Test class: io.mosip.kernel.tests.FetchTitle (kernel_fetchTitle_valid_smoke)<br>Parameters: invalid_langcode_empty</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchTitle@4c6e276e</td></tr>
+<tr>
+<td title='io.mosip.kernel.tests.FetchTitle.kernel_fetchTitle_valid_smoke()'><b>kernel_fetchTitle_valid_smoke</b><br>Test class: io.mosip.kernel.tests.FetchTitle (kernel_fetchTitle_valid_smoke)<br>Parameters: valid_smoke</td>
+<td></td>
+<td>0</td>
+<td>io.mosip.kernel.tests.FetchTitle@4c6e276e</td></tr>
+</table><p>
+</body>
+</html>

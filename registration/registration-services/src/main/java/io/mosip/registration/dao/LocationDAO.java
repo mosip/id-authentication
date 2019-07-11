@@ -5,16 +5,16 @@ import java.util.List;
 import io.mosip.registration.entity.Location;
 
 /**
- * DAO class for Location
+ * This class is used to fetch all the locations present in the {@link Location} table.
  * 
  * @author Brahmananda Reddy
  *
  */
 public interface LocationDAO {
 	/**
-	 * This method fetches the locations
+	 * This method is used to fetch all the locations from {@link Location} table.
 	 * 
-	 * @return the {@link List} of locations
+	 * @return the list of locations
 	 */
 
 	List<Location> getLocations();

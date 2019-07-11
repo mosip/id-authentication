@@ -16,12 +16,18 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -32,11 +38,13 @@ import io.mosip.registration.processor.core.exception.PacketDecryptionFailureExc
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTO;
 import io.mosip.registration.processor.core.kernel.master.dto.UserResponseDTOWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationDTO;
 import io.mosip.registration.processor.manual.verification.dto.ManualVerificationStatus;
 import io.mosip.registration.processor.manual.verification.dto.UserDto;
@@ -76,11 +84,10 @@ public class ManualVerificationServiceTest {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 	@Mock
 	PacketManager filesystemCephAdapterImpl;
-	
+
 	@Mock
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
-	
 	@Mock
 	private BasePacketRepository<ManualVerificationEntity, String> basePacketRepository;
 	@Mock
@@ -99,6 +106,16 @@ public class ManualVerificationServiceTest {
 	private UserResponseDTOWrapper userResponseDTOWrapper = new UserResponseDTOWrapper();
 	private List<UserResponseDTO> userResponseDto = new ArrayList<>();
 	private UserResponseDTO userResponseDTO = new UserResponseDTO();
+
+	@Mock
+	LogDescription description;
+
+	@Mock
+	ObjectMapper mapper;
+
+	@Mock
+	RegistrationExceptionMapperUtil registrationExceptionMapperUtil;
+
 
 	@Before
 	public void setup()
@@ -139,7 +156,8 @@ public class ManualVerificationServiceTest {
 		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(), "DEMO"))
 				.thenReturn(entities);
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString())).thenReturn(entities);
-
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(registrationExceptionMapperUtil.getStatusCode(any())).thenReturn("ERROR");
 		userResponseDTO.setStatusCode("ACT");
 		userResponseDTOWrapper.setUserResponseDto(userResponseDto);
 		responseWrapper.setResponse(userResponseDTOWrapper);
@@ -147,7 +165,7 @@ public class ManualVerificationServiceTest {
 	}
 
 	@Test
-	public void assignStatusMethodCheck() {
+	public void assignStatusMethodCheck() throws JsonParseException, JsonMappingException, java.io.IOException {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString())).thenReturn(entities);
 		dto.setMatchType("DEMO");
 		dto.setUserId("110003");
@@ -155,6 +173,7 @@ public class ManualVerificationServiceTest {
 		userResponseDTO.setStatusCode("ACT");
 		userResponseDto.add(userResponseDTO);
 		userResponseDTOWrapper.setUserResponseDto(userResponseDto);
+		Mockito.when(mapper.readValue(anyString(),any(Class.class))).thenReturn(userResponseDTOWrapper);
 		responseWrapper.setResponse(userResponseDTOWrapper);
 		try {
 			Mockito.doReturn(responseWrapper).when(restClientService).getApi(any(), any(), any(), any(), any());
@@ -166,8 +185,32 @@ public class ManualVerificationServiceTest {
 
 	}
 
+	@Test(expected=UserIDNotPresentException.class)
+	public void assignStatusMethodNullIdCheck() throws JsonParseException, JsonMappingException, java.io.IOException {
+		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
+				.thenReturn(entitiesTemp);
+		Mockito.when(basePacketRepository.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
+		dto.setMatchType("DEMO");
+		dto.setUserId(null);
+
+		userResponseDTO.setStatusCode("ACT");
+		userResponseDto.add(userResponseDTO);
+		userResponseDTOWrapper.setUserResponseDto(userResponseDto);
+		Mockito.when(mapper.readValue(anyString(),any(Class.class))).thenReturn(userResponseDTOWrapper);
+		responseWrapper.setResponse(userResponseDTOWrapper);
+		try {
+			Mockito.doReturn(responseWrapper).when(restClientService).getApi(any(), any(), any(), any(), any());
+		} catch (ApisResourceAccessException e) {
+			e.printStackTrace();
+		}
+
+		manualAdjudicationService.assignApplicant(dto);
+	}
+	
+	
+	
 	@Test
-	public void assignStatusMethodNullEntityCheck() {
+	public void assignStatusMethodNullEntityCheck() throws JsonParseException, JsonMappingException, java.io.IOException {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
 		Mockito.when(basePacketRepository.update(manualVerificationEntity)).thenReturn(manualVerificationEntity);
@@ -177,6 +220,7 @@ public class ManualVerificationServiceTest {
 		userResponseDTO.setStatusCode("ACT");
 		userResponseDto.add(userResponseDTO);
 		userResponseDTOWrapper.setUserResponseDto(userResponseDto);
+		Mockito.when(mapper.readValue(anyString(),any(Class.class))).thenReturn(userResponseDTOWrapper);
 		responseWrapper.setResponse(userResponseDTOWrapper);
 		try {
 			Mockito.doReturn(responseWrapper).when(restClientService).getApi(any(), any(), any(), any(), any());
@@ -188,7 +232,7 @@ public class ManualVerificationServiceTest {
 	}
 
 	@Test(expected = NoRecordAssignedException.class)
-	public void noRecordAssignedExceptionAssignStatus() {
+	public void noRecordAssignedExceptionAssignStatus() throws JsonParseException, JsonMappingException, java.io.IOException {
 		Mockito.when(basePacketRepository.getAssignedApplicantDetails(anyString(), anyString()))
 				.thenReturn(entitiesTemp);
 		Mockito.when(basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(), "DEMO"))
@@ -199,6 +243,8 @@ public class ManualVerificationServiceTest {
 		userResponseDTO.setStatusCode("ACT");
 		userResponseDto.add(userResponseDTO);
 		userResponseDTOWrapper.setUserResponseDto(userResponseDto);
+		Mockito.when(mapper.readValue(anyString(),any(Class.class))).thenReturn(userResponseDTOWrapper);
+
 		responseWrapper.setResponse(userResponseDTOWrapper);
 		try {
 			Mockito.doReturn(responseWrapper).when(restClientService).getApi(any(), any(), any(), any(), any());
@@ -209,13 +255,13 @@ public class ManualVerificationServiceTest {
 	}
 
 	@Test(expected = MatchTypeNotFoundException.class)
-	public void noMatchTypeNotFoundException() {
+	public void noMatchTypeNotFoundException() throws JsonParseException, JsonMappingException, java.io.IOException {
 		dto.setMatchType("test");
 		dto.setUserId("110003");
-
 		userResponseDTO.setStatusCode("ACT");
 		userResponseDto.add(userResponseDTO);
 		userResponseDTOWrapper.setUserResponseDto(userResponseDto);
+		Mockito.when(mapper.readValue(anyString(),any(Class.class))).thenReturn(userResponseDTOWrapper);
 		responseWrapper.setResponse(userResponseDTOWrapper);
 		try {
 			Mockito.doReturn(responseWrapper).when(restClientService).getApi(any(), any(), any(), any(), any());
@@ -236,6 +282,15 @@ public class ManualVerificationServiceTest {
 		} catch (ApisResourceAccessException e) {
 			e.printStackTrace();
 		}
+		manualAdjudicationService.assignApplicant(dto);
+	}
+	
+	@Test(expected = UserIDNotPresentException.class)
+	public void ApisResourceAccessExceptionTest() throws ApisResourceAccessException {
+		dto.setUserId("dummyID");
+		dto.setMatchType("DEMO");
+		Mockito.doThrow(ApisResourceAccessException.class).when(restClientService).getApi(any(), any(), any(), any(), any());
+		
 		manualAdjudicationService.assignApplicant(dto);
 	}
 
@@ -297,6 +352,7 @@ public class ManualVerificationServiceTest {
 
 	}
 
+	
 	@Test
 	public void updatePacketStatusApprovalMethodCheck() {
 		Mockito.when(basePacketRepository.getSingleAssignedRecord(anyString(), anyString(), anyString(), anyString()))

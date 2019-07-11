@@ -9,7 +9,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity Class for Gender.
+ * This Entity Class contains list of gender types that are being used in 
+ * Registration with respect to language code
+ * The data for this table will come through sync from server master table 
  * 
  * @author Sreekar Chukka
  * @version 1.0

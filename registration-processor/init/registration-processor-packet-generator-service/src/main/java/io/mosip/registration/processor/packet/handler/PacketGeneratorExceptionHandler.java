@@ -6,30 +6,24 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.signatureutil.spi.SignatureUtil;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.packet.service.dto.PacketGeneratorResponseDto;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.packet.service.exception.RegBaseUnCheckedException;
-import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
-import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 
 /**
  * The Class PacketGeneratorExceptionHandler.
@@ -53,17 +47,13 @@ public class PacketGeneratorExceptionHandler {
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorExceptionHandler.class);
 
-	/*@Autowired
-	SignatureUtil signatureUtil;*/
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<Object> accessDenied(AccessDeniedException e) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				e.getErrorCode(), e.getMessage());
+		return packetGenExceptionResponse((Exception) e);
+	}
 
-	private static final String RESPONSE_SIGNATURE = "Response-Signature";
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> accessDenied(AccessDeniedException e) {
-        regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
-                e.getErrorCode(), e.getMessage());
-        return packetGenExceptionResponse((Exception) e);
-    }
 	/**
 	 * Badrequest.
 	 *
@@ -96,9 +86,10 @@ public class PacketGeneratorExceptionHandler {
 
 	@ExceptionHandler(InvalidTokenException.class)
 	protected ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException e, WebRequest request) {
-		return packetGenExceptionResponse((Exception)e);
+		return packetGenExceptionResponse((Exception) e);
 
 	}
+
 	/**
 	 * Packet gen exception response.
 	 *
@@ -137,11 +128,7 @@ public class PacketGeneratorExceptionHandler {
 		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		response.setVersion(env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION));
 		response.setResponse(null);
-		Gson gson = new GsonBuilder().create();
-
-		//HttpHeaders headers = new HttpHeaders();
-		//headers.add(RESPONSE_SIGNATURE,signatureUtil.signResponse(gson.toJson(response)).getData());
-		return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(response));
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
 

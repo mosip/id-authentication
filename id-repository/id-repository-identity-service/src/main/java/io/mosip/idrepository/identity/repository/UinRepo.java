@@ -14,10 +14,10 @@ import io.mosip.idrepository.identity.entity.Uin;
 public interface UinRepo extends JpaRepository<Uin, String> {
 	
 	/**
-	 * Gets the uin by refId 
-	 * 
-	 * @param regId
-	 * @return the Uin 
+	 * Gets the uin by refId .
+	 *
+	 * @param regId the reg id
+	 * @return the Uin
 	 */
 	@Query("select uinHash from Uin where regId = :regId")
 	String getUinHashByRid(@Param("regId") String regId);
@@ -42,7 +42,7 @@ public interface UinRepo extends JpaRepository<Uin, String> {
 	/**
 	 * Find by uin.
 	 *
-	 * @param uin the uin
+	 * @param uinHash the uin hash
 	 * @return the uin
 	 */
 	Uin findByUinHash(String uinHash);

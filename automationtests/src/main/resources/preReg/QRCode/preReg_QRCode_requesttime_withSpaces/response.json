@@ -1,0 +1,12 @@
+{
+    "id": "mosip.pre-registration.qrcode.generate",
+    "version": "1.0",
+    "responsetime": "2019-06-28T09:51:43.687Z",
+    "response": null,
+    "errors": [
+        {
+            "errorCode": "PRG_PAM_CORE_003",
+            "message": "Invalid request time"
+        }
+    ]
+}

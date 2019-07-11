@@ -24,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
@@ -61,6 +62,9 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private  RegistrationExternalStatusUtility regexternalstatusUtil;
 
+	@Mock
+	LogDescription description;
+	
 	List<RegistrationStatusDto> registrations = new ArrayList<>();
 
 	List<String> statusList;
@@ -68,6 +72,9 @@ public class RegistrationStatusServiceTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+
+		Mockito.doNothing().when(description).setMessage(any());
+		
 		registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setIsActive(true);
 		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_VIRUS_SCAN");
