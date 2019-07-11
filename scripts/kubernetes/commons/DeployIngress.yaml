@@ -198,6 +198,10 @@ spec:
         backend:
           serviceName: registration-processor-abis-middleware-stage
           servicePort: 8091
+      - path: /registrationprocessor/v1/reprocessor
+        backend:
+          serviceName: registration-processor-reprocessor-stage
+          servicePort: 8021
       - path: /config
         backend:
           serviceName: kernel-config-server
