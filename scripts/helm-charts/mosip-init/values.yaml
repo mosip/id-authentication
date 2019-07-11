@@ -73,10 +73,10 @@ deploymentsAndServices:
        dockerImageName: kernel-cryptomanager-service
     kernel-signature-service:
        servicePath: /v1/signature
-       servicePort: 8089
+       servicePort: 8092
        dockerImageName: kernel-signature-service
     kernel-uingenerator-service:
-       servicePath: /v1/cryptomanager
+       servicePath: /v1/uingenerator
        servicePort: 8080
        dockerImageName: kernel-uingenerator-service
        overideCommonEnvironmentVariables: true
@@ -249,7 +249,7 @@ deploymentsAndServices:
               valueFrom:
                 secretKeyRef:
                   name: config-server-keystore-values-secret
-                  key: secret
+                  key: alias
         volumes:
             config-server-secret-volume:
                 name: config-server-secret #secret with same name must be created
