@@ -202,6 +202,10 @@ spec:
         backend:
           serviceName: registration-processor-reprocessor-stage
           servicePort: 8021
+      - path: /registrationprocessor/v1/bioauth
+        backend:
+          serviceName: registration-processor-biometric-authentication-stage
+          servicePort: 8020
       - path: /config
         backend:
           serviceName: kernel-config-server
