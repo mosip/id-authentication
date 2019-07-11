@@ -47,14 +47,14 @@ public class CoreConfigBean {
 			List<ConfigStoreOptions> configStores = new ArrayList<>();
 			List<String> configUrls = CoreConfigBean.getUrls(environment);
 			configUrls.forEach(url -> {
-				configStores.add(new ConfigStoreOptions().setType(ConfigurationUtil.CONFIG_SERVER_TYPE)
-						.setConfig(new JsonObject().put("url", url).put("timeout",
-								Long.parseLong(ConfigurationUtil.CONFIG_SERVER_TIME_OUT))));
+				configStores.add(new ConfigStoreOptions().setType(ConfigurationUtil.CONFIG_SERVER_TYPE).setConfig(new JsonObject().put("url", url)
+						.put("timeout", Long.parseLong(ConfigurationUtil.CONFIG_SERVER_TIME_OUT))
+						.put("httpClientConfiguration", new JsonObject().put("trustAll", true).put("ssl", true))));
 			});
 			ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
 			configStores.forEach(configRetrieverOptions::addStore);
 			ConfigRetriever retriever = ConfigRetriever.create(vertx, configRetrieverOptions.setScanPeriod(0));
-			regProcLogger.info(this.getClass().getName(), "","","Getting values from config Server");
+			regProcLogger.info(this.getClass().getName(), "", "", "Getting values from config Server");
 			CompletableFuture<JsonObject> configLoader = new CompletableFuture<JsonObject>();
 			retriever.getConfig(json -> {
 				if (json.succeeded()) {
@@ -68,7 +68,8 @@ public class CoreConfigBean {
 					retriever.close();
 					vertx.close();
 				} else {
-					regProcLogger.info(this.getClass().getName(), "", json.cause().getLocalizedMessage(), json.cause().getMessage());
+					regProcLogger.info(this.getClass().getName(), "", json.cause().getLocalizedMessage(),
+							json.cause().getMessage());
 					json.otherwiseEmpty();
 					retriever.close();
 					vertx.close();
@@ -138,12 +139,12 @@ public class CoreConfigBean {
 	public DigitalSignatureUtility getDigitalSignatureUtility() {
 		return new DigitalSignatureUtility();
 	}
-	
+
 	@Bean
 	public LogDescription getLogDescription() {
 		return new LogDescription();
 	}
-	
+
 	@Bean
 	public RegistrationExceptionMapperUtil getRegistrationExceptionMapperUtil() {
 		return new RegistrationExceptionMapperUtil();

@@ -1,13 +1,12 @@
 {
-    "id": null,
-    "version": null,
-    "responsetime": "2019-06-02T11:15:42.291Z",
-    "metadata": null,
+    "id": "mosip.pre-registration.document.delete.specific",
+    "version": "1.0",
+    "responsetime": "2019-07-05T09:14:13.757Z",
     "response": null,
     "errors": [
         {
-            "errorCode": "PRG_CORE_REQ_016",
-            "message": "Required String parameter 'preRegistrationId' is not present"
+            "errorCode": "PRG_PAM_CORE_001",
+            "message": "request parameter is missing"
         }
     ]
 }

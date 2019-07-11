@@ -245,6 +245,8 @@ public class ReprocessorStage extends MosipVerticleManager {
 							description.setMessage(PlatformSuccessMessages.RPR_SENT_TO_REPROCESS_SUCCESS.getMessage());
 
 						}
+						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+								LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description.getMessage());
 						registrationStatusService.updateRegistrationStatus(dto);
 						String eventId = EventId.RPR_402.toString();
 						String eventName = EventName.UPDATE.toString();
@@ -261,8 +263,6 @@ public class ReprocessorStage extends MosipVerticleManager {
 				}
 
 			}
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					description.getCode(), "PacketValidatorStage::process()::exit");
 
 		} catch (TablenotAccessibleException e) {
 			isTransactionSuccessful = false;

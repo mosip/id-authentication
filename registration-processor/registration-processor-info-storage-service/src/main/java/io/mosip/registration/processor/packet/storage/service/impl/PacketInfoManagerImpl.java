@@ -1,19 +1,14 @@
 package io.mosip.registration.processor.packet.storage.service.impl;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.code.ApiName;
@@ -24,8 +19,6 @@ import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
-import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
-import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -41,7 +34,6 @@ import io.mosip.registration.processor.core.packet.dto.abis.RegDemoDedupeListDto
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
@@ -66,7 +58,6 @@ import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
-import lombok.Cleanup;
 
 /**
  * The Class PacketInfoManagerImpl.
@@ -129,10 +120,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Autowired
 	private PacketInfoDao packetInfoDao;
 
-	/** The filesystem ceph adapter impl. */
-	@Autowired
-	private PacketManager filesystemCephAdapterImpl;
-
 	/** The utility. */
 	@Autowired
 	private Utilities utility;
@@ -143,9 +130,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Value("${registration.processor.demodedupe.manualverification.status}")
 	private String manualVerificationStatus;
-
-	/** The pre reg id. */
-	private String preRegId;
 
 	/** The Constant MATCHED_REFERENCE_TYPE. */
 	private static final String MATCHED_REFERENCE_TYPE = "rid";
@@ -194,38 +178,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					qcUserId, "PacketInfoManagerImpl::getPacketsforQCUser()::exit");
-		}
-
-	}
-
-	/**
-	 * Gets the document as byte array.
-	 *
-	 * @param registrationId
-	 *            the registration id
-	 * @param documentName
-	 *            the document name
-	 * @return the document as byte array
-	 * @throws io.mosip.kernel.core.exception.IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
-	 */
-	private byte[] getDocumentAsByteArray(String registrationId, String documentName) throws PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
-		try {
-
-			@Cleanup
-			InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
-			byte[] buffer = new byte[1024];
-			int len;
-			@Cleanup
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			while ((len = in.read(buffer)) != -1) {
-				os.write(buffer, 0, len);
-			}
-			return os.toByteArray();
-		} catch (IOException e) {
-
-			return new byte[1];
 		}
 
 	}
@@ -291,7 +243,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	private void getRegistrationId(List<FieldValue> metaData) {
 		for (int i = 0; i < metaData.size(); i++) {
 			if ("preRegistrationId".equals(metaData.get(i).getLabel())) {
-				preRegId = metaData.get(i).getValue();
+				metaData.get(i).getValue();
 
 			}
 		}
@@ -336,6 +288,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
+		
 
 	}
 
@@ -353,6 +306,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			String registrationId) {
 		boolean isTransactionSuccessful = false;
 		LogDescription description=new LogDescription();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PacketInfoManagerImpl::saveIndividualDemographicDedupeUpdatePacket()::entry");
 		
 		try {
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
@@ -380,6 +335,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PacketInfoManagerImpl::saveIndividualDemographicDedupeUpdatePacket()::exit");
 
 	}
 
@@ -550,21 +507,19 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		LogDescription description=new LogDescription();
 		String regisId = "";
 		try {
-
+		
 			if (regAbisRefDto != null) {
 				regisId = regAbisRefDto.getReg_id();
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 						regisId, "PacketInfoManagerImpl::saveAbisRef()::entry");
+			
 				RegAbisRefEntity regAbisRefEntity = PacketInfoMapper.convertRegAbisRefToEntity(regAbisRefDto);
 				regAbisRefRepository.save(regAbisRefEntity);
 				isTransactionSuccessful = true;
 				description.setMessage("ABIS data saved successfully");
 			}
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regisId,
-					"PacketInfoManagerImpl::saveAbisRef()::exit");
 		} catch (DataAccessLayerException e) {
 			description.setMessage("DataAccessLayerException while saving the ABIS data" + "::" + e.getMessage());
-
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regisId, e);
@@ -580,6 +535,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString(), ApiName.AUDIT);
 
 		}
+		
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regisId,
+				"PacketInfoManagerImpl::saveAbisRef()::exit");
+	
 	}
 
 	/*
@@ -728,6 +687,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveBioRef(RegBioRefDto regBioRefDto) {
 		LogDescription description=new LogDescription();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoManagerImpl::saveBioRef()::entry");
+	
 		try {
 			RegBioRefEntity regBioRefEntity = PacketInfoMapper.convertBioRefDtoToEntity(regBioRefDto);
 			regBioRefRepository.save(regBioRefEntity);
@@ -738,6 +700,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regBioRefDto.getRegId(), e);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoManagerImpl::saveBioRef()::exit");
+	
+		
 	}
 
 	/*
@@ -751,6 +717,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	@Override
 	public void saveAbisRequest(AbisRequestDto abisRequestDto) {
 		LogDescription description=new LogDescription();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoManagerImpl::saveAbisRequest()::entry");
+	
 		
 		try {
 			AbisRequestEntity abisRequestEntity = PacketInfoMapper.convertAbisRequestDtoToEntity(abisRequestDto);
@@ -762,6 +731,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + abisRequestDto.getId(), e);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "PacketInfoManagerImpl::saveAbisRequest()::exit");
+	
 	}
 
 	/*

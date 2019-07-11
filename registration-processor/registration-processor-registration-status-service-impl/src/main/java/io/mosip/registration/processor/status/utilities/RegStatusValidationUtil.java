@@ -5,6 +5,7 @@ import io.mosip.registration.processor.status.exception.RegStatusValidationExcep
 
 /**
  * The Class RegStatusValidationUtil.
+ * 
  * @author Rishabh Keshari
  */
 public final class RegStatusValidationUtil {
@@ -18,8 +19,10 @@ public final class RegStatusValidationUtil {
 	/**
 	 * Get list of errors from error object.
 	 *
-	 * @param errors            the errors
-	 * @throws RegStatusValidationException the reg status validation exception
+	 * @param errors
+	 *            the errors
+	 * @throws RegStatusValidationException
+	 *             the reg status validation exception
 	 */
 	public static void validate(Errors errors) throws RegStatusValidationException {
 		if (errors.hasErrors()) {

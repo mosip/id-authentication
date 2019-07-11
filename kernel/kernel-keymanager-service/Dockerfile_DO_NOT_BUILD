@@ -1,4 +1,5 @@
-FROM docker-registry.mosip.io:5000/kernel-keymanager-softhsm:0.1
+ARG docker_registry_url=docker-registry.mosip.io:51000
+FROM ${docker_registry_url}/kernel-keymanager-softhsm:0.1
 
 # can be passed during Docker build as build time environment for github branch to pickup configuration from.
 ARG spring_config_label

@@ -154,14 +154,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisMiddlewareStage::process()::entry");
 		object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 		object.setIsValid(false);
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;
 		String description = "";
 		String registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "AbisMiddlewareStage::process()::entry");
 		InternalRegistrationStatusDto internalRegDto = registrationStatusService.getRegistrationStatus(registrationId);
 		try {
 			List<String> abisRefList = packetInfoManager.getReferenceIdByRid(registrationId);
@@ -235,8 +235,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			object.setInternalError(false);
 			isTransactionSuccessful = true;
 			description = "Abis insertRequests sucessfully sent to Queue";
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
 		} catch (RegistrationProcessorUnCheckedException | RegistrationProcessorCheckedException e) {
 			object.setInternalError(true);
 			object.setIsValid(false);
@@ -274,8 +274,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisMiddlewareStage::process()::Exit");
+
 		return object;
 	}
 
@@ -298,7 +297,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			List<String> registrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(bioRefId);
 			internalRegStatusDto = registrationStatusService.getRegistrationStatus(registrationIds.get(0));
 			registrationId = internalRegStatusDto.getRegistrationId();
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"AbisMiddlewareStage::consumerListener()::response from abis for requestId ::" + requestId);
 
 			AbisRequestDto abisCommonRequestDto = packetInfoManager.getAbisRequestByRequestId(requestId);

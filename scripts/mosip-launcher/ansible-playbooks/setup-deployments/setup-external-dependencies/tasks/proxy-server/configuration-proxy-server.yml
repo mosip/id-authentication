@@ -127,6 +127,10 @@
   yum:
     name: python2-certbot-nginx
     state: present
+    
+- name: nginx network connectivity settings
+  become: yes
+  command: setsebool -P httpd_can_network_connect 1
 
 - name: Generating ssl certs for nginx for proxy server for {{ env_name  }}
   become: yes

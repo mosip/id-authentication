@@ -88,6 +88,9 @@ public class PrintPostServiceImpl {
 	@SuppressWarnings("unchecked")
 	protected boolean consumeLogic(Message message, MosipQueue queue, MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
 		boolean isPdfAddedtoQueue = false;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PrintPostServiceImpl::consumeLogic()::entry");
+
 		PrintQueueDTO printQueueDTO = new PrintQueueDTO();
 		try {
 			JSONObject response;
@@ -132,6 +135,9 @@ public class PrintPostServiceImpl {
 					printQueueDTO.getUin(), PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"PrintPostServiceImpl::consumeLogic()::exit");
+
 		return isPdfAddedtoQueue;
 	}
 

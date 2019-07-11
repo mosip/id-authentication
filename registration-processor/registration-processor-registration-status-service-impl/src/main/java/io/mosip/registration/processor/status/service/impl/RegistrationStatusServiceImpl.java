@@ -72,7 +72,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 		LogDescription description=new LogDescription();
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-				registrationId, "RegistrationStatusServiceImpl::InternalRegistrationStatusDto()::entry");
+				registrationId, "RegistrationStatusServiceImpl::getRegistrationStatus()::entry");
 		try {
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 			isTransactionSuccessful = true;
@@ -80,7 +80,7 @@ implements RegistrationStatusService<String, InternalRegistrationStatusDto, Regi
 			description.setMessage("Get registration status by registration id is successful");
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
-					registrationId, "RegistrationStatusServiceImpl::InternalRegistrationStatusDto()::exit");
+					registrationId, "RegistrationStatusServiceImpl::getRegistrationStatus()::exit");
 
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {

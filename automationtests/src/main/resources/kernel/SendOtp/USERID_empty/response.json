@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-07-05T09:26:13.692Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-OTG-001",
+      "message": "request.key: Key can't be empty or null"
+    }
+  ]
+}

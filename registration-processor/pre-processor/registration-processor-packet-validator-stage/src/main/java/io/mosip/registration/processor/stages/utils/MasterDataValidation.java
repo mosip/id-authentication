@@ -94,6 +94,8 @@ public class MasterDataValidation {
 	 *            the json string @return the boolean @throws
 	 */
 	public Boolean validateMasterData(String jsonString) throws ApisResourceAccessException, IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"MasterDataValidation::validateMasterData()::entry");
 		boolean isValid = false;
 		String primaryLanguage = env.getProperty(PRIMARY_LANGUAGE);
 		String secondaryLanguage = env.getProperty(SECONDARY_LANGUAGE);
@@ -187,10 +189,15 @@ public class MasterDataValidation {
 				List<String> pathsegmentsEng = new ArrayList<>();
 
 				pathsegmentsEng.add(value);
-                ResponseWrapper<StatusResponseDto> responseWrapper =  (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
+
+				ResponseWrapper<StatusResponseDto> responseWrapper = (ResponseWrapper<StatusResponseDto>) registrationProcessorRestService
 						.getApi(ApiName.valueOf(key.toUpperCase()), pathsegmentsEng, "", "", ResponseWrapper.class);
 				statusResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 						StatusResponseDto.class);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"MasterDataValidation::validateIdentityValues():: MasterData Api call  ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(statusResponseDto));
 				if (statusResponseDto.getStatus().equalsIgnoreCase(VALID))
 					isvalidateIdentity = true;
 			} catch (ApisResourceAccessException ex) {
