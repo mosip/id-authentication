@@ -171,7 +171,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				/* Get Scheduler frequency from global param */
 				String syncDataFreq = getGlobalConfigValueOf(RegistrationConstants.SYNC_DATA_FREQ);
 
-				if (syncDataFreq != null) {
+				if (!isNull(syncDataFreq)) {
 					List<SyncJobDef> jobsToBeUpdated = new LinkedList<>();
 
 					/* Store the jobs to be updated */
@@ -264,7 +264,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private void loadScheduler(ResponseDTO responseDTO) {
 		syncActiveJobMap.forEach((jobId, syncJob) -> {
 			try {
-				if (syncJob.getParentSyncJobId() == null && syncJob.getApiName() != null
+				if (isNull(syncJob.getParentSyncJobId()) && !isNull(syncJob.getApiName())
 						&& responseDTO.getErrorResponseDTOs() == null && isSchedulerRunning()
 						&& !schedulerFactoryBean.getScheduler().checkExists(new JobKey(jobId))) {
 
@@ -434,7 +434,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 			SyncJobDef syncJobDef = syncActiveJobMap.get(jobId);
 
-			if (syncJobDef != null && syncJobDef.getApiName() != null) {
+			if (syncJobDef != null && !isNull(syncJobDef.getApiName())) {
 				// Get Job using application context and api name
 				baseJob = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
@@ -451,7 +451,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				} else {
 					/* Child Job's check */
 					syncJobMap.forEach((jobIdForChild, childJob) -> {
-						if (childJob.getParentSyncJobId() != null && childJob.getParentSyncJobId().equals(jobId)) {
+						if (!isNull(childJob.getParentSyncJobId()) && childJob.getParentSyncJobId().equals(jobId)) {
 							baseJob.addToCompletedJobMap(jobIdForChild, RegistrationConstants.JOB_EXECUTION_FAILURE);
 						}
 					});
@@ -681,8 +681,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	private void executeMissedTriggers(Map<String, SyncJobDef> map) {
 
 		map.forEach((jobId, syncJob) -> {
-			if (syncJob.getParentSyncJobId() == null && syncJob.getSyncFrequency() != null
-					&& syncJob.getApiName() != null) {
+			if (isNull(syncJob.getParentSyncJobId()) && !isNull(syncJob.getSyncFrequency())
+					&& !isNull(syncJob.getApiName())) {
 				/* An A-sync task to complete missed trigger */
 				new Thread(() -> executeMissedTrigger(jobId, syncJob.getSyncFrequency())).start();
 			}
@@ -706,9 +706,7 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
 			if ((!offlineJobs.contains(syncJob.getKey()) && !unTaggedJobs.contains(syncJob.getKey()))
-					&& (syncJob.getValue().getParentSyncJobId() == null
-							|| syncJob.getValue().getParentSyncJobId().equalsIgnoreCase("NULL"))
-					&& syncJob.getValue().getApiName() != null) {
+					&& (isNull(syncJob.getValue().getParentSyncJobId()) && !isNull(syncJob.getValue().getApiName()))) {
 
 				String triggerPoint = getUserIdFromSession().equals(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM)
 						? RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM
