@@ -128,7 +128,7 @@ The key solution considerations are --
         the current controller class as an argument to callback the
         process once authentication completed.
 
-    -   **updateRegistration(List\<Registration\>) --** Once the
+    -   **updateRegistration(String registrationID, String statusComments, String clientStatusCode) --** Once the
         required registration ids are selected and clicked on the
         approval/ rejected/ onhold and authenticated by user then this
         method will be invoked and pass the required detail to
@@ -174,11 +174,11 @@ The key solution considerations are --
 -   Create **RegistrationApprovalServiceImpl** and create DTO for the
     same.
 
-    -   **getEnrollmentByStatus(String statusCd)** -- invokes the DAO
+    -   **getEnrollmentByStatus(String statusCode)** -- invokes the DAO
         class and fetch the client status code specific data from db and
         return the same to Controller class.
 
-    -   **updateRegistration(List\<Registration\>)** -- it collects the
+    -   **updateRegistration(String registrationID, String statusComments, String clientStatusCode)** -- it collects the
         information from controller and invoke the DAO class .
 
     -   
@@ -188,7 +188,7 @@ The key solution considerations are --
     -   **getEnrollmentByStatus(String statusCd)** -- return all the
         registration detail based on the provided client status code.
 
-    -   **updateRegistration(List\<Registration\>)** -- this method
+    -   **updateRegistration(String registrationID, String statusComments, String clientStatusCode)** -- this method
         updates the selected record status in the DB by calling the
         respective JPA repository interface.
 
@@ -226,5 +226,6 @@ Re-RegistrationServiceImpl.java  
 
 **DTO**: RegistrationApprovalDTO.java
 
-![Sequence and Class Diagram: for pending approval / action and
-Re-Registration case] (_images/reg_eod_process_class_seq_diagram.png)
+**Sequence and Class Diagram**
+
+![EOD Process ](_images/reg_eod_process_class_seq_diagram.png)

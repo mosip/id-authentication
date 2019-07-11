@@ -64,6 +64,6 @@ public class IrisValidatorTest {
 	
 	@Test
 	public void validateAuthTest() {
-		assertNull(irsiValidatorImpl.validate("mosip","123"));
+		assertNull(irsiValidatorImpl.validate("mosip","123", true));
 	}
 }

@@ -241,5 +241,11 @@ public class JsonUtil {
 		return javaObject;
 
 	}
+	
+	
+	public static String objectMapperObjectToJson(Object obj) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.writeValueAsString(obj);
+	} 
 
 }

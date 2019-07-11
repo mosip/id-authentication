@@ -3,7 +3,7 @@ package io.mosip.registration.dao;
 import io.mosip.registration.entity.KeyStore;
 
 /**
- * DAO class for PolicySync
+ * This class is used to store the public key.
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0
@@ -13,7 +13,7 @@ public interface PolicySyncDAO {
 	
 
 	/**
-	 * Update policy.
+	 * This will store the public key as {@link KeyStore}
 	 *
 	 * @param keyStore the key store
 	 */
@@ -27,7 +27,7 @@ public interface PolicySyncDAO {
 	KeyStore findByMaxExpireTime();
 	
 	/**
-	 * Find public key.
+	 * This method will get the public key from the DB
 	 *
 	 * @param refId the ref id
 	 * @return the key store

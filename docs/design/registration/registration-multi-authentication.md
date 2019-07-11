@@ -16,7 +16,7 @@ The **target users** are
 
 The key **requirements** are
 
--   Login - user should have the facility to login with muti factors based on configuration, which is synced 
+-   Login - user should have the facility to login with multi factors based on configuration, which is synced 
     from server.
 -   Registration Authentication by Officer - user should have the facility to authenticate the registration 
     process with muti factors based on configuration, which is synced from server.

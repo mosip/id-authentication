@@ -69,8 +69,7 @@ The key solution considerations are -
 -   Create ***RegistrationPacketStatusService*** and create DTO and DAO
     layer for status updation.
 
-    -   Get list of registration packet by status \[Status: POST
-        SYNCHED\].
+    -   Get list of registration packet by status \[Status: PUSHED\].
 
     -   Call the Rest API to fetch the status of the list of packet ids.
 

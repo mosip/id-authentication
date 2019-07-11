@@ -6,7 +6,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
 
 /**
- * DAO class for SyncJobDAO.
+ *This DAO class will be used to get all the Sync job details.
  *
  * @author Chukka Sreekar
  * @since 1.0.0

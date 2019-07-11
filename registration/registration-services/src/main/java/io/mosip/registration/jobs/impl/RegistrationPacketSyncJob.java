@@ -15,7 +15,18 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.packet.RegPacketStatusService;
 
 /**
- * This is a job to sync the packet status
+ * The {@code RegistrationPacketSyncJob} is a job to sync the packet status
+ * which extends {@code BaseJob}
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch
+ * </p>
  * 
  * @author SARAVANAKUMAR G
  * @since 1.0.0
@@ -27,7 +38,7 @@ public class RegistrationPacketSyncJob extends BaseJob {
 	/**
 	 * The RegPacketStatusServiceImpl
 	 */
-	
+
 	@Autowired
 	private RegPacketStatusService regPacketStatusService;
 
@@ -50,10 +61,10 @@ public class RegistrationPacketSyncJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			
+
 			this.jobId = loadContext(context);
 			regPacketStatusService = applicationContext.getBean(RegPacketStatusService.class);
-			
+
 			// Run the Parent JOB always first
 			this.responseDTO = regPacketStatusService.syncPacket(triggerPoint);
 
@@ -65,9 +76,8 @@ public class RegistrationPacketSyncJob extends BaseJob {
 			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB,
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					baseUncheckedException.getMessage());
+			LOGGER.error(LoggerConstants.REG_PACKET_SYNC_STATUS_JOB, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
 

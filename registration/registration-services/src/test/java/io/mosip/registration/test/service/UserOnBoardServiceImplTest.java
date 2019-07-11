@@ -1,7 +1,10 @@
 package io.mosip.registration.test.service;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.net.SocketTimeoutException;
 import java.security.PublicKey;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -832,10 +835,13 @@ public class UserOnBoardServiceImplTest {
 		Mockito.when(userOnBoardDao.getStationID(Mockito.anyString())).thenReturn("1947");
 		Mockito.when(userOnBoardDao.getCenterID(Mockito.anyString())).thenThrow(RegBaseCheckedException.class);
 		
-		userOnboardServiceImpl.getMachineCenterId();
-		
-		
-		
+		userOnboardServiceImpl.getMachineCenterId();	
+	}
+	
+	@Test
+	public void getLastUpdatedTime() {
+		Mockito.when(userOnBoardDao.getLastUpdatedTime(Mockito.anyString())).thenReturn(new Timestamp(System.currentTimeMillis()));
+		assertNotNull(userOnboardServiceImpl.getLastUpdatedTime("User123"));
 	}
 	
 

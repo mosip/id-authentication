@@ -148,6 +148,20 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 		List<UserPassword> userPassword = new ArrayList<>();
 		try {
 
+			// deleting Role if Exist
+			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Deleting User role if exist....");
+			userDetailsResponse.getUserDetails().forEach(userRole -> {
+				userRole.getRoles().forEach(userRoleId -> {
+					UserRoleID roleId = new UserRoleID();
+					roleId.setRoleCode(userRoleId);
+					roleId.setUsrId(userRole.getUserName());
+					userRoleRepository.deleteByUserRoleID(roleId);
+				});
+
+			});
+
+			
+			// Saving User Details user name and password
 			userDetailsResponse.getUserDetails().forEach(userDtals -> {
 
 				UserDetail userDtls = new UserDetail();
@@ -156,7 +170,7 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 				usrPwd.setUsrId(userDtals.getUserName());
 				usrPwd.setPwd(CryptoUtil.encodeBase64(userDtals.getUserPassword()));
 				usrPwd.setStatusCode("00");
-				usrPwd.setIsActive(true);
+				usrPwd.setIsActive(userDtls.getIsActive() != null ? userDtls.getIsActive().booleanValue() : true);
 				usrPwd.setLangCode(ApplicationContext.applicationLanguage());
 				if (SessionContext.isSessionContextAvailable()) {
 					usrPwd.setCrBy(SessionContext.userContext().getUserId());
@@ -178,20 +192,19 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 					userDtls.setCrBy(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 				}
 				userDtls.setCrDtime(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
-				userDtls.setIsActive(true);
+				userDtls.setIsActive(userDtls.getIsActive() != null ? userDtls.getIsActive().booleanValue() : true);
 				userDtls.setStatusCode("00");
 				userList.add(userDtls);
-
 			});
 
 			userDetailRepository.saveAll(userList);
-
 			userPwdRepository.saveAll(userPassword);
 
+			// Saving User Roles
 			userDetailsResponse.getUserDetails().forEach(role -> {
 
 				UserRole roles = new UserRole();
-				roles.setIsActive(true);
+				roles.setIsActive(role.getIsActive() != null ? role.getIsActive().booleanValue() : true);
 				roles.setLangCode(ApplicationContext.applicationLanguage());
 				if (SessionContext.isSessionContextAvailable()) {
 					roles.setCrBy(SessionContext.userContext().getUserId());
@@ -209,8 +222,6 @@ public class UserDetailDAOImpl implements UserDetailDAO {
 
 			});
 			
-			
-
 			LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Leaving user detail save method...");
 
 		} catch (RuntimeException exRuntimeException) {

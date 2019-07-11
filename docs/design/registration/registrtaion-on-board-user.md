@@ -90,4 +90,4 @@ The key solution considerations are --
     - Encrypt the Hash value using session key using kernel library.  
     - Encrypt the session key using Public key > [EncryptorImpl.asymmetricPublicEncrypt()].  
     
-![User On boarding sequence diagram](_images/UserOnBoardingSequnceDiagram.png)
+![User On boarding sequence diagram](_images/_sequence_diagram/UserOnBoard_seq.png)

@@ -61,6 +61,8 @@ import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 @ActiveProfiles("test")
 public class IdRepoControllerTest {
 
+	private static final String TYPE = "type";
+
 	private static final String REGISTRATION_ID = "registrationId";
 
 	private static final String UIN = "UIN";
@@ -152,22 +154,26 @@ public class IdRepoControllerTest {
 	 * @throws JsonMappingException
 	 * @throws JsonParseException
 	 */
-	@Test(expected = IdRepoAppException.class)
-	public void testAddIdentityException()
-			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		IdRequestDTO request = new IdRequestDTO();
-		request.setId("mosip.id.create");
-		RequestDTO requestDTO = new RequestDTO();
-		Object identity = mapper.readValue(
-				"{\"UIN\":6743571690,\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
-						.getBytes(),
-				Object.class);
-		requestDTO.setIdentity(identity);
-		request.setRequest(requestDTO);
-		when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException(null, null));
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
-		errors.reject("errorCode");
-		controller.addIdentity(request, errors);
+	@Test
+	public void testAddIdentityException() throws Throwable {
+		try {
+			IdRequestDTO request = new IdRequestDTO();
+			request.setId("mosip.id.create");
+			RequestDTO requestDTO = new RequestDTO();
+			Object identity = mapper.readValue(
+					"{\"UIN\":6743571690,\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+							.getBytes(),
+					Object.class);
+			requestDTO.setIdentity(identity);
+			request.setRequest(requestDTO);
+			when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException(null, null));
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
+			errors.reject("errorCode");
+			controller.addIdentity(request, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
 	}
 
 	/**
@@ -200,12 +206,18 @@ public class IdRepoControllerTest {
 	 *
 	 * @throws IdRepoAppException the id repo app exception
 	 */
-	@Test(expected = IdRepoAppException.class)
-	public void testRetrieveIdentityInvalidUin() throws IdRepoAppException {
-		when(idRepoService.retrieveIdentityByUin(any(), any()))
-				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
-		controller.retrieveIdentityByUin("1234", "demo");
+	@Test
+	public void testRetrieveIdentityInvalidUin() throws Throwable {
+		try {
+			when(idRepoService.retrieveIdentityByUin(any(), any()))
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
+			controller.retrieveIdentityByUin("1234", "demo");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN),
+					e.getErrorText());
+		}
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -240,46 +252,58 @@ public class IdRepoControllerTest {
 		requestDTO.setIdentity(identity);
 		request.setRequest(requestDTO);
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
-		controller.updateIdentity(request, errors);
+		ResponseEntity<IdResponseDTO> updateIdentity = controller.updateIdentity(request, errors);
+		assertEquals(response, updateIdentity.getBody());
+		assertEquals(HttpStatus.OK, updateIdentity.getStatusCode());
 	}
 
-	@Test(expected = IdRepoAppException.class)
-	public void updateIdentityInvalidId()
-			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		when(idRepoService.updateIdentity(any(), any()))
-				.thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
-		IdRequestDTO request = new IdRequestDTO();
-		request.setId("mosip.id.update");
-		RequestDTO requestDTO = new RequestDTO();
-		Object identity = mapper.readValue(
-				"{\"UIN\":6743571690,\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
-						.getBytes(),
-				Object.class);
-		requestDTO.setIdentity(identity);
-		request.setRequest(requestDTO);
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
-		controller.updateIdentity(request, errors);
+	@Test
+	public void updateIdentityInvalidId() throws Throwable {
+		try {
+			when(idRepoService.updateIdentity(any(), any()))
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
+			IdRequestDTO request = new IdRequestDTO();
+			request.setId("mosip.id.update");
+			RequestDTO requestDTO = new RequestDTO();
+			Object identity = mapper.readValue(
+					"{\"UIN\":6743571690,\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+							.getBytes(),
+					Object.class);
+			requestDTO.setIdentity(identity);
+			request.setRequest(requestDTO);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
+			controller.updateIdentity(request, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN),
+					e.getErrorText());
+		}
+
 	}
 
-	@Test(expected = IdRepoAppException.class)
-	public void updateIdentityIdRepoDataValidationException()
-			throws IdRepoAppException, JsonParseException, JsonMappingException, IOException {
-		IdResponseDTO response = new IdResponseDTO();
-		when(uinValidator.validateId(anyString())).thenReturn(true);
-		when(idRepoService.updateIdentity(any(), any())).thenReturn(response);
-		IdRequestDTO request = new IdRequestDTO();
-		request.setId("mosip.id.update");
-		RequestDTO requestDTO = new RequestDTO();
-		Object identity = mapper.readValue(
-				"{\"UIN\":6743571690,\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
-						.getBytes(),
-				Object.class);
-		requestDTO.setIdentity(identity);
-		request.setRequest(requestDTO);
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
-		errors.reject("");
-		controller.updateIdentity(request, errors);
+	@Test
+	public void updateIdentityIdRepoDataValidationException() throws Throwable {
+		try {
+			IdResponseDTO response = new IdResponseDTO();
+			when(uinValidator.validateId(anyString())).thenReturn(true);
+			when(idRepoService.updateIdentity(any(), any())).thenReturn(response);
+			IdRequestDTO request = new IdRequestDTO();
+			request.setId("mosip.id.update");
+			RequestDTO requestDTO = new RequestDTO();
+			Object identity = mapper.readValue(
+					"{\"UIN\":6743571690,\"dateOfBirth\":\"12345\",\"fullName\":[{\"language\":\"ARA\",\"value\":\"Manoj\",\"label\":\"string\"}]}}"
+							.getBytes(),
+					Object.class);
+			requestDTO.setIdentity(identity);
+			request.setRequest(requestDTO);
+			BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "IdRequestDTO");
+			errors.reject("");
+			controller.updateIdentity(request, errors);
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorCode(), e.getErrorCode());
+			assertEquals(IdRepoErrorConstants.DATA_VALIDATION_FAILED.getErrorMessage(), e.getErrorText());
+		}
 	}
 
 	@Test(expected = IdRepoAppException.class)
@@ -321,8 +345,8 @@ public class IdRepoControllerTest {
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
-	@Test(expected = IdRepoAppException.class)
-	public void testRetrieveIdentityByRidInvalidUin() throws IdRepoAppException {
+	@Test
+	public void testRetrieveIdentityByRidInvalidUin() throws Throwable {
 		when(uinValidator.validateId(null)).thenThrow(new InvalidIDException(null, null));
 		when(ridValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
 		try {
@@ -331,28 +355,39 @@ public class IdRepoControllerTest {
 							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN)));
 			controller.retrieveIdentityByRid("1234", "demo");
 		} catch (IdRepoAppException e) {
-			throw new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN),
+					e.getErrorText());
 		}
 	}
 
-	@Test(expected = IdRepoAppException.class)
-	public void testRetrieveIdentityByRidMultipleInvalidType() throws IdRepoAppException {
-		IdResponseDTO response = new IdResponseDTO();
-		when(ridValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-		when(idRepoService.retrieveIdentityByRid(any(), any())).thenReturn(response);
-		controller.retrieveIdentityByRid("1234", "dem, abc");
+	@Test
+	public void testRetrieveIdentityByRidMultipleInvalidType() throws Throwable {
+		try {
+			when(ridValidator.validateId(anyString())).thenReturn(true);
+			when(idRepoService.retrieveIdentityByRid(any(), any()))
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE)));
+			controller.retrieveIdentityByRid("1234", "dem, abc");
+		} catch (IdRepoAppException e) {
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE),
+					e.getErrorText());
+		}
 	}
 
 	@Test
 	public void testRetrieveIdentityByRidInvalidType() throws Throwable {
 		try {
-			IdResponseDTO response = new IdResponseDTO();
-			when(ridValidator.validateId(anyString())).thenThrow(new InvalidIDException(null, null));
-			when(idRepoService.retrieveIdentityByRid(any(), any())).thenReturn(response);
+			when(ridValidator.validateId(anyString())).thenReturn(true);
+			when(idRepoService.retrieveIdentityByRid(any(), any()))
+					.thenThrow(new IdRepoAppException(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE)));
 			controller.retrieveIdentityByRid("1234", "dem");
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-IDC-002 --> Invalid Input Parameter - type", e.getCause().getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TYPE),
+					e.getErrorText());
 		}
 	}
 
@@ -361,7 +396,9 @@ public class IdRepoControllerTest {
 		IdResponseDTO response = new IdResponseDTO();
 		when(ridValidator.validateId(anyString())).thenReturn(true);
 		when(idRepoService.retrieveIdentityByRid(any(), any())).thenReturn(response);
-		controller.retrieveIdentityByRid("1234", "demo,all,bio");
+		ResponseEntity<IdResponseDTO> responseEntity = controller.retrieveIdentityByRid("1234", "demo,all,bio");
+		assertEquals(response, responseEntity.getBody());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
 
 	@Test
@@ -372,7 +409,9 @@ public class IdRepoControllerTest {
 					String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID)));
 			controller.retrieveIdentityByRid(null, null);
 		} catch (IdRepoAppException e) {
-			assertEquals("IDR-IDS-002 --> Invalid Input Parameter - registrationId", e.getMessage());
+			assertEquals(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), e.getErrorCode());
+			assertEquals(String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID),
+					e.getErrorText());
 		}
 	}
 

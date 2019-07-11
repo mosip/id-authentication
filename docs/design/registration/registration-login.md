@@ -32,6 +32,18 @@ The key **requirements** are
 
 <!-- -->
 
+-	Software Update
+
+<!-- -->
+
+1. Before login, Software Update check will happen by invoking *HeaderController.softwareUpdate()*.
+
+2. If Update exists, then it will check for internet availability and execute the update and redirect to Login screen with user id.
+
+3. If Update not exists, then it will launch Login screen with user id.
+
+<!-- -->
+
 -   Offline
 
 <!-- -->
@@ -99,7 +111,7 @@ The key **non-functional requirements** are
 
 -   Security:
 
-    -   No ware we should not store the RO/RS plain text credentials or
+    -   No where we should not store the RO/RS plain text credentials or
         any sensitive information.
 
     -   The password should be not stored as raw data. It should be
@@ -140,21 +152,17 @@ The key **non-functional requirements** are
 
 -   Create a UI for login with the User ID a text field prompt to enter the details. 
     
--   Create a UI to accept and submitted credentials from the client application. Please refer the latest registraion design.
-
--   Create a Java component as 'LoginController' with 'login' method to
-    accept the Defined [DTO structure](#_Entity_Object_Structure:).
+-   Create a UI to accept and submitted credentials from the client application. Please refer the latest registration design.
 
 -   Based on the user input check the role of login (user id )and display the respective authenticaiton screen
     (password, OTP and fingerprint thumb login).
 
--   Create java component "ValidateUser" with 'validate' method to
-    accept the Defined [DTO structure](#_Entity_Object_Structure:).
+-   Create java component "LoginController" with 'validateUserId' method to validate user.
 
 -   The validation should be performed based on the configuration.
 
 -   Check the client system is connected with internet and verify the
-    user credentials synched job is done.
+    user credentials sync job is done.
 
 -   Login with user id and password:
 
@@ -167,7 +175,7 @@ The key **non-functional requirements** are
         
 This process is reuqired for the initial setup and User -Onboarding. 
 
-    -   If the system has internet connection getTokenID from server by
+    -   If the system has internet connection invoke getTokenID from server by
         passing user id and password as parameter to the REST service
         call.
 
@@ -241,7 +249,7 @@ This process is reuqired for the initial setup and User -Onboarding.
 > **Logout API:**
 
 -   When user click on the 'logout' button in the screen, invoke the
-    respective method in the *BaseController.logoff()* control to kill
+    respective method in the *HeaderController.logout()* control to kill
     the current session context and audit the information and logout the
     application.
 
@@ -251,9 +259,9 @@ Solution
 
 Class Diagram
 
-![Login Class Diagram](_images/_class_diagram/LoginClassDiagram.png)
+![Login Class Diagram](_images/_class_diagram/LoginClassDiagramUpdated.png)
 
 Sequence Diagram
 
-![Login Sequence Diagram](_images/_sequence_diagram/LoginSequenceDiagarm.png)
+![Login Sequence Diagram](_images/_sequence_diagram/LoginSequenceDiagramUpdated.png)
 

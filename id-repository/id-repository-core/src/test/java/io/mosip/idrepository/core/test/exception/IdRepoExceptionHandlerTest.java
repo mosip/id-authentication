@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.AccessDeniedException;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -127,7 +128,7 @@ public class IdRepoExceptionHandlerTest {
 	public void testHandleExceptionInternal_HttpMessageNotReadableException() {
 		when(request.getHttpMethod()).thenReturn(HttpMethod.POST);
 		HttpMessageNotReadableException httpMessageNotReadableException = new HttpMessageNotReadableException("",
-				new InvalidFormatException(null, "", null, null));
+				new DateTimeParseException("", "", 0));
 		Class<? extends Throwable> class1 = httpMessageNotReadableException.getCause().getClass();
 		class1.isAssignableFrom(InvalidFormatException.class);
 		ResponseEntity<Object> handleExceptionInternal = ReflectionTestUtils.invokeMethod(handler,

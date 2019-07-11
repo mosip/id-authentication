@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.json.simple.parser.JSONParser;
 import org.junit.Before;
@@ -255,7 +256,7 @@ public class BookingServiceTest {
 		statusDTOB.setBookingMessage("Appointment booked successfully");
 
 		List<BookingStatusDTO> resp = new ArrayList<>();
-
+		mapper.setTimeZone(TimeZone.getDefault());
 		resp.add(statusDTOA);
 		resp.add(statusDTOB);
 		responseDto.setResponse(resp);
@@ -1860,11 +1861,57 @@ public class BookingServiceTest {
 
 	@Test(expected = AvailablityNotFoundException.class)
 	public void checkSlotAvailabilityTest() {
+		
+		String date1 = "2016-11-09 09:00:00";
+		String date2 = "2016-11-09 17:00:00";
+		String date3 = "2016-11-09 00:20:00";
+		String date4 = "2016-11-09 13:00:00";
+		String date5 = "2016-11-09 14:20:00";
+		LocalDateTime localDateTime1 = LocalDateTime.parse(date1, format);
+		LocalDateTime localDateTime2 = LocalDateTime.parse(date2, format);
+		LocalDateTime localDateTime3 = LocalDateTime.parse(date3, format);
+		LocalTime startTime = localDateTime1.toLocalTime();
+		LocalTime endTime = localDateTime2.toLocalTime();
+		LocalTime perKioskTime = localDateTime3.toLocalTime();
+		LocalTime LunchStartTime = LocalDateTime.parse(date4, format).toLocalTime();
+		LocalTime LunchEndTime = LocalDateTime.parse(date5, format).toLocalTime();
+		RegistrationCenterDto centerDto = new RegistrationCenterDto();
+		List<AvailibityEntity> availablityList= new ArrayList<>();
+		AvailibityEntity entity= new AvailibityEntity();
+		entity.setAvailableKiosks(3);
+		entity.setRegcntrId("10001");
+		availablityList.add(entity);
+		List<RegistrationCenterDto> centerList = new ArrayList<>();
+		centerDto.setId("10001");
+		centerDto.setLangCode("eng");
+		centerDto.setCenterStartTime(startTime);
+		centerDto.setCenterEndTime(endTime);
+		centerDto.setPerKioskProcessTime(perKioskTime);
+		centerDto.setLunchStartTime(LunchStartTime);
+		centerDto.setLunchEndTime(LunchEndTime);
+		centerDto.setNumberOfKiosks((short) 4);
+		centerList.add(centerDto);
+		regCenDto.setRegistrationCenters(centerList);
+		RegistrationCenterHolidayDto CenholidayDto = new RegistrationCenterHolidayDto();
+		HolidayDto holiday = new HolidayDto();
+		List<HolidayDto> holidayList = new ArrayList<>();
+		holiday.setHolidayDate("2018-12-12");
+		holidayList.add(holiday);
+		CenholidayDto.setHolidays(holidayList);
+        List<String> regCenterList= new ArrayList<>();
+        regCenterList.add("10001");
+        List<LocalDate> insertedDate= new ArrayList<>();
+        insertedDate.add(localDateTime1.toLocalDate());
+		MainResponseDTO<String> response = new MainResponseDTO<>();
+
+		ResponseWrapper<RegistrationCenterResponseDto> resp = new ResponseWrapper<>();
+		resp.setResponse(regCenDto);
+
 
 		MainRequestDTO<BookingRequestDTO> bookingRequestDTOs = new MainRequestDTO<>();
 		List<BookingRequestDTO> successBookDtoList = new ArrayList<>();
 		BookingRequestDTO successBookDto = new BookingRequestDTO();
-		successBookDto.setRegistrationCenterId("1");
+		successBookDto.setRegistrationCenterId("10001");
 		successBookDto.setSlotFromTime("09:00");
 		successBookDto.setSlotToTime("09:15");
 		successBookDto.setRegDate("2019-12-12");
@@ -1878,6 +1925,11 @@ public class BookingServiceTest {
 		availableEntityNull.setCrBy("987654321");
 		availableEntityNull.setCrDate(DateUtils.parseDateToLocalDateTime(new Date()));
 		availableEntityNull.setDeleted(false);
+		ResponseEntity<ResponseWrapper<RegistrationCenterResponseDto>> res = new ResponseEntity<>(resp, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<ResponseWrapper<RegistrationCenterResponseDto>>() {
+				}))).thenReturn(res);
+		Mockito.when(bookingDAO.findRegCenter(Mockito.any())).thenReturn(regCenterList);
 		Mockito.when(bookingDAO.findByFromTimeAndToTimeAndRegDateAndRegcntrId(Mockito.any(), Mockito.any(),
 				Mockito.any(), Mockito.anyString())).thenReturn(availableEntityNull);
 		service.checkSlotAvailability(successBookDto);

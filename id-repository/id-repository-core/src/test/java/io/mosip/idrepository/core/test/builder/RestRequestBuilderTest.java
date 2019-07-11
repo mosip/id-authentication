@@ -27,6 +27,7 @@ import io.mosip.idrepository.core.builder.AuditRequestBuilder;
 import io.mosip.idrepository.core.builder.RestRequestBuilder;
 import io.mosip.idrepository.core.constant.AuditEvents;
 import io.mosip.idrepository.core.constant.AuditModules;
+import io.mosip.idrepository.core.constant.IdType;
 import io.mosip.idrepository.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.dto.AuditRequestDTO;
 import io.mosip.idrepository.core.dto.AuditResponseDTO;
@@ -34,6 +35,10 @@ import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.IdRepoDataValidationException;
 import io.mosip.kernel.core.http.RequestWrapper;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -61,8 +66,8 @@ public class RestRequestBuilderTest {
 
 	@Test
 	public void testBuildRequest() throws IdRepoDataValidationException {
-		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
-				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
+		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.ID_REPO_IDENTITY_SERVICE,
+				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc");
 		auditRequest.getRequest().setActionTimeStamp(null);
 
 		RestRequestDTO request = restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -98,8 +103,8 @@ public class RestRequestBuilderTest {
 		environment.setProperty("mosip.idrepo.audit.rest.uri.pathparam.test", "yes");
 
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
-		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.CREATE_IDENTITY,
-				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc");
+		RequestWrapper<AuditRequestDTO> auditRequest = auditBuilder.buildRequest(AuditModules.ID_REPO_IDENTITY_SERVICE,
+				AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc");
 		auditRequest.getRequest().setActionTimeStamp(null);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -117,7 +122,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_IDENTITY_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -130,7 +135,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_IDENTITY_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", IdType.REG_ID,"desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -144,7 +149,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_IDENTITY_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -152,7 +157,7 @@ public class RestRequestBuilderTest {
 	public void testBuildRequestEmptyResponseType() throws IdRepoDataValidationException {
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder.buildRequest(
-				AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"), null);
+				AuditModules.ID_REPO_IDENTITY_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", IdType.REG_ID,"desc"), null);
 	}
 	
 	@Test
@@ -178,7 +183,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_IDENTITY_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc"),
 				AuditResponseDTO.class);
 	}
 
@@ -192,7 +197,7 @@ public class RestRequestBuilderTest {
 		ReflectionTestUtils.setField(restBuilder, "env", environment);
 
 		restBuilder.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditBuilder
-				.buildRequest(AuditModules.CREATE_IDENTITY, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id", "desc"),
+				.buildRequest(AuditModules.ID_REPO_IDENTITY_SERVICE, AuditEvents.CREATE_IDENTITY_REQUEST_RESPONSE, "id",IdType.REG_ID, "desc"),
 				AuditResponseDTO.class);
 	}
 

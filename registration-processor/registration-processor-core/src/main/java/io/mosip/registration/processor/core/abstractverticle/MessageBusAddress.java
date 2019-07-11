@@ -19,6 +19,8 @@ public class MessageBusAddress implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	public static final String BUS_OUT = "bus-out";
+
 	/**
 	 * Instantiates a new message bus address.
 	 */
@@ -27,15 +29,21 @@ public class MessageBusAddress implements Serializable {
 
 	public MessageBusAddress(MessageBusAddress messageBusAddress, RegistrationType regType) {
 
-		               List<String> addressList = (List<String>)Arrays.asList(messageBusAddress.getAddress().split("-"));
+		List<String> addressList = (List<String>)Arrays.asList(messageBusAddress.getAddress().split("-"));
 
-		               ArrayList<String> modifiableArrayList = new ArrayList<String>(addressList);
+		ArrayList<String> modifiableArrayList = new ArrayList<String>(addressList);
 
-		               modifiableArrayList.add(addressList.size() - 2, regType.toString());
-		               String modifiedAddress = String.join("-", modifiableArrayList);
+		modifiableArrayList.add(addressList.size() - 2, regType.toString());
+		String modifiedAddress = null;
 
-		               this.address = modifiedAddress;
-		       }
+		if(messageBusAddress.getAddress().contains(BUS_OUT)) {
+			modifiedAddress = String.join("-", modifiableArrayList);
+		}else{
+			modifiedAddress = messageBusAddress.getAddress();
+		}
+
+		this.address = modifiedAddress;
+	}
 
 	/** The address. */
 	private String address;
@@ -121,7 +129,7 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress DEMO_DEDUPE_BUS_OUT = new MessageBusAddress("demo-dedupe-bus-out");
 
 	/** The Constant MANUAL_VERIFICATION_BUS. */
-	public static final MessageBusAddress MANUAL_VERIFICATION_BUS = new MessageBusAddress("manual-verification-bus-in");
+	public static final MessageBusAddress MANUAL_VERIFICATION_BUS = new MessageBusAddress("manual-verification-bus-out");
 
 	/** The Constant UIN_GENERATION_BUS_IN. */
 	public static final MessageBusAddress UIN_GENERATION_BUS_IN = new MessageBusAddress("uin-generator-bus-in");

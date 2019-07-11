@@ -1,0 +1,16 @@
+{
+  "id": "string",
+  "metadata": {},
+  "request": {
+    "appId": "PREREGISTRATION",
+    "context": "auth-otp",
+    "otpChannel": [
+      "MOBILE"
+    ],
+    "templateVariables": {},
+    "userId": "7894561234",
+    "useridtype": "USERID"
+  },
+  "requesttime": "2018-12-10T06:12:52.994Z",
+  "version": "string"
+}

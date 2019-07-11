@@ -119,10 +119,11 @@ public class DaoConfig extends HibernateDaoConfig {
 		return new PropertiesConfig(jdbcTemplate());
 	}
 
+	
 	/**
 	 * setting profile for spring properties
 	 * 
-	 * @return PropertyPlaceholderConfigurer
+	 * @return the {@link PropertyPlaceholderConfigurer} after setting the properties
 	 */
 	@Bean
 	@Lazy(false)

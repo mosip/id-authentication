@@ -73,7 +73,7 @@ The key solution considerations are -
 
 Class Diagram:
 
-<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-networkconnectivity-classDiagram.png>
+![Network Connectivity Health Check](_images/_class_diagram/registration-networkconnectivity-classDiagram.png)
 
 Sequence Diagram:
 

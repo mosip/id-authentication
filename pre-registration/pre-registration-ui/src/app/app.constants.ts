@@ -71,7 +71,8 @@ export const ERROR_CODES = {
   noApplicantEnrolled: 'PRG_PAM_APP_005',
   userBlocked: 'PRG_PAM_LGN_013',
   invalidPin: 'KER-IOV-004',
-  tokenExpired: 'KER-ATH-401'
+  tokenExpired: 'KER-ATH-401',
+  slotNotAvailable: 'PRG_BOOK_RCI_002'
 };
 
 export const CONFIG_KEYS = {

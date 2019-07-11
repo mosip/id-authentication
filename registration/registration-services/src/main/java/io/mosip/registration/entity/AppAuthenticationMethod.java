@@ -10,7 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Entity Class for AppAuthenticationMethod
+ * This entity class(table) will hold the user's different mode of Authentication such as 
+ * Fingerprint/Password/Iris/Face Authentication in different scenarios like
+ * Login Authentication, Packet Authentication, EOD Authentication.
  * 
  * @author Sravya Surampalli
  * @since 1.0.0

@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * The Class UinHashSalt.
  * 
  * @author Prem Kumar.
  *
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(schema = "idmap")
 public class UinHashSalt {
-	
+
 	/** The Id value */
 	@Id
 	private int id;

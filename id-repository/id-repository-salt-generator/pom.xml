@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.mosip.idrepository</groupId>
 		<artifactId>id-repository-parent</artifactId>
-		<version>0.12.10</version>
+		<version>0.12.16</version>
 	</parent>
 	<artifactId>id-repository-salt-generator</artifactId>
 	<dependencies>
@@ -49,4 +49,6 @@
 			</plugin>
 		</plugins>
 	</build>
+	<name>ID-Repository Salt Generator</name>
+	<description>Batch Job Application to for one-time populating of salt values for ID-Repository Identity and VID service salt tables.</description>
 </project>

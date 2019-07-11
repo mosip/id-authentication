@@ -16,7 +16,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity Class for ReasonCategory.
+ * This Entity Class contains list of reason categories[Client Rejection, Manual Adjudication...] 
+ * with respect to language code.
+ * The data for this table will come through sync from server master table.
  *
  * @author Sreekar chukka
  * @since 1.0.0

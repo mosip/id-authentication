@@ -1,0 +1,12 @@
+{
+	"response" : null,
+    "errors": [
+        {
+            "errorCode": "RPR-MVS-017",
+            "message": "User Id should not empty or null "
+        }
+    ],
+    "id": "mosip.manual.verification.assignment",
+    "version": "1.0",
+    "responsetime": "2019-06-20T15:08:14.399Z"
+}

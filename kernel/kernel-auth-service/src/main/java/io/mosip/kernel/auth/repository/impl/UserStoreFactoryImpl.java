@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auth.config.MosipEnvironment;
@@ -32,6 +33,17 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 	private MosipEnvironment mosipEnvironment;
 
 	private Map<String, DataStore> dataStoreMap = null;
+	
+	@Value("${hikari.maximumPoolSize:25}")
+	private int maximumPoolSize;
+	@Value("${hikari.validationTimeout:3000}")
+	private int validationTimeout;
+	@Value("${hikari.connectionTimeout:60000}")
+	private int connectionTimeout;
+	@Value("${hikari.idleTimeout:200000}")
+	private int idleTimeout;
+	@Value("${hikari.minimumIdle:0}")
+	private int minimumIdle;
 
 	UserStoreFactoryImpl() {
 
@@ -70,7 +82,7 @@ public class UserStoreFactoryImpl implements UserStoreFactory {
 					DataStore idatastore = new LdapDataStore(dataBaseConfig);
 					dataStoreMap.put(ds, idatastore);
 				} else {
-					DataStore idatastore = new DBDataStore(dataBaseConfig);
+					DataStore idatastore = new DBDataStore(dataBaseConfig,maximumPoolSize,validationTimeout,connectionTimeout,idleTimeout,minimumIdle);
 					dataStoreMap.put(ds, idatastore);
 				}
 

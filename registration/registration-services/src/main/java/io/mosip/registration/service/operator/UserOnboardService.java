@@ -1,5 +1,6 @@
 package io.mosip.registration.service.operator;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import io.mosip.registration.dto.ResponseDTO;
@@ -58,7 +59,13 @@ public interface UserOnboardService {
 	 */
 	Map<String,String> getMachineCenterId();
 		
-	
+	/**
+	 * Gets the last updated operator bio-metric date time.
+	 *
+	 * @param usrID the usr ID
+	 * @return the last updated operator bio-metric date time
+	 */
+	Timestamp getLastUpdatedTime(String usrId);
 	
 	
 }

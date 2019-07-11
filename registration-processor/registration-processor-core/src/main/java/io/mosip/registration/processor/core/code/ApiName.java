@@ -54,7 +54,7 @@ public enum ApiName {
 
 	/** The biodedupe. */
 	BIODEDUPE,
-
+	
 	/** The idrepository. */
 	IDREPOSITORY,
 
@@ -175,22 +175,32 @@ public enum ApiName {
 
 	/** The external service. */
 	EISERVICE,
+	
     /** The ridgeneration. */
 	RIDGENERATION,
+	
     /** The retrieveidentity. */
     RETRIEVEIDENTITY,
+    
     /** The retrieveidentity using rid. */
 	RETRIEVEIDENTITYFROMRID,
-    /** The digitalsignature */
+    
+    /**  The digitalsignature. */
 	DIGITALSIGNATURE,
-	/**The Vid creation  */
+	
+	/** The Vid creation. */
 	CREATEVID,
-
-    /** The user details */
+    
+    /**  The user details. */
     USERDETAILS,
-    /** get operator rid from id */
+    
+    /**  get operator rid from id. */
     GETRIDFROMUSERID,
-
-    INTERNALAUTH;
+    
+    /** The internalauth. */
+    INTERNALAUTH,
+	
+	/** The templates. */
+	TEMPLATES;
 
 }

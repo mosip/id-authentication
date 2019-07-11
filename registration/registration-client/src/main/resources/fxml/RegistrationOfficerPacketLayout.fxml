@@ -177,7 +177,12 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%lastsynctemp" wrapText="true" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="12.0" prefWidth="205.0" spacing="2.0">
+                                       <children>
+                                          <Label alignment="TOP_LEFT" contentDisplay="TOP" styleClass="operationalDetails" text="%lastsynctemp" wrapText="true" />
+                                          <Label fx:id="lastSyncTime" styleClass="operationalDetails" />
+                                       </children>
+                                    </HBox>
                                     <Label styleClass="operationalTitle" text="%synchronizeData" wrapText="true" />
                                  </children>
                               </VBox>
@@ -196,7 +201,7 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%downloadedtemp" wrapText="true" />
+                                    <Label fx:id="lastPreRegPacketDownloadedTime" styleClass="operationalDetails" text="%downloadedtemp" wrapText="true" />
                                     <Label styleClass="operationalTitle" text="%downloadPreregistrationData" wrapText="true" />
                                  </children>
                               </VBox>
@@ -222,7 +227,7 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%notuploadedtemp" wrapText="true" />
+                                    <Label fx:id="lastBiometricTime" styleClass="operationalDetails" text="%notuploadedtemp" wrapText="true" />
                                     <Label styleClass="operationalTitle" text="%updateOperatorBiometrics" wrapText="true" />
                                  </children>
                               </VBox>

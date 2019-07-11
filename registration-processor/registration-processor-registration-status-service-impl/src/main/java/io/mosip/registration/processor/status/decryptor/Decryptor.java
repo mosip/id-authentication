@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -141,7 +142,7 @@ public class Decryptor {
 					IO_EXCEPTION);
 		} catch (ApisResourceAccessException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "Internal Error occurred ");
+					"", "Internal Error occurred " + ExceptionUtils.getStackTrace(e));
 			if (e.getCause() instanceof HttpClientErrorException) {
 				HttpClientErrorException httpClientException = (HttpClientErrorException) e.getCause();
 				description = DECRYPTION_FAILURE + "" + "::" + httpClientException.getResponseBodyAsString();

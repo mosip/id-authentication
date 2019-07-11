@@ -43,10 +43,14 @@ public class IdObjectsSchemaValidationOperationMapperTest {
 	
 	@Test
 	public void childRegistrationTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+		SyncRegistrationEntity regEntity=new SyncRegistrationEntity();
+		regEntity.setRegistrationType(SyncTypeDto.NEW.getValue());
+		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.when(utility.getApplicantAge(anyString())).thenReturn(9);
 		assertEquals(IdObjectValidatorSupportedOperations.CHILD_REGISTRATION.getOperation(),
 				idObjectsSchemaValidationOperationMapper.getOperation("1234567890").getOperation());
 	}
+
 	@Test
 	public void newRegistrationTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SyncRegistrationEntity regEntity=new SyncRegistrationEntity();
@@ -55,6 +59,7 @@ public class IdObjectsSchemaValidationOperationMapperTest {
 		assertEquals(IdObjectValidatorSupportedOperations.NEW_REGISTRATION.getOperation(),
 				idObjectsSchemaValidationOperationMapper.getOperation("1234567890").getOperation());
 	}
+
 	@Test
 	public void lostUINTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SyncRegistrationEntity regEntity=new SyncRegistrationEntity();
@@ -63,6 +68,7 @@ public class IdObjectsSchemaValidationOperationMapperTest {
 		assertEquals(IdObjectValidatorSupportedOperations.LOST_UIN.getOperation(),
 				idObjectsSchemaValidationOperationMapper.getOperation("1234567890").getOperation());
 	}
+
 	@Test
 	public void updateUINTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SyncRegistrationEntity regEntity=new SyncRegistrationEntity();
@@ -71,6 +77,7 @@ public class IdObjectsSchemaValidationOperationMapperTest {
 		assertEquals(IdObjectValidatorSupportedOperations.UPDATE_UIN.getOperation(),
 				idObjectsSchemaValidationOperationMapper.getOperation("1234567890").getOperation());
 	}
+
 	@Test
 	public void resUpdateTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SyncRegistrationEntity regEntity=new SyncRegistrationEntity();
@@ -79,6 +86,7 @@ public class IdObjectsSchemaValidationOperationMapperTest {
 		assertEquals(IdObjectValidatorSupportedOperations.UPDATE_UIN.getOperation(),
 				idObjectsSchemaValidationOperationMapper.getOperation("1234567890").getOperation());
 	}
+
 	@Test
 	public void activateTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SyncRegistrationEntity regEntity=new SyncRegistrationEntity();
@@ -87,6 +95,7 @@ public class IdObjectsSchemaValidationOperationMapperTest {
 		assertEquals(IdObjectValidatorSupportedOperations.UPDATE_UIN.getOperation(),
 				idObjectsSchemaValidationOperationMapper.getOperation("1234567890").getOperation());
 	}
+
 	@Test
 	public void deactivateTest() throws ApisResourceAccessException, IOException, PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		SyncRegistrationEntity regEntity=new SyncRegistrationEntity();

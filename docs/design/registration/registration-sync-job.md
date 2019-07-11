@@ -65,7 +65,7 @@ The overall batch job technical process and individual job detail has been provi
 	
 
 Technical Flow, Class and Sequence Diagram: [Batch Jobs]
-![Class and Sync job sequence diagram](_images/registration-sync-batch-jobs.png)
+![Class and Sync job sequence diagram](_images/registration-sync-batch-jobs.jpg)
 
 Design of **[Packet Status Reader](registration-packetstatusreader.md)**
 

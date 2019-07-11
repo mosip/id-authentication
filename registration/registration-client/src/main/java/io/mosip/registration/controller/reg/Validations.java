@@ -77,7 +77,6 @@ public class Validations extends BaseController {
 			noAlert.add(RegistrationConstants.DD + RegistrationConstants.LOCAL_LANGUAGE);
 			noAlert.add(RegistrationConstants.MM + RegistrationConstants.LOCAL_LANGUAGE);
 			noAlert.add(RegistrationConstants.YYYY + RegistrationConstants.LOCAL_LANGUAGE);
-			noAlert.add(RegistrationConstants.CNI_OR_PIN);
 			validationMessage = new StringBuilder();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(RegistrationConstants.VALIDATION_LOGGER, APPLICATION_NAME, APPLICATION_ID,
@@ -251,9 +250,9 @@ public class Validations extends BaseController {
 				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
-						return s.equals("demoGraphicTextField");
+						return s.equals(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 					});
-					node.getStyleClass().add("demoGraphicTextFieldFocused");
+					node.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 				}
 			} else if (inputText.matches(regex)) {
 				isInputValid = validateBlackListedWords(parentPane, node, id, blackListedWords, showAlert,
@@ -267,9 +266,9 @@ public class Validations extends BaseController {
 				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
-						return s.equals("demoGraphicTextField");
+						return s.equals(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 					});
-					node.getStyleClass().add("demoGraphicTextFieldFocused");
+					node.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 				}
 			}
 		} catch (RuntimeException runtimeException) {
@@ -290,7 +289,7 @@ public class Validations extends BaseController {
 			} else {
 				
 				List<String> invalidWorlds = blackListedWords.stream().flatMap(l1->Stream.of(node.getText().split("\\s+")).collect(Collectors.toList()).stream().filter(l2->{
-					return l1.equalsIgnoreCase(l2) || Pattern.compile(Pattern.quote(l2), Pattern.CASE_INSENSITIVE).matcher(l1).find();
+					return l1.equalsIgnoreCase(l2) || Pattern.compile(Pattern.quote(l1), Pattern.CASE_INSENSITIVE).matcher(l2).find();
 				})).collect(Collectors.toList());
 				
 				String bWords = String.join(", ", invalidWorlds);
@@ -408,7 +407,9 @@ public class Validations extends BaseController {
 
 					LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 							invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
+					uinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 					uinId.requestFocus();
+
 				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() == null && !regId.isDisabled()) {
@@ -421,7 +422,9 @@ public class Validations extends BaseController {
 								false);
 						LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
+						regId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 						regId.requestFocus();
+
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);
@@ -507,7 +510,7 @@ public class Validations extends BaseController {
 				break;
 			case RegistrationConstants.CNI_OR_PIN:
 				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
-				validation[1] = RegistrationConstants.CNI_MANDATORY;
+				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.MOBILE_NUMBER:
 				validation[0] = getValueFromApplicationContext(RegistrationConstants.PHONE_VALIDATION_REGEX);

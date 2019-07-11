@@ -767,23 +767,7 @@ Si vous avez des intérêts, veuillez vous rendre au centre d’inscription le p
 
 Merci et salutations,
 Équipe MOSIP",10003,Processeur dinscription,RPR_UIN_REAC_EMAIL,fra,TRUE,superadmin,now()
-1136,Acknowledgement SMS Template,Registration Acknowledgement Template,txt,velocity,"
-العزيز ${ResidentName},
-شكرًا لك على التسجيل في نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"". التفاصيل الديموغرافية هي كما يلي:
-${Date}: تاريخ.1
-${FullName}: الاسم الكامل.2
-${DOB}: تاريخ الولادة.3
-${Gender}: جنس.4
-${AddressLine1}: 1 خط عنوان.5
-${AddressLine2}: 2 خط عنوان.6
-${AddressLine3}: 3 خط عنوان.7
-${Region}: منطقة.8
-${City}: مدينة.9
-${Province}: المحافظة.10
-${PostalCode}: الرمز البريدي.11
-${Mobile}: رقم الهاتف المحمول.12
-${Email}: البريد الإلكتروني.13",10005,registration,reg-sms-notification,eng,TRUE,superadmin,now()
-1136,قالب SMS شكر,نموذج شكر التسجيل,txt,velocity,"Dear ${ResidentName},
+1136,Acknowledgement SMS Template,Registration Acknowledgement Template,txt,velocity,"Dear ${ResidentName},
 Thank you for registering with Digital Identity platform . Your registration id is ""${RID}"". The demographic details are as follows:
 1.Date:${Date}
 2.Full Name:${FullName}
@@ -797,7 +781,22 @@ Thank you for registering with Digital Identity platform . Your registration id 
 10.Province:${Province}
 11.Postal Code:${PostalCode}
 12.Mobile Number:${Mobile}
-13.Email:${Email}",10005,registration,reg-sms-notification,ara,TRUE,superadmin,now()
+13.Email:${Email}",10005,registration,reg-sms-notification,eng,TRUE,superadmin,now()
+1136,قالب SMS شكر,نموذج شكر التسجيل,txt,velocity,"العزيز ${ResidentName},
+شكرًا لك على التسجيل في نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"". التفاصيل الديموغرافية هي كما يلي:
+${Date}: تاريخ.1
+${FullName}: الاسم الكامل.2
+${DOB}: تاريخ الولادة.3
+${Gender}: جنس.4
+${AddressLine1}: 1 خط عنوان.5
+${AddressLine2}: 2 خط عنوان.6
+${AddressLine3}: 3 خط عنوان.7
+${Region}: منطقة.8
+${City}: مدينة.9
+${Province}: المحافظة.10
+${PostalCode}: الرمز البريدي.11
+${Mobile}: رقم الهاتف المحمول.12
+${Email}: البريد الإلكتروني.13",10005,registration,reg-sms-notification,ara,TRUE,superadmin,now()
 1136,Modèle SMS de reconnaissance,Modèle de confirmation dinscription,txt,velocity,"cher ${ResidentName},
 Merci de vous être inscrit à la plateforme d’’identité numérique. Votre identifiant d''inscription est ""${RID}"". Les détails démographiques sont les suivants:
 1.Rendez-vous amoureux:${Date}
@@ -813,23 +812,7 @@ Merci de vous être inscrit à la plateforme d’’identité numérique. Votre 
 11.code postal:${PostalCode}
 12.Numéro de portable:${Mobile}
 13.Email:${Email}",10005,registration,reg-sms-notification,fra,TRUE,superadmin,now()
-1137,Acknowledgement Email Template,Registration Acknowledgement Template,txt,velocity,"
-العزيز ${ResidentName},
-شكرًا لك على التسجيل في نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"". التفاصيل الديموغرافية هي كما يلي:
-${Date}: تاريخ.1
-${FullName}: الاسم الكامل.2
-${DOB}: تاريخ الولادة.3
-${Gender}: جنس.4
-${AddressLine1}: 1 خط عنوان.5
-${AddressLine2}: 2 خط عنوان.6
-${AddressLine3}: 3 خط عنوان.7
-${Region}: منطقة.8
-${City}: مدينة.9
-${Province}: المحافظة.10
-${PostalCode}: الرمز البريدي.11
-${Mobile}: رقم الهاتف المحمول.12
-${Email}: البريد الإلكتروني.13",10005,registration,reg-email-notification,eng,TRUE,superadmin,now()
-1137,نموذج البريد الإلكتروني شكرًا,نموذج شكر التسجيل,txt,velocity,"Dear ${ResidentName},
+1137,Acknowledgement Email Template,Registration Acknowledgement Template,txt,velocity,"Dear ${ResidentName},
 Thank you for registering with Digital Identity platform . Your registration id is ""${RID}"". The demographic details are as follows:
 1.Date:${Date}
 2.Full Name:${FullName}
@@ -843,7 +826,22 @@ Thank you for registering with Digital Identity platform . Your registration id 
 10.Province:${Province}
 11.Postal Code:${PostalCode}
 12.Mobile Number:${Mobile}
-13.Email:${Email}",10005,registration,reg-email-notification,ara,TRUE,superadmin,now()
+13.Email:${Email}",10005,registration,reg-email-notification,eng,TRUE,superadmin,now()
+1137,نموذج البريد الإلكتروني شكرًا,نموذج شكر التسجيل,txt,velocity,"العزيز ${ResidentName},
+شكرًا لك على التسجيل في نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"". التفاصيل الديموغرافية هي كما يلي:
+${Date}: تاريخ.1
+${FullName}: الاسم الكامل.2
+${DOB}: تاريخ الولادة.3
+${Gender}: جنس.4
+${AddressLine1}: 1 خط عنوان.5
+${AddressLine2}: 2 خط عنوان.6
+${AddressLine3}: 3 خط عنوان.7
+${Region}: منطقة.8
+${City}: مدينة.9
+${Province}: المحافظة.10
+${PostalCode}: الرمز البريدي.11
+${Mobile}: رقم الهاتف المحمول.12
+${Email}: البريد الإلكتروني.13",10005,registration,reg-email-notification,ara,TRUE,superadmin,now()
 1137,Modèle de courrier électronique daccusé de réception,Modèle de confirmation d inscription,txt,velocity,"cher ${ResidentName},
 Merci de vous être inscrit à la plateforme d’’identité numérique. Votre identifiant d''inscription est ""${RID}"". Les détails démographiques sont les suivants:
 1.Rendez-vous amoureux:${Date}
@@ -882,7 +880,7 @@ input[type=""radio""]:checked + label:before { background-color: #FF4081; border
 </style></head>",10005,registration,reg-ack-template-part1,fra,TRUE,superadmin,now()
 1139,Registration Acknowledgement Template - Part 2,Acknowledgement generated after registration - Part 2,txt,velocity,"<body><div class=""section""><div class=""form"">
 <table ${AckReceipt} class=""${headerTable}""><tr><td class=""bottom""><img src=""${QRCodeSource}"" width=""85"" height=""85""/></td><td class=""bottom""><p class=""headings"">${RIDPrimLabel} / ${RIDSecLabel}</p><br/>${RID}</td><td ${UINUpdate} class=""bottom""><p class=""headings"">${UINPrimLabel} / ${UINSecLabel}</p><br/>${UIN}</td><td class=""bottom""><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
-<table ${Preview} class=""headerTable""><tr><td><p class=""headings"">${PreRegIDPrimLabel} / ${PreRegIDSecLabel}</p><br/>${PreRegID}</td><td><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
+<table ${Preview} class=""headerTable""><tr><td ${IsUINUpdate}><p class=""headings"">${PreRegIDPrimLabel} / ${PreRegIDSecLabel}</p><br/>${PreRegID}</td><td><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
 <br/><hr/><p class=""head""><b>${DemographicInfo}</b></p><div ${Preview} class=""modify""><img src=""${ModifyImageSource}"" border=""0"" width=""15"" height=""15""/><button id=""modifyDemographicInfo"">${Modify}</button></div><hr/>
 <table class=""dataTable""><tr><td><p class=""headings"">${FullNamePrimLabel} / ${FullNameSecLabel}</p><br/>${FullName}<br/>${FullNameSec}</td><td><p class=""headings"">${GenderPrimLabel} / ${GenderSecLabel}</p><br/>${Gender}<br/>${GenderSec}</td></tr><tr><td><p class=""headings"">${DOBPrimLabel} / ${DOBSecLabel}</p><br/>${DOB}</td><td><p class=""headings"">${AgePrimLabel} / ${AgeSecLabel}</p><br/>${Age} ${YearsPrim} ${YearsSec}</td></tr><tr><td><p class=""headings"">${ForiegnerPrimLabel} / ${ForiegnerSecLabel}</p><br/>${ResidenceStatus}<br/>${ResidenceStatusSec}</td><td><p class=""headings"">${AddressLine1PrimLabel} / ${AddressLine1SecLabel}</p><br/>${AddressLine1}<br/>${AddressLine1Sec}</td></tr><tr><td><p class=""headings"">${AddressLine2PrimLabel} / ${AddressLine2SecLabel}</p><br/>${AddressLine2}<br/>${AddressLine2Sec}</td><td><p class=""headings"">${RegionPrimLabel} / ${RegionSecLabel}</p><br/>${Region}<br/>${RegionSec}</td></tr><tr><td><p class=""headings"">${ProvincePrimLabel} / ${ProvinceSecLabel}</p><br/>${Province}<br/>${ProvinceSec}</td><td><p class=""headings"">${LocalAuthorityPrimLabel} / ${LocalAuthoritySecLabel}</p><br/>${LocalAuthority}<br/>${LocalAuthoritySec}</td></tr><tr><td><p class=""headings"">${MobilePrimLabel} / ${MobileSecLabel}</p><br/>${Mobile}</td><td><p class=""headings"">${PostalCodePrimLabel} / ${PostalCodeSecLabel}</p><br/>${PostalCode}</td></tr><tr><td><p class=""headings"">${EmailPrimLabel} / ${EmailSecLabel}</p><br/>${Email}</td><td><p class=""headings"">${CNIEPrimLabel} / ${CNIESecLabel}</p><br/>${CNIE}</td></tr><tr ${WithParent}><td><p class=""headings"">${ParentNamePrimLabel} / ${ParentNameSecLabel}</p><br/>${ParentName}<br/>${ParentNameSec}</td><td><p class=""headings"">${ParentUINPrimLabel} / ${ParentUINSecLabel}</p><br/>${ParentUIN}</td></tr></table>
 <br/><p ${DocumentsEnabled} class=""head""><b>${DocumentsPrimLabel}</b></p><div ${DocumentsEnabled} ${Preview} class=""modify""><img src=""${ModifyImageSource}"" border=""0"" width=""15"" height=""15""/><button id=""modifyDocuments"">${Modify}</button></div><hr ${DocumentsEnabled}/>
@@ -892,7 +890,7 @@ input[type=""radio""]:checked + label:before { background-color: #FF4081; border
 <table ${IrisDisabled}><tr><td><p class=""headings"">${ExceptionPhotoPrimLabel} / ${ExceptionPhotoSecLabel}</p></td></tr><tr><td><img src=""${ExceptionImageSource}"" border=""0"" width=""80"" height=""80""/></td></tr></table>",10005,registration,reg-ack-template-part2,eng,TRUE,superadmin,now()
 1139,الإقرار المتولد بعد التسجيل - الجزء 2,الب الاعتراف بالتسجيل - الجزء 2,txt,velocity,"<body><div class=""section""><div class=""form"">
 <table ${AckReceipt} class=""${headerTable}""><tr><td class=""bottom""><img src=""${QRCodeSource}"" width=""85"" height=""85""/></td><td class=""bottom""><p class=""headings"">${RIDPrimLabel} / ${RIDSecLabel}</p><br/>${RID}</td><td ${UINUpdate} class=""bottom""><p class=""headings"">${UINPrimLabel} / ${UINSecLabel}</p><br/>${UIN}</td><td class=""bottom""><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
-<table ${Preview} class=""headerTable""><tr><td><p class=""headings"">${PreRegIDPrimLabel} / ${PreRegIDSecLabel}</p><br/>${PreRegID}</td><td><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
+<table ${Preview} class=""headerTable""><tr><td ${IsUINUpdate}><p class=""headings"">${PreRegIDPrimLabel} / ${PreRegIDSecLabel}</p><br/>${PreRegID}</td><td><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
 <br/><hr/><p class=""head""><b>${DemographicInfo}</b></p><div ${Preview} class=""modify""><img src=""${ModifyImageSource}"" border=""0"" width=""15"" height=""15""/><button id=""modifyDemographicInfo"">${Modify}</button></div><hr/>
 <table class=""dataTable""><tr><td><p class=""headings"">${FullNamePrimLabel} / ${FullNameSecLabel}</p><br/>${FullName}<br/>${FullNameSec}</td><td><p class=""headings"">${GenderPrimLabel} / ${GenderSecLabel}</p><br/>${Gender}<br/>${GenderSec}</td></tr><tr><td><p class=""headings"">${DOBPrimLabel} / ${DOBSecLabel}</p><br/>${DOB}</td><td><p class=""headings"">${AgePrimLabel} / ${AgeSecLabel}</p><br/>${Age} ${YearsPrim} ${YearsSec}</td></tr><tr><td><p class=""headings"">${ForiegnerPrimLabel} / ${ForiegnerSecLabel}</p><br/>${ResidenceStatus}<br/>${ResidenceStatusSec}</td><td><p class=""headings"">${AddressLine1PrimLabel} / ${AddressLine1SecLabel}</p><br/>${AddressLine1}<br/>${AddressLine1Sec}</td></tr><tr><td><p class=""headings"">${AddressLine2PrimLabel} / ${AddressLine2SecLabel}</p><br/>${AddressLine2}<br/>${AddressLine2Sec}</td><td><p class=""headings"">${RegionPrimLabel} / ${RegionSecLabel}</p><br/>${Region}<br/>${RegionSec}</td></tr><tr><td><p class=""headings"">${ProvincePrimLabel} / ${ProvinceSecLabel}</p><br/>${Province}<br/>${ProvinceSec}</td><td><p class=""headings"">${LocalAuthorityPrimLabel} / ${LocalAuthoritySecLabel}</p><br/>${LocalAuthority}<br/>${LocalAuthoritySec}</td></tr><tr><td><p class=""headings"">${MobilePrimLabel} / ${MobileSecLabel}</p><br/>${Mobile}</td><td><p class=""headings"">${PostalCodePrimLabel} / ${PostalCodeSecLabel}</p><br/>${PostalCode}</td></tr><tr><td><p class=""headings"">${EmailPrimLabel} / ${EmailSecLabel}</p><br/>${Email}</td><td><p class=""headings"">${CNIEPrimLabel} / ${CNIESecLabel}</p><br/>${CNIE}</td></tr><tr ${WithParent}><td><p class=""headings"">${ParentNamePrimLabel} / ${ParentNameSecLabel}</p><br/>${ParentName}<br/>${ParentNameSec}</td><td><p class=""headings"">${ParentUINPrimLabel} / ${ParentUINSecLabel}</p><br/>${ParentUIN}</td></tr></table>
 <br/><p ${DocumentsEnabled} class=""head""><b>${DocumentsPrimLabel}</b></p><div ${DocumentsEnabled} ${Preview} class=""modify""><img src=""${ModifyImageSource}"" border=""0"" width=""15"" height=""15""/><button id=""modifyDocuments"">${Modify}</button></div><hr ${DocumentsEnabled}/>
@@ -902,7 +900,7 @@ input[type=""radio""]:checked + label:before { background-color: #FF4081; border
 <table ${IrisDisabled}><tr><td><p class=""headings"">${ExceptionPhotoPrimLabel} / ${ExceptionPhotoSecLabel}</p></td></tr><tr><td><img src=""${ExceptionImageSource}"" border=""0"" width=""80"" height=""80""/></td></tr></table>",10005,registration,reg-ack-template-part2,ara,TRUE,superadmin,now()
 1139,enregistrement Modèle de remerciement - Partie 2,Accusé de réception généré après lenregistrement - Partie 2,txt,velocity,"<body><div class=""section""><div class=""form"">
 <table ${AckReceipt} class=""${headerTable}""><tr><td class=""bottom""><img src=""${QRCodeSource}"" width=""85"" height=""85""/></td><td class=""bottom""><p class=""headings"">${RIDPrimLabel} / ${RIDSecLabel}</p><br/>${RID}</td><td ${UINUpdate} class=""bottom""><p class=""headings"">${UINPrimLabel} / ${UINSecLabel}</p><br/>${UIN}</td><td class=""bottom""><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
-<table ${Preview} class=""headerTable""><tr><td><p class=""headings"">${PreRegIDPrimLabel} / ${PreRegIDSecLabel}</p><br/>${PreRegID}</td><td><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
+<table ${Preview} class=""headerTable""><tr><td ${IsUINUpdate}><p class=""headings"">${PreRegIDPrimLabel} / ${PreRegIDSecLabel}</p><br/>${PreRegID}</td><td><p class=""headings"">${DatePrimLabel} / ${DateSecLabel}</p><br/>${Date}</td></tr></table>
 <br/><hr/><p class=""head""><b>${DemographicInfo}</b></p><div ${Preview} class=""modify""><img src=""${ModifyImageSource}"" border=""0"" width=""15"" height=""15""/><button id=""modifyDemographicInfo"">${Modify}</button></div><hr/>
 <table class=""dataTable""><tr><td><p class=""headings"">${FullNamePrimLabel} / ${FullNameSecLabel}</p><br/>${FullName}<br/>${FullNameSec}</td><td><p class=""headings"">${GenderPrimLabel} / ${GenderSecLabel}</p><br/>${Gender}<br/>${GenderSec}</td></tr><tr><td><p class=""headings"">${DOBPrimLabel} / ${DOBSecLabel}</p><br/>${DOB}</td><td><p class=""headings"">${AgePrimLabel} / ${AgeSecLabel}</p><br/>${Age} ${YearsPrim} ${YearsSec}</td></tr><tr><td><p class=""headings"">${ForiegnerPrimLabel} / ${ForiegnerSecLabel}</p><br/>${ResidenceStatus}<br/>${ResidenceStatusSec}</td><td><p class=""headings"">${AddressLine1PrimLabel} / ${AddressLine1SecLabel}</p><br/>${AddressLine1}<br/>${AddressLine1Sec}</td></tr><tr><td><p class=""headings"">${AddressLine2PrimLabel} / ${AddressLine2SecLabel}</p><br/>${AddressLine2}<br/>${AddressLine2Sec}</td><td><p class=""headings"">${RegionPrimLabel} / ${RegionSecLabel}</p><br/>${Region}<br/>${RegionSec}</td></tr><tr><td><p class=""headings"">${ProvincePrimLabel} / ${ProvinceSecLabel}</p><br/>${Province}<br/>${ProvinceSec}</td><td><p class=""headings"">${LocalAuthorityPrimLabel} / ${LocalAuthoritySecLabel}</p><br/>${LocalAuthority}<br/>${LocalAuthoritySec}</td></tr><tr><td><p class=""headings"">${MobilePrimLabel} / ${MobileSecLabel}</p><br/>${Mobile}</td><td><p class=""headings"">${PostalCodePrimLabel} / ${PostalCodeSecLabel}</p><br/>${PostalCode}</td></tr><tr><td><p class=""headings"">${EmailPrimLabel} / ${EmailSecLabel}</p><br/>${Email}</td><td><p class=""headings"">${CNIEPrimLabel} / ${CNIESecLabel}</p><br/>${CNIE}</td></tr><tr ${WithParent}><td><p class=""headings"">${ParentNamePrimLabel} / ${ParentNameSecLabel}</p><br/>${ParentName}<br/>${ParentNameSec}</td><td><p class=""headings"">${ParentUINPrimLabel} / ${ParentUINSecLabel}</p><br/>${ParentUIN}</td></tr></table>
 <br/><p ${DocumentsEnabled} class=""head""><b>${DocumentsPrimLabel}</b></p><div ${DocumentsEnabled} ${Preview} class=""modify""><img src=""${ModifyImageSource}"" border=""0"" width=""15"" height=""15""/><button id=""modifyDocuments"">${Modify}</button></div><hr ${DocumentsEnabled}/>
@@ -995,7 +993,7 @@ registrationclient,otp service,OTP Send Service,txt,string,Please find the OTP $
 1155,اعتراف قالب البريد الإلكتروني,تسجيل قالب الاعتراف,txt,velocity,"العزيز ${ResidentName}, شكرًا لك على تحديث التفاصيل الخاصة بك باستخدام نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"".",10005,registration,updateUIN-email-notification,ara,TRUE,superadmin,now()
 1155,Acknowledgement Email Template,Registration Acknowledgement Template,txt,velocity,"Dear ${ResidentName}, Thank you for updating your details with Digital Identity platform. Your registration id is ""${RID}"".",10005,registration,updateUIN-email-notification,eng,TRUE,superadmin,now()
 1155,Modèle d'email de reconnaissance,Modèle de confirmation d'inscription,txt,velocity,"Dear ${ResidentName}, Merci de mettre à jour vos coordonnées avec la plateforme d’identité numérique. Votre identifiant d'inscription est ""${RID}"".",10005,registration,updateUIN-email-notification,fra,TRUE,superadmin,now()
-1156,قالب رسالة شكر وتقدير الإلكتروني,تسجيل قالب الاعتراف,txt,velocity,"العزيز ${ResidentName}, شكرًا لك على تحديث التفاصيل الخاصة بك باستخدام نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"".",10005,registration,updateUIN-sms-notification,ara,TRUE,superadmin,now()
+1156,قالب الاعتراف,تسجيل قالب الاعتراف,txt,velocity,"العزيز ${ResidentName}, شكرًا لك على تحديث التفاصيل الخاصة بك باستخدام نظام الهوية الرقمية. معرف التسجيل الخاص بك هو ""${RID}"".",10005,registration,updateUIN-sms-notification,ara,TRUE,superadmin,now()
 1156,Acknowledgement SMS Template,Registration Acknowledgement Template,txt,velocity,"Dear ${ResidentName}, Thank you for updating your details with Digital Identity platform. Your registration id is ""${RID}"".",10005,registration,updateUIN-sms-notification,eng,TRUE,superadmin,now()
 1156,Modèle de SMS de reconnaissance,Modèle de confirmation d'inscription,txt,velocity,"Dear ${ResidentName}, Merci de mettre à jour vos coordonnées avec la plateforme d’identité numérique. Votre identifiant d'inscription est ""${RID}"".",10005,registration,updateUIN-sms-notification,fra,TRUE,superadmin,now()
 1157,اعتراف قالب البريد الإلكتروني,تسجيل قالب الاعتراف,txt,velocity,"عزيزي المستخدم ، شكرًا على طلبك لاسترداد UIN المفقود. معرف تسجيلك لهذا الطلب هو""${RID}"".",10005,registration,lostUIN-email-notification,ara,TRUE,superadmin,now()

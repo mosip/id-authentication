@@ -224,7 +224,7 @@ public class DemographicController {
 		return ResponseEntity.status(HttpStatus.OK).body(preRegistrationService.deleteIndividual(preId, userId));
 	}
 
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','REGISTRATION_ADMIN','REGISTRATION_PROCESSOR')")
 	@PostMapping(path = "/applications/updatedTime", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get Updated Date Time for List of Pre-Registration Id")
 	@ApiResponses(value = {

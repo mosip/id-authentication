@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.mosip</groupId>
 		<artifactId>mosip-parent</artifactId>
-		<version>0.12.10</version>
+		<version>0.12.16</version>
 	</parent>
 
 	<groupId>io.mosip.registrationprocessor</groupId>
@@ -241,6 +241,7 @@
 			**/registration/processor/packet/storage/mapper/PacketInfoMapper.java,
 			**/registration/processor/packet/storage/dao/PacketInfoDao.java,
 			**/registration/processor/packet/uploader/constants/*.java,
+			**/registration/processor/packet/manager/constant/*.java,
 			**/registration/processor/print/exception/PrintGlobalExceptionHandler.java,
 			**/registration/processor/packet/receiver/constants/*.java,
 			**/registration/processor/print/service/exception/*.java,
@@ -252,7 +253,8 @@
 
 			**/registration/processor/print/service/impl/PrintPostServiceImpl.java
 
-
+			**/registration/processor/message/sender/constants/*.java,
+			**/registration/processor/core/abstractverticle/BaseHealthCheckModel.java
 		</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**,**/handler/**,**/utilities/**,
 			**/validator/**, **/utils/**,**/util/**,**/code/**</sonar.cpd.exclusions>

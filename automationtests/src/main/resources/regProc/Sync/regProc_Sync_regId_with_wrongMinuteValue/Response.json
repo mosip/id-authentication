@@ -1,0 +1,14 @@
+{
+    "id": "mosip.registration.sync",
+    "version": "1.0",
+    "responsetime": "2019-06-28T06:55:09.835Z",
+    "response": null,
+    "errors": [
+        {
+            "registrationId": "10011100110001920190325129310",
+            "status": "FAILURE",
+            "errorMessage": "Invalid Request Value - Invalid Timestamp in RID",
+            "errorCode": "RPR-RGS-007"
+        }
+    ]
+}

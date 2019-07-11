@@ -1,0 +1,20 @@
+authType:
+  address: false
+  bio: false
+  fullAddress: false
+  otp: false
+  personalIdentity: true
+  pin: false
+id: "mosip.identity.auth"
+idvId:  "to-assign"
+idvIdType: "V"
+key:
+  publicKeyCert: "string"
+  sessionKey: "to-assign"
+muaCode: "1234567890"
+reqHmac: "string" 
+reqTime: "2019-01-10T12:25:43.095+05:30"
+request: "to-assign"
+txnID: "1234567890"
+tspID: "to-assign"
+ver: "1.0"

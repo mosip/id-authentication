@@ -108,6 +108,10 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private GridPane leftEyePaneHolder;
 	@FXML
+	private Pane leftEyePane;
+	@FXML
+	private Pane rightEyePane;
+	@FXML
 	private GridPane registrationExceptionHeader;
 	@FXML
 	private GridPane operatorExceptionHeader;
@@ -234,18 +238,6 @@ public class BiometricExceptionController extends BaseController implements Init
 			operatorExceptionLayout.setVisible(false);
 			operatorExceptionHeader.setVisible(false);
 		}
-		EventHandler<Event> mouseClick = event -> {
-			if (event.getSource() instanceof GridPane) {
-				GridPane sourcePane = (GridPane) event.getSource();
-				if(sourcePane.getStyleClass().contains(RegistrationConstants.BIO_IRIS_SELECTED)) {
-					sourcePane.getStyleClass().remove(RegistrationConstants.BIO_IRIS_SELECTED);
-				}else {
-					sourcePane.getStyleClass().add(RegistrationConstants.BIO_IRIS_SELECTED);
-				}
-			}
-		};
-		rightEyePaneHolder.setOnMouseClicked(mouseClick);
-		leftEyePaneHolder.setOnMouseClicked(mouseClick);
 	}
 
 	private void irisException() {
@@ -270,6 +262,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		irisException();
 		rightEyePaneHolder.getStyleClass().clear();
 		leftEyePaneHolder.getStyleClass().clear();
+		leftEyePane.getStyleClass().clear();
+		rightEyePane.getStyleClass().clear();
 	}
 	
 	/**
@@ -351,7 +345,11 @@ public class BiometricExceptionController extends BaseController implements Init
 		irisImage.setOnMouseClicked(event -> {
 			auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_MARKING, Components.REG_BIOMETRICS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
+			if(irisImage.getParent().getStyleClass().contains(RegistrationConstants.BIO_IRIS_SELECTED)) {
+				irisImage.getParent().getStyleClass().remove(RegistrationConstants.BIO_IRIS_SELECTED);
+			}else {
+				irisImage.getParent().getStyleClass().add(RegistrationConstants.BIO_IRIS_SELECTED);
+			}
 			toggleFunctionForIris.set(!toggleFunctionForIris.get());
 		});
 

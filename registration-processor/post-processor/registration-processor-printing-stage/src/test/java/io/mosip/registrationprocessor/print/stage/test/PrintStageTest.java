@@ -213,7 +213,7 @@ public class PrintStageTest {
 		QueueListener listener = new QueueListener() {
 			@Override
 			public void setListener(Message message) {
-				stage.consumerListener(message);
+			//	stage.consumerListener(message);
 			}
 		};
 
@@ -256,7 +256,7 @@ public class PrintStageTest {
 		ByteSequence byteSeq = new ByteSequence();
 		byteSeq.setData(response.getBytes());
 		amq.setContent(byteSeq);
-		stage.consumerListener(amq);
+		//stage.consumerListener(amq);
 		stage.deployVerticle();
 	}
 
@@ -266,7 +266,7 @@ public class PrintStageTest {
 		ByteSequence byteSeq = new ByteSequence();
 		byteSeq.setData(response.getBytes());
 		amq.setContent(byteSeq);
-		stage.consumerListener(amq);
+		//stage.consumerListener(amq);
 		stage.deployVerticle();
 	}
 
@@ -278,7 +278,7 @@ public class PrintStageTest {
 		byteSeq.setData("registration processor".getBytes());
 		amq.setContent(byteSeq);
 		PowerMockito.whenNew(String.class).withArguments(((ActiveMQBytesMessage) amq).getContent().data).thenThrow(exp);
-		stage.consumerListener(amq);
+	//	stage.consumerListener(amq);
 	}
 
 	@Test(expected = QueueConnectionNotFound.class)

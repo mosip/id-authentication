@@ -1,12 +1,18 @@
 package io.mosip.registration.dao;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 import io.mosip.registration.entity.PreRegistrationList;
 
 /**
- * pre registartion DAO
+ * This class is used to fetch the specific pre registration by passing pre registration id as parameter,
+ * To save the new pre registration record to {@link PreRegistrationList} table. To fetch the list
+ * of pre registration that needs to be deleted by passing start date as parameter from 
+ * {@link PreRegistrationList} table. To update the pre registration record in the {@link PreRegistrationList} table.
+ * To delete all the specifically given list of pre registration records and to fetch all the pre registration 
+ * present in the {@link PreRegistrationList} table.  
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -14,16 +20,17 @@ import io.mosip.registration.entity.PreRegistrationList;
 public interface PreRegistrationDataSyncDAO {
 
 	/**
-	 * To get pre registration
+	 * This method is used to get the pre registration from  {@link PreRegistrationList} table by 
+	 * passing pre registration ID as parameter.
 	 * 
 	 * @param preRegId
 	 *            pre registration id
-	 * @return PreRegistrationList pre registartion entity
+	 * @return PreRegistrationList pre registration entity
 	 */
 	public PreRegistrationList get(String preRegId);
 
 	/**
-	 * To save new Pre registration
+	 * This method is udsed to save new Pre registration to the {@link PreRegistrationList} table.
 	 * 
 	 * @param preRegistration
 	 *            pre reg entity object
@@ -32,35 +39,42 @@ public interface PreRegistrationDataSyncDAO {
 	public PreRegistrationList save(PreRegistrationList preRegistration);
 
 	/**
-	 * Fetch the Pre-Reg Records that needs to be deleted
+	 * This method is used to fetch the list of Pre-Registration Records that needs to be deleted from  {@link PreRegistrationList} table.
 	 * 
 	 * @param startDate
-	 *            - start date to fetch pre reg data
-	 * @return List - pre reg list to be deleted
+	 *            - start date to fetch pre registration data
+	 * @return List - List of pre registrations to be deleted
 	 */
 	public List<PreRegistrationList> fetchRecordsToBeDeleted(Date startDate);
 
 	/**
-	 * Update the Deleted Pre-Reg Records in the table
+	 * This method id used to update the Pre-Registration Records in the {@link PreRegistrationList} table.
 	 * 
 	 * @param preReg
-	 *            - pre reg entity object
-	 * @return PreRegistrationList - pre reg entity
+	 *            - pre registration entity object
+	 * @return PreRegistrationList - pre registration entity
 	 */
 	public PreRegistrationList update(PreRegistrationList preReg);
 
 	/**
-	 * Delete list of Pre-Registartions
+	 * This method is used to delete the list of Pre-Registartions from  {@link PreRegistrationList} table.
 	 * 
 	 * @param preRegistrationList
-	 *            pre registation list
+	 *            pre registration list
 	 */
 	public void deleteAll(List<PreRegistrationList> preRegistrationList);
 
 	/**
-	 * Fetches all the pre registration packets available in the db
+	 * This method is used to fetch all the pre registration packets available in the {@link PreRegistrationList} table.
 	 * 
-	 * @return List - pre reg list
+	 * @return List - pre registration list
 	 */
 	List<PreRegistrationList> getAllPreRegPackets();
+	
+	/**
+	 * Last pre registration packet downloaded date time.
+	 *
+	 * @return the timestamp
+	 */
+	public Timestamp getLastPreRegPacketDownloadedTime();
 }

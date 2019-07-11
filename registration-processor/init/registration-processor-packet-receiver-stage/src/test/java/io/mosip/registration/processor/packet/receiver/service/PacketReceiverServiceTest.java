@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
@@ -55,6 +54,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
@@ -79,7 +79,7 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
 @RefreshScope
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ IOUtils.class, HMACUtils.class })
+@PrepareForTest({ IOUtils.class, HMACUtils.class, org.h2.store.fs.FileUtils.class })
 public class PacketReceiverServiceTest {
 
 	private static final String fileExtension = ".zip";
@@ -108,7 +108,9 @@ public class PacketReceiverServiceTest {
 	@Mock
 	private Decryptor decryptor;
 
-
+	@Mock
+	LogDescription description;
+	
 	@Mock
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
@@ -147,6 +149,7 @@ public class PacketReceiverServiceTest {
 		registrationStatusDto.setStatusCode("RESEND");
 		registrationStatusDto.setRegistrationId("12345");
 		registrations.add(registrationStatusDto);
+		Mockito.doNothing().when(description).setMessage(any());
 		Mockito.when(registrationStatusService.getByIds(anyList())).thenReturn(registrations);
 		PowerMockito.mockStatic(HMACUtils.class);
 		PowerMockito.when(HMACUtils.digestAsPlainText(any())).thenReturn("abcd1234");
@@ -327,20 +330,15 @@ public class PacketReceiverServiceTest {
 	}
 
 	@Test(expected = PacketReceiverAppException.class)
-	@Ignore
-	public void testIoException() throws IOException, PacketDecryptionFailureException, ApisResourceAccessException {
+	public void testIoException() throws Exception {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
 		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
-		// Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(),
-		// any());
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
-		// Mockito.when(decryptor.decrypt(any(InputStream.class),any())).thenReturn(is);
-		// Mockito.when(virusScannerService.scanFile(any(InputStream.class))).thenReturn(Boolean.TRUE);
 		File mockedFile = Mockito.mock(File.class);
 		Mockito.when(mockedFile.getName()).thenReturn("Abc.txt");
 		Mockito.when(mockedFile.exists()).thenReturn(Boolean.TRUE);
-		// Mockito.when(mockedFile.getAbsolutePath()).thenThrow(new IOException());
-		Mockito.doThrow(new IOException()).when(mockedFile.getAbsolutePath());
+		PowerMockito.mockStatic(org.h2.store.fs.FileUtils.class);
+		PowerMockito.when(org.h2.store.fs.FileUtils.class, "newInputStream" , any()).thenThrow(new IOException());
 		MessageDTO result = packetReceiverService.validatePacket(mockMultipartFile, stageName);
 
 		assertFalse(result.getIsValid());
@@ -350,7 +348,7 @@ public class PacketReceiverServiceTest {
 	public void testVirusScanFailed()
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
-		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
 
 		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
@@ -364,7 +362,7 @@ public class PacketReceiverServiceTest {
 	public void testVirusscannerException()
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
-		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
 
 		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));
@@ -408,7 +406,7 @@ public class PacketReceiverServiceTest {
 	public void testPacketDecryptionFailureException()
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
-		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any()))
 				.thenThrow(new PacketDecryptionFailureException("", ""));
 
@@ -423,7 +421,7 @@ public class PacketReceiverServiceTest {
 	public void testPacketStorageToLandingZone()
 			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, io.mosip.registration.processor.core.exception.PacketDecryptionFailureException {
 		Mockito.when(syncRegistrationService.findByRegistrationId(anyString())).thenReturn(regEntity);
-		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.doReturn(mockDto).when(registrationStatusService).getRegistrationStatus("0000");
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any())).thenReturn(is);
 
 		Mockito.doNothing().when(fileManager).put(anyString(), any(InputStream.class), any(DirectoryPathDto.class));

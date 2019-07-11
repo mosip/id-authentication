@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.spi.biodedupe;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
@@ -17,8 +18,9 @@ public interface BioDedupeService {
 	 * @return the string
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
-	public String insertBiometrics(String registrationId) throws ApisResourceAccessException;
+	public String insertBiometrics(String registrationId) throws ApisResourceAccessException, IOException;
 
 	/**
 	 * Perform dedupe.
@@ -28,16 +30,26 @@ public interface BioDedupeService {
 	 * @return the list
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
+	 * @throws IOException 
 	 */
-	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException;
+	public List<String> performDedupe(String registrationId) throws ApisResourceAccessException, IOException;
 
 	/**
 	 * Gets the file.
 	 *
-	 * @param registrationId
-	 *            the registration id
+	 * @param abisRefId
+	 *            the abisRefId
 	 * @return the file
 	 */
-	public byte[] getFile(String registrationId);
+	public byte[] getFileByAbisRefId(String abisRefId);
+	
+	/**
+	 * Gets the file.
+	 *
+	 * @param registrationId
+	 *            the registrationId
+	 * @return the file
+	 */
+	public byte[] getFileByRegId(String registrationId);
 
 }
