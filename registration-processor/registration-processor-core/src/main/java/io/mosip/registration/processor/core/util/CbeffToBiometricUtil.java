@@ -305,7 +305,7 @@ public class CbeffToBiometricUtil {
 	 *            the list of BIR
 	 * @return the list
 	 */
-	public List<BIR> convertBIRTYPEtoBIR(List<BIRType> listOfBIR) {
+	private List<BIR> convertBIRTYPEtoBIR(List<BIRType> listOfBIR) {
 		return listOfBIR.parallelStream().map(bir -> new BIR.BIRBuilder().withBdb(bir.getBDB())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
 				.withBdbInfo(Optional.ofNullable(bir.getBDBInfo())

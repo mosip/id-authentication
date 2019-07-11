@@ -1,98 +1,107 @@
 {
-	"phoneNumber": [
-		{
-			"value": "9393356547"
-		}
-	],
-	"gender": [
-		{
-			"language": "ara",
-			"value": "الذكر"
-		},
-		{
-			"language": "fra",
-			"value": "Mâle"
-		}
-	],
-	"dob": [
-		{
-			"value": "2001/02/11"
-		}
-	],
-	"name": [
-		{
-			"language": "ara",
-			"value": "َسِف جَلَُدِِن"
-		},
-		{
-			"language": "fra",
-			"value": "Asif Jalaudeen"
-		}
-	],
-	"location1": [
-		{
-			"language": "ara",
-			"value": "القنيطرة"
-		},
-		{
-			"language": "fra",
-			"value": "Kénitra"
-		}
-	],
-	"location2": [
-		{
-			"language": "ara",
-			"value": "جهة الرباط سلا القنيطرة"
-		},
-		{
-			"language": "fra",
-			"value": "Rabat-Salé-Kénitra"
-		}
-	],
-	"addressLine1": [
-		{
-			"language": "ara",
-			"value": "دُبَِ مَِن رَُد"
-		},
-		{
-			"language": "fra",
-			"value": "Dubai Main Road"
-		}
-	],
-	"emailId": [
-		{
-			"value": "athila.sirajudeen@mindtree.com"
-		}
-	],
-	"addressLine2": [
-		{
-			"language": "ara",
-			"value": "كهِتتِ رُبُ سترِِت هُُسِ"
-		},
-		{
-			"language": "fra",
-			"value": "Chitti Robo Street House"
-		}
-	],
-	"location3": [
-		{
-			"language": "ara",
-			"value": "الرباط"
-		},
-		{
-			"language": "fra",
-			"value": "Kénitra"
-		}
-	],
-	"addressLine3": [
-		{
-			"language": "ara",
-			"value": "ُسَِن"
-		},
-		{
-			"language": "fra",
-			"value": "Ocean"
-		}
-	],
-	"FACE": "$IGNORE$"
+	"kycStatus": true,
+	"staticToken": "517622126327587616265570657843083834",
+	"ttl": "24",
+	"identity": {
+		"phoneNumber": [
+			{
+				"value": "9003356458"
+			}
+		],
+		"gender": [
+			{
+				"language": "ara",
+				"value": "م"
+			},
+			{
+				"language": "fra",
+				"value": "MLE"
+			}
+		],
+		"dob": [
+			{
+				"value": "1999/04/11"
+			}
+		],
+		"postalCode": [
+			{
+				"value": "300033"
+			}
+		],
+		"location1": [
+			{
+				"language": "ara",
+				"value": "سيرَِ"
+			},
+			{
+				"language": "fra",
+				"value": "SYRIA"
+			}
+		],
+		"name": [
+			{
+				"language": "ara",
+				"value": "فُلل نَمِ"
+			},
+			{
+				"language": "fra",
+				"value": "Full Name"
+			}
+		],
+		"addressLine1": [
+			{
+				"language": "ara",
+				"value": "٢٥ مُهَمِد سترِِت"
+			},
+			{
+				"language": "fra",
+				"value": "25 Mohamed Street"
+			}
+		],
+		"location2": [
+			{
+				"language": "ara",
+				"value": "ِرَن"
+			},
+			{
+				"language": "fra",
+				"value": "IRAN"
+			}
+		],
+		"location3": [
+			{
+				"language": "ara",
+				"value": "فِس-مِكنِس"
+			},
+			{
+				"language": "fra",
+				"value": "Fès-Meknès"
+			}
+		],
+		"addressLine2": [
+			{
+				"language": "ara",
+				"value": "سيرَِ رَُد"
+			},
+			{
+				"language": "fra",
+				"value": "Syria Road"
+			}
+		],
+		"emailId": [
+			{
+				"value": "athilbanu@gmail.com"
+			}
+		],
+		"addressLine3": [
+			{
+				"language": "ara",
+				"value": "ِرَن"
+			},
+			{
+				"language": "fra",
+				"value": "IRAN"
+			}
+		]
+	}
 }
