@@ -4,7 +4,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.mosip.authentication.common.service.filter.BaseInternalFilter;
+import io.mosip.authentication.common.service.filter.DefaultInternalFilter;
 import io.mosip.authentication.internal.service.filter.InternalAuthFilter;
 
 /**
@@ -31,9 +31,9 @@ public class InternalAuthFilterConfig {
 	}
 
 	@Bean
-	public FilterRegistrationBean<BaseInternalFilter> getInternalOTPFilter() {
-		FilterRegistrationBean<BaseInternalFilter> registrationBean = new FilterRegistrationBean<>();
-		registrationBean.setFilter(new BaseInternalFilter());
+	public FilterRegistrationBean<DefaultInternalFilter> getInternalOTPFilter() {
+		FilterRegistrationBean<DefaultInternalFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new DefaultInternalFilter());
 		registrationBean.addUrlPatterns("/otp", "/auth-transactions");
 		return registrationBean;
 	}
