@@ -35,6 +35,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.registration.processor.core.code.DedupeSourceName;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
@@ -68,6 +69,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegBioRefEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegBioRefPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegDemoDedupeListPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegLostUinDetEntity;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
@@ -155,6 +157,13 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	private BasePacketRepository<RegDemoDedupeListEntity, String> regDemoDedupeListRepository;
+	
+	@Mock
+	private BasePacketRepository<RegLostUinDetEntity, String> regLostUinDetRepository;
+
+	@Mock
+	private LogDescription description;
+
 	/** The byte array. */
 	byte[] byteArray = null;
 
@@ -189,6 +198,8 @@ public class PacketInfoManagerImplTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(description.getMessage()).thenReturn("DESCRIPTION");
 		ClassLoader classLoader = getClass().getClassLoader();
 		demographicJsonFile = new File(classLoader.getResource("ID.json").getFile());
 		demographicJsonStream = new FileInputStream(demographicJsonFile);
@@ -1058,5 +1069,19 @@ public class PacketInfoManagerImplTest {
 		assertEquals(batchId,"123312");
 	}
 
+	@Test
+	public void  saveRegLostUinDetTest() {
+		
+		packetInfoManagerImpl.saveRegLostUinDet("123","456");
+	}
+	
+	@Test(expected = UnableToInsertData.class)
+	public void dataAccessLayerExceptionTest() {
+		
+		Mockito.when(regLostUinDetRepository.save(any())).thenThrow(new DataAccessLayerException("", "", new UnableToInsertData()));
+
+		packetInfoManagerImpl.saveRegLostUinDet("123","456");
+		
+	}
 
 }

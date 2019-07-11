@@ -6,7 +6,7 @@ As part of the registration packet created successfully the Supervisor has to au
 Once done the authenticated packets will be uploaded to the registration processor by manually or automatically. If the registration application is not in online and RO/RS wants to export to the specific folder based on the user section path. Later the RO/RS will be uploaded same by using the portal services.
 
 **Packet Export**
-- The UI will provide the option to export label as **'Export'** the packets which status as 'Created'. 
+- The UI will provide the option to export label as **'Export'** the packets which status as 'Approved/Rejected'. 
 - The exported packets path should be chosen by the user.
 - The status should be updated in the transaction table as 'Exported'.
 - While fetching the packet status this status 'Exported' also should be included.

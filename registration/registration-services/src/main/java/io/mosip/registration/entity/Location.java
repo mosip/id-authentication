@@ -11,7 +11,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity Class for Location.
+ * This Entity Class contains list of locations that are being used in Registration with respect to language code.
+ * The data for this table will come through sync from server master table .
  *
  * @author Sreekar Chukka
  * @since 1.0.0

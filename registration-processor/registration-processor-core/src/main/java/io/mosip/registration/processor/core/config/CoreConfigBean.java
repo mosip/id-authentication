@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,6 +16,7 @@ import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.queue.factory.MosipQueueConnectionFactoryImpl;
@@ -28,6 +30,7 @@ import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 
 import org.springframework.context.annotation.Primary;
 
@@ -44,14 +47,14 @@ public class CoreConfigBean {
 			List<ConfigStoreOptions> configStores = new ArrayList<>();
 			List<String> configUrls = CoreConfigBean.getUrls(environment);
 			configUrls.forEach(url -> {
-				configStores.add(new ConfigStoreOptions().setType(ConfigurationUtil.CONFIG_SERVER_TYPE)
-						.setConfig(new JsonObject().put("url", url).put("timeout",
-								Long.parseLong(ConfigurationUtil.CONFIG_SERVER_TIME_OUT))));
+				configStores.add(new ConfigStoreOptions().setType(ConfigurationUtil.CONFIG_SERVER_TYPE).setConfig(new JsonObject().put("url", url)
+						.put("timeout", Long.parseLong(ConfigurationUtil.CONFIG_SERVER_TIME_OUT))
+						.put("httpClientConfiguration", new JsonObject().put("trustAll", true).put("ssl", true))));
 			});
 			ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions();
 			configStores.forEach(configRetrieverOptions::addStore);
 			ConfigRetriever retriever = ConfigRetriever.create(vertx, configRetrieverOptions.setScanPeriod(0));
-			regProcLogger.info(this.getClass().getName(), "","","Getting values from config Server");
+			regProcLogger.info(this.getClass().getName(), "", "", "Getting values from config Server");
 			CompletableFuture<JsonObject> configLoader = new CompletableFuture<JsonObject>();
 			retriever.getConfig(json -> {
 				if (json.succeeded()) {
@@ -65,7 +68,8 @@ public class CoreConfigBean {
 					retriever.close();
 					vertx.close();
 				} else {
-					regProcLogger.info(this.getClass().getName(), "", json.cause().getLocalizedMessage(), json.cause().getMessage());
+					regProcLogger.info(this.getClass().getName(), "", json.cause().getLocalizedMessage(),
+							json.cause().getMessage());
 					json.otherwiseEmpty();
 					retriever.close();
 					vertx.close();
@@ -73,7 +77,7 @@ public class CoreConfigBean {
 			});
 			configLoader.get();
 		} catch (Exception exception) {
-			regProcLogger.error(this.getClass().getName(), "", "", exception.getMessage());
+			regProcLogger.error(this.getClass().getName(), "", "", ExceptionUtils.getStackTrace(exception));
 		}
 		return new PropertySourcesPlaceholderConfigurer();
 	}
@@ -134,5 +138,15 @@ public class CoreConfigBean {
 	@Bean
 	public DigitalSignatureUtility getDigitalSignatureUtility() {
 		return new DigitalSignatureUtility();
+	}
+
+	@Bean
+	public LogDescription getLogDescription() {
+		return new LogDescription();
+	}
+
+	@Bean
+	public RegistrationExceptionMapperUtil getRegistrationExceptionMapperUtil() {
+		return new RegistrationExceptionMapperUtil();
 	}
 }

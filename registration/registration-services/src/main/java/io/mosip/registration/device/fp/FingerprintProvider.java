@@ -85,6 +85,7 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 	 */
 	@Override
 	public abstract int captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#uninitFingerPrintDevice()
 	 */

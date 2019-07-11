@@ -2,16 +2,17 @@
 <div class="file-upload">
   <div class="file-uploaad__header">{{ 'documents.title_document' | translate }}</div>
   <div class="file-upload__message">
-    {{ 'documents.text_filetype' | translate }} &nbsp;{{ allowedFilesHtml }} &nbsp;{{
+    {{ 'documents.text_filetype' | translate }} : {{ allowedFilesHtml }} &nbsp;{{
       'documents.text_filesize' | translate
     }}
-    &nbsp; {{ allowedFileSize }}
+    : {{ allowedFileSize }}
   </div>
   <div class="file-upload__body">
     <div class="file-upload__body__1">
       <div class="file-upload__body__document-type" *ngFor="let document of LOD; let i = index">
         <mat-form-field class="file-upload__input">
           <mat-select
+            disableOptionCentering
             placeholder="{{ document.code }}"
             (selectionChange)="selectChange($event, i)"
             (openedChange)="openedChange($event, i)"
@@ -51,7 +52,7 @@
               </mat-select>
             </mat-form-field>
           </span>
-          <span>
+          <span *ngIf="allApplicants.length > 1">
             <mat-icon class="icon" matTooltip="{{ 'helpText.same_as' | translate }}" [inline]="true"
               >help_outline</mat-icon
             >
@@ -72,20 +73,20 @@
     <div class="file-upload__body__2" *ngIf="this.users[0].files && fileIndex >= 0">
       <p>{{ fileName }}</p>
       <iframe
-        *ngIf="fileExtension == 'pdf'"
+        *ngIf="fileExtension == 'pdf' || fileExtension == 'PDF'"
         class="file-uplaoad__body__2__preview"
         [attr.src]="fileUrl"
         type="application/pdf;Base64,"
       ></iframe>
 
       <img
-        *ngIf="fileExtension == 'jpg'"
+        *ngIf="fileExtension == 'jpg' || fileExtension == 'jpeg' || fileExtension == 'JPG' || fileExtension == 'JPEG'"
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/jpeg;Base64,"
       />
       <img
-        *ngIf="fileExtension == 'png'"
+        *ngIf="fileExtension == 'png' || fileExtension == 'PNG' "
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/png;Base64,"

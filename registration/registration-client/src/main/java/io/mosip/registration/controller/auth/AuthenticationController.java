@@ -206,16 +206,19 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		auditFactory.audit(
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_SUBMIT_OTP : AuditEvent.REG_OPERATOR_AUTH_SUBMIT_OTP,
-				Components.REG_OS_AUTH, otpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH,
+				otpUserId.getText().isEmpty() ? RegistrationConstants.AUDIT_DEFAULT_USER : otpUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating OTP for OTP based Authentication");
+		
 		if (validations.validateTextField(operatorAuthenticationPane, otp, otp.getId(), true)) {
 			if (isSupervisor) {
 				if (!otpUserId.getText().isEmpty()) {
 					if (fetchUserRole(otpUserId.getText())) {
 						if (null != authenticationService.authValidator(RegistrationConstants.OTP, otpUserId.getText(),
-								otp.getText())) {
+								otp.getText(), haveToSaveAuthToken(otpUserId.getText()))) {
 							userAuthenticationTypeListValidation.remove(0);
 							userNameField = otpUserId.getText();
 							if (!isEODAuthentication) {
@@ -235,7 +238,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				}
 			} else {
 				if (null != authenticationService.authValidator(RegistrationConstants.OTP, otpUserId.getText(),
-						otp.getText())) {
+						otp.getText(), haveToSaveAuthToken(otpUserId.getText()))) {
 					if (!isEODAuthentication) {
 						getOSIData().setOperatorAuthenticatedByPIN(true);
 					}
@@ -252,7 +255,9 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		auditFactory.audit(
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_PASSWORD : AuditEvent.REG_OPERATOR_AUTH_PASSWORD,
-				Components.REG_OS_AUTH, username.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH,
+				username.getText().isEmpty() ? RegistrationConstants.AUDIT_DEFAULT_USER : username.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		String status = RegistrationConstants.EMPTY;
 		if (isSupervisor) {
@@ -311,7 +316,9 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		auditFactory.audit(
 				isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_FINGERPRINT : AuditEvent.REG_OPERATOR_AUTH_FINGERPRINT,
-				Components.REG_OS_AUTH, fpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH,
+				fpUserId.getText().isEmpty() ? RegistrationConstants.AUDIT_DEFAULT_USER : fpUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Fingerprint for Fingerprint based Authentication");
@@ -359,7 +366,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void validateIris() {
 
 		auditFactory.audit(isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_IRIS : AuditEvent.REG_OPERATOR_AUTH_IRIS,
-				Components.REG_OS_AUTH, irisUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH,
+				irisUserId.getText().isEmpty() ? RegistrationConstants.AUDIT_DEFAULT_USER : irisUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Iris for Iris based Authentication");
@@ -407,7 +416,9 @@ public class AuthenticationController extends BaseController implements Initiali
 	public void validateFace() {
 
 		auditFactory.audit(isSupervisor ? AuditEvent.REG_SUPERVISOR_AUTH_FACE : AuditEvent.REG_OPERATOR_AUTH_FACE,
-				Components.REG_OS_AUTH, faceUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				Components.REG_OS_AUTH,
+				faceUserId.getText().isEmpty() ? RegistrationConstants.AUDIT_DEFAULT_USER : faceUserId.getText(),
+				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Validating Face for Face based Authentication");
@@ -619,9 +630,18 @@ public class AuthenticationController extends BaseController implements Initiali
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Enabling OTP based Authentication Screen in UI");
 
+		pwdBasedLogin.setVisible(false);
+		otpBasedLogin.setVisible(false);
+		fingerprintBasedLogin.setVisible(false);
+		irisBasedLogin.setVisible(false);
+		faceBasedLogin.setVisible(false);
 		errorPane.setVisible(true);
+		errorPane.setDisable(false);
 		errorText1.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1);
+		errorText1.setVisible(true);
 		errorText2.setText(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
+		errorText1.setVisible(true);
+
 		if (isSupervisor) {
 			errorLabel.setText(RegistrationUIConstants.SUPERVISOR_VERIFICATION);
 		}
@@ -1001,6 +1021,10 @@ public class AuthenticationController extends BaseController implements Initiali
 
 		authList.removeIf(auth -> authList.size() > 1 && RegistrationConstants.DISABLE.equalsIgnoreCase(flag)
 				&& auth.equalsIgnoreCase(authCode));
+	}
+
+	private boolean haveToSaveAuthToken(String userId) {
+		return SessionContext.userId().equals(userId);
 	}
 
 }

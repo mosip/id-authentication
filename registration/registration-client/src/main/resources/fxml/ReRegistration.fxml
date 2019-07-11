@@ -77,9 +77,9 @@
                   </HBox>
                </children>
                <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="4.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="2.0" />
                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="31.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.0" />
                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
                   <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
@@ -100,7 +100,7 @@
                <children>
                   <GridPane>
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="4.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="2.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                     </columnConstraints>

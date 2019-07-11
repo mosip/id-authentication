@@ -264,7 +264,31 @@ public class DemographicDetailController extends BaseController {
 
 	@FXML
 	private Label addressLine3LocalLanguageMessage;
-
+	
+	@FXML
+	private Label postalCodeMessage;
+	
+	@FXML
+	private Label postalCodeLocalLanguageMessage;
+	
+	@FXML
+	private Label mobileNoMessage;
+	
+	@FXML
+	private Label mobileNoLocalLanguageMessage;
+	
+	@FXML
+	private Label emailIdMessage;
+	
+	@FXML
+	private Label emailIdLocalLanguageMessage;
+	
+	@FXML
+	private Label cniOrPinNumberMessage;
+	
+	@FXML
+	private Label cniOrPinNumberLocalLanguageMessage;
+	
 	@FXML
 	private TextField emailId;
 
@@ -632,6 +656,8 @@ public class DemographicDetailController extends BaseController {
 	@FXML
 	private GridPane localAddressPane;
 	@FXML
+	private GridPane preRegParentPane;
+	@FXML
 	private VBox applicationemailIdPane;
 	@FXML
 	private VBox applicationCniOrPinNumberPane;
@@ -675,8 +701,6 @@ public class DemographicDetailController extends BaseController {
 	private String textMaleLocalLanguage;
 	private String textFemaleLocalLanguage;
 	private String textMaleCode;
-	private String textFemaleCode;
-	private Node parentDetailNode;
 
 	/*
 	 * (non-Javadoc)
@@ -735,6 +759,8 @@ public class DemographicDetailController extends BaseController {
 			genderSettings();
 			if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 					.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
+				preRegParentPane.setVisible(false);
+				preRegParentPane.setManaged(false);
 				national.getStyleClass().addAll("residence", "button");
 				nationalLocalLanguage.getStyleClass().addAll("residence", "button");
 				residence.setText(RegistrationConstants.EMPTY);
@@ -909,6 +935,18 @@ public class DemographicDetailController extends BaseController {
 
 				}
 
+				parentRegId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				parentRegId.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+
+				parentUinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				parentUinId.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+
+				parentRegIdLabel.setVisible(false);
+				parentRegId.setPromptText(parentRegIdLabel.getText());
+
+				parentUinIdLabel.setVisible(false);
+				parentUinId.setPromptText(parentUinIdLabel.getText());
+
 			});
 
 			uinRidToggleLabel1
@@ -961,6 +999,14 @@ public class DemographicDetailController extends BaseController {
 				dd.clear();
 				mm.clear();
 				yyyy.clear();
+				dd.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				dd.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				mm.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				mm.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				yyyy.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				yyyy.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
+				ageField.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+				ageField.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 
 				ddLocalLanguage.clear();
 				mmLocalLanguage.clear();
@@ -988,10 +1034,9 @@ public class DemographicDetailController extends BaseController {
 
 				parentDetailPane.setManaged(false);
 				parentDetailPane.setVisible(false);
-				
+
 				keyboardNode.setManaged(false);
 				keyboardNode.setVisible(false);
-
 
 			});
 
@@ -1013,7 +1058,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when national button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void national(ActionEvent event) {
@@ -1037,7 +1083,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when mail button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void male(ActionEvent event) {
@@ -1066,7 +1113,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when foriegner button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void foreigner(ActionEvent event) {
@@ -1090,7 +1138,8 @@ public class DemographicDetailController extends BaseController {
 	/**
 	 * method action when female button is pressed
 	 * 
-	 * @param ActionEvent the action event
+	 * @param ActionEvent
+	 *            the action event
 	 */
 	@FXML
 	private void female(ActionEvent event) {
@@ -1178,7 +1227,8 @@ public class DemographicDetailController extends BaseController {
 
 						parentFieldValidation();
 					}
-					fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false, oldValue);
+					fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false,
+							oldValue);
 				} else {
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
@@ -1974,6 +2024,10 @@ public class DemographicDetailController extends BaseController {
 					fxUtils.selectComboBoxValue(city, locationDto.getCity());
 					retrieveAndPopulateLocationByHierarchy(city, localAdminAuthority, localAdminAuthorityLocalLanguage);
 				}
+				if (locationDto.getLocalAdministrativeAuthority() != null) {
+					fxUtils.selectComboBoxValue(localAdminAuthority, locationDto.getLocalAdministrativeAuthority());
+				}
+
 				if (locationDto.getPostalCode() != null) {
 					postalCode.setText(locationDto.getPostalCode());
 				}
@@ -2036,7 +2090,7 @@ public class DemographicDetailController extends BaseController {
 				if (old) {
 					keyboardPane.maxHeight(parentFlowPane.getHeight());
 					fullNameLocalLanguage.requestFocus();
-				}else {
+				} else {
 					keyboardPane.maxHeight(200);
 					keyboardNode.setManaged(false);
 				}
@@ -2072,7 +2126,6 @@ public class DemographicDetailController extends BaseController {
 		if (!localAdminAuthority.getItems().isEmpty()) {
 			localAdminAuthority.getSelectionModel().select(0);
 		}
-		postalCode.setText("600111");
 		mobileNo.setText("9965625706");
 		emailId.setText("ayoub.toufiq@gmail.com");
 		cniOrPinNumber.setText("4545343123");
@@ -2109,16 +2162,14 @@ public class DemographicDetailController extends BaseController {
 					RegistrationUIConstants.UPDATE_UIN_INDIVIDUAL_AND_PARENT_SAME_UIN_ALERT);
 		} else {
 			if (validateThisPane()) {
-				if (switchedOn.get()) {
+				disableTheMessages();
+				if (dd != null && mm != null && yyyy != null && dd.getText().matches(RegistrationConstants.NUMBER_REGEX)
+						&& mm.getText().matches(RegistrationConstants.NUMBER_REGEX)
+						&& yyyy.getText().matches(RegistrationConstants.NUMBER_REGEX)) {
 
-					if (dd.getText().matches(RegistrationConstants.NUMBER_REGEX)
-							&& mm.getText().matches(RegistrationConstants.NUMBER_REGEX)
-							&& yyyy.getText().matches(RegistrationConstants.NUMBER_REGEX)) {
-
-						LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
-								Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
-						dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
-					}
+					LocalDate currentYear = LocalDate.of(Integer.parseInt(yyyy.getText()),
+							Integer.parseInt(mm.getText()), Integer.parseInt(dd.getText()));
+					dateOfBirth = Date.from(currentYear.atStartOfDay(ZoneId.systemDefault()).toInstant());
 				}
 				saveDetail();
 
@@ -2152,6 +2203,32 @@ public class DemographicDetailController extends BaseController {
 			}
 		}
 	}
+	/**
+	 * Disables the messages once the pane is validated
+	 */
+	private void disableTheMessages() {
+		fullNameMessage.setVisible(false);
+		fullNameLocalLanguageMessage.setVisible(false);
+		dobMessage.setVisible(false);
+		addressLine1Message.setVisible(false);
+		addressLine1LocalLanguageMessage.setVisible(false);
+		addressLine2Message.setVisible(false);
+		addressLine2LocalLanguageMessage.setVisible(false);
+		addressLine3Message.setVisible(false);
+		addressLine3LocalLanguageMessage.setVisible(false);
+		postalCodeMessage.setVisible(false);
+		postalCodeLocalLanguageMessage.setVisible(false);
+		mobileNoMessage.setVisible(false);
+		mobileNoLocalLanguageMessage.setVisible(false);
+		emailIdMessage.setVisible(false);
+		emailIdLocalLanguageMessage.setVisible(false);
+		cniOrPinNumberMessage.setVisible(false);
+		cniOrPinNumberLocalLanguageMessage.setVisible(false);
+		parentNameMessage.setVisible(false);
+		parentNameLocalLanguageMessage.setVisible(false);
+		parentRegIdMessage.setVisible(false);
+		parentUinIdMessage.setVisible(false);
+	}
 
 	/**
 	 * Method to validate the details entered
@@ -2163,7 +2240,7 @@ public class DemographicDetailController extends BaseController {
 			if (switchedOn.get()) {
 				isValid = validateDateOfBirth(isValid);
 			} else {
-				if (Integer.parseInt(ageField.getText()) > maxAge) {
+				if (ageField.getText().length() > 0 && Integer.parseInt(ageField.getText()) > maxAge) {
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
 					isValid = false;

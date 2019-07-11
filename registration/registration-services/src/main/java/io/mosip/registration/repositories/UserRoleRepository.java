@@ -13,4 +13,6 @@ import io.mosip.registration.entity.id.UserRoleID;
  */
 public interface UserRoleRepository extends BaseRepository<UserRole, UserRoleID> {
 
+	void deleteByUserRoleID(UserRoleID roleId);
+
 }

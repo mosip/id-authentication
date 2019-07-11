@@ -18,6 +18,7 @@ public class RestServiceException extends IdRepoAppException {
 	/** The response body. */
 	private transient String responseBodyAsString;
 
+	/** The response body. */
 	private transient Object responseBody;
 
 	/**
@@ -69,6 +70,11 @@ public class RestServiceException extends IdRepoAppException {
 		return Optional.ofNullable(responseBody);
 	}
 
+	/**
+	 * Gets the response body as string.
+	 *
+	 * @return the response body as string
+	 */
 	public Optional<String> getResponseBodyAsString() {
 		return Optional.ofNullable(responseBodyAsString);
 	}

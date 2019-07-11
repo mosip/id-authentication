@@ -482,11 +482,10 @@
                               </GridPane>
                               <GridPane fx:id="ContentHeader">
                                  <children>
-                                    <Label alignment="CENTER" contentDisplay="CENTER" styleClass="paneHeader" text="%fingerprint" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                                    <Label alignment="CENTER" contentDisplay="CENTER" styleClass="paneHeader" text="%fingerprint" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
                                  </children>
                                  <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="100.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="100.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="100.0" prefWidth="100.0" />
                                  </columnConstraints>
                                  <rowConstraints>
@@ -617,6 +616,9 @@
                   <Button mnemonicParsing="false" onAction="#goToHomePageFromOnboard" styleClass="homeButton" text="%home" />
                   <Label styleClass="headerLabel" text="%/onboardOperator" />
                </children>
+               <GridPane.margin>
+                  <Insets left="25.0" />
+               </GridPane.margin>
             </HBox>
             <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
               <columnConstraints>

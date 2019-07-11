@@ -17,7 +17,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class UinDocument.
+ * The Class UinDocument - Entity class for uin_document table.
  *
  * @author Manoj SP
  */

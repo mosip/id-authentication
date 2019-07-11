@@ -59,16 +59,6 @@ The key **requirements** are
 -   If not available the system should display alert. "**The Details are
     not available**".
 
-The status for the Pre-Registration are as follows
-
-1.  Yet To Receive.
-
-2.  Received
-
-3.  RID Generated
-
-4.  Deleted.
-
 The key **non-functional requirements** are
 
 -   Security:
@@ -87,9 +77,6 @@ The key **non-functional requirements** are
 -   Network
 
     -   URL should be communicated using the SSL mode.
-
--   Log the each state of the packet Yet To Receive/Received/RID
-    Generated/Deleted:
 
     -   As a security measures the UIN or any sensitive individual
         information should not be logged.
@@ -128,16 +115,6 @@ The key **non-functional requirements** are
     the DB.
 
     f.  Write the respective queries using the JPA query language.
-
-7.  Use the below status for the pre-registration status.
-
-    g.  'Yet To Receive'.
-
-    h.  Received
-
-    i.  RID Generated
-
-    j.  Deleted
 
 **Class Diagram :**
 ![Pre-Registrtaion Sync Class Diagram](_images/PreRegistrationSyncClassDgm.png)

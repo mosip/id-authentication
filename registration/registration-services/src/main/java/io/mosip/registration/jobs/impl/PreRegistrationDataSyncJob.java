@@ -16,7 +16,27 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
 
 /**
- * This is a job to sync the pre registrations
+ * The {@code PreRegistrationDataSyncJob} is a job to sync the pre registrations
+ * 
+ * <p>
+ * The {@code PreRegistrationDataSyncJob} is job to sync the pre-registration
+ * data from server to local.
+ * </p>
+ * 
+ * <p>
+ * The PreRegistration packets will be saved on configured folder (EX:
+ * PreRegistartion Packet Store).
+ * </p>
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -48,7 +68,8 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 			preRegistrationDataSyncService = applicationContext.getBean(PreRegistrationDataSyncService.class);
 
 			// Run the Parent JOB always first
-			this.responseDTO = preRegistrationDataSyncService.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+			this.responseDTO = preRegistrationDataSyncService
+					.getPreRegistrationIds(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
 
 			// To run the child jobs after the parent job Success
 			if (responseDTO.getSuccessResponseDTO() != null && context != null) {
@@ -58,11 +79,11 @@ public class PreRegistrationDataSyncJob extends BaseJob {
 			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE,
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					baseUncheckedException.getMessage()+ ExceptionUtils.getStackTrace(baseUncheckedException));
+			LOGGER.error(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					baseUncheckedException.getMessage() + ExceptionUtils.getStackTrace(baseUncheckedException));
 			throw baseUncheckedException;
-		} 
+		}
 
 		LOGGER.info(LoggerConstants.PRE_REG_DATA_SYNC_JOB_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");

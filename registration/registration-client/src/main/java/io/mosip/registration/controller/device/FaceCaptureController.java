@@ -246,7 +246,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 					}
 				} else {
 					applicantBufferedImage = null;
-					applicantImage.setImage(defaultImage);
 					saveBiometricDetailsBtn.setDisable(true);
 				}
 			}
@@ -260,6 +259,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				demographicDetailController.saveDetail();
 			}
 		}
+		webCameraController.closeWebcam();
 	}
 
 	@FXML
@@ -267,6 +267,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 		auditFactory.audit(AuditEvent.REG_BIO_FACE_CAPTURE_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
+		webCameraController.closeWebcam();
+		
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			/*
 			 * if (validateOperatorPhoto()) {
@@ -392,6 +394,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 		}
 
+		capturedImage.flush();
+		
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) && validateOperatorPhoto()) {
 			saveBiometricDetailsBtn.setDisable(false);
 
@@ -821,5 +825,4 @@ public class FaceCaptureController extends BaseController implements Initializab
 			saveBiometricDetailsBtn.setDisable(true);
 		}
 	}
-
 }

@@ -10,7 +10,8 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity Class for MachineType.
+ * This Entity Class contains list of machine types[Desktop,Laptop...] with respect to language code.
+ * The data for this table will come through sync from server master table.
  *
  * @author Sreekar chukka
  * @since 1.0.0

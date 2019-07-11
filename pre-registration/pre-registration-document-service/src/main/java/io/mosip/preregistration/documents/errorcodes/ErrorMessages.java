@@ -45,7 +45,7 @@ public enum ErrorMessages {
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_007
 	 */
-	DOCUMENT_EXCEEDING_PREMITTED_SIZE("Document exceeding permited size"),
+	DOCUMENT_EXCEEDING_PREMITTED_SIZE("Document exceeding permitted size"),
 	/**
 	 * ErrorMessage for PRG_PAM_DOC_008
 	 */

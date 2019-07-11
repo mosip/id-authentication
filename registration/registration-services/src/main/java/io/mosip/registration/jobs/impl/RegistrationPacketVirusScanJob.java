@@ -15,7 +15,17 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.packet.RegistrationPacketVirusScanService;
 
 /**
- * This is a job to scan the Registration packets for viruses
+ * This is a job to scan the Registration packets for viruses.
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author SARAVANAKUMAR G
  * @since 1.0.0
@@ -27,7 +37,7 @@ public class RegistrationPacketVirusScanJob extends BaseJob {
 	/**
 	 * The RegPacketStatusServiceImpl
 	 */
-	
+
 	@Autowired
 	private RegistrationPacketVirusScanService packetVirusScanService;
 
@@ -50,10 +60,10 @@ public class RegistrationPacketVirusScanJob extends BaseJob {
 		this.responseDTO = new ResponseDTO();
 
 		try {
-			
+
 			this.jobId = loadContext(context);
 			packetVirusScanService = applicationContext.getBean(RegistrationPacketVirusScanService.class);
-			
+
 			// Run the Parent JOB always first
 			this.responseDTO = packetVirusScanService.scanPacket();
 
@@ -65,9 +75,8 @@ public class RegistrationPacketVirusScanJob extends BaseJob {
 			syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		} catch (RegBaseUncheckedException baseUncheckedException) {
-			LOGGER.error(LoggerConstants.REG_PACKET_VIRUS_SCAN,
-					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					baseUncheckedException.getMessage());
+			LOGGER.error(LoggerConstants.REG_PACKET_VIRUS_SCAN, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, baseUncheckedException.getMessage());
 			throw baseUncheckedException;
 		}
 

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -330,7 +331,7 @@ public class DemographicServiceTest {
 		request.setVersion("1.0");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		mapper.setDateFormat(df);
-
+		mapper.setTimeZone(TimeZone.getDefault());
 		request.setRequesttime(df.parse("2019-01-22T07:22:57.186Z"));
 		request.setRequesttime(new Timestamp(System.currentTimeMillis()));
 		request.setRequest(createPreRegistrationDTO);

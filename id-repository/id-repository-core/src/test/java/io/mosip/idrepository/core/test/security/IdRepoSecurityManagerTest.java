@@ -37,6 +37,10 @@ import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.CryptoUtil;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest

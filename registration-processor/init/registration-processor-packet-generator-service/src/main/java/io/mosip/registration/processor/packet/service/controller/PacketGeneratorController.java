@@ -107,7 +107,7 @@ public class PacketGeneratorController {
 			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility
-						.getDigitalSignature(buildPacketGeneratorResponse(packerGeneratorResDto)));
+						.getDigitalSignature(buildSignaturePacketGeneratorResponse(packerGeneratorResDto)));
 				return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
@@ -124,7 +124,20 @@ public class PacketGeneratorController {
 	 *            the packer generator res dto
 	 * @return the string
 	 */
-	public String buildPacketGeneratorResponse(PacketGeneratorResDto packerGeneratorResDto) {
+	public PacketGeneratorResponseDto buildPacketGeneratorResponse(PacketGeneratorResDto packerGeneratorResDto) {
+
+		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
+		if (Objects.isNull(response.getId())) {
+			response.setId(env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
+		}
+		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
+		response.setVersion(env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION));
+		response.setResponse(packerGeneratorResDto);
+		response.setErrors(null);
+		return response;
+	}
+	
+	public String buildSignaturePacketGeneratorResponse(PacketGeneratorResDto packerGeneratorResDto) {
 
 		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
 		if (Objects.isNull(response.getId())) {

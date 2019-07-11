@@ -167,6 +167,6 @@ public class FingerprintValidatorTest {
 	
 	@Test
 	public void validateAuthTest() {
-		assertNull(fingerprintValidator.validate("mosip","123"));
+		assertNull(fingerprintValidator.validate("mosip","123", true));
 	}
 }

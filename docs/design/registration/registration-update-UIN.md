@@ -31,11 +31,13 @@ The key **requirements** are
     -   Age/DOB
     -   Gender
     -   Address
-    -   Contact Details \[Email/Mobile Number\...\]
-    -   Biometric-Exception \[Finger Print/Iris/Face ...\]
-    -   Biometric-Iris
-    -   Biometric-Fingerprint
--   The documents should be mandaotry based on the below criteria.
+    -	Phone
+    -	Email
+    -	Parents or Guardian Details
+    -	Foreigner 
+    -   Biometrics
+    -	CNIE Number
+-   The documents should be mandatory based on the below criteria.
     - If the **Name** is going to be updated then 
       **Proof Of Identity** document is mandatory to be scan and upload.
     - If the **Address** is going to be updated then **Proof Of Address**
@@ -60,7 +62,7 @@ The key **non-functional requirements** are
 1.  Get the required configuration to display for the Update UIN screen
     from the Global Configuration Parameter table.
 
-2.  Create the controller for the **RegistrtaionEditController** to
+2.  Create the controller for the **UpdateUINController** to
     display the list of the required editable section on the screen.
     \[Provide submit method to capture the details and maintains in the
     Registration DTO\].
@@ -75,7 +77,7 @@ The key **non-functional requirements** are
     the specific fields which are editable should be captured along the
     packet data and mention the 'applicationType' as 'UpdateUIN'.
 
-6.  The **RegsitrationValidator** should validate the fields against
+6.  The **Validations** should validate the fields against
     the selection.
 
 7.  The **RegistrtaionController** also should displays based on the
@@ -86,7 +88,7 @@ The key **non-functional requirements** are
 
 Note:
 
-    Write a Controller **RegistrtaionEditController** class for UpdateUIN which  
+    Write a Controller **UpdateUINController** class for UpdateUIN which  
     would associate all the controller classes created for  
     New Registration to reuse the functionality. 
 

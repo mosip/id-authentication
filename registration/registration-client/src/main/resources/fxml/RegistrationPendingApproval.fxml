@@ -68,7 +68,7 @@
                         </HBox>
                      </children>
                      <GridPane.margin>
-                        <Insets left="20.0" />
+                        <Insets left="25.0" />
                      </GridPane.margin>
                   </GridPane>
                  <GridPane fx:id="imageAnchorPane" styleClass="imageAnchorPaneStyle" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -126,14 +126,17 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="3.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home" />
+                        <Button mnemonicParsing="false" onAction="#goToHomePageFromRegistration" styleClass="homeButton" text="%home">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin></Button>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="headerLabel" text="%/pendingapproval" />
                      </children>
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
                      <padding>
-                        <Insets left="20.0" />
+                        <Insets left="25.0" />
                      </padding>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">

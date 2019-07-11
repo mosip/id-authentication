@@ -8,12 +8,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.bouncycastle.util.Arrays;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
@@ -44,6 +48,12 @@ import io.mosip.kernel.auth.repository.DataStore;
 @Component
 public class DBDataStore implements DataStore {
 
+	private int maximumPoolSize;
+	private int validationTimeout;
+	private int connectionTimeout;
+	private int idleTimeout;
+	private int minimumIdle;
+
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
 	private static final String NEW_USER_OTP = "INSERT INTO iam.user_detail(id,name,email,mobile,lang_code,cr_dtimes,is_active,status_code,cr_by)VALUES ( :userName,:name,:email,:phone,:langcode,NOW(),true,'ACT','Admin')";
@@ -66,12 +76,33 @@ public class DBDataStore implements DataStore {
 		setUpConnection(dataBaseConfig);
 	}
 
+	public DBDataStore(DataBaseProps dataBaseConfig, int maximumPoolSize, int validationTimeout, int connectionTimeout,
+			int idleTimeout, int minimumIdle) {
+		this.maximumPoolSize = maximumPoolSize;
+		this.validationTimeout = validationTimeout;
+		this.connectionTimeout = connectionTimeout;
+		this.idleTimeout = idleTimeout;
+		this.minimumIdle = minimumIdle;
+		setUpConnection(dataBaseConfig);
+	}
+
 	private void setUpConnection(DataBaseProps dataBaseConfig) {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(dataBaseConfig.getDriverName());
-		dataSource.setUrl(dataBaseConfig.getUrl());
-		dataSource.setUsername(dataBaseConfig.getUsername());
-		dataSource.setPassword(dataBaseConfig.getPassword());
+//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//		dataSource.setDriverClassName(dataBaseConfig.getDriverName());
+//		dataSource.setUrl(dataBaseConfig.getUrl());
+//		dataSource.setUsername(dataBaseConfig.getUsername());
+//		dataSource.setPassword(dataBaseConfig.getPassword());
+		HikariConfig hikariConfig = new HikariConfig();
+		hikariConfig.setDriverClassName(dataBaseConfig.getDriverName());
+		hikariConfig.setJdbcUrl(dataBaseConfig.getUrl());
+		hikariConfig.setUsername(dataBaseConfig.getUsername());
+		hikariConfig.setPassword(dataBaseConfig.getPassword());
+		hikariConfig.setMaximumPoolSize(maximumPoolSize);
+		hikariConfig.setValidationTimeout(validationTimeout);
+		hikariConfig.setConnectionTimeout(connectionTimeout);
+		hikariConfig.setIdleTimeout(idleTimeout);
+		hikariConfig.setMinimumIdle(minimumIdle);
+		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
@@ -258,7 +289,7 @@ public class DBDataStore implements DataStore {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception {
 		// TODO Auto-generated method stub
@@ -276,17 +307,17 @@ public class DBDataStore implements DataStore {
 		// TODO Auto-generated method stub
 		return null;
 	}
-  
-  @Override
+
+	@Override
 	public MosipUserDto getUserRoleByUserId(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-@Override
-public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
-	// TODO Auto-generated method stub
-	return null;
-}
+	@Override
+	public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

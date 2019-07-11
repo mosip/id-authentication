@@ -70,11 +70,13 @@ public class BookingExceptionCatcher {
 					((InvalidRequestParameterException) ex).getErrorText(), mainResponseDTO);
 		} else if (ex instanceof DateTimeException || ex instanceof java.time.format.DateTimeParseException
 				|| ex instanceof InvalidDateTimeFormatException || ex instanceof java.text.ParseException) {
-			throw new InvalidDateTimeFormatException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
-					ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), mainResponseDTO);
+			throw new InvalidDateTimeFormatException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(),
+					mainResponseDTO);
 		} else if (ex instanceof ParseException) {
-			throw new ParseException(ErrorCodes.PRG_BOOK_RCI_009.toString(),
-					ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage());
+			throw new ParseException(io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage());
 		} else if (ex instanceof DocumentNotFoundException) {
 			throw new DocumentNotFoundException(((DocumentNotFoundException) ex).getErrorCode(),
 					((DocumentNotFoundException) ex).getErrorText(), mainResponseDTO);
@@ -156,10 +158,10 @@ public class BookingExceptionCatcher {
 			throw new RestCallException(((RestCallException) ex).getErrorCode(),
 					((RestCallException) ex).getErrorText(), mainResponseDTO);
 		} else if (ex instanceof NotificationException) {
-			throw new NotificationException(((NotificationException) ex).getValidationErrorList(),
-					mainResponseDTO);
-		} else if(ex instanceof JsonProcessingException) {
-			throw new JsonException(ErrorCodes.PRG_BOOK_RCI_034.getCode(),ErrorMessages.JSON_PROCESSING_EXCEPTION.getMessage(),mainResponseDTO);
+			throw new NotificationException(((NotificationException) ex).getValidationErrorList(), mainResponseDTO);
+		} else if (ex instanceof JsonProcessingException) {
+			throw new JsonException(ErrorCodes.PRG_BOOK_RCI_034.getCode(),
+					ErrorMessages.JSON_PROCESSING_EXCEPTION.getMessage(), mainResponseDTO);
 		}
 
 	}

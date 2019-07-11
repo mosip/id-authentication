@@ -232,6 +232,7 @@ mat-icon {
   margin-right: 2rem;
   cursor: pointer;
   border-radius: 2px;
+  text-transform:uppercase;
 }
 
 .user__btn--back {

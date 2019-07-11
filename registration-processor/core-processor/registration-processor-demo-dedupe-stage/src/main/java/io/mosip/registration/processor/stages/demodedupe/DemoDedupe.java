@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -11,6 +12,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoDto;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
+import io.mosip.registration.processor.stages.app.constants.DemoDedupeConstants;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 /**
@@ -24,6 +26,10 @@ public class DemoDedupe {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(DemoDedupe.class);
+
+	/** The env. */
+	@Autowired
+	private Environment env;
 
 	@Autowired
 	private RegistrationStatusService registrationStatusService;
@@ -44,7 +50,7 @@ public class DemoDedupe {
 				"DemoDedupe::performDedupe()::entry");
 
 		List<DemographicInfoDto> applicantDemoDto = packetInfoDao.findDemoById(refId);
-		List<DemographicInfoDto> demographicInfoDtos;
+		List<DemographicInfoDto> demographicInfoDtos = new ArrayList<>();
 		List<DemographicInfoDto> infoDtos = new ArrayList<>();
 		for (DemographicInfoDto demoDto : applicantDemoDto) {
 			infoDtos.addAll(packetInfoDao.getAllDemographicInfoDtos(demoDto.getName(), demoDto.getGenderCode(),

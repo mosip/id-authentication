@@ -1,0 +1,14 @@
+{
+	"errors" : null,
+    "response": {
+        "regId": "10002100320000720190611092333",
+        "mvUsrId": "110037",
+        "statusCode": "ASSIGNED",
+        "matchedRefId": "10002100320000620190611083847",
+        "matchedRefType": "rid",
+        "reasonCode": "Potential Match"
+    },
+    "id": "mosip.manual.verification.assignment",
+    "version": "1.0",
+    "responsetime": "2019-06-17T10:51:31.039Z"
+}

@@ -1,0 +1,204 @@
+{
+  "id" : "mosip.manual.verification.packetinfo",
+  "version" : "1.0",
+  "responsetime" : "2019-07-05T10:24:48.261Z",
+  "response" : {
+    "identity" : {
+      "biometric" : {
+        "applicant" : {
+          "leftEye" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "rightEye" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "leftThumb" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "rightThumb" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "leftIndex" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "leftMiddle" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "leftRing" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "leftLittle" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "rightIndex" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "rightMiddle" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "rightRing" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          },
+          "rightLittle" : {
+            "language" : null,
+            "label" : null,
+            "imageName" : null,
+            "type" : null,
+            "qualityScore" : 0.0,
+            "numRetry" : 1,
+            "forceCaptured" : false
+          }
+        },
+        "introducer" : null
+      },
+      "exceptionBiometrics" : [ ],
+      "applicantPhotograph" : {
+        "language" : null,
+        "label" : null,
+        "photographName" : null,
+        "numRetry" : 0,
+        "qualityScore" : 0.0
+      },
+      "exceptionPhotograph" : null,
+      "documents" : [ ],
+      "metaData" : null,
+      "osiData" : null,
+      "hashSequence1" : null,
+      "hashSequence2" : [ {
+        "label" : "otherFiles",
+        "value" : [ "audit" ]
+      } ],
+      "capturedRegisteredDevices" : [ {
+        "label" : "Finger Print Scanner",
+        "value" : "3000022"
+      }, {
+        "label" : "Finger Print Scanner",
+        "value" : "3000023"
+      }, {
+        "label" : "Iris Scanner",
+        "value" : "3000042"
+      }, {
+        "label" : "Iris Scanner",
+        "value" : "3000043"
+      }, {
+        "label" : "Camera",
+        "value" : "3000062"
+      }, {
+        "label" : "Camera",
+        "value" : "3000063"
+      }, {
+        "label" : "Document Scanner",
+        "value" : "3000082"
+      }, {
+        "label" : "Document Scanner",
+        "value" : "3000083"
+      }, {
+        "label" : "Printer",
+        "value" : "3000102"
+      }, {
+        "label" : "Printer",
+        "value" : "3000103"
+      }, {
+        "label" : "Finger Print Scanner",
+        "value" : "3000122"
+      }, {
+        "label" : "Finger Print Scanner",
+        "value" : "3000124"
+      }, {
+        "label" : "Iris Scanner",
+        "value" : "3000131"
+      }, {
+        "label" : "Iris Scanner",
+        "value" : "3000133"
+      }, {
+        "label" : "Camera",
+        "value" : "3000140"
+      }, {
+        "label" : "Camera",
+        "value" : "3000142"
+      }, {
+        "label" : "Document Scanner",
+        "value" : "3000149"
+      }, {
+        "label" : "Document Scanner",
+        "value" : "3000151"
+      }, {
+        "label" : "Printer",
+        "value" : "3000158"
+      }, {
+        "label" : "Printer",
+        "value" : "3000160"
+      } ],
+      "capturedNonRegisteredDevices" : null,
+      "checkSum" : null,
+      "uinUpdatedFields" : null
+    }
+  },
+  "errors" : null
+}

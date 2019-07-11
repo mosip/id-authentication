@@ -1,7 +1,9 @@
 package io.mosip.preregistration.generateqrcode.controller;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.generateqrcode.dto.QRCodeResponseDTO;
@@ -37,8 +40,8 @@ public class GenerateQRcodeController {
 	 * @return the response entity
 	 */
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
-	@PostMapping(path="/generate")
-	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody String data) {
+	@PostMapping(path="/generate" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MainResponseDTO<QRCodeResponseDTO>> generateQRCode(@RequestBody MainRequestDTO<JSONObject> data) {
 		log.info("sessionId", "idType", "id",
 				"In generateQRCode controller for generateQRCode generation with request " + data);
 		return  new ResponseEntity<>(service.generateQRCode(data),HttpStatus.OK);

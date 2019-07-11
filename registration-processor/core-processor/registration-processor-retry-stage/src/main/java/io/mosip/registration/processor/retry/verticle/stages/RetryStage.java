@@ -6,10 +6,12 @@ import java.util.TimerTask;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -22,7 +24,7 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
  */
 @RefreshScope
 @Component
-public class RetryStage extends MosipVerticleManager {
+public class RetryStage extends MosipVerticleAPIManager {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(MosipVerticleManager.class);
@@ -53,10 +55,13 @@ public class RetryStage extends MosipVerticleManager {
 	 */
 	@Override
 	public MessageDTO process(MessageDTO dto) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RetryStage::process::entry");
 		int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 		dto.setRetryCount(retrycount);
 		Timer timer = new Timer();
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),"retry count  ","is : "+retrycount);
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.APPLICATIONID.toString(),
+				"retry count  ", "is : " + retrycount);
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
@@ -69,6 +74,9 @@ public class RetryStage extends MosipVerticleManager {
 				}
 			}
 		}, waitPeriod * 60000l);
+		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RetryStage::success");
+
 		return null;
 	}
 

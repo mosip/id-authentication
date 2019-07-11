@@ -56,5 +56,5 @@ The key **non-functional requirements** are
  
 
 **Sequence and Class Diagram**
-![Policy class diagram](_images/registration-policy-sync.png)
+![Policy class diagram](_images/registration-policy-updatesync.png)
     

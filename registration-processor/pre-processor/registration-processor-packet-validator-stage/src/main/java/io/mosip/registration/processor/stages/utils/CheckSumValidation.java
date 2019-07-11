@@ -7,9 +7,12 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.PacketFiles;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
@@ -28,6 +31,10 @@ public class CheckSumValidation {
 
 	/** The registration status dto. */
 	private InternalRegistrationStatusDto registrationStatusDto;
+	
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(CheckSumValidation.class);
 
 	/**
 	 * Instantiates a new check sum validation.
@@ -60,7 +67,8 @@ public class CheckSumValidation {
 	public boolean checksumvalidation(String registrationId, Identity identity) throws IOException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
 		List<FieldValueArray> hashSequence = identity.getHashSequence1();
 		List<FieldValueArray> hashSequence2 = identity.getHashSequence2();
-
+        regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "CheckSumValidation::checksumvalidation::entry");
 		Boolean isValid = false;
 
 		// Getting hash bytes from packet
@@ -86,11 +94,9 @@ public class CheckSumValidation {
 		if (isDataCheckSumEqual && isOsiCheckSumEqual) {
 			isValid = true;
 		}
-
-		/* 
-		 * TODO ::  This has been mocked for Testing once uncomment after test
-		 * */
-		return Boolean.TRUE;
+	    regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "CheckSumValidation::checksumvalidation::exit");
+		return isValid;
 	}
 
 }
