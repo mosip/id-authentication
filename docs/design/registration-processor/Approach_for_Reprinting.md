@@ -51,14 +51,8 @@ RegistrationProcessRequestHandler --> UinGeneratorStage --> PrintStage
 ![logical class diagram](_images/re-print-logical-arch-diagram.png)
 
 
-**Class Diagram**
-
-------------
-
-![Printing_stage class diagram](_images/print_stage_class_diagram.png)
-
 **Sequence Diagram**
 
 ------------
 
-![Printing_stage seq diagram](_images/print_stage_seq_diagram.png)
+![Printing_stage seq diagram](_images/reprint_seq_diagram.png)
