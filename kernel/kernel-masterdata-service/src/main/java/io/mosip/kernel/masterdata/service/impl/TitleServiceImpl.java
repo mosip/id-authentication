@@ -6,13 +6,22 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.TitleErrorCode;
 import io.mosip.kernel.masterdata.dto.TitleDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -22,12 +31,16 @@ import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * Implementing service class for fetching titles from master db
  * 
  * @author Sidhant Agarwal
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -36,6 +49,12 @@ public class TitleServiceImpl implements TitleService {
 
 	@Autowired
 	private TitleRepository titleRepository;
+	
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+	
+	@Autowired
+	private MasterdataSearchHelper masterDataSearchHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -181,6 +200,53 @@ public class TitleServiceImpl implements TitleService {
 		CodeResponseDto responseDto = new CodeResponseDto();
 		responseDto.setCode(code);
 		return responseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.TitleService#getTitles(int, int,
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public PageDto<TitleExtnDto> getTitles(int pageNumber, int pageSize, String sortBy, String orderBy) {
+		List<TitleExtnDto> titles = null;
+		PageDto<TitleExtnDto> pageDto = null;
+		try {
+			Page<Title> pageData = titleRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				titles = MapperUtils.mapAll(pageData.getContent(), TitleExtnDto.class);
+				pageDto = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(), pageData.getTotalElements(),
+						titles);
+			} else {
+				throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+						TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
+					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(e));
+		}
+		return pageDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TitleService#searchTitles(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto) {
+		PageResponseDto<TitleExtnDto> pageDto = new PageResponseDto<>();
+		List<TitleExtnDto> titles = null;
+		if (filterTypeValidator.validate(TitleExtnDto.class, searchDto.getFilters())) {
+			Page<Template> page = masterDataSearchHelper.searchMasterdata(Template.class, searchDto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				titles = MapperUtils.mapAll(page.getContent(), TitleExtnDto.class);
+				pageDto.setData(titles);
+			}
+		}
+		return pageDto;
+		
 	}
 
 }

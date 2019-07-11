@@ -4,33 +4,57 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
-import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterReqAdmDto;
 import io.mosip.kernel.masterdata.dto.getresponse.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ResgistrationCenterStatusResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
+import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
+import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -38,24 +62,35 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
-import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
+import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LocationUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.OptionalFilter;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * This service class contains methods that provides registration centers
@@ -68,6 +103,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
  * @author Sagar Mahapatra
  * @author Sidhant Agarwal
  * @author Uday Kumar
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -99,6 +135,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
 
+	@Autowired
+	RegistrationCenterIdGenerator<String> registrationCenterIdGenerator;
+
 	/**
 	 * Reference to HolidayRepository.
 	 */
@@ -107,6 +146,59 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	@Autowired
 	private LocationService locationService;
+
+	@Autowired
+	private FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	private MasterdataSearchHelper masterdataSearchHelper;
+
+	@Autowired
+	private RegistrationCenterUserRepository registrationCenterUserRepository;
+
+	@Autowired
+	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
+
+	@Autowired
+	private LocationUtils locationUtils;
+
+	@Autowired
+	private LocationRepository locationRepository;
+
+	@Autowired
+	private ZoneUtils zoneUtils;
+
+	/**
+	 * get list of languages supported by MOSIP from configuration file
+	 */
+	@Value("${mosip.secondary-language}")
+	private String secondaryLang;
+
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
+
+	private Set<String> supportedLanguages;
+
+	/**
+	 * minimum digits after decimal point in Longitude and latitude
+	 */
+	@Value("${mosip.min-digit-longitude-latitude:4}")
+	private int minDegits;
+
+	private String negRegex;
+	private String posRegex;
+
+	/**
+	 * Constructing regex for matching the Latitude and Longitude format
+	 */
+
+	@PostConstruct
+	public void constructRegEx() {
+		supportedLanguages = new HashSet<>(Arrays.asList(secondaryLang.split(",")));
+		supportedLanguages.add(primaryLang);
+		negRegex = "^(\\-\\d{1,2}\\.\\d{" + minDegits + ",})$";
+		posRegex = "^(\\d{1,2}\\.\\d{" + minDegits + ",})$";
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -337,45 +429,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * createRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
-	 */
-	@Override
-	public IdResponseDto createRegistrationCenter(RegistrationCenterDto registrationCenterDto) {
-		try {
-			if (!EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLatitude())
-					&& !EmptyCheckUtils.isNullEmpty(registrationCenterDto.getLongitude())) {
-				Float.parseFloat(registrationCenterDto.getLatitude());
-				Float.parseFloat(registrationCenterDto.getLongitude());
-			}
-		} catch (NullPointerException | NumberFormatException latLongException) {
-			throw new RequestException(ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_REQUEST_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(latLongException));
-		}
-		RegistrationCenter entity = new RegistrationCenter();
-		entity = MetaDataUtils.setCreateMetaData(registrationCenterDto, entity.getClass());
-		RegistrationCenterHistory registrationCenterHistoryEntity = MetaDataUtils
-				.setCreateMetaData(registrationCenterDto, RegistrationCenterHistory.class);
-		registrationCenterHistoryEntity.setEffectivetimes(entity.getCreatedDateTime());
-		registrationCenterHistoryEntity.setCreatedDateTime(entity.getCreatedDateTime());
-		RegistrationCenter registrationCenter;
-		try {
-			registrationCenter = registrationCenterRepository.create(entity);
-			registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
-		} catch (DataAccessLayerException | DataAccessException e) {
-			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
-					ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorMessage() + " "
-							+ ExceptionUtils.parseException(e));
-		}
-		IdResponseDto idResponseDto = new IdResponseDto();
-		idResponseDto.setId(registrationCenter.getId());
-		return idResponseDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
 	 * validateTimestampWithRegistrationCenter(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -422,47 +475,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		return resgistrationCenterStatusResponseDto;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
-	 * updateRegistrationCenter(io.mosip.kernel.masterdata.dto.RequestDto)
-	 */
-	@Transactional
-	@Override
-	public IdAndLanguageCodeID updateRegistrationCenter(RequestWrapper<RegistrationCenterDto> registrationCenter) {
-		RegistrationCenter updRegistrationCenter = null;
-		try {
-
-			RegistrationCenter renRegistrationCenter = registrationCenterRepository.findByIdAndLangCode(
-					registrationCenter.getRequest().getId(), registrationCenter.getRequest().getLangCode());
-			if (renRegistrationCenter != null) {
-				MetaDataUtils.setUpdateMetaData(registrationCenter.getRequest(), renRegistrationCenter, false);
-				updRegistrationCenter = registrationCenterRepository.update(renRegistrationCenter);
-
-				RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
-				MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
-				MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
-				registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
-				registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
-				registrationCenterHistoryService.createRegistrationCenterHistory(registrationCenterHistory);
-
-			} else {
-				throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
-			}
-		} catch (DataAccessLayerException | DataAccessException exception) {
-			throw new MasterDataServiceException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
-							+ ExceptionUtils.parseException(exception));
-		}
-
-		IdAndLanguageCodeID idAndLanguageCodeID = new IdAndLanguageCodeID();
-		MapperUtils.map(updRegistrationCenter, idAndLanguageCodeID);
-		return idAndLanguageCodeID;
 	}
 
 	/*
@@ -572,7 +584,6 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	private Set<String> getLocationCode(Map<Short, List<Location>> levelToListOfLocationMap, Short hierarchyLevel,
 			String text) {
 		validateLocationName(levelToListOfLocationMap, hierarchyLevel, text);
-
 		Set<String> uniqueLocCode = new TreeSet<>();
 		boolean isParent = false;
 		for (Entry<Short, List<Location>> data : levelToListOfLocationMap.entrySet()) {
@@ -655,6 +666,688 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			}
 		}
 		return locationNames;
+	}
+
+	@Override
+	public PageDto<RegistrationCenterExtnDto> getAllExistingRegistrationCenters(int pageNumber, int pageSize,
+			String sortBy, String orderBy) {
+		List<RegistrationCenterExtnDto> registrationCenters = null;
+		PageDto<RegistrationCenterExtnDto> registrationCenterPages = null;
+		try {
+			Page<RegistrationCenter> pageData = registrationCenterRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				registrationCenters = MapperUtils.mapAll(pageData.getContent(), RegistrationCenterExtnDto.class);
+				registrationCenterPages = new PageDto<RegistrationCenterExtnDto>(pageData.getNumber(), 0, null,
+						pageData.getTotalPages(), (int) pageData.getTotalElements(), registrationCenters);
+			} else {
+				throw new DataNotFoundException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+		}
+		return registrationCenterPages;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * createRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
+	 * RegistrationCenterDto)
+	 */
+	@Override
+	@Transactional
+	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
+			List<RegistrationCenterReqAdmDto> reqRegistarionCenterReqDto) {
+		RegistrationCenter registrationCenterEntity = new RegistrationCenter();
+		RegistrationCenterHistory registrationCenterHistoryEntity = null;
+		List<RegistrationCenter> registrationCenterList = new ArrayList<>();
+		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+		List<String> inputLangCodeList = new ArrayList<>();
+
+		// Get RegistrationCenter Id by calling RegistrationCenterIdGenerator
+		// API
+		String regCenterID = registrationCenterIdGenerator.generateRegistrationCenterId();
+
+		validateRegCenterCreateReq(reqRegistarionCenterReqDto, inputLangCodeList);
+		// validate to check if data is received in all configured languages
+		if ((!new HashSet<String>(inputLangCodeList).containsAll(supportedLanguages))
+				|| (!supportedLanguages.containsAll(new HashSet<String>(inputLangCodeList)))) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
+		}
+
+		// validate to if Records with duplicate language code
+		else if ((new HashSet<String>(inputLangCodeList).size()) != inputLangCodeList.size()) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGECODE_EXCEPTION.getErrorMessage());
+		}
+
+		try {
+			for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+				// creating registration center
+				RegistrationCenter registrationCenter;
+				registrationCenterEntity = MetaDataUtils.setCreateMetaData(registrationCenterDto,
+						registrationCenterEntity.getClass());
+				/*
+				 * RegistrationCenterID from the rcid_Seq Table, RegistrationCenterID get by
+				 * calling RegistrationCenterIdGenerator API method
+				 * generateRegistrationCenterId().
+				 * 
+				 */
+				registrationCenterEntity.setId(regCenterID);
+				/*
+				 * at the time of creation of new Registration Center Number of Kiosks value
+				 * will be Zero always
+				 */
+				registrationCenterEntity.setNumberOfKiosks((short) 0);
+				/*
+				 * Deactivate a Center during first time creation since there will be no
+				 * machines initially mapped to the Center
+				 */
+				registrationCenterEntity.setIsActive(false);
+				registrationCenter = registrationCenterRepository.create(registrationCenterEntity);
+				registrationCenterList.add(registrationCenter);
+
+				// creating registration center history
+				registrationCenterHistoryEntity = MetaDataUtils.setCreateMetaData(registrationCenterEntity,
+						RegistrationCenterHistory.class);
+				registrationCenterHistoryEntity.setEffectivetimes(registrationCenterEntity.getCreatedDateTime());
+				registrationCenterHistoryEntity.setCreatedDateTime(registrationCenterEntity.getCreatedDateTime());
+				registrationCenterHistoryRepository.create(registrationCenterHistoryEntity);
+			}
+
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_INSERT_EXCEPTION.getErrorMessage() + " "
+							+ ExceptionUtils.parseException(exception));
+		}
+
+		RegistrationCenterPostResponseDto registrationCenterPostResponseDto = new RegistrationCenterPostResponseDto();
+		registrationCenterDtoList = MapperUtils.mapAll(registrationCenterList, RegistrationCenterExtnDto.class);
+		registrationCenterPostResponseDto.setRegistrationCenters(registrationCenterDtoList);
+		return registrationCenterPostResponseDto;
+
+	}
+
+	private void validateRegCenterCreateReq(List<RegistrationCenterReqAdmDto> reqRegistarionCenterReqDto,
+			List<String> inputLangCodeList) {
+		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+			String latitude = registrationCenterDto.getLatitude();
+			String longitude = registrationCenterDto.getLongitude();
+
+			// validation to check the RegCenter Start Time is greater than
+			// RegCenter End
+			// Time
+			if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
+			}
+			// validation to check the RegCenter Lunch Start Time is greater
+			// than RegCenter
+			// Lunch End Time
+			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			// validate to check the format of latitude and longitude
+			// Latitude or Longitude must have minimum 4 digits after decimal
+			else if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
+			}
+			inputLangCodeList.add(registrationCenterDto.getLangCode());
+
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * updateRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
+	 * RegistarionCenterReqDto)
+	 */
+	@Transactional
+	@Override
+	public RegistrationCenterPutResponseDto updateRegistrationCenterAdmin(
+			List<RegistrationCenterPutReqAdmDto> reqRegistarionCenterReqDto) {
+		RegistrationCenter updRegistrationCenter = null;
+		RegistrationCenter updRegistrationCenterEntity = null;
+		List<RegistrationCenterExtnDto> registrationCenterDtoList = null;
+		List<RegistrationCenterPutReqAdmDto> notUpdRegistrationCenterList = new ArrayList<>();
+		List<RegistrationCenter> updRegistrationCenterList = new ArrayList<>();
+
+		Set<String> inputLangCodeSet = new HashSet<>();
+		List<String> inputIdList = new ArrayList<>();
+		List<String> idLangList = new ArrayList<>();
+
+		validateRegCenterUpdateReq(reqRegistarionCenterReqDto, inputLangCodeSet, inputIdList, idLangList);
+		// validate to check if data is received in all configured languages
+		if ((!inputLangCodeSet.containsAll(supportedLanguages))
+				|| (!supportedLanguages.containsAll(inputLangCodeSet))) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_LANGUAGE_EXCEPTION.getErrorMessage());
+		}
+		// validate to check if data is received for only one registration
+		// center or not
+		else if (new HashSet<String>(inputIdList).size() > 1) {
+			throw new RequestException(RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_EXCEPTION.getErrorMessage());
+		}
+		// validate to check duplicate pair of ID and LanguageCode
+		else if ((new HashSet<String>(idLangList).size()) != idLangList.size()) {
+			throw new RequestException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_ID_LANGUAGECODE_EXCEPTION.getErrorMessage());
+		}
+
+		try {
+			for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+
+				RegistrationCenter renRegistrationCenter = registrationCenterRepository
+						.findByIdAndLangCodeAndIsDeletedTrue(registrationCenterDto.getId(),
+								registrationCenterDto.getLangCode());
+				if (renRegistrationCenter != null) {
+					// updating registration center
+					updRegistrationCenterEntity = MetaDataUtils.setUpdateMetaData(registrationCenterDto,
+							renRegistrationCenter, false);
+					updRegistrationCenter = registrationCenterRepository.update(updRegistrationCenterEntity);
+					// creating registration center history
+					RegistrationCenterHistory registrationCenterHistory = new RegistrationCenterHistory();
+					MapperUtils.map(updRegistrationCenter, registrationCenterHistory);
+					MapperUtils.setBaseFieldValue(updRegistrationCenter, registrationCenterHistory);
+					registrationCenterHistory.setEffectivetimes(updRegistrationCenter.getUpdatedDateTime());
+					registrationCenterHistory.setUpdatedDateTime(updRegistrationCenter.getUpdatedDateTime());
+					registrationCenterHistoryRepository.create(registrationCenterHistory);
+					// adding into updated list
+					updRegistrationCenterList.add(updRegistrationCenter);
+				} else {
+					// adding into non-updated list
+					notUpdRegistrationCenterList.add(registrationCenterDto);
+				}
+			}
+
+		} catch (DataAccessLayerException | DataAccessException exception) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_UPDATE_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(exception));
+		}
+
+		RegistrationCenterPutResponseDto registrationCenterPutResponseDto = new RegistrationCenterPutResponseDto();
+		registrationCenterDtoList = MapperUtils.mapAll(updRegistrationCenterList, RegistrationCenterExtnDto.class);
+		registrationCenterPutResponseDto.setRegistrationCenters(registrationCenterDtoList);
+		registrationCenterPutResponseDto.setNotUpdatedRegCenters(notUpdRegistrationCenterList);
+		return registrationCenterPutResponseDto;
+	}
+
+	private void validateRegCenterUpdateReq(List<RegistrationCenterPutReqAdmDto> reqRegistarionCenterReqDto,
+			Set<String> inputLangCodeSet, List<String> inputIdList, List<String> idLangList) {
+		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
+			String latitude = registrationCenterDto.getLatitude();
+			String longitude = registrationCenterDto.getLongitude();
+
+			// validation to check the format of latitude and longitude
+			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
+					&& (Pattern.matches(negRegex, longitude) || Pattern.matches(posRegex, longitude)))) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_FORMATE_EXCEPTION.getErrorMessage());
+			}
+
+			// validation to check the RegCenter Start Time is greater than
+			// RegCenter End
+			// Time
+			else if (registrationCenterDto.getCenterStartTime().isAfter(registrationCenterDto.getCenterEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			// validation to check the RegCenter Lunch Start Time is greater
+			// than RegCenter
+			// Lunch End Time
+			else if (registrationCenterDto.getLunchStartTime().isAfter(registrationCenterDto.getLunchEndTime())) {
+				throw new RequestException(
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorCode(),
+						RegistrationCenterErrorCode.REGISTRATION_CENTER_LUNCH_START_END_EXCEPTION.getErrorMessage());
+
+			}
+
+			inputLangCodeSet.add(registrationCenterDto.getLangCode());
+			inputIdList.add(registrationCenterDto.getId());
+			idLangList.add(registrationCenterDto.getLangCode() + registrationCenterDto.getId());
+
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * searchRegistrationCenter(io.mosip.kernel.masterdata.dto.request. SearchDto)
+	 */
+	@Override
+	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto dto) {
+		PageResponseDto<RegistrationCenterSearchDto> pageDto = new PageResponseDto<>();
+		List<RegistrationCenterSearchDto> registrationCenters = null;
+		List<SearchFilter> addList = new ArrayList<>();
+		List<SearchFilter> removeList = new ArrayList<>();
+		List<SearchFilter> locationFilter = new ArrayList<>();
+		List<SearchFilter> zoneFilter = new ArrayList<>();
+		List<Zone> zones = null;
+		List<Location> locations = locationRepository.findAllNonDeleted();
+		boolean flag = true;
+		for (SearchFilter filter : dto.getFilters()) {
+			String column = filter.getColumnName();
+			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
+				centerTypeSearch(addList, removeList, filter);
+			}
+			if (isLocationSearch(filter.getColumnName())) {
+				Location location = locationSearch(filter);
+				if (location != null) {
+					List<Location> childs = locationUtils.getDescedants(locations, location);
+					locationFilter.addAll(buildLocationSearchFilter(childs));
+				}
+				removeList.add(filter);
+			} /*
+				 * if (MasterDataConstant.POSTAL_CODE.equalsIgnoreCase(column)) { Location
+				 * location = locationSearch(filter); if (location != null) {
+				 * addList.addAll(buildLocationSearchFilter(Arrays.asList(location))); }
+				 * removeList.add(filter); }
+				 */
+			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
+				Zone zone = getZone(filter);
+				if (zone != null) {
+					zones = zoneUtils.getZones(zone);
+					zoneFilter.addAll(buildZoneFilter(zones));
+				}
+				removeList.add(filter);
+				flag = false;
+			}
+		}
+		if (flag) {
+			zones = zoneUtils.getUserZones();
+			if (zones != null && !zones.isEmpty())
+				zoneFilter.addAll(buildZoneFilter(zones));
+			else
+				throw new MasterDataServiceException("XXX", "User is not tagged to zone");
+		}
+		dto.getFilters().removeAll(removeList);
+		dto.getFilters().addAll(addList);
+		if (filterTypeValidator.validate(RegistrationCenterSearchDto.class, dto.getFilters())) {
+			OptionalFilter optionalFilter = new OptionalFilter(locationFilter);
+			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
+			Page<RegistrationCenter> page = masterdataSearchHelper.searchMasterdata(RegistrationCenter.class, dto,
+					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				registrationCenters = MapperUtils.mapAll(page.getContent(), RegistrationCenterSearchDto.class);
+				setCenterMetadata(registrationCenters, locations, zones);
+				pageDto.setData(registrationCenters);
+			}
+		}
+		return pageDto;
+	}
+
+	/**
+	 * Method to fetch registration center type
+	 * 
+	 * @param addList
+	 *            filter to be added for further operation
+	 * @param removeList
+	 *            filter to be removed from further operations
+	 * @param filter
+	 *            list of request search filters
+	 */
+	private void centerTypeSearch(List<SearchFilter> addList, List<SearchFilter> removeList, SearchFilter filter) {
+		filter.setColumnName(MasterDataConstant.NAME);
+		if (filterTypeValidator.validate(RegistrationCenterTypeExtnDto.class, Arrays.asList(filter))) {
+			Page<RegistrationCenterType> regtypes = masterdataSearchHelper.searchMasterdata(
+					RegistrationCenterType.class,
+					new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
+			if (regtypes.hasContent()) {
+				removeList.add(filter);
+				addList.addAll(buildRegistrationCenterTypeSearchFilter(regtypes.getContent()));
+			} else {
+				throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.NO_CENTERTYPE_AVAILABLE.getErrorMessage(),
+								filter.getValue()));
+			}
+		}
+	}
+
+	/**
+	 * Method to search the location based the filter.
+	 * 
+	 * @param filter
+	 *            input for search
+	 * @return {@link Location}
+	 */
+	private Location locationSearch(SearchFilter filter) {
+		SearchFilter filter2 = new SearchFilter();
+		filter2.setColumnName(MasterDataConstant.HIERARCHY_LEVEL);
+		filter2.setType(FilterTypeEnum.EQUALS.name());
+		filter2.setValue(getHierarchyLevel(filter.getColumnName()));
+		filter.setColumnName(MasterDataConstant.NAME);
+		if (filterTypeValidator.validate(LocationExtnDto.class, Arrays.asList(filter, filter2))) {
+			Page<Location> locations = masterdataSearchHelper.searchMasterdata(Location.class,
+					new SearchDto(Arrays.asList(filter, filter2), Collections.emptyList(), new Pagination(), null),
+					null);
+			if (locations.hasContent()) {
+				return locations.getContent().get(0);
+			} else {
+				throw new MasterDataServiceException(
+						RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorCode(),
+						String.format(RegistrationCenterErrorCode.NO_LOCATION_DATA_AVAILABLE.getErrorMessage(),
+								filter.getValue()));
+			}
+		}
+		return null;
+	}
+
+	public String getHierarchyLevel(String columnName) {
+		if (columnName != null) {
+			switch (columnName.toLowerCase()) {
+			case MasterDataConstant.POSTAL_CODE:
+				return "5";
+			case MasterDataConstant.LAA:
+				return "4";
+			case MasterDataConstant.CITY:
+				return "3";
+			case MasterDataConstant.PROVINCE:
+				return "2";
+			case MasterDataConstant.REGION:
+				return "1";
+			default:
+				return "0";
+			}
+		}
+		return "0";
+	}
+
+	/**
+	 * Method to prepare search filters based on the registration center type code
+	 * list passed
+	 * 
+	 * @param regCenterTypes
+	 *            list of registration center types
+	 * @return list of search filters
+	 */
+	private List<SearchFilter> buildRegistrationCenterTypeSearchFilter(List<RegistrationCenterType> regCenterTypes) {
+		if (regCenterTypes != null && !regCenterTypes.isEmpty())
+			return regCenterTypes.stream().filter(Objects::nonNull).map(this::buildRegCenterType)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Method to prepare search filters based on the location code list passed.
+	 * 
+	 * @param location
+	 *            list of location codes
+	 * @return list of search filter
+	 */
+	private List<SearchFilter> buildLocationSearchFilter(List<Location> location) {
+		if (location != null && !location.isEmpty())
+			return location.stream().filter(Objects::nonNull).map(Location::getCode).map(this::buildLocationFilter)
+					.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Method to build search filter by the registration center type id to fetch the
+	 * exact registration center
+	 * 
+	 * @param centerType
+	 *            request registration center
+	 * @return search filter
+	 */
+	private SearchFilter buildRegCenterType(RegistrationCenterType centerType) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.CENTERTYPECODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(centerType.getCode());
+		return filter;
+	}
+
+	/**
+	 * Method to build location search filter
+	 * 
+	 * @param location
+	 *            search filter
+	 * @return search filter
+	 */
+	private SearchFilter buildLocationFilter(String location) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.CENTERLOCCODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(location);
+		return filter;
+	}
+
+	private SearchFilter buildZoneFilter(String zoneCode) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.ZONE_CODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(zoneCode);
+		return filter;
+	}
+
+	/**
+	 * Method to check whether columnName is belong to location
+	 * 
+	 * @param filter
+	 *            to search the column name
+	 * @return true if column is location type false otherwise
+	 */
+	private boolean isLocationSearch(String filter) {
+		switch (filter.toLowerCase()) {
+		case MasterDataConstant.CITY:
+			return true;
+		case MasterDataConstant.PROVINCE:
+			return true;
+		case MasterDataConstant.REGION:
+			return true;
+		case MasterDataConstant.LAA:
+			return true;
+		case MasterDataConstant.POSTAL_CODE:
+			return true;
+		default:
+			return false;
+		}
+
+	}
+
+	/**
+	 * Method to fetch no. of machines for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
+
+	public void setCenterMetadata(List<RegistrationCenterSearchDto> list, List<Location> locations, List<Zone> zones) {
+		list.parallelStream().filter(this::setDevices).filter(this::setMachines).filter(this::setRegistrationCenterType)
+				.filter(this::setUsers).filter(i -> setHolidayMetadata(i, locations))
+				.filter(i -> setLocationMetadata(i, locations)).forEach(i -> setZoneMetadata(i, zones));
+	}
+
+	public void setZoneMetadata(RegistrationCenterSearchDto centers, List<Zone> zones) {
+		Optional<Zone> zone = zones.stream()
+				.filter(i -> i.getCode().equals(centers.getZoneCode()) && i.getLangCode().equals(centers.getLangCode()))
+				.findFirst();
+		if (zone.isPresent()) {
+			centers.setZone(zone.get().getName());
+		}
+	}
+
+	/**
+	 * Method to fetch no. of devices for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
+	public boolean setDevices(RegistrationCenterSearchDto centerDto) {
+		try {
+			long devices = registrationCenterDeviceRepository.countCenterDevices(centerDto.getId());
+			centerDto.setDevices(devices);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
+		}
+		return true;
+	}
+
+	/**
+	 * Method to fetch no. of machines for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
+	public boolean setMachines(RegistrationCenterSearchDto centerDto) {
+		try {
+			long machines = registrationCenterMachineRepository.countCenterMachines(centerDto.getId());
+			centerDto.setMachines(machines);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
+		}
+		return true;
+	}
+
+	/**
+	 * Method to fetch no. of machines for the registration center and set the
+	 * response to registration center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
+	public boolean setUsers(RegistrationCenterSearchDto centerDto) {
+		try {
+			long users = registrationCenterUserRepository.countCenterUsers(centerDto.getId());
+			centerDto.setUsers(users);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
+		}
+		return true;
+	}
+
+	private boolean setLocationMetadata(RegistrationCenterSearchDto center, List<Location> locations) {
+		Optional<Location> optional = locations.parallelStream().filter(
+				i -> i.getCode().equals(center.getLocationCode()) && i.getLangCode().equals(center.getLangCode()))
+				.findFirst();
+		if (optional.isPresent()) {
+			Location location = optional.get();
+			List<Location> list = locationUtils.getAncestors(locations, location);
+			if (list != null && !list.isEmpty()) {
+				for (Location l : list) {
+					short level = l.getHierarchyLevel();
+					switch (level) {
+					case 3:
+						center.setCity(l.getName());
+						break;
+					case 2:
+						center.setProvince(l.getName());
+						break;
+					case 1:
+						center.setRegion(l.getName());
+						break;
+					case 5:
+						center.setPostalCode(l.getName());
+						break;
+					case 4:
+						center.setLocalAdminAuthority(l.getName());
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Method to fetch registration center type and set the response to registration
+	 * center response dto
+	 * 
+	 * @param dto
+	 *            response to be mapped
+	 * @return true if successful otherwise exception
+	 */
+	public boolean setRegistrationCenterType(RegistrationCenterSearchDto dto) {
+		try {
+			RegistrationCenterType centerType = registrationCenterTypeRepository
+					.findByCodeAndLangCode(dto.getCenterTypeCode(), dto.getLangCode());
+			dto.setCenterTypeName(centerType.getName());
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage(), e);
+		}
+		return true;
+	}
+
+	private Zone getZone(SearchFilter filter) {
+		filter.setColumnName(MasterDataConstant.NAME);
+		Page<Zone> locations = masterdataSearchHelper.searchMasterdata(Zone.class,
+				new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
+		if (locations.hasContent()) {
+			return locations.getContent().get(0);
+		} else {
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_ZONE_AVAILABLE.getErrorCode(),
+					String.format(RegistrationCenterErrorCode.NO_ZONE_AVAILABLE.getErrorMessage(), filter.getValue()));
+		}
+	}
+
+	private List<SearchFilter> buildZoneFilter(List<Zone> zones) {
+		if (zones != null && !zones.isEmpty()) {
+			return zones.stream().filter(Objects::nonNull).map(Zone::getCode).distinct().map(this::buildZoneFilter)
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	public boolean setHolidayMetadata(RegistrationCenterSearchDto center, List<Location> locations) {
+		if (locations != null && !locations.isEmpty()) {
+			Optional<Location> location = locations.stream()
+					.filter(i -> center.getHolidayLocationCode().equals(i.getCode())
+							&& center.getLangCode().equals(i.getLangCode()))
+					.findFirst();
+			if (location.isPresent()) {
+				center.setHolidayLocation(location.get().getName());
+			}
+		}
+		return true;
 	}
 
 }

@@ -5,7 +5,9 @@ package io.mosip.kernel.auth.service;
 
 import java.util.List;
 
+import io.mosip.kernel.auth.dto.AccessTokenResponseDTO;
 import io.mosip.kernel.auth.dto.AuthNResponse;
+import io.mosip.kernel.auth.dto.AuthResponseDto;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.MosipUserDto;
 import io.mosip.kernel.auth.dto.MosipUserListDto;
@@ -14,12 +16,14 @@ import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
 import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.UserRoleDto;
+import io.mosip.kernel.auth.dto.ValidationResponseDto;
 
 /**
  * @author Ramadurai Pandian
@@ -54,5 +58,17 @@ public interface AuthService extends AuthZService, AuthNService {
 	public UserRoleDto getUserRole(String appId, String userId) throws Exception;
 
 	public MosipUserDto getUserDetailBasedonMobileNumber(String appId, String mobileNumber) throws Exception;
+	
+	public ValidationResponseDto validateUserName(String appId,String userName);
+	
+	public UserDetailsResponseDto getUserDetailBasedOnUserId(String appId,List<String> userIds);
+	
+	public MosipUserDto valdiateToken(String token);
+	
+	public AuthResponseDto logoutUser(String token);
+	
+	AccessTokenResponseDTO loginRedirect(String state, String sessionState, String code, String stateCookie, String redirectURI);
+
+	String getKeycloakURI(String redirectURI, String state);
 
 }

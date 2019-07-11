@@ -184,4 +184,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "lunch_end_time")
 	private LocalTime lunchEndTime;
+	
+	@Column(name = "zone_code", length = 36)
+	private String zoneCode;
 }

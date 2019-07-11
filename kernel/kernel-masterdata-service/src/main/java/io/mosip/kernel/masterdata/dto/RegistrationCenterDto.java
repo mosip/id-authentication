@@ -14,6 +14,7 @@ import lombok.Data;
 /**
  * @author Dharmesh Khandelwal
  * @author Abhishek Kumar
+ * @author Urvil Joshi
  * @since 1.0.0
  *
  */
@@ -86,5 +87,7 @@ public class RegistrationCenterDto {
 
 	@NotNull
 	private Boolean isActive;
+	
+	private String zoneCode;
 
 }
