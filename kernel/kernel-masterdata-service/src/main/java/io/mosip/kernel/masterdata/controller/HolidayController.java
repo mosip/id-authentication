@@ -11,19 +11,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayIDDto;
 import io.mosip.kernel.masterdata.dto.HolidayIdDeleteDto;
 import io.mosip.kernel.masterdata.dto.HolidayUpdateDto;
 import io.mosip.kernel.masterdata.dto.getresponse.HolidayResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.HolidayExtnDto;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller class for Holiday table
@@ -58,7 +65,8 @@ public class HolidayController {
 	/**
 	 * This method returns list of holidays for a particular holiday id
 	 * 
-	 * @param holidayId input parameter holiday id
+	 * @param holidayId
+	 *            input parameter holiday id
 	 * @return list of holidays for a particular holiday id
 	 */
 	@ResponseFilter
@@ -74,8 +82,10 @@ public class HolidayController {
 	 * This method returns a list of holidays containing a particular language code
 	 * and holiday id
 	 * 
-	 * @param holidayId input parameter holiday id
-	 * @param langCode  input parameter language code
+	 * @param holidayId
+	 *            input parameter holiday id
+	 * @param langCode
+	 *            input parameter language code
 	 * @return {@link HolidayResponseDto}
 	 */
 	@ResponseFilter
@@ -90,7 +100,8 @@ public class HolidayController {
 	/**
 	 * This method creates a new row of holiday data
 	 * 
-	 * @param holiday input values to add a new row of data
+	 * @param holiday
+	 *            input values to add a new row of data
 	 * @return primary key of inserted Holiday data
 	 */
 	@ResponseFilter
@@ -104,7 +115,8 @@ public class HolidayController {
 	/**
 	 * Method to update a holiday
 	 * 
-	 * @param holiday input values to update the data
+	 * @param holiday
+	 *            input values to update the data
 	 * @return id of updated Holiday data
 	 */
 	@ResponseFilter
@@ -119,7 +131,8 @@ public class HolidayController {
 	/**
 	 * Method to delete holidays
 	 * 
-	 * @param request input values to delete
+	 * @param request
+	 *            input values to delete
 	 * @return id of the deleted Holiday data
 	 */
 	@ResponseFilter
@@ -129,6 +142,36 @@ public class HolidayController {
 			@Valid @RequestBody RequestWrapper<HolidayIdDeleteDto> request) {
 		ResponseWrapper<HolidayIdDeleteDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(holidayService.deleteHoliday(request));
+		return responseWrapper;
+	}
+
+	/**
+	 * This controller method provides with all holidays.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param pageSize
+	 *            the size of each page
+	 * @param sortBy
+	 *            the attributes by which it should be ordered
+	 * @param orderBy
+	 *            the order to be used
+	 * 
+	 * @return the response i.e. pages containing the holidays.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/all")
+	@ApiOperation(value = "Retrieve all the holidays with additional metadata", notes = "Retrieve all the holidays with the additional metadata")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of holidays"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving holidays") })
+	public ResponseWrapper<PageDto<HolidayExtnDto>> getHolidays(
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
+			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
+			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		ResponseWrapper<PageDto<HolidayExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(holidayService.getHolidays(pageNumber, pageSize, sortBy, orderBy.name()));
 		return responseWrapper;
 	}
 
