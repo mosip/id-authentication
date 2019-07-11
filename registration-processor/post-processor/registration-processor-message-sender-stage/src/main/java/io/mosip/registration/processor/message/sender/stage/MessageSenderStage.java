@@ -213,10 +213,16 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 			if (registrationStatusDto.getStatusCode().equals(RegistrationStatusCode.PROCESSED.toString())) {
 				if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.LOST.getValue()))
 					type = NotificationTemplateType.LOST_UIN;
-				if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.getValue()))
+				else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.NEW.getValue()))
 					type = NotificationTemplateType.UIN_CREATED;
-				if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.getValue()))
+				else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.UPDATE.getValue()))
 					type = NotificationTemplateType.UIN_UPDATE;
+				else if (registrationStatusDto.getRegistrationType().equalsIgnoreCase(SyncTypeDto.ACTIVATED.getValue()))
+					type = NotificationTemplateType.UIN_UPDATE;
+				else if (registrationStatusDto.getRegistrationType()
+						.equalsIgnoreCase(SyncTypeDto.DEACTIVATED.getValue()))
+					type = NotificationTemplateType.UIN_UPDATE;
+
 			} else {
 				type = map.getTemplateType(status);
 			}
@@ -428,10 +434,6 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 				ResponseWrapper.class);
 		templateResponseDto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 				TemplateResponseDto.class);
-
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
-				"MessageSenderStage::isTemplateAvailable():: TEMPLATES Api call call  ended with response data : \"\r\n"
-						+ JsonUtil.objectMapperObjectToJson(templateResponseDto));
 
 		if (responseWrapper.getErrors() == null) {
 			templateResponseDto.getTemplates().forEach(dto -> {

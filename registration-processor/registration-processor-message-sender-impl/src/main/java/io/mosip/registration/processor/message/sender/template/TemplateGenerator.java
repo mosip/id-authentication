@@ -35,7 +35,6 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.notification.template.generator.dto.TemplateResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.util.JsonUtil;
 
 /**
  * The Class TemplateGenerator.
@@ -99,9 +98,6 @@ public class TemplateGenerator {
 					ResponseWrapper.class);
 			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 					TemplateResponseDto.class);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"TemplateGenerator::getTemplate():: TEMPLATES GET service Ended with response "
-							+ JsonUtil.objectMapperObjectToJson(template));
 
 			InputStream fileTextStream = null;
 			if (template != null) {
