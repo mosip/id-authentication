@@ -208,11 +208,11 @@ public class ReprocessorStage extends MosipVerticleManager {
 					dtolist.forEach(dto -> {
 						this.registrationId = dto.getRegistrationId();
 						if (reprocessCount.equals(dto.getReProcessRetryCount())) {
-							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS_FAILED.toString());
 							dto.setLatestTransactionTypeCode(
 									RegistrationTransactionTypeCode.PACKET_REPROCESS.toString());
 							dto.setStatusComment("Reprocess count has exceeded the configured attempts");
-							dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+							dto.setStatusCode(RegistrationStatusCode.REPROCESS_FAILED.toString());
 							object.setRid(registrationId);
 							object.setIsValid(false);
 							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
