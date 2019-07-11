@@ -80,8 +80,6 @@ public class RegistrationSystemPropertiesChecker {
 				Pattern pattern = Pattern.compile(MAC_PATTERN);
 				Matcher matcher = pattern.matcher(line);
 				if (matcher.find()) {
-					LOGGER.info(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
-							RegistrationConstants.APPLICATION_ID, "MAC Address : " + matcher.group(0));
 					windowsMachineId = matcher.group(0);
 					break;
 				}
