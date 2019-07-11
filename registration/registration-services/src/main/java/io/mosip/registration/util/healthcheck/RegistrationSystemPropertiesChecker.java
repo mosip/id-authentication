@@ -26,6 +26,12 @@ public class RegistrationSystemPropertiesChecker {
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationSystemPropertiesChecker.class);
 
+	private static final String MAC_PATTERN = "([a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-"
+			+ "[a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-"
+			+ "[a-zA-Z0-9][a-zA-Z0-9])";
+	private static final String ETHERNET = "Ethernet";
+	private static final String ETHERNET_ARABIC = "إيثرنت";
+
 	private RegistrationSystemPropertiesChecker() {
 
 	}
@@ -63,32 +69,20 @@ public class RegistrationSystemPropertiesChecker {
 	}
 
 	private static String getWindowsMacAddress() throws IOException {
-		String windowsMachineId = "";
-		String command = "ipconfig /all";
-		BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
-		while (true) {
-			String line = bufferedReader.readLine();
-			if (line != null) {
-				Pattern englishPattern = Pattern.compile(".*Physical Address.*: (.*)");
-				Pattern frenchPattern = Pattern.compile(".*Adresse physique.*: (.*)");
-				Pattern arabicPattern = Pattern.compile(".*العنوان الفعلي.*: (.*)");
-
-				Matcher englishMatcher = englishPattern.matcher(line);
-				if (englishMatcher.matches()) {
-					windowsMachineId = englishMatcher.group(1);
-					break;
-				}
-
-				Matcher frenchMatcher = frenchPattern.matcher(line);
-				if (frenchMatcher.matches()) {
-					windowsMachineId = frenchMatcher.group(1);
-					break;
-				}
-
-				Matcher arabicMatcher = arabicPattern.matcher(line);
-				if (arabicMatcher.matches()) {
-					windowsMachineId = arabicMatcher.group(1);
+		Process process;
+		process = Runtime.getRuntime().exec("getmac /fo csv /v");
+		BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		String line;
+		String windowsMachineId="";
+		while (null != (line = in.readLine())) {
+			String[] lineSplitter = line.replaceAll("\"", "").split(",");
+			if (lineSplitter[0].equals(ETHERNET) || lineSplitter[0].equals(ETHERNET_ARABIC)) {
+				Pattern pattern = Pattern.compile(MAC_PATTERN);
+				Matcher matcher = pattern.matcher(line);
+				if (matcher.find()) {
+					LOGGER.info(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, "MAC Address : " + matcher.group(0));
+					windowsMachineId = matcher.group(0);
 					break;
 				}
 			}
