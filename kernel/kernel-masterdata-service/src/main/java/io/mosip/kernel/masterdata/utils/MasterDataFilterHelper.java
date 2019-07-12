@@ -88,11 +88,11 @@ public class MasterDataFilterHelper {
 
 	private <E, T> void buildFilterColumnListForBoolean(String columnName, String text, CriteriaBuilder criteriaBuilder,
 			CriteriaQuery<T> criteriaQuery, Root<E> root) {
-		boolean flag = false;
+		boolean statusValue = false;
 		if (text.equals(STATUS_TRUE_FLAG)) {
-			flag = true;
+			statusValue = true;
 		}
-		criteriaQuery.where(criteriaBuilder.equal(root.get(columnName), flag));
+		criteriaQuery.where(criteriaBuilder.equal(root.get(columnName), statusValue));
 	}
 
 	public <E> List<E> filterValueEntities(Class<E> entity, FilterDto filterDto, String languageCode) {
