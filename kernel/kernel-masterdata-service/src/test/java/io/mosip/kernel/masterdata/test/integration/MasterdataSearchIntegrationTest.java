@@ -205,7 +205,11 @@ public class MasterdataSearchIntegrationTest {
 		locationLaaEntity = new Location("LOC04", "laa", (short) 4, "Local Administrative Authority", "LOC03", "eng",
 				null);
 		locationPostalCodeEntity = new Location("LOC05", "postalcode", (short) 5, "postalcode", "LOC04", "eng", null);
-
+        
+		template=new Template();
+		template.setDescription("aaaaa");
+		template.setModuleId("10004");
+		template.setLangCode("eng");
 		request = new RequestWrapper<>();
 		searchDto = new SearchDto();
 		Pagination pagination = new Pagination(0, 10);
@@ -246,6 +250,7 @@ public class MasterdataSearchIntegrationTest {
 		templateSearchDto= new SearchDto();
 		templateSearchDto.setFilters(Arrays.asList(templateSearchFilter));
 		templateSearchDto.setLanguageCode("eng");
+		templateSearchDto.setSort(Arrays.asList());
 		templateSearchDto.setPagination(pagination);
 		templateRequestDto.setRequest(templateSearchDto);
 
@@ -261,7 +266,7 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
 				Mockito.any(), Mockito.any()))
 						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
-		//when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Template>>any(), Mockito.any(), Mockito.anyList())).thenReturn(new PageImpl<>(Arrays.asList(templ), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Template>>any(), Mockito.any(), Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(template), PageRequest.of(0, 10), 1));
 		when(registrationCenterUserRepository.countCenterUsers(Mockito.any())).thenReturn(10l);
 		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any())).thenReturn(10l);
 		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any())).thenReturn(10l);
@@ -1062,6 +1067,37 @@ public class MasterdataSearchIntegrationTest {
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/machinetypes/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchtemplate() throws Exception {
+		
+		String validRequest = objectMapper.writeValueAsString(templateRequestDto);
+		mockMvc.perform(
+				post("/templates/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchPageContentNulltemplate() throws Exception {
+		template=new Template();
+		template.setDescription("aaaaa");
+		template.setModuleId("10004");
+		template.setLangCode("eng");
+		request = new RequestWrapper<>();
+		searchDto = new SearchDto();
+		Pagination pagination = new Pagination(0, 0);
+		searchDto.setLanguageCode("eng");
+		searchDto.setPagination(pagination);
+		searchDto.setSort(Arrays.asList(sort));
+		request.setRequest(searchDto);
+		String validRequest = objectMapper.writeValueAsString(templateRequestDto);
+		mockMvc.perform(
+				post("/templates/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
 				.andExpect(status().isOk());
 	}
 }
