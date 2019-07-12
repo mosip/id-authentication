@@ -7,7 +7,7 @@ List of authentication types supported by MOSIP are -
 3. Biometric Auth (includes Fingerprint, IRIS and Face)
 4. Static Pin Auth
 
-Refer wiki page for [ID Authentication API](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs)   
+Refer wiki page for [ID Authentication API](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-API)   
 
 
 **Configuration**

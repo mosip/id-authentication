@@ -7,13 +7,7 @@ Following are the pre-requisites for storing or retrieving Identity authenticati
 1. ID Repository accepts ID JSON in the format as provided by the country in ID Schema
 2. ID JSON present in ID Repository APIs gets validated against IdObjectValidator.
 
-[Background & Design](../../docs/design/idrepository/identity-service.md)
-
-[Background & Design](../../docs/design/idrepository/vid-service.md)
-
-[Background & Design](../../docs/design/idrepository/salt-generator.md)
-
-[Api Documentation]( https://github.com/mosip/mosip/wiki/ID-Repository-API)
+[Api Documentation]( https://github.com/mosip/mosip-docs/wiki/ID-Repository-API)
 
 **Configuration**
 Configurations used for ID Repo are available in [mosip-config](https://github.com/mosip/mosip-config)

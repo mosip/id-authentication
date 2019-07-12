@@ -6,12 +6,7 @@ All MOSIP modules are dependent on Kernel modules for common Java and REST APIs.
 
 ### Kernel Dependencies
 
-https://github.com/mosip/mosip-docs/wiki/Kernel-Dependencies
-
-
-**MOSIP Modules Components**
-
-![](../docs/design/kernel/_images/MOSIP_modules_components.png)   
+https://github.com/mosip/mosip-docs/wiki/Kernel-Dependencies  
 
 **Configuration**
 Configurations used for ID Repo are available in [mosip-config](https://github.com/mosip/mosip-config)
