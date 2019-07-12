@@ -33,6 +33,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.RegistrationCenterIdGenerator;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
+import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterDeviceHistoryErrorCode;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
@@ -954,8 +955,14 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<SearchFilter> locationFilter = new ArrayList<>();
 		List<SearchFilter> zoneFilter = new ArrayList<>();
 		List<Zone> zones = null;
-		List<Location> locations = locationRepository.findAllNonDeleted();
+		List<Location> locations = null;
 		boolean flag = true;
+		try {
+			locations = locationRepository.findAllNonDeleted();
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
+		}
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 			if (MasterDataConstant.CENTERTYPENAME.equalsIgnoreCase(column)) {
@@ -968,12 +975,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					locationFilter.addAll(buildLocationSearchFilter(childs));
 				}
 				removeList.add(filter);
-			} /*
-				 * if (MasterDataConstant.POSTAL_CODE.equalsIgnoreCase(column)) { Location
-				 * location = locationSearch(filter); if (location != null) {
-				 * addList.addAll(buildLocationSearchFilter(Arrays.asList(location))); }
-				 * removeList.add(filter); }
-				 */
+			}
 			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
 				Zone zone = getZone(filter);
 				if (zone != null) {
@@ -989,7 +991,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			if (zones != null && !zones.isEmpty())
 				zoneFilter.addAll(buildZoneFilter(zones));
 			else
-				throw new MasterDataServiceException("XXX", "User is not tagged to zone");
+				throw new MasterDataServiceException(RegistrationCenterErrorCode.USER_ZONE_NOT_FOUND.getErrorCode(),
+						RegistrationCenterErrorCode.USER_ZONE_NOT_FOUND.getErrorMessage());
 		}
 		dto.getFilters().removeAll(removeList);
 		dto.getFilters().addAll(addList);
@@ -1319,10 +1322,10 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	private Zone getZone(SearchFilter filter) {
 		filter.setColumnName(MasterDataConstant.NAME);
-		Page<Zone> locations = masterdataSearchHelper.searchMasterdata(Zone.class,
+		Page<Zone> zones = masterdataSearchHelper.searchMasterdata(Zone.class,
 				new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
-		if (locations.hasContent()) {
-			return locations.getContent().get(0);
+		if (zones.hasContent()) {
+			return zones.getContent().get(0);
 		} else {
 			throw new MasterDataServiceException(RegistrationCenterErrorCode.NO_ZONE_AVAILABLE.getErrorCode(),
 					String.format(RegistrationCenterErrorCode.NO_ZONE_AVAILABLE.getErrorMessage(), filter.getValue()));
