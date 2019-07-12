@@ -3,6 +3,8 @@ Registration Processor validates and processes Individual's data received from R
 
 Registration Processor module receives registration packets from Registration and then, validates and processes Individual's data and generated UIN. This UIN along with IDentity Details of the Individual is stored in ID Repository module.
 
+Registration Processor has APIs to check status and upload packets. The API specs are at https://github.com/mosip/mosip-docs/wiki/Registration-Processor-APIs
+
 **Configuration**
 Configurations used for ID Repo are available in [mosip-config](https://github.com/mosip/mosip-config)
 
