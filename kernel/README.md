@@ -1,8 +1,14 @@
 ## Kernel
 
-Kernel module provides a bedrock to build and run services by providing several significant necessary technical functions. It contains common functionalities which are used by more than one modules.
+Kernel module provides common functionality required by all the functional modules of MOSIP. The key components provided by kernel are
 
-All MOSIP modules are dependent on Kernel modules for common Java and REST APIs.
+ - Audit Manager
+ - PKI infra
+ - File System connectors (CEPH & HDFS)
+ - UIN Generator
+ - Number ID generators (Pre-Reg ID, VID etc...)
+
+All MOSIP modules are dependent on Kernel components for common Java and REST APIs.
 
 ### Kernel Dependencies
 
