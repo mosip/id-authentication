@@ -1,15 +1,26 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
+import static io.vertx.ext.healthchecks.impl.StatusHelper.isUp;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.PrivilegedExceptionAction;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.jms.BytesMessage;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQBytesMessage;
@@ -27,12 +38,22 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.support.JdbcUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.registration.processor.core.constant.HealthConstant;
+import io.netty.handler.codec.http.HttpResponse;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
+import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.AuthProvider;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.healthchecks.HealthChecks;
@@ -42,34 +63,6 @@ import io.vertx.ext.web.RoutingContext;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.exceptions.ClamavException;
-
-import static io.vertx.ext.healthchecks.impl.StatusHelper.isUp;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.jms.BytesMessage;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
-
-import org.springframework.jdbc.support.JdbcUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import io.mosip.registration.processor.core.constant.HealthConstant;
-import io.netty.handler.codec.http.HttpResponse;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.http.HttpHeaders;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.streams.ReadStream;
 
 /**
  * @author Mukul Puspam
@@ -197,8 +190,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 				if (resource.exists()) {
 					java.nio.file.Path c = Paths.get("s", "x");
 					File winUtilsPath = FileUtils.getFile(binPath.toString(), resource.getFilename());
-					   FileUtils.copyInputStreamToFile(resource.getInputStream(), winUtilsPath);
-					   }
+					FileUtils.copyInputStreamToFile(resource.getInputStream(), winUtilsPath);
+				}
 			}
 
 			if (isAuthEnable) {
@@ -245,7 +238,7 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 		configuration.set("hadoop.security.authentication", "kerberos");
 		InputStream krbStream = getClass().getClassLoader().getResourceAsStream("krb5.conf");
 		File krbPath = FileUtils.getFile(hadoopLibPath.toString(), "krb5.conf");
-		 FileUtils.copyInputStreamToFile(krbStream, krbPath);
+		FileUtils.copyInputStreamToFile(krbStream, krbPath);
 		System.setProperty("java.security.krb5.conf", krbPath.toString());
 		UserGroupInformation.setConfiguration(configuration);
 		String user = hdfsUserName + "@" + kdcDomain;
@@ -280,17 +273,20 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	 * @param future
 	 */
 	public void virusScanHealthChecker(Future<Status> future) {
-		File file = new File(getClass().getClassLoader().getResource("cbef.xml").getFile());
 		try {
 			this.clamavClient = new ClamavClient(clamavHost, clamavPort);
 			ScanResult scanResult;
+
+			File file = new File("virus_scan_test.txt");
+			String fileData = "virus scan test";
+			Files.write(Paths.get("virus_scan_test.txt"), fileData.getBytes());
 			scanResult = this.clamavClient.scan(new FileInputStream(file));
 
 			final JsonObject result = resultBuilder.create().add(HealthConstant.RESPONSE, scanResult.getStatus().name())
 					.build();
 			future.complete(Status.OK(result));
 
-		} catch (FileNotFoundException | ClamavException e) {
+		} catch (ClamavException | IOException e) {
 			final JsonObject result = resultBuilder.create().add(HealthConstant.ERROR, e.getMessage()).build();
 			future.complete(Status.KO(result));
 		}
@@ -299,7 +295,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Database health check handler
 	 * 
-	 * @param future {@link Future} instance from handler
+	 * @param future
+	 *            {@link Future} instance from handler
 	 */
 	public void databaseHealthChecker(Future<Status> future) {
 
@@ -332,7 +329,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Disk-Space health check Handler
 	 * 
-	 * @param future {@link Future} instance from handler
+	 * @param future
+	 *            {@link Future} instance from handler
 	 */
 	public void dispSpaceHealthChecker(Future<Status> future) {
 
@@ -353,8 +351,10 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Send Verticle health check handler
 	 * 
-	 * @param future {@link Future} instance from handler
-	 * @param vertx  {@link Vertx} instance
+	 * @param future
+	 *            {@link Future} instance from handler
+	 * @param vertx
+	 *            {@link Vertx} instance
 	 */
 	public void senderHealthHandler(Future<Status> future, Vertx vertx, String address) {
 		try {
@@ -428,7 +428,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Create health check summary
 	 * 
-	 * @param rc {@link RoutingContext} instance
+	 * @param rc
+	 *            {@link RoutingContext} instance
 	 * @return {@link Handler}
 	 */
 	private Handler<AsyncResult<JsonObject>> healthSummaryHandler(RoutingContext rc) {
@@ -451,8 +452,10 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Create a json response
 	 * 
-	 * @param json     summary json
-	 * @param response {@link HttpResponse}
+	 * @param json
+	 *            summary json
+	 * @param response
+	 *            {@link HttpResponse}
 	 */
 	private void createResponse(JsonObject json, HttpServerResponse response) {
 		int status = isUp(json) ? 200 : 503;
@@ -479,8 +482,10 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Copy actual response to Spring actuator like response
 	 * 
-	 * @param json   Summary json
-	 * @param checks Json array of all registered parameters with details
+	 * @param json
+	 *            Summary json
+	 * @param checks
+	 *            Json array of all registered parameters with details
 	 */
 	private void createResponse(JsonObject json, JsonArray checks) {
 		for (int i = 0; i < checks.size(); i++) {
@@ -516,7 +521,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Check if error has occurred or not
 	 * 
-	 * @param json Summary json
+	 * @param json
+	 *            Summary json
 	 * @return True if has Error;else False
 	 */
 	private boolean hasErrors(JsonObject json) {
@@ -541,7 +547,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	/**
 	 * Encode the json object
 	 * 
-	 * @param json Result json
+	 * @param json
+	 *            Result json
 	 * @return Encoded Json String
 	 */
 	private String encode(JsonObject json) {
