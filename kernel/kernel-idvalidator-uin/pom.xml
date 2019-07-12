@@ -3,7 +3,7 @@
   <parent>
     <groupId>io.mosip.kernel</groupId>
     <artifactId>kernel-parent</artifactId>
-    <version>0.12.16</version>
+    <version>0.9.0</version>
   </parent>
   <artifactId>kernel-idvalidator-uin</artifactId>
   <name>kernel-idvalidator-uin</name>
