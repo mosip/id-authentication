@@ -1,5 +1,5 @@
 # mosip-platform
-This repository contains the source code of the Modular Open Source Identity Platform. To know what more about MOSIP, its architecture, external integrations, releases, etc., please check the [Platform Documentation](https://github.com/mosip/mosip-docs/wiki)
+This repository contains the source code of the Modular Open Source Identity Platform. To know more about MOSIP, its architecture, external integrations, releases, etc., please check the [Platform Documentation](https://github.com/mosip/mosip-docs/wiki)
 
 ### Introduction
 MOSIP consists of the following modules - 
