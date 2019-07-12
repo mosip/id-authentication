@@ -12,19 +12,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
+import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -109,6 +118,7 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is inserted successfully
 	 *         {@link ResponseEntity}
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping
 	@ApiOperation(value = "Service to save Device", notes = "Saves Device and return Device id")
@@ -121,6 +131,7 @@ public class DeviceController {
 		ResponseWrapper<IdAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.createDevice(deviceRequestDto.getRequest()));
 		return responseWrapper;
+
 	}
 
 	/**
@@ -132,6 +143,7 @@ public class DeviceController {
 	 * @return ResponseEntity Device Id which is updated successfully
 	 *         {@link ResponseEntity}
 	 */
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ResponseFilter
 	@PutMapping
 	@ApiOperation(value = "Service to update Device", notes = "Update Device and return Device id")
@@ -167,4 +179,69 @@ public class DeviceController {
 		responseWrapper.setResponse(deviceService.deleteDevice(id));
 		return responseWrapper;
 	}
+
+	/**
+	 * 
+	 * Function to fetch Device detail those are mapped with given registration Id
+	 * 
+	 * @param regCenterId
+	 *            pass registration Id as String
+	 * 
+	 * @return @return DeviceRegistrationCenterDto all devices details
+	 *         {@link DeviceRegistrationCenterDto}
+	 */
+	@ResponseFilter
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	@GetMapping(value = "/mappeddevices/{regCenterId}")
+	@ApiOperation(value = "Retrieve all Devices which are mapped to given Registration Center Id", notes = "Retrieve all Devices which are mapped to given Registration Center Id")
+	@ApiResponses({
+			@ApiResponse(code = 200, message = "When Device Details retrieved from database for the given Registration Center Id"),
+			@ApiResponse(code = 404, message = "When No Device Details not mapped with the Given Registation Center ID"),
+			@ApiResponse(code = 500, message = "While retrieving Device Detail any error occured") })
+	public ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> getDevicesByRegistrationCenter(
+			@PathVariable("regCenterId") String regCenterId,
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page number for the requested data", defaultValue = "0") int page,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "1") int size,
+			@RequestParam(name = "orderBy", defaultValue = "cr_dtimes") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String orderBy,
+			@RequestParam(name = "direction", defaultValue = "DESC") @ApiParam(value = "order the requested data based on param", defaultValue = "DESC") String direction) {
+
+		ResponseWrapper<PageDto<DeviceRegistrationCenterDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(deviceService.getDevicesByRegistrationCenter(regCenterId, page, size, orderBy, direction));
+		return responseWrapper;
+	}
+
+	/**
+	 * Api to search Device based on filters provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the pages of {@link DeviceExtnDto}.
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/search")
+	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
+	public ResponseWrapper<PageResponseDto<DeviceExtnDto>> searchDevice(
+			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DeviceExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Api to filter Device based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/filtervalues")
+	public ResponseWrapper<FilterResponseDto> deviceFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceService.deviceFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+
 }

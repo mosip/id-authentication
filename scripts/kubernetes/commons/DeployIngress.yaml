@@ -174,6 +174,38 @@ spec:
         backend:
           serviceName: registration-processor-printing-stage
           servicePort: 8099
+      - path: /registrationprocessor/v1/packetvalidator
+        backend:
+          serviceName: registration-processor-packet-validator-stage
+          servicePort: 8088
+      - path: /registrationprocessor/v1/osivalidator
+        backend:
+          serviceName: registration-processor-osi-validator-stage
+          servicePort: 8089
+      - path: /registrationprocessor/v1/qualitychecker
+        backend:
+          serviceName: registration-processor-quality-checker-stage
+          servicePort: 9072
+      - path: /registrationprocessor/v1/abishandler
+        backend:
+          serviceName: registration-processor-abis-handler-stage
+          servicePort: 9071
+      - path: /registrationprocessor/v1/external
+        backend:
+          serviceName: registration-processor-external-stage
+          servicePort: 8095
+      - path: /registrationprocessor/v1/abismiddleware
+        backend:
+          serviceName: registration-processor-abis-middleware-stage
+          servicePort: 8091
+      - path: /registrationprocessor/v1/reprocessor
+        backend:
+          serviceName: registration-processor-reprocessor-stage
+          servicePort: 8021
+      - path: /registrationprocessor/v1/bioauth
+        backend:
+          serviceName: registration-processor-biometric-authentication-stage
+          servicePort: 8020
       - path: /config
         backend:
           serviceName: kernel-config-server

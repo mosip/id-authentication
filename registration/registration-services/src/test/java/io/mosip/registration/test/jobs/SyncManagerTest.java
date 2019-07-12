@@ -19,8 +19,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -43,7 +41,6 @@ import io.mosip.registration.repositories.SyncTransactionRepository;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ io.mosip.registration.config.AppConfig.class })
 public class SyncManagerTest {
 
 	@Mock
@@ -115,7 +112,7 @@ public class SyncManagerTest {
 
 		Mockito.when(onboardDAO.getCenterID(Mockito.anyString())).thenReturn("CNTR123");
 		Mockito.when(onboardDAO.getStationID(Mockito.anyString())).thenReturn("MCHN123");
-		PowerMockito.mockStatic(io.mosip.registration.config.AppConfig.class);
+		//PowerMockito.mockStatic(io.mosip.registration.config.AppConfig.class);
 		//when(io.mosip.registration.config.AppConfig.getApplicationProperty(Mockito.anyString())).thenReturn("Appli_Lang");
 
 	}
@@ -154,13 +151,13 @@ public class SyncManagerTest {
 
 	@Test
 	public void createSyncTest() throws RegBaseCheckedException {
+		String machineId = RegistrationSystemPropertiesChecker.getMachineId();
 		SyncTransaction syncTransaction = prepareSyncTransaction();
 		SyncControl syncControl = null;
 		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
 
 		Mockito.when(jobTransactionDAO.save(Mockito.any(SyncTransaction.class))).thenReturn(syncTransaction);
-		Mockito.when(machineMappingDAO.getStationID(RegistrationSystemPropertiesChecker.getMachineId()))
-				.thenReturn(Mockito.anyString());
+		Mockito.when(machineMappingDAO.getStationID(machineId)).thenReturn(Mockito.anyString());
 		
 		
 		assertSame(syncTransaction.getSyncJobId(),

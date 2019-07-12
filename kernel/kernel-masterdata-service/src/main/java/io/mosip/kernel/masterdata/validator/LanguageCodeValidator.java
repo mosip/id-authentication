@@ -3,10 +3,8 @@ package io.mosip.kernel.masterdata.validator;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.ValidLangCodeErrorCode;
@@ -23,9 +21,6 @@ import lombok.Data;
  */
 @Data
 public class LanguageCodeValidator implements ConstraintValidator<ValidLangCode, String> {
-
-	@Autowired
-	private RestTemplate restTemplate;
 
 	@Value("${mosip.supported-languages}")
 	private String supportedLanguages;

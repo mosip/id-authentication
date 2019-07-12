@@ -45,8 +45,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 * @see io.mosip.registration.processor.core.spi.restclient.
 	 * RegistrationProcessorRestClientService#getApi(io.mosip.registration.
 	 * processor .core.code.ApiName,
-	 * io.mosip.registration.processor.core.code.RestUriConstant,
-	 * java.lang.String, java.lang.String, java.lang.Class)
+	 * io.mosip.registration.processor.core.code.RestUriConstant, java.lang.String,
+	 * java.lang.String, java.lang.Class)
 	 */
 	@Override
 	public Object getApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
@@ -83,7 +83,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			try {
 
 				uriComponents = builder.build(false).encode();
-				regProcLogger.info(uriComponents.toUri().toString(), " URI Of ID Repo", "", "");
+				regProcLogger.debug(uriComponents.toUri().toString(), "URI", "", "");
 				obj = restApiClient.getApi(uriComponents.toUri(), responseType);
 
 			} catch (Exception e) {
@@ -147,8 +147,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 * @see io.mosip.registration.processor.core.spi.restclient.
 	 * RegistrationProcessorRestClientService#postApi(io.mosip.registration.
 	 * processor.core.code.ApiName,
-	 * io.mosip.registration.processor.core.code.RestUriConstant,
-	 * java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
+	 * io.mosip.registration.processor.core.code.RestUriConstant, java.lang.String,
+	 * java.lang.String, java.lang.Object, java.lang.Class)
 	 */
 	@Override
 	public Object postApi(ApiName apiName, String queryParamName, String queryParamValue, Object requestedData,
@@ -276,7 +276,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 * java.lang.String, java.lang.Object, java.lang.Class)
 	 */
 	public Object putApi(ApiName apiName, List<String> pathsegments, String queryParamName, String queryParamValue,
-			Object requestedData, Class<?> responseType,MediaType mediaType) throws ApisResourceAccessException {
+			Object requestedData, Class<?> responseType, MediaType mediaType) throws ApisResourceAccessException {
 
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"RegistrationProcessorRestClientServiceImpl::putApi()::entry");
@@ -305,7 +305,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 
 			try {
-				obj = restApiClient.putApi(builder.toUriString(), requestedData, responseType,mediaType);
+				obj = restApiClient.putApi(builder.toUriString(), requestedData, responseType, mediaType);
 
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),

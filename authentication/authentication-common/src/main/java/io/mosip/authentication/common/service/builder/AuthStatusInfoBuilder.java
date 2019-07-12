@@ -212,11 +212,15 @@ public class AuthStatusInfoBuilder {
 	 */
 	private static AuthError createActionableAuthError(IdAuthenticationErrorConstants idAuthenticationErrorConstants,
 			Object... params) {
-		return new ActionableAuthError(idAuthenticationErrorConstants.getErrorCode(),
-				String.format(idAuthenticationErrorConstants.getErrorMessage(), params),
-				idAuthenticationErrorConstants.getActionMessage() != null
-						? String.format(idAuthenticationErrorConstants.getActionMessage(), params)
-						: null);
+		String errorCode = idAuthenticationErrorConstants.getErrorCode();
+		String errorMessage = String.format(idAuthenticationErrorConstants.getErrorMessage(), params);
+		String actionMessage;
+		if (idAuthenticationErrorConstants.getActionMessage() != null) {
+			actionMessage = String.format(idAuthenticationErrorConstants.getActionMessage(), params);
+		} else {
+			actionMessage = null;
+		}
+		return new ActionableAuthError(errorCode, errorMessage, actionMessage);
 	}
 
 	/**

@@ -292,6 +292,7 @@ public class PacketValidateProcessorTest {
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
 		FieldValueArray hashsequence2 = new FieldValueArray();
+		hashsequence2.setLabel(PacketFiles.OTHERFILES.name());
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -501,6 +502,7 @@ public class PacketValidateProcessorTest {
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
 		FieldValueArray hashsequence2 = new FieldValueArray();
+		hashsequence2.setLabel(PacketFiles.OTHERFILES.name());
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);
@@ -588,6 +590,7 @@ public class PacketValidateProcessorTest {
 		sequence2.add("audit");
 		List<FieldValueArray> fieldValueArrayListSequence = new ArrayList<FieldValueArray>();
 		FieldValueArray hashsequence2 = new FieldValueArray();
+		hashsequence2.setLabel(PacketFiles.OTHERFILES.name());
 		hashsequence2.setValue(sequence2);
 		fieldValueArrayListSequence.add(hashsequence2);
 		identity.setHashSequence2(fieldValueArrayListSequence);

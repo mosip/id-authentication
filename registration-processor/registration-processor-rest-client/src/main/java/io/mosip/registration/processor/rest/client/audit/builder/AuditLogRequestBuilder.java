@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -28,35 +29,43 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 public class AuditLogRequestBuilder {
 
 	/** The logger. */
-	private final Logger LOGGER = LoggerFactory.getLogger(AuditLogRequestBuilder.class);
+	private final Logger regProcLogger = LoggerFactory.getLogger(AuditLogRequestBuilder.class);
 
 	/** The registration processor rest service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
-	
+
 	@Autowired
 	private Environment env;
-	
-	
+
 	private static final String AUDIT_SERVICE_ID = "mosip.registration.processor.audit.id";
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
-	
+
 	/**
 	 * Creates the audit request builder.
 	 *
-	 * @param description            the description
-	 * @param eventId            the event id
-	 * @param eventName            the event name
-	 * @param eventType            the event type
-	 * @param registrationId the registration id
+	 * @param description
+	 *            the description
+	 * @param eventId
+	 *            the event id
+	 * @param eventName
+	 *            the event name
+	 * @param eventType
+	 *            the event type
+	 * @param registrationId
+	 *            the registration id
 	 * @return the audit response dto
 	 */
 	@SuppressWarnings("unchecked")
-	public ResponseWrapper<AuditResponseDto> createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
-			String registrationId, ApiName apiname) {
+	public ResponseWrapper<AuditResponseDto> createAuditRequestBuilder(String description, String eventId,
+			String eventName, String eventType, String registrationId, ApiName apiname) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId,
+				"AuditLogRequestBuilder:: createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,\r\n"
+						+ "			String registrationId, ApiName apiname)::entry");
 
-		AuditRequestDto auditRequestDto=new AuditRequestDto();
+		AuditRequestDto auditRequestDto = new AuditRequestDto();
 		RequestWrapper<AuditRequestDto> requestWrapper = new RequestWrapper<>();
 		ResponseWrapper<AuditResponseDto> responseWrapper = new ResponseWrapper<>();
 		try {
@@ -80,22 +89,32 @@ public class AuditLogRequestBuilder {
 			requestWrapper.setMetadata(null);
 			requestWrapper.setRequest(auditRequestDto);
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)),format);
+			LocalDateTime localdatetime = LocalDateTime
+					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
 			requestWrapper.setRequesttime(localdatetime);
 			requestWrapper.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
-			responseWrapper=(ResponseWrapper<AuditResponseDto>) registrationProcessorRestService.postApi(apiname, "", "", requestWrapper, ResponseWrapper.class);
+			responseWrapper = (ResponseWrapper<AuditResponseDto>) registrationProcessorRestService.postApi(apiname, "",
+					"", requestWrapper, ResponseWrapper.class);
 		} catch (ApisResourceAccessException arae) {
 
-			LOGGER.error(arae.getMessage());
-			
+			regProcLogger.error(arae.getMessage());
+
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId,
+				"AuditLogRequestBuilder:: createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,\r\n"
+						+ "			String registrationId, ApiName apiname)::exit");
 
 		return responseWrapper;
 	}
 
 	@SuppressWarnings("unchecked")
-	public ResponseWrapper<AuditResponseDto> createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,String moduleId,String moduleName,
-			String registrationId) {
+	public ResponseWrapper<AuditResponseDto> createAuditRequestBuilder(String description, String eventId,
+			String eventName, String eventType, String moduleId, String moduleName, String registrationId) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId,
+				"AuditLogRequestBuilder:: createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,String moduleId,String moduleName,\r\n"
+						+ "			String registrationId)::entry");
 
 		AuditRequestDto auditRequestDto;
 		RequestWrapper<AuditRequestDto> requestWrapper = new RequestWrapper<>();
@@ -103,7 +122,7 @@ public class AuditLogRequestBuilder {
 
 		try {
 
-			auditRequestDto= new AuditRequestDto();
+			auditRequestDto = new AuditRequestDto();
 			auditRequestDto.setDescription(description);
 			auditRequestDto.setActionTimeStamp(DateUtils.getUTCCurrentDateTimeString());
 			auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
@@ -124,16 +143,22 @@ public class AuditLogRequestBuilder {
 			requestWrapper.setMetadata(null);
 			requestWrapper.setRequest(auditRequestDto);
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-			LocalDateTime localdatetime = LocalDateTime.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)),format);
+			LocalDateTime localdatetime = LocalDateTime
+					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
 			requestWrapper.setRequesttime(localdatetime);
 			requestWrapper.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
-			responseWrapper=(ResponseWrapper<AuditResponseDto>) registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", requestWrapper, ResponseWrapper.class);
+			responseWrapper = (ResponseWrapper<AuditResponseDto>) registrationProcessorRestService
+					.postApi(ApiName.AUDIT, "", "", requestWrapper, ResponseWrapper.class);
 
 		} catch (ApisResourceAccessException arae) {
 
-			LOGGER.error(arae.getMessage());
+			regProcLogger.error(arae.getMessage());
 
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId,
+				"AuditLogRequestBuilder:: createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,String moduleId,String moduleName,\r\n"
+						+ "			String registrationId)::exit");
 
 		return responseWrapper;
 	}

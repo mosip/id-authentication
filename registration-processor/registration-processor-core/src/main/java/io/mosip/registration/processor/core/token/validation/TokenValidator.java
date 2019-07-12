@@ -42,12 +42,14 @@ public class TokenValidator {
 	Environment env;
 
 	public void validate(String token, String url) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TokenValidator::validate()::entry");
 
 		if (token == null)
 			throw new InvalidTokenException(INVALIDTOKENMESSAGE);
-		try {	
+		try {
 			URL obj = new URL(env.getProperty("TOKENVALIDATE"));
-			URLConnection urlConnection= obj.openConnection();
+			URLConnection urlConnection = obj.openConnection();
 			HttpsURLConnection con = (HttpsURLConnection) urlConnection;
 
 			con.setRequestProperty("Cookie", token);
@@ -70,8 +72,9 @@ public class TokenValidator {
 				throw new InvalidTokenException(tokenResponseDTO.getErrors()[0].getMessage());
 			} else {
 				if (!validateAccess(url, tokenResponseDTO.getResponse().getRole())) {
-					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-							"", ACCESSDENIEDMESSAGE + tokenResponseDTO.getResponse().getRole());
+					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), "",
+							ACCESSDENIEDMESSAGE + tokenResponseDTO.getResponse().getRole());
 					throw new AccessDeniedException(ACCESSDENIEDMESSAGE + tokenResponseDTO.getResponse().getRole());
 				}
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
@@ -83,9 +86,15 @@ public class TokenValidator {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TokenValidator::validate()::exit");
+
 	}
 
 	public boolean validateAccess(String url, String role) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TokenValidator::validateAccess()::entry");
 		if (url.contains("receiver")) {
 			for (String assignedRole : APIAuthorityList.PACKETRECEIVER.getList()) {
 				if (role.contains(assignedRole))
@@ -121,23 +130,25 @@ public class TokenValidator {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}
-		}else if (url.contains("bio")) {
+		} else if (url.contains("bio")) {
 			for (String assignedRole : APIAuthorityList.BIO.getList()) {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}
-		}
-		else if (url.contains("uploader")) {
+		} else if (url.contains("uploader")) {
 			for (String assignedRole : APIAuthorityList.PACKETUPLOADER.getList()) {
 				if (role.compareToIgnoreCase(assignedRole) == 0)
 					return true;
 			}
-		}else if (url.contains("packetgenerator")) {
+		} else if (url.contains("packetgenerator")) {
 			for (String assignedRole : APIAuthorityList.PACKETGENERATOR.getList()) {
 				if (role.contains(assignedRole))
 					return true;
 			}
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TokenValidator::validateAccess()::exit");
+	
 		return false;
 	}
 }

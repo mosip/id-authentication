@@ -84,21 +84,29 @@ public class TemplateGenerator {
 	public InputStream getTemplate(String templateTypeCode, Map<String, Object> attributes, String langCode)
 			throws IOException, ApisResourceAccessException {
 
-		ResponseWrapper<?> responseWrapper;
-		TemplateResponseDto template=null;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto template = new TemplateResponseDto();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"TemplateGenerator::getTemplate()::entry");
 
 		try {
 			List<String> pathSegments = new ArrayList<>();
 			pathSegments.add(langCode);
 			pathSegments.add(templateTypeCode);
-			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "","", ResponseWrapper.class);
-			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), TemplateResponseDto.class);
+
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.TEMPLATES, pathSegments, "", "",
+					ResponseWrapper.class);
+			template = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+					TemplateResponseDto.class);
+
 			InputStream fileTextStream = null;
 			if (template != null) {
 				InputStream stream = new ByteArrayInputStream(
 						template.getTemplates().iterator().next().getFileText().getBytes());
 				fileTextStream = getTemplateManager().merge(stream, attributes);
 			}
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"TemplateGenerator::getTemplate()::exit");
 			return fileTextStream;
 
 		} catch (TemplateResourceNotFoundException | TemplateParsingException | TemplateMethodInvocationException e) {

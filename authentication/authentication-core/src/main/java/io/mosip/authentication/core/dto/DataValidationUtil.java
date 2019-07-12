@@ -31,9 +31,13 @@ public final class DataValidationUtil {
 			IDDataValidationException exception = new IDDataValidationException();
 			exception.clearArgs();
 			errors.getAllErrors()
-					.forEach(error -> exception.addInfo(error.getCode(), error.getDefaultMessage(),
-							IdAuthenticationErrorConstants.getActionMessageForErrorCode(error.getCode()).orElse(null),
-							error.getArguments()));
+					.forEach(error -> {
+						String errorCode = error.getCode();
+						String errorMessage = error.getDefaultMessage();
+						String actionMesgsage = IdAuthenticationErrorConstants.getActionMessageForErrorCode(error.getCode()).orElse(null);
+						Object[] args = error.getArguments();
+						exception.addInfo(errorCode, errorMessage, actionMesgsage, args);
+					});
 			throw exception;
 		}
 	}

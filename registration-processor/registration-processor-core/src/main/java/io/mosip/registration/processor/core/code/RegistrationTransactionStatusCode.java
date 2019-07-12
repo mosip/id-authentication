@@ -27,6 +27,9 @@ public enum RegistrationTransactionStatusCode {
 	REJECTED,
 	
 	/** The processing. */
-	PROCESSING;
+	PROCESSING,
+
+	/** The reprocess failed*/
+	REPROCESS_FAILED
 	
 }
