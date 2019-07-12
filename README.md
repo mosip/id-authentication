@@ -34,3 +34,6 @@ Functional tests run against the codebase in `mosip-platform` is present in [mos
 ### Documentation
 Relevant documents to get started with MOSIP can be found in [mosip-docs](https://github.com/mosip/mosip-docs) repository. 
 In order to get started, please refer - [Getting-Started](https://github.com/mosip/mosip-docs/wiki/Getting-Started)
+
+### Infra
+Automated scripts to build and deploy MOSIP modules are present in [mosip-infra](https://github.com/mosip/mosip-infra) repository.
