@@ -352,17 +352,19 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
+		ColumnValue columnValue;
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto.getColumnName(),
-						filterDto.getType(), filterValueDto.getLanguageCode()).forEach(filterValue -> {
-							if (filterValue != null) {
-								ColumnValue columnValue = new ColumnValue();
-								columnValue.setFieldID(filterDto.getColumnName());
-								columnValue.setFieldValue(filterValue.toString());
-								columnValueList.add(columnValue);
-							}
-						});
+				List<BlacklistedWords> filterValues = masterDataFilterHelper.filterValues(BlacklistedWords.class,
+						filterDto, filterValueDto);
+				for (BlacklistedWords filterValue : filterValues) {
+					if (filterValue != null) {
+						columnValue = new ColumnValue();
+						columnValue.setFieldID(filterDto.getColumnName());
+						columnValue.setFieldValue(filterValue.toString());
+						columnValueList.add(columnValue);
+					}
+				}
 			}
 			filterResponseDto.setFilters(columnValueList);
 		}
