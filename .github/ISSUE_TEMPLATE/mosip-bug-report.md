@@ -2,8 +2,9 @@
 name: MOSIP Bug report
 about: Create a report to help us improve
 title: "[BUG]  <use verb instead of noun such as 'unable to register...'"
-labels: ''
-assignees: ''
+labels: bug, documentation, duplicate, invalid, wontfix
+assignees: anadi, ramesh-n, shravanpoorigali, hosurkrishnan, johnpsmindtree, gitapvr,
+  pjoshi751, ananda-mosip
 
 ---
 
