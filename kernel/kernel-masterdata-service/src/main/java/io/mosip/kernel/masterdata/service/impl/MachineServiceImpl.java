@@ -562,15 +562,14 @@ public class MachineServiceImpl implements MachineService {
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(Machine.class, filterDto.getColumnName(), filterDto.getType(),
-						filterValueDto.getLanguageCode()).forEach(filterValue -> {
-							if (filterValue != null) {
-								ColumnValue columnValue = new ColumnValue();
-								columnValue.setFieldID(filterDto.getColumnName());
-								columnValue.setFieldValue(filterValue.toString());
-								columnValueList.add(columnValue);
-							}
-						});
+				masterDataFilterHelper.filterValues(Machine.class, filterDto, filterValueDto).forEach(filterValue -> {
+					if (filterValue != null) {
+						ColumnValue columnValue = new ColumnValue();
+						columnValue.setFieldID(filterDto.getColumnName());
+						columnValue.setFieldValue(filterValue.toString());
+						columnValueList.add(columnValue);
+					}
+				});
 			}
 			filterResponseDto.setFilters(columnValueList);
 

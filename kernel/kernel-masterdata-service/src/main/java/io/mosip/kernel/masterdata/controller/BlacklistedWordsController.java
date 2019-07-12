@@ -222,9 +222,9 @@ public class BlacklistedWordsController {
 	@ResponseFilter
 	@PostMapping("/filtervalues")
 	public ResponseWrapper<FilterResponseDto> blackListedWordsFilterValues(
-			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(blacklistedWordsService.blackListedWordsFilterValues(request.getRequest()));
+		responseWrapper.setResponse(blacklistedWordsService.blackListedWordsFilterValues(requestWrapper.getRequest()));
 		return responseWrapper;
 	}
 }
