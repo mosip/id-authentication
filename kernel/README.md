@@ -7,6 +7,11 @@ Kernel module provides common functionality required by all the functional modul
  - File System connectors (CEPH & HDFS)
  - UIN Generator
  - Number ID generators (Pre-Reg ID, VID etc...)
+ - Virus scanner
+ - Transliteration library
+ - logger
+ - Notification (SMS and email)
+ - ...
 
 All MOSIP modules are dependent on Kernel components for common Java and REST APIs.
 
