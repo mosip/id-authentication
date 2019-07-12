@@ -15,6 +15,7 @@ Kernel module provides common functionality required by all the functional modul
 
 All MOSIP modules are dependent on Kernel components for common Java and REST APIs.
 
+[Kernel REST APIs](https://github.com/mosip/mosip-docs/wiki/Kernel-APIs)
 ### Kernel Dependencies
 
 https://github.com/mosip/mosip-docs/wiki/Kernel-Dependencies  
