@@ -355,9 +355,9 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		ColumnValue columnValue;
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<BlacklistedWords> filterValues = masterDataFilterHelper.filterValues(BlacklistedWords.class,
-						filterDto, filterValueDto);
-				for (BlacklistedWords filterValue : filterValues) {
+				List<String> filterValues = masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto,
+						filterValueDto);
+				for (String filterValue : filterValues) {
 					if (filterValue != null) {
 						columnValue = new ColumnValue();
 						columnValue.setFieldID(filterDto.getColumnName());
