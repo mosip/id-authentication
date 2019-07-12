@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.test.utils;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +15,13 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
@@ -73,8 +76,28 @@ public class ZoneUtilTest {
 
 	@Test
 	@WithUserDetails("zonal-admin")
-	public void testUserZone() {
+	public void testGetZonesFailure() {
 		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
+		List<Zone> result = zoneUtils.getUserZones();
+		assertNotNull(result);
+		assertNotEquals(0, result.size());
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	@WithUserDetails("zonal-admin")
+	public void testUserZoneFailure() {
+		doThrow(DataRetrievalFailureException.class).when(zoneRepository).findAllNonDeleted();
+		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
+		List<Zone> result = zoneUtils.getUserZones();
+		assertNotNull(result);
+		assertNotEquals(0, result.size());
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	@WithUserDetails("zonal-admin")
+	public void testUserZoneUserFailure() {
+		doThrow(DataRetrievalFailureException.class).when(zoneRepository).findAllNonDeleted();
 		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
 		List<Zone> result = zoneUtils.getUserZones();
 		assertNotNull(result);

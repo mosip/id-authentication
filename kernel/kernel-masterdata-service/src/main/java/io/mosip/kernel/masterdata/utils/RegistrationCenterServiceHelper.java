@@ -128,7 +128,7 @@ public class RegistrationCenterServiceHelper {
 	 * @return list of {@link Zone}
 	 */
 	public List<Zone> fetchUserZone(List<SearchFilter> zoneFilter) {
-		List<Zone> zones;
+		List<Zone> zones=null;
 		zones = zoneUtils.getUserZones();
 		if (zones != null && !zones.isEmpty())
 			zoneFilter.addAll(buildZoneFilter(zones));
