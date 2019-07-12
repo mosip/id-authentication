@@ -127,8 +127,8 @@ public class LocationSearchFilterIntegrationTest {
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(masterDataFilterHelper.filterValues(Mockito.eq(Location.class), Mockito.any(), Mockito.any(),
-				Mockito.any())).thenReturn(Arrays.asList());
+		when(masterDataFilterHelper.filterValues(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList());
 		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}

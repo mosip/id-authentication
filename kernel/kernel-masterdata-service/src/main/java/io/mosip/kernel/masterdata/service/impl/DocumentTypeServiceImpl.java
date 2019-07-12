@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -250,8 +249,8 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(DocumentType.class, filterDto.getColumnName(), filterDto.getType(),
-						filterValueDto.getLanguageCode()).forEach(filterValue -> {
+				masterDataFilterHelper.filterValues(DocumentType.class, filterDto, filterValueDto)
+						.forEach(filterValue -> {
 							if (filterValue != null) {
 								ColumnValue columnValue = new ColumnValue();
 								columnValue.setFieldID(filterDto.getColumnName());
@@ -279,7 +278,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		if (filterTypeValidator.validate(DocumentTypeExtnDto.class, dto.getFilters())) {
 			Page<DocumentType> page = masterdataSearchHelper.searchMasterdata(DocumentType.class, dto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
-				PageUtils.pageResponse(page);
+				pageDto = PageUtils.pageResponse(page);
 				doumentTypes = MapperUtils.mapAll(page.getContent(), DocumentTypeExtnDto.class);
 				pageDto.setData(doumentTypes);
 			}
