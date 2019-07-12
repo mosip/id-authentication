@@ -227,8 +227,6 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						registrationStatusDto
 								.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 
-						regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
-								LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description.getMessage());
 					} else {
 						String statusComment = idResponseDTO.getErrors() != null
 								? idResponseDTO.getErrors().get(0).getMessage()
@@ -270,6 +268,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				}
 
 			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description.getMessage());
 			registrationStatusDto.setUpdatedBy(UINConstants.USER);
 
 		} catch (FSAdapterException e) {

@@ -15,10 +15,7 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.processor.abis.handler.constant.AbisHandlerStageConstant;
 import io.mosip.registration.processor.abis.handler.exception.AbisHandlerException;
 import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.abstractverticle.*;
 import io.mosip.registration.processor.core.code.AbisStatusCode;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -50,7 +47,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * @author M1048358 Alok
  */
 @Service
-public class AbisHandlerStage extends MosipVerticleManager {
+public class AbisHandlerStage extends MosipVerticleAPIManager {
 
 	/** The cluster manager url. */
 	@Value("${vertx.cluster.configuration}")
@@ -67,6 +64,10 @@ public class AbisHandlerStage extends MosipVerticleManager {
 	/** The target FPIR. */
 	@Value("${registration.processor.abis.targetFPIR}")
 	private Integer targetFPIR;
+	
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisHandlerStage.class);
@@ -85,14 +86,28 @@ public class AbisHandlerStage extends MosipVerticleManager {
 
 	@Autowired
 	private Utilities utility;
+	
+	/** The mosip event bus. */
+	MosipEventBus mosipEventBus = null;
+	
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
 
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.ABIS_HANDLER_BUS_IN,
 				MessageBusAddress.ABIS_HANDLER_BUS_OUT);
+	}
+	
+	@Override
+	public void start(){
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.ABIS_HANDLER_BUS_IN,
+				MessageBusAddress.ABIS_HANDLER_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	/*

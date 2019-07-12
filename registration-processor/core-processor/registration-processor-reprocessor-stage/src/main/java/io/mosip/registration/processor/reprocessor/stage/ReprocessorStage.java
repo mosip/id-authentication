@@ -12,7 +12,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -49,7 +50,7 @@ import io.vertx.core.json.JsonObject;
  * @since 0.10.0
  *
  */
-public class ReprocessorStage extends MosipVerticleManager {
+public class ReprocessorStage extends MosipVerticleAPIManager {
 
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(ReprocessorStage.class);
 
@@ -89,6 +90,14 @@ public class ReprocessorStage extends MosipVerticleManager {
 
 	/** The registration id. */
 	private String registrationId = "";
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
+	/** The port. */
+	@Value("${server.port}")
+	private String port;
 
 	/**
 	 * Deploy verticle.
@@ -180,6 +189,12 @@ public class ReprocessorStage extends MosipVerticleManager {
 		this.send(this.mosipEventBus, toAddress, message);
 	}
 
+	@Override
+	public void start() {
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), null, null));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -208,11 +223,11 @@ public class ReprocessorStage extends MosipVerticleManager {
 					dtolist.forEach(dto -> {
 						this.registrationId = dto.getRegistrationId();
 						if (reprocessCount.equals(dto.getReProcessRetryCount())) {
-							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+							dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS_FAILED.toString());
 							dto.setLatestTransactionTypeCode(
 									RegistrationTransactionTypeCode.PACKET_REPROCESS.toString());
 							dto.setStatusComment("Reprocess count has exceeded the configured attempts");
-							dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
+							dto.setStatusCode(RegistrationStatusCode.REPROCESS_FAILED.toString());
 							object.setRid(registrationId);
 							object.setIsValid(false);
 							object.setReg_type(RegistrationType.valueOf(dto.getRegistrationType()));
