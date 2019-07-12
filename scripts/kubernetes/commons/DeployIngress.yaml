@@ -206,6 +206,10 @@ spec:
         backend:
           serviceName: registration-processor-biometric-authentication-stage
           servicePort: 8020
+      - path: /registrationprocessor/v1/camelbridge
+        backend:
+          serviceName: registration-processor-common-camel-bridge
+          servicePort: 8022
       - path: /config
         backend:
           serviceName: kernel-config-server
