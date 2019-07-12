@@ -6,7 +6,7 @@ All MOSIP modules are dependent on Kernel modules for common Java and REST APIs.
 
 ### Kernel Dependencies
 
-https://github.com/mosip/mosip/wiki/Kernel-Dependencies
+https://github.com/mosip/mosip-docs/wiki/Kernel-Dependencies
 
 
 **MOSIP Modules Components**
