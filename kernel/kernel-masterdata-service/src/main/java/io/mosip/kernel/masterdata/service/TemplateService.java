@@ -6,7 +6,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -108,5 +111,14 @@ public interface TemplateService {
 	 * @return {@link PageResponseDto}the page response dto
 	 */
 	public PageResponseDto<TemplateExtnDto> searchTemplates(SearchDto searchDto);
+	
+	
+	/**
+	 * Filter templates.
+	 *
+	 * @param filterDto the filter dto
+	 * @return {@link PageResponseDto}the page response dto
+	 */
+	public FilterResponseDto filterTemplates(FilterValueDto filterValueDto);
 
 }
