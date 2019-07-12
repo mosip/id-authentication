@@ -57,14 +57,19 @@ import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.Template;
+import io.mosip.kernel.masterdata.entity.Zone;
+import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
+import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
+import io.mosip.kernel.masterdata.repository.ZoneRepository;
+import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
@@ -111,9 +116,21 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
-	
+
 	@MockBean
 	private TemplateRepository templateRepository;
+
+	@MockBean
+	private ZoneRepository zoneRepository;
+
+	@MockBean
+	private ZoneUserRepository zoneUserRepository;
+
+	@MockBean
+	private LocationRepository locationRepository;
+
+	private List<Zone> zones;
+	private ZoneUser zoneUser;
 
 	private RegistrationCenterType centerTypeEntity;
 	private RegistrationCenter centerEntity;
@@ -192,12 +209,15 @@ public class MasterdataSearchIntegrationTest {
 		centerEntity = new RegistrationCenter();
 		centerEntity.setCenterTypeCode("10001");
 		centerEntity.setId("10011");
-		centerEntity.setLocationCode("100011");
+		centerEntity.setLocationCode("LOC01");
 		centerEntity.setName("Registration Center Name");
 		centerEntity.setAddressLine1("address line1");
 		centerEntity.setAddressLine2("address line2");
 		centerEntity.setAddressLine3("address line3");
-		
+		centerEntity.setHolidayLocationCode("LOC03");
+		centerEntity.setZoneCode("ZONE1");
+		centerEntity.setIsActive(true);
+		centerEntity.setLangCode("eng");
 
 		locationRegionEntity = new Location("LOC01", "regionname", (short) 1, "region", "LOC00", "eng", null);
 		locationProvinceEntity = new Location("LOC02", "provincename", (short) 2, "province", "LOC01", "eng", null);
@@ -237,37 +257,53 @@ public class MasterdataSearchIntegrationTest {
 		deviceSearchDto.setSort(Arrays.asList());
 		deviceSearchDto.setPagination(pagination);
 		deviceRequestDto.setRequest(deviceSearchDto);
-		
-		templateRequestDto=new RequestWrapper<>();
-		templateSearchFilter=new SearchFilter();
+
+		templateRequestDto = new RequestWrapper<>();
+		templateSearchFilter = new SearchFilter();
 		templateSearchFilter.setColumnName("moduleId");
 		templateSearchFilter.setType("equals");
 		templateSearchFilter.setValue("10004");
-		templateSearchDto= new SearchDto();
+		templateSearchDto = new SearchDto();
 		templateSearchDto.setFilters(Arrays.asList(templateSearchFilter));
 		templateSearchDto.setLanguageCode("eng");
 		templateSearchDto.setPagination(pagination);
 		templateRequestDto.setRequest(templateSearchDto);
 
-		when(filterTypeValidator.validate(ArgumentMatchers.<Class<LocationExtnDto>>any(), Mockito.anyList()))
+		when(filterTypeValidator.validate(Mockito.eq(LocationExtnDto.class), Mockito.anyList())).thenReturn(true);
+		when(filterTypeValidator.validate(Mockito.eq(RegistrationCenterTypeExtnDto.class), Mockito.anyList()))
 				.thenReturn(true);
-		when(filterTypeValidator.validate(ArgumentMatchers.<Class<RegistrationCenterTypeExtnDto>>any(),
-				Mockito.anyList())).thenReturn(true);
-		when(filterTypeValidator.validate(ArgumentMatchers.<Class<RegistrationCenterExtnDto>>any(), Mockito.anyList()))
+		when(filterTypeValidator.validate(Mockito.eq(RegistrationCenterExtnDto.class), Mockito.anyList()))
 				.thenReturn(true);
 		mockFilterValidator(TemplateExtnDto.class);
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenter>>any(), Mockito.any(),
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(RegistrationCenter.class), Mockito.any(),
 				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(centerEntity), PageRequest.of(0, 10), 1));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
-				Mockito.any(), Mockito.any()))
-						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
-		//when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Template>>any(), Mockito.any(), Mockito.anyList())).thenReturn(new PageImpl<>(Arrays.asList(templ), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(RegistrationCenterType.class), Mockito.any(),
+				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
+		// when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Template>>any(),
+		// Mockito.any(), Mockito.anyList())).thenReturn(new
+		// PageImpl<>(Arrays.asList(templ), PageRequest.of(0, 10), 1));
 		when(registrationCenterUserRepository.countCenterUsers(Mockito.any())).thenReturn(10l);
 		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any())).thenReturn(10l);
 		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any())).thenReturn(10l);
-		
+
 		doReturn(new RegistrationCenterType("10001", "ENG", "Center Name", "Description", null))
 				.when(registrationCenterTypeRepository).findByCodeAndLangCode(Mockito.any(), Mockito.any());
+		doReturn(Arrays.asList(locationCityEntity, locationLaaEntity, locationPostalCodeEntity, locationProvinceEntity,
+				locationRegionEntity)).when(locationRepository).findAllNonDeleted();
+		zoneUser = new ZoneUser("ZONE1", "zonal-admin", "eng");
+		zones = new ArrayList<>();
+		Zone zone1 = new Zone("ZONE1", "eng", "ZONE1 Name", (short) 1, "ZONENAME", null, "ZONE1");
+		Zone zone2 = new Zone("ZONE2", "eng", "ZONE1 Name", (short) 1, "ZONENAME", "ZONE1", "ZONE1/ZONE2");
+		Zone zone3 = new Zone("ZONE3", "eng", "ZONE1 Name", (short) 1, "ZONENAME", "ZONE2", "ZONE1/ZONE2/ZONE3");
+		Zone zone4 = new Zone("ZONE4", "eng", "ZONE1 Name", (short) 1, "ZONENAME", "ZONE3", "ZONE1/ZONE2/ZONE3/ZONE4");
+		zones.add(zone1);
+		zones.add(zone2);
+		zones.add(zone3);
+		zones.add(zone4);
+		when(zoneUserRepository.findByUserIdNonDeleted(Mockito.any())).thenReturn(Arrays.asList(zoneUser));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Zone.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(zone1), PageRequest.of(0, 10), 1));
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
 
 	}
 
@@ -278,7 +314,6 @@ public class MasterdataSearchIntegrationTest {
 		documentTypes.add(documentType);
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithNameSuccess() throws Exception {
@@ -289,7 +324,6 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithCenterTypeNameSuccess() throws Exception {
@@ -300,13 +334,12 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithCityNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
-				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(locationCityEntity), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(locationCityEntity), PageRequest.of(0, 10), 1));
 
 		searchDto.setFilters(Arrays.asList(filter3));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -315,14 +348,12 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithPostalCodeNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
-				Mockito.any()))
-						.thenReturn(new PageImpl<>(Arrays.asList(locationPostalCodeEntity), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(locationPostalCodeEntity), PageRequest.of(0, 10), 1));
 
 		searchDto.setFilters(Arrays.asList(filter4));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -331,14 +362,12 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithRegionNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
-				Mockito.any()))
-						.thenReturn(new PageImpl<>(Arrays.asList(locationRegionEntity), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(locationRegionEntity), PageRequest.of(0, 10), 1));
 
 		searchDto.setFilters(Arrays.asList(filter5));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -347,13 +376,12 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithLAANameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
-				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(locationLaaEntity), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(locationLaaEntity), PageRequest.of(0, 10), 1));
 
 		searchDto.setFilters(Arrays.asList(filter6));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -362,14 +390,12 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchRegCenterWithProvinceNameSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
-				Mockito.any()))
-						.thenReturn(new PageImpl<>(Arrays.asList(locationProvinceEntity), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(locationProvinceEntity), PageRequest.of(0, 10), 1));
 
 		searchDto.setFilters(Arrays.asList(filter7));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -378,17 +404,15 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCenterFilterTypeSuccess() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
-				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
 
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
-				Mockito.any(), Mockito.any()))
-						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 0));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(RegistrationCenterType.class), Mockito.any(),
+				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 0));
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
@@ -400,8 +424,8 @@ public class MasterdataSearchIntegrationTest {
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCityName() throws Exception {
 		when(locationService.getChildList(Mockito.anyString())).thenReturn(Arrays.asList("10001"));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<Location>>any(), Mockito.any(),
-				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
 
 		searchDto.setFilters(Arrays.asList(filter3));
 		String validRequest = objectMapper.writeValueAsString(request);
@@ -410,13 +434,11 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
-	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCenterName() throws Exception {
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
-				Mockito.any(), Mockito.any()))
-						.thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(RegistrationCenterType.class), Mockito.any(),
+				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
@@ -427,8 +449,8 @@ public class MasterdataSearchIntegrationTest {
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchInvalidCenterTypeName() throws Exception {
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<RegistrationCenterType>>any(),
-				Mockito.any(), Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(RegistrationCenterType.class), Mockito.any(),
+				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 0));
 		searchDto.setFilters(Arrays.asList(filter2));
 		String validRequest = objectMapper.writeValueAsString(request);
 		mockMvc.perform(
@@ -588,6 +610,7 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchMachineByMachineTypeNameTest() throws Exception {
@@ -754,6 +777,7 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isOk());
 	}
 
+	@Ignore
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchDeviceByDeviceTypeNameTest() throws Exception {
@@ -983,8 +1007,8 @@ public class MasterdataSearchIntegrationTest {
 
 		String contentJson = objectMapper.writeValueAsString(requestDto);
 		Page<DocumentType> page = new PageImpl<>(documentTypes, PageRequest.of(0, 10), 1);
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<DocumentType>>any(),
-				Mockito.any(SearchDto.class), Mockito.any())).thenReturn(page);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DocumentType.class), Mockito.any(SearchDto.class),
+				Mockito.any())).thenReturn(page);
 		mockMvc.perform(post("/documenttypes/search").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isOk());
 	}
@@ -1025,17 +1049,16 @@ public class MasterdataSearchIntegrationTest {
 		String contentJson = objectMapper.writeValueAsString(requestDto);
 		Page<DocumentType> page = new PageImpl<>(documentTypes, PageRequest.of(0, 10), 1);
 
-		when(filterTypeValidator.validate(ArgumentMatchers.<Class<DocumentTypeExtnDto>>any(), Mockito.anyList()))
+		when(filterTypeValidator.validate(Mockito.eq(DocumentTypeExtnDto.class), Mockito.anyList()))
 				.thenThrow(new ValidationException(errors));
-		when(masterdataSearchHelper.searchMasterdata(ArgumentMatchers.<Class<DocumentType>>any(),
-				Mockito.any(SearchDto.class), Mockito.any())).thenReturn(page);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(DocumentType.class), Mockito.any(SearchDto.class),
+				Mockito.any())).thenReturn(page);
 		mockMvc.perform(post("/documenttypes/search").contentType(MediaType.APPLICATION_JSON).content(contentJson))
 				.andExpect(status().isInternalServerError());
 	}
-	
-	public<T, clazz> void mockFilterValidator(Class<T> clazz) {
-		when(filterTypeValidator.validate(ArgumentMatchers.<Class<clazz>>any(), Mockito.anyList()))
-		.thenReturn(true);
+
+	public <T, clazz> void mockFilterValidator(Class<T> clazz) {
+		when(filterTypeValidator.validate(Mockito.eq(clazz), Mockito.anyList())).thenReturn(true);
 	}
 
 	@Test
@@ -1055,7 +1078,7 @@ public class MasterdataSearchIntegrationTest {
 		searchDto.setSort(Arrays.asList());
 		request.setRequest(searchDto);
 		String json = objectMapper.writeValueAsString(request);
-		MachineType machineTypes=new MachineType();
+		MachineType machineTypes = new MachineType();
 		machineTypes.setCode("1001");
 		machineTypes.setName("Dekstop");
 		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(machineTypes));
