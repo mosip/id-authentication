@@ -28,8 +28,8 @@ public enum RegistrationCenterErrorCode {
 	DATA_TO_BE_VALIDATED_WITH_NOT_FOUND("KER-MSD-XXX", "start/end time Data not configured in database"),
 	NO_LOCATION_DATA_AVAILABLE("KER-MSD-320","No Location found for value %s"),
 	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s"),
-	NO_ZONE_AVAILABLE("KER-MSD-XXX","No Zone found for value %s"),
-	USER_ZONE_NOT_FOUND("KER-MSD-XXX","User's zone not found");
+	NO_ZONE_AVAILABLE("KER-MSD-340","Zone %s doesn't exist"),
+	USER_ZONE_NOT_FOUND("KER-MSD-341","No zone assigned to the user");
 
 	private final String errorCode;
 	private final String errorMessage;
