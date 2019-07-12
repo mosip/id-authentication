@@ -619,6 +619,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	}
 
 	private List<SyncJobDef> getJobs() {
+
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Fetching sync_job_defs from db");
 		return jobConfigDAO.getAll();
 	}
 
@@ -637,8 +640,13 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 
 	private void updateJobs(final List<SyncJobDef> syncJobDefs) {
 
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating Jobs into DB");
+
 		jobConfigDAO.updateAll(syncJobDefs);
 
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Updating Jobs in sync active job map");
 		/* Refresh The sync job map and sync active job map as we have updated jobs */
 		setSyncJobMap(syncJobDefs);
 
@@ -732,12 +740,18 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 */
 	@Override
 	public ResponseDTO executeAllJobs() {
+
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Started execute all jobs");
 		ResponseDTO responseDTO = new ResponseDTO();
 		BaseJob.successJob.clear();
 		BaseJob.clearCompletedJobMap();
 		List<String> failureJobs = new LinkedList<>();
 
 		for (Entry<String, SyncJobDef> syncJob : syncActiveJobMap.entrySet()) {
+			LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Validating job to execute : " + syncJob.getKey());
+
 			if ((!offlineJobs.contains(syncJob.getKey()) && !unTaggedJobs.contains(syncJob.getKey()))
 					&& (isNull(syncJob.getValue().getParentSyncJobId()) && !isNull(syncJob.getValue().getApiName()))) {
 
@@ -760,6 +774,8 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		if (!isEmpty(failureJobs)) {
 			setErrorResponse(responseDTO, failureJobs.toString().replace("[", "").replace("]", ""), null);
 		}
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "completed execute all jobs");
 
 		return responseDTO;
 
@@ -772,6 +788,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 */
 	@Override
 	public ResponseDTO isRestart() {
+
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Checking for is to be re-start started");
+
 		ResponseDTO responseDTO = new ResponseDTO();
 		/* Fetch completed job map */
 		Map<String, String> completedSyncJobMap = BaseJob.getCompletedJobMap();
@@ -791,12 +811,16 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 						successJobAttribute);
 			}
 		}
-
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Checking for is to be re-start completed");
 		return responseDTO;
 	}
 
 	@Override
 	public ResponseDTO getRestartTime() {
+
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Getting Re-start time started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
@@ -810,6 +834,9 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 				setSuccessResponse(responseDTO, String.valueOf((Duration.between(last, next).toMillis()) / 5), null);
 			}
 		}
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Getting Re-start time completed");
+
 		return responseDTO;
 	}
 
@@ -820,6 +847,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 	 * @throws Exception
 	 */
 	private SchedulerFactoryBean getSchedulerFactoryBean(String count) throws Exception {
+
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Initializing Scheduler Factory Bean started");
+
 		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
 		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
 		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
@@ -827,6 +858,10 @@ public class JobConfigurationServiceImpl extends BaseService implements JobConfi
 		quartzProperties.put("org.quartz.threadPool.threadCount", count);
 		schFactoryBean.setQuartzProperties(quartzProperties);
 		schFactoryBean.afterPropertiesSet();
+
+		LOGGER.info(LoggerConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Initializing Scheduler Factory Bean completed");
+
 		return schFactoryBean;
 	}
 
