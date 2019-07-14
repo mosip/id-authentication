@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,9 +22,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TitleService;
@@ -39,13 +36,11 @@ import io.swagger.annotations.ApiResponses;
  * Controller class for fetching titles from master data
  * 
  * @author Sidhant Agarwal
- * @author Srinivasan
  * @since 1.0.0
  *
  */
 @RestController
 @Api(tags = { "Title" })
-@RequestMapping("/title")
 public class TitleController {
 
 	@Autowired
@@ -58,7 +53,7 @@ public class TitleController {
 	 */
 	@PreAuthorize("hasAnyRole('ID_AUTHENTICATION','ZONAL_ADMIN','ZONAL_APPROVER')")
 	@ResponseFilter
-	@GetMapping
+	@GetMapping(value = "/title")
 	public ResponseWrapper<TitleResponseDto> getAllTitles() {
 		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.getAllTitles());
@@ -74,7 +69,7 @@ public class TitleController {
 	 * @return list of all titles for the particular language code
 	 */
 	@ResponseFilter
-	@GetMapping(value = "/{langcode}")
+	@GetMapping(value = "/title/{langcode}")
 	public ResponseWrapper<TitleResponseDto> getTitlesBylangCode(@PathVariable("langcode") String langCode) {
 
 		ResponseWrapper<TitleResponseDto> responseWrapper = new ResponseWrapper<>();
@@ -90,7 +85,7 @@ public class TitleController {
 	 * @return primary key of entered row
 	 */
 	@ResponseFilter
-	@PostMapping
+	@PostMapping("/title")
 	public ResponseWrapper<CodeAndLanguageCodeID> saveTitle(@Valid @RequestBody RequestWrapper<TitleDto> title) {
 
 		ResponseWrapper<CodeAndLanguageCodeID> responseWrapper = new ResponseWrapper<>();
@@ -106,7 +101,7 @@ public class TitleController {
 	 * @return composite primary key of updated row
 	 */
 	@ResponseFilter
-	@PutMapping
+	@PutMapping("/title")
 	@ApiOperation(value = "Service to update title", notes = "Update title and return composite id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully updated"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -128,7 +123,7 @@ public class TitleController {
 	 * @return composite key of deleted row of data
 	 */
 	@ResponseFilter
-	@DeleteMapping("/{code}")
+	@DeleteMapping("/title/{code}")
 	@ApiOperation(value = "Service to delete title", notes = "Delete title and return composite id")
 	@ApiResponses({ @ApiResponse(code = 200, message = "When title successfully deleted"),
 			@ApiResponse(code = 400, message = "When Request body passed  is null or invalid"),
@@ -157,7 +152,7 @@ public class TitleController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping("/all")
+	@GetMapping("/title/all")
 	@ApiOperation(value = "Retrieve all the title with additional metadata", notes = "Retrieve all the title with the additional metadata")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
 			@ApiResponse(code = 500, message = "Error occured while retrieving title") })
@@ -180,7 +175,7 @@ public class TitleController {
 	 */
 	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@PostMapping("/search")
+	@PostMapping("title/search")
 	@ApiOperation(value = "Search title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of titles"),
 			@ApiResponse(code = 500, message = "Error occured while searching title") })
@@ -188,18 +183,6 @@ public class TitleController {
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.searchTitles(request.getRequest()));
-		return responseWrapper;
-	}
-	
-	@ResponseFilter
-	@PostMapping("/filter")
-	@ApiOperation(value = "filter title details")
-	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
-			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
-	public ResponseWrapper<FilterResponseDto> filterTemplates(
-			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
-		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
-		responseWrapper.setResponse(titleService.filterTitles(request.getRequest()));
 		return responseWrapper;
 	}
 }

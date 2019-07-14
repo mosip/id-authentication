@@ -5,9 +5,7 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
-import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
-import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -18,7 +16,6 @@ import io.mosip.kernel.masterdata.exception.RequestException;
  * Service class to fetch titles from master db
  * 
  * @author Sidhant Agarwal
- * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -114,15 +111,5 @@ public interface TitleService {
 	 * @return {@link PageResponseDto} the page response dto
 	 */
 	PageResponseDto<TitleExtnDto> searchTitles(SearchDto searchDto);
-	
-	/**
-	 * Filter titles.
-	 *
-	 * @param filterValueDto the filter value dto
-	 * @return the filter response dto
-	 */
-	FilterResponseDto filterTitles(FilterValueDto filterValueDto);
-	
-	
 
 }
