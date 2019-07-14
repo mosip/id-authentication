@@ -59,7 +59,6 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.Title;
-import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
@@ -217,10 +216,8 @@ public class MasterdataSearchIntegrationTest {
 		template.setModuleId("10004");
 		template.setLangCode("eng");
 		title = new Title();
-		CodeAndLanguageCodeID codeAndLangCode = new CodeAndLanguageCodeID();
-		codeAndLangCode.setCode("MIR");
-		codeAndLangCode.setLangCode("eng");
-		title.setId(codeAndLangCode);
+		title.setCode("MIR");
+		title.setLangCode("eng");
 		title.setTitleDescription("Male Title");
 		title.setTitleName("Mr");
 
@@ -1066,10 +1063,6 @@ public class MasterdataSearchIntegrationTest {
 				.andExpect(status().isInternalServerError());
 	}
 
-	public <T, clazz> void mockFilterValidator(Class<T> clazz) {
-		when(filterTypeValidator.validate(ArgumentMatchers.<Class<clazz>>any(), Mockito.anyList())).thenReturn(true);
-	}
-
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchMachineTypesTest() throws Exception {
@@ -1112,5 +1105,49 @@ public class MasterdataSearchIntegrationTest {
 		String validRequest = objectMapper.writeValueAsString(titleRequestDto);
 		mockMvc.perform(post("/title/search").contentType(MediaType.APPLICATION_JSON).content(validRequest))
 				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void filterTemplate() throws Exception {
+		RequestWrapper<FilterValueDto> request = new RequestWrapper<>();
+		FilterValueDto filterValueDto = new FilterValueDto();
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("moduleId");
+		filterDto.setText("10004");
+		filterDto.setType("all");
+		filterValueDto.setLanguageCode("eng");
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		request.setRequest(filterValueDto);
+		Template temp = new Template();
+		temp.setModuleId("10004");
+		when(masterDataFilterHelper.filterValues(ArgumentMatchers.<Class<Template>>any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(template));
+		String validRequest = objectMapper.writeValueAsString(request);
+		mockMvc.perform(post("/templates/filter").contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void filterTitle() throws Exception {
+		RequestWrapper<FilterValueDto> request = new RequestWrapper<>();
+		FilterValueDto filterValueDto = new FilterValueDto();
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("code");
+		filterDto.setText("MIR");
+		filterDto.setType("all");
+		filterValueDto.setLanguageCode("eng");
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		request.setRequest(filterValueDto);
+		when(masterDataFilterHelper.filterValues(ArgumentMatchers.<Class<Title>>any(), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList(template));
+		String validRequest = objectMapper.writeValueAsString(request);
+		mockMvc.perform(post("/title/filter").contentType(MediaType.APPLICATION_JSON).content(validRequest))
+				.andExpect(status().isOk());
+	}
+
+	public <T, clazz> void mockFilterValidator(Class<T> clazz) {
+		when(filterTypeValidator.validate(ArgumentMatchers.<Class<clazz>>any(), Mockito.anyList())).thenReturn(true);
 	}
 }
