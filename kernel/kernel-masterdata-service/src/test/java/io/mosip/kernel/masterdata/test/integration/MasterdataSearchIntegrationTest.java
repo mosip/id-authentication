@@ -1119,4 +1119,23 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/machinetypes/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
+	
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void filterMachineTypeTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("name");
+		filterDto.setType("all");
+		filterDto.setText("Dekk");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList("name", "Dekstop"));
+		mockMvc.perform(post("/machinetypes/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
 }
