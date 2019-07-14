@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
+import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.LocationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
@@ -43,6 +44,7 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.Device;
@@ -536,6 +538,7 @@ public class MasterdataSearchIntegrationTest {
 		Machine machine = new Machine();
 		machine.setId("1001");
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
+		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -555,6 +558,7 @@ public class MasterdataSearchIntegrationTest {
 		Machine machine = new Machine();
 		machine.setId("1001");
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
+		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		when(machineRepository.findMappedMachineId()).thenReturn(machineIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
@@ -575,6 +579,7 @@ public class MasterdataSearchIntegrationTest {
 		machineIdList.add("1001");
 		Machine machine = new Machine();
 		machine.setId("1001");
+		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList());
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
@@ -594,6 +599,7 @@ public class MasterdataSearchIntegrationTest {
 		machineIdList.add("1001");
 		Machine machine = new Machine();
 		machine.setId("1001");
+		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList(machine));
 		when(machineRepository.findNotMappedMachineId()).thenReturn(machineIdList);
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
@@ -614,6 +620,7 @@ public class MasterdataSearchIntegrationTest {
 		machineIdList.add("1001");
 		Machine machine = new Machine();
 		machine.setId("1001");
+		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		Page<Machine> pageContentData = new PageImpl<>(Arrays.asList());
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Machine.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
@@ -647,6 +654,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(type));
 		MachineSpecification specification = new MachineSpecification();
 		specification.setId("1001");
+		when(filterTypeValidator.validate(Mockito.eq(MachineSearchDto.class), Mockito.anyList())).thenReturn(true);
 		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
@@ -667,6 +675,7 @@ public class MasterdataSearchIntegrationTest {
 		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList());
 		MachineSpecification specification = new MachineSpecification();
 		specification.setId("1001");
+		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
 		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList(specification));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
 				.thenReturn(pageContentData);
@@ -686,6 +695,7 @@ public class MasterdataSearchIntegrationTest {
 		String json = objectMapper.writeValueAsString(machineRequestDto);
 		MachineType type = new MachineType();
 		type.setCode("machineCode");
+		when(filterTypeValidator.validate(Mockito.eq(MachineTypeDto.class), Mockito.anyList())).thenReturn(true);
 		Page<MachineType> pageContentData = new PageImpl<>(Arrays.asList(type));
 		Page<MachineSpecification> pageContentSpecificationData = new PageImpl<>(Arrays.asList());
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(MachineType.class), Mockito.any(), Mockito.any()))
@@ -695,7 +705,7 @@ public class MasterdataSearchIntegrationTest {
 		mockMvc.perform(post("/machines/search").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
-
+	
 	@Test
 	@WithUserDetails("zonal-admin")
 	public void searchDeviceTest() throws Exception {
