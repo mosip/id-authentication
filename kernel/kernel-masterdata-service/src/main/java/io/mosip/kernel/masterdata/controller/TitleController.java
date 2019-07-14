@@ -173,8 +173,9 @@ public class TitleController {
 	 *            the request
 	 * @return response wrapper
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping("/search")
+	@PostMapping("title/search")
 	@ApiOperation(value = "Search title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of titles"),
 			@ApiResponse(code = 500, message = "Error occured while searching title") })

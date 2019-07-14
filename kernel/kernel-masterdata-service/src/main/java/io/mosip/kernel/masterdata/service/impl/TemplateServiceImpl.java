@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -20,7 +21,11 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -31,9 +36,11 @@ import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
@@ -59,7 +66,13 @@ public class TemplateServiceImpl implements TemplateService {
 	private FilterTypeValidator filterTypeValidator;
 	
 	@Autowired
+	private FilterColumnValidator filterColumnValidator;
+	
+	@Autowired
 	private MasterdataSearchHelper masterDataSearchHelper;
+	
+	@Autowired
+	private MasterDataFilterHelper  masterDataFilterHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -296,4 +309,29 @@ public class TemplateServiceImpl implements TemplateService {
 		return pageDto;
 		
 	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#filterTemplates(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	 */
+	@Override
+	public FilterResponseDto filterTemplates(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+	       if(filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+	    	  filterValueDto.getFilters().stream().forEach(filter ->{
+	    		  masterDataFilterHelper.filterValues(Template.class, filter.getColumnName(), filter.getType(), filterValueDto.getLanguageCode()).forEach(filteredValue ->{
+	    			  if(filteredValue!=null) {
+	    				  ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filter.getColumnName());
+							columnValue.setFieldValue(filteredValue.toString());
+							columnValueList.add(columnValue);
+	    			  }
+	    		  });
+	    	  });
+	    	  filterResponseDto.setFilters(columnValueList);
+	       }
+		return filterResponseDto;
+	}
+
+	
 }
