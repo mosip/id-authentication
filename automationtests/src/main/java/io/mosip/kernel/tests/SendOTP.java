@@ -75,7 +75,7 @@ public class SendOTP extends BaseTestCase implements ITest{
 	 * Then Response is expected as 200 and other responses as per inputs passed in the request
 	 */
 	@Test(dataProvider="SendOTP")
-	public void sendOtp(String testcaseName) throws FileNotFoundException, IOException, ParseException
+	public void sendOTP(String testcaseName) throws FileNotFoundException, IOException, ParseException
     {
 		// getting request and expected response jsondata from json files.
 		JSONObject objectDataArray[] = new TestCaseReader().readRequestResponseJson(moduleName, apiName, testcaseName);

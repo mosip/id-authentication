@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ public class LocationUtils {
 	ThreadLocal<List<Location>> list;
 
 	public List<Location> getDescedants(List<Location> locations, Location location) {
+		Objects.requireNonNull(locations);
 		initialize(locations);
 		list.get().add(location);
 		getImmdChild(locations, location);
