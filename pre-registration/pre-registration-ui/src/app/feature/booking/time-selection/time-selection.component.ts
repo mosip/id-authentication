@@ -15,11 +15,12 @@ import * as appConstants from '../../../app.constants';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
 import { BookingDeactivateGuardService } from 'src/app/shared/can-deactivate-guard/booking-guard/booking-deactivate-guard.service';
+import LanguageFactory from 'src/assets/i18n';
 
 @Component({
-  selector: 'app-time-selection',
-  templateUrl: './time-selection.component.html',
-  styleUrls: ['./time-selection.component.css']
+  selector: "app-time-selection",
+  templateUrl: "./time-selection.component.html",
+  styleUrls: ["./time-selection.component.css"]
 })
 export class TimeSelectionComponent extends BookingDeactivateGuardService implements OnInit, OnDestroy {
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
@@ -34,11 +35,11 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
   availabilityData = [];
   days: number;
   disableAddButton = false;
-  activeTab = 'morning';
+  activeTab = "morning";
   bookingDataList = [];
   temp: NameList[];
   registrationCenterLunchTime = [];
-  secondaryLang = localStorage.getItem('secondaryLangCode');
+  secondaryLang = localStorage.getItem("secondaryLangCode");
   secondaryLanguagelabels: any;
   errorlabels: any;
   showMorning: boolean;
@@ -46,8 +47,8 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
   disableContinueButton = false;
   spinner = true;
   canDeactivateFlag = true;
-
   DAYS: any;
+  primaryLangCode = localStorage.getItem("langCode");
   constructor(
     private bookingService: BookingService,
     private dialog: MatDialog,
@@ -59,37 +60,42 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
   ) {
     super();
     smoothscroll.polyfill();
-    this.translate.use(localStorage.getItem('langCode'));
+    this.translate.use(this.primaryLangCode);
   }
 
   ngOnInit() {
     this.names = this.bookingService.getNameList();
+    console.log("coming form time selection component", this.names);
     this.temp = this.bookingService.getNameList();
-    this.days = this.configService.getConfigByKey(appConstants.CONFIG_KEYS.preregistration_availability_noOfDays);
+    console.log("coming form time selection componenet", this.temp);
+    this.days = this.configService.getConfigByKey(
+      appConstants.CONFIG_KEYS.preregistration_availability_noOfDays
+    );
     if (this.temp[0]) {
-      this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(':');
+      this.registrationCenterLunchTime = this.temp[0].registrationCenter.lunchEndTime.split(
+        ":"
+      );
     }
     this.bookingService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     this.getSlotsforCenter(this.registrationCenter);
-
-    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      this.secondaryLanguagelabels = response['timeSelection'].booking;
-      this.errorlabels = response['error'];
-      this.DAYS = response['DAYS'];
-    });
+    let factory = new LanguageFactory(this.primaryLangCode);
+    let response = factory.getCurrentlanguage();
+    this.secondaryLanguagelabels = response["timeSelection"].booking;
+    this.errorlabels = response["error"];
+    this.DAYS = response["DAYS"];
   }
 
   public scrollRight(): void {
     // for edge browser
     this.widgetsContent.nativeElement.scrollBy({
       left: this.widgetsContent.nativeElement.scrollLeft + 100,
-      behavior: 'smooth'
+      behavior: "smooth"
     });
     // for chrome browser
     this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft + 100,
-      behavior: 'smooth'
+      behavior: "smooth"
     });
   }
 
@@ -97,12 +103,12 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
     // for edge browser
     this.widgetsContent.nativeElement.scrollBy({
       left: this.widgetsContent.nativeElement.scrollLeft - 100,
-      behavior: 'smooth'
+      behavior: "smooth"
     });
     //for chrome browser
     this.widgetsContent.nativeElement.scrollTo({
       left: this.widgetsContent.nativeElement.scrollLeft - 100,
-      behavior: 'smooth'
+      behavior: "smooth"
     });
   }
 
@@ -114,18 +120,33 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
 
   cardSelected(index: number): void {
     this.selectedCard = index;
-    this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]);
+    this.canAddApplicant(
+      this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]
+    );
   }
 
   itemDelete(index: number): void {
-    this.deletedNames.push(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names[index]);
-    this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.splice(index, 1);
-    this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]);
+    this.deletedNames.push(
+      this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]
+        .names[index]
+    );
+    this.availabilityData[this.selectedTile].timeSlots[
+      this.selectedCard
+    ].names.splice(index, 1);
+    this.canAddApplicant(
+      this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]
+    );
   }
 
   addItem(index: number): void {
-    if (this.canAddApplicant(this.availabilityData[this.selectedTile].timeSlots[this.selectedCard])) {
-      this.availabilityData[this.selectedTile].timeSlots[this.selectedCard].names.push(this.deletedNames[index]);
+    if (
+      this.canAddApplicant(
+        this.availabilityData[this.selectedTile].timeSlots[this.selectedCard]
+      )
+    ) {
+      this.availabilityData[this.selectedTile].timeSlots[
+        this.selectedCard
+      ].names.push(this.deletedNames[index]);
       this.deletedNames.splice(index, 1);
     }
   }
@@ -146,23 +167,29 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
       element.timeSlots.forEach(slot => {
         sumAvailability += slot.availability;
         slot.names = [];
-        let fromTime = slot.fromTime.split(':');
-        let toTime = slot.toTime.split(':');
+        let fromTime = slot.fromTime.split(":");
+        let toTime = slot.toTime.split(":");
         if (fromTime[0] < this.registrationCenterLunchTime[0]) {
-          slot.tag = 'morning';
+          slot.tag = "morning";
           element.showMorning = true;
         } else {
-          slot.tag = 'afternoon';
+          slot.tag = "afternoon";
           element.showAfternoon = true;
         }
-        slot.displayTime = Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
-        slot.displayTime += ':' + fromTime[1] + ' - ';
-        slot.displayTime += Number(toTime[0]) > 12 ? Number(toTime[0]) - 12 : toTime[0];
-        slot.displayTime += ':' + toTime[1];
+        slot.displayTime =
+          Number(fromTime[0]) > 12 ? Number(fromTime[0]) - 12 : fromTime[0];
+        slot.displayTime += ":" + fromTime[1] + " - ";
+        slot.displayTime +=
+          Number(toTime[0]) > 12 ? Number(toTime[0]) - 12 : toTime[0];
+        slot.displayTime += ":" + toTime[1];
       });
       element.TotalAvailable = sumAvailability;
       element.inActive = false;
-      element.displayDate = Utils.getBookingDateTime(element.date, '', localStorage.getItem('langCode'));
+      element.displayDate = Utils.getBookingDateTime(
+        element.date,
+        "",
+        this.primaryLangCode
+      );
       let index = new Date(Date.parse(element.date)).getDay();
       element.displayDay = this.DAYS[index];
       if (!element.inActive) {
@@ -175,7 +202,10 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
   placeNamesInSlots() {
     this.availabilityData[this.selectedTile].timeSlots.forEach(slot => {
       if (this.names.length !== 0) {
-        while (slot.names.length < slot.availability && this.names.length !== 0) {
+        while (
+          slot.names.length < slot.availability &&
+          this.names.length !== 0
+        ) {
           slot.names.push(this.names[0]);
           this.names.splice(0, 1);
         }
@@ -187,11 +217,11 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
   enableBucketTabs() {
     const element = this.availabilityData[this.selectedTile];
     if (element.showMorning && element.showAfternoon) {
-      this.tabSelected('morning');
+      this.tabSelected("morning");
     } else if (element.showMorning) {
-      this.tabSelected('morning');
+      this.tabSelected("morning");
     } else {
-      this.tabSelected('afternoon');
+      this.tabSelected("afternoon");
     }
   }
 
@@ -199,22 +229,24 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
     this.dataService.getAvailabilityData(id).subscribe(
       response => {
         this.spinner = false;
-        if (response['response']) {
-          this.formatJson(response['response'].centerDetails);
+        if (response["response"]) {
+          this.formatJson(response["response"].centerDetails);
         } else if (response[appConstants.NESTED_ERROR]) {
-          this.displayMessage('Error', this.errorlabels.error, '');
+          this.displayMessage("Error", this.errorlabels.error, "");
         }
       },
       error => {
-        this.displayMessage('Error', this.errorlabels.error, error);
+        this.displayMessage("Error", this.errorlabels.error, error);
       }
     );
   }
 
   tabSelected(selection: string) {
     if (
-      (selection === 'morning' && this.availabilityData[this.selectedTile].showMorning) ||
-      (selection === 'afternoon' && this.availabilityData[this.selectedTile].showAfternoon)
+      (selection === "morning" &&
+        this.availabilityData[this.selectedTile].showMorning) ||
+      (selection === "afternoon" &&
+        this.availabilityData[this.selectedTile].showAfternoon)
     ) {
       this.activeTab = selection;
     }
@@ -227,7 +259,7 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
       x.push(name.fullName);
     });
 
-    return x.join(', ');
+    return x.join(", ");
   }
 
   makeBooking(): void {
@@ -260,20 +292,20 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
     const request = new RequestModel(appConstants.IDS.booking, obj);
     if (this.deletedNames.length !== 0) {
       const data = {
-        case: 'CONFIRMATION',
-        title: '',
+        case: "CONFIRMATION",
+        title: "",
         message:
           this.secondaryLanguagelabels.deletedApplicant1[0] +
           ' - "' +
           this.getNames() +
           ' ". ' +
           this.secondaryLanguagelabels.deletedApplicant1[1] +
-          '?',
+          "?",
         yesButtonText: this.secondaryLanguagelabels.yesButtonText,
         noButtonText: this.secondaryLanguagelabels.noButtonText
       };
       const dialogRef = this.dialog.open(DialougComponent, {
-        width: '350px',
+        width: "350px",
         data: data,
         disableClose: true
       });
@@ -293,37 +325,51 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
   bookingOperation(request) {
     this.dataService.makeBooking(request).subscribe(
       response => {
-        if (!response['errors']) {
+        if (!response["errors"]) {
           const data = {
-            case: 'MESSAGE',
+            case: "MESSAGE",
             title: this.secondaryLanguagelabels.title_success,
             message: this.secondaryLanguagelabels.msg_success
           };
           const dialogRef = this.dialog
             .open(DialougComponent, {
-              width: '350px',
+              width: "350px",
               data: data
             })
             .afterClosed()
             .subscribe(() => {
               this.temp.forEach(name => {
-                const booking = this.bookingDataList.filter(element => element.preRegistrationId === name.preRegId);
+                const booking = this.bookingDataList.filter(
+                  element => element.preRegistrationId === name.preRegId
+                );
                 if (booking[0]) {
                   this.bookingService.addNameList(name);
-                  const appointmentDateTime = booking[0].appointment_date + ',' + booking[0].time_slot_from;
-                  this.bookingService.updateBookingDetails(name.preRegId, appointmentDateTime);
+                  const appointmentDateTime =
+                    booking[0].appointment_date +
+                    "," +
+                    booking[0].time_slot_from;
+                  this.bookingService.updateBookingDetails(
+                    name.preRegId,
+                    appointmentDateTime
+                  );
                 }
               });
               this.bookingService.setSendNotification(true);
-              const url = Utils.getURL(this.router.url, 'summary/acknowledgement', 2);
+              const url = Utils.getURL(
+                this.router.url,
+                "summary/acknowledgement",
+                2
+              );
               this.router.navigateByUrl(url);
             });
         } else {
-          this.displayMessage('Error', this.errorlabels.error, { error: response });
+          this.displayMessage("Error", this.errorlabels.error, {
+            error: response
+          });
         }
       },
       error => {
-        this.displayMessage('Error', this.errorlabels.error, error);
+        this.displayMessage("Error", this.errorlabels.error, error);
       }
     );
   }
@@ -334,28 +380,31 @@ export class TimeSelectionComponent extends BookingDeactivateGuardService implem
     if (
       error &&
       error[appConstants.ERROR] &&
-      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode ===
+        appConstants.ERROR_CODES.tokenExpired
     ) {
       message = this.errorlabels.tokenExpiredLogout;
-      title = '';
+      title = "";
     } else if (
       error &&
       error[appConstants.ERROR] &&
-      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.slotNotAvailable
+      error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode ===
+        appConstants.ERROR_CODES.slotNotAvailable
     ) {
       message = this.errorlabels.slotNotAvailable;
     }
     const messageObj = {
-      case: 'MESSAGE',
+      case: "MESSAGE",
       title: title,
       message: message
     };
-    const dialogRef = this.openDialog(messageObj, '250px');
+    const dialogRef = this.openDialog(messageObj, "250px");
     dialogRef.afterClosed().subscribe(() => {
       if (
         error &&
         error[appConstants.ERROR] &&
-        error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.slotNotAvailable
+        error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode ===
+          appConstants.ERROR_CODES.slotNotAvailable
       ) {
         window.history.back();
       }
