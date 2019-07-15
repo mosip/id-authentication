@@ -65,17 +65,27 @@ public class MasterDataFilterHelper {
 		List<T> results;
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
+
 		Root<E> root = criteriaQuery.from(entity);
+
+		Predicate langCodePredicate = criteriaBuilder.equal(root.get(LANGCODE_COLUMN_NAME), languageCode);
+		Predicate wildCardPredicate = criteriaBuilder.like(root.get(filterDto.getColumnName()),
+				WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER);
+		Predicate caseInsensitiveWildCardPredicate = criteriaBuilder.like(root.get(filterDto.getColumnName()),
+				WILD_CARD_CHARACTER + filterDto.getText().toLowerCase() + WILD_CARD_CHARACTER);
+
 		criteriaQuery.select(root.get(columnName));
-		criteriaQuery.orderBy(criteriaBuilder.asc(root.get(columnName)));
-		criteriaQuery.where(criteriaBuilder.equal(root.get(LANGCODE_COLUMN_NAME), languageCode));
+
 		if (!(root.get(columnName).getJavaType().equals(Boolean.class))) {
-			criteriaQuery.where(
-					criteriaBuilder.like(root.get(columnName), WILD_CARD_CHARACTER + text + WILD_CARD_CHARACTER));
+			criteriaQuery.where(criteriaBuilder.and(langCodePredicate,
+					criteriaBuilder.or(wildCardPredicate, caseInsensitiveWildCardPredicate)));
 		}
+		criteriaQuery.orderBy(criteriaBuilder.asc(root.get(columnName)));
+
 		if (root.get(columnName).getJavaType().equals(Boolean.class) && columnType.equals(FILTER_VALUE_UNIQUE)) {
 			buildFilterColumnListForBoolean(columnName, text, criteriaBuilder, criteriaQuery, root);
 		}
+
 		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
 			criteriaQuery.distinct(true);
 		} else if (columnType.equals(FILTER_VALUE_ALL)) {
