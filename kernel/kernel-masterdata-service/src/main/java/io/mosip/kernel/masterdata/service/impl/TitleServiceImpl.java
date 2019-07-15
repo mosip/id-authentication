@@ -238,7 +238,7 @@ public class TitleServiceImpl implements TitleService {
 		PageResponseDto<TitleExtnDto> pageDto = new PageResponseDto<>();
 		List<TitleExtnDto> titles = null;
 		if (filterTypeValidator.validate(TitleExtnDto.class, searchDto.getFilters())) {
-			Page<Template> page = masterDataSearchHelper.searchMasterdata(Template.class, searchDto, null);
+			Page<Title> page = masterDataSearchHelper.searchMasterdata(Title.class, searchDto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
 				titles = MapperUtils.mapAll(page.getContent(), TitleExtnDto.class);
