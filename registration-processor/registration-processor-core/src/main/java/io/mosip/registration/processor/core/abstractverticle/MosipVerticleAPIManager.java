@@ -82,7 +82,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 						healthCheckHandler.consumerHealthHandler(future, vertx, consumeAddress);
 					});
 		}
-		if (servletPath.contains("external")) {
+		if (servletPath.contains("external") || servletPath.contains("bioauth")) {
 			healthCheckHandler.register(
 					servletPath.substring(servletPath.lastIndexOf("/") + 1, servletPath.length()) + "Send", future -> {
 						healthCheckHandler.senderHealthHandler(future, vertx, sendAddress);
