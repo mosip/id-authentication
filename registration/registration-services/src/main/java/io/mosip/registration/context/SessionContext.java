@@ -230,7 +230,8 @@ public class SessionContext {
 	 */
 	private static boolean validatePword(String loginMethod, UserDTO userDTO, AuthenticationValidatorDTO authenticationValidatorDTO) {
 		AuthenticationService authenticationService = applicationContext.getBean(AuthenticationService.class);
-		if(authenticationService.validatePassword(authenticationValidatorDTO).equalsIgnoreCase(RegistrationConstants.PWD_MATCH)) {
+		if (authenticationValidatorDTO != null && authenticationService.validatePassword(authenticationValidatorDTO)
+				.equalsIgnoreCase(RegistrationConstants.PWD_MATCH)) {
 			createSessionContext();
 			SessionContext.authTokenDTO().setLoginMode(loginMethod);
 			validAuthModes.add(loginMethod);
