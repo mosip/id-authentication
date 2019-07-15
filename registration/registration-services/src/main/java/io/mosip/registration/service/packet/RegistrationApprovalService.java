@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * {@code RegistrationApprovalService} is the interface for registration
@@ -45,7 +46,8 @@ public interface RegistrationApprovalService {
 	 * @param clientStatusCode
 	 *            the data to be updated as Client Status Code
 	 * @return {@link Registration} entity which had been updated
+	 * @throws RegBaseCheckedException 
 	 */
-	Registration updateRegistration(String registrationID,String statusComments,String clientStatusCode);
+	Registration updateRegistration(String registrationID,String statusComments,String clientStatusCode) throws RegBaseCheckedException;
 
 }
