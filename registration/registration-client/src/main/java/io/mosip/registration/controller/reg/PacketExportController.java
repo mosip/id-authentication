@@ -27,6 +27,8 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketExportService;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -85,11 +87,20 @@ public class PacketExportController extends BaseController {
 					}
 				}
 				if (!exportedPackets.isEmpty()) {
-					ResponseDTO responseDTO = packetExportServiceImpl.updateRegistrationStatus(exportedPackets);
-					if (responseDTO.getSuccessResponseDTO() != null
-							&& responseDTO.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
-						generateAlert(RegistrationConstants.ALERT_INFORMATION,
-								exportedPackets.size() + " " + RegistrationUIConstants.PACKET_EXPORT_SUCCESS_MESSAGE);
+					try {
+						ResponseDTO responseDTO = packetExportServiceImpl.updateRegistrationStatus(exportedPackets);
+						if (responseDTO.getSuccessResponseDTO() != null
+								&& responseDTO.getSuccessResponseDTO().getMessage().equals(RegistrationConstants.SUCCESS)) {
+							generateAlert(RegistrationConstants.ALERT_INFORMATION,
+									exportedPackets.size() + " " + RegistrationUIConstants.PACKET_EXPORT_SUCCESS_MESSAGE);
+						}
+					} catch(RegBaseCheckedException regBaseCheckedException) {
+						LOGGER.error("REGISTRATION - HANDLE_PACKET_EXPORT_ERROR - PACKET_EXPORT_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Error while exporting packets "+ExceptionUtils.getStackTrace(regBaseCheckedException));
+						
+						if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+							generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+						}
 					}
 				}
 			}

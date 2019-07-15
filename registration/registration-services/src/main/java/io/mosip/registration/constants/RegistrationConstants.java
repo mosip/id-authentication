@@ -323,6 +323,7 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_SLNO = "slno";
 	public static final String EOD_PROCESS_DATE = "date";
 	public static final String EOD_PROCESS_DATE_FORMAT_FOR_FILE= "yyyyMMddHHmmss";
+	public static final String AUTH_ADVICE_FAILURE = "AUTH_ADVICE_FAILURE";
 
 
 

@@ -14,11 +14,13 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.SecurityContext;
 import io.mosip.registration.dto.UserDTO;
 import io.mosip.registration.dto.UserRoleDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.login.LoginService;
 
 /**
@@ -60,8 +62,23 @@ public class AuthenticationAdvice {
 
 		if (SessionContext.isSessionContextAvailable()) {
 			SecurityContext securityContext = SessionContext.securityContext();
+			
+			if(null == securityContext || RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM == securityContext.getUserId()) {
+				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
+						"Pre-Authorize the user id got failed");
+
+				throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode(), RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorMessage());
+
+			}
 
 			UserDTO userDTO = loginService.getUserDetail(securityContext.getUserId());
+			
+			if(null == userDTO) {
+				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
+						"Pre-Authorize the user id got failed");
+
+				throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode(), RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorMessage());
+			}
 
 			List<String> roleList = userDTO.getUserRole().stream().map(UserRoleDTO::getRoleCode)
 					.collect(Collectors.toList());
@@ -76,7 +93,7 @@ public class AuthenticationAdvice {
 				LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 						"Pre-Authorize the user id got failed");
 
-				throw new RegBaseCheckedException("REG-SER-ATAD", "Invalid user id.");
+				throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode(), RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorMessage());
 			}
 
 			LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
@@ -85,7 +102,7 @@ public class AuthenticationAdvice {
 			LOGGER.info(LoggerConstants.AUTHORIZE_USER_ID, APPLICATION_ID, APPLICATION_NAME,
 					"Pre-Authorize the user id got failed");
 
-			throw new RegBaseCheckedException("REG-SER-ATAD", "Invalid user id.");
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode(), RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorMessage());
 		}
 	}
 }
