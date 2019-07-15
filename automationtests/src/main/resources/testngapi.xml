@@ -2,23 +2,20 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
 <suite name="Mosip API Suite">
-	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
-		regression smokeAndRegression -->
+	
 	<listeners>
 		<listener class-name="io.mosip.report.CustomTestNGReporter" />
 		<listener class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener" />
 		<listener class-name="io.mosip.authentication.e2e.E2EReport" />
 	</listeners>
 
-
-	  <test name="Kernel Tests">
-						 <classes>
-						
-                        <class name="io.mosip.kernel.tests.AuditLog" />   
-                       <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
-                            <class name="io.mosip.kernel.tests.EmailNotification" />
+    <test name="Kernel Tests">
+						 <classes>						
+                           <class name="io.mosip.kernel.tests.AuditLog" />   
+                           <class name="io.mosip.kernel.tests.CentetMachineUserMappingToMasterData" /> 
+                           <class name="io.mosip.kernel.tests.EmailNotification" />
                            <class name="io.mosip.kernel.tests.EncrptionDecryption" />
-                       <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
+                           <class name="io.mosip.kernel.tests.FetchBiometricAttribute" />
                            <class name="io.mosip.kernel.tests.FetchBiometricAuthType" />
                            <class name="io.mosip.kernel.tests.FetchBlackListedWord" />
                            <class name="io.mosip.kernel.tests.FetchDevice" />
@@ -69,7 +66,6 @@
                            <class name="io.mosip.kernel.tests.ValidateGenderByName" /> 
                           <class name="io.mosip.kernel.tests.ValidateLocationByName" />  
                  </classes>
-
 				</test>      
 			
   
@@ -110,7 +106,8 @@
                      <class name="io.mosip.preregistration.tests.OperationWithDifferentToken" />
 
 		</classes> 
-	</test>  
+	</test> 
+
 
 
     <test name="RegistrationProcessor Tests">
@@ -131,9 +128,10 @@
 			<class name="io.mosip.registrationProcessor.tests.PacketInfo" />
 			<class name="io.mosip.registrationProcessor.tests.AbisMiddlewareTests" />
 			<class name="io.mosip.registrationProcessor.tests.UpdatePacket" />
-			<class name="io.mosip.registrationProcessor.tests.PrintingStage" />
+			<class name="io.mosip.registrationProcessor.tests.PrintingStage" /> 
 		</classes>
-	</test>    
+	</test>    		 
+   
 
 	 <test name="AuthenticationTest">
              <classes>
@@ -170,8 +168,7 @@
                     <class name="io.mosip.authentication.idRepository.tests.UpdateVidStatus" />
                    <class name="io.mosip.authentication.idRepository.tests.RetrieveUinByVid" /> 
              </classes>
-
-       </test>	 		 
+       </test>	 	
 
 		</suite>
 		

@@ -21,7 +21,8 @@ import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.AbisStatusCode;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -69,7 +70,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationUtility;
  * @since v1.0
  *
  */
-public class AbisMiddleWareStage extends MosipVerticleManager {
+public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisMiddleWareStage.class);
 
 	/** The mosip queue manager. */
@@ -106,6 +107,18 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
+
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
+	/** The mosip event bus. */
+	MosipEventBus mosipEventBus = null;
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
 	/** The url. */
 	private static final String SYSTEM = "SYSTEM";
 	private static List<AbisQueueDetails> abisQueueDetails;
@@ -119,7 +132,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		try {
-			MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 			this.consume(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 			abisQueueDetails = utility.getAbisQueueDetails();
 			for (AbisQueueDetails abisQueue : abisQueueDetails) {
@@ -149,6 +162,13 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 					PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage(), e);
 
 		}
+	}
+
+	@Override
+	public void start() {
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
+				MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
 
 	@Override

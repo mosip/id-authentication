@@ -212,6 +212,12 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 					retBuf.append(deltaTimeStr);
 					retBuf.append("</td>");
 					
+					/* Environment */
+					String environment = getAppEnvironment().toLowerCase();
+					retBuf.append("<td>");
+					retBuf.append(environment);
+					retBuf.append("</td>");
+					
 					/* Build Number */
 					String deploymentVersion = getAppDepolymentVersion();
 					retBuf.append("<td>");
@@ -587,7 +593,8 @@ public class CustomTestNGReporter extends Reporter implements IReporter {
 		"					<th># Failed</th>\r\n" + 
 		"					<th>Start Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
 		"					<th>End Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
-		"					<th>Execute Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" + 
+		"					<th>Execute Time<i><legend>(HH:MM:SS)</legend></i></th>\r\n" +
+		"					<th>Environment</th>\r\n" + 
 		"					<th>Build Version</th>\r\n" + 
 		"				</tr>\r\n" + 
 		"			</thead>";

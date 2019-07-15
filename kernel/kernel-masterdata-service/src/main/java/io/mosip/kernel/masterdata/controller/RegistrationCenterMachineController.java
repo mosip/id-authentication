@@ -71,4 +71,6 @@ public class RegistrationCenterMachineController {
 				registrationCenterMachineService.deleteRegistrationCenterMachineMapping(regCenterId, machineId));
 		return responseWrapper;
 	}
+	
+
 }

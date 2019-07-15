@@ -3,19 +3,39 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
 import io.mosip.kernel.masterdata.constant.BlacklistedWordsErrorCode;
+import io.mosip.kernel.masterdata.constant.UpdateQueryConstants;
+import io.mosip.kernel.masterdata.dto.BlackListedWordsUpdateDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.BlacklistedWordsExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.id.WordAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -25,7 +45,12 @@ import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * Service implementation class for {@link BlacklistedWordsService}.
@@ -42,6 +67,22 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 */
 	@Autowired
 	private BlacklistedWordsRepository blacklistedWordsRepository;
+
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	@Autowired
+	FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	MasterdataSearchHelper masterDataSearchHelper;
+
+	@Autowired
+	MasterDataFilterHelper masterDataFilterHelper;
+
 	/**
 	 * Autowired reference for {@link DataMapper}
 	 */
@@ -142,29 +183,32 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	 * updateBlackListedWord(io.mosip.kernel.masterdata.dto.RequestDto)
 	 */
 	@Override
-	public WordAndLanguageCodeID updateBlackListedWord(BlacklistedWordsDto wordDto) {
-		WordAndLanguageCodeID id = null;
-		BlacklistedWords wordEntity = null;
-		wordDto.setWord(wordDto.getWord().toLowerCase());
+	@Transactional
+	public WordAndLanguageCodeID updateBlackListedWord(BlackListedWordsUpdateDto wordDto) {
+		WordAndLanguageCodeID wordAndLanguageCodeID = null;
+		int noOfRowAffected = 0;
+		Map<String, Object> params = bindDtoToMap(wordDto);
 		try {
-			wordEntity = blacklistedWordsRepository.findByWordAndLangCode(wordDto.getWord(), wordDto.getLangCode());
-			if (wordEntity != null) {
-				MetaDataUtils.setUpdateMetaData(wordDto, wordEntity, false);
-				wordEntity = blacklistedWordsRepository.update(wordEntity);
-				id = MapperUtils.map(wordEntity, WordAndLanguageCodeID.class);
+			if (wordDto.getDescription() != null) {
+				noOfRowAffected = blacklistedWordsRepository.createQueryUpdateOrDelete(
+						UpdateQueryConstants.BLACKLISTED_WORD_UPDATE_QUERY_WITH_DESCRIPTION.getQuery(), params);
+
+			} else {
+				noOfRowAffected = blacklistedWordsRepository.createQueryUpdateOrDelete(
+						UpdateQueryConstants.BLACKLISTED_WORD_UPDATE_QUERY_WITHOUT_DESCRIPTION.getQuery(), params);
+			}
+			if (noOfRowAffected != 0)
+				wordAndLanguageCodeID = mapToWordAndLanguageCodeID(wordDto);
+			else {
+				throw new RequestException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+						BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
 			}
 		} catch (DataAccessException | DataAccessLayerException e) {
 			throw new MasterDataServiceException(
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorCode(),
 					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage());
 		}
-
-		if (id == null) {
-			throw new RequestException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
-					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
-		}
-
-		return id;
+		return wordAndLanguageCodeID;
 	}
 
 	/*
@@ -191,5 +235,136 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		}
 
 		return blackListedWord;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * getBlackListedWords()
+	 */
+	@Override
+	public PageDto<BlacklistedWordsExtnDto> getBlackListedWords(int pageNumber, int pageSize, String sortBy,
+			String orderBy) {
+		List<BlacklistedWordsExtnDto> wordsDto = null;
+		PageDto<BlacklistedWordsExtnDto> pageDto = null;
+		try {
+			Page<BlacklistedWords> pageData = blacklistedWordsRepository
+					.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.fromString(orderBy), sortBy)));
+			if (pageData != null && pageData.getContent() != null && !pageData.getContent().isEmpty()) {
+				wordsDto = MapperUtils.mapAll(pageData.getContent(), BlacklistedWordsExtnDto.class);
+				pageDto = new PageDto<>(pageData.getNumber(), pageData.getTotalPages(), pageData.getTotalElements(),
+						wordsDto);
+			} else {
+				throw new DataNotFoundException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+						BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
+			}
+		} catch (DataAccessException accessException) {
+			throw new MasterDataServiceException(
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(accessException));
+		}
+		return pageDto;
+	}
+
+	private WordAndLanguageCodeID mapToWordAndLanguageCodeID(BlackListedWordsUpdateDto dto) {
+		WordAndLanguageCodeID wordAndLanguageCodeID;
+		wordAndLanguageCodeID = new WordAndLanguageCodeID();
+		if (dto.getWord() != null)
+			wordAndLanguageCodeID.setWord(dto.getWord());
+		if (dto.getLangCode() != null)
+			wordAndLanguageCodeID.setLangCode(dto.getLangCode());
+		return wordAndLanguageCodeID;
+	}
+
+	private Map<String, Object> bindDtoToMap(BlackListedWordsUpdateDto dto) {
+		Map<String, Object> params = new HashMap<>();
+		if (dto.getWord() != null && !dto.getWord().isEmpty())
+			params.put("word", dto.getWord());
+		if (dto.getOldWord() != null && !dto.getOldWord().isEmpty())
+			params.put("oldWord", dto.getOldWord());
+		if (dto.getDescription() != null && !dto.getDescription().isEmpty())
+			params.put("description", dto.getDescription());
+		params.put("isActive", dto.getIsActive());
+		params.put("updatedBy", MetaDataUtils.getContextUser());
+		params.put("updatedDateTime", LocalDateTime.now(ZoneId.of("UTC")));
+		params.put("langCode", dto.getLangCode());
+		return params;
+	}
+
+	@Override
+	public WordAndLanguageCodeID updateBlackListedWordExceptWord(BlacklistedWordsDto blacklistedWordsDto) {
+		WordAndLanguageCodeID id = null;
+		BlacklistedWords wordEntity = null;
+		blacklistedWordsDto.setWord(blacklistedWordsDto.getWord().toLowerCase());
+		try {
+			wordEntity = blacklistedWordsRepository.findByWordAndLangCode(blacklistedWordsDto.getWord(),
+					blacklistedWordsDto.getLangCode());
+			if (wordEntity != null) {
+				MetaDataUtils.setUpdateMetaData(blacklistedWordsDto, wordEntity, false);
+				wordEntity = blacklistedWordsRepository.update(wordEntity);
+				id = MapperUtils.map(wordEntity, WordAndLanguageCodeID.class);
+			}
+		} catch (DataAccessException | DataAccessLayerException e) {
+			throw new MasterDataServiceException(
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorCode(),
+					BlacklistedWordsErrorCode.BLACKLISTED_WORDS_UPDATE_EXCEPTION.getErrorMessage());
+		}
+
+		if (id == null) {
+			throw new RequestException(BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorCode(),
+					BlacklistedWordsErrorCode.NO_BLACKLISTED_WORDS_FOUND.getErrorMessage());
+		}
+
+		return id;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * searchBlackListedWords(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageResponseDto<BlacklistedWordsExtnDto> searchBlackListedWords(SearchDto dto) {
+		PageResponseDto<BlacklistedWordsExtnDto> pageDto = new PageResponseDto<>();
+		List<BlacklistedWordsExtnDto> blackListedWords = null;
+		if (filterTypeValidator.validate(BlacklistedWordsExtnDto.class, dto.getFilters())) {
+			Page<BlacklistedWords> page = masterDataSearchHelper.searchMasterdata(BlacklistedWords.class, dto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				blackListedWords = MapperUtils.mapAll(page.getContent(), BlacklistedWordsExtnDto.class);
+				pageDto.setData(blackListedWords);
+			}
+		}
+		return pageDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * blackListedWordsFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
+	 */
+	@Override
+	public FilterResponseDto blackListedWordsFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				List<?> filterValues = masterDataFilterHelper.filterValues(BlacklistedWords.class, filterDto,
+						filterValueDto);
+				filterValues.forEach(filterValue -> {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.toString());
+					columnValueList.add(columnValue);
+				});
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
 	}
 }

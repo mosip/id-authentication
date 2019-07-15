@@ -113,6 +113,10 @@ public class UMCValidator {
 	private boolean isValidRegistrationCenter(String registrationCenterId, String langCode, String effectiveDate,
 			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		boolean activeRegCenter = false;
+		if (registrationCenterId == null || effectiveDate == null) {
+			registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+			return false;
+		}
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(registrationCenterId);
 		pathsegments.add(langCode);
@@ -188,6 +192,10 @@ public class UMCValidator {
 			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 
 		boolean isActiveMachine = false;
+		if (machineId == null) {
+			registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
+			return false;
+		}
 
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(machineId);

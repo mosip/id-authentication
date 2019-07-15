@@ -186,10 +186,46 @@ spec:
         backend:
           serviceName: registration-processor-quality-checker-stage
           servicePort: 9072
+      - path: /registrationprocessor/v1/abishandler
+        backend:
+          serviceName: registration-processor-abis-handler-stage
+          servicePort: 9071
       - path: /registrationprocessor/v1/external
         backend:
           serviceName: registration-processor-external-stage
           servicePort: 8095
+      - path: /registrationprocessor/v1/abismiddleware
+        backend:
+          serviceName: registration-processor-abis-middleware-stage
+          servicePort: 8091
+      - path: /registrationprocessor/v1/reprocessor
+        backend:
+          serviceName: registration-processor-reprocessor-stage
+          servicePort: 8021
+      - path: /registrationprocessor/v1/bioauth
+        backend:
+          serviceName: registration-processor-biometric-authentication-stage
+          servicePort: 8020
+      - path: /registrationprocessor/v1/camelbridge
+        backend:
+          serviceName: registration-processor-common-camel-bridge
+          servicePort: 8022
+      - path: /registrationprocessor/v1/biodedupe
+        backend:
+          serviceName: registration-processor-bio-dedupe-stage
+          servicePort: 9096
+      - path: /registrationprocessor/v1/demodedupe
+        backend:
+         serviceName: registration-processor-demo-dedupe-stage
+         servicePort: 8091
+      - path: /registrationprocessor/v1/uin-generator
+        backend:
+          serviceName: registration-processor-uin-generator-stage
+          servicePort: 8099
+      - path: /registrationprocessor/v1/sender-stage
+        backend:
+          serviceName: registration-processor-message-sender-stage
+          servicePort: 8088
       - path: /config
         backend:
           serviceName: kernel-config-server
