@@ -9,6 +9,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineID;
@@ -142,7 +143,7 @@ public interface MachineService {
 	 *            the search DTO.
 	 * @return the {@link PageResponseDto}.
 	 */
-	public PageResponseDto<MachineExtnDto> searchMachine(SearchDto dto);
+	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto);
 
 	/**
 	 * Method to filter Machine based on column and type provided.

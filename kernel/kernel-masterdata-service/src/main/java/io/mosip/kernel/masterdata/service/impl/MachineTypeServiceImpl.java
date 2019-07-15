@@ -17,9 +17,11 @@ import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineTypeExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineType;
@@ -30,10 +32,12 @@ import io.mosip.kernel.masterdata.repository.MachineTypeRepository;
 import io.mosip.kernel.masterdata.service.MachineTypeService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
@@ -63,6 +67,18 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@Autowired
 	private MasterdataSearchHelper masterdataSearchHelper;
+
+	/**
+	 * Reference to {@link MasterDataFilterHelper}.
+	 */
+	@Autowired
+	private MasterDataFilterHelper masterDataFilterHelper;
+
+	/**
+	 * Refernece to {@link FilterColumnValidator}.
+	 */
+	@Autowired
+	private FilterColumnValidator filterColumnValidator;
 
 	/*
 	 * (non-Javadoc)
@@ -155,8 +171,22 @@ public class MachineTypeServiceImpl implements MachineTypeService {
 	 */
 	@Override
 	public FilterResponseDto machineTypesFilterValues(FilterValueDto filterValueDto) {
-
-		return null;
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				List<?> filterValues = masterDataFilterHelper.filterValues(MachineType.class, filterDto,
+						filterValueDto);
+				filterValues.forEach(filterValue -> {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.toString());
+					columnValueList.add(columnValue);
+				});
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
 	}
 
 }
