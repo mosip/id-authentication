@@ -52,7 +52,7 @@ spec:
       imagePullSecrets:
       - name: pvt-reg-cred
       
-      ---
+---
 apiVersion: v1
 kind: Service
 metadata:
