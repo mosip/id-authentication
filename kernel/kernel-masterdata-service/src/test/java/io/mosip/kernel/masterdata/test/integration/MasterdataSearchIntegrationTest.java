@@ -309,6 +309,10 @@ public class MasterdataSearchIntegrationTest {
 				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(centerEntity), PageRequest.of(0, 10), 1));
 		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(RegistrationCenterType.class), Mockito.any(),
 				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(centerTypeEntity), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Template.class), Mockito.any(),
+				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(template), PageRequest.of(0, 10), 1));
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Title.class), Mockito.any(),
+				Mockito.any())).thenReturn(new PageImpl<>(Arrays.asList(title), PageRequest.of(0, 10), 1));
 		when(registrationCenterUserRepository.countCenterUsers(Mockito.any())).thenReturn(10l);
 		when(registrationCenterMachineRepository.countCenterMachines(Mockito.any())).thenReturn(10l);
 		when(registrationCenterDeviceRepository.countCenterDevices(Mockito.any())).thenReturn(10l);
