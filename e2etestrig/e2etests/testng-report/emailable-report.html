@@ -1,0 +1,723 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>TestNG Report</title>
+<style type="text/css">table {margin-bottom:10px;border-collapse:collapse;empty-cells:show}th,td {border:1px solid #009;padding:.25em .5em}th {vertical-align:bottom}td {vertical-align:top}table a {font-weight:bold}.stripe td {background-color: #E6EBF9}.num {text-align:right}.passedodd td {background-color: #3F3}.passedeven td {background-color: #0A0}.skippedodd td {background-color: #DDD}.skippedeven td {background-color: #CCC}.failedodd td,.attn {background-color: #F33}.failedeven td,.stripe .attn {background-color: #D00}.stacktrace {white-space:pre;font-family:monospace}.totop {font-size:85%;text-align:center;border-bottom:2px solid #000}.invisible {display:none}</style>
+</head>
+<body>
+<table>
+<tr><th>Test</th><th># Passed</th><th># Skipped</th><th># Failed</th><th>Time (ms)</th><th>Included Groups</th><th>Excluded Groups</th></tr>
+<tr><th colspan="7">Mosip API Suite</th></tr>
+<tr><td><a href="#t0">AuthenticationTest</a></td><td class="num">1</td><td class="num">0</td><td class="num attn">46</td><td class="num">948,193</td><td></td><td></td></tr>
+</table>
+<table id='summary'><thead><tr><th>Class</th><th>Method</th><th>Start</th><th>Time (ms)</th></tr></thead><tbody><tr><th colspan="4">Mosip API Suite</th></tr></tbody><tbody id="t0"><tr><th colspan="4">AuthenticationTest &#8212; failed</th></tr><tr class="failedeven"><td rowspan="1">io.mosip.authentication.idRepository.prerequiste.CreateUinRecord</td><td><a href="#m0">Create UIN</a></td><td rowspan="1">1563192763421</td><td rowspan="1">1077</td></tr><tr class="failedodd"><td rowspan="1">io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord</td><td><a href="#m1">Update VID</a></td><td rowspan="1">1563192824596</td><td rowspan="1">0</td></tr><tr class="failedeven"><td rowspan="1">io.mosip.authentication.idRepository.prerequiste.UpdateVID</td><td><a href="#m2">Update VID</a></td><td rowspan="1">1563192944988</td><td rowspan="1">23</td></tr><tr class="failedodd"><td rowspan="8">io.mosip.authentication.tests.AuthPartnerAuthentication</td><td><a href="#m3">Authentication_AuthPartnerValidation_PolicyWithoutAge_Demo_smoke_For UIN_Neg_29</a></td><td rowspan="1">1563193190622</td><td rowspan="1">8</td></tr><tr class="failedodd"><td><a href="#m4">Authentication_AuthPartnerValidation_PolicyWithoutDOBDemo_smoke_For UIN_Neg_27</a></td><td rowspan="1">1563193192325</td><td rowspan="1">21</td></tr><tr class="failedodd"><td><a href="#m5">Authentication_AuthPartnerValidation_PolicyWithoutEmail_Demo_smoke_For UIN_Neg_28</a></td><td rowspan="1">1563193193661</td><td rowspan="1">9</td></tr><tr class="failedodd"><td><a href="#m6">Authentication_AuthPartnerValidation_PolicyWithoutFinger_Bio_smoke_For UIN_Neg_31</a></td><td rowspan="1">1563193195177</td><td rowspan="1">15</td></tr><tr class="failedodd"><td><a href="#m7">Authentication_AuthPartnerValidation_PolicyWithoutGenderDemo_smoke_For UIN_Neg_26</a></td><td rowspan="1">1563193197039</td><td rowspan="1">14</td></tr><tr class="failedodd"><td><a href="#m8">Authentication_AuthPartnerValidation_PolicyWithoutIris_Bio_smoke_For UIN_Neg_33</a></td><td rowspan="1">1563193198804</td><td rowspan="1">7</td></tr><tr class="failedodd"><td><a href="#m9">Authentication_AuthPartnerValidation_PolicyWithoutPhone_Demo_smoke_For UIN_Neg_30</a></td><td rowspan="1">1563193200127</td><td rowspan="1">14</td></tr><tr class="failedodd"><td><a href="#m10">Authentication_AuthPartnerValidation_smoke_For UIN_Pos_01</a></td><td rowspan="1">1563193201591</td><td rowspan="1">16</td></tr><tr class="failedeven"><td rowspan="6">io.mosip.authentication.tests.BiometricAuthentication</td><td><a href="#m11">Authentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</a></td><td rowspan="1">1563193345082</td><td rowspan="1">8</td></tr><tr class="failedeven"><td><a href="#m12">Authentication_Biometric_Finger_LeftIndex_Smoke_Pos</a></td><td rowspan="1">1563193334363</td><td rowspan="1">9</td></tr><tr class="failedeven"><td><a href="#m13">Authentication_Biometric_Finger_RightIndex_Smoke_Pos</a></td><td rowspan="1">1563193335954</td><td rowspan="1">12</td></tr><tr class="failedeven"><td><a href="#m14">Authentication_Biometric_Finger_RightIndex_VID_smoke_Pos</a></td><td rowspan="1">1563193337620</td><td rowspan="1">721</td></tr><tr class="failedeven"><td><a href="#m15">Authentication_Biometric_Iris_With_Left_Smoke_Pos</a></td><td rowspan="1">1563193341122</td><td rowspan="1">4</td></tr><tr class="failedeven"><td><a href="#m16">Authentication_Biometric_Iris_With_Right_Smoke_Pos</a></td><td rowspan="1">1563193342741</td><td rowspan="1">3</td></tr><tr class="failedodd"><td rowspan="17">io.mosip.authentication.tests.DemographicAuthentication</td><td><a href="#m17">Authentication_Demographic_Address_With_primary and secondary lang_for VID_smoke_pos_38</a></td><td rowspan="1">1563193100501</td><td rowspan="1">577</td></tr><tr class="failedodd"><td><a href="#m18">Authentication_Demographic_Address_With_primary and secondary lang_smoke_pos_01</a></td><td rowspan="1">1563193102384</td><td rowspan="1">13</td></tr><tr class="failedodd"><td><a href="#m19">Authentication_Demographic_Address_With_primary lang_smoke_pos_02</a></td><td rowspan="1">1563193103795</td><td rowspan="1">21</td></tr><tr class="failedodd"><td><a href="#m20">Authentication_Demographic_Address_With_secondary lang_smoke_pos_03</a></td><td rowspan="1">1563193105259</td><td rowspan="1">6</td></tr><tr class="failedodd"><td><a href="#m21">Authentication_Demographic_Age_smoke_For IntegrationTest_UIN_Pos</a></td><td rowspan="1">1563193123836</td><td rowspan="1">364</td></tr><tr class="failedodd"><td><a href="#m22">Authentication_Demographic_DateOfBirth_smoke_For IntegrationTest_UIN_Pos_01</a></td><td rowspan="1">1563193066481</td><td rowspan="1">408</td></tr><tr class="failedodd"><td><a href="#m23">Authentication_Demographic_EmailId_smoke_For IntegrationTest_UIN_Pos_01</a></td><td rowspan="1">1563193112372</td><td rowspan="1">349</td></tr><tr class="failedodd"><td><a href="#m24">Authentication_Demographic_Gender_With arabic language_smoke_For UIN_Pos_02</a></td><td rowspan="1">1563193070231</td><td rowspan="1">7</td></tr><tr class="failedodd"><td><a href="#m25">Authentication_Demographic_Gender_With both language_smoke_For UIN_Pos_01</a></td><td rowspan="1">1563193071714</td><td rowspan="1">11</td></tr><tr class="failedodd"><td><a href="#m26">Authentication_Demographic_Gender_With french language_smoke_For UIN_Pos_03</a></td><td rowspan="1">1563193072959</td><td rowspan="1">8</td></tr><tr class="failedodd"><td><a href="#m27">Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For IntegrationTest_UIN_Pos_01</a></td><td rowspan="1">1563193118212</td><td rowspan="1">6</td></tr><tr class="failedodd"><td><a href="#m28">Authentication_Demographic_Name_WithSecLang_Smoke_For UIN_Pos</a></td><td rowspan="1">1563193121155</td><td rowspan="1">6</td></tr><tr class="failedodd"><td><a href="#m29">Authentication_Demographic_Name_smoke_For UIN_Pos_01</a></td><td rowspan="1">1563193119678</td><td rowspan="1">15</td></tr><tr class="failedodd"><td><a href="#m30">Authentication_Demographic_PhoneNumber_smoke_For IntegrationTest_UIN_Pos_01</a></td><td rowspan="1">1563193114789</td><td rowspan="1">210</td></tr><tr class="failedodd"><td><a href="#m31">Authentication_Demographic_fullAddress_With_primary and secondary lang_smoke_pos</a></td><td rowspan="1">1563193107022</td><td rowspan="1">5</td></tr><tr class="failedodd"><td><a href="#m32">Authentication_Demographic_fullAddress_With_primary lang_smoke_pos</a></td><td rowspan="1">1563193108493</td><td rowspan="1">17</td></tr><tr class="failedodd"><td><a href="#m33">Authentication_Demographic_fullAddress_With_secondary lang_smoke_pos</a></td><td rowspan="1">1563193110271</td><td rowspan="1">8</td></tr><tr class="failedeven"><td rowspan="1">io.mosip.authentication.tests.EkycPartnerAuthentication</td><td><a href="#m34">Autheticate_EkycPartner_smoke_For UIN_Pos_01</a></td><td rowspan="1">1563193569831</td><td rowspan="1">0</td></tr><tr class="failedodd"><td rowspan="4">io.mosip.authentication.tests.EkycWithBiometricAuthentication</td><td><a href="#m35">Authentication_Biometric_EKYC_FACE_With_secondary_lang_With_smoke_VID_Pos</a></td><td rowspan="1">1563193504572</td><td rowspan="1">570</td></tr><tr class="failedodd"><td><a href="#m36">Authentication_Biometric_EKYC_FACE_With_secondary_lang_smoke_Pos</a></td><td rowspan="1">1563193503238</td><td rowspan="1">11</td></tr><tr class="failedodd"><td><a href="#m37">Authentication_EKYC_Biometric_Finger_with_primary_lang_Smoke_Pos</a></td><td rowspan="1">1563193506634</td><td rowspan="1">9</td></tr><tr class="failedodd"><td><a href="#m38">Authentication_EYC_Biometric_Iris_With_Left_primary_lang_Smoke_Pos</a></td><td rowspan="1">1563193507916</td><td rowspan="1">6</td></tr><tr class="failedeven"><td rowspan="1">io.mosip.authentication.tests.EkycWithOtpAuthentication</td><td><a href="#m39">Authentication_KYC_OTP_With secondary language_UIN_smoke_Pos</a></td><td rowspan="1">1563193271379</td><td rowspan="1">9</td></tr><tr class="failedodd"><td rowspan="3">io.mosip.authentication.tests.InternalBiometricAuthentication</td><td><a href="#m40">InternalAuthentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</a></td><td rowspan="1">1563193408884</td><td rowspan="1">230</td></tr><tr class="failedodd"><td><a href="#m41">InternalAuthentication_Biometric_Finger_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</a></td><td rowspan="1">1563193410451</td><td rowspan="1">173</td></tr><tr class="failedodd"><td><a href="#m42">InternalAuthentication_Biometric_Iris_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</a></td><td rowspan="1">1563193411617</td><td rowspan="1">191</td></tr><tr class="failedeven"><td rowspan="2">io.mosip.authentication.tests.OtpAuthentication</td><td><a href="#m43">Authentication_OTP_For VID_smoke_Pos</a></td><td rowspan="1">1563193631535</td><td rowspan="1">470</td></tr><tr class="failedeven"><td><a href="#m44">Authentication_OTP_IntegrationTest_UIN_1_smoke_Pos</a></td><td rowspan="1">1563193633752</td><td rowspan="1">21</td></tr><tr class="failedodd"><td rowspan="1">io.mosip.authentication.tests.OtpGeneration</td><td><a href="#m45">Authentication_OTPGenerate_With_Valid_Request_Smoke_Pos</a></td><td rowspan="1">1563193005132</td><td rowspan="1">2</td></tr><tr><th colspan="4">AuthenticationTest &#8212; passed</th></tr><tr class="passedeven"><td rowspan="1">io.mosip.authentication.idRepository.prerequiste.CreateVID</td><td><a href="#m46">Authenticaiton_CreateVID</a></td><td rowspan="1">1563192884686</td><td rowspan="1">277</td></tr></tbody>
+</table>
+<h2>AuthenticationTest</h2><h3 id="m0">io.mosip.authentication.idRepository.prerequiste.CreateUinRecord#Create UIN</h3><table class="result"><tr><th>Messages</th></tr><tr><td><div class="messages"><b><u>UIN create request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th>Exception</th></tr><tr><td><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.idRepository.prerequiste.CreateUinRecord.createUinDataTest(CreateUinRecord.java:194)
+	at io.mosip.authentication.idRepository.prerequiste.CreateUinRecord.generateUINTestData(CreateUinRecord.java:134)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m1">io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord#Update VID</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.NullPointerException
+	at io.mosip.authentication.fw.util.FileUtil.getFolders(FileUtil.java:44)
+	at io.mosip.authentication.fw.util.DataProviderClass.getDataProvider(DataProviderClass.java:26)
+	at io.mosip.authentication.idRepository.prerequiste.UpdateUinRecord.updateUINTestData(UpdateUinRecord.java:120)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m2">io.mosip.authentication.idRepository.prerequiste.UpdateVID#Update VID</h3><table class="result"><tr><th>Exception</th></tr><tr><td><div class="stacktrace">java.lang.NullPointerException
+	at io.mosip.authentication.fw.util.FileUtil.getFolders(FileUtil.java:44)
+	at io.mosip.authentication.fw.util.DataProviderClass.getDataProvider(DataProviderClass.java:26)
+	at io.mosip.authentication.idRepository.prerequiste.UpdateVID.updateVidStatus(UpdateVID.java:129)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m3">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_PolicyWithoutAge_Demo_smoke_For UIN_Neg_29</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@4ba66828</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_PolicyWithoutAge_Demo_smoke_For UIN_Neg_29</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m4">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_PolicyWithoutDOBDemo_smoke_For UIN_Neg_27</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@665951bb</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_PolicyWithoutDOBDemo_smoke_For UIN_Neg_27</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m5">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_PolicyWithoutEmail_Demo_smoke_For UIN_Neg_28</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@d4db3bf</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_PolicyWithoutEmail_Demo_smoke_For UIN_Neg_28</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m6">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_PolicyWithoutFinger_Bio_smoke_For UIN_Neg_31</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@3e57394</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_PolicyWithoutFinger_Bio_smoke_For UIN_Neg_31</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m7">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_PolicyWithoutGenderDemo_smoke_For UIN_Neg_26</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@5716c7b</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_PolicyWithoutGenderDemo_smoke_For UIN_Neg_26</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m8">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_PolicyWithoutIris_Bio_smoke_For UIN_Neg_33</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@6ba19aaa</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_PolicyWithoutIris_Bio_smoke_For UIN_Neg_33</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m9">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_PolicyWithoutPhone_Demo_smoke_For UIN_Neg_30</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@f4f6a5f</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_PolicyWithoutPhone_Demo_smoke_For UIN_Neg_30</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m10">io.mosip.authentication.tests.AuthPartnerAuthentication#Authentication_AuthPartnerValidation_smoke_For UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@2a2ad842</td><td>/ida/PartnerValidation/AuthPartner</td><td>Authentication_AuthPartnerValidation_smoke_For UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.AuthPartnerAuthentication.authPartnerAuthenticationTest(AuthPartnerAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m11">io.mosip.authentication.tests.BiometricAuthentication#Authentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@3a79a02</td><td>/ida/Bio/Face</td><td>Authentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.BiometricAuthentication.biometricAuthenticationTest(BiometricAuthentication.java:181)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m12">io.mosip.authentication.tests.BiometricAuthentication#Authentication_Biometric_Finger_LeftIndex_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@5ead9c2d</td><td>/ida/bio/AuthWithFingerPrint</td><td>Authentication_Biometric_Finger_LeftIndex_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.BiometricAuthentication.biometricAuthenticationTest(BiometricAuthentication.java:181)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m13">io.mosip.authentication.tests.BiometricAuthentication#Authentication_Biometric_Finger_RightIndex_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@3c621646</td><td>/ida/bio/AuthWithFingerPrint</td><td>Authentication_Biometric_Finger_RightIndex_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.BiometricAuthentication.biometricAuthenticationTest(BiometricAuthentication.java:181)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m14">io.mosip.authentication.tests.BiometricAuthentication#Authentication_Biometric_Finger_RightIndex_VID_smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@3e7ac88c</td><td>/ida/bio/AuthWithFingerPrint</td><td>Authentication_Biometric_Finger_RightIndex_VID_smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: null<br/><b> Output validation for: </b>Status Code<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/><b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/auth/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "transactionID": "2042834632",
+  "version": "1.0",
+  "id": "mosip.identity.auth",
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-003",
+      "errorMessage": "Unable to decrypt Request"
+    }
+  ],
+  "responseTime": "2019-07-15T17:52:18.090+05:30",
+  "response": {
+    "authStatus": false
+  }
+}</textarea></pre><br/><b> Output validation for: </b>D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\bio\AuthWithFingerPrint\Authentication_Biometric_Finger_RightIndex_VID_smoke_Pos\output-1-actual-res.json vs D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\bio\AuthWithFingerPrint\Authentication_Biometric_Finger_RightIndex_VID_smoke_Pos\output-1-expected-y-res.json<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>response.authStatus</td>
+    <td>true</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>response.staticToken</td>
+    <td>TOKENID:NoVIDLoaded.1873299273</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.auth</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>2042834632</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+</table></div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at response output validation
+	at io.mosip.authentication.tests.BiometricAuthentication.biometricAuthenticationTest(BiometricAuthentication.java:187)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m15">io.mosip.authentication.tests.BiometricAuthentication#Authentication_Biometric_Iris_With_Left_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@462570e0</td><td>/ida/bio/AuthWithIris</td><td>Authentication_Biometric_Iris_With_Left_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.BiometricAuthentication.biometricAuthenticationTest(BiometricAuthentication.java:181)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m16">io.mosip.authentication.tests.BiometricAuthentication#Authentication_Biometric_Iris_With_Right_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@1d630ac</td><td>/ida/bio/AuthWithIris</td><td>Authentication_Biometric_Iris_With_Right_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.BiometricAuthentication.biometricAuthenticationTest(BiometricAuthentication.java:181)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m17">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Address_With_primary and secondary lang_for VID_smoke_pos_38</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@4ab8a260</td><td>/ida/Demo/AuthWithAddress</td><td>Authentication_Demographic_Address_With_primary and secondary lang_for VID_smoke_pos_38</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: null<br/><b> Output validation for: </b>Status Code<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/><b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/auth/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "transactionID": "3582072684",
+  "version": "1.0",
+  "id": "mosip.identity.auth",
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-003",
+      "errorMessage": "Unable to decrypt Request"
+    }
+  ],
+  "responseTime": "2019-07-15T17:48:20.929+05:30",
+  "response": {
+    "authStatus": false
+  }
+}</textarea></pre><br/><b> Output validation for: </b>D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\Demo\AuthWithAddress\Authentication_Demographic_Address_With_primary and secondary lang_for VID_smoke_pos_38\output-1-actual-res.json vs D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\Demo\AuthWithAddress\Authentication_Demographic_Address_With_primary and secondary lang_for VID_smoke_pos_38\output-1-expected-y-res.json<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>response.authStatus</td>
+    <td>true</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>response.staticToken</td>
+    <td>TOKENID:NoVIDLoaded.1873299273</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.auth</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>3582072684</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+</table></div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at response output validation
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:188)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m18">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Address_With_primary and secondary lang_smoke_pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@16ea1a59</td><td>/ida/Demo/AuthWithAddress</td><td>Authentication_Demographic_Address_With_primary and secondary lang_smoke_pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m19">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Address_With_primary lang_smoke_pos_02</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@505d318</td><td>/ida/Demo/AuthWithAddress</td><td>Authentication_Demographic_Address_With_primary lang_smoke_pos_02</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m20">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Address_With_secondary lang_smoke_pos_03</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@2d77eb9b</td><td>/ida/Demo/AuthWithAddress</td><td>Authentication_Demographic_Address_With_secondary lang_smoke_pos_03</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m21">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Age_smoke_For IntegrationTest_UIN_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@2b8b3ba</td><td>/ida/Demo/AuthWithAge</td><td>Authentication_Demographic_Age_smoke_For IntegrationTest_UIN_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u> Identity request:</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "identityRequest": {
+    "demographics": {
+      "age": "No Record found for the UIN: $UIN$"
+    },
+    "timestamp": "2019-07-15T17:46:43.043+05:30"
+  }
+}</textarea></pre><br/><b> <u>Encryption of identity request</u> </b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "encryptedSessionKey": "sHd4tty-XKpav-LxKFR-DJ4Bkzg7DSP0UlPw9f5eE_8nK_F4pmy51HqCtfzunj1EZgzidNqkmZq9dCoIDzHn2qwPMsTW7O8r805nDq347vTI2c1s3re7T-fRYcCqbuVtxyUDHle8qQrzD2Y-z5aPje6FPcecB62KfHE9KP1nvwzSJReQl9eTn_Tzy9Ma5d5NHkB0_I7LRu-syUc9OokwQe2Iy9PmNapPnjbPGmh30b_QXbcPOiYuPo735violPSpJliI6nO-tcIHq5iQ97mK0Bu2N6iiMfzNOqWaV8iikdzO1o_JIUi2YzgqpMiRg_Wg3PFx1T6OCXQFIL3H_4jgDw",
+  "encryptedIdentity": "sDI1bllqkkAMLP-bGTH6C9Cnmvr9ciTHhoeyuotZxJuYf99LESEOpmlm8GDUHoRM908FxYmLfp744RADuzBVaNWQag8OlvNUuFAJOqtmxPPwJJZ-_eBruNUK4QZ37fhj3O9LhRLYqnybxhbbMc7I-qQSDP0Fhq-hDmoLXn4cVzo",
+  "requestHMAC": "W8ncb07z3i-LNRm2gDdbVhmfrL2GJ7mohaoNppbovSBH_IDJLjwzOx6mJES4i2byEJ7NRFCW-hK3rcarnZlFzqapUhjyqru6AXNyF-AVgrqb1xQ0bQuygxGTbcyczK9d"
+}</textarea></pre><br/><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m22">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_DateOfBirth_smoke_For IntegrationTest_UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@33c8c19e</td><td>/ida/Demo/AuthWithDateOfBirth</td><td>Authentication_Demographic_DateOfBirth_smoke_For IntegrationTest_UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u> Identity request:</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "identityRequest": {
+    "demographics": {
+      "dob": "No Record found for the UIN: $UIN$"
+    },
+    "timestamp": "2019-07-15T17:45:46.046+05:30"
+  }
+}</textarea></pre><br/><b> <u>Encryption of identity request</u> </b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "encryptedSessionKey": "mOVtA9_wq5psQokZt0EIQ2v_WVypQawuetauFwj1M0NHvMI0nco4EN69v76-fHYHAyNOxKf52ZJ1MJkOAkBtvqIQS5fSZvRwEzNcFu209glyplegtprIwFwl2OJTTTPE9TlBFLVUOcRz9pay8fLzWwLk3AWFOMaOJjzgXtdzFkiqYmKERiS8I9o9vQy6RHAqqkv1eymQzweLrZAPVtZkmPrVScbhpkIt5ghH11lu34GnVAih0X6Pu6EQ5-pWk5ZBZNPzG1o1zVNMInUbklB_fVlhuwJxkF39yDyMBMVdulD_tc38YchpvCkzm9jX2fV3tE72-fDcY8QSDuOlsOuX_A",
+  "encryptedIdentity": "AfhMxlXvKaksWz7KbswWB5NnXY-CA3NTolCajOFMjaMS3kM0bm7U8-wWO-nAMYyfqc_yoOBddrQRztXrWaKE-uVXrbFAzxAH7mVdRw2I0i1GZX79uSxDtmfg3eix5WMgeIn_ixpFy3-XWRuHZ5mpqkoP3LoTL5q522SR_XPrqP8",
+  "requestHMAC": "-Y92Ij6yelibogPTUCbRXjoDnM1oL5Zt0EAGhPQnXK-JgGNaNlmKE4v3RvTEtq9XnLnGpBxkf0GqBmfqa2EXF9RLzccYLPYn8s0Fo_F1_swHxEe6NxKDRy1rknHdpgl8"
+}</textarea></pre><br/><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m23">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_EmailId_smoke_For IntegrationTest_UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@2c387eed</td><td>/ida/Demo/AuthWithEmail</td><td>Authentication_Demographic_EmailId_smoke_For IntegrationTest_UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u> Identity request:</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "identityRequest": {
+    "demographics": {
+      "emailId": "No Record found for the UIN: $UIN$"
+    },
+    "timestamp": "2019-07-15T17:46:31.031+05:30"
+  }
+}</textarea></pre><br/><b> <u>Encryption of identity request</u> </b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "encryptedSessionKey": "Hu_hAeDwFuw7x1NjvsdQ5Il3Um1VmN5lvVLKlTifZXNFBEMagzjnPYNTM1R1NNmrESQ6C4wdLf4Lq_iU7GvvIF0lkgyN7Y8JmjNxz1BLs45gphBRwuxWmdbsnd-Vk4-4qGDsPqRz8jYzOm-JT6jbSptaSCLUObs0ZtZUD__Q1LTbeFbRYGPzKhCNicgsRswePGrDiIeOhUQQVPDnC4LwPKh8tQ1BEZRgGTlW_KKk0wOIC8YLqf9uGPLgYFK36pJebkfO-6gNnHLjbnfG2XKGMPECAWPOD_Dhi1plyFFaGnDw4zKLlWIj3ZdSuh51tyNxRegIdh3gFGwGGV1Fk8h7aQ",
+  "encryptedIdentity": "0OGQfrBCJ5wpuctByNzyL3-Z33Kn_vq3SXESO_LeDcaCJ2rWSPsTkMYrdLZng-J7yU7gPQP74svTmdNbaNqdj17M-SwsL_TnAN_WsSAcjYjFQtnccAEg3CKNX5BUkUI_RvnjCs_-pUouMJOhAj1FmqqTggkGRhUhYdeM6K56Ino",
+  "requestHMAC": "gA_s5KTDLybsoQC_L1HB4Dj7St6Zo8F2vyMl5718gOJADz1T2pDxl7Hpkkg9oHVBoO76F9ZAmRjhaMDnlRc0QhWM5kgQRkOLjUNAT3YlJN1eXn0BSS6g8k5ZCIY5a1qx"
+}</textarea></pre><br/><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m24">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Gender_With arabic language_smoke_For UIN_Pos_02</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@76bf9a31</td><td>/ida/Demo/AuthWithGender</td><td>Authentication_Demographic_Gender_With arabic language_smoke_For UIN_Pos_02</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m25">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Gender_With both language_smoke_For UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@23d56991</td><td>/ida/Demo/AuthWithGender</td><td>Authentication_Demographic_Gender_With both language_smoke_For UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m26">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Gender_With french language_smoke_For UIN_Pos_03</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@59b07d4a</td><td>/ida/Demo/AuthWithGender</td><td>Authentication_Demographic_Gender_With french language_smoke_For UIN_Pos_03</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m27">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For IntegrationTest_UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@307aba7c</td><td>/ida/Demo/Name</td><td>Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For IntegrationTest_UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m28">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Name_WithSecLang_Smoke_For UIN_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@1985cc74</td><td>/ida/Demo/Name</td><td>Authentication_Demographic_Name_WithSecLang_Smoke_For UIN_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m29">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_Name_smoke_For UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@1aec3dca</td><td>/ida/Demo/Name</td><td>Authentication_Demographic_Name_smoke_For UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m30">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_PhoneNumber_smoke_For IntegrationTest_UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@434d0fd4</td><td>/ida/Demo/AuthWithPhoneNumber</td><td>Authentication_Demographic_PhoneNumber_smoke_For IntegrationTest_UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u> Identity request:</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "identityRequest": {
+    "demographics": {
+      "phoneNumber": "No Record found for the UIN: $UIN$"
+    },
+    "timestamp": "2019-07-15T17:46:34.034+05:30"
+  }
+}</textarea></pre><br/><b> <u>Encryption of identity request</u> </b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "encryptedSessionKey": "nJ3K9OcvsaJ28psiShOFyfk_xoqzqThXmi7JpNRGOu8-uSebJ8IVV4Z8lqJvndrOplmY7LqGXZsbTK2sI8fs-75cXyhUAaiqIvmrXtmRHxhl9rUThReljvIMs46bTOhdgzjpfI6_0PLs-bf1mlCwVR66al8TPsJbnqn3Wi145nzVf9UZ6K7sNbGj0_0ztJtYi5KvU_nJY2xOpMSCg9vd6MZ2iRKUFiyXC1s-T3eVFC6SwRByb_nEgz1lSWESaOcW4wJBQEgDo2b37_-uZCTUsWz8Ff9bIsUq2mRirczac-plh3WLcNF4h1TMO5YO2_khGhlbuAqvQ0xuaYoEwbynFQ",
+  "encryptedIdentity": "abxFz_0AeFH__AQE_ulYgt4Qvn6Ttylvz96YIk7vdSowBZn2FBDIQBSDmyVnf4MrH6-PsJLztTPMPTup5xxcU60mAyhPprFwVfhbDrw1X1xF1oXvfRkVJ12SXwq81AFfpZpVl4yJ_68vM4o9T66K6TYtupRD911WronW1YUhenxhwGpIL9LisSq_h8hQvLwI",
+  "requestHMAC": "-FE2YhdCPZfC0i08uBD4cLrE1Y4LZFs3J0Z5e28gFi_-zdFBaGEuK9yufOQJK3E7IHWaPzcrKrlE5hyzlzrj5FE56TrNrFe0OpDuUcEFg5eXADZ-UGVKF12OmQs0B98h"
+}</textarea></pre><br/><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m31">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_fullAddress_With_primary and secondary lang_smoke_pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@41e546c0</td><td>/ida/Demo/AuthWithAddress</td><td>Authentication_Demographic_fullAddress_With_primary and secondary lang_smoke_pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m32">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_fullAddress_With_primary lang_smoke_pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@7a2bfd8d</td><td>/ida/Demo/AuthWithAddress</td><td>Authentication_Demographic_fullAddress_With_primary lang_smoke_pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m33">io.mosip.authentication.tests.DemographicAuthentication#Authentication_Demographic_fullAddress_With_secondary lang_smoke_pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@4aa51057</td><td>/ida/Demo/AuthWithAddress</td><td>Authentication_Demographic_fullAddress_With_secondary lang_smoke_pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of demo auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.DemographicAuthentication.demographicAuthenticationTest(DemographicAuthentication.java:182)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 43 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m34">io.mosip.authentication.tests.EkycPartnerAuthentication#Autheticate_EkycPartner_smoke_For UIN_Pos_01</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@526b1c7d</td><td>/ida/PartnerValidation/EkycPartner</td><td>Autheticate_EkycPartner_smoke_For UIN_Pos_01</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.EkycPartnerAuthentication.ekycPartnerAuthenticationTest(EkycPartnerAuthentication.java:175)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m35">io.mosip.authentication.tests.EkycWithBiometricAuthentication#Authentication_Biometric_EKYC_FACE_With_secondary_lang_With_smoke_VID_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@416aee4c</td><td>/ida/Ekyc/AuthWithBiometric</td><td>Authentication_Biometric_EKYC_FACE_With_secondary_lang_With_smoke_VID_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: null<br/><b> Output validation for: </b>Status Code<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/><b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/kyc/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "transactionID": "1754404028",
+  "version": "1.0",
+  "id": "mosip.identity.kyc",
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-003",
+      "errorMessage": "Unable to decrypt Request"
+    }
+  ],
+  "responseTime": "2019-07-15T17:55:04.980+05:30",
+  "response": {
+    "kycStatus": false
+  }
+}</textarea></pre><br/><b> Output validation for: </b>D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\Ekyc\AuthWithBiometric\Authentication_Biometric_EKYC_FACE_With_secondary_lang_With_smoke_VID_Pos\output-1-actual-res.json vs D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\Ekyc\AuthWithBiometric\Authentication_Biometric_EKYC_FACE_With_secondary_lang_With_smoke_VID_Pos\output-1-expected-y-res.json<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>response.identity</td>
+    <td>$DECODE$->output-2-expected-decoded-two-lang-kyc-res.json</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>response.staticToken</td>
+    <td>TOKENID:NoVIDLoaded.1873299273</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.kyc</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>response.kycStatus</td>
+    <td>true</td>
+    <td>false</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>1754404028</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+</table></div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at output response validation
+	at io.mosip.authentication.tests.EkycWithBiometricAuthentication.idaEkycWithBiometricAuthenticationTest(EkycWithBiometricAuthentication.java:189)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m36">io.mosip.authentication.tests.EkycWithBiometricAuthentication#Authentication_Biometric_EKYC_FACE_With_secondary_lang_smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@3b3ddc5c</td><td>/ida/Ekyc/AuthWithBiometric</td><td>Authentication_Biometric_EKYC_FACE_With_secondary_lang_smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.EkycWithBiometricAuthentication.idaEkycWithBiometricAuthenticationTest(EkycWithBiometricAuthentication.java:183)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m37">io.mosip.authentication.tests.EkycWithBiometricAuthentication#Authentication_EKYC_Biometric_Finger_with_primary_lang_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@25605db0</td><td>/ida/Ekyc/AuthWithBiometric</td><td>Authentication_EKYC_Biometric_Finger_with_primary_lang_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.EkycWithBiometricAuthentication.idaEkycWithBiometricAuthenticationTest(EkycWithBiometricAuthentication.java:183)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m38">io.mosip.authentication.tests.EkycWithBiometricAuthentication#Authentication_EYC_Biometric_Iris_With_Left_primary_lang_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@a7a4887</td><td>/ida/Ekyc/AuthWithBiometric</td><td>Authentication_EYC_Biometric_Iris_With_Left_primary_lang_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.EkycWithBiometricAuthentication.idaEkycWithBiometricAuthenticationTest(EkycWithBiometricAuthentication.java:183)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m39">io.mosip.authentication.tests.EkycWithOtpAuthentication#Authentication_KYC_OTP_With secondary language_UIN_smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@3d3f2a80</td><td>/ida/Ekyc/AuthWithOtp</td><td>Authentication_KYC_OTP_With secondary language_UIN_smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Otp generation request</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>null</textarea></pre></div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST otp-request
+	at io.mosip.authentication.tests.EkycWithOtpAuthentication.idaEkycWithOtpAuthenticationTest(EkycWithOtpAuthentication.java:175)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m40">io.mosip.authentication.tests.InternalBiometricAuthentication#InternalAuthentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@e197e28</td><td>/ida/InternalAuth/Bio</td><td>InternalAuthentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.InternalBiometricAuthentication.internalBiometricAuthenticationTest(InternalBiometricAuthentication.java:195)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m41">io.mosip.authentication.tests.InternalBiometricAuthentication#InternalAuthentication_Biometric_Finger_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@3973e62b</td><td>/ida/InternalAuth/Bio</td><td>InternalAuthentication_Biometric_Finger_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.InternalBiometricAuthentication.internalBiometricAuthenticationTest(InternalBiometricAuthentication.java:195)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m42">io.mosip.authentication.tests.InternalBiometricAuthentication#InternalAuthentication_Biometric_Iris_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@5d47209e</td><td>/ida/InternalAuth/Bio</td><td>InternalAuthentication_Biometric_Iris_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Modification of bio auth request</u></b><br/>Exception Occured in message precondtion: No content to map due to end-of-input
+ at [Source: (String)""; line: 1, column: 0]</div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST request
+	at io.mosip.authentication.tests.InternalBiometricAuthentication.internalBiometricAuthenticationTest(InternalBiometricAuthentication.java:195)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m43">io.mosip.authentication.tests.OtpAuthentication#Authentication_OTP_For VID_smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@665a64c</td><td>/ida/Otp/OtpAuthentication</td><td>Authentication_OTP_For VID_smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Otp generation request</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "(otpChannel)[0]": "EMAIL",
+  "(otpChannel)[1]": "PHONE",
+  "id": "mosip.identity.otp",
+  "individualId": "NoVIDLoaded",
+  "individualIdType": "VID",
+  "otpChannel": [
+    "EMAIL",
+    "PHONE"
+  ],
+  "requestTime": "2019-07-15T17:55:11.011+05:30",
+  "transactionID": "0582711272",
+  "version": "1.0"
+}</textarea></pre><br/><b> Output validation for: </b>Status Code<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>STATUS CODE</td>
+    <td>200</td>
+    <td>200</td>
+    <td bgcolor='Green'>PASS</td>
+  </tr>
+</table><br/><b><u>Actual Response Content: </u></b>(EndPointUrl: https://qa.mosip.io/idauthentication/v1/otp/1873299273/735899345) <pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>{
+  "id": "mosip.identity.otp",
+  "version": "1.0",
+  "transactionID": "0582711272",
+  "responseTime": "2019-07-15T17:57:11.832+05:30",
+  "errors": [
+    {
+      "errorCode": "IDA-MLC-004",
+      "errorMessage": "Invalid VID",
+      "actionMessage": "Please retry with correct VID"
+    }
+  ]
+}</textarea></pre><br/><b> Output validation for: </b>D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\Otp\OtpAuthentication\Authentication_OTP_For VID_smoke_Pos\output-1-actual-res.json vs D:\codeFreeze\mosip\e2etestrig\e2etests\target\classes\MosipTemporaryTestResource\ida\Otp\OtpAuthentication\Authentication_OTP_For VID_smoke_Pos\output-1-expected-otp-gen-res.json<br/><table width='90%' charset='UTF8'>
+  <tr>
+    <th>FieldName</th>
+    <th>Expected Value</th> 
+    <th>Actual Value</th>
+    <th>Status</th>
+  </tr>
+  <tr>
+    <td>responseTime</td>
+    <td>$TIMESTAMP$</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>response.maskedEmail</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>response.maskedMobile</td>
+    <td>$REGEXP:XX.*XX.*$</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>id</td>
+    <td>mosip.identity.otp</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+  <tr>
+    <td>transactionID</td>
+    <td>0582711272</td>
+    <td>NOT AVAILABLE</td>
+    <td bgcolor='RED'>FAIL</td>
+  </tr>
+</table></div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at otp-generate-response output validation
+	at io.mosip.authentication.tests.OtpAuthentication.idaOtpAuthenticationTest(OtpAuthentication.java:189)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m44">io.mosip.authentication.tests.OtpAuthentication#Authentication_OTP_IntegrationTest_UIN_1_smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@6cb5affb</td><td>/ida/Otp/OtpAuthentication</td><td>Authentication_OTP_IntegrationTest_UIN_1_smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Otp generation request</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>null</textarea></pre></div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST otp-generate-request
+	at io.mosip.authentication.tests.OtpAuthentication.idaOtpAuthenticationTest(OtpAuthentication.java:183)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m45">io.mosip.authentication.tests.OtpGeneration#Authentication_OTPGenerate_With_Valid_Request_Smoke_Pos</h3><table class="result"><tr class="param"><th>Parameter #1</th><th>Parameter #2</th><th>Parameter #3</th></tr><tr class="param stripe"><td>io.mosip.authentication.fw.util.TestParameters@732328e5</td><td>/ida/Otp/OtpGenerate</td><td>Authentication_OTPGenerate_With_Valid_Request_Smoke_Pos</td></tr><tr><th colspan="3">Messages</th></tr><tr><td colspan="3"><div class="messages"><b><u>Otp generation request</u></b><br/><pre><textarea style='border:solid 1px white;' name='message' rows='20' cols='160' readonly='true'>null</textarea></pre></div></td></tr><tr><th colspan="3">Exception</th></tr><tr><td colspan="3"><div class="stacktrace">io.mosip.authentication.fw.util.AuthenticationTestException: Failed at HTTP-POST otp-generate-request
+	at io.mosip.authentication.tests.OtpGeneration.otpGenerationTest(OtpGeneration.java:183)
+	at io.mosip.testrunner.MosipTestRunner.startTestRunner(MosipTestRunner.java:53)
+	at io.mosip.authentication.e2e.AuthenticationE2E.performAuthE2E(AuthenticationE2E.java:10)
+	at io.mosip.e2e.tests.AuthenticationTests.authenticateTest(AuthenticationTests.java:15)
+	at io.mosip.e2e.runner.EndToEndRun.main(EndToEndRun.java:28)
+... Removed 44 stack frames</div></td></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+<h3 id="m46">io.mosip.authentication.idRepository.prerequiste.CreateVID#Authenticaiton_CreateVID</h3><table class="result"><tr><th class="invisible"/></tr></table><p class="totop"><a href="#summary">back to summary</a></p>
+</body>
+</html>

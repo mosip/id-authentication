@@ -1,0 +1,11 @@
+{
+  "errors": [
+    {
+      "errorCode": "IDR-IDC-002",
+      "message": "Invalid Input Parameter - id"
+    }
+  ],
+  "id": "mosip.id.create",
+  "responsetime": "$IGNORE$",
+  "version": "v1"
+}

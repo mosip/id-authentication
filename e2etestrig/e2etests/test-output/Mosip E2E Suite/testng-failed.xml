@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Mosip E2E Suite]">
+  <listeners>
+    <listener class-name="io.mosip.e2e.report.CustomTestNGReporter"/>
+  </listeners>
+  <test thread-count="5" name="AuthenticationTests(failed)">
+    <classes>
+      <class name="io.mosip.e2e.tests.AuthenticationTests">
+        <methods>
+          <include name="authenticateTest"/>
+        </methods>
+      </class> <!-- io.mosip.e2e.tests.AuthenticationTests -->
+    </classes>
+  </test> <!-- AuthenticationTests(failed) -->
+</suite> <!-- Failed suite [Mosip E2E Suite] -->

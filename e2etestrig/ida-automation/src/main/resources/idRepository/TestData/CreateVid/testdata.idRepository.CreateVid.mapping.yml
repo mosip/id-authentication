@@ -1,0 +1,351 @@
+testdata:
+  IdRepository_CreateVID_withValidParameters_For VidType_Smoke_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$  
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-y-res:
+      output.1.res.status: ACTIVE
+      output.1.res.responsetime: $IGNORE$
+      output.1.res.version: $version$
+      output.1.res.VID: $IGNORE$
+      output.1.res.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_withInvalidVersion_For VidType_Temporary:
+    input.create-request:
+      version: $TestData:id_version_invalid$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidVersion:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidVersion:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+ 
+  IdRepository_CreateVID_withInvalidUIN_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $TestData:uin_invalid$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidUIN:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidUIN:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+    
+  IdRepository_CreateVID_withInvalidRequestTime_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMP$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidRequestTime:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidRequestTime:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+  
+  IdRepository_CreateVID_withInvalidVidType_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: 2793094674
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_Invalid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidVidType:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidVidType:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_withInvalidId_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_AddIdentity_Invalid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidId:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidId:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+    
+  IdRepository_CreateVID_withMissingVersion_For VidType_Temporary:
+    input.create-request:
+      version: $REMOVE$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingVersion:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingVersion:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_withMissingUIN_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $REMOVE$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingUIN:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingUIN:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+    
+  IdRepository_CreateVID_withMissingRequestTime_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $REMOVE$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingRequestTime:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingRequestTime:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+  
+  IdRepository_CreateVID_withMissingVidType_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $REMOVE$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingVidType:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingVidType:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_withMissingIdForTemporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $REMOVE$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingId:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingId:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+      
+  IdRepository_CreateVID_withInvalidVersion_For VidType_Perpetual:
+    input.create-request:
+      version: $TestData:id_version_invalid$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidVersion:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidVersion:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+    
+  IdRepository_CreateVID_withInvalidUIN_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $TestData:uin_invalid$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidUIN:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidUIN:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+    
+  IdRepository_CreateVID_withInvalidRequest_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMP$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidRequestTime:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidRequestTime:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+  
+  IdRepository_CreateVID_withInvalidVidType_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: 2793094674
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_Invalid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidVidType:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidVidType:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_withInvalId_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_AddIdentity_Invalid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidInvalidId:errorMessage$
+      output.1.res.n.errorCode: $errors:VidInvalidId:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+    
+  IdRepository_CreateVID_withMissingVersion_For VidType_Perpetual:
+    input.create-request:
+      version: $REMOVE$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingVersion:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingVersion:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_withMissingUIN_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $REMOVE$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingUIN:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingUIN:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+    
+  IdRepository_CreateVID_withMissingRequestTime_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $REMOVE$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingRequestTime:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingRequestTime:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$  
+  
+  IdRepository_CreateVID_withMissingVidType_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $REMOVE$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingVidType:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingVidType:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_withMissingId_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $UIN$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $REMOVE$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:VidMissingId:errorMessage$
+      output.1.res.n.errorCode: $errors:VidMissingId:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_with DeActivated UIN_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN:WITH:Deactivated$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:DeactivatedUINForVid:errorMessage$
+      output.1.res.n.errorCode: $errors:DeactivatedUINForVid:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_with Blocked UIN_For VidType_Temporary:
+    input.create-request:
+      version: $version$
+      UIN: $UIN:WITH:Blocked$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Temporary_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:BlockedUINForVid:errorMessage$
+      output.1.res.n.errorCode: $errors:BlockedUINForVid:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+      
+  IdRepository_CreateVID_with DeActivated UIN_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $UIN:WITH:Deactivated$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:DeactivatedUINForVid:errorMessage$
+      output.1.res.n.errorCode: $errors:DeactivatedUINForVid:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+  
+  IdRepository_CreateVID_with Blocked UIN_For VidType_Perpetual:
+    input.create-request:
+      version: $version$
+      UIN: $UIN:WITH:Blocked$
+      requesttime: $TIMESTAMPZ$
+      vidType: $TestData:vidType_Perpetual_valid$
+      id: $TestData:id_CreateVid_valid$
+    output.output-1-expected-n-res:
+      output.1.res.n.responsetime: $IGNORE$
+      output.1.res.n.version: $version$
+      output.1.res.n.errormessage: $errors:BlockedUINForVid:errorMessage$
+      output.1.res.n.errorCode: $errors:BlockedUINForVid:errorCode$
+      output.1.res.n.id: $TestData:id_CreateVid_valid$
+   

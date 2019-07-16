@@ -1,0 +1,88 @@
+{
+	"id": "mosip.pre-registration.demographic.create",
+	"version": "1.0",
+	"requesttime": "2019-01-22T07:22:57.086Z",
+	"request": {
+		"langCode": "fra",
+		"demographicDetails": {
+			"identity": {
+				"CNIENumber": "2864123456765432",
+				"gender": [{
+					"language": "eng",
+					"value": "MLE"
+				}, {
+					"language": "ara",
+					"value": "MLE"
+				}],
+				"city": [{
+					"language": "eng",
+					"value": "KNT"
+				}, {
+					"language": "ara",
+					"value": "KNT"
+				}],
+				"postalCode": "14022",
+				"fullName": [{
+					"language": "eng",
+					"value": "جَگَدِسهوَرِ سِلڤَرَج"
+				}, {
+					"language": "ara",
+					"value": "Shashank"
+				}],
+				"localAdministrativeAuthority": [{
+					"language": "eng",
+					"value": "SATZ"
+				}, {
+					"language": "ara",
+					"value": "SATZ"
+				}],
+				"dateOfBirth": "1993/09/12",
+				"IDSchemaVersion": 1,
+				"province": [{
+					"language": "eng",
+					"value": "KTA"
+				}, {
+					"language": "ara",
+					"value": "KTA"
+				}],
+				"phone": "9680958812",
+				"addressLine1": [{
+					"language": "eng",
+					"value": "مِندترِِ پهَسِ ٢، گلُبَل ڤِللَگِ"
+				}, {
+					"language": "ara",
+					"value": "mindtree phase 2, global village"
+				}],
+				"residenceStatus": [{
+					"language": "eng",
+					"value": "FR"
+				}, {
+					"language": "ara",
+					"value": "FR"
+				}],
+				"addressLine2": [{
+					"language": "eng",
+					"value": "كَرنَتَكَ"
+				}, {
+					"language": "ara",
+					"value": "Karnataka"
+				}],
+				"addressLine3": [{
+					"language": "eng",
+					"value": ""
+				}, {
+					"language": "ara",
+					"value": ""
+				}],
+				"region": [{
+					"language": "eng",
+					"value": "RSK"
+				}, {
+					"language": "ara",
+					"value": "RSK"
+				}],
+				"email": "shashank@mindtree.com"
+			}
+		}
+	}
+}

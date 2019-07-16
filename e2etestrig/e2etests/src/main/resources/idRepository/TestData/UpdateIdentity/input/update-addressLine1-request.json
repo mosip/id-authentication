@@ -1,0 +1,26 @@
+{
+	"id": "mosip.id.update",
+	"request": {
+		"registrationId": "27847657360002520190205113339",
+
+		"identity": {
+		"UIN": 6738521981,
+        "addressLine1": [
+				{
+					"language": "eng",
+					"value": "25 RUE PASTEUR"
+				},
+				{
+					"language": "ara",
+					"value": "25 أسف باستور"
+				},
+				{
+					"language": "fra",
+					"value": "25 RUE PASTEUR"
+				}
+			]
+		}
+	},
+	"requesttime": "2018-02-05T06:12:25.288Z",
+	"version": "v1"
+}
