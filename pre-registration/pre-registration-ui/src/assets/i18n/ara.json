@@ -525,7 +525,8 @@
     "action_dismiss": "حسنا",
     "action_add": "إضافة",
     "action_close": "قريب",
-    "action_add_to_slot": "أضف إلى الفتحة"
+    "action_add_to_slot": "أضف إلى الفتحة",
+    "navigation_alert": "Are you sure you would like to navigate away as data entered will not be saved. Please confirm(ARA)"
   },
   "centerSelection": {
     "title": " موعد الكتاب ",

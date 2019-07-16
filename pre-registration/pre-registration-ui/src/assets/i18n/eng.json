@@ -526,7 +526,8 @@
     "action_dismiss": "Ok",
     "action_add": "Add",
     "action_close": "Close",
-    "action_add_to_slot": "Add to Slot"
+    "action_add_to_slot": "Add to Slot",
+    "navigation_alert": "Are you sure you would like to navigate away as data entered will not be saved. Please confirm"
   },
   "centerSelection": {
     "title": " Book Appointment ",

@@ -21,18 +21,22 @@
 .form_wrapper {
   margin: 4% 0%;
   line-height: 2.8rem;
+  height: 66vh;
 }
 
 .form_fields_padding {
   margin: 30px auto;
+  width: 47vw;
 }
 
 .heading {
   font-size: 2rem;
+  text-align: center;
 }
 
 .subHeading {
   font-size: 1.5rem;
+  text-align: center;
 }
 
 mat-form-field {

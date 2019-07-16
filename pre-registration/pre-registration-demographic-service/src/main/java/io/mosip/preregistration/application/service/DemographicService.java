@@ -11,7 +11,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.SystemUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -27,7 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -35,8 +33,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
@@ -81,11 +77,11 @@ import io.mosip.preregistration.core.common.dto.DeleteBookingDTO;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
-import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegIdsByRegCenterIdDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
+import io.mosip.preregistration.core.common.dto.identity.DemographicIdentityRequestDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
@@ -241,6 +237,11 @@ public class DemographicService {
 	 */
 	Map<String, String> requiredRequestMap = new HashMap<>();
 
+	@Value("${preregistartion.config.identityjson}")
+	private String preregistrationIdJson;
+
+	private String getIdentityJsonString = "";
+
 	/**
 	 * This method acts as a post constructor to initialize the required request
 	 * parameters.
@@ -248,6 +249,8 @@ public class DemographicService {
 	@PostConstruct
 	public void setup() {
 		requiredRequestMap.put("version", version);
+		getIdentityJsonString = serviceUtil.getJson(preregistrationIdJson);
+
 	}
 
 	@Autowired
@@ -503,28 +506,27 @@ public class DemographicService {
 		List<DemographicViewDTO> viewList = new ArrayList<>();
 		long start = System.currentTimeMillis();
 		log.info("sessionId", "idType", "id", "for loop start time : " + DateUtils.getUTCCurrentDateTimeString());
+		JSONParser jsonParser = new JSONParser();
 		for (DemographicEntity demographicEntity : demographicEntities) {
 			log.info("sessionId", "idType", "id", "decryption start time : " + DateUtils.getUTCCurrentDateTimeString());
 			byte[] decryptedString = cryptoUtil.decrypt(demographicEntity.getApplicantDetailJson(),
 					DateUtils.getUTCCurrentDateTime());
 			log.info("sessionId", "idType", "id", "decryption end time : " + DateUtils.getUTCCurrentDateTimeString());
-			String nameValue = serviceUtil.getPreregistrationIdentityJson().getIdentity().getName().getValue();
-			String poaValue = serviceUtil.getPreregistrationIdentityJson().getIdentity().getProofOfAddress().getValue();
-			String postalCodeValue = serviceUtil.getPreregistrationIdentityJson().getIdentity().getPostalCode()
-					.getValue();
 			log.info("sessionId", "idType", "id",
 					"get document metadata start time : " + DateUtils.getUTCCurrentDateTimeString());
 			JSONObject documentJsonObject = getDocumentMetadata(demographicEntity, RequestCodes.POA.getCode());
 			log.info("sessionId", "idType", "id",
 					"get document metadata end time : " + DateUtils.getUTCCurrentDateTimeString());
-			JSONParser jsonParser = new JSONParser();
+
 			JSONObject jsonObj = (JSONObject) jsonParser.parse(new String(decryptedString));
 			JSONObject demographicMetadata = new JSONObject();
+			String nameValue = getPreregistrationIdentityJson().getIdentity().getName().getValue();
+			String poaValue = getPreregistrationIdentityJson().getIdentity().getProofOfAddress().getValue();
+			String postalCodeValue = getPreregistrationIdentityJson().getIdentity().getPostalCode().getValue();
 			demographicMetadata.put(nameValue, serviceUtil.getValueFromIdentity(decryptedString, nameValue));
 			demographicMetadata.put(postalCodeValue,
 					serviceUtil.getIdJSONValue(jsonObj.toJSONString(), postalCodeValue));
 			demographicMetadata.put(poaValue, documentJsonObject);
-
 			DemographicViewDTO viewDto = new DemographicViewDTO();
 			viewDto.setPreRegistrationId(demographicEntity.getPreRegistrationId());
 			viewDto.setStatusCode(demographicEntity.getStatusCode());
@@ -534,9 +536,7 @@ public class DemographicService {
 			BookingRegistrationDTO bookingRegistrationDTO = getAppointmentData(demographicEntity);
 			log.info("sessionId", "idType", "id",
 					"get booking details end time : " + DateUtils.getUTCCurrentDateTimeString());
-			if (bookingRegistrationDTO != null) {
-				viewDto.setBookingMetadata(bookingRegistrationDTO);
-			}
+			viewDto.setBookingMetadata(bookingRegistrationDTO);
 			viewList.add(viewDto);
 		}
 		log.info("sessionId", "idType", "id", "for loop end time : " + DateUtils.getUTCCurrentDateTimeString());
@@ -947,33 +947,22 @@ public class DemographicService {
 	private JSONObject getDocumentMetadata(DemographicEntity demographicEntity, String poa)
 			throws JsonProcessingException, ParseException {
 		String documentJsonString = "";
-		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
-		List<DocumentMultipartResponseDTO> documentMultipartResponseDTOs = new ArrayList<>();
+		JSONParser jsonParser = new JSONParser();
+		DocumentMultipartResponseDTO documentMultipartResponseDTO = new DocumentMultipartResponseDTO();
 		if (!serviceUtil.isNull(demographicEntity.getDocumentEntity())) {
 			for (DocumentEntity documentEntity : demographicEntity.getDocumentEntity()) {
-				if (documentEntity.getDocCatCode().equals(RequestCodes.POA.getCode())) {
-					DocumentMultipartResponseDTO documentMultipartResponseDTO = new DocumentMultipartResponseDTO();
+				if (documentEntity.getDocCatCode().equals(poa)) {
 					documentMultipartResponseDTO.setDocCatCode(documentEntity.getDocCatCode());
 					documentMultipartResponseDTO.setDocName(documentEntity.getDocName());
 					documentMultipartResponseDTO.setDocTypCode(documentEntity.getDocTypeCode());
 					documentMultipartResponseDTO.setDocumentId(documentEntity.getDocId());
 					documentMultipartResponseDTO.setLangCode(documentEntity.getLangCode());
-					documentMultipartResponseDTOs.add(documentMultipartResponseDTO);
-				}
-			}
-		}
-		documentsMetaData.setDocumentsMetaData(documentMultipartResponseDTOs);
-		if (documentsMetaData.getDocumentsMetaData() != null && !documentsMetaData.getDocumentsMetaData().isEmpty()) {
-			for (DocumentMultipartResponseDTO metaData : documentsMetaData.getDocumentsMetaData()) {
-				if (metaData.getDocCatCode().equals(poa)) {
-					documentJsonString = JsonUtils.javaObjectToJsonString(metaData);
-					JSONParser jsonParser = new JSONParser();
+					documentJsonString = JsonUtils.javaObjectToJsonString(documentMultipartResponseDTO);
 					return (JSONObject) jsonParser.parse(documentJsonString);
 				}
 			}
 		}
 		return null;
-
 	}
 
 	/**
@@ -990,4 +979,17 @@ public class DemographicService {
 		}
 		return listWORole;
 	}
+
+	public DemographicIdentityRequestDTO getPreregistrationIdentityJson() {
+
+		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+		try {
+			return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, DemographicIdentityRequestDTO.class);
+		} catch (IOException ex) {
+			log.error("sessionId", "idType", "id",
+					"In pre-registration service util of getPreregistrationIdentityJson- " + ex.getMessage());
+		}
+		return null;
+	}
+
 }
