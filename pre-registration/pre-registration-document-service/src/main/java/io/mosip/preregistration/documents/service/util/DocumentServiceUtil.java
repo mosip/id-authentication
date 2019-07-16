@@ -165,7 +165,9 @@ public class DocumentServiceUtil {
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
 		documentEntity.setDocId(preRegistrationId + "/" + dto.getDocCatCode() + "_" + documentEntity.getDocumentId());
-		documentEntity.setDemographicEntity(getentity.getDemographicEntity());
+		DemographicEntity demographicEntity = new DemographicEntity();
+		demographicEntity.setPreRegistrationId(preRegistrationId);
+		documentEntity.setDemographicEntity(demographicEntity);
 		documentEntity.setDocCatCode(dto.getDocCatCode());
 		documentEntity.setDocTypeCode(dto.getDocTypCode());
 		documentEntity.setDocFileFormat(FilenameUtils.getExtension(file.getOriginalFilename()));
