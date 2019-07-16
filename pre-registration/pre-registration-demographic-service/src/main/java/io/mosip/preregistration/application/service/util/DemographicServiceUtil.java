@@ -4,7 +4,6 @@
  */
 package io.mosip.preregistration.application.service.util;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,8 +25,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.preregistration.application.code.RequestCodes;
@@ -45,7 +42,6 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
-import io.mosip.preregistration.core.common.dto.identity.DemographicIdentityRequestDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
@@ -431,38 +427,6 @@ public class DemographicServiceUtil {
 		}
 	}
 
-	public DemographicIdentityRequestDTO getPreregistrationIdentityJson() {
-
-		String getIdentityJsonString = getJson(preregistrationIdJson);
-		// ClassLoader classLoader = getClass().getClassLoader();
-		// URI uri;
-		// JSONParser parser = new JSONParser();
-		// JSONObject jsonObject = null;
-		// try {
-		// uri = new
-		// URI(classLoader.getResource("PreRegistrationIdentitiyMapping.json").getFile().trim()
-		// .replaceAll("\\u0020", "%20"));
-		// File fileCr = new File(uri.getPath());
-		// try {
-		// jsonObject = (JSONObject) parser.parse(new FileReader(fileCr));
-		// } catch (IOException e) {
-		// }
-		// } catch (ParseException e) {
-		// e.printStackTrace();
-		// } catch (URISyntaxException e1) {
-		// e1.printStackTrace();
-		// }
-		// String getIdentityJsonString = jsonObject.toJSONString();
-		ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
-		try {
-			return mapIdentityJsonStringToObject.readValue(getIdentityJsonString, DemographicIdentityRequestDTO.class);
-		} catch (IOException ex) {
-			log.error("sessionId", "idType", "id",
-					"In pre-registration service util of getPreregistrationIdentityJson- " + ex.getMessage());
-		}
-		return null;
-	}
-
 	/**
 	 * This method is used for config rest call
 	 * 
@@ -478,6 +442,8 @@ public class DemographicServiceUtil {
 			StringBuilder uriBuilder = new StringBuilder();
 			uriBuilder.append(configServerUri + "/").append(configAppName + "/").append(configProfile + "/")
 					.append(configLabel + "/").append(filename);
+			// uriBuilder.append(
+			// "http://104.211.212.28:51000/preregistration/dev/0.12.0/PreRegistrationIdentitiyMapping.json");
 			log.info("sessionId", "idType", "id", " URL in demographic service util of getJson " + uriBuilder);
 			return restTemplate.getForObject(uriBuilder.toString(), String.class);
 		} catch (Exception ex) {
