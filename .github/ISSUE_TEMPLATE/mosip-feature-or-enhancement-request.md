@@ -3,7 +3,7 @@ name: MOSIP Feature or Enhancement request
 about: Suggest a feature or an enhancement for this project
 title: ''
 labels: Feature/Enhancement
-assignees: anadi, ananda-mosip, hosurkrishnan, pjoshi751, ramesh-n
+assignees: ''
 
 ---
 
