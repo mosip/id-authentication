@@ -541,7 +541,7 @@ public class DemographicService {
 		}
 		log.info("sessionId", "idType", "id", "for loop end time : " + DateUtils.getUTCCurrentDateTimeString());
 		long end = System.currentTimeMillis();
-		System.out.println("diff time: " + (end - start));
+		log.info("sessionId", "idType", "id", "for loop total time : " + (end - start));
 		demographicMetadataDTO.setBasicDetails(viewList);
 	}
 
