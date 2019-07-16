@@ -178,6 +178,8 @@ public class DocumentController {
 			@Valid @RequestParam(required = true, value = "preRegistrationId") String preRegistrationId) {
 		log.info("sessionId", "idType", "id",
 				"In deleteDocument method of document controller to delete the document for documentId " + documentId);
+//		preRegistrationId="";
+		documentId="";
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(documentUploadService.deleteDocument(documentId, preRegistrationId));
 

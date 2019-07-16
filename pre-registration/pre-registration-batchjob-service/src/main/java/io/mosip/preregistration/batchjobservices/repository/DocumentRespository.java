@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
 
 /**
  * @author Kishan Rathore
@@ -14,11 +14,11 @@ import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
  */
 @Repository("documentRespository")
 public interface DocumentRespository extends BaseRepository<DocumentEntity, String> {
-	
+
 	/**
 	 * @param preregId
 	 * @return document entity based on given preId
 	 */
-	public List<DocumentEntity> findBypreregId(String preregId);
+	public List<DocumentEntity> findByDemographicEntityPreRegistrationId(String preId);
 
 }

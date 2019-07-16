@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
+import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 
 /**
  * This repository interface is used to define the JPA methods for Booking
@@ -30,12 +30,12 @@ import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
 @Transactional
 public interface RegistrationBookingRepository extends BaseRepository<RegistrationBookingEntity, String> {
 
-	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1";
-	public static final String deletePreIdQuery = "delete from RegistrationBookingEntity u where u.bookingPK.preregistrationId = ?1";
+	public static final String preIdQuery = "SELECT u FROM RegistrationBookingEntity u WHERE u.demographicEntity.preRegistrationId = ?1";
+	public static final String deletePreIdQuery = "delete from RegistrationBookingEntity u where u.demographicEntity.preRegistrationId = ?1";
 	public static final String getPreIdQuery = "select u from RegistrationBookingEntity u where u.registrationCenterId=?3 and u.regDate between ?1 and ?2";
 
 	@Query(preIdQuery)
-	RegistrationBookingEntity getPreRegId(@Param("preRegId") String preRegId);
+	RegistrationBookingEntity getDemographicEntityPreRegistrationId(@Param("preRegId") String preRegId);
 
 	/**
 	 * @param registrationCenterId
@@ -46,12 +46,12 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	public List<RegistrationBookingEntity> findByRegistrationCenterId(@Param("regcntr_id") String registrationCenterId);
 
 	@Query(preIdQuery)
-	public List<RegistrationBookingEntity> findBypreregistrationId(String preId);
+	public List<RegistrationBookingEntity> findByDemographicEntityPreRegistrationId(String preId);
 
 	@Transactional
 	@Modifying
 	@Query(deletePreIdQuery)
-	public int deleteByPreRegistrationId(String preregistrationId);
+	public int deleteByDemographicEntityPreRegistrationId(String preregistrationId);
 
 	/**
 	 * @param start
@@ -61,12 +61,12 @@ public interface RegistrationBookingRepository extends BaseRepository<Registrati
 	 * @return list of booked preregistration data between start and end date
 	 */
 	@Query(getPreIdQuery)
-	public List<RegistrationBookingEntity> findByRegDateBetweenAndRegistrationCenterId(LocalDate start,
-			LocalDate end, String regCenterId);
-	
-	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDate(String registrationCenterId,LocalDate regDate);
-	
-	
+	public List<RegistrationBookingEntity> findByRegDateBetweenAndRegistrationCenterId(LocalDate start, LocalDate end,
+			String regCenterId);
+
+	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDate(String registrationCenterId,
+			LocalDate regDate);
+
 	@Query("SELECT e FROM RegistrationBookingEntity e  WHERE e.registrationCenterId= ?1 and e.regDate>=?2")
-	public List<RegistrationBookingEntity> findByRegId(String registrationCenterId,LocalDate regDate);
+	public List<RegistrationBookingEntity> findByRegId(String registrationCenterId, LocalDate regDate);
 }
