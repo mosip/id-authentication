@@ -17,7 +17,7 @@ import io.mosip.authentication.fw.precon.XmlPrecondtion;
  */
 public class AuthPartnerProcessor extends AuthTestsUtil{
 
-	private static final Logger DEMOAPP_LOGGER = Logger.getLogger(AuthTestsUtil.class);
+	private static final Logger DEMOAPP_LOGGER = Logger.getLogger(AuthPartnerProcessor.class);
 	public static Process authPartherProcessor;
 
 	/**

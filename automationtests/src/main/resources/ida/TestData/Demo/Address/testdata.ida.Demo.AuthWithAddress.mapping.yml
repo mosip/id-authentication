@@ -1539,7 +1539,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_Address_With_primary lang_For VID_smoke_pos_39:
+  Authentication_Demographic_Address_With_primary lang_For VID_pos_39:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1599,7 +1599,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
        
-  Authentication_Demographic_Address_With_secondary lang_smoke_pos_40:
+  Authentication_Demographic_Address_With_secondary lang_VID_pos_40:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1770,7 +1770,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_fullAddress_With_primary and secondary lang_smoke_for_VID_pos:
+  Authentication_Demographic_fullAddress_With_primary and secondary lang_for_VID_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1808,7 +1808,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_fullAddress_With_primary lang_smoke_for_VID_pos:
+  Authentication_Demographic_fullAddress_With_primary lang__for_VID_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -1846,7 +1846,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
        
-  Authentication_Demographic_fullAddress_With_secondary lang_smoke_for_VID_pos:
+  Authentication_Demographic_fullAddress_With_secondary lang_for_VID_pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:

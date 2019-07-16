@@ -585,7 +585,7 @@ testdata:
       output.1.response.n.err.errorMessage: $errors:MSLKNotRegisteredToPID:errorMessage$
       output.1.response.n.err.errorCode: $errors:MSLKNotRegisteredToPID:errorCode$
     
-  Authentication_AuthPartnerValidation_smoke_For VID_Pos_35:
+  Authentication_AuthPartnerValidation_For VID_Pos_35:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.auth-request:

@@ -1,6 +1,6 @@
 package io.mosip.authentication.fw.util;
 
-import static io.restassured.RestAssured.given;   
+import static io.restassured.RestAssured.given;    
 
 import java.io.File;
 import javax.ws.rs.core.MediaType;
@@ -171,5 +171,13 @@ public class RestClient {
         RESTCLIENT_LOGGER.info("REST-ASSURED: The response Time is: " + getResponse.time());
         return getResponse;
     }
+	public static Response postRequestWithCookie(String url, String contentHeader, String acceptHeader,String cookieName,String cookieValue) {
+		RESTCLIENT_LOGGER.info("REST-ASSURED: Sending a POST request to " + url);
+		Response postResponse = given().config(config).relaxedHTTPSValidation().contentType(contentHeader).cookie(cookieName, cookieValue)
+				.accept(acceptHeader).log().all().when().post(url).then().log().all().extract().response();
+		RESTCLIENT_LOGGER.info("REST-ASSURED: The response from the request is: " + postResponse.asString());
+		RESTCLIENT_LOGGER.info("REST-ASSURED: The response Time is: " + postResponse.time());
+		return postResponse;
+	}
 }
 

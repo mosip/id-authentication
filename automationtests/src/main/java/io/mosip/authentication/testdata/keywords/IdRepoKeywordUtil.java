@@ -21,8 +21,11 @@ import io.mosip.authentication.fw.dto.VidStaticPinDto;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
 import io.mosip.authentication.fw.util.EncryptDecrptUtil;
 import io.mosip.authentication.fw.util.IdRepoUtil;
+import io.mosip.authentication.fw.util.RIDUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.fw.util.UINUtil;
+import io.mosip.authentication.fw.util.VIDUtil;
 import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -188,9 +191,9 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 			}
 			// Keyword to get UIN Number
 			else if (entry.getValue().contains("$UIN") && !entry.getValue().contains("UIN-PIN")) {
-				returnMap.put(entry.getKey(), RunConfigUtil.getUinNumber(entry.getValue()));
+				returnMap.put(entry.getKey(), UINUtil.getUinNumber(entry.getValue()));
 			} else if (entry.getValue().contains("$RID")) {
-				returnMap.put(entry.getKey(), RunConfigUtil.getRidNumber(entry.getValue()));
+				returnMap.put(entry.getKey(), RIDUtil.getRidNumber(entry.getValue()));
 			}else if (entry.getValue().contains("$VID") && !entry.getValue().contains("VID-PIN")) {
 				if (entry.getValue().contains("VID:WHERE:") && entry.getValue().contains("WHERE")
 						&& entry.getValue().contains("WITH") && entry.getValue().contains("UIN")) {
@@ -198,10 +201,10 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 					Map<String, String> tempIn = new HashMap<String, String>();
 					tempIn.put("uin", uinKeyword);
 					Map<String, String> tempOut = precondtionKeywords(tempIn);
-					returnMap.put(entry.getKey(), RunConfigUtil.getVidKey(tempOut.get("uin").toString()));
+					returnMap.put(entry.getKey(), VIDUtil.getVidKey(tempOut.get("uin").toString()));
 				} else if (entry.getValue().contains("VID:WITH")) {
 					String vidKeyword = entry.getValue().replace("VID:WITH:", "").replace("$", "");
-					returnMap.put(entry.getKey(), RunConfigUtil.getVidForvidkey(vidKeyword));
+					returnMap.put(entry.getKey(), VIDUtil.getVidForvidkey(vidKeyword));
 				} else
 					returnMap.put(entry.getKey(), getVidNumber());
 			} else if (entry.getValue().contains("$") && (entry.getValue().startsWith("$audit")
@@ -311,7 +314,7 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 	 * @return static pin
 	 */
 	private String getStaticPinUinNumber() {
-		return RunConfigUtil.getRandomStaticPinUINKey();
+		return UINUtil.getRandomStaticPinUINKey();
 	}
 	/**
 	 * The method get static pin for VID number
@@ -319,7 +322,7 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 	 * @return static pin
 	 */
 	private String getStaticPinVidNumber() {
-		return RunConfigUtil.getRandomStaticPinVIDKey();
+		return VIDUtil.getRandomStaticPinVIDKey();
 	}
 	/**
 	 * The method generate random VID number
@@ -327,7 +330,7 @@ public class IdRepoKeywordUtil extends KeywordUtil{
 	 * @return VID
 	 */
 	private String getVidNumber() {
-		return RunConfigUtil.getRandomVidKey();
+		return VIDUtil.getRandomVidKey();
 	}
 	/**
 	 * The method get modified OTP template

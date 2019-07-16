@@ -389,7 +389,7 @@ testdata:
       moduleName: $TestData:audit_log_finger_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Biometric_Finger_LeftIndex_smoke_VID_Pos:
+  Authentication_Biometric_Finger_LeftIndex_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -429,7 +429,7 @@ testdata:
       moduleName: $TestData:audit_log_finger_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Biometric_Finger_RightIndex_Smoke_VID_Pos:
+  Authentication_Biometric_Finger_RightIndex_VID_smoke_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:
@@ -2104,7 +2104,7 @@ testdata:
       moduleName: $TestData:audit_log_finger_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Biometric_Finger_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_With_VID_Pos:
+  Authentication_Biometric_Finger_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_With_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:

@@ -603,7 +603,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:DeactivatedUIN:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
       
-  Authentication_Demographic_Gender_With both language_smoke_For VID_Pos_26:
+  Authentication_Demographic_Gender_With both language_For VID_Pos_26:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -642,7 +642,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$ 
   
-  Authentication_Demographic_Gender_With arabic language_smoke_For VID_Pos_27:
+  Authentication_Demographic_Gender_With arabic language_For VID_Pos_27:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -683,7 +683,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$ 
   
-  Authentication_Demographic_Gender_With french language_smoke_For VID_Pos_28:
+  Authentication_Demographic_Gender_With french language_For VID_Pos_28:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:

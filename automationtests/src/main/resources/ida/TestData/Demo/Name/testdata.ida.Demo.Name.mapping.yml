@@ -225,7 +225,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For IntegrationTest_UIN_Pos_04:
+  Authentication_Demographic_Name_Male_Tittle_Normalisation_UIN_Pos_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -261,7 +261,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For UIN_Pos_05:
+  Authentication_Demographic_Name_Female_Tittle_Normalisation_For UIN_Pos_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -297,7 +297,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For UIN_Pos_06:
+  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_For UIN_Pos_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -333,7 +333,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For VID_Pos_01:
+  Authentication_Demographic_Name_Male_Tittle_Normalisation_For VID_Pos_01:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -371,7 +371,7 @@ testdata:
       refIdType: $TestData:audit_log_VID_refIdType$
       
       
-  Authentication_Demographic_Name_Male_Tittle_Normalisation_Smoke_For VID_Pos_04:
+  Authentication_Demographic_Name_Male_Tittle_Normalisation_For VID_Pos_04:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -408,7 +408,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_Name_Female_Tittle_Normalisation_Smoke_For VID_Pos_05:
+  Authentication_Demographic_Name_Female_Tittle_Normalisation_For VID_Pos_05:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -445,7 +445,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_Smoke_For VID_Pos_06:
+  Authentication_Demographic_Name_UnMarried Female_Tittle_Normalisation_For VID_Pos_06:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
@@ -828,7 +828,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:Invalidversion:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$      
       
-  Autheticate_Authentication_Demographic_Name_smoke_For VID_Pos_19:
+  Autheticate_Authentication_Demographic_Name_For VID_Pos_19:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:
