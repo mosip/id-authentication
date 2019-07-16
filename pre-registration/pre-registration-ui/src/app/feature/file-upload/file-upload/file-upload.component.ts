@@ -540,17 +540,20 @@ export class FileUploadComponent implements OnInit {
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
                 'data:application/pdf;base64,' + this.fileByteArray
               );
+              console.log(this.fileUrl);
               break;
             case 'jpg':
             case 'jpeg':
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
                 'data:image/jpeg;base64,' + this.fileByteArray
               );
+              console.log(this.fileUrl);
               break;
             case 'png':
               this.fileUrl = this.domSanitizer.bypassSecurityTrustResourceUrl(
                 'data:image/png;base64,' + this.fileByteArray
               );
+              console.log(this.fileUrl);
               break;
           }
         }
@@ -580,6 +583,15 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
+      let notSelectedFile;
+      if (this.fileUrl) {
+       this.users[0].files.documentsMetaData.filter((data, i) => {
+       if (data.docName !== event.target.files[0].name) notSelectedFile = i;
+       });
+
+       console.log('this.users[0].files.documentsMetaData[i]', notSelectedFile);
+       this.viewFileByIndex(notSelectedFile);
+     }
     const extensionRegex = new RegExp('(?:pdf|jpg|png|jpeg)');
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     this.fileExtension = this.fileExtension.toLowerCase();
