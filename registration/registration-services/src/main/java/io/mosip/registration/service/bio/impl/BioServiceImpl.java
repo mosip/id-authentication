@@ -9,6 +9,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -202,54 +203,20 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
-		String type = fingerType;
-		fingerType = findFingerPrintType(fingerType);
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
-		if (captureResponseDto != null) {
-			byte[] fingerPrintByte = captureResponseDto.getSlapImage();
-			fpDetailsDTO.setFingerPrint(fingerPrintByte);
-			fpDetailsDTO.setFingerType(type.replace("_onboard", ""));
-			fpDetailsDTO.setQualityScore(80);
-		}
+		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
+		mosipBioDeviceDataResponses.forEach(captured->{
+			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
+			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
+			fingerPrintDetail.setFingerPrintISOImage(captureRespoonse.getBioExtract());
+			fingerPrintDetail.setFingerType(captureRespoonse.getBioSubType());
+			fingerPrintDetail.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));
+			fpDetailsDTO.getSegmentedFingerprints().add(fingerPrintDetail);
+		});
+		double slapQuality = (fpDetailsDTO.getSegmentedFingerprints().stream().mapToDouble(finger->finger.getQualityScore()).sum())/4;
+		fpDetailsDTO.setQualityScore(slapQuality);
 	}
 
-	/**
-	 * Helper method to find the finger type mapping
-	 * 
-	 * @param fingerType
-	 * @return String
-	 */
-	private String findFingerPrintType(String fingerType) {
-		switch (fingerType) {
-		case RegistrationConstants.LEFTPALM:
-			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.LEFT.toUpperCase();
-			break;
-		case RegistrationConstants.RIGHTPALM:
-			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.RIGHT.toUpperCase();
-			break;
-		case RegistrationConstants.THUMBS:
-			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.THUMB.toUpperCase();
-			break;
-		case RegistrationConstants.LEFTPALM + "_onboard":
-			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.LEFT.toUpperCase() + RegistrationConstants.UNDER_SCORE + "ONBOARD";
-			break;
-		case RegistrationConstants.RIGHTPALM + "_onboard":
-			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.RIGHT.toUpperCase() + RegistrationConstants.UNDER_SCORE + "ONBOARD";
-			break;
-		case RegistrationConstants.THUMBS + "_onboard":
-			fingerType = RegistrationConstants.FINGER_SLAP + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.THUMB.toUpperCase() + RegistrationConstants.UNDER_SCORE + "ONBOARD";
-			break;
-		default:
-			break;
-		}
-		return fingerType;
-	}
 
 	/**
 	 * Gets the finger print image as DTO without MDM.
@@ -436,12 +403,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 								.getBiometricExceptionDTO();
 			}
 
-			if (isMdmEnabled()) {
-
-				prepareSegmentedBiometricsFromMdm(fingerprintDetailsDTO, fingerType);
-			}
-
-			else {
+			if (!isMdmEnabled()) {
 
 				prepareSegmentedBiometrics(fingerprintDetailsDTO, path, biometricExceptionDTOs);
 			}
@@ -460,49 +422,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 					runtimeException.getMessage(), runtimeException.getCause()));
 		}
 		LOGGER.info(LOG_REG_FINGERPRINT_FACADE, APPLICATION_NAME, APPLICATION_ID, "Reading scanned Finger has ended");
-	}
-
-	/**
-	 * Preparing segmentation detail of Biometric from MDM
-	 * 
-	 * @param fingerprintDetailsDTO
-	 *            - the fingerprints which have to be segmented
-	 * @param fingerType
-	 *            - type of finger, whether right or left
-	 * @throws RegBaseCheckedException
-	 *             - generalized exception with errorCode and errorMessage
-	 */
-	protected void prepareSegmentedBiometricsFromMdm(FingerprintDetailsDTO fingerprintDetailsDTO, String fingerType)
-			throws RegBaseCheckedException {
-		CaptureResponseDto biometricData = mosipBioDeviceManager.scan(findFingerPrintType(fingerType));
-
-		if (null != biometricData && null != biometricData.getMosipBioDeviceDataResponses()
-				&& !biometricData.getMosipBioDeviceDataResponses().isEmpty()) {
-
-			for (CaptureResponseBioDto captureResponseBioDto : biometricData.getMosipBioDeviceDataResponses()) {
-
-				CaptureResponsBioDataDto bioData = captureResponseBioDto.getCaptureResponseData();
-				FingerprintDetailsDTO segmentedDetailsDTO = new FingerprintDetailsDTO();
-
-				byte[] isoTemplateBytes = bioData.getBioExtract();
-				segmentedDetailsDTO.setFingerPrint(isoTemplateBytes);
-
-				byte[] isoImageBytes = bioData.getBioValue();
-				segmentedDetailsDTO.setFingerPrintISOImage(isoImageBytes);
-
-				segmentedDetailsDTO.setFingerType(bioData.getBioSubType());
-				segmentedDetailsDTO.setFingerprintImageName(bioData.getBioSubType());
-				segmentedDetailsDTO.setNumRetry(fingerprintDetailsDTO.getNumRetry());
-				segmentedDetailsDTO.setForceCaptured(false);
-				segmentedDetailsDTO.setQualityScore(90);
-
-				if (fingerprintDetailsDTO.getSegmentedFingerprints() == null) {
-					List<FingerprintDetailsDTO> segmentedFingerprints = new ArrayList<>(5);
-					fingerprintDetailsDTO.setSegmentedFingerprints(segmentedFingerprints);
-				}
-				fingerprintDetailsDTO.getSegmentedFingerprints().add(segmentedDetailsDTO);
-			}
-		}
 	}
 
 	/**

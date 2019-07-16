@@ -53,22 +53,39 @@ public class MdmRequestResponseBuilder {
 		CaptureRequestDto bioCaptureRequestDto = new CaptureRequestDto();
 
 		bioCaptureRequestDto.setEnv(RegistrationConstants.MDM_ENVIRONMENT);
+		bioCaptureRequestDto.setMosipProcess("Registration");
 		bioCaptureRequestDto.setTimeout(RegistrationConstants.MDM_TIMEOUT);
 		bioCaptureRequestDto.setVersion(RegistrationConstants.MDM_VERSION);
-		bioCaptureRequestDto.setTransactionId(String.valueOf(generateID()));
+		bioCaptureRequestDto.setRegistrationID(String.valueOf(generateID()));
 
 		CaptureRequestDeviceDetailDto mosipBioRequest = new CaptureRequestDeviceDetailDto();
+		mosipBioRequest.setType(bioDevice.getDeviceType());
 		mosipBioRequest.setCount(1);
-		mosipBioRequest.setDeviceId(bioDevice.getDeviceType());
-		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubType());
-		mosipBioRequest.setFormat("");
+		String[] excptions= {};
+		mosipBioRequest.setException(excptions);
+		mosipBioRequest.setRequestedScore("40");
+		mosipBioRequest.setDeviceId(bioDevice.getDeviceId());
+		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubId());
 		mosipBioRequest.setPreviousHash("");
-		mosipBioRequest.setType("");
 
 		List<CaptureRequestDeviceDetailDto> bioRequests = new ArrayList<>();
 		bioRequests.add(mosipBioRequest);
 
 		bioCaptureRequestDto.setMosipBioRequest(bioRequests);
+		
+		Map<String, String> customOpts = new HashMap<String,String>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			{
+			put("Name", "name1");
+			put("Value", "value1");
+			}
+		};
+		
+		bioCaptureRequestDto.setCustomOpts(customOpts);
 
 		return bioCaptureRequestDto;
 

@@ -142,9 +142,6 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 	protected void decodeBiometrics(ObjectMapper mapper, CaptureResponseDto mosipBioCaptureResponseDto)
 			throws IOException, JsonParseException, JsonMappingException {
 		if (null != mosipBioCaptureResponseDto) {
-			mosipBioCaptureResponseDto.setSlapImage(mosipBioCaptureResponseDto.getSlapImage() != null
-					? Base64.getDecoder().decode(mosipBioCaptureResponseDto.getSlapImage())
-					: null);
 			if (mosipBioCaptureResponseDto.getMosipBioDeviceDataResponses() != null) {
 
 				for (CaptureResponseBioDto captureResponseBioDto : mosipBioCaptureResponseDto

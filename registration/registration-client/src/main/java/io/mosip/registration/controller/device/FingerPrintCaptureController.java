@@ -5,7 +5,11 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_GUARDIAN_B
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +17,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1037,8 +1043,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 		try {
-
-			bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
+			//have to start the streaming
+			
+			scanPopUpViewController.streamer(findFingerPrintType(fingerType));
+			bioService.getFingerPrintImageAsDTO(detailsDTO, findFingerPrintType(fingerType));
 			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath, fingerType);
 		} catch (Exception exception) {
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -1091,7 +1099,33 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		}
 
 	}
-
+	
+	/**
+	 * Helper method to find the finger type mapping
+	 * 
+	 * @param fingerType
+	 * @return String
+	 */
+	private String findFingerPrintType(String fingerType) {
+		switch (fingerType) {
+		case RegistrationConstants.LEFTPALM:
+			fingerType = RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.LEFT.toUpperCase();
+			break;
+		case RegistrationConstants.RIGHTPALM:
+			fingerType = RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.RIGHT.toUpperCase();
+			break;
+		case RegistrationConstants.THUMBS:
+			fingerType = RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.THUMB.toUpperCase();
+			break;
+		default:
+			break;
+		}
+		return fingerType;
+	}
+	
 	/**
 	 * {@code saveBiometricDetails} is to check the deduplication of captured
 	 * finger prints.

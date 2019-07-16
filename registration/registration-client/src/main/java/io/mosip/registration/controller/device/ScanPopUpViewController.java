@@ -5,7 +5,12 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_REG_SCAN_CONTR
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +22,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.DocumentScanController;
+import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -24,6 +30,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -39,6 +46,9 @@ public class ScanPopUpViewController extends BaseController {
 	
 	@Autowired
 	private DocumentScanController documentScanController;
+	
+	@Autowired
+	private MosipBioDeviceManager mosipBioDeviceManager;
 
 	@FXML
 	private ImageView scanImage;
@@ -59,7 +69,110 @@ public class ScanPopUpViewController extends BaseController {
 	private Text scanningMsg;
 
 	private boolean isDocumentScan;
+	
+	private InputStream urlStream;
+	
+	private boolean isRunning=true;
+	
+	private final String CONTENT_LENGTH = "Content-Length:";
 
+
+	public void streamer(String bioType) {
+		new Thread(new Runnable() {
+			
+		    public void run() {
+		    	
+		    	urlStream  = mosipBioDeviceManager.stream(bioType);
+		    	
+		        while (isRunning) {
+		            try {
+		                byte[] imageBytes = retrieveNextImage();
+		                ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBytes);
+
+		                scanImage.setImage(new Image(imageStream));
+		            } catch (SocketTimeoutException ste) {
+		                stop();
+
+		            } catch (IOException e) {
+		                System.err.println("failed stream read: " + e);
+		                stop();
+		            }
+		        }
+
+		        // close streams
+		        try {
+		            urlStream.close();
+		        } catch (IOException ioe) {
+		            System.err.println("Failed to close the stream: " + ioe);
+		        }
+		    }
+
+		}).start();
+		
+	}
+
+	
+	  /**
+     * Using the urlStream get the next JPEG image as a byte[]
+     *
+     * @return byte[] of the JPEG
+     * @throws IOException
+     */
+    private byte[] retrieveNextImage() throws IOException {
+        int currByte = -1;
+
+        boolean captureContentLength = false;
+        StringWriter contentLengthStringWriter = new StringWriter(128);
+        StringWriter headerWriter = new StringWriter(128);
+
+        int contentLength = 0;
+
+        while ((currByte = urlStream.read()) > -1) {
+            if (captureContentLength) {
+                if (currByte == 10 || currByte == 13) {
+                    contentLength = Integer.parseInt(contentLengthStringWriter.toString());
+                    break;
+                }
+                contentLengthStringWriter.write(currByte);
+
+            } else {
+                headerWriter.write(currByte);
+                String tempString = headerWriter.toString();
+                int indexOf = tempString.indexOf(CONTENT_LENGTH);
+                if (indexOf > 0) {
+                    captureContentLength = true;
+                }
+            }
+        }
+
+        // 255 indicates the start of the jpeg image
+        int sI;
+        while ((sI=urlStream.read()) != 255) {
+            System.out.print(sI);
+        }
+
+        // rest is the buffer
+        byte[] imageBytes = new byte[contentLength + 1];
+        // since we ate the original 255 , shove it back in
+        imageBytes[0] = (byte) 255;
+        int offset = 1;
+        int numRead = 0;
+        while (offset < imageBytes.length
+                && (numRead = urlStream.read(imageBytes, offset, imageBytes.length - offset)) >= 0) {
+            offset += numRead;
+        }
+
+        return imageBytes;
+    }
+
+    /**
+     * Stop the loop, and allow it to clean up
+     */
+    private synchronized void stop() {
+        isRunning = false;
+    }
+
+	
 	/**
 	 * @return the scanImage
 	 */
@@ -120,13 +233,14 @@ public class ScanPopUpViewController extends BaseController {
 
 	/**
 	 * This method will allow to scan
+	 * @throws IOException 
+	 * @throws MalformedURLException 
 	 */
 	@FXML
-	public void scan() {
+	public void scan() throws MalformedURLException, IOException {
 		scanningMsg.setVisible(true);
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Invoke scan method for the passed controller");
-
 		baseController.scan(popupStage);
 	}
 
