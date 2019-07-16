@@ -388,7 +388,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			LogDescription description) throws IOException {
 		// TO-DO testing
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
-		HMACUtils.update(isbytearray);
+		HMACUtils.generateHash(isbytearray);
 		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
 		String packetHashSequence = regEntity.getPacketHashValue();
 		if (!(MessageDigest.isEqual(packetHashSequence.getBytes(), hashSequence.getBytes()))) {
