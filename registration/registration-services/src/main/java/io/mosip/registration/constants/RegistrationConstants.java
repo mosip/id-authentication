@@ -123,6 +123,13 @@ public class RegistrationConstants {
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
 	public static final String SCAN = "/images/scan.png";
+	public static final String SCAN_FOCUSED = "/images/scanFocused.png";
+	public static final String BACK = "/images/arrowLeft.png";
+	public static final String BACK_FOCUSED = "/images/backInWhite.png";
+	public static final String WRONG_IMAGE_PATH = "/images/wrong.png";
+	public static final String REJECT_IMAGE_PATH = "/images/Reject.png";
+	public static final String SEND_EMAIL_IMAGE_PATH = "/images/SendEmail.png";
+	public static final String SEND_EMAIL_FOCUSED_IMAGE_PATH = "/images/sendEmailFocused.png";
 	public static final String LOGO = "/images/logo-final-small.png";
 
 	// Authentication

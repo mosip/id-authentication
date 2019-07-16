@@ -61,6 +61,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -134,6 +136,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@FXML
 	private ToggleButton rejectionBtn;
+	
+	@FXML
+	private ImageView approvalImageView;
+	@FXML
+	private ImageView rejectionImageView;
 
 	/** Button for authentication. */
 
@@ -183,6 +190,17 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		Image rejectInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.WRONG_IMAGE_PATH));
+		Image rejectImage = new Image(getClass().getResourceAsStream(RegistrationConstants.REJECT_IMAGE_PATH));
+		
+		rejectionBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				rejectionImageView.setImage(rejectInWhite);
+			} else {
+				rejectionImageView.setImage(rejectImage);
+			}
+		});
+		
 		reloadTableView();
 		tableCellColorChangeListener();
 		id.setResizable(false);

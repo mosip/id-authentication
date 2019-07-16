@@ -120,6 +120,14 @@ public class FaceCaptureController extends BaseController implements Initializab
 
 	@FXML
 	private Label photoAlert;
+	@FXML
+	private ImageView backImageView;
+	@FXML
+	private ImageView scanImageView;
+	@FXML
+	private ImageView startOverImageView;
+	@FXML
+	private Button startOverBtn;
 
 	private BufferedImage applicantBufferedImage;
 	private BufferedImage exceptionBufferedImage;
@@ -138,6 +146,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info("REGISTRATION - UI - FACE_CAPTURE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FaceCapture screen started");
+
+		setImagesOnHover();
 
 		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
@@ -181,6 +191,35 @@ public class FaceCaptureController extends BaseController implements Initializab
 			exceptionImageCaptured = false;
 			exceptionBufferedImage = null;
 		}
+	}
+
+	private void setImagesOnHover() {
+		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+		Image scanInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN_FOCUSED));
+		Image scanImage = new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN));
+
+		biometricPrevBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});
+		takePhoto.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				scanImageView.setImage(scanInWhite);
+			} else {
+				scanImageView.setImage(scanImage);
+			}
+		});
+		startOverBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				startOverImageView.setImage(scanInWhite);
+			} else {
+				startOverImageView.setImage(scanImage);
+			}
+		});
 	}
 
 	/**
@@ -268,7 +307,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		webCameraController.closeWebcam();
-		
+
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			/*
 			 * if (validateOperatorPhoto()) {
@@ -395,7 +434,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		}
 
 		capturedImage.flush();
-		
+
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) && validateOperatorPhoto()) {
 			saveBiometricDetailsBtn.setDisable(false);
 

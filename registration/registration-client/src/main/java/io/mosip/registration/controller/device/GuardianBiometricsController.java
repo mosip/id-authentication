@@ -128,6 +128,15 @@ public class GuardianBiometricsController extends BaseController implements Init
 	
 	@FXML
 	private Label photoAlert;
+	
+	@FXML
+	private Button backBtn;
+	
+	@FXML
+	private ImageView backImageView;
+	
+	@FXML
+	private ImageView scanImageView;
 
 	/** The scan popup controller. */
 	@Autowired
@@ -191,6 +200,24 @@ public class GuardianBiometricsController extends BaseController implements Init
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of Guardian Biometric screen started");
+		
+		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+
+		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});
+		scanBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				scanImageView.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN_FOCUSED)));
+			} else {
+				scanImageView.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN)));
+			}
+		});
 
 		fxUtils = FXUtils.getInstance();
 		fxUtils.setTransliteration(transliteration);

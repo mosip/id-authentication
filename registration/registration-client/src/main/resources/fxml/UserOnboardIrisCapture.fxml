@@ -311,7 +311,8 @@
                                     <GridPane GridPane.columnIndex="1">
                                       <columnConstraints>
                                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -319,12 +320,21 @@
                                        <children>
                                           <Button fx:id="scanIris" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
                                              <graphic>
-                                                <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fx:id="scanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../images/scan.png" />
                                                    </image>
                                                 </ImageView>
                                              </graphic>
+                                          </Button>
+                                          <Button fx:id="startOverBtn" mnemonicParsing="false" onAction="#clearIrisData" styleClass="onboardScanBtn" text="%startOver" visible="false">
+                                               <graphic>
+                                                   <ImageView fx:id="startOverImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                        <image>
+                                                             <Image url="@../images/scan.png" />
+                                                         </image>
+                                                     </ImageView>
+                                                 </graphic>
                                           </Button>
                                        </children>
                                     </GridPane>
@@ -517,7 +527,7 @@
                      <children>
                         <Button fx:id="backBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#previousSection" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                            <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/arrowLeft.png" />
                                  </image>

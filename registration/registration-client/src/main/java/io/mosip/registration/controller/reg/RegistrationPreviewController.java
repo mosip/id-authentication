@@ -37,6 +37,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 
@@ -47,6 +49,12 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@FXML
 	private WebView webView;
+	
+	@FXML
+	private Button backBtn;
+	
+	@FXML
+	private ImageView backImageView;
 
 	@Autowired
 	private TemplateManagerBuilder templateManagerBuilder;
@@ -72,6 +80,17 @@ public class RegistrationPreviewController extends BaseController implements Ini
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+
+		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});	
+		
 		nextButton.setDisable(true);
 
 		String key = RegistrationConstants.REG_CONSENT + applicationContext.getApplicationLanguage();

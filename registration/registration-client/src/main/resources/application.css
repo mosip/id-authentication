@@ -420,7 +420,16 @@
     -fx-font-size: 10.0px;
     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
-
+.loginSubmitStyle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.loginSubmitStyle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .loginOtpValidStyle{
 	-fx-pref-height: 18.0px;
 	-fx-pref-width: 136.0px;
@@ -447,7 +456,6 @@
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;
 }
-
 .reRegCantInformToggle{
 	-fx-pref-height: 30.0px; 
 	-fx-pref-width: 120.0px;
@@ -455,6 +463,15 @@
 	-fx-text-fill: #FFFFFF;
 	-fx-font-family: Roboto;
 }
+.reRegCantInformToggle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+.reRegCantInformToggle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+
 .operatorAuthenticationAnchorPaneStyle{
 	-fx-pref-height: 550.0px; 
 	-fx-pref-width: 850.0px;
@@ -625,7 +642,16 @@ Working on new Css by taleev
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size : 1.1em;
-	 
+}
+.demoGraphicPaneContentButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.demoGraphicPaneContentButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 
 .paneAtDisplayDemoGraphic{
@@ -640,13 +666,45 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size : 1.2em;
 }
+.documentContentButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.documentContentButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.documentContentButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
 
 .contiuneButton{
 	-fx-background-color:#FF4081;
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;	
 	-fx-font-size: 1.2em;
+}
+
+.contiuneButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+
+.contiuneButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+
+.contiuneButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
 }
 
 .backButton{
@@ -656,6 +714,18 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size: 1.2em;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;	
+}
+
+.backButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.backButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 
 .demoGraphicTextField{
@@ -926,10 +996,18 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-pref-height: 2.0px;	
 	-fx-pref-width: 120.0px;
-	-fx-text-fill: #FF4081;
-	
+	-fx-text-fill: #FF4081;	
 }
-
+.scanButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.scanButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 
 .registrationHeaderBorder{
 	-fx-border-width: 0.0 0.0 1.0 0.0;
@@ -1230,12 +1308,36 @@ Working on new Css by taleev
 	-fx-text-fill: #FFFFFF;
 	-fx-font-family: Roboto;
 }
+.approveButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+.approveButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+.approveButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
 .rejectButton{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color:#FFFFFF;
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;		
+}
+.rejectButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.rejectButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 .pendingApprovalHeader{
 	-fx-background-color:#FFFFFF;
@@ -1263,6 +1365,17 @@ Working on new Css by taleev
     -fx-pref-width:60.0px;
     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
+.RegbuttonStyle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.RegbuttonStyle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 /*Authentication page design ends */
 
 /*Acknowledgement page design starts */
@@ -1278,12 +1391,32 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;	
 }
+.ackBackButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.ackBackButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .ackPageButton {
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
+}
+.ackPageButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+
+.ackPageButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
 }
 .ackMenu{
 	-fx-border-width: 0.0 0.0 1.0 0.0;
@@ -1559,6 +1692,22 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-font-size: 12.0px;
 }
+.onboardScanBtn:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardScanBtn:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardScanBtn:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
 .userOnboardHeader{
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );

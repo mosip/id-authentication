@@ -186,6 +186,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The thumb slap exception. */
 	@FXML
 	private Label thumbSlapException;
+	
+	@FXML
+	private ImageView scanImageView;
+	@FXML
+	private ImageView startOverImageView;
+	@FXML
+	private Button startOverBtn;
 
 	/** The selected pane. */
 	private GridPane selectedPane = null;
@@ -224,6 +231,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private AnchorPane rightPalmTrackerImg;
 	@FXML
 	private AnchorPane thumbTrackerImg;
+	@FXML
+	private ImageView backImageView;
 
 	/** The left slap count. */
 	private int leftSlapCount;
@@ -247,6 +256,9 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
+		
+		setImagesOnHover();
+
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -414,6 +426,35 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					String.format("Exception while initializing Fingerprint Capture page for user registration  %s",
 							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException)));
 		}
+	}
+
+	private void setImagesOnHover() {
+		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+		Image scanInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN_FOCUSED));
+		Image scanImage = new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN));
+
+		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});
+		scanBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				scanImageView.setImage(scanInWhite);
+			} else {
+				scanImageView.setImage(scanImage);
+			}
+		});
+		startOverBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				startOverImageView.setImage(scanInWhite);
+			} else {
+				startOverImageView.setImage(scanImage);
+			}
+		});
 	}
 
 	/**
@@ -712,7 +753,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (null != getBiometricDTOFromSession()) {
 				loadImage(getBiometricDTOFromSession().getOperatorBiometricDTO().getFingerprintDetailsDTO());
 			}
-		} else if (null != getRegistrationDTOFromSession() && getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
+		} else if (null != getRegistrationDTOFromSession()
+				&& getRegistrationDTOFromSession().isUpdateUINNonBiometric()) {
 			loadImage(getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.getFingerprintDetailsDTO());
 		} else {
@@ -793,8 +835,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.registration.controller.BaseController#scan(javafx.stage.Stage)
+	 * @see io.mosip.registration.controller.BaseController#scan(javafx.stage.Stage)
 	 */
 	@Override
 	public void scan(Stage popupStage) {
@@ -1093,8 +1134,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	}
 
 	/**
-	 * {@code saveBiometricDetails} is to check the deduplication of captured
-	 * finger prints.
+	 * {@code saveBiometricDetails} is to check the deduplication of captured finger
+	 * prints.
 	 */
 	public void goToNextPage() {
 		try {
@@ -1151,8 +1192,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	}
 
 	/**
-	 * {@code saveBiometricDetails} is to check the deduplication of captured
-	 * finger prints.
+	 * {@code saveBiometricDetails} is to check the deduplication of captured finger
+	 * prints.
 	 */
 	public void goToPreviousPage() {
 		try {
