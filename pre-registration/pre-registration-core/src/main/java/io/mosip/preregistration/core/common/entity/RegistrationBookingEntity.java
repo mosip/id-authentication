@@ -2,7 +2,7 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.booking.entity;
+package io.mosip.preregistration.core.common.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -12,9 +12,12 @@ import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -36,17 +39,24 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "reg_appointment", schema = "prereg")
-//@NamedQuery(name = "RegistrationBookingEntity.existsByPreIdandStatusCode", query = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and u.statusCode = ?2")
+// @NamedQuery(name = "RegistrationBookingEntity.existsByPreIdandStatusCode",
+// query = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM
+// RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and
+// u.statusCode = ?2")
 public class RegistrationBookingEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7886669943207769620L;
 
+	@OneToOne
+	@JoinColumn(name = "prereg_id", nullable = false)
+	private DemographicEntity demographicEntity;
+
 	/** Id. */
 	@Id
 	@Column(name = "id")
 	private String id;
-	
+
 	/** Booking primary Key. */
 	@Embedded
 	private RegistrationBookingPK bookingPK;
@@ -67,7 +77,7 @@ public class RegistrationBookingEntity implements Serializable {
 	@Column(name = "appointment_date")
 	private LocalDate regDate;
 
-		/** Language code. */
+	/** Language code. */
 	@Column(name = "lang_code")
 	private String langCode;
 
@@ -86,6 +96,5 @@ public class RegistrationBookingEntity implements Serializable {
 	/** Updated date time. */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updDate;
-
 
 }

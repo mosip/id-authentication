@@ -412,7 +412,7 @@ public class DemographicServiceUtil {
 
 		return response;
 	}
-	
+
 	public static Integer parsePageIndex(String text) {
 		try {
 			return Integer.parseInt(text);
@@ -430,6 +430,7 @@ public class DemographicServiceUtil {
 					ErrorMessages.PAGE_SIZE_MUST_BE_GREATER_THAN_ZERO.getMessage());
 		}
 	}
+
 	public DemographicIdentityRequestDTO getPreregistrationIdentityJson() {
 
 		String getIdentityJsonString = getJson(preregistrationIdJson);
@@ -486,6 +487,5 @@ public class DemographicServiceUtil {
 					ErrorMessages.UBALE_TO_READ_IDENTITY_JSON.getMessage(), null);
 		}
 	}
-	
-	
+
 }

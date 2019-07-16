@@ -17,10 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
-import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
-import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPKConsumed;
 import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
@@ -33,6 +31,8 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
+import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
@@ -69,10 +69,10 @@ public class ConsumedStatusService {
 	 */
 	@Autowired
 	private BatchServiceDAO batchServiceDAO;
-	
+
 	@Autowired
 	AuditLogUtil auditLogUtil;
-	
+
 	public AuthUserDetails authUserDetails() {
 		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
@@ -125,7 +125,7 @@ public class ConsumedStatusService {
 					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
 					RegistrationBookingPKConsumed consumedPk = new RegistrationBookingPKConsumed();
 					consumedPk.setBookingDateTime(bookingEntity.getBookingPK().getBookingDateTime());
-					consumedPk.setPreregistrationId(bookingEntity.getBookingPK().getPreregistrationId());
+					consumedPk.setPreregistrationId(bookingEntity.getDemographicEntity().getPreRegistrationId());
 					bookingEntityConsumed.setBookingPK(consumedPk);
 					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
 
@@ -145,12 +145,11 @@ public class ConsumedStatusService {
 				}
 
 			});
-			isSaveSuccess=true;
+			isSaveSuccess = true;
 
 		} catch (Exception e) {
 			new BatchServiceExceptionCatcher().handle(e, response);
-		}
-		finally {
+		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_412.toString(), EventName.CONSUMEDSTATUS.toString(),
 						EventType.BUSINESS.toString(),
@@ -159,8 +158,8 @@ public class ConsumedStatusService {
 						authUserDetails().getUsername(), null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null);
+						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			}
 		}
 		response.setResponsetime(GenericUtil.getCurrentResponseTime());
@@ -170,7 +169,6 @@ public class ConsumedStatusService {
 		return response;
 	}
 
-		
 	/**
 	 * This method is used to audit all the consumed status events
 	 * 

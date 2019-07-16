@@ -46,13 +46,14 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.HashUtill;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
 import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
-import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.DemographicGetDetailsException;
@@ -159,12 +160,12 @@ public class DocumentServiceUtil {
 	 * @return DocumentEntity
 	 */
 	public DocumentEntity dtoToEntity(MultipartFile file, DocumentRequestDTO dto, String userId,
-			String preRegistrationId) {
+			String preRegistrationId, DocumentEntity getentity) {
 		log.info("sessionId", "idType", "id", "In dtoToEntity method of document service util");
 		DocumentEntity documentEntity = new DocumentEntity();
 		documentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
 		documentEntity.setDocId(preRegistrationId + "/" + dto.getDocCatCode() + "_" + documentEntity.getDocumentId());
-		documentEntity.setPreregId(preRegistrationId);
+		documentEntity.setDemographicEntity(getentity.getDemographicEntity());
 		documentEntity.setDocCatCode(dto.getDocCatCode());
 		documentEntity.setDocTypeCode(dto.getDocTypCode());
 		documentEntity.setDocFileFormat(FilenameUtils.getExtension(file.getOriginalFilename()));
@@ -261,10 +262,12 @@ public class DocumentServiceUtil {
 		} else {
 			copyDocumentEntity.setDocumentId(UUIDGeneratorUtil.generateId());
 		}
-		copyDocumentEntity.setPreregId(destinationPreId);
+		DemographicEntity demographicEntity = new DemographicEntity();
+		demographicEntity.setPreRegistrationId(destinationPreId);
+		copyDocumentEntity.setDemographicEntity(demographicEntity);
 		copyDocumentEntity.setDocId(sourceEntity.getDocId());
 		String key = sourceEntity.getDocCatCode() + "_" + sourceEntity.getDocumentId();
-		InputStream file = fs.getFile(sourceEntity.getPreregId(), key);
+		InputStream file = fs.getFile(sourceEntity.getDemographicEntity().getPreRegistrationId(), key);
 
 		copyDocumentEntity.setDocHash(HashUtill.hashUtill(IOUtils.toByteArray(file)));
 		copyDocumentEntity.setDocName(sourceEntity.getDocName());
@@ -385,6 +388,5 @@ public class DocumentServiceUtil {
 		}
 		return true;
 	}
-
 
 }

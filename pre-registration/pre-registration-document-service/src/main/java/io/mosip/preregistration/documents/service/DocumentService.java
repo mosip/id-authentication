@@ -43,6 +43,7 @@ import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
@@ -54,7 +55,6 @@ import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
-import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
@@ -258,7 +258,7 @@ public class DocumentService {
 		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
 			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
-					preRegistrationId);
+					preRegistrationId,getentity);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
@@ -271,14 +271,14 @@ public class DocumentService {
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 
-				boolean isStoreSuccess = fs.storeFile(documentEntity.getPreregId(), key,
+				boolean isStoreSuccess = fs.storeFile(documentEntity.getDemographicEntity().getPreRegistrationId(), key,
 						new ByteArrayInputStream(encryptedDocument));
 
 				if (!isStoreSuccess) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 				}
-				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
+				docResponseDto.setPreRegistrationId(documentEntity.getDemographicEntity().getPreRegistrationId());
 				docResponseDto.setDocId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocName(documentEntity.getDocName());
 				docResponseDto.setDocCatCode(documentEntity.getDocCatCode());
@@ -332,7 +332,7 @@ public class DocumentService {
 					DocumentEntity copyDocumentEntity = documnetDAO.saveDocument(
 							serviceUtil.documentEntitySetter(destinationPreId, documentEntity, destEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-					sourceBucketName = documentEntity.getPreregId();
+					sourceBucketName = documentEntity.getDemographicEntity().getPreRegistrationId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
 					DocumentResponseDTO documentResponseDTO = new DocumentResponseDTO();
 					documentResponseDTO.setPreRegistrationId(destinationPreId);
@@ -381,7 +381,7 @@ public class DocumentService {
 		String destinationBucketName;
 		String destinationKey;
 		if (copyDocumentEntity != null) {
-			destinationBucketName = copyDocumentEntity.getPreregId();
+			destinationBucketName = copyDocumentEntity.getDemographicEntity().getPreRegistrationId();
 			destinationKey = copyDocumentEntity.getDocCatCode() + "_" + copyDocumentEntity.getDocumentId();
 			boolean isStoreSuccess = fs.copyFile(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 			if (!isStoreSuccess) {
@@ -412,7 +412,9 @@ public class DocumentService {
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
-			if (ValidationUtil.requstParamValidator(requestParamMap) && serviceUtil.getPreRegInfoRestService(preId)) {
+			if (ValidationUtil.requstParamValidator(requestParamMap)) {// &&
+																		// serviceUtil.getPreRegInfoRestService(preId))
+																		// {
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 				responseDto.setResponse(createDocumentResponse(documentEntities));
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -469,12 +471,12 @@ public class DocumentService {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
 			if (ValidationUtil.requstParamValidator(requestParamMap) && serviceUtil.getPreRegInfoRestService(preId)) {
 				DocumentEntity documentEntity = documnetDAO.findBydocumentId(docId);
-				if (!documentEntity.getPreregId().equals(preId)) {
+				if (!documentEntity.getDemographicEntity().getPreRegistrationId().equals(preId)) {
 					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
 							ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 				}
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				InputStream sourcefile = fs.getFile(documentEntity.getPreregId(), key);
+				InputStream sourcefile = fs.getFile(documentEntity.getDemographicEntity().getPreRegistrationId(), key);
 				if (sourcefile == null) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.getMessage());
@@ -534,6 +536,7 @@ public class DocumentService {
 		List<DocumentMultipartResponseDTO> allDocRes = new ArrayList<>();
 		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
 		for (DocumentEntity doc : entityList) {
+			System.out.println("Demographic preid: " + doc.getDemographicEntity().getStatusCode());
 			DocumentMultipartResponseDTO allDocDto = new DocumentMultipartResponseDTO();
 			allDocDto.setDocCatCode(doc.getDocCatCode());
 			allDocDto.setDocName(doc.getDocName());
@@ -567,13 +570,14 @@ public class DocumentService {
 			if (ValidationUtil.requstParamValidator(requestParamMap)
 					&& serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 				DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
-				if (!documentEntity.getPreregId().equals(preRegistrationId)) {
+				if (!documentEntity.getDemographicEntity().getPreRegistrationId().equals(preRegistrationId)) {
 					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
 							ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 				}
 				if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
 					String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-					boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
+					boolean isDeleted = fs.deleteFile(documentEntity.getDemographicEntity().getPreRegistrationId(),
+							key);
 					if (!isDeleted) {
 						throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
 								ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
@@ -674,7 +678,7 @@ public class DocumentService {
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
 			for (DocumentEntity documentEntity : documentEntityList) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				fs.deleteFile(documentEntity.getPreregId(), key);
+				fs.deleteFile(documentEntity.getDemographicEntity().getPreRegistrationId(), key);
 			}
 			deleteDTO.setMessage(DocumentStatusMessages.ALL_DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 		}
