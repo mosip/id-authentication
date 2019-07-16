@@ -1540,6 +1540,16 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
+.uinUpdateStyle:hover, .uinUpdateStyle:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.uinUpdateStyle:pressed, .uinUpdateStyle:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .uinUpdateBtnStyle{
 	-fx-font-size: 16.0px;
 	-fx-text-fill: #FF4081;

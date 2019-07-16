@@ -131,6 +131,12 @@ public class RegistrationConstants {
 	public static final String SEND_EMAIL_IMAGE_PATH = "/images/SendEmail.png";
 	public static final String SEND_EMAIL_FOCUSED_IMAGE_PATH = "/images/sendEmailFocused.png";
 	public static final String LOGO = "/images/logo-final-small.png";
+	public static final String NEW_REG_IMAGE = "/images/NewReg.png";
+	public static final String NEW_REG_FOCUSED = "/images/NewRegistration.png";
+	public static final String UPDATE_UIN_IMAGE = "/images/UINUpdate.png";
+	public static final String UPDATE_UIN_FOCUSED = "/images/updateUINFocused.png";
+	public static final String LOST_UIN_IMAGE = "/images/LostUIN.png";
+	public static final String LOST_UIN_FOCUSED = "/images/lostUINFocused.png";
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";

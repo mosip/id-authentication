@@ -74,6 +74,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -98,6 +99,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 	private ImageView uinUpdateImage;
 
 	@FXML
+	private ImageView newRegImage;
+
+	@FXML
+	private ImageView lostUINImage;
+
+	@FXML
 	private Button newRegistrationBtn;
 
 	@FXML
@@ -111,21 +118,27 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	private Label lastBiometricTime;
-	
+
 	@FXML
 	private Label lastPreRegPacketDownloadedTime;
-	
+
 	@FXML
 	private Label lastSyncTime;
-	
+
 	@Autowired
 	private JobConfigurationService jobConfigurationService;
-	
+
 	public void setLastUpdateTime() {
 		try {
-		String  latestUpdateTime= ((List<SyncDataProcessDTO>) jobConfigurationService.getLastCompletedSyncJobs().getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO)).stream().sorted((sync1, sync2)->Timestamp.valueOf(sync2.getLastUpdatedTimes()).compareTo(Timestamp.valueOf(sync1.getLastUpdatedTimes()))).findFirst().get().getLastUpdatedTimes();
-		lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime().format(DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
-		}catch(RuntimeException expception) {
+			String latestUpdateTime = ((List<SyncDataProcessDTO>) jobConfigurationService.getLastCompletedSyncJobs()
+					.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO))
+							.stream()
+							.sorted((sync1, sync2) -> Timestamp.valueOf(sync2.getLastUpdatedTimes())
+									.compareTo(Timestamp.valueOf(sync1.getLastUpdatedTimes())))
+							.findFirst().get().getLastUpdatedTimes();
+			lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime()
+					.format(DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
+		} catch (RuntimeException expception) {
 			lastSyncTime.setText("---");
 		}
 	}
@@ -141,6 +154,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	public GridPane uinUpdateGridPane;
+
+	@FXML
+	public GridPane newRegGridPane;
 
 	@FXML
 	public HBox userOnboardMessage;
@@ -220,6 +236,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
+		setImagesOnHover();
+
 		if (!SessionContext.userContext().getRoles().contains(RegistrationConstants.SUPERVISOR)
 				&& !SessionContext.userContext().getRoles().contains(RegistrationConstants.ADMIN_ROLE)) {
 			eodProcessGridPane.setVisible(false);
@@ -253,7 +271,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 				}
 			});
 		}
-		
+
 		DateTimeFormatter format = DateTimeFormatter
 				.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
 		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());
@@ -270,6 +288,37 @@ public class PacketHandlerController extends BaseController implements Initializ
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
 		}
+	}
+
+	private void setImagesOnHover() {
+		Image newRegFocused = new Image(getClass().getResourceAsStream(RegistrationConstants.NEW_REG_FOCUSED));
+		Image newRegImagePath = new Image(getClass().getResourceAsStream(RegistrationConstants.NEW_REG_IMAGE));
+		Image updateUINFocused = new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_UIN_FOCUSED));
+		Image updateUINImagePath = new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_UIN_IMAGE));
+		Image lostUINFocused = new Image(getClass().getResourceAsStream(RegistrationConstants.LOST_UIN_FOCUSED));
+		Image lostUINImagePath = new Image(getClass().getResourceAsStream(RegistrationConstants.LOST_UIN_IMAGE));
+
+		newRegGridPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				newRegImage.setImage(newRegFocused);
+			} else {
+				newRegImage.setImage(newRegImagePath);
+			}
+		});
+		uinUpdateGridPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				uinUpdateImage.setImage(updateUINFocused);
+			} else {
+				uinUpdateImage.setImage(updateUINImagePath);
+			}
+		});
+		lostUINPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				lostUINImage.setImage(lostUINFocused);
+			} else {
+				lostUINImage.setImage(lostUINImagePath);
+			}
+		});
 	}
 
 	/**
@@ -709,8 +758,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
-				
-				if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+
+				if (regBaseCheckedException.getErrorCode()
+						.equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
 				}
 			} catch (RuntimeException runtimeException) {
@@ -740,9 +790,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 								.with(location -> location.setRegion(individualIdentity.getRegion() != null
 										? individualIdentity.getRegion().get(0).getValue()
 										: null))
-								.with(location -> location.setLocalAdministrativeAuthority(individualIdentity.getLocalAdministrativeAuthority() != null
-										? individualIdentity.getLocalAdministrativeAuthority().get(0).getValue()
-										: null))
+								.with(location -> location.setLocalAdministrativeAuthority(
+										individualIdentity.getLocalAdministrativeAuthority() != null
+												? individualIdentity.getLocalAdministrativeAuthority().get(0).getValue()
+												: null))
 								.with(location -> location.setPostalCode(
 										individualIdentity.getPostalCode() != null ? individualIdentity.getPostalCode()
 												: null))
@@ -796,7 +847,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	/**
 	 * Update packet status.
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	private void updatePacketStatus() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
@@ -813,7 +865,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 	/**
 	 * Sync and upload packet.
 	 *
-	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
 	 */
 	private void syncAndUploadPacket() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Sync and Upload of created Packet started");

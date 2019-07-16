@@ -71,7 +71,7 @@
                         <Insets left="20.0" />
                      </GridPane.margin>
                      <children>
-                        <GridPane onMouseClicked="#createPacket" prefHeight="90.0" prefWidth="250.0" styleClass="newRegBtnStyle">
+                        <GridPane fx:id="newRegGridPane" onMouseClicked="#createPacket" prefHeight="90.0" prefWidth="250.0" styleClass="uinUpdateStyle">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="90.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="156.0" />
@@ -80,12 +80,12 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label styleClass="newRegBtnStyle" text="%newregistration" wrapText="true" GridPane.columnIndex="1" />
+                              <Label styleClass="uinUpdateBtnStyle" text="%newregistration" wrapText="true" GridPane.columnIndex="1" />
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="newRegImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/NewRegistration.png" />
+                                          <Image url="@../images/NewReg.png" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -125,7 +125,7 @@
                               <Label styleClass="uinUpdateBtnStyle" text="%lostuin" wrapText="true" GridPane.columnIndex="1" />
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="lostUINImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/LostUIN.png" />
                                        </image>
