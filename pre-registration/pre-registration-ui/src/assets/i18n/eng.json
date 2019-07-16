@@ -527,7 +527,7 @@
     "action_add": "Add",
     "action_close": "Close",
     "action_add_to_slot": "Add to Slot",
-    "navigation_alert": "You have unsaved changes! If you leave, your changes will be lost."
+    "navigation_alert": "Are you sure you would like to navigate away as data entered will not be saved. Please confirm"
   },
   "centerSelection": {
     "title": " Book Appointment ",
