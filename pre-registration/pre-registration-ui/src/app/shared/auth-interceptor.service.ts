@@ -43,6 +43,10 @@ export class AuthInterceptorService implements HttpInterceptor {
         if (
           error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
         ) {
+
+          this.router.navigateByUrl('/');
+        }
+        if(error.status === 500) {
           this.router.navigateByUrl('/');
         }
         return throwError(error);

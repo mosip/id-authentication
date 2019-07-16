@@ -16,11 +16,11 @@
   height: 50%;
 }
 .browseInput {
-  width: 90%;
   background: none;
   border: 1px solid rgba(253, 81, 140, 1);
   color: rgba(253, 81, 140, 1);
   border-radius: 2px;
+  padding: 0.4rem 1.5rem;
 }
 
 .browseInput[disabled] {
@@ -32,9 +32,11 @@
   position: absolute;
   left: 1em;
 }
-
+mat-select {
+  font-weight: 600;
+}
 mat-select:focus {
-  font-weight: 800;
+  font-weight: 400;
 }
 .docsContainer {
   display: flex;
@@ -85,6 +87,7 @@ mat-select:focus {
   box-shadow: 1px 1px 10px 4px #eeeeee;
   background: #ffffff;
   margin: 5px 2vw;
+  color: #838383;
 }
 
 .file-uploaad__header {
@@ -99,14 +102,14 @@ mat-select:focus {
 
 .file-upload__body {
   padding: 0px 2rem 10px 2rem;
-  font-size: 12px;
+  font-size: 0.8rem;
   display: flex;
   justify-content: space-between;
   margin-bottom: 70px;
 }
 
 .file-upload__body__1 {
-  width: 50%;
+  width: 45.5vw;
   border-right: 2px solid #e6e6e6;
   margin-bottom: 30px;
 }
@@ -117,12 +120,13 @@ mat-select:focus {
 }
 
 .file-upload__body__2 > p {
-  margin: 0px;
+  margin: 0px 0px 16px 0px;
+  font-size: 0.8rem;
 }
 
 .file-upload__message {
   padding: 20px 2rem 10px 2rem;
-  font-size: 12px;
+  font-size: 0.8rem;
 }
 
 .file-upload__body__document-type {
@@ -131,9 +135,9 @@ mat-select:focus {
 }
 
 .file-upload__body__document-name {
-  max-width: 49%;
-  padding: 0.6em;
-  font-size: 0.7em;
+  max-width: 30vw;
+  padding: 0.2rem 0;
+  font-size: 0.8rem;
   position: relative;
 }
 
@@ -159,11 +163,9 @@ mat-select:focus {
   filter: grayscale(100%);
 }
 .file-upload__button {
-  height: 32px;
-  width: 20%;
   display: inline-flex;
   justify-content: flex-end;
-  padding-right: 15px;
+  margin-left: 2rem;
 }
 
 .file-uplaoad__body__2__preview {
@@ -196,7 +198,7 @@ mat-select:focus {
   text-decoration: none;
   display: inline-block;
   font-size: 0.8rem;
-  margin: 4px 3rem;
+  margin: 6px 3rem;
   cursor: pointer;
   text-transform: uppercase;
 }
@@ -206,13 +208,14 @@ mat-select:focus {
   background-color: white;
   color: #ff4081;
   margin-left: 2rem;
+  text-transform: uppercase;
 }
 
 .user__btn:disabled,
 .user__btn:active {
-  border: 1px solid gray;
-  background-color: white;
-  color: #ff4081;
+  border: 1px solid lightgray;
+  background-color: lightgray;
+  color: #2f3033;
   cursor: default;
 }
 .file-upload__input,

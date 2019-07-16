@@ -28,10 +28,10 @@
             (click)="dateSelected(i)"
           >
             <mat-card-content class="time-selection__date">
-              <p class="time-selection__tile-date-text">{{ data.displayDate }}</p>
+              <p class="time-selection__tile-date">{{ data.displayDate }}</p>
               <p class="time-selection__tile-date-text">{{ data.displayDay }}</p>
               <p class="time-selection__tile-availability-text">{{ data.TotalAvailable }}</p>
-              <p class="time-selection__tile-date-text">{{ 'timeSelection.text_availability' | translate }}</p>
+              <p class="time-selection__tile-availability-text">{{ 'timeSelection.text_availability' | translate }}</p>
             </mat-card-content>
           </mat-card>
         </div>
@@ -91,8 +91,7 @@
       <div>
         <div *ngIf="availabilityData[selectedTile] !== undefined" class="time-selection__name-list-header">
           <span class="time-selection__names-header-date-text">{{ availabilityData[selectedTile].displayDate }}</span
-          >,
-          <span class="time-selection__names-header-date-text">{{ availabilityData[selectedTile].displayDay }}</span>
+          >, <span class="time-selection__names-header-date-text">{{ availabilityData[selectedTile].displayDay }}</span>
           <br />
           <span class="time-selection__names-header-time-text">{{
             availabilityData[selectedTile].timeSlots[selectedCard].displayTime
@@ -133,16 +132,17 @@
       </div>
     </mat-card>
   </div>
-</div>
-<div>
-  <mat-card class="center-selection__button-container">
-    <button (click)="navigateBack()" class="user-back-btn">{{ 'timeSelection.action_back' | translate }}</button>
-    <span class="spacer"></span>
-    <button (click)="navigateDashboard()" class="user-book_later-btn">
-      {{ 'timeSelection.action_bookLater' | translate }}
-    </button>
-    <button [disabled]="disableContinueButton" (click)="makeBooking()" class="user-continue-btn">
-      {{ 'timeSelection.action_continue' | translate }}
-    </button>
-  </mat-card>
+
+  <div>
+    <mat-card class="time-selection__button-container">
+      <button (click)="navigateBack()" class="user-back-btn">{{ 'timeSelection.action_back' | translate }}</button>
+      <span class="spacer"></span>
+      <button (click)="navigateDashboard()" class="user-book_later-btn">
+        {{ 'timeSelection.action_bookLater' | translate }}
+      </button>
+      <button [disabled]="disableContinueButton" (click)="makeBooking()" class="user-continue-btn">
+        {{ 'timeSelection.action_continue' | translate }}
+      </button>
+    </mat-card>
+  </div>
 </div>
