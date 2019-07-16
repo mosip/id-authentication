@@ -2,7 +2,7 @@
  * Copyright
  * 
  */
-package io.mosip.preregistration.documents.entity;
+package io.mosip.preregistration.core.common.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -12,11 +12,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.ManyToAny;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,25 +42,29 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "applicant_document", schema = "prereg")
-@NamedQuery(name = "DocumentEntity.findSingleDocument", query = "SELECT d FROM DocumentEntity d WHERE d.preregId= :preId AND d.docCatCode= :catCode")
+@NamedQuery(name = "DocumentEntity.findSingleDocument", query = "SELECT d FROM DocumentEntity d WHERE d.demographicEntity.preRegistrationId= :preId AND d.docCatCode= :catCode")
 public class DocumentEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1692781286748263575L;
 
+	@ManyToOne
+	@JoinColumn(name = "prereg_id", nullable = false)
+	private DemographicEntity demographicEntity;
+
 	/**
 	 * Document Id
 	 */
-	
-	@Id 
+
+	@Id
 	@Column(name = "id")
 	private String documentId;
 
-	/**
-	 * PreRegistration Id
-	 */
-	@Column(name = "prereg_id")
-	private String preregId;
+	// /**
+	// * PreRegistration Id
+	// */
+	// @Column(name = "prereg_id")
+	// private String preregId;
 
 	/**
 	 * Document Name
@@ -118,24 +125,23 @@ public class DocumentEntity implements Serializable {
 	 */
 	@Column(name = "upd_dtimes")
 	private LocalDateTime updDtime;
-	
+
 	/**
 	 * Encrypted Date Time
 	 */
 	@Column(name = "encrypted_dtimes")
 	private LocalDateTime encryptedDateTime;
-	
+
 	/**
 	 * Document Id
 	 */
 	@Column(name = "doc_id")
 	private String docId;
-	
+
 	/**
 	 * Hash value of row
 	 */
 	@Column(name = "doc_hash")
 	private String DocHash;
-	
-	
+
 }

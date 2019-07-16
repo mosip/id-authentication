@@ -704,12 +704,12 @@ public class DemographicServiceTest {
 				.thenReturn(identityMappingJson);
 		Mockito.when(serviceUtil.getJson(Mockito.any())).thenReturn(identityMappingJson);
 		Mockito.when(serviceUtil.getPreregistrationIdentityJson()).thenReturn(demographicIdentityRequestDTO);
-		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
-				}), Mockito.anyMap())).thenReturn(resDoc);
-		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-				}), Mockito.anyMap())).thenReturn(resBook);
+//		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
+//				}), Mockito.anyMap())).thenReturn(resDoc);
+//		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+//				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+//				}), Mockito.anyMap())).thenReturn(resBook);
 
 		MainResponseDTO<DemographicMetadataDTO> actualRes = preRegistrationService.getAllApplicationDetails(userId, "");
 		assertEquals(actualRes.getVersion(), response.getVersion());
