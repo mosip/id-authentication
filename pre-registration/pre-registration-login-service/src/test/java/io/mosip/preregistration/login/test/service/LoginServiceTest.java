@@ -1,6 +1,7 @@
 package io.mosip.preregistration.login.test.service;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -289,7 +290,8 @@ public class LoginServiceTest {
 		  Mockito.eq(String.class))).thenReturn(res); 
 		  Mockito.doThrow(new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.name(),
 					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name(),null)).when(authCommonUtil).getConfig(Mockito.any());
-		  Mockito.doNothing().when(authCommonUtil).getConfigParams(Mockito.any(), Mockito.any(), Mockito.any());
+		  Mockito.doThrow(new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.name(),
+					ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.name(),null)).when(authCommonUtil).getConfigParams(Mockito.any(), Mockito.any(), Mockito.any());
 		  Mockito.when(authCommonUtil.parsePropertiesString(Mockito.any())).thenReturn(prop);
 		  response = authService.getConfig();
 		  }
@@ -321,6 +323,18 @@ public class LoginServiceTest {
 		  Mockito.when(headers.get(Mockito.any())).thenReturn(list);
 		  spyAuthService.setAuditValues("eventId", "eventName", "eventType", "description", "idType", "userId", "userName");
 		  
+	  }
+	  
+	  @Test
+	  public void refreshConfig() {
+		  Mockito.when(authCommonUtil.getConfig(Mockito.any())).thenReturn("config");
+		  assertEquals(spyAuthService.refreshConfig().getResponse(),"success");
+	  }
+	  
+	  @Test(expected=ConfigFileNotFoundException.class)
+	  public void refreshConfigException() {
+		  Mockito.when(authCommonUtil.getConfig(Mockito.any())).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+		  assertEquals(spyAuthService.refreshConfig().getResponse(),"success");
 	  }
 	  
 

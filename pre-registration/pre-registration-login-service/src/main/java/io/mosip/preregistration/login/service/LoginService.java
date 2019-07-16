@@ -1,7 +1,9 @@
 package io.mosip.preregistration.login.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -19,13 +21,17 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -69,9 +75,13 @@ public class LoginService {
 	@Autowired
 	private LoginCommonUtil loginCommonUtil;
 	
+	@Autowired
+	private Environment env;
+	
 	@Value("${global.config.file}")
 	private String globalFileName;
 
+	
 	@Value("${pre.reg.config.file}")
 	private String preRegFileName;
 
@@ -123,10 +133,19 @@ public class LoginService {
 	@Value("${secretKey}")
 	private String secretKey;
 	
+	@Autowired
+	@Qualifier("restTemplateConfig")
+	private RestTemplate restTemplate;
+	
+	private static String globalConfig;
+	private static String preregConfig;
+	
 	@PostConstruct
 	public void setupLoginService() {
+	
 		requiredRequestMap.put("version", version);
-
+		globalConfig=loginCommonUtil.getConfig(globalFileName);
+		preregConfig=loginCommonUtil.getConfig(preRegFileName);
 	}
 	/**
 	 * Reference for ${mosip.prereg.app-id} from property file
@@ -364,6 +383,8 @@ public class LoginService {
 	/**
 	 * This will return UI related configurations return
 	 */
+	
+	
 	public MainResponseDTO<Map<String, String>> getConfig() {
 		log.info("sessionId", "idType", "id",
 				"In login service of getConfig ");
@@ -378,13 +399,12 @@ public class LoginService {
 				reqParams.add(uiParams[i]);
 			}
 			if (globalFileName != null && preRegFileName != null) {
-				String globalParam = loginCommonUtil.getConfig(globalFileName);
-				String preregParam = loginCommonUtil.getConfig(preRegFileName);
-				Properties prop1 = loginCommonUtil.parsePropertiesString(globalParam);
-				Properties prop2 = loginCommonUtil.parsePropertiesString(preregParam);
+				
+				Properties prop1 = loginCommonUtil.parsePropertiesString(globalConfig);
+				Properties prop2 = loginCommonUtil.parsePropertiesString(preregConfig);
 				loginCommonUtil.getConfigParams(prop1,configParams,reqParams);
 				loginCommonUtil.getConfigParams(prop2,configParams,reqParams);
-		
+				
 			} else {
 				throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.getCode(),
 						ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.getMessage(),res);
@@ -396,6 +416,27 @@ public class LoginService {
 			new LoginExceptionCatcher().handle(ex,"config",res);
 		}
 		res.setResponse(configParams);
+		res.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return res;
+	}
+	
+	public  MainResponseDTO<String> refreshConfig(){
+		log.info("sessionId", "idType", "id",
+				"In login service of refreshConfig ");
+		MainResponseDTO<String> res = new MainResponseDTO<>();
+		res.setId(configId);
+		res.setVersion(version);
+
+		try {
+			globalConfig=loginCommonUtil.getConfig(globalFileName);
+			preregConfig=loginCommonUtil.getConfig(preRegFileName);
+		}
+		catch(HttpServerErrorException | HttpClientErrorException ex) {
+			log.error("sessionId", "idType", "id",
+					"In login service of refreshConfig "+ex.getMessage());
+			new LoginExceptionCatcher().handle(ex,"refreshConfig",res);
+		}
+		res.setResponse("success");
 		res.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return res;
 	}
