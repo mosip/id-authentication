@@ -526,7 +526,8 @@
     "action_dismiss": "Ok",
     "action_add": "Add",
     "action_close": "Close",
-    "action_add_to_slot": "Add to Slot"
+    "action_add_to_slot": "Add to Slot",
+    "navigation_alert": "You have unsaved changes! If you leave, your changes will be lost."
   },
   "centerSelection": {
     "title": " Book Appointment ",

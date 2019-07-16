@@ -525,7 +525,8 @@
     "action_dismiss": "حسنا",
     "action_add": "إضافة",
     "action_close": "قريب",
-    "action_add_to_slot": "أضف إلى الفتحة"
+    "action_add_to_slot": "أضف إلى الفتحة",
+    "navigation_alert": "You have unsaved changes! If you leave, your changes will be lost.(ARA)"
   },
   "centerSelection": {
     "title": " موعد الكتاب ",

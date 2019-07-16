@@ -9,7 +9,6 @@ export abstract class UnloadDeactivateGuardService {
 
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
-    console.log('$event', $event);
     if (!this.canDeactivate()) {
       $event.returnValue = true;
     }

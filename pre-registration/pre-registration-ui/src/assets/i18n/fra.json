@@ -530,7 +530,8 @@
     "action_dismiss": "D'accord",
     "action_add": "Ajouter",
     "action_close": "Fermer",
-    "action_add_to_slot": "Ajouter à la fente"
+    "action_add_to_slot": "Ajouter à la fente",
+    "navigation_alert": "You have unsaved changes! If you leave, your changes will be lost.(FRA)"
   },
   "centerSelection": {
     "title": " Rendez-vous du livre ",
