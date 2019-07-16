@@ -54,7 +54,7 @@ node {
  
 stage ('---------- mvn-clean-install ---------------') {
 	//rtMaven.deployer.deployArtifacts = false
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests=true', buildInfo: buildInfo
 }
 
 stage('---------- SonarQube Analysis --------------') {
