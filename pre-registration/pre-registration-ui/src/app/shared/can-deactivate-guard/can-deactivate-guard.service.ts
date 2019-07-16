@@ -11,11 +11,11 @@ export class CanDeactivateGuardService implements CanDeactivate<UnloadDeactivate
 
   canDeactivate(component: UnloadDeactivateGuardService): boolean {
     if (this.authService.isAuthenticated() && !component.canDeactivate()) {
-      if (confirm('You have unsaved changes! If you leave, your changes will be lost.')) {
-        return true;
-      } else {
-        return false;
-      }
+      // if (confirm('You have unsaved changes! If you leave, your changes will be lost.')) {
+      //   return true;
+      // } else {
+      //   return false;
+      // }
     }
     return true;
   }
