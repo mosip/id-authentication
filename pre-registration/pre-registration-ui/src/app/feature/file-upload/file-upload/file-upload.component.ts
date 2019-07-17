@@ -150,6 +150,9 @@ export class FileUploadComponent implements OnInit {
    */
   private setNoneApplicant() {
     let i: number = 0;
+    const temp = JSON.parse(JSON.stringify(this.allApplicants.push(this.noneApplicant)));
+
+    let noneCount: Boolean = this.isNoneAvailable();
 
     for (let applicant of this.allApplicants) {
       if (applicant.preRegistrationId == this.users[0].preRegId) {
@@ -400,7 +403,7 @@ export class FileUploadComponent implements OnInit {
 
     this.updateApplicants();
     this.allApplicants = this.getApplicantsName(this.applicants);
-
+    const temp = JSON.parse(JSON.stringify(this.allApplicants));
     this.setNoneApplicant();
   }
 
