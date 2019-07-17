@@ -27,6 +27,7 @@
 .form_fields_padding {
   margin: 30px auto;
   width: 38vw;
+  max-width: 323px;
 }
 
 .heading {
