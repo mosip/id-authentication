@@ -412,9 +412,8 @@ public class DocumentService {
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
-			if (ValidationUtil.requstParamValidator(requestParamMap)) {// &&
-																		// serviceUtil.getPreRegInfoRestService(preId))
-																		// {
+			if (ValidationUtil.requstParamValidator(requestParamMap) &&
+				serviceUtil.getPreRegInfoRestService(preId)){
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 				responseDto.setResponse(createDocumentResponse(documentEntities));
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());

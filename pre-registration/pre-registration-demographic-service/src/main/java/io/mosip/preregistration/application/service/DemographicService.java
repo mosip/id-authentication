@@ -955,7 +955,7 @@ public class DemographicService {
 					documentMultipartResponseDTO.setDocCatCode(documentEntity.getDocCatCode());
 					documentMultipartResponseDTO.setDocName(documentEntity.getDocName());
 					documentMultipartResponseDTO.setDocTypCode(documentEntity.getDocTypeCode());
-					documentMultipartResponseDTO.setDocumentId(documentEntity.getDocId());
+					documentMultipartResponseDTO.setDocumentId(documentEntity.getDocumentId());
 					documentMultipartResponseDTO.setLangCode(documentEntity.getLangCode());
 					documentJsonString = JsonUtils.javaObjectToJsonString(documentMultipartResponseDTO);
 					return (JSONObject) jsonParser.parse(documentJsonString);
