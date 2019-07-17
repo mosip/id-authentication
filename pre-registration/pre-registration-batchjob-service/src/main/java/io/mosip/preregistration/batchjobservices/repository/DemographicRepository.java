@@ -1,7 +1,5 @@
 package io.mosip.preregistration.batchjobservices.repository;
 
-
-
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +13,5 @@ import io.mosip.preregistration.core.common.entity.DemographicEntity;
 @Repository("demographicRepository")
 public interface DemographicRepository extends BaseRepository<DemographicEntity, String> {
 
-	DemographicEntity findBypreRegistrationId(@Param("preRegId")String preRegId);
+	DemographicEntity findBypreRegistrationId(String preRegId);
 }
