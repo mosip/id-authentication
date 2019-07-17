@@ -7,10 +7,10 @@ import { AuthService } from 'src/app/auth/auth.service';
 export abstract class UnloadDeactivateGuardService {
   abstract canDeactivate(): boolean;
 
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (!this.canDeactivate()) {
-      $event.returnValue = true;
-    }
-  }
+  // @HostListener('window:beforeunload', ['$event'])
+  // unloadNotification($event: any) {
+  //   if (!this.canDeactivate()) {
+  //     $event.returnValue = true;
+  //   }
+  // }
 }
