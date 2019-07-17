@@ -192,13 +192,15 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 			System.setProperty("hadoop.home.dir", hadoopLibPath.toString());
 			if (SystemUtils.IS_OS_WINDOWS) {
 				File binPath = FileUtils.getFile(hadoopLibPath.toString(), "bin");
-				binPath.mkdir();
+				boolean created=binPath.mkdir();
 				Resource resource = resourceLoader.getResource(CLASSPATH_PREFIX + WIN_UTIL);
 				if (resource.exists()) {
 					java.nio.file.Path c = Paths.get("s", "x");
+					if(created) {
 					File winUtilsPath = FileUtils.getFile(binPath.toString(), resource.getFilename());
 					   FileUtils.copyInputStreamToFile(resource.getInputStream(), winUtilsPath);
-					   }
+					}
+					}
 			}
 
 			if (isAuthEnable) {
@@ -262,8 +264,8 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 		File keyPath = null;
 		Resource resource = resourceLoader.getResource(keytabPath);
 		File dataPath = FileUtils.getFile(hadoopLibPath.toString(), "data");
-		dataPath.mkdir();
-		if (resource.exists()) {
+		boolean created=dataPath.mkdir();
+		if (resource.exists() && created) {
 			keyPath = FileUtils.getFile(dataPath.toString(), resource.getFilename());
 			FileUtils.copyInputStreamToFile(resource.getInputStream(), keyPath);
 		} else {

@@ -33,6 +33,6 @@ public enum APIAuthorityList {
 	}
 
 	public String[] getList() {
-		return this.list;
+		return this.list.clone();
 	}
 }

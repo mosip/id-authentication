@@ -140,8 +140,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				ManualVerificationStatus.ASSIGNED.name());
 
 		if (!(matchType.equalsIgnoreCase(DedupeSourceName.ALL.toString())
-				|| matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
-				|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString()))) {
+				|| isMatchTypeDemoOrBio(matchType))) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 					dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()"
 							+ PlatformErrorMessages.RPR_MVS_NO_MATCH_TYPE_PRESENT.getMessage());
@@ -161,8 +160,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		} else {
 			if (matchType.equalsIgnoreCase(DedupeSourceName.ALL.toString())) {
 				entities = basePacketRepository.getFirstApplicantDetailsForAll(ManualVerificationStatus.PENDING.name());
-			} else if (matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
-					|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString())) {
+			} else if (isMatchTypeDemoOrBio(matchType)) {
 				entities = basePacketRepository.getFirstApplicantDetails(ManualVerificationStatus.PENDING.name(),
 						matchType);
 			}
@@ -194,6 +192,11 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				dto.getUserId(), "ManualVerificationServiceImpl::assignApplicant()::exit");
 		return manualVerificationDTO;
 
+	}
+
+	private boolean isMatchTypeDemoOrBio(String matchType) {
+		return matchType.equalsIgnoreCase(DedupeSourceName.DEMO.toString())
+				|| matchType.equalsIgnoreCase(DedupeSourceName.BIO.toString());
 	}
 
 	/*
@@ -293,7 +296,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 		messageDTO.setInternalError(false);
 		messageDTO.setIsValid(false);
 		messageDTO.setRid(manualVerificationDTO.getRegId());
-		if (registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty()) {
+		if ( isRegAndMactedRefIdEmpty(registrationId,matchedRefId)) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "ManualVerificationServiceImpl::updatePacketStatus()::InvalidFileNameException"
 							+ PlatformErrorMessages.RPR_MVS_REG_ID_SHOULD_NOT_EMPTY_OR_NULL.getMessage());
@@ -393,6 +396,11 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				manualVerificationDTO.getRegId(), "ManualVerificationServiceImpl::updatePacketStatus()::exit");
 		return manualVerificationDTO;
 
+	}
+
+	private boolean isRegAndMactedRefIdEmpty(String registrationId, String matchedRefId) {
+		
+		return registrationId == null || registrationId.isEmpty() || matchedRefId == null || matchedRefId.isEmpty();
 	}
 
 	/*

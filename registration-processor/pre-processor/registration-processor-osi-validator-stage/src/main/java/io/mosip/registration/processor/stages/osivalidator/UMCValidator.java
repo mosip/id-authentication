@@ -391,7 +391,30 @@ public class UMCValidator {
 			registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
 		}
 
-		else if (isWorkingHourValidationRequired
+		else if (isValidCenterDetails(registrationStatusDto, rcmDto, regOsi))
+			umc = true;
+		else if (isValidMachinDetails(registrationStatusDto, rcmDto, regOsi))
+			umc = true;
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "UMCValidator::isValidUMC()::exit");
+		return umc;
+	}
+
+	private boolean isValidMachinDetails(InternalRegistrationStatusDto registrationStatusDto,
+			RegistrationCenterMachineDto rcmDto, RegOsiDto regOsi) throws ApisResourceAccessException, IOException {
+		return isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate(),
+				registrationStatusDto)
+				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate(),
+						registrationStatusDto)
+				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
+						regOsi.getSupervisorId(), regOsi.getOfficerId(), registrationStatusDto)
+				&& isValidDevice(rcmDto, registrationStatusDto);
+	}
+
+	private boolean isValidCenterDetails(InternalRegistrationStatusDto registrationStatusDto,
+			RegistrationCenterMachineDto rcmDto, RegOsiDto regOsi) throws ApisResourceAccessException, IOException {
+		return isWorkingHourValidationRequired
 				&& isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate(),
 						registrationStatusDto)
 				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate(),
@@ -399,20 +422,7 @@ public class UMCValidator {
 				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
 						regOsi.getSupervisorId(), regOsi.getOfficerId(), registrationStatusDto)
 				&& validateCenterIdAndTimestamp(rcmDto, registrationStatusDto)
-				&& isValidDevice(rcmDto, registrationStatusDto))
-			umc = true;
-		else if (isValidRegistrationCenter(rcmDto.getRegcntrId(), primaryLanguagecode, rcmDto.getPacketCreationDate(),
-				registrationStatusDto)
-				&& isValidMachine(rcmDto.getMachineId(), primaryLanguagecode, rcmDto.getPacketCreationDate(),
-						registrationStatusDto)
-				&& isValidUMCmapping(rcmDto.getPacketCreationDate(), rcmDto.getRegcntrId(), rcmDto.getMachineId(),
-						regOsi.getSupervisorId(), regOsi.getOfficerId(), registrationStatusDto)
-				&& isValidDevice(rcmDto, registrationStatusDto))
-			umc = true;
-
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-				registrationId, "UMCValidator::isValidUMC()::exit");
-		return umc;
+				&& isValidDevice(rcmDto, registrationStatusDto);
 	}
 
 	/**

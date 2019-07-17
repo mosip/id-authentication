@@ -206,51 +206,9 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			List<AbisRequestDto> abisIdentifyRequestList = abisInsertIdentifyList.stream()
 					.filter(dto -> dto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString()))
 					.collect(Collectors.toList());
-			// If all insert request are null then send all identify requests.
-			if (abisInsertRequestList.isEmpty()) {
-				for (AbisRequestDto abisIdentifyRequest : abisIdentifyRequestList) {
-					List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
-							.filter(dto -> dto.getName().equals(abisIdentifyRequest.getAbisAppCode()))
-							.collect(Collectors.toList());
-					validateNullCheck(abisQueue, ABIS_QUEUE_NOT_FOUND);
-					byte[] reqBytearray = abisIdentifyRequest.getReqText();
 
-					boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
-							abisQueue.get(0).getInboundQueueName());
-
-					updateAbisRequest(isAddedToQueue, abisIdentifyRequest, internalRegDto);
-				}
-
-			}
-			// send in progress insert requests to queue
-			for (AbisRequestDto abisInprogressRequest : abisInprogressInsertRequestList) {
-				List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
-						.filter(dto -> dto.getName().equals(abisInprogressRequest.getAbisAppCode()))
-						.collect(Collectors.toList());
-				validateNullCheck(abisQueue, ABIS_QUEUE_NOT_FOUND);
-
-				byte[] reqBytearray = abisInprogressRequest.getReqText();
-
-				boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
-						abisQueue.get(0).getInboundQueueName());
-
-				updateAbisRequest(isAddedToQueue, abisInprogressRequest, internalRegDto);
-			}
-			// send all identify requests for already processed insert requests
-			for (AbisRequestDto abisAlreadyProcessedInsertRequest : abisAlreadyprocessedInsertRequestList) {
-				List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
-						.filter(dto -> dto.getName().equals(abisAlreadyProcessedInsertRequest.getAbisAppCode()))
-						.collect(Collectors.toList());
-				validateNullCheck(abisQueue, ABIS_QUEUE_NOT_FOUND);
-				List<AbisRequestDto> identifyRequest = abisIdentifyRequestList.stream()
-						.filter(dto -> dto.getAbisAppCode().equals(abisAlreadyProcessedInsertRequest.getAbisAppCode()))
-						.collect(Collectors.toList());
-				byte[] reqBytearray = identifyRequest.get(0).getReqText();
-				boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
-						abisQueue.get(0).getInboundQueueName());
-				updateAbisRequest(isAddedToQueue, identifyRequest.get(0), internalRegDto);
-
-			}
+			processInsertIdentify(abisInsertRequestList,abisIdentifyRequestList,abisInprogressInsertRequestList,internalRegDto,abisAlreadyprocessedInsertRequestList);
+			
 			object.setIsValid(true);
 			object.setInternalError(false);
 			isTransactionSuccessful = true;
@@ -298,6 +256,58 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 		return object;
 	}
 
+	private void processInsertIdentify(List<AbisRequestDto> abisInsertRequestList,
+			List<AbisRequestDto> abisIdentifyRequestList,
+			List<AbisRequestDto> abisInprogressInsertRequestList,
+			InternalRegistrationStatusDto internalRegDto,
+			List<AbisRequestDto> abisAlreadyprocessedInsertRequestList ) throws RegistrationProcessorCheckedException {
+		// If all insert request are null then send all identify requests.
+		if (abisInsertRequestList.isEmpty()) {
+			for (AbisRequestDto abisIdentifyRequest : abisIdentifyRequestList) {
+				List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
+						.filter(dto -> dto.getName().equals(abisIdentifyRequest.getAbisAppCode()))
+						.collect(Collectors.toList());
+				validateNullCheck(abisQueue, ABIS_QUEUE_NOT_FOUND);
+				byte[] reqBytearray = abisIdentifyRequest.getReqText();
+
+				boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
+						abisQueue.get(0).getInboundQueueName());
+
+				updateAbisRequest(isAddedToQueue, abisIdentifyRequest, internalRegDto);
+			}
+
+		}
+		// send in progress insert requests to queue
+		for (AbisRequestDto abisInprogressRequest : abisInprogressInsertRequestList) {
+			List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
+					.filter(dto -> dto.getName().equals(abisInprogressRequest.getAbisAppCode()))
+					.collect(Collectors.toList());
+			validateNullCheck(abisQueue, ABIS_QUEUE_NOT_FOUND);
+
+			byte[] reqBytearray = abisInprogressRequest.getReqText();
+
+			boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
+					abisQueue.get(0).getInboundQueueName());
+
+			updateAbisRequest(isAddedToQueue, abisInprogressRequest, internalRegDto);
+		}
+		// send all identify requests for already processed insert requests
+		for (AbisRequestDto abisAlreadyProcessedInsertRequest : abisAlreadyprocessedInsertRequestList) {
+			List<AbisQueueDetails> abisQueue = abisQueueDetails.stream()
+					.filter(dto -> dto.getName().equals(abisAlreadyProcessedInsertRequest.getAbisAppCode()))
+					.collect(Collectors.toList());
+			validateNullCheck(abisQueue, ABIS_QUEUE_NOT_FOUND);
+			List<AbisRequestDto> identifyRequest = abisIdentifyRequestList.stream()
+					.filter(dto -> dto.getAbisAppCode().equals(abisAlreadyProcessedInsertRequest.getAbisAppCode()))
+					.collect(Collectors.toList());
+			byte[] reqBytearray = identifyRequest.get(0).getReqText();
+			boolean isAddedToQueue = sendToQueue(abisQueue.get(0).getMosipQueue(), new String(reqBytearray),
+					abisQueue.get(0).getInboundQueueName());
+			updateAbisRequest(isAddedToQueue, identifyRequest.get(0), internalRegDto);
+
+		}
+	}
+	
 	public void consumerListener(Message message, String abisInBoundAddress, MosipQueue queue, MosipEventBus eventBus)
 			throws RegistrationProcessorCheckedException {
 		InternalRegistrationStatusDto internalRegStatusDto = null;

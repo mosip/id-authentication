@@ -215,7 +215,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 					idResponseDTO = sendIdRepoWithUin(registrationId, demographicIdentity,
 							uinResponseDto.getResponse().getUin(), description);
-					if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
+					if (isIdResponseNotNull(idResponseDTO)) {
 						generateVid(registrationId, uinResponseDto.getResponse().getUin());
 						registrationStatusDto.setStatusComment(UinStatusMessage.PACKET_UIN_UPDATION_SUCCESS_MSG);
 
@@ -504,7 +504,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		List<Documents> documentInfo = utility.getAllDocumentsByRegId(regId);
 		result = idRepoRequestBuilder(RegistrationType.ACTIVATED.toString().toUpperCase(), regId, documentInfo,
 				demographicIdentity);
-		if (result != null && result.getResponse() != null) {
+		if (isIdResponseNotNull(result)) {
 
 			if ((RegistrationType.ACTIVATED.toString().toUpperCase())
 					.equalsIgnoreCase(result.getResponse().getStatus())) {
@@ -596,7 +596,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		RequestDto requestDto = new RequestDto();
 		boolean isTransactionSuccessful = Boolean.FALSE;
 
-		if (result != null && result.getResponse() != null) {
+		if (isIdResponseNotNull(result)) {
 
 			if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getResponse().getStatus())) {
 
@@ -625,7 +625,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				result = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 						pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
-				if (result != null && result.getResponse() != null) {
+				if (isIdResponseNotNull(result)) {
 
 					if ((RegistrationType.ACTIVATED.toString()).equalsIgnoreCase(result.getResponse().getStatus())) {
 						isTransactionSuccessful = true;
@@ -661,6 +661,10 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		}
 
 		return isTransactionSuccessful;
+	}
+
+	private boolean isIdResponseNotNull(IdResponseDTO result) {
+		return result != null && result.getResponse() != null;
 	}
 
 	/**
@@ -710,7 +714,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			idResponseDto = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY,
 					pathsegments, "", "", idRequestDTO, IdResponseDTO.class);
 
-			if (idResponseDto != null && idResponseDto.getResponse() != null) {
+			if (isIdResponseNotNull(idResponseDto)) {
 				if (idResponseDto.getResponse().getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
 					description.setCode(RegistrationStatusCode.PROCESSED.toString());
 					description.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
@@ -970,7 +974,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			idResponse = (IdResponseDTO) registrationProcessorRestClientService.patchApi(ApiName.IDREPOSITORY, null, "",
 					"", idRequestDTO, IdResponseDTO.class);
 
-			if (idResponse != null && idResponse.getResponse() != null) {
+			if (isIdResponseNotNull(idResponse)) {
 				description.setCode(RegistrationStatusCode.PROCESSED.toString());
 				description.setStatusComment(UinStatusMessage.PACKET_LOST_UIN_UPDATION_SUCCESS_MSG + lostPacketRegId);
 				description.setMessage(UinStatusMessage.PACKET_LOST_UIN_UPDATION_SUCCESS_MSG + lostPacketRegId);

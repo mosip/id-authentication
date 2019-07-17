@@ -154,7 +154,7 @@ public class AbisRequestEntity extends BasePacketEntity<AbisRequestPKEntity> imp
 	}
 
 	public void setReqText(byte[] reqText) {
-		this.reqText = reqText;
+		this.reqText = reqText!=null?reqText:null;
 	}
 
 	public LocalDateTime getRequestDtimes() {

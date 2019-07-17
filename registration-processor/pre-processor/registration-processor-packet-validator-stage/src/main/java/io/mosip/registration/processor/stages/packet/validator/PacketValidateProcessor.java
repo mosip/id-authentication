@@ -457,10 +457,7 @@ public class PacketValidateProcessor {
 			return false;
 
 		List<FieldValue> metadataList = identity.getMetaData();
-		if (object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())
-				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString())
-				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.RES_UPDATE.toString())) {
+		if (checkRegType(object)) {
 			uin = utility.getUIn(registrationId);
 			if (uin == null)
 				throw new IdRepoAppException(PlatformErrorMessages.RPR_PVM_INVALID_UIN.getMessage());
@@ -488,10 +485,7 @@ public class PacketValidateProcessor {
 			}
 		}
 		// check if uin is in idrepisitory
-		if (RegistrationType.UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
-				|| RegistrationType.RES_UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
-				|| RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
-				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
+		if (checkRegType(object)) {
 
 			if (!uinPresentInIdRepo(String.valueOf(uin))) {
 				packetValidationDto.setPacketValidaionFailure("uin is not present in idrepo");
@@ -507,6 +501,13 @@ public class PacketValidateProcessor {
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
 		// Sync list table
 		return validateRegIdAndTypeFromSyncTable(object.getRid(),metadataList, identityIteratorUtil, packetValidationDto);
+	}
+
+	private boolean checkRegType(MessageDTO object) {
+		return object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())
+				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString())
+				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.RES_UPDATE.toString());
 	}
 
 	private boolean uinPresentInIdRepo(String uin) throws ApisResourceAccessException, IOException {

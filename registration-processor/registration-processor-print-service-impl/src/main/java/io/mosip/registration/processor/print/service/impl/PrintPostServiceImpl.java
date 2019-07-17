@@ -126,8 +126,10 @@ public class PrintPostServiceImpl {
 
 			} else {
 				// Creating The New Directory Structure
-				dirPathObj.mkdirs();//createDirectories();
+				boolean created=dirPathObj.mkdirs();//createDirectories();
+				if(created) {
 				printConsumedFileFromQueue(dirPathObj, printQueueDTO);
+				}
 			}
 
 		} catch (IOException | JMSException | ClassNotFoundException e) {
