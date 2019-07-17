@@ -134,18 +134,21 @@ public abstract class BaseIDAFilter implements Filter {
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
 		CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response) {
-			
+
 			@Override
 			public void flushBuffer() throws IOException {
-				// Avoiding flush and commit while data validation exception handling to set response header(response-signature) later in the filter. 
+				// Avoiding flush and commit while data validation exception handling to set
+				// response header(response-signature) later in the filter.
 				// Positive response does not invoke this
-				//super.flushBuffer();
+				// super.flushBuffer();
 			}
 		};
 		try {
 			Map<String, Object> requestBody = getRequestBody(requestWrapper.getInputStream());
 			if (requestBody == null) {
 				chain.doFilter(requestWrapper, responseWrapper);
+				String responseAsString = mapResponse(requestWrapper, responseWrapper, requestTime);
+				response.getWriter().write(responseAsString);
 				return;
 			}
 
@@ -288,6 +291,12 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param requestTime
 	 */
 	private void logTime(String time, String type, Temporal requestTime) {
+
+		if (time == null || time.isEmpty()) {
+			time = DateUtils.formatDate(DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
+					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC)),
+					env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN), TimeZone.getTimeZone(ZoneOffset.UTC));
+		}
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + time);
 		long duration = Duration
 				.between(requestTime,
@@ -323,7 +332,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * decipher.
 	 *
 	 * @param requestWrapper {@link ResettableStreamHttpServletRequest}
-	 * @param requestBody the request body
+	 * @param requestBody    the request body
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	protected void consumeRequest(ResettableStreamHttpServletRequest requestWrapper, Map<String, Object> requestBody)
@@ -367,7 +376,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @return the string
 	 */
 
-	private String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
 		String id = null;
 		String contextPath = requestWrapper.getContextPath();
 		if (!StringUtils.isEmpty(contextPath)) {
@@ -405,7 +414,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 * @param id          the id
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	private void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
+	protected void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
 		String idFromRequest = requestBody.containsKey(IdAuthCommonConstants.ID)
 				? (String) requestBody.get(IdAuthCommonConstants.ID)
 				: null;
@@ -447,7 +456,7 @@ public abstract class BaseIDAFilter implements Filter {
 	 *
 	 * @param requestWrapper  {@link ResettableStreamHttpServletRequest}
 	 * @param responseWrapper {@link CharResponseWrapper}
-	 * @param requestTime the request time
+	 * @param requestTime     the request time
 	 * @return the string response finally built
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
@@ -460,9 +469,11 @@ public abstract class BaseIDAFilter implements Filter {
 			Map<String, Object> responseMap = setResponseParams(requestBody,
 					getResponseBody(responseWrapper.toString()));
 			requestWrapper.resetInputStream();
-			responseMap.replace(VERSION, env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
+			responseMap.replace(VERSION,
+					env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_VERSION)));
 			requestWrapper.resetInputStream();
-			responseMap.put(IdAuthCommonConstants.ID, env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID)));
+			responseMap.put(IdAuthCommonConstants.ID,
+					env.getProperty(fetchId(requestWrapper, IdAuthConfigKeyConstants.MOSIP_IDA_API_ID)));
 			if (responseMap.containsKey(ERRORS)) {
 				List<AuthError> errorList = responseMap.get(ERRORS) instanceof List
 						? (List<AuthError>) responseMap.get(ERRORS)

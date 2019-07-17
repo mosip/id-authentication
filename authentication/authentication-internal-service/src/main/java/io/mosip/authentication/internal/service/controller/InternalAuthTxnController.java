@@ -1,12 +1,13 @@
 package io.mosip.authentication.internal.service.controller;
 
-import java.util.ArrayList;
+import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,27 +15,27 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.repository.AutnTxnRepository;
+import io.mosip.authentication.core.autntxn.dto.AutnTxnDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.DataValidationUtil;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.id.service.IdService;
+import io.mosip.authentication.core.spi.authtxn.service.AuthTxnService;
 import io.mosip.authentication.internal.service.validator.AuthTxnValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.kernel.core.util.DateUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -47,29 +48,23 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 public class InternalAuthTxnController {
 
-	private static final int DEFAULT_COUNT = 10;
-
-	private static final int DEFAULT_PAGE_SIZE = 1;
-
-	private static final String UIN_KEY = "uin";
-
 	private static Logger logger = IdaLogger.getLogger(InternalAuthTxnController.class);
 
 	private static final String AUTH_TXN_DETAILS = "getAuthTransactionDetails";
 
 	@Autowired
-	private AutnTxnRepository authtxnRepo;
-
-	@Autowired
 	private AuthTxnValidator authTxnValidator;
 
 	@Autowired
-	private IdService<AutnTxn> idService;
+	private AuthTxnService authTxnService;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.setValidator(authTxnValidator);
 	}
+
+	@Autowired
+	Environment environment;
 
 	/**
 	 * To fetch Auth Transactions details based on Individual's details
@@ -84,34 +79,30 @@ public class InternalAuthTxnController {
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
 	@ApiOperation(value = "Auth Transaction Request", response = IdAuthenticationAppException.class)
-	@PostMapping(path = "/auth-transactions/individualIdType/{IDType}/individualId/{ID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/auth-transactions/individualIdType/{IDType}/individualId/{ID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "No Records Found") })
-	public ResponseEntity<List<AutnTxnResponseDto>> getAuthTxnDetails(@PathVariable("IDType") String individualIdType,
+	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(@PathVariable("IDType") String individualIdType,
 			@PathVariable("ID") String individualId,
 			@RequestParam(name = "pageStart", required = false) Integer pageStart,
 			@RequestParam(name = "pageFetch", required = false) Integer pageFetch)
 			throws IdAuthenticationAppException, IDDataValidationException {
 		try {
-			AutnTxnRequestDto authTxnDto = new AutnTxnRequestDto();
-			authTxnDto.setIndividualId(individualId);
-			authTxnDto.setIndividualIdType(individualIdType);
-			Errors errors = new BindException(authTxnDto, "authTxnDto");
-			authTxnValidator.validate(authTxnDto, errors);
+			AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
+			AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
+			authtxnrequestdto.setIndividualId(individualId);
+			authtxnrequestdto.setIndividualIdType(individualIdType);
+			authtxnrequestdto.setPageStart(pageStart);
+			authtxnrequestdto.setPageFetch(pageFetch);
+			Errors errors = new BindException(authtxnrequestdto, "authtxnrequestdto");
+			authTxnValidator.validate(authtxnrequestdto, errors);
 			DataValidationUtil.validate(errors);
-			List<AutnTxn> autnTxnList = new ArrayList<>();
-			Map<String, Object> idResDTO = idService.processIdType(individualIdType, individualId, false);
-			if (idResDTO != null && !idResDTO.isEmpty() && idResDTO.containsKey(UIN_KEY)) {
-				String uin = String.valueOf(idResDTO.get(UIN_KEY));
-				String hashedUin = HMACUtils.digestAsPlainText(HMACUtils.generateHash(uin.getBytes()));
-				autnTxnList = authtxnRepo.findByPagableUinorVid(hashedUin,
-						PageRequest.of(pageStart == null || pageStart == 0 ? DEFAULT_PAGE_SIZE : pageStart,
-								pageFetch == null || pageFetch == 0 ? DEFAULT_COUNT : pageFetch));
-				logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
-						"pageStart >>" + pageStart + "pageFetch >>" + pageFetch);
-			}
-			return new ResponseEntity<>(fetchAuthResponse(autnTxnList), HttpStatus.OK);
-
+			List<AutnTxnDto> authTxnList = authTxnService.fetchAuthTxnDetails(authtxnrequestdto);
+			Map<String, List<AutnTxnDto>> authTxnMap = new HashMap<>();
+			authTxnMap.put("authTransactions", authTxnList);
+			autnTxnResponseDto.setResponse(authTxnMap);
+			autnTxnResponseDto.setResponseTime(getResponseTime());
+			return new ResponseEntity<>(autnTxnResponseDto, HttpStatus.OK);
 		} catch (IDDataValidationException e) {
 			logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTH_TXN_DETAILS,
 					e.getErrorText());
@@ -120,21 +111,16 @@ public class InternalAuthTxnController {
 			logger.error(IdAuthCommonConstants.SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
+
 	}
 
-	private List<AutnTxnResponseDto> fetchAuthResponse(List<AutnTxn> autnTxnList) {
-		return autnTxnList.stream().map(this::fetchAuthResponseDTO).collect(Collectors.toList());
-	}
-
-	private AutnTxnResponseDto fetchAuthResponseDTO(AutnTxn autnTxn) {
-		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
-		autnTxnResponseDto.setTransactionID(autnTxn.getRequestTrnId());
-		autnTxnResponseDto.setRequestdatetime(autnTxn.getRequestDTtimes());
-		autnTxnResponseDto.setAuthtypeCode(autnTxn.getAuthTypeCode());
-		autnTxnResponseDto.setStatusCode(autnTxn.getStatusCode());
-		autnTxnResponseDto.setStatusComment(autnTxn.getStatusComment());
-		autnTxnResponseDto.setReferenceIdType(autnTxn.getRefIdType());
-		return autnTxnResponseDto;
+	private String getResponseTime() {
+		return DateUtils.formatDate(
+				DateUtils.parseToDate(DateUtils.getUTCCurrentDateTimeString(),
+						environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
+						TimeZone.getTimeZone(ZoneOffset.UTC)),
+				environment.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN),
+				TimeZone.getTimeZone(ZoneOffset.UTC));
 	}
 
 }

@@ -2,7 +2,6 @@ package io.mosip.authentication.internal.service.controller;
 
 import static org.junit.Assert.assertTrue;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
+import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
@@ -49,6 +49,9 @@ public class InternalAuthTransactionTest {
 	private AutnTxnRepository authtxnRepo;
 
 	@InjectMocks
+	private AuthTxnServiceImpl authTxnService;
+
+	@InjectMocks
 	private AuthTxnValidator authTxnValidator;
 
 	@Autowired
@@ -70,6 +73,8 @@ public class InternalAuthTransactionTest {
 	public void before() {
 		ReflectionTestUtils.invokeMethod(internalAuthTxnController, "initBinder", binder);
 		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnValidator", authTxnValidator);
+		ReflectionTestUtils.setField(internalAuthTxnController, "authTxnService", authTxnService);
+		ReflectionTestUtils.setField(internalAuthTxnController, "environment", environment);
 		ReflectionTestUtils.setField(authTxnValidator, "env", environment);
 	}
 
@@ -86,7 +91,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(authtxnRepo.findByPagableUinorVid(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", 1, 10);
 	}
 
@@ -99,7 +104,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(authtxnRepo.findByPagableUinorVid(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", 0, 0);
 	}
 
@@ -112,7 +117,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(authtxnRepo.findByPagableUinorVid(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", null, null);
 	}
 
@@ -123,10 +128,10 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(authtxnRepo.findByPagableUinorVid(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", null, null);
 	}
-	
+
 	@Test
 	public void TestIdrepoListwithoutUIN() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
@@ -135,7 +140,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(authtxnRepo.findByPagableUinorVid(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", null, null);
 	}
 
@@ -147,7 +152,7 @@ public class InternalAuthTransactionTest {
 		Mockito.when(idService.processIdType(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(value);
 		List<AutnTxn> valueList = getAuthTxnList();
-		Mockito.when(authtxnRepo.findByPagableUinorVid(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
+		Mockito.when(authtxnRepo.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		internalAuthTxnController.getAuthTxnDetails(IdType.UIN.getType(), "9172985031", null, null);
 	}
 

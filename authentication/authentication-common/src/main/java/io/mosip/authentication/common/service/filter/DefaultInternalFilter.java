@@ -8,10 +8,15 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.policy.dto.AuthPolicy;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
+import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class OTPFilter.
@@ -21,17 +26,26 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 @Component
 public class DefaultInternalFilter extends IdAuthFilter {
 
+	
+	
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#validateSignature(java.lang.String, byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.common.service.filter.IdAuthFilter#validateSignature(
+	 * java.lang.String, byte[])
 	 */
 	@Override
 	protected boolean validateSignature(String signature, byte[] requestAsByte) throws IdAuthenticationAppException {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#
+	 * checkAllowedAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
 	 */
 	@Override
 	protected void checkAllowedAuthTypeBasedOnPolicy(Map<String, Object> requestBody, List<AuthPolicy> authPolicies)
@@ -40,8 +54,8 @@ public class DefaultInternalFilter extends IdAuthFilter {
 	}
 
 	/**
-	 * This method is used to construct the response
-	 * for OTP by removing the null values
+	 * This method is used to construct the response for OTP by removing the null
+	 * values
 	 * 
 	 * @param responseMap the response map
 	 * @return the map
@@ -62,13 +76,42 @@ public class DefaultInternalFilter extends IdAuthFilter {
 						(map1, map2) -> map1, LinkedHashMap<String, Object>::new));
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#checkMandatoryAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.authentication.common.service.filter.IdAuthFilter#
+	 * checkMandatoryAuthTypeBasedOnPolicy(java.util.Map, java.util.List)
 	 */
 	@Override
 	protected void checkMandatoryAuthTypeBasedOnPolicy(Map<String, Object> requestBody,
 			List<AuthPolicy> mandatoryAuthPolicies) throws IdAuthenticationAppException {
 		// Nothing to do
+	}
+
+	@Override
+	protected String fetchId(ResettableStreamHttpServletRequest requestWrapper, String attribute) {
+		String id = null;
+		String reqUrl = ((HttpServletRequest) requestWrapper).getRequestURL().toString();
+		if (reqUrl != null && !reqUrl.isEmpty()) {
+			String[] path = reqUrl.split(IdAuthCommonConstants.INTERNAL_URL);
+			if (path[1] != null && !path[1].isEmpty()) {
+				String[] urlPath = path[1].split("/");
+				String contextPath = urlPath[1];
+				if (!StringUtils.isEmpty(contextPath)) {
+					if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
+						id = attribute + contextPath;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
+						id = attribute + IdAuthConfigKeyConstants.AUTH_TRANSACTION;
+					}
+				}
+			}
+		}
+		return id;
+	}
+
+	@Override
+	protected void validateId(Map<String, Object> requestBody, String id) throws IdAuthenticationAppException {
+		// Do nothing
 	}
 
 }

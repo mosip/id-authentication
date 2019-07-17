@@ -10,7 +10,7 @@ public final class IdAuthCommonConstants {
 	private IdAuthCommonConstants() {
 
 	}
-	
+
 	public static final String INTERNAL = "INTERNAL";
 
 	/** The Constant SESSION_ID. */
@@ -72,4 +72,10 @@ public final class IdAuthCommonConstants {
 	public static final String SECONDAY_LANG = "secondayLang";
 
 	public static final String PRIMARY_LANG = "primaryLang";
+
+	public static final String OTP = "otp";
+
+	public static final String INTERNAL_URL = "/internal";
+
+	public static final String AUTH_TRANSACTIONS = "auth-transactions";
 }

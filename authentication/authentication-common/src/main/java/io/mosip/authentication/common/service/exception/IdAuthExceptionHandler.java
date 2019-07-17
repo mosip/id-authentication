@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.exception;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -22,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
@@ -41,6 +43,7 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * The Class IDAExceptionHandler - Spring MVC Exceptions as defined in
@@ -60,6 +63,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/** The Constant EVENT_EXCEPTION. */
 	private static final String EVENT_EXCEPTION = "Exception";
+
+	private static final String INTERNAL = "/internal";
 
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
@@ -154,8 +159,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
 				e = e.getCause();
 			} else if (ex.getCause() instanceof BaseCheckedException) {
-				e = new IdAuthenticationAppException((ex).getErrorCode(),
-						(ex).getErrorText());
+				e = new IdAuthenticationAppException((ex).getErrorCode(), (ex).getErrorText());
 				break;
 			} else {
 				break;
@@ -174,9 +178,14 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	public static Object buildExceptionResponse(Exception ex, HttpServletRequest request) {
 		mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Building exception response",
 				"Entered buildExceptionResponse", PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
+		String type = null;
 		String contextPath = request.getContextPath();
 		String[] splitedContext = contextPath.split("/");
 		String requestReceived = splitedContext[splitedContext.length - 1];
+		if (requestReceived.equalsIgnoreCase("internal")) {
+			String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
+			type = fetchInternalAuthtype(reqUrl);
+		}
 		List<AuthError> errors = null;
 		Object response;
 		if (ex instanceof IdAuthenticationBaseException) {
@@ -204,13 +213,32 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						.distinct().collect(Collectors.toList());
 			}
 
-			response = frameErrorResponse(requestReceived, errors);
+			response = frameErrorResponse(requestReceived, type, errors);
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, "Response", ex.getClass().getName(),
 					response.toString());
 			return response;
 		}
 
 		return null;
+	}
+
+	private static String fetchInternalAuthtype(String reqURL) {
+		String type = null;
+		if (reqURL != null && !reqURL.isEmpty()) {
+			String[] path = reqURL.split(INTERNAL);
+			if (path[1] != null && !path[1].isEmpty()) {
+				String[] urlPath = path[1].split("/");
+				String contextPath = urlPath[1];
+				if (!StringUtils.isEmpty(contextPath)) {
+					if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
+						type = IdAuthCommonConstants.OTP;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
+						type = IdAuthCommonConstants.AUTH_TRANSACTIONS;
+					}
+				}
+			}
+		}
+		return type;
 	}
 
 	/**
@@ -220,7 +248,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param errors          the errors
 	 * @return the object
 	 */
-	private static Object frameErrorResponse(String requestReceived, List<AuthError> errors) {
+	private static Object frameErrorResponse(String requestReceived, String type, List<AuthError> errors) {
 		String responseTime = DateUtils.getUTCCurrentDateTimeString();
 		switch (requestReceived) {
 		case "kyc":
@@ -235,6 +263,19 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			otpResponseDTO.setErrors(errors);
 			otpResponseDTO.setResponseTime(responseTime);
 			return otpResponseDTO;
+		case "internal":
+			if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.OTP)) {
+				OtpResponseDTO internalotpresponsedto = new OtpResponseDTO();
+				internalotpresponsedto.setErrors(errors);
+				internalotpresponsedto.setResponseTime(responseTime);
+				return internalotpresponsedto;
+			} else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
+				AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
+				autnTxnResponseDto.setErrors(errors);
+				autnTxnResponseDto.setResponseTime(responseTime);
+				return autnTxnResponseDto;
+			}
+
 		default:
 			AuthResponseDTO authResp = new AuthResponseDTO();
 			ResponseDTO res = new ResponseDTO();
