@@ -832,10 +832,17 @@ public class TemplateGenerator extends BaseService {
 				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
 						localProperties.getString("uinUpdateParentUIN"));
 			} else {
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
-						applicationLanguageProperties.getString("parentUIN"));
-				templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
-						localProperties.getString("parentUIN"));
+				if(individualIdentity.getParentOrGuardianRID() == null) {
+					templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+							applicationLanguageProperties.getString("parentUinId"));
+					templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+							localProperties.getString("parentUinId"));
+				} else {
+					templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_USER_LANG_LABEL,
+							applicationLanguageProperties.getString("parentRegId"));
+					templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN_LOCAL_LANG_LABEL,
+							localProperties.getString("parentRegId"));
+				}				
 			}
 			templateValues.put(RegistrationConstants.TEMPLATE_PARENT_UIN,
 					getValue(individualIdentity.getParentOrGuardianRID() == null
