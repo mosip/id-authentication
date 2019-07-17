@@ -255,7 +255,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 				primaryStage.setScene(scene);
 				primaryStage.initModality(Modality.WINDOW_MODAL);
 				primaryStage.initOwner(fXComponents.getStage());
-				primaryStage.show();
+				cameraController.setWebCameraStage(primaryStage);
+				primaryStage.show();				
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,

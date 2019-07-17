@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -21,6 +22,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -74,6 +76,9 @@ public class SchedulerUtil extends BaseController {
 	private boolean isShowing;
 	private PauseTransition delay;
 	private int duration;
+	
+	@Autowired
+	private WebCameraController webCameraController;
 
 	/**
 	 * Constructor to invoke scheduler method once login success.
@@ -255,6 +260,10 @@ public class SchedulerUtil extends BaseController {
 		stopScheduler();
 		// to clear the session object
 		SessionContext.destroySession();
+		//close webcam window, if open.
+		if(webCameraController.getWebCameraStage() != null && webCameraController.getWebCameraStage().isShowing()) {
+			webCameraController.getWebCameraStage().close();
+		}
 		// load login screen
 		loadLoginScreen();
 		isShowing = false;
