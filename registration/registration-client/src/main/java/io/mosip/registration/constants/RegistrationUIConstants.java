@@ -72,6 +72,8 @@ public class RegistrationUIConstants {
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
 	public static final String FACE_CAPTURE_ERROR = bundle.getString("FACE_CAPTURE_ERROR");
+	public static final String EXCEPTION_PHOTO_CAPTURE_ERROR = bundle.getString("EXCEPTION_PHOTO_CAPTURE_ERROR");
+	public static final String PARENT_FACE_CAPTURE_ERROR = bundle.getString("PARENT_FACE_CAPTURE_ERROR");
 	public static final String FACE_SCANNING_ERROR = bundle.getString("FACE_SCANNING_ERROR");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
