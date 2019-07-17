@@ -23,7 +23,6 @@ node {
      [name: branch]
     ],
     extensions: scm.extensions + [[$class: 'CleanCheckout']],
-    [$class: 'CloneOption', noTags: false, reference: '', shallow: true, timeout: 120, depth: 1, refspec:"+refs/heads/"+branch+":refs/remotes/origin/"+branch],
     userRemoteConfigs: [
      [url: 'git@github.com:mosip/mosip.git', credentialsId: 'fd9c5f45-e6ac-45ea-b345-f6fbeb303044']
     ]
