@@ -1671,14 +1671,17 @@ public class DemographicDetailController extends BaseController {
 	@SuppressWarnings("unchecked")
 	private List<ValuesDTO> buildValues(String platformLanguageCode, String localLanguageCode, String valueInAppLang,
 			String valueInLocalLang) {
-		return (List<ValuesDTO>) Builder.build(LinkedList.class)
+		List<ValuesDTO> valuesDTO = (List<ValuesDTO>) Builder.build(LinkedList.class)
 				.with(values -> values
 						.add(Builder.build(ValuesDTO.class).with(value -> value.setLanguage(platformLanguageCode))
 								.with(value -> value.setValue(valueInAppLang)).get()))
-				.with(values -> values
-						.add(Builder.build(ValuesDTO.class).with(value -> value.setLanguage(localLanguageCode))
-								.with(value -> value.setValue(valueInLocalLang)).get()))
 				.get();
+
+		if (localLanguageCode != null && !platformLanguageCode.equalsIgnoreCase(localLanguageCode))
+			valuesDTO.add(Builder.build(ValuesDTO.class).with(value -> value.setLanguage(localLanguageCode))
+					.with(value -> value.setValue(valueInLocalLang)).get());
+
+		return valuesDTO;
 	}
 
 	private String buildDemoTextValue(TextField demoField, boolean isTextFieldNotRequired) {
