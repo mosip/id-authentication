@@ -136,7 +136,19 @@ public class RegistrationConstants {
 	public static final String UPDATE_UIN_IMAGE = "/images/UINUpdate.png";
 	public static final String UPDATE_UIN_FOCUSED = "/images/updateUINFocused.png";
 	public static final String LOST_UIN_IMAGE = "/images/LostUIN.png";
-	public static final String LOST_UIN_FOCUSED = "/images/lostUINFocused.png";
+	public static final String LOST_UIN_FOCUSED = "/images/lostUINFocused.png";	
+	public static final String SYNC_DATA_IMAGE = "/images/sync.png";
+	public static final String SYNC_DATA_FOCUSED = "/images/syncFocused.png";
+	public static final String DOWNLOAD_PREREG_IMAGE = "/images/DownloadPreRegData.png";
+	public static final String DOWNLOAD_PREREG_FOCUSED = "/images/DownloadPreRegDataFocused.png";
+	public static final String UPDATE_OP_BIOMETRICS_IMAGE = "/images/UpdateOperatorBiometrics.png";
+	public static final String UPDATE_OP_BIOMETRICS_FOCUSED = "/images/UpdateOperatorBiometricsFocused.png";
+	public static final String PENDING_APPROVAL_IMAGE = "/images/PendingApproval.png";
+	public static final String PENDING_APPROVAL_FOCUSED = "/images/PendingApprovalFocused.png";
+	public static final String RE_REGISTRATION_IMAGE = "/images/Re-Registration.png";
+	public static final String RE_REGISTRATION_FOCUSED = "/images/ReRegistrationFocused.png";
+	public static final String VIEW_REPORTS_IMAGE = "/images/ViewReports.png";
+	public static final String VIEW_REPORTS_FOCUSED = "/images/ViewReportsFocused.png";
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";

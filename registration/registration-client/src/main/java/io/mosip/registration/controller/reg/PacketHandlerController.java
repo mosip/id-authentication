@@ -223,6 +223,31 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@FXML
 	private Label eodLabel;
 
+	@FXML
+	private GridPane syncDataPane;
+	@FXML
+	private ImageView syncDataImageView;
+	@FXML
+	private GridPane downloadPreRegDataPane;
+	@FXML
+	private ImageView downloadPreRegDataImageView;
+	@FXML
+	private GridPane updateOperatorBiometricsPane;
+	@FXML
+	private ImageView updateOperatorBiometricsImageView;
+	@FXML
+	private GridPane eodApprovalPane;
+	@FXML
+	private ImageView eodApprovalImageView;
+	@FXML
+	private GridPane reRegistrationPane;
+	@FXML
+	private ImageView reRegistrationImageView;
+	@FXML
+	private GridPane viewReportsPane;
+	@FXML
+	private ImageView viewReportsImageView;
+
 	@Autowired
 	HeaderController headerController;
 
@@ -291,32 +316,82 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	private void setImagesOnHover() {
-		Image newRegFocused = new Image(getClass().getResourceAsStream(RegistrationConstants.NEW_REG_FOCUSED));
-		Image newRegImagePath = new Image(getClass().getResourceAsStream(RegistrationConstants.NEW_REG_IMAGE));
-		Image updateUINFocused = new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_UIN_FOCUSED));
-		Image updateUINImagePath = new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_UIN_IMAGE));
-		Image lostUINFocused = new Image(getClass().getResourceAsStream(RegistrationConstants.LOST_UIN_FOCUSED));
-		Image lostUINImagePath = new Image(getClass().getResourceAsStream(RegistrationConstants.LOST_UIN_IMAGE));
-
 		newRegGridPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
 			if (newValue) {
-				newRegImage.setImage(newRegFocused);
+				newRegImage.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.NEW_REG_FOCUSED)));
 			} else {
-				newRegImage.setImage(newRegImagePath);
+				newRegImage.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.NEW_REG_IMAGE)));
 			}
 		});
 		uinUpdateGridPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
 			if (newValue) {
-				uinUpdateImage.setImage(updateUINFocused);
+				uinUpdateImage
+						.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_UIN_FOCUSED)));
 			} else {
-				uinUpdateImage.setImage(updateUINImagePath);
+				uinUpdateImage
+						.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_UIN_IMAGE)));
 			}
 		});
 		lostUINPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
 			if (newValue) {
-				lostUINImage.setImage(lostUINFocused);
+				lostUINImage
+						.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.LOST_UIN_FOCUSED)));
 			} else {
-				lostUINImage.setImage(lostUINImagePath);
+				lostUINImage.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.LOST_UIN_IMAGE)));
+			}
+		});
+		syncDataPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				syncDataImageView
+						.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.SYNC_DATA_FOCUSED)));
+			} else {
+				syncDataImageView
+						.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.SYNC_DATA_IMAGE)));
+			}
+		});
+		downloadPreRegDataPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				downloadPreRegDataImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.DOWNLOAD_PREREG_FOCUSED)));
+			} else {
+				downloadPreRegDataImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.DOWNLOAD_PREREG_IMAGE)));
+			}
+		});
+		updateOperatorBiometricsPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				updateOperatorBiometricsImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_OP_BIOMETRICS_FOCUSED)));
+			} else {
+				updateOperatorBiometricsImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.UPDATE_OP_BIOMETRICS_IMAGE)));
+			}
+		});
+		eodApprovalPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				eodApprovalImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.PENDING_APPROVAL_FOCUSED)));
+			} else {
+				eodApprovalImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.PENDING_APPROVAL_IMAGE)));
+			}
+		});
+		reRegistrationPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				reRegistrationImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.RE_REGISTRATION_FOCUSED)));
+			} else {
+				reRegistrationImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.RE_REGISTRATION_IMAGE)));
+			}
+		});
+		viewReportsPane.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				viewReportsImageView.setImage(
+						new Image(getClass().getResourceAsStream(RegistrationConstants.VIEW_REPORTS_FOCUSED)));
+			} else {
+				viewReportsImageView
+						.setImage(new Image(getClass().getResourceAsStream(RegistrationConstants.VIEW_REPORTS_IMAGE)));
 			}
 		});
 	}
@@ -466,8 +541,8 @@ public class PacketHandlerController extends BaseController implements Initializ
 			templateContent
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
 			String ackTemplateText = templateContent.toString();
-			
-			if(ApplicationContext.applicationLanguage().equalsIgnoreCase(ApplicationContext.localLanguage())) {
+
+			if (ApplicationContext.applicationLanguage().equalsIgnoreCase(ApplicationContext.localLanguage())) {
 				ackTemplateText = ackTemplateText.replace("} / ${", "}  ${");
 			}
 

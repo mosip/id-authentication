@@ -1630,6 +1630,16 @@ Working on new Css by taleev
 	 -fx-border-radius: 4.0 4.0 0.0 0.0;
   	 -fx-background-radius: 4.0 4.0 0.0 0.0;
 }
+.operationalPaneDetailsSync:hover, .operationalPaneDetailsSync:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsSync:pressed, .operationalPaneDetailsSync:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .operationalTitle{
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;
@@ -1645,19 +1655,47 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
-
+.operationalPaneDetailsPreReg:hover, .operationalPaneDetailsPreReg:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsPreReg:pressed, .operationalPaneDetailsPreReg:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .operationalPaneDetails{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
-
+.operationalPaneDetails:hover, .operationalPaneDetails:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetails:pressed, .operationalPaneDetails:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .operationalPaneDetailsBioUpdate{
 	-fx-border-width: 0.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 	 -fx-border-radius: 0.0 0.0 4.0 4.0;
   	 -fx-background-radius: 0.0 0.0 4.0 4.0;
+}
+.operationalPaneDetailsBioUpdate:hover, .operationalPaneDetailsBioUpdate:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsBioUpdate:pressed, .operationalPaneDetailsBioUpdate:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 .newsUpdates{
 	-fx-background-color:#FFFFFF;
