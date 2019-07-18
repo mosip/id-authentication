@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.impl.PacketExportServiceImpl;
 
 public class PacketExportServiceTest {
@@ -40,7 +41,7 @@ public class PacketExportServiceTest {
 	}
 	
 	@Test
-	public void updateRegistrationStatusTest() {
+	public void updateRegistrationStatusTest() throws RegBaseCheckedException {
 		Registration reg=new Registration();
 		PacketStatusDTO statusDTO=new PacketStatusDTO();
 		List<PacketStatusDTO> updatedExportPackets = new ArrayList<>();

@@ -122,7 +122,7 @@ public abstract class BaseIDAFilter implements Filter {
 			throws IOException, ServletException {
 
 		String reqUrl = ((HttpServletRequest) request).getRequestURL().toString();
-		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs")) {
+		if (reqUrl.contains("swagger") || reqUrl.contains("api-docs") || reqUrl.contains("actuator")) {
 			chain.doFilter(request, response);
 			return;
 		}

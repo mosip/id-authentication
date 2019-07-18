@@ -22,33 +22,18 @@ public class DataProviderClass {
 	 * @return Object of data provider
 	 */
 	public static Object[][] getDataProvider(String configFile, String scenario, String testType) {
-		//scenario = scenario.replace("/", "_");
-		System.out.println("Type: "+testType); 
+		// scenario = scenario.replace("/", "_");
 		Object[][] returnObj = new Object[FileUtil.getFolders(new File(configFile)).size() + 1][];
 		int numberOfTestcase = 1;
 		for (File testcase : FileUtil.getFolders(new File(configFile))) {
 			if (testType.equalsIgnoreCase("smoke")) {
-				if (testcase.getName().contains("smoke") || testcase.getName().contains("Smoke")) {
-					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
-					numberOfTestcase++;
-				}
-			} 
-			else if (testType.equalsIgnoreCase("IntegrationTest")) {
-				if (testcase.getName().contains(testType)) {
-					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
-					numberOfTestcase++;
-				}
-			}else if (testType.equalsIgnoreCase("regression")) {
-				if (testcase.getName().contains(testType) || (!testcase.getName().contains(testType) && !testcase.getName().contains("smoke"))) {
+				if (testcase.getName().toString().toLowerCase().contains(testType.toString().toLowerCase())) {
 					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
 					numberOfTestcase++;
 				}
 			} else if (testType.equalsIgnoreCase("smokeandregression")) {
-				if (testcase.getName().contains("smoke") || testcase.getName().contains("Smoke") || testcase.getName().contains("regression")
-						|| !testcase.getName().contains("regression")) {
-					returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
-					numberOfTestcase++;
-				}
+				returnObj[numberOfTestcase] = returnObject(testcase, scenario, numberOfTestcase);
+				numberOfTestcase++;
 			}
 		}
 		return returnObj;

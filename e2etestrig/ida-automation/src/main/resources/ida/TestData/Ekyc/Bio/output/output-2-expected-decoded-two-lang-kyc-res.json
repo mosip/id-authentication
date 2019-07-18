@@ -1,0 +1,98 @@
+{
+	"phoneNumber": [
+		{
+			"value": "9393356547"
+		}
+	],
+	"gender": [
+		{
+			"language": "ara",
+			"value": "الذكر"
+		},
+		{
+			"language": "fra",
+			"value": "Mâle"
+		}
+	],
+	"dob": [
+		{
+			"value": "2001/02/11"
+		}
+	],
+	"name": [
+		{
+			"language": "ara",
+			"value": "َسِف جَلَُدِِن"
+		},
+		{
+			"language": "fra",
+			"value": "Asif Jalaudeen"
+		}
+	],
+	"location1": [
+		{
+			"language": "ara",
+			"value": "القنيطرة"
+		},
+		{
+			"language": "fra",
+			"value": "Kénitra"
+		}
+	],
+	"location2": [
+		{
+			"language": "ara",
+			"value": "جهة الرباط سلا القنيطرة"
+		},
+		{
+			"language": "fra",
+			"value": "Rabat-Salé-Kénitra"
+		}
+	],
+	"addressLine1": [
+		{
+			"language": "ara",
+			"value": "دُبَِ مَِن رَُد"
+		},
+		{
+			"language": "fra",
+			"value": "Dubai Main Road"
+		}
+	],
+	"emailId": [
+		{
+			"value": "athila.sirajudeen@mindtree.com"
+		}
+	],
+	"addressLine2": [
+		{
+			"language": "ara",
+			"value": "كهِتتِ رُبُ سترِِت هُُسِ"
+		},
+		{
+			"language": "fra",
+			"value": "Chitti Robo Street House"
+		}
+	],
+	"location3": [
+		{
+			"language": "ara",
+			"value": "الرباط"
+		},
+		{
+			"language": "fra",
+			"value": "Kénitra"
+		}
+	],
+	"addressLine3": [
+		{
+			"language": "ara",
+			"value": "ُسَِن"
+		},
+		{
+			"language": "fra",
+			"value": "Ocean"
+		}
+	],
+	"FACE": "$IGNORE$"
+}

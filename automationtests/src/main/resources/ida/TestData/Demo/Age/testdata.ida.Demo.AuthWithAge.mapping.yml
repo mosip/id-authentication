@@ -33,7 +33,7 @@ testdata:
       moduleName: $TestData:audit_log_demo_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
   
-  Authentication_Demographic_Age_smoke_For VID_Pos:
+  Authentication_Demographic_Age_For VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:

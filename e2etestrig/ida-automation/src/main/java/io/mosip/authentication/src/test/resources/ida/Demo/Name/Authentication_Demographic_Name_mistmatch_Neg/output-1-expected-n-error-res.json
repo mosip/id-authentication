@@ -1,0 +1,1 @@
+{"response":{"authStatus":false,"staticToken":"283951391818831980603525866090242008"},"errors":[{"errorCode":"IDA-DEA-001","errorMessage":"Demographic data name in ara did not match"}],"responseTime":"$TIMESTAMP$","version":"1.0","transactionID":"1426482847","id":"mosip.identity.auth"}

@@ -526,7 +526,8 @@
     "action_dismiss": "Ok",
     "action_add": "Add",
     "action_close": "Close",
-    "action_add_to_slot": "Add to Slot"
+    "action_add_to_slot": "Add to Slot",
+    "navigation_alert": "Are you sure you would like to navigate away as data entered will not be saved. Please confirm"
   },
   "centerSelection": {
     "title": " Book Appointment ",
@@ -546,7 +547,7 @@
   },
   "autologout": {
     "preview": "You will be timed out in 60 secs due to inactivity. Please click anywhere to re-activate your session",
-    "post": "You have been LoggedOut due to inactivity."
+    "post": "You have been logged out due to inactivity."
   },
   "helpText": {
     "applicationId": "Application ID for your pre-registration",
@@ -576,7 +577,7 @@
     "phone": "Entered phone is invalid",
     "dateOfBirth": "Entered date of birth is invalid",
     "CNIENumber": "Entered CNIE Number is invalid",
-    "tokenExpiredLogout": "You have been LoggedOut due to inactivity.",
+    "tokenExpiredLogout": "You have been logged out due to inactivity.",
     "slotNotAvailable": "Appointment booking/re-booking cannot be done as the requested slot is not available. Please select another slot or try again later",
     "errorLabel": "ERROR"
   },

@@ -103,10 +103,11 @@ public class ExternalStage extends MosipVerticleAPIManager {
 	@Override
 	public void start() {
 
-		router.setRoute(this.postUrl(vertx,MessageBusAddress.EXTERNAL_STAGE_BUS_IN,
-				MessageBusAddress.EXTERNAL_STAGE_BUS_OUT));
+		router.setRoute(
+				this.postUrl(vertx, MessageBusAddress.EXTERNAL_STAGE_BUS_IN, MessageBusAddress.EXTERNAL_STAGE_BUS_OUT));
 		this.createServer(router.getRouter(), Integer.parseInt(port));
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -136,8 +137,13 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.EXTERNAL_INTEGRATION.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
+
 			Boolean temp = (Boolean) registrationProcessorRestService.postApi(ApiName.EISERVICE, "", "", requestdto,
 					Boolean.class);
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"",
+					"ExternalStage::process():: EIS service Api call  ended with response data : " + temp.toString());
 			if (temp) {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -146,8 +152,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				object.setIsValid(true);
 				object.setInternalError(false);
 				isTransactionSuccessful = true;
-				description.setMessage(PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getMessage() + " -- " + registrationId);
+				description.setMessage(
+						PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getMessage() + " -- " + registrationId);
 				description.setCode(PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getCode());
+
 			} else {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.EXTERNAL_INTEGRATION_FAILED));
@@ -155,10 +163,13 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				object.setIsValid(false);
 				object.setInternalError(false);
-				
-				description.setMessage(PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getMessage() + " -- " + registrationId);
+
+				description
+						.setMessage(PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getMessage() + " -- " + registrationId);
 				description.setCode(PlatformErrorMessages.EXTERNAL_STAGE_FAILED.getCode());
 			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, description.getMessage());
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_API_RESOURCE_EXCEPTION.getMessage());
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
@@ -172,9 +183,6 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			object.setIsValid(false);
 		} finally {
 
-
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, description.getMessage());
 			if (object.getInternalError()) {
 				registrationStatusDto.setUpdatedBy(USER);
 				int retryCount = registrationStatusDto.getRetryCount() != null
@@ -184,7 +192,7 @@ public class ExternalStage extends MosipVerticleAPIManager {
 				registrationStatusDto.setRetryCount(retryCount);
 			}
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			if(isTransactionSuccessful) 
+			if (isTransactionSuccessful)
 				description.setMessage(PlatformSuccessMessages.RPR_PKR_PACKET_VALIDATE.getMessage());
 			String eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			String eventName = isTransactionSuccessful ? EventName.UPDATE.toString() : EventName.EXCEPTION.toString();
@@ -194,11 +202,10 @@ public class ExternalStage extends MosipVerticleAPIManager {
 			String moduleId = isTransactionSuccessful ? PlatformSuccessMessages.RPR_EXTERNAL_STAGE_SUCCESS.getCode()
 					: description.getCode();
 			String moduleName = ModuleName.EXTERNAL.toString();
-			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType, moduleId,
-					moduleName, registrationId);
+			auditLogRequestBuilder.createAuditRequestBuilder(description.getMessage(), eventId, eventName, eventType,
+					moduleId, moduleName, registrationId);
 		}
 
-		regProcLogger.debug("", "", "sent to next stage --> ", object.toString());
 		return object;
 	}
 

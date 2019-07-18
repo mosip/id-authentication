@@ -33,13 +33,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<role name="admuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
 <role name="iamuser"
       inherit="true"
       login="true"
@@ -47,13 +40,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<tablespace name="mosip_data" directory="'/var/lib/pgsql/mosip/mosip_data'">
-	<role name="sysadmin"/>
-</tablespace>
-
 <database name="mosip_iam" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
 	<role name="sysadmin"/>
-	<tablespace name="mosip_data"/>
+	<tablespace name="pg_default"/>
 	<comment><![CDATA[Database to store all Identity and Access management data, look-up data, configuration data, metadata...etc.]]></comment>
 </database>
 
@@ -68,7 +57,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Role List : List of roles defined within the system. These roles are used for various processes like data access, authentication methods, authorization, etc.]]></comment>
-	<position x="60" y="60"/>
+	<position x="800" y="440"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Code : list of roles defined for security , authorization,  permission for various modules/processes, etc.]]></comment>
@@ -118,14 +107,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Detail : List of applicatgion users in the system, who can perform UIN registration functions as per roles assigned.]]></comment>
-	<position x="380" y="240"/>
+	<position x="400" y="60"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : Unique ID generated / assigned for a user]]></comment>
-	</column>
-	<column name="reg_id">
-		<type name="character varying" length="39"/>
-		<comment><![CDATA[Registration ID: RID of the user. Typically this will be used for authentication and validation of users]]></comment>
 	</column>
 	<column name="name" not-null="true">
 		<type name="character varying" length="64"/>
@@ -155,10 +140,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Last Login Method: Previous login method in which the user logged into the system]]></comment>
 	</column>
-	<column name="salt">
-		<type name="character varying" length="64"/>
-		<comment><![CDATA[Salt: Salt used in the encryption algorithm to encrypt the latest password of the user.]]></comment>
-	</column>
 	<column name="is_active" not-null="true">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
@@ -187,6 +168,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
+	<column name="reg_id">
+		<type name="character varying" length="39"/>
+		<comment><![CDATA[Registration ID: RID of the user. Typically this will be used for authentication and validation of users]]></comment>
+	</column>
+	<column name="salt">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Salt : Salt is the key used while hashing user password for additional security]]></comment>
+	</column>
 	<constraint name="pk_usrdtl_id" type="pk-constr" table="iam.user_detail">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
@@ -196,18 +185,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Detail History : This to track changes to iam record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer iam.user_detail table description for details.]]></comment>
-	<position x="840" y="340"/>
+	<position x="400" y="420"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : Unique ID generated / assigned for a user]]></comment>
-	</column>
-	<column name="eff_dtimes" not-null="true">
-		<type name="timestamp" length="0"/>
-		<comment><![CDATA[Effective Date Timestamp : This to track iam record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ]]></comment>
-	</column>
-	<column name="reg_id">
-		<type name="character varying" length="39"/>
-		<comment><![CDATA[Registration ID: RID of the user. Typically this will be used for authentication and validation of users]]></comment>
 	</column>
 	<column name="name" not-null="true">
 		<type name="character varying" length="64"/>
@@ -237,10 +218,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Last Login Method: Previous login method in which the user logged into the system]]></comment>
 	</column>
-	<column name="salt">
-		<type name="character varying" length="64"/>
-		<comment><![CDATA[Salt: Salt used in the encryption algorithm to encrypt the password of the user.]]></comment>
-	</column>
 	<column name="is_active" not-null="true">
 		<type name="boolean" length="0"/>
 		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
@@ -269,6 +246,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Date Timestamp : This to track iam record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ]]></comment>
+	</column>
+	<column name="reg_id">
+		<type name="character varying" length="39"/>
+		<comment><![CDATA[Registration ID: RID of the user. Typically this will be used for authentication and validation of users]]></comment>
+	</column>
+	<column name="salt">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Salt : Salt is the key used while hashing user password for additional security]]></comment>
+	</column>
 	<constraint name="pk_usrdtl_h_id" type="pk-constr" table="iam.user_detail_h">
 		<columns names="id,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
@@ -278,7 +267,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Password : Stores encripted password of users in iam.user_details table. ]]></comment>
-	<position x="460" y="620"/>
+	<position x="0" y="100"/>
 	<column name="usr_id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : registration center id refers to iam.user_detail.id]]></comment>
@@ -336,7 +325,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[User Role : List of user roles as per the security and access rights, that will be assigned to specific users.]]></comment>
-	<position x="880" y="40"/>
+	<position x="820" y="80"/>
 	<column name="usr_id" not-null="true">
 		<type name="character varying" length="256"/>
 		<comment><![CDATA[User ID : registration center id refers to iam.user_detail.id]]></comment>
@@ -386,7 +375,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="iam"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Authentication Access Token : This table is used to store the auth token, refresh token and expiration time for JWT token based validation.]]></comment>
-	<position x="60" y="580"/>
+	<position x="60" y="400"/>
 	<column name="auth_token">
 		<type name="character varying" length="1024"/>
 		<comment><![CDATA[Authentication Token : JWT Token for user logged in]]></comment>
@@ -509,7 +498,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="iam.role_list" type="table"/>
 	<roles names="iamuser"/>
-	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
+</permission>
+<permission>
+	<object name="iam.role_list" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
 </permission>
 <permission>
 	<object name="iam.user_detail" type="table"/>
@@ -519,7 +513,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="iam.user_detail" type="table"/>
 	<roles names="iamuser"/>
-	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
+</permission>
+<permission>
+	<object name="iam.user_detail" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
 </permission>
 <permission>
 	<object name="iam.user_detail_h" type="table"/>
@@ -529,7 +528,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="iam.user_detail_h" type="table"/>
 	<roles names="iamuser"/>
-	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
+</permission>
+<permission>
+	<object name="iam.user_detail_h" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
 </permission>
 <permission>
 	<object name="iam.user_pwd" type="table"/>
@@ -539,7 +543,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="iam.user_pwd" type="table"/>
 	<roles names="iamuser"/>
-	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
+</permission>
+<permission>
+	<object name="iam.user_pwd" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
 </permission>
 <permission>
 	<object name="iam.user_role" type="table"/>
@@ -549,7 +558,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="iam.user_role" type="table"/>
 	<roles names="iamuser"/>
-	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
+</permission>
+<permission>
+	<object name="iam.user_role" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
 </permission>
 <permission>
 	<object name="iam.oauth_access_token" type="table"/>
@@ -559,6 +573,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="iam.oauth_access_token" type="table"/>
 	<roles names="iamuser"/>
-	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
+</permission>
+<permission>
+	<object name="iam.oauth_access_token" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true"/>
 </permission>
 </dbmodel>

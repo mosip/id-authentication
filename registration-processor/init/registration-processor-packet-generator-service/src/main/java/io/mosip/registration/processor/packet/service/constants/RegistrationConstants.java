@@ -127,13 +127,6 @@ public class RegistrationConstants {
 	/** The Constant AUDIT_DEFAULT_USER. */
 	public static final String AUDIT_DEFAULT_USER = "NA";
 
-	/** The Constant HOST_IP. */
-	// Default Host IP Address and Name for Audit Logs
-	public static final String HOST_IP = "registration.processor.audit.hostIP";
-
-	/** The Constant HOST_NAME. */
-	public static final String HOST_NAME = "registration.processor.audit.hostName";
-
 	/** The Constant URL. */
 	// OnlineConnectivity check
 	public static final String URL = "http://localhost:8080/getTokenId";

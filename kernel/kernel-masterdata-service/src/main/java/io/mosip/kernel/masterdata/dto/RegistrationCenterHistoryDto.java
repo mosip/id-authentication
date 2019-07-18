@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.dto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -93,4 +94,6 @@ public class RegistrationCenterHistoryDto {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDateTime effectivetimes;
 
+	@Size(min = 1, max = 36)
+	private String zoneCode;
 }

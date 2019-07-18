@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
-import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.CryptoUtil;
 
 /**
  * 
@@ -186,7 +186,7 @@ public class BioMatcherUtil {
 	 * @return the byte[]
 	 */
 	private static byte[] decodeValue(String value) {
-		return Base64.getDecoder().decode(value);
+		return CryptoUtil.decodeBase64(value);
 	}
 
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.status.dto.RegistrationStatusRequestDTO;
@@ -34,8 +35,7 @@ public class RegistrationStatusRequestValidator {
 	/** The Constant DATETIME_PATTERN. */
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
-
-	/** The reg proc logger. */
+	/** The mosip logger. */
 	Logger regProcLogger = RegProcessorLogger.getLogger(RegistrationStatusRequestValidator.class);
 
 	/** The Constant REG_STATUS_SERVICE. */
@@ -48,7 +48,7 @@ public class RegistrationStatusRequestValidator {
 	@Autowired
 	private Environment env;
 
-	
+
 	/** The grace period. */
 	@Value("${mosip.registration.processor.grace.period}")
 	private int gracePeriod;
@@ -68,10 +68,17 @@ public class RegistrationStatusRequestValidator {
 	 */
 	public void validate(RegistrationStatusRequestDTO registrationStatusRequestDTO, String serviceId)
 			throws RegStatusAppException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationStatusRequestValidator::validate()::entry");
+
 		id.put("status", serviceId);
 		validateId(registrationStatusRequestDTO.getId());
 		validateVersion(registrationStatusRequestDTO.getVersion());
 		validateReqTime(registrationStatusRequestDTO.getRequesttime());
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"RegistrationStatusRequestValidator::validate()::exit");
+
 	}
 
 	/**
@@ -141,14 +148,14 @@ public class RegistrationStatusRequestValidator {
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
 						regProcLogger.error(REG_STATUS_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
 								"\n" + PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP.getMessage());
-						
+
 						throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,
 								exception);
 					}
 
 				}
 			} catch (IllegalArgumentException e) {
-				regProcLogger.error(REG_STATUS_SERVICE, "RegistrationStatusRequestValidator", "validateReqTime",
+				regProcLogger.error(REG_STATUS_SERVICE, "IdRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
 				throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_INVALID_INPUT_PARAMETER_TIMESTAMP,
 						exception);

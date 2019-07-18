@@ -398,33 +398,54 @@ public class Validations extends BaseController {
 
 		if (isChild) {
 			if (!uinId.isDisabled()) {
-				try {
-					isIdValid = uinValidator.validateId(uinId.getText());
-				} catch (InvalidIDException invalidUinException) {
-
+				if ("" == uinId.getText() || uinId.getText().isEmpty()) {
 					generateInvalidValueAlert(parentPane, uinId.getId(), applicationLabelBundle.getString(uinId.getId())
-							+ " " + applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004), false);
+							+ " " + applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001), false);
 
-					LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-							invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
 					uinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 					uinId.requestFocus();
+				} else {
+					try {
+						isIdValid = uinValidator.validateId(uinId.getText());
+					} catch (InvalidIDException invalidUinException) {
+
+						generateInvalidValueAlert(parentPane, uinId.getId(),
+								applicationLabelBundle.getString(uinId.getId()) + " "
+										+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
+								false);
+
+						LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+								invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
+						uinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+						uinId.requestFocus();
+
+					}
 
 				}
 			} else {
 				if (getRegistrationDTOFromSession().getSelectionListDTO() == null && !regId.isDisabled()) {
-					try {
-						isIdValid = ridValidator.validateId(regId.getText());
-					} catch (InvalidIDException invalidRidException) {
+					if ("" == regId.getText() || regId.getText().isEmpty()) {
 						generateInvalidValueAlert(parentPane, regId.getId(),
 								applicationLabelBundle.getString(regId.getId()) + " "
-										+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
+										+ applicationMessageBundle.getString(RegistrationConstants.REG_LGN_001),
 								false);
-						LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-								invalidRidException.getMessage() + ExceptionUtils.getStackTrace(invalidRidException));
 						regId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 						regId.requestFocus();
+					} else {
+						try {
+							isIdValid = ridValidator.validateId(regId.getText());
+						} catch (InvalidIDException invalidRidException) {
+							generateInvalidValueAlert(parentPane, regId.getId(),
+									applicationLabelBundle.getString(regId.getId()) + " "
+											+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
+									false);
+							LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
+									RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage()
+											+ ExceptionUtils.getStackTrace(invalidRidException));
+							regId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
+							regId.requestFocus();
 
+						}
 					}
 				} else {
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UIN_INVALID);

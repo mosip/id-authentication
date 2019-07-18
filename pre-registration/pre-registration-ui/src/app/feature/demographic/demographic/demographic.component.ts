@@ -25,6 +25,7 @@ import { MatKeyboardService, MatKeyboardRef, MatKeyboardComponent } from 'ngx7-m
 import { RouterExtService } from 'src/app/shared/router/router-ext.service';
 import { LogService } from 'src/app/shared/logger/log.service';
 import LanguageFactory from 'src/assets/i18n';
+import { FormDeactivateGuardService } from 'src/app/shared/can-deactivate-guard/form-guard/form-deactivate-guard.service';
 // import { ErrorService } from 'src/app/shared/error/error.service';
 
 /**
@@ -41,7 +42,7 @@ import LanguageFactory from 'src/assets/i18n';
   templateUrl: './demographic.component.html',
   styleUrls: ['./demographic.component.css']
 })
-export class DemographicComponent implements OnInit {
+export class DemographicComponent extends FormDeactivateGuardService implements OnInit {
   textDir = localStorage.getItem('dir');
   secTextDir = localStorage.getItem('secondaryDir');
   primaryLang = localStorage.getItem('langCode');
@@ -75,6 +76,7 @@ export class DemographicComponent implements OnInit {
   dataModification: boolean;
   showPreviewButton = false;
   dataIncomingSuccessful = false;
+  canDeactivateFlag = true;
 
   step: number = 0;
   id: number;
@@ -183,6 +185,7 @@ export class DemographicComponent implements OnInit {
     private routerService: RouterExtService,
     private loggerService: LogService // private errorService: ErrorService
   ) {
+    super();
     this.translate.use(localStorage.getItem('langCode'));
     this.regService.getMessage().subscribe(message => (this.message = message));
   }
@@ -1052,6 +1055,7 @@ export class DemographicComponent implements OnInit {
    * @memberof DemographicComponent
    */
   onSubmission() {
+    this.canDeactivateFlag = false;
     this.loggerService.info('regService.getUsers', this.regService.getUsers());
     this.checked = true;
     this.dataUploadComplete = true;
@@ -1244,6 +1248,7 @@ export class DemographicComponent implements OnInit {
       this._keyboardRef.instance.attachControl(control);
     }
   }
+
   scrollUp(ele: HTMLElement) {
     ele.scrollIntoView({ behavior: 'smooth' });
   }

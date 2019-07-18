@@ -18,8 +18,7 @@ CREATE TABLE idrepo.uin_h(
 	is_deleted boolean,
 	del_dtimes timestamp,
 	CONSTRAINT pk_uinh PRIMARY KEY (uin_ref_id,eff_dtimes),
-	CONSTRAINT uk_uinh UNIQUE (uin,eff_dtimes),
-	CONSTRAINT uk_uinh_regid UNIQUE (reg_id)
+	CONSTRAINT uk_uinh UNIQUE (uin,eff_dtimes)
 
 );
 -- ddl-end --

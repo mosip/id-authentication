@@ -38,12 +38,14 @@ export class AuthInterceptorService implements HttpInterceptor {
       withCredentials: true
     });
     return next.handle(copiedReq).pipe(
-      retry(2),
       catchError((error: HttpErrorResponse) => {
         if (
           error[appConstants.ERROR][appConstants.NESTED_ERROR][0].errorCode === appConstants.ERROR_CODES.tokenExpired
         ) {
           this.router.navigateByUrl('/');
+        }
+        if (error.status === 500) {
+          // this.router.navigateByUrl('/');
         }
         return throwError(error);
       })

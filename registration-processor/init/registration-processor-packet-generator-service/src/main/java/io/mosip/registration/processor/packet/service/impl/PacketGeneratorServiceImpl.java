@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.packet.service.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -19,9 +18,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -36,6 +34,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.service.PacketCreationService;
 import io.mosip.registration.processor.packet.service.PacketGeneratorService;
@@ -50,11 +49,12 @@ import io.mosip.registration.processor.packet.service.dto.demographic.Demographi
 import io.mosip.registration.processor.packet.service.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.processor.packet.service.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.processor.packet.service.exception.RegBaseCheckedException;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.packet.upload.service.SyncUploadEncryptionService;
 import io.mosip.registration.processor.status.code.RegistrationType;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+
 /**
  * @author Sowmya The Class PacketGeneratorServiceImpl.
  */
@@ -90,11 +90,10 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	@Autowired
-	private ObjectMapper mapper=new ObjectMapper();
+	private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
 	private Utilities utilities;
-
 
 	/*
 	 * (non-Javadoc)
@@ -108,22 +107,28 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 		PacketGeneratorResDto packerGeneratorResDto = null;
 		PackerGeneratorFailureDto dto = new PackerGeneratorFailureDto();
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"PacketGeneratorServiceImpl ::createPacket()::entry");
 		byte[] packetZipBytes = null;
 		if (isValidCenter(request.getCenterId(), dto) && isValidMachine(request.getMachineId(), dto)
 				&& isValidUin(request.getUin(), dto) && isValidRegistrationType(request.getRegistrationType(), dto)) {
 			try {
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", "Packet Generator Validation successfull");
 				RegistrationDTO registrationDTO = createRegistrationDTOObject(request.getUin(),
 						request.getRegistrationType(), request.getCenterId(), request.getMachineId());
 				packetZipBytes = packetCreationService.create(registrationDTO);
 				String rid = registrationDTO.getRegistrationId();
 				String packetCreatedDateTime = rid.substring(rid.length() - 14);
-				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
-				LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")); 
-				String creationTime = ldt.toString()+".000Z";
+				String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
+						+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
+				LocalDateTime ldt = LocalDateTime.parse(formattedDate,
+						DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+				String creationTime = ldt.toString() + ".000Z";
 
 				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
-						creationTime, request.getRegistrationType(),packetZipBytes);
+						creationTime, request.getRegistrationType(), packetZipBytes);
+
 				return packerGeneratorResDto;
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -141,7 +146,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	private boolean isValidRegistrationType(String registrationType, PackerGeneratorFailureDto dto)
 			throws RegBaseCheckedException {
-		if (registrationType!=null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
 				|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
 			return true;
 		} else {
@@ -155,8 +160,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		boolean isValidUIN = false;
 		try {
 			isValidUIN = uinValidatorImpl.validateId(uin);
-			JSONObject jsonObject =  utilities.retrieveIdrepoJson(Long.parseLong(uin));
-			if (isValidUIN && jsonObject!=null) {
+			JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(uin));
+			if (isValidUIN && jsonObject != null) {
 				isValidUIN = true;
 			} else {
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid",
@@ -172,6 +177,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		} catch (ApisResourceAccessException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		}
 		return isValidUIN;
 	}
@@ -190,7 +197,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 * @param machineId
 	 *            the machine id
 	 * @return the registration DTO
-	 * @throws RegBaseCheckedException 
+	 * @throws RegBaseCheckedException
 	 */
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
 			String machineId) throws RegBaseCheckedException {
@@ -198,7 +205,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		registrationDTO.setDemographicDTO(getDemographicDTO(uin));
 		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(registrationType, uin, centerId,
 				machineId);
-		String registrationId =generateRegistrationId(registrationMetaDataDTO.getCenterId(),registrationMetaDataDTO.getMachineId());
+		String registrationId = generateRegistrationId(registrationMetaDataDTO.getCenterId(),
+				registrationMetaDataDTO.getMachineId());
 		registrationDTO.setRegistrationId(registrationId);
 		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
 		return registrationDTO;
@@ -259,12 +267,13 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 *            the dto
 	 * @return true, if is valid center
 	 * @throws RegBaseCheckedException
-	 * @throws IOException 
-	 * @throws JsonProcessingException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
-	private boolean isValidCenter(String centerId, PackerGeneratorFailureDto dto) throws RegBaseCheckedException, IOException {
+	private boolean isValidCenter(String centerId, PackerGeneratorFailureDto dto)
+			throws RegBaseCheckedException, IOException {
 		boolean isValidCenter = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(centerId);
@@ -272,23 +281,29 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		RegistrationCenterResponseDto rcpdto;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		try {
-			if(centerId!=null && !centerId.isEmpty()) {
-			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.CENTERDETAILS, pathsegments, "",
-					"", ResponseWrapper.class);
-			rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), RegistrationCenterResponseDto.class);
+			if (centerId != null && !centerId.isEmpty()) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"PacketGeneratorServiceImpl::isValidCenter():: Centerdetails Api call started");
+				responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.CENTERDETAILS, pathsegments, "",
+						"", ResponseWrapper.class);
+				rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+						RegistrationCenterResponseDto.class);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::isValidCenter():: Centerdetails Api call  ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(rcpdto));
+				if (responseWrapper.getErrors() == null && !rcpdto.getRegistrationCenters().isEmpty()) {
+					isValidCenter = true;
+				} else {
+					List<ErrorDTO> error = responseWrapper.getErrors();
 
-			if (responseWrapper.getErrors() == null && !rcpdto.getRegistrationCenters().isEmpty()) {
-				isValidCenter = true;
+					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+							error.get(0).getMessage(), new Throwable());
+				}
 			} else {
-				List<ErrorDTO> error = responseWrapper.getErrors();
-
-
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						error.get(0).getMessage(), new Throwable());
-			  }
-			}else {
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						 "Center id is mandatory", new Throwable());
+						"Center id is mandatory", new Throwable());
 			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -302,7 +317,6 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		return isValidCenter;
 	}
 
-
 	/**
 	 * Checks if is valid machine.
 	 *
@@ -312,12 +326,13 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 	 *            the dto
 	 * @return true, if is valid machine
 	 * @throws RegBaseCheckedException
-	 * @throws IOException 
-	 * @throws JsonProcessingException 
-	 * @throws JsonMappingException 
-	 * @throws JsonParseException 
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
-	private boolean isValidMachine(String machine, PackerGeneratorFailureDto dto) throws RegBaseCheckedException, IOException {
+	private boolean isValidMachine(String machine, PackerGeneratorFailureDto dto)
+			throws RegBaseCheckedException, IOException {
 		boolean isValidMachine = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(machine);
@@ -326,21 +341,28 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
 		try {
 
-			if(machine!=null && !machine.isEmpty())  {
-			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MACHINEDETAILS, pathsegments, "", "",
-					ResponseWrapper.class);
-			machinedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), MachineResponseDto.class);
-
-			if (responseWrapper.getErrors() == null && !machinedto.getMachines().isEmpty()) {
-				isValidMachine = true;
+			if (machine != null && !machine.isEmpty()) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"PacketGeneratorServiceImpl::isValidMachine():: MachineDetails Api call started");
+				responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MACHINEDETAILS, pathsegments,
+						"", "", ResponseWrapper.class);
+				machinedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+						MachineResponseDto.class);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::isValidMachine():: MachienDetails Api call  ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(machinedto));
+				if (responseWrapper.getErrors() == null && !machinedto.getMachines().isEmpty()) {
+					isValidMachine = true;
+				} else {
+					List<ErrorDTO> error = responseWrapper.getErrors();
+					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+							error.get(0).getMessage(), new Throwable());
+				}
 			} else {
-				List<ErrorDTO> error = responseWrapper.getErrors();
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						error.get(0).getMessage(), new Throwable());
-			}
-			}else {
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						 "Machine id is mandatory", new Throwable());
+						"Machine id is mandatory", new Throwable());
 			}
 
 		} catch (ApisResourceAccessException e) {
@@ -355,38 +377,46 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 		return isValidMachine;
 
 	}
-	
-	
-	private String generateRegistrationId(String centerId,String machineId) throws RegBaseCheckedException {
+
+	private String generateRegistrationId(String centerId, String machineId) throws RegBaseCheckedException {
 
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(centerId);
 		pathsegments.add(machineId);
-		String rid=null;
+		String rid = null;
 		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
-		JSONObject ridJson=new JSONObject();
-		ObjectMapper mapper=new ObjectMapper();
+		JSONObject ridJson = new JSONObject();
+		ObjectMapper mapper = new ObjectMapper();
 		try {
-			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "",
-					"", ResponseWrapper.class);
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call started");
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "", "",
+					ResponseWrapper.class);
 			if (responseWrapper.getErrors() == null) {
 				ridJson = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), JSONObject.class);
-				rid=(String) ridJson.get("rid");
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(ridJson));
+				rid = (String) ridJson.get("rid");
 
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
+								+ error.get(0).getMessage());
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 						error.get(0).getMessage(), new Throwable());
 			}
 
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
-				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-						e.getMessage(), e);
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getMessage(), e);
 			}
-		}catch (IOException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-					e.getMessage(), e);
+		} catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getMessage(), e);
 		}
 		return rid;
 	}

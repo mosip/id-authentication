@@ -150,7 +150,7 @@ public class UserDetailDAOTest {
 		Mockito.when(userDetailRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		Mockito.when(userPwdRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		Mockito.when(userRoleRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
-		doNothing().when(userRoleRepository).deleteByUserRoleID(Mockito.any());
+		doNothing().when(userRoleRepository).deleteByUserRoleIdUsrId(Mockito.any());
 		userDetailDAOImpl.save(userDetailsResponse);
 	}
 	

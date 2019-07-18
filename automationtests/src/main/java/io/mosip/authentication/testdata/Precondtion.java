@@ -46,66 +46,6 @@ import io.mosip.authentication.testdata.keywords.KeywordUtil;
 public class Precondtion {
 	
 	private static final Logger PRECON_LOGGER = Logger.getLogger(Precondtion.class);
-
-	/**
-	 * Method will return updated json field value , it will set property of json
-	 * according to the json mapping provided in test data yml file
-	 * 
-	 * @param inputFilePath
-	 * @param fieldvalue
-	 * @param outputFilePath
-	 * @param propFileNameversio
-	 * @return map
-	 */
-	public static Map<String, String> parseAndWriteTestDataJsonFile(String inputFilePath, Map<String, String> fieldvalue,
-			String outputFilePath, String propFileName) {
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			Object jsonObj = mapper.readValue(
-					new String(Files.readAllBytes(Paths.get(inputFilePath)), StandardCharsets.UTF_8), Object.class);
-			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
-																									// add
-			for (Entry<String, String> map : fieldvalue.entrySet()) {
-				if (map.getValue().contains("LONG:")) {
-					String value = map.getValue().replace("LONG:", "");
-					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
-							Long.parseLong(value));
-				} else if (map.getValue().contains("DOUBLE:")) {
-					String value = map.getValue().replace("DOUBLE:", "");
-					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
-							Double.parseDouble(value));
-				} else if (map.getValue().contains("BOOLEAN:")) {
-					String value = map.getValue();
-					if (value.contains("true"))
-						PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
-								true);
-					if (value.contains("false"))
-						PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
-								false);
-				} else
-					PropertyUtils.setProperty(jsonObj, AuthTestsUtil.getPropertyFromFilePath(propFileName).getProperty(map.getKey()),
-							map.getValue());
-			}
-			mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
-			mapper.writeValue(new FileOutputStream(outputFilePath), jsonObj);
-			String outputJson = new String(Files.readAllBytes(Paths.get(outputFilePath)), StandardCharsets.UTF_8);
-			// Replacing the version in request
-			outputJson = outputJson.replace("$version$", RunConfigUtil.objRunConfig.getAuthVersion());
-			outputJson = outputJson.replaceAll("$version$", RunConfigUtil.objRunConfig.getAuthVersion());
-			outputJson = outputJson.replace("$idrepoVersion$", RunConfigUtil.objRunConfig.getIdRepoVersion());
-			outputJson = outputJson.replaceAll("$idrepoVersion$", RunConfigUtil.objRunConfig.getIdRepoVersion());
-			if (outputJson.contains("$REMOVE$"))
-				outputJson = removeObject(new JSONObject(outputJson));
-			outputJson=JsonPrecondtion.toPrettyFormat(outputJson);
-			FileUtil.writeFile(outputFilePath, outputJson);
-			PRECON_LOGGER.info("Updated json file content: " + JsonPrecondtion.toPrettyFormat(outputJson.toString()));
-			return fieldvalue;
-		} catch (Exception e) {
-			PRECON_LOGGER.error("Exception Occured in precondtion message: " + e.getMessage());
-			Reporter.log("Exception Occured in precondtion message: " + e.getMessage());
-			return fieldvalue;
-		}
-	}
 	
 	/**
 	 * Method update the property file and return map of property
@@ -118,7 +58,7 @@ public class Precondtion {
 	public static Map<String, String> parseAndWritePropertyFile(String auditMappingPath,Map<String, String> fieldvalue,
 			String outputFilePath) {
 		try {
-			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to add
+			fieldvalue = getKeywordObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to add
 			Map<String, String> auditTxnValue = new HashMap<String, String>();
 			for (Entry<String, String> entry : fieldvalue.entrySet()) {
 				String orgKey = AuthTestsUtil.getPropertyFromFilePath(auditMappingPath).get(entry.getKey()).toString();
@@ -148,7 +88,7 @@ public class Precondtion {
 	public static Map<String, String> parseAndWriteEmailNotificationPropertyFile(String emailMappingPath,
 			Map<String, String> fieldvalue, String outputFilePath) {
 		try {
-			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
+			fieldvalue = getKeywordObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
 																									// add
 			Map<String, String> emailTemplatevalue = new HashMap<String, String>();
 			for (Entry<String, String> entry : fieldvalue.entrySet()) {
@@ -182,7 +122,7 @@ public class Precondtion {
 	 */
 	public static Map<String, String> parseAndWritePropertyFile(Map<String, String> fieldvalue, String outputFilePath) {
 		try {
-			fieldvalue = getObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
+			fieldvalue = getKeywordObject(TestDataConfig.getModuleName()).precondtionKeywords(fieldvalue);// New Code . Need to
 																									// add
 			Properties prop = new Properties();
 			if (!new File(outputFilePath).exists())
@@ -202,112 +142,14 @@ public class Precondtion {
 		}
 	}
 	
-	/**
-	 * This method is to remove objects where ever REMOVE keyword is provided in
-	 * test data
-	 * 
-	 * @param object
-	 * @return string
-	 */
-	public static String removeObject(JSONObject object) {
-		Iterator<String> keysItr = object.keys();
-		while (keysItr.hasNext()) {
-			String key = keysItr.next();
-			Object value = object.get(key);
-			if (value instanceof JSONArray) {
-				JSONArray array = (JSONArray) value;
-				String finalarrayContent = "";
-				for (int i = 0; i < array.length(); ++i) {
-					if(!array.toString().contains("{") && !array.toString().contains("}"))
-					{
-						Set<String> arr = new HashSet<String>();
-						for (int k = 0; k < array.length(); k++)
-						{
-							arr.add(array.getString(k));
-						}
-						finalarrayContent=removObjectFromArray(arr);
-					}
-					else
-					{
-					String arrayContent = removeObject(new JSONObject(array.get(i).toString()), finalarrayContent);
-					if (!arrayContent.equals("{}"))
-						finalarrayContent = finalarrayContent + "," + arrayContent;
-					}
-				}
-				finalarrayContent = finalarrayContent.substring(1, finalarrayContent.length());
-				object.put(key, new JSONArray("[" + finalarrayContent + "]"));
-			} else if (value instanceof JSONObject) {
-				String objectContent = removeObject(new JSONObject(value.toString()));
-				object.put(key, new JSONObject(objectContent));
-			}
-			if (value.toString().equals("$REMOVE$")) {
-				object.remove(key);
-				keysItr = object.keys();
-			}
-		}
-		return object.toString();
-	}
 	
-	private static String removObjectFromArray(Set<String> content) {
-		String array = "[";
-		for (String str : content) {
-			if (!str.contains("$REMOVE$"))
-				array = array + '"' + str + '"' + ",";
-		}
-		array = array.substring(0, array.length() - 1);
-		array = array + "]";
-		return array;
-	}
-	public static boolean isJSONValid(String test) {
-	    try {
-	        new JSONObject(test);
-	    } catch (JSONException ex) {
-	        // edited, to include @Arthur's comment
-	        // e.g. in case JSONArray is valid as well...
-	        try {
-	            new JSONArray(test);
-	        } catch (JSONException ex1) {
-	            return false;
-	        }
-	    }
-	    return true;
-	}
-	/**
-	 * The method remove Object from Json array
-	 * 
-	 * @param object
-	 * @param tempArrayContent
-	 * @return string
-	 */
-	private static String removeObject(JSONObject object, String tempArrayContent) {
-		Iterator<String> keysItr = object.keys();
-		while (keysItr.hasNext()) {
-			String key = keysItr.next();
-			Object value = object.get(key);
-			if (value instanceof JSONArray) {
-				JSONArray array = (JSONArray) value;
-				for (int i = 0; i < array.length(); ++i) {
-					String arrayContent = removeObject(new JSONObject(array.get(i).toString()));
-					object.put(key, new JSONArray("[" + arrayContent + "]"));
-				}
-			} else if (value instanceof JSONObject) {
-				String objectContent = removeObject(new JSONObject(value.toString()));
-				object.put(key, new JSONObject(objectContent));
-			}
-			if (value.toString().equals("$REMOVE$")) {
-				object.remove(key);
-				keysItr = object.keys();
-			}
-		}
-		return object.toString();
-	}
 	/**
 	 * The method return object of KeywordUtil
 	 * 
 	 * @param moduleName
 	 * @return
 	 */
-	public static KeywordUtil getObject(String moduleName) {
+	public static KeywordUtil getKeywordObject(String moduleName) {
 		KeywordUtil objKeywordUtil = null;
 		if (moduleName.equalsIgnoreCase("ida"))
 			objKeywordUtil = new IdaKeywordUtil();

@@ -59,7 +59,7 @@ public class IdRepoUtil extends AuthTestsUtil {
 			else
 				mappingTopass=mapping;
 			if (uinNumber.length() == 16) {
-				RunConfigUtil.getVidPropertyValue(RunConfigUtil.getVidPropertyPath());
+				VIDUtil.getVidPropertyValue(RunConfigUtil.getVidPropertyPath());
 				for (Entry<String, String> entry : VidDto.getVid().entrySet()) {
 					if (entry.getValue().contains(uinNumber)) {
 						uinNumber = entry.getKey();
@@ -237,6 +237,18 @@ public class IdRepoUtil extends AuthTestsUtil {
 		String url = RunConfigUtil.objRunConfig.getIdRepoEndPointUrl() + RunConfigUtil.objRunConfig.getIdRepoRetrieveIdentityByRid();
 		url = url.replace("$vid$", vidNumer);
 		return url;
+	}
+	
+	public static String getIdrepoUinRefIdQuery(String regId) {
+		return "select uin_ref_id from idrepo.uin where reg_id='" + regId + "'";
+	}
+	
+	public static String deleteIdrepoBiometricQuery(String uinRefId) {
+		return "delete from idrepo.uin_biometric where uin_ref_id='" + uinRefId + "'";
+	}
+	
+	public static String deleteIdrepoUin(String uinRefId) {
+		return "delete from idrepo.uin where uin_ref_id='" + uinRefId + "'";
 	}
 
 }

@@ -205,7 +205,7 @@ testdata:
       moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_EKYC_Biometric_Finger_with_primary_lang_Smoke_With_VID_Pos:
+  Authentication_EKYC_Biometric_Finger_with_primary_lang_With_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.ekyc-request:
@@ -269,7 +269,7 @@ testdata:
       moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_Biometric_EKYC_FACE_With_secondary_lang_smoke_With_VID_Pos:
+  Authentication_Biometric_EKYC_FACE_With_secondary_lang_With_smoke_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.ekyc-request:
@@ -350,7 +350,7 @@ testdata:
       moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
       
-  Authentication_EYC_Biometric_Iris_With_Left_primary_lang_Smoke_With_VID_Pos:
+  Authentication_EYC_Biometric_Iris_With_Left_primary_lang_With_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.ekyc-request:
@@ -1642,7 +1642,7 @@ testdata:
       moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_EKYC_Biometric_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_With_VID_Pos:
+  Authentication_EKYC_Biometric_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_With_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.ekyc-request:

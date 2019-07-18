@@ -1,14 +1,12 @@
 package io.mosip.registration.processor.packet.manager.decryptor;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +28,6 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
-import io.mosip.registration.processor.packet.manager.decryptor.Decryptor;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.packet.manager.dto.CryptomanagerRequestDto;
 import io.mosip.registration.processor.packet.manager.dto.CryptomanagerResponseDto;
@@ -73,8 +70,8 @@ public class DecryptorImpl implements Decryptor {
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
-	private static final String DECRYPTION_SUCCESS = "Decryption success for RegistrationId : {}";
-	private static final String DECRYPTION_FAILURE = "Virus scan decryption failed for  registrationId ";
+	private static final String DECRYPTION_SUCCESS = "Decryption success";
+	private static final String DECRYPTION_FAILURE = "Virus scan decryption failed for registrationId ";
 	private static final String IO_EXCEPTION = "Exception while reading packet inputStream";
 	private static final String DATE_TIME_EXCEPTION = "Error while parsing packet timestamp";
 
@@ -142,7 +139,7 @@ public class DecryptorImpl implements Decryptor {
 			byte[] decryptedPacket = CryptoUtil.decodeBase64(response.getResponse().getData());
 			outstream = new ByteArrayInputStream(decryptedPacket);
 			isTransactionSuccessful = true;
-			description = DECRYPTION_SUCCESS + registrationId;
+			description = DECRYPTION_SUCCESS + "for RegistrationId" + registrationId;
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Decryptor::decrypt()::exit");
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -153,7 +150,7 @@ public class DecryptorImpl implements Decryptor {
 					registrationId, description);
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-					IO_EXCEPTION,e);
+					IO_EXCEPTION, e);
 		} catch (DateTimeParseException e) {
 			description = DATE_TIME_EXCEPTION + registrationId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

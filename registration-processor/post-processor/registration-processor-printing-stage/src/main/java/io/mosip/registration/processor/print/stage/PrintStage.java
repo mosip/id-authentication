@@ -93,7 +93,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The global exception handler. */
 	@Autowired
 	public PrintGlobalExceptionHandler globalExceptionHandler;
-	
+
 	@Autowired
 	public Utilities utilities;
 
@@ -143,12 +143,12 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** The address. */
 	@Value("${registration.processor.queue.address}")
 	private String address;
-	
+
 	/** The print & postal service provider address. */
 	/** The address. */
 	@Value("${registration.processor.queue.printpostaladdress}")
 	private String printPostalAddress;
-	
+
 	@Value("${server.servlet.path}")
 	private String contextPath;
 
@@ -158,30 +158,31 @@ public class PrintStage extends MosipVerticleAPIManager {
 	/** Mosip router for APIs */
 	@Autowired
 	MosipRouter router;
-	
+
 	boolean isConnection = false;
 
 	private static final String SUCCESS = "Success";
 
 	private static final String RESEND = "Resend";
-	
+
 	private static final String CLASSNAME = "PrintStage";
-	
+
 	private static final String SEPERATOR = "::";
-	
+
 	private MosipQueue queue;
-	
+
 	private static final String UIN = "UIN";
 
 	private static final Map<String, MessageDTO> uinMap = new ConcurrentHashMap<String, MessageDTO>();
+
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		
+
 		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
-		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);		
-		
+		this.consume(mosipEventBus, MessageBusAddress.PRINTING_BUS);
+
 		queue = getQueueConnection();
 		if (queue != null) {
 
@@ -193,9 +194,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			};
 
 			mosipQueueManager.consume(queue, printPostalAddress, listener);
-			
-			
-			 
+
 		} else {
 			throw new QueueConnectionNotFound(PlatformErrorMessages.RPR_PRT_QUEUE_CONNECTION_NULL.getMessage());
 		}
@@ -215,20 +214,23 @@ public class PrintStage extends MosipVerticleAPIManager {
 		object.setInternalError(Boolean.FALSE);
 		String description = null;
 		boolean isTransactionSuccessful = false;
-		
+
 		String regId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				regId, "PrintStage::process()::entry");
 		try {
 			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(regId);
-			registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
+			registrationStatusDto
+					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
 			JSONObject jsonObject = utilities.retrieveUIN(regId);
-			Long value=JsonUtil.getJSONValue(jsonObject, UIN);
-			String uin= Long.toString(value);
-			
+			Long value = JsonUtil.getJSONValue(jsonObject, UIN);
+			String uin = Long.toString(value);
+
 			uinMap.put(uin, object);
-			
+
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, uin);
@@ -238,17 +240,24 @@ public class PrintStage extends MosipVerticleAPIManager {
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
 				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
-				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
+				registrationStatusDto
+						.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
+
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
 				registrationStatusDto.setStatusComment(description);
-				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
-				registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
-			}
+				registrationStatusDto
+						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
+				registrationStatusDto
+						.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 
+			}
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					regId, description);
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			printPostService.generatePrintandPostal(regId, queue, mosipQueueManager);
@@ -300,6 +309,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, regId,
 					ApiName.AUDIT);
 		}
+
 		return object;
 	}
 
@@ -342,7 +352,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
 						PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.name() + e.getMessage()
 								+ ExceptionUtils.getStackTrace(e));
-				throw new ConnectionUnavailableException(PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getCode());
+				throw new ConnectionUnavailableException(
+						PlatformErrorMessages.RPR_MQI_UNABLE_TO_SEND_TO_QUEUE.getCode());
 			}
 		}
 
@@ -368,11 +379,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 	 *            the router
 	 */
 	private void routes(MosipRouter router) {
-		router.post(contextPath+"/resend");
+		router.post(contextPath + "/resend");
 		router.handler(this::reSendPrintPdf, this::failure);
 
 	}
-	
+
 	/**
 	 * This is for failure handler
 	 * 
@@ -381,7 +392,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	private void failure(RoutingContext routingContext) {
 		this.setResponse(routingContext, globalExceptionHandler.handler(routingContext.failure()));
 	}
-	
+
 	/**
 	 * Re send print pdf.
 	 *
@@ -393,6 +404,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 		JsonObject object = ctx.getBodyAsJson();
 		MessageDTO messageDTO = new MessageDTO();
 		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					object.getString("regId"), "PrintStage::reSendPrintPdf()::entry");
 			messageDTO.setRid(object.getString("regId"));
 			String uin = object.getString("uin");
 			String status = object.getString("status");
@@ -415,6 +428,8 @@ public class PrintStage extends MosipVerticleAPIManager {
 					"", PlatformErrorMessages.RPR_BDD_UNKNOWN_EXCEPTION.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				object.getString("regId"), "PrintStage::reSendPrintPdf()::exit");
 	}
 
 	public void consumerListener(Message message) {
@@ -422,49 +437,55 @@ public class PrintStage extends MosipVerticleAPIManager {
 		String registrationId = null;
 		boolean isTransactionSuccessful = false;
 		String uin = null;
-		try {			
+		try {
 
 			String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 
 			JSONObject jsonObject = JsonUtil.objectMapperReadValue(response, JSONObject.class);
-			
+
 			String status = JsonUtil.getJSONValue(jsonObject, "Status");
 			uin = JsonUtil.getJSONValue(jsonObject, "UIN");
-			if(uin != null) {
+			if (uin != null) {
 				MessageDTO messageDTO = uinMap.get(uin);
 				registrationId = messageDTO.getRid();
-				
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PrintStage::consumerListener()::entry");
 				InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 						.getRegistrationStatus(registrationId);
-				
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, "ConsumerStage::process()::exit");
+
 				if (status.equals(SUCCESS)) {
 					isTransactionSuccessful = true;
 					description = "Print and Post Completed for the regId : " + registrationId;
 					registrationStatusDto.setStatusComment(description);
-					registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
-					registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
+					registrationStatusDto
+							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
+					registrationStatusDto.setLatestTransactionTypeCode(
+							RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
 					registrationStatusDto.setUpdatedBy(USER);
 					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-				} else if (status.equals(RESEND)) {				
+				} else if (status.equals(RESEND)) {
 					description = "Re-Send uin card with regId " + registrationId + " for printing";
 					registrationStatusDto.setStatusComment(description);
 					registrationStatusDto.setLatestTransactionStatusCode(RESEND);
-					registrationStatusDto.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
+					registrationStatusDto.setLatestTransactionTypeCode(
+							RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
 					registrationStatusDto.setUpdatedBy(USER);
 					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 					this.send(mosipEventBus, MessageBusAddress.PRINTING_BUS, messageDTO);
 				}
-				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, "ConsumerStage::process()::exit");
-				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, description);
+
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId, description);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						"PrintStage::consumerListener()::exit");
 			} else {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						registrationId, PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name());
-			}			
-			
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
+						PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name());
+			}
+
 		} catch (IOException e) {
 			isTransactionSuccessful = false;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -481,10 +502,11 @@ public class PrintStage extends MosipVerticleAPIManager {
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			uinMap.remove(uin);	
+			uinMap.remove(uin);
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
 					ApiName.AUDIT);
 		}
+
 	}
 
 	private MosipQueue getQueueConnection() {
@@ -494,8 +516,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 	@SuppressWarnings("unchecked")
 	private MessageDTO resendQueueResponse(MessageDTO messageDto, String uin, String status) {
 		JSONObject response = new JSONObject();
-		
-		
+
 		try {
 			response.put("UIN", uin);
 			response.put("Status", status);

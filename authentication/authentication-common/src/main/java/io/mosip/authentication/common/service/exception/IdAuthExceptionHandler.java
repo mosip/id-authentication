@@ -159,7 +159,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 					&& !e.getCause().getClass().isAssignableFrom(RestServiceException.class)) {
 				e = e.getCause();
 			} else if (ex.getCause() instanceof BaseCheckedException) {
-				e = new IdAuthenticationAppException((ex).getErrorCode(), (ex).getErrorText());
+				e = new IdAuthenticationAppException(ex.getErrorCode(), ex.getErrorText());
 				break;
 			} else {
 				break;
@@ -200,12 +200,24 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				IDDataValidationException validationException = (IDDataValidationException) ex;
 				List<Object[]> args = validationException.getArgs();
 				List<String> actionArgs = validationException.getActionargs();
-				errors = IntStream.range(0, errorCodes.size()).mapToObj(i -> createAuthError(validationException,
-						errorCodes.get(i),
-						args.isEmpty() ? errorMessages.get(i) : String.format(errorMessages.get(i), args.get(i)),
-						!args.isEmpty() && actionArgs != null && !actionArgs.contains(null)
-								? String.format(actionArgs.get(i), args.get(i))
-								: actionArgs.get(i)))
+				errors = IntStream.range(0, errorCodes.size())
+						.mapToObj(i -> {
+							String errorMessage;
+							if (args != null && !args.isEmpty()) {
+								errorMessage = String.format(errorMessages.get(i), args.get(i));
+							} else {
+								errorMessage = errorMessages.get(i);
+							}
+							
+							String actionMessage;
+							if (args != null && !args.isEmpty() && actionArgs != null && !actionArgs.contains(null)) {
+								actionMessage = String.format(actionArgs.get(i), args.get(i));
+							} else {
+								actionMessage = actionArgs.get(i);
+							}
+							
+							return createAuthError(validationException, errorCodes.get(i), errorMessage, actionMessage);
+						})
 						.distinct().collect(Collectors.toList());
 			} else {
 				errors = IntStream.range(0, errorCodes.size())
