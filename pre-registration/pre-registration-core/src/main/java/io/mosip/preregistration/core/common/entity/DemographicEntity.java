@@ -6,10 +6,16 @@ package io.mosip.preregistration.core.common.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.NamedQuery;
@@ -28,6 +34,10 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
+/**
+ * @author M1046129
+ *
+ */
 @Component
 @Entity
 @Table(name = "applicant_demographic", schema = "prereg")
@@ -39,6 +49,12 @@ public class DemographicEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "demographicEntity")
+	private List<DocumentEntity> documentEntity;
+
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "demographicEntity")
+	private RegistrationBookingEntity registrationBookingEntity;
 
 	/** The pre registration id. */
 	@Column(name = "prereg_id", nullable = false)
@@ -176,6 +192,22 @@ public class DemographicEntity implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public List<DocumentEntity> getDocumentEntity() {
+		return documentEntity;
+	}
+
+	public void setDocumentEntity(List<DocumentEntity> documentEntity) {
+		this.documentEntity = documentEntity;
+	}
+
+	public RegistrationBookingEntity getRegistrationBookingEntity() {
+		return registrationBookingEntity;
+	}
+
+	public void setRegistrationBookingEntity(RegistrationBookingEntity registrationBookingEntity) {
+		this.registrationBookingEntity = registrationBookingEntity;
 	}
 
 }

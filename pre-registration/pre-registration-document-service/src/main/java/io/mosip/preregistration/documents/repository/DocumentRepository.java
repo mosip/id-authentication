@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import io.mosip.preregistration.documents.entity.DocumentEntity;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
 
 /**
  * This repository interface is used to define the JPA methods for Document
@@ -26,21 +26,21 @@ import io.mosip.preregistration.documents.entity.DocumentEntity;
  * 
  */
 @Repository("documentRepository")
-@Transactional(rollbackOn= {Exception.class})
+@Transactional(rollbackOn = { Exception.class })
 public interface DocumentRepository extends BaseRepository<DocumentEntity, String> {
 	/**
 	 * @param preregId
 	 *            pass preRegistrationId
 	 * @return true or false for a preRegistrationId
 	 */
-	public boolean existsByPreregId(String preregId);
+	public boolean existsByDemographicEntityPreRegistrationId(String preregId);
 
 	/**
 	 * @param preId
 	 *            pass preRegistrationId
 	 * @return all the documents for a preRegistrationId
 	 */
-	public List<DocumentEntity> findBypreregId(String preId);
+	public List<DocumentEntity> findByDemographicEntityPreRegistrationId(String preId);
 
 	/**
 	 * @param documentId
@@ -70,6 +70,6 @@ public interface DocumentRepository extends BaseRepository<DocumentEntity, Strin
 	 *            pass preRegistrationId
 	 * @return the number of records deleted for a preRegistrationId
 	 */
-	public int deleteAllBypreregId(String preregId);
+	public int deleteAllByDemographicEntityPreRegistrationId(String preregId);
 
 }

@@ -15,7 +15,7 @@
             disableOptionCentering
             placeholder="{{ document.code }}"
             (selectionChange)="selectChange($event, i)"
-            (openedChange)="openedChange($event, i)"
+            (openedChange)="openedChange(i)"
             [disabled]="document.code === 'POA' && sameAsselected ? true : false"
           >
             <mat-option *ngFor="let ValidDocument of document.documentTypes" value="{{ ValidDocument.code }}">
@@ -51,8 +51,6 @@
                 </mat-option>
               </mat-select>
             </mat-form-field>
-          </span>
-          <span *ngIf="allApplicants.length > 1">
             <mat-icon class="icon" matTooltip="{{ 'helpText.same_as' | translate }}" [inline]="true"
               >help_outline</mat-icon
             >
@@ -73,20 +71,23 @@
     <div class="file-upload__body__2" *ngIf="this.users[0].files && fileIndex >= 0">
       <p>{{ fileName }}</p>
       <iframe
-        *ngIf="fileExtension == 'pdf' || fileExtension == 'PDF'"
+        *ngIf="fileUrl && (fileExtension == 'pdf' || fileExtension == 'PDF')"
         class="file-uplaoad__body__2__preview"
         [attr.src]="fileUrl"
         type="application/pdf;Base64,"
       ></iframe>
 
       <img
-        *ngIf="fileExtension == 'jpg' || fileExtension == 'jpeg' || fileExtension == 'JPG' || fileExtension == 'JPEG'"
+        *ngIf="
+          fileUrl &&
+          (fileExtension == 'jpg' || fileExtension == 'jpeg' || fileExtension == 'JPG' || fileExtension == 'JPEG')
+        "
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/jpeg;Base64,"
       />
       <img
-        *ngIf="fileExtension == 'png' || fileExtension == 'PNG' "
+        *ngIf="fileUrl && (fileExtension == 'png' || fileExtension == 'PNG')"
         class="file-uplaoad__body__2__preview"
         [src]="fileUrl"
         type="image/png;Base64,"

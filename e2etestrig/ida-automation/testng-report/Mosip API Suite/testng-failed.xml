@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [Mosip API Suite]">
+  <listeners>
+    <listener class-name="io.mosip.report.CustomTestNGReporter"/>
+    <listener class-name="io.mosip.report.ExtentReportListener"/>
+    <listener class-name="io.mosip.authentication.fw.util.AuthenticationTestsListener"/>
+    <listener class-name="io.mosip.authentication.e2e.E2EReport"/>
+  </listeners>
+  <test name="AuthenticationTest(failed)">
+    <classes>
+      <class name="io.mosip.authentication.tests.InternalBiometricAuthentication">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="setTestType"/>
+          <include name="internalBiometricAuthenticationTest" invocation-numbers="1 2 3"/>
+          <include name="testData"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.InternalBiometricAuthentication -->
+      <class name="io.mosip.authentication.tests.OtpAuthentication">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="idaOtpAuthenticationTest" invocation-numbers="1 2"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="setTestType"/>
+          <include name="testData"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.OtpAuthentication -->
+      <class name="io.mosip.authentication.tests.DemographicAuthentication">
+        <methods>
+          <include name="testData"/>
+          <include name="suiteSetup"/>
+          <include name="setTestType"/>
+          <include name="testTearDown"/>
+          <include name="demographicAuthenticationTest" invocation-numbers="1 2 1 2 3 4 5 6 1 2 3 4 5 6 7 8 9 10 11 12 1 2 1 2 1 2 3 4 5 6 7 8 9 10 11 1 2"/>
+          <include name="setResultTestName"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.DemographicAuthentication -->
+      <class name="io.mosip.authentication.idRepository.prerequiste.CreateVID">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="setTestType"/>
+          <include name="generateVidForUin"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="testData"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.idRepository.prerequiste.CreateVID -->
+      <class name="io.mosip.authentication.tests.OtpGeneration">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="testData"/>
+          <include name="setTestType"/>
+          <include name="otpGenerationTest" invocation-numbers="1 2 3 4"/>
+          <include name="testTearDown"/>
+          <include name="setResultTestName"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.OtpGeneration -->
+      <class name="io.mosip.authentication.tests.EkycWithBiometricAuthentication">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="setResultTestName"/>
+          <include name="testData"/>
+          <include name="setTestType"/>
+          <include name="testTearDown"/>
+          <include name="idaEkycWithBiometricAuthenticationTest" invocation-numbers="1 2 3 4 5 6 7"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.EkycWithBiometricAuthentication -->
+      <class name="io.mosip.authentication.tests.BiometricAuthentication">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="testData"/>
+          <include name="testTearDown"/>
+          <include name="setTestType"/>
+          <include name="setResultTestName"/>
+          <include name="biometricAuthenticationTest" invocation-numbers="1 2 3 4 5 1 2 3 4 5 1 2 1 2 3 4"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.BiometricAuthentication -->
+      <class name="io.mosip.authentication.tests.EkycWithOtpAuthentication">
+        <methods>
+          <include name="suiteSetup"/>
+          <include name="setTestType"/>
+          <include name="testData"/>
+          <include name="setResultTestName"/>
+          <include name="testTearDown"/>
+          <include name="idaEkycWithOtpAuthenticationTest" invocation-numbers="1 2 3 4"/>
+        </methods>
+      </class> <!-- io.mosip.authentication.tests.EkycWithOtpAuthentication -->
+    </classes>
+  </test> <!-- AuthenticationTest(failed) -->
+</suite> <!-- Failed suite [Mosip API Suite] -->

@@ -28,6 +28,7 @@ import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.fw.util.StoreAuthenticationAppLogs;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -154,6 +155,8 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, InternalBiometricAuthentication.testCaseName);
+			if(!result.isSuccess())
+				StoreAuthenticationAppLogs.storeApplicationLog(RunConfigUtil.getInternalAuthSeriveName(), logFileName, getTestFolder());
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -185,6 +188,7 @@ public class InternalBiometricAuthentication extends AuthTestsUtil implements IT
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
 		if(!modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"))
 			throw new AuthenticationTestException("Failed at modifying the request file. Kindly check testdata.");
+		displayContentInFile(testCaseName.listFiles(), "bio-auth");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath()
 				+" *******");
 		if(!postRequestAndGenerateOuputFileForIntenalAuth(testCaseName.listFiles(),

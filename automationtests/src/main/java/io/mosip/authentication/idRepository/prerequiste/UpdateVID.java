@@ -36,6 +36,7 @@ import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
 import io.mosip.authentication.fw.util.TestParameters;
+import io.mosip.authentication.fw.util.VIDUtil;
 import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -181,7 +182,7 @@ public class UpdateVID extends AuthTestsUtil implements ITest {
 		setTestCaseName(testCaseName.getName());
 		String name = getTestCaseName();
 		String mapping = TestDataUtil.getMappingPath();
-		String vid[] = RunConfigUtil.getVidKeyForVIDUpdate(name).split(Pattern.quote(".")); 
+		String vid[] = VIDUtil.getVidKeyForVIDUpdate(name).split(Pattern.quote(".")); 
 		String vidNumber=vid[0];
 		String vidType=vid[1];
 		

@@ -1,12 +1,11 @@
 package io.mosip.authentication.tests;
 
-import java.io.File; 
+import java.io.File;  
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.testng.Assert;
 import org.testng.ITest;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -14,7 +13,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import org.testng.internal.BaseTestMethod;
 import org.testng.internal.TestResult;
@@ -28,6 +26,7 @@ import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.fw.util.StoreAuthenticationAppLogs;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -142,6 +141,8 @@ public class BiometricAuthentication extends AuthTestsUtil implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, BiometricAuthentication.testCaseName);
+			if(!result.isSuccess())
+				StoreAuthenticationAppLogs.storeApplicationLog(RunConfigUtil.getAuthSeriveName(), logFileName, getTestFolder());
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -171,6 +172,7 @@ public class BiometricAuthentication extends AuthTestsUtil implements ITest {
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
 		if(!modifyRequest(testCaseName.listFiles(), tempMap, mapping, "bio-auth"))
 			throw new AuthenticationTestException("Failed at modifying the request file. Kindly check testdata.");
+		displayContentInFile(testCaseName.listFiles(), "bio-auth");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getAuthPath()
 				+ extUrl + " *******");
 		if(!postRequestAndGenerateOuputFile(testCaseName.listFiles(),

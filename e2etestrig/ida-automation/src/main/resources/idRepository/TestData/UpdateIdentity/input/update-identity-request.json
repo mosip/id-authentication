@@ -1,0 +1,19 @@
+{
+	"id": "mosip.id.update",
+	"request": {
+		"registrationId": "27847657360002520190205113339",
+
+		"identity": {
+
+			"UIN": 9372146754,
+			"email": "$REMOVE$",
+			"phone": "$REMOVE$",
+		    "dateOfBirth": "$REMOVE$",
+			"age": "$REMOVE$",
+			"postalCode": "$REMOVE$",
+			"CNIENumber": "$REMOVE$"
+		}
+	},
+	"requesttime": "2018-02-05T06:12:25.288Z",
+	"version": "v1"
+}

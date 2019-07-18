@@ -12,7 +12,10 @@
       {{ 'login.sub_text' | translate }} <span class="boldText"> {{ 'login.sub_text_UID' | translate }} </span>
     </div>
 
-    <div [ngClass]="selectedLanguage !== 'Arabic' ? 'form_fields_wrapper form_fields_padding' : 'form_fields_wrapper'">
+    <div
+      style="width: 38vw; max-width: 323px;"
+      [ngClass]="selectedLanguage !== 'Arabic' ? 'form_fields_wrapper form_fields_padding' : 'form_fields_wrapper'"
+    >
       <div>
         <mat-form-field appearance="outline">
           <mat-select
