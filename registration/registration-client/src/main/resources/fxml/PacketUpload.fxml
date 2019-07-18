@@ -52,7 +52,7 @@
                            <columns>
                               <TableColumn fx:id="checkBoxColumn" prefWidth="${tableContainer.width*2/100}">
                                  <graphic>
-                                    <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" onAction="#selectAllCheckBox">
+                                    <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" onAction="#selectAllCheckBox" styleClass="uploadCheckBox">
                                        </CheckBox>
                                  </graphic>
                               </TableColumn>

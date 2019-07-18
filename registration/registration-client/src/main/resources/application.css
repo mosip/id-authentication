@@ -1275,6 +1275,13 @@ Working on new Css by taleev
 }
 	
 /*Upload Packet page design starts*/
+.uploadCheckBox > .box{
+	-fx-background-color: #FFFFFF;
+    -fx-text-fill: -fx-text-background-color;
+    -fx-border-color: #B0B0B0;
+	-fx-border-radius: 3px;	
+	-fx-padding: 0.25px;
+}
 .uploadPacketparentPane{
 	-fx-background-color:#F4F4F4;
 }
