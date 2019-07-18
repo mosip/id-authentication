@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.idobjectvalidator.spi.IdObjectValidator;
 import io.mosip.preregistration.application.DemographicTestApplication;
@@ -46,6 +47,9 @@ public class DemographicServiceUtilTest {
 
 	@MockBean
 	private IdObjectValidator jsonValidator;
+	
+	@MockBean(name = "restTemplateConfig")
+	RestTemplate restTemplate;
 	
 	private DemographicRequestDTO saveDemographicRequest = null;
 	private DemographicRequestDTO updateDemographicRequest = null;

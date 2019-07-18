@@ -1,0 +1,154 @@
+{
+	"fullName": 
+	[
+		{
+			"language": "eng",
+			"value": "أيوب توفيق"
+		},
+
+		{
+			"language": "ara",
+			"value": "شثقصثفف"
+		}
+	],
+
+	"dateOfBirth": "1992/01/01",
+	"age": 27,
+	"gender": 
+	[
+		{
+			"language": "eng",
+			"value": "Male"
+		},
+
+		{
+			"language": "ara",
+			"value": "الذكر"
+		}
+	],
+
+	"residenceStatus": 
+	[
+		{
+			"language": "eng",
+			"value": "Non-Foreigner"
+		},
+
+		{
+			"language": "ara",
+			"value": "غير أجنبي"
+		}
+	],
+
+	"addressLine1": 
+	[
+		{
+			"language": "eng",
+			"value": "٣٠ ر أم عربية"
+		},
+
+		{
+			"language": "ara",
+			"value": "سيبسليبلي"
+		}
+	],
+
+	"addressLine2": 
+	[
+		{
+			"language": "eng",
+			"value": "عربية"
+		},
+
+		{
+			"language": "ara",
+			"value": ""
+		}
+	],
+
+	"region": 
+	[
+		{
+			"language": "eng",
+			"value": "Rabat Sale Kenitra"
+		},
+
+		{
+			"language": "ara",
+			"value": "جهة الرباط سلا القنيطرة"
+		}
+	],
+
+	"province": 
+	[
+		{
+			"language": "eng",
+			"value": "Kenitra"
+		},
+
+		{
+			"language": "ara",
+			"value": "القنيطرة"
+		}
+	],
+
+	"city": 
+	[
+		{
+			"language": "eng",
+			"value": "Kenitra"
+		},
+
+		{
+			"language": "ara",
+			"value": "القنيطرة"
+		}
+	],
+
+	"postalCode": "60011",
+	"phone": "9965625706",
+	"email": "ayoub.toufiq@gmail.com",
+	"localAdministrativeAuthority": 
+	[
+		{
+			"language": "eng",
+			"value": "Ben Mansour"
+		},
+
+		{
+			"language": "ara",
+			"value": "بن منصور"
+		}
+	],
+
+	"proofOfAddress": 
+	{
+		"value": "POA_Certificate of residence",
+		"type": "Certificate of residence",
+		"format": "jpg"
+	},
+
+	"proofOfIdentity": 
+	{
+		"value": "POI_PAN card",
+		"type": "PAN card",
+		"format": "jpg"
+	},
+
+	"proofOfRelationship": 
+	{
+		"value": "POR_Canteen card of the Army",
+		"type": "Canteen card of the Army",
+		"format": "jpg"
+	},
+
+	"individualBiometrics": 
+	{
+		"format": "cbeff",
+		"version": 1.0,
+		"value": "applicant_bio_CBEFF"
+	},
+
+	"IDSchemaVersion": 1.0,
+	"CNIENumber": "4545343123"
+}

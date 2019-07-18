@@ -1,0 +1,1730 @@
+testdata:
+  Authentication_KYC_OTP_With primary language_UIN_Pos:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.secondaryLangCode: $REMOVE$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-y-res:
+      output.2.response.responseTime: $TIMESTAMP$
+      output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
+      output.2.response.response.kycStatus: BOOLEAN:true
+      output.2.response.staticToken: $IGNORE$
+      output.2.response.identity: '$DECODE$->output-3-expected-decoded-one-lang-kyc-res.json'
+    output.output-3-expected-decoded-one-lang-kyc-res:
+      output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
+      output.3.res.kyc.valueaddressLine10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
+      output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation20: $TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine30: $TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation10: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
+      output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
+  
+  Authentication_KYC_OTP_With secondary language_UIN_smoke_Pos:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.secondaryLangCode: $TestData:secondary_lang_code$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-y-res:
+      output.2.response.responseTime: $TIMESTAMP$
+      output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
+      output.2.response.response.kycStatus: BOOLEAN:true
+      output.2.response.staticToken: $IGNORE$
+      output.2.response.identity: '$DECODE$->output-3-expected-decoded-two-lang-kyc-res.json'
+    output.output-3-expected-decoded-two-lang-kyc-res:
+      output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
+      output.3.res.kyc.valueaddressLine10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
+      output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation20: $TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine30: $TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation10: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
+      output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation31: $TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine11: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuefullName1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation21: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine31: $TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation11: $TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagefullName1: $TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine21: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
+      
+  Authentication_KYC_OTP_invalid otp_Neg:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      identityReq.otp: 784612
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.secondaryLangCode: $TestData:secondary_lang_code$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidOTP:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidOTP:errorCode$
+      output.2.response.err.actionMessage: $IGNORE$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_fail_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_fail_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
+      
+  Authentication_KYC_OTP_With primary language_VID_Pos:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.individualIdType: $input.otp-generate:otpReq.individualIdType$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.secondaryLangCode: $REMOVE$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-y-res:
+      output.2.response.responseTime: $TIMESTAMP$
+      output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
+      output.2.response.response.kycStatus: BOOLEAN:true
+      output.2.response.staticToken: $IGNORE$
+      output.2.response.identity: '$DECODE$->output-3-expected-decoded-one-lang-kyc-res.json'
+    output.output-3-expected-decoded-one-lang-kyc-res:
+      output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
+      output.3.res.kyc.valueaddressLine10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
+      output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation20: $TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine30: $TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation10: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
+      output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
+  
+  Authentication_KYC_OTP_With secondary language_VID_Pos:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.individualIdType: $input.otp-generate:otpReq.individualIdType$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.secondaryLangCode: $TestData:secondary_lang_code$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-y-res:
+      output.2.response.responseTime: $TIMESTAMP$
+      output.2.response.transactionID: $input.otp-generate:otpReq.transactionID$
+      output.2.response.response.kycStatus: BOOLEAN:true
+      output.2.response.staticToken: $IGNORE$
+      output.2.response.identity: '$DECODE$->output-3-expected-decoded-two-lang-kyc-res.json'
+    output.output-3-expected-decoded-two-lang-kyc-res:
+      output.3.res.kyc.phone: $idrepo~$input.ekyc-request:AuthReq.individualId$~phone$
+      output.3.res.kyc.valueaddressLine10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation10: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation30: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine10: $TestData:primary_lang_code$
+      output.3.res.kyc.valuefullName0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagegender0: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valuedateOfBirth0: $idrepo~$input.ekyc-request:AuthReq.individualId$~dateOfBirth$
+      output.3.res.kyc.valueaddressLine30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation20: $TestData:primary_lang_code$
+      output.3.res.kyc.valuelocation30: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine30: $TestData:primary_lang_code$
+      output.3.res.kyc.languagelocation10: $TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine20: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.languagefullName0: $TestData:primary_lang_code$
+      output.3.res.kyc.languageaddressLine20: $TestData:primary_lang_code$
+      output.3.res.kyc.valueemail0: $idrepo~$input.ekyc-request:AuthReq.individualId$~email$
+      output.3.res.kyc.valuegender0: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:primary_lang_code$
+      output.3.res.kyc.valueaddressLine11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation11: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation31: $TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine11: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuefullName1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuefullName:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagegender1: $TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation21: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuelocation31: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine31: $TestData:secondary_lang_code$
+      output.3.res.kyc.languagelocation11: $TestData:secondary_lang_code$
+      output.3.res.kyc.valueaddressLine21: $idrepo~$input.ekyc-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.languagefullName1: $TestData:secondary_lang_code$
+      output.3.res.kyc.languageaddressLine21: $TestData:secondary_lang_code$
+      output.3.res.kyc.valuegender1: $idrepo~$input.ekyc-request:AuthReq.individualId$~valuegender:langcode:TestData:secondary_lang_code$
+      output.3.res.kyc.face: $idrepo~$input.ekyc-request:AuthReq.individualId$~DECODEFILE:individualBiometricsValue~//BIR/BDBInfo[Type='Face']//following::BDB$
+    audit.auth_transaction:
+      refId: $input.ekyc-request:AuthReq.individualId$
+      txnId: $input.ekyc-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_EKYC_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_EKYC_success_statusComment$
+      idType: $TestData:auth_transaction_VID_idType$
+    audit.audit_log:
+      refId:  $input.ekyc-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_ekyc_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_ekyc_moduleName$
+      refIdType: $TestData:audit_log_VID_refIdType$
+      
+  Authentication_KYC_OTP_Invalid UIN_Neg:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $TestData:uin_invalid$
+      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$    
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidUIN:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidUIN:errorCode$
+      output.2.response.err.actionMessage: $IGNORE$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+    
+  Authentication_KYC_OTP_Invalid TransactionID_Neg_04:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId:$
+      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID:  $input.otp-auth-request:AuthReq.transactionID$
+      identityReq.transactionID: $RANDOM:N:10$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidtransactionID:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      ##output.2.response.err.response.identity: null 
+      
+  Authentication_KYC_OTP_Invalid reqTime_for UIN_Neg_05:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      ##output.2.response.err.response.identity: null 
+  
+  Authentication_KYC_OTP_Invalid individualIdType_for UIN_Neg_05:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+    
+  Authentication_KYC_OTP_Invalid version_for UIN_Neg_06:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      #AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.2.response.err.errorCode: $errors:Invalidversion:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid_reqTime_greaterthan24hrs_for UIN_Neg_07:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$HOUR+25
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.2.response.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid_reqTime_Lessthan24hrs_for UIN_Neg_08:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$HOUR-25
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:RequestTimeLT24HR:errorMessage$
+      output.2.response.err.errorCode: $errors:RequestTimeLT24HR:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid UIN which is not as per defenition_Neg_09:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $TestData:uin_invalid$
+      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidUIN:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidUIN:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid TransactionID which is not as per defenition_Neg_10:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId:$
+      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID:  $input.ekyc-request:AuthReq.transactionID$
+      identityReq.transactionID: $RANDOM:N:10$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidtransactionID:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid reqTime which is not as per defenition_for UIN_Neg_11:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid individualIdType which is not as per defenition_for UIN_Neg_12:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid version which is not as per defenition_for UIN_Neg_13:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      #AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.2.response.err.errorCode: $errors:Invalidversion:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing UIN_Neg_14:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingUIN:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing TransactionID_Neg_15:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID:  $input.ekyc-request:AuthReq.transactionID$
+      identityReq.transactionID: $RANDOM:N:10$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:MissingtransactionID:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingtransactionID:errorCode$
+      output.2.response.err.transactionID: $REMOVE$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing reqTime_for UIN_Neg_16:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $REMOVE$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:MissingrequestTime:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingrequestTime:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      
+  Authentication_KYC_OTP_Missing individualIdType_for IntegrationTest_UIN_Neg_17:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $REMOVE$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingindividualIdType:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing version_for UIN_Neg_18:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      #AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:Missingversion:errorMessage$
+      output.2.response.err.errorCode: $errors:Missingversion:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+  
+  Authentication_KYC_OTP_Invalid VID_Neg_21:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $TestData:vid_invalid$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidVID:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidVID:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid TransactionID_For VID_Neg_22:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $RANDOM:N:10$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidtransactionID:errorCode$
+      output.2.response.err.transactionID: $REMOVE$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid reqTime_for VID_Neg_23:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid individualIdType_for VID_Neg_24:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$   
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid version_for VID_Neg_25:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.2.response.err.errorCode: $errors:Invalidversion:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid_reqTime_greaterthan24hrs_for VID_Neg_26:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$HOUR+25
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:RequestTimeGT24HR:errorMessage$
+      output.2.response.err.errorCode: $errors:RequestTimeGT24HR:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid_reqTime_Lessthan24hrs_for VID_Neg_27:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$HOUR-25
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:RequestTimeLT24HR:errorMessage$
+      output.2.response.err.errorCode: $errors:RequestTimeLT24HR:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid VID which is not as per defenition_Neg_28:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $TestData:uin_invalid$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidVID:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidVID:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid TransactionID which is not as per defenition_For VID_Neg_29:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId:$
+      AuthReq.individualIdType: $TestData:indvId_Uin_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:12$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID:  $input.ekyc-request:AuthReq.transactionID$
+      identityReq.transactionID: $RANDOM:N:10$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:InvalidtransactionID:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidtransactionID:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid reqTime which is not as per defenition_for VID_Neg_30:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TestData:timestamp_invalid$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidrequestTime:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidrequestTime:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid individualIdType which is not as per defenition_for VID_Neg_31:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $TestData:indvId_invalid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:InvalidindividualIdType:errorMessage$
+      output.2.response.err.errorCode: $errors:InvalidindividualIdType:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Invalid version which is not as per defenition_for VID_Neg_32:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $TestData:id_version_invalid$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:Invalidversion:errorMessage$
+      output.2.response.err.errorCode: $errors:Invalidversion:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing VID_Neg_33:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID:$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:MissingUIN:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingUIN:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing TransactionID_for VID_Neg_34:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $REMOVE$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID:  $input.ekyc-request:AuthReq.transactionID$
+      identityReq.transactionID: $RANDOM:N:10$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $TIMESTAMP$
+      output.2.response.err.errorMessage: $errors:MissingtransactionID:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingtransactionID:errorCode$
+      output.2.response.err.transactionID: $IGNORE$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing reqTime_for VID_Neg_35:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      #identityReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $REMOVE$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:MissingrequestTime:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingrequestTime:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing individualIdType_for UIN_Neg_36:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $REMOVE$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $version$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:MissingindividualIdType:errorMessage$
+      output.2.response.err.errorCode: $errors:MissingindividualIdType:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+      
+  Authentication_KYC_OTP_Missing version_for VID_Neg_37:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $VID$
+      otpReq.individualIdType: $TestData:indvId_Vid_valid$
+      otpReq.email: EMAIL
+      otpReq.phone: PHONE
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    input.ekyc-request:
+      AuthReq.individualId: $input.otp-generate:otpReq.individualId$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.individualIdType: $TestData:indvId_Vid_valid$
+      AuthReq.transactionID: $input.otp-generate:otpReq.transactionID$
+      AuthReq.version: $REMOVE$
+    input.identity-encrypt-data:
+      identityReq.timestamp: $TIMESTAMP$
+      identityReq.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      identityReq.otp: '%$input.otp-generate:otpReq.individualId$%_5'
+      #identityReq.otp: 7846
+    output.output-1-expected-otp-gen-res:
+      output.1.y.response.resTime: $TIMESTAMP$
+      output.1.y.response.txnID: $input.otp-generate:otpReq.transactionID$
+      output.1.y.response.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.response.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.response.id: $TestData:id_otp_valid$
+      output.1.y.response.ver: $version$
+    output.output-2-expected-n-kyc-res:
+      output.2.response.err.status: $TestData:auth_Fail_status$
+      output.2.response.err.responseTime: $IGNORE$
+      output.2.response.err.errorMessage: $errors:Missingversion:errorMessage$
+      output.2.response.err.errorCode: $errors:Missingversion:errorCode$
+      output.2.response.err.transactionID: $input.ekyc-request:AuthReq.transactionID$
+      output.2.response.err.version: $version$
+      #output.2.response.err.response.identity: null
+  

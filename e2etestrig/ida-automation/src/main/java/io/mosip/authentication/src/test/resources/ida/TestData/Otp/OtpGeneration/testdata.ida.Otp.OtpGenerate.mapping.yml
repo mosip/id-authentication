@@ -1,0 +1,47 @@
+testdata:
+  Authentication_OTPGenerate_With_Valid_Request_IntegrationTest_Smoke_Pos:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $TestData:otpChannel_MOBILE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-y-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REGEXP:XX.*XX.*$
+      output.1.y.res.id: $TestData:id_otp_valid$
+      #output.1.y.res.ver: $version$
+    #email.emailNotification:
+      #email.uin: $input.otp-generate-request:otpReq.individualId$
+      #email.fullname: $idrepo~$input.otp-generate-request:otpReq.individualId$~valuefullName1$
+      #email.otp: '%$input.otp-generate-request:otpReq.transactionID$_$endpoint.url:partnerID$%_10'
+      #email.template1: otp.generate.email.fra.message.body
+      #email.template2: otp.generate.email.fra.message.address
+      
+  Authentication_OTPGenerate_With_Valid_Request_EMAIL_alone_IntegrationTest_Smoke_Pos:
+    endpoint.url:
+      partnerID: $PIDMLKURL:ValidPID$
+      mispLK: $PIDMLKURL:ValidMLK$
+    input.otp-generate-request:
+      otpReq.id: $TestData:id_otp_valid$
+      otpReq.individualId: $UIN$
+      otpReq.individualIdType: $TestData:indvId_Uin_valid$
+      otpReq.email: $TestData:otpChannel_EMAIL$
+      otpReq.phone: $REMOVE$
+      otpReq.requestTime: $TIMESTAMP$
+      otpReq.transactionID: $RANDOM:N:10$
+      otpReq.version: $version$
+    output.output-1-expected-y-res:
+      output.1.y.res.resTime: $TIMESTAMP$
+      output.1.y.res.txnID: $input.otp-generate-request:otpReq.transactionID$
+      output.1.y.res.maskedEmail: $REGEXP:XX.*XX.*$
+      output.1.y.res.maskedMobile: $REMOVE$
+      output.1.y.res.id: $TestData:id_otp_valid$

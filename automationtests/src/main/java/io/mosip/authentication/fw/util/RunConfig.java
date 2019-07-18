@@ -518,5 +518,16 @@ public abstract class RunConfig {
 	public abstract String getIdRepoRetrieveIdentityByRid();
 	public abstract void setIdRepoRetrieveIdentityByRid(String idRepoRetrieveIdentityByRid);
 	public abstract String getIdRepoRegenerateVID();
-	public abstract void setIdRepoidRepoRegenerateVID(String idRepoRegenerateVID);
+	public abstract void setIdRepoRegenerateVID(String idRepoRegenerateVID);
+	public abstract String getDbIdrepoUrl();
+	public abstract void setDbIdrepoUrl(String dbIdrepoUrl);
+	public abstract String getDbIdrepoTableName();
+	public abstract void setDbIdrepoTableName(String dbIdrepoTableName);
+	public abstract String getDbIdrepoSchemaName();
+	public abstract void setDbIdrepoSchemaName(String dbIdrepoSchemaName);
+	public abstract String getDbIdrepoUserName();
+	public abstract void setDbIdrepoUserName(String dbIdrepoUserName);
+	public abstract String getDbIdrepoPwd();
+	public abstract void setDbIdrepoPwd(String dbIdrepoPwd);
+
 }

@@ -1,6 +1,6 @@
 package io.mosip.authentication.idRepository.fw.util;
 
-import java.io.File;    
+import java.io.File;     
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -931,7 +931,67 @@ public class IdRepoRunConfig extends RunConfig{
 	}
 
 	@Override
-	public void setIdRepoidRepoRegenerateVID(String idRepoRegenerateVID) {
+	public void setIdRepoRegenerateVID(String idRepoRegenerateVID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getDbIdrepoUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDbIdrepoUrl(String dbIdrepoUrl) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getDbIdrepoTableName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDbIdrepoTableName(String dbIdrepoTableName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getDbIdrepoSchemaName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDbIdrepoSchemaName(String dbIdrepoSchemaName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getDbIdrepoUserName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDbIdrepoUserName(String dbIdrepoUserName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getDbIdrepoPwd() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDbIdrepoPwd(String dbIdrepoPwd) {
 		// TODO Auto-generated method stub
 		
 	}

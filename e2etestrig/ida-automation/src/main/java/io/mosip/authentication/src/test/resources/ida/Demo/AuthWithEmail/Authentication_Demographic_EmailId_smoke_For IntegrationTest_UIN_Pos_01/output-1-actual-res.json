@@ -1,0 +1,1 @@
+{"transactionID":"8172226622","version":"1.0","id":"mosip.identity.auth","errors":[{"errorCode":"IDA-MLC-009","errorMessage":"Invalid Input Parameter - emailId"}],"responseTime":"2019-05-27T13:06:34.652+05:30","response":{"authStatus":false,"staticToken":null}}

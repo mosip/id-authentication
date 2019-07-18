@@ -75,10 +75,8 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
 import io.mosip.kernel.core.cbeffutil.entity.SBInfo;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -1084,23 +1082,6 @@ public class IdRepoServiceTest {
 		request.setRequest(req);
 		IdResponseDTO updateIdentity = proxyService.updateIdentity(request, "12343");
 		assertEquals(status, updateIdentity.getResponse().getStatus());
-	}
-
-	@Test
-	public void testConvertToBIR() {
-		rFinger.getCbeffversion();
-		BIRType birType = rFinger.toBIRType(rFinger);
-		birType.setCBEFFVersion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build().toVersion());
-		SBInfoType sbInfoType = new SBInfoType();
-		sbInfoType.setFormatOwner(257l);
-		sbInfoType.setFormatType(7l);
-		birType.setSBInfo(sbInfoType);
-		ReflectionTestUtils.invokeMethod(service, "convertToBIR", Collections.singletonList(birType));
-	}
-
-	@Test
-	public void testConvertToBIRNoData() {
-		ReflectionTestUtils.invokeMethod(service, "convertToBIR", Collections.singletonList(new BIRType()));
 	}
 
 	@Test(expected = IdRepoAppException.class)

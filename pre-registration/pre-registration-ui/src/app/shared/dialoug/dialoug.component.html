@@ -73,7 +73,9 @@
     <p>{{ input.message }}</p>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()" cdkFocusInitial>{{ 'dialog.action_dismiss' | translate }}</button>
+    <button mat-button (click)="onNoClick()" cdkFocusInitial class="error-dialog">
+      {{ 'dialog.action_dismiss' | translate }}
+    </button>
   </div>
 </div>
 <div *ngIf="input.case === 'CONFIRMATION'">
@@ -83,9 +85,15 @@
   </div>
   <div mat-dialog-actions>
     <span
+      style="
+    width: 50%;
+"
       ><button mat-button [mat-dialog-close]="confirm" cdkFocusInitial>{{ input.yesButtonText }}</button></span
     >
     <span
+      style="
+    width: 50%;
+"
       ><button mat-button (click)="onNoClick()" cdkFocusInitial>{{ input.noButtonText }}</button></span
     >
   </div>
@@ -93,11 +101,16 @@
 
 <div class="consent-popup-parent" *ngIf="input.case === 'CONSENTPOPUP'">
   <!-- based upon the matching condition the popup appears for consent -->
-  <button class="consent-popup-cross" mat-dialog-actions (click)="onNoClick(); userRedirection()" cdkFocusInitial>
-    x
-  </button>
-  <!-- user redirection button for moving out -->
-  <h3 class="consent-popup-title" mat-dialog-title>{{ input.title }}</h3>
+  <div>
+    <!-- user redirection button for moving out -->
+
+    <span class="consent-popup-title" mat-dialog-title>{{ input.title }}</span>
+    <span>
+      <button class="consent-popup-cross" mat-dialog-actions (click)="onNoClick(); userRedirection()" cdkFocusInitial>
+        <mat-icon class="consent-popup-cross-icon">close</mat-icon>
+      </button></span
+    >
+  </div>
   <h3 class="consent-popup-subtitle" mat-dialog-title>{{ input.subtitle }}</h3>
   <div mat-dialog-content class="consentpopup-content">
     <p>{{ input.message }}</p>

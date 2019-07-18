@@ -1378,7 +1378,7 @@ testdata:
       moduleName: $TestData:audit_log_face_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_Smoke_With_VID_Pos:
+  Authentication_Biometric_Face_With_Valid_BioType_BioSubType_And_BioValue_In_Bio_Identity_With_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.bio-auth-request:

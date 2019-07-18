@@ -1,0 +1,4 @@
+testdata:
+  VIDGenerate_smoke:
+    input.vid-request:
+      requesttime: $TIMESTAMPZ$

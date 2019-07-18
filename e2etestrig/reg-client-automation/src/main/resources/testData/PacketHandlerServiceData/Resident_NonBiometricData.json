@@ -1,0 +1,253 @@
+{
+	"biometricDTO": 
+	{
+		"applicantBiometricDTO": 
+		{
+			"fingerprintDetailsDTO": 
+			[
+				
+			],
+
+			"biometricExceptionDTO": 
+			[
+				
+			],
+
+			"irisDetailsDTO": 
+			[
+				
+			],
+
+			"face": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"exceptionFace": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"hasExceptionPhoto": false
+		},
+
+		"introducerBiometricDTO": 
+		{
+			"fingerprintDetailsDTO": 
+			[
+				
+			],
+
+			"biometricExceptionDTO": 
+			[
+				
+			],
+
+			"irisDetailsDTO": 
+			[
+				
+			],
+
+			"face": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"exceptionFace": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"hasExceptionPhoto": false
+		},
+
+		"supervisorBiometricDTO": 
+		{
+			"fingerprintDetailsDTO": 
+			[
+				
+			],
+
+			"biometricExceptionDTO": 
+			[
+				
+			],
+
+			"irisDetailsDTO": 
+			[
+				
+			],
+
+			"face": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"exceptionFace": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"hasExceptionPhoto": false
+		},
+
+		"operatorBiometricDTO": 
+		{
+			"fingerprintDetailsDTO": 
+			[
+				
+			],
+
+			"biometricExceptionDTO": 
+			[
+				
+			],
+
+			"irisDetailsDTO": 
+			[
+				
+			],
+
+			"face": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"exceptionFace": 
+			{
+				"face": null,
+				"qualityScore": 0.0,
+				"numOfRetries": 0,
+				"photographName": null,
+				"compressedFacePhoto": null,
+				"forceCaptured": false
+			},
+
+			"hasExceptionPhoto": false
+		}
+	},
+
+	"demographicDTO": 
+	{
+		"applicantDocumentDTO": 
+		{
+			"documents": 
+			{
+				"POR": 
+				{
+					"value": "POR_Canteen card of the Army",
+					"type": "Canteen card of the Army",
+					"format": "jpg"
+				},
+
+				"POA": 
+				{
+					"value": "POA_Certificate of residence",
+					"type": "Certificate of residence",
+					"format": "jpg"
+				},
+
+				"POI": 
+				{
+					"value": "POI_PAN card",
+					"type": "PAN card",
+					"format": "jpg"
+				}
+			},
+
+			"acknowledgeReceipt": null,
+			"acknowledgeReceiptName": null
+		},
+
+		"introducerRID": null,
+		"introducerUIN": null,
+		"demographicInfoDTO": 
+		{
+			
+		}
+	},
+
+	"registrationId": null,
+	"preRegistrationId": "",
+	"registrationMetaDataDTO": 
+	{
+		"geoLatitudeLoc": 0.0,
+		"geoLongitudeLoc": 0.0,
+		"registrationCategory": "New",
+		"machineId": "10018",
+		"centerId": "10014",
+		"previousRID": null,
+		"uin": null,
+		"consentOfApplicant": "Yes",
+		"parentOrGuardianUINOrRID": null,
+		"parentOrGuardianUIN": null,
+		"parentOrGuardianRID": "",
+		"deviceId": "RR2683722548",
+		"applicantTypeCode": null,
+		"fullName": 
+		[
+			{
+				"language": "eng",
+				"value": "أيوب توفيق"
+			},
+
+			{
+				"language": "ara",
+				"value": "شثقصثفف"
+			}
+		]
+	},
+
+	"osiDataDTO": 
+	{
+		"operatorID": null,
+		"supervisorID": null,
+		"introducerType": null,
+		"operatorAuthenticatedByPassword": true,
+		"superviorAuthenticatedByPassword": false,
+		"operatorAuthenticatedByPIN": false,
+		"superviorAuthenticatedByPIN": false
+	},
+
+	"auditDTOs": null,
+	"selectionListDTO": null,
+	"auditLogStartTime": null,
+	"auditLogEndTime": null,
+	"updateUINChild": false,
+	"nameNotUpdated": false
+}

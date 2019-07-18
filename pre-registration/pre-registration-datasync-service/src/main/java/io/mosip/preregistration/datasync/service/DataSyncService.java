@@ -168,7 +168,7 @@ public class DataSyncService {
 		responseDto.setId(fetchId);
 		responseDto.setVersion(version);
 		try {
-			// serviceUtil.parsejson();
+//			serviceUtil.parsejson();
 			DemographicResponseDTO preRegistrationDTO = serviceUtil.getPreRegistrationData(preId.trim());
 			DocumentsMetaData documentsMetaData = serviceUtil.getDocDetails(preId.trim());
 			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil.getAppointmentDetails(preId.trim());

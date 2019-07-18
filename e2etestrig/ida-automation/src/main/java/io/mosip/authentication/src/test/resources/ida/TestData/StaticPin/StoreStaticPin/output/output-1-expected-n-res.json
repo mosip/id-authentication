@@ -1,0 +1,11 @@
+{
+  "status": "N",
+  "err": [
+    {
+      "errorCode": "IDA-IDV-003",
+      "errorMessage": "Missing Input Parameter - pinValue"
+    }
+  ],
+  "resTime": "2019-02-21T15:53:12.523+05:30",
+  "ver": "1.0"
+}

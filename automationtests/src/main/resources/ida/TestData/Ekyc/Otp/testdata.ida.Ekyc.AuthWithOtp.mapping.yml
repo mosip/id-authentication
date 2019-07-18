@@ -1,5 +1,5 @@
 testdata:
-  Authentication_KYC_OTP_With primary language_UIN_smoke_Pos:
+  Authentication_KYC_OTP_With primary language_UIN_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate:
@@ -222,7 +222,7 @@ testdata:
       moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_UIN_refIdType$
       
-  Authentication_KYC_OTP_With primary language_VID_smoke_Pos:
+  Authentication_KYC_OTP_With primary language_VID_Pos:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.otp-generate:
@@ -298,7 +298,7 @@ testdata:
       moduleName: $TestData:audit_log_ekyc_moduleName$
       refIdType: $TestData:audit_log_VID_refIdType$
   
-  Authentication_KYC_OTP_With secondary language_VID_smoke_Pos:
+  Authentication_KYC_OTP_With secondary language_VID_Pos:
     endpoint.url:
       partnerID: $PIDMLKURL:ValidPID$
       mispLK: $PIDMLKURL:ValidMLK$
