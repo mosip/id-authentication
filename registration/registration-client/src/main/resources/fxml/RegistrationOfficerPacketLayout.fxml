@@ -201,7 +201,7 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label fx:id="lastPreRegPacketDownloadedTime" styleClass="operationalDetails" text="%downloadedtemp" wrapText="true" />
+                                    <Label fx:id="lastPreRegPacketDownloadedTime" styleClass="operationalDetails" wrapText="true" />
                                     <Label styleClass="operationalTitle" text="%downloadPreregistrationData" wrapText="true" />
                                  </children>
                               </VBox>
@@ -227,7 +227,7 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label fx:id="lastBiometricTime" styleClass="operationalDetails" text="%notuploadedtemp" wrapText="true" />
+                                    <Label fx:id="lastBiometricTime" styleClass="operationalDetails" wrapText="true" />
                                     <Label styleClass="operationalTitle" text="%updateOperatorBiometrics" wrapText="true" />
                                  </children>
                               </VBox>

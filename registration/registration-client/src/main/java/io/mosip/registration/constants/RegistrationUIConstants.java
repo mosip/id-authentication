@@ -352,4 +352,8 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String PAGE_NAVIGATION_MESSAGE = bundle.getString("PAGE_NAVIGATION_MESSAGE");
 	public static final String PAGE_NAVIGATION_CONFIRM = bundle.getString("PAGE_NAVIGATION_CONFIRM");
 	public static final String PAGE_NAVIGATION_CANCEL = bundle.getString("PAGE_NAVIGATION_CANCEL");
+	
+	// SYNC DATE TIME
+	public static final String LAST_DOWNLOADED = bundle.getString("LAST_DOWNLOADED");
+	public static final String LAST_UPDATED = bundle.getString("LAST_UPDATED");
 }

@@ -295,23 +295,28 @@ public class PacketHandlerController extends BaseController implements Initializ
 					btnNode.setManaged(false);
 				}
 			});
-		}
-
-		DateTimeFormatter format = DateTimeFormatter
-				.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
-		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());
-		Timestamp lastPreRegPacketDownloaded = preRegistrationDataSyncService.getLastPreRegPacketDownloadedTime();
+		}		
+		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());		
 		if (ts != null) {
-			lastBiometricTime.setText(lastBiometricTime.getText() + " " + ts.toLocalDateTime().format(format));
+			DateTimeFormatter format = DateTimeFormatter
+					.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+			lastBiometricTime.setText(RegistrationUIConstants.LAST_DOWNLOADED + " " + ts.toLocalDateTime().format(format));
 		}
-		if (lastPreRegPacketDownloaded != null) {
-			lastPreRegPacketDownloadedTime.setText(lastPreRegPacketDownloadedTime.getText() + " "
-					+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
-		}
+		preRegistrationSyncTime();
 
 		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
 				.equalsIgnoreCase(RegistrationConstants.ENABLE)) {
 			lostUINPane.setVisible(false);
+		}
+	}
+
+	private void preRegistrationSyncTime() {
+		Timestamp lastPreRegPacketDownloaded = preRegistrationDataSyncService.getLastPreRegPacketDownloadedTime();
+		if (lastPreRegPacketDownloaded != null) {
+			DateTimeFormatter format = DateTimeFormatter
+					.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+			lastPreRegPacketDownloadedTime.setText(RegistrationUIConstants.LAST_UPDATED + " "
+					+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
 		}
 	}
 
@@ -727,6 +732,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 	public void downloadPreRegData() {
 
 		headerController.downloadPreRegData(null);
+		preRegistrationSyncTime();
 	}
 
 	/**
