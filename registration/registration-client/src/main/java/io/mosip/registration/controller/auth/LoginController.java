@@ -15,6 +15,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.auth.adapter.config.LoggerConfiguration;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -248,6 +249,9 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			primaryStage.show();
 
+			
+			LoggerConfiguration.logConfig(LoginController.class).info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,"Mosip client Screen loaded");
+
 			// Execute SQL file (Script files on update)
 			executeSQLFile();
 
@@ -298,7 +302,7 @@ public class LoginController extends BaseController implements Initializable {
 						SessionContext.destroySession();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
-						
+
 						new Initialization().stop();
 
 					}
@@ -309,9 +313,9 @@ public class LoginController extends BaseController implements Initializable {
 		} catch (RuntimeException | IOException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-			
+
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
-			
+
 			new Initialization().stop();
 
 		}
