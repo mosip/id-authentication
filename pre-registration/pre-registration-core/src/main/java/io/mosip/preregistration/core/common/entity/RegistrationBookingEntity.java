@@ -12,16 +12,10 @@ import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NamedQuery;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,10 +33,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "reg_appointment", schema = "prereg")
-// @NamedQuery(name = "RegistrationBookingEntity.existsByPreIdandStatusCode",
-// query = "SELECT CASE WHEN COUNT(u) > 0 THEN 'true' ELSE 'false' END FROM
-// RegistrationBookingEntity u WHERE u.bookingPK.preregistrationId = ?1 and
-// u.statusCode = ?2")
 public class RegistrationBookingEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
