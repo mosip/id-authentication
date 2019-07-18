@@ -466,6 +466,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 			templateContent
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
 			String ackTemplateText = templateContent.toString();
+			
+			if(ApplicationContext.applicationLanguage().equalsIgnoreCase(ApplicationContext.localLanguage())) {
+				ackTemplateText = ackTemplateText.replace("} / ${", "}  ${");
+			}
 
 			if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 				String key = "mosip.registration.important_guidelines_" + applicationContext.getApplicationLanguage();

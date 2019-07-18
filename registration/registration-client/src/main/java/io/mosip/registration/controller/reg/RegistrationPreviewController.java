@@ -194,6 +194,9 @@ public class RegistrationPreviewController extends BaseController implements Ini
 					.append(templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE_PART_4, platformLanguageCode));
 		}
 		String ackTemplateText = templateContent.toString();
+		if(ApplicationContext.applicationLanguage().equalsIgnoreCase(ApplicationContext.localLanguage())) {
+			ackTemplateText = ackTemplateText.replace("} / ${", "}  ${");
+		}
 
 		if (ackTemplateText != null && !ackTemplateText.isEmpty()) {
 			templateGenerator.setConsentText(consentText);
