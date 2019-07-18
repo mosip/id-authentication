@@ -1168,7 +1168,7 @@ public class BaseController {
 	protected void updatePageFlow(String pageId, boolean val) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Updating page flow to naviagate next or previous");
+				RegistrationConstants.APPLICATION_ID, "Updating page flow to navigate next or previous");
 
 		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
 				.get(pageId).put(RegistrationConstants.VISIBILITY, val);

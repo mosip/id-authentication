@@ -158,7 +158,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public List<Registration> getEnrollmentByStatus(String status) {
 		LOGGER.info("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Retriving packets based on status");
+				"Retrieving packets based on status");
 
 		return registrationRepository.findByclientStatusCodeOrderByCrDtime(status);
 	}

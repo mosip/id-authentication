@@ -139,7 +139,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	@Override
 	public List<SyncControl> findAll() {
 		LOGGER.info(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetching the list of sync details from databse started");
+				"Fetching the list of sync details from database started");
 		return syncJobRepository.findAll();
 	}
 

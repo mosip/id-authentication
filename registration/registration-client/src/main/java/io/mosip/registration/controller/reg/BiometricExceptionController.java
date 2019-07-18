@@ -36,8 +36,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -332,7 +330,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		});
 
 		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
-				APPLICATION_ID, "End of Functionality");
+				APPLICATION_ID, "End of functionality");
 
 	}
 
