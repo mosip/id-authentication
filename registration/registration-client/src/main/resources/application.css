@@ -18,18 +18,6 @@
 	 -fx-background-insets : 0;
 }
 
-.demoGraphicTextFieldFocused{
-	-fx-border-color: red;
-  	-fx-border-width: 0.0 0.0 1.0 0.0;	
-  	-fx-background-color: #FFFFFF;
-	-fx-prompt-text-fill: #000000;	
-	-fx-font-size: 1.2em;
-}
-
-.demoGraphicTextField:focused{
-	-fx-border-color: blue;
-}
-
 .dividerTypeOne{
 	-fx-border-width : 0.0 0.0 1.0 0.0;
 	-fx-border-color : #C9C9C9;
@@ -545,7 +533,6 @@ Working on new Css by taleev
 
 }
 
-
 .loginTextStyle{
 	-fx-pref-height: 35.0px;
 	-fx-pref-width: 312.0px;
@@ -558,8 +545,15 @@ Working on new Css by taleev
 .searchBoxTextStyle{
 	-fx-pref-height: 30.0px;
 	-fx-pref-width: 312.0px;
-	-fx-border-width: 0.0 0.0 2.0 0.0;
-    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.3) , 5.0, 0.0 , 0.0 , 1.0 );
+	-fx-border-width: 0.0 0.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;   
+	-fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+
+.searchBoxTextStyle:focused{
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
 }
 
 .higlightedLoginLable{
@@ -738,6 +732,7 @@ Working on new Css by taleev
 }
 
 
+
 .demographicLangHeader{
 	-fx-font-size : 1.4em;
 	-fx-text-fill : #2F3033;
@@ -749,21 +744,72 @@ Working on new Css by taleev
 	-fx-font-size: 1.3em;
 }
 
+.demoGraphicFieldLabelOnType{
+		-fx-background-color:#ffffff;
+		-fx-border-width: 0.0;
+		-fx-text-fill : #22A8C9;
+		-fx-prompt-text-fill: #000000;	
+		-fx-font-size: 1em;
+}
+
 .demoGraphicFieldLabel{
 		-fx-background-color:#ffffff;
 		-fx-border-width: 0.0;
 		-fx-text-fill : #666666;
 		-fx-font-size: 1em;
-		
 }
+
+.demoGraphicTextFieldFocused{
+	-fx-border-color: #FF0000;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #FF0000;
+	-fx-text-fill: #FF0000;	
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextFieldFocused:focused{
+	-fx-border-color: #FF0000;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #FF0000;	
+	-fx-text-fill: #FF0000;
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextField{
+	-fx-border-color: #C9C9C9;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 1.2em;
+	-fx-text-fill : #000000;
+}
+
+.demoGraphicTextFieldOnType{
+	-fx-border-color: #C9C9C9;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	 	 	 	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: black;	
+	-fx-text-fill: #000000;
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextFieldOnType:focused{
+	-fx-border-color: #22A8C9;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: gray;	
+	-fx-text-fill: #000000;
+	-fx-font-size: 1.2em;
+} 
 
 .scanPage{
 	-fx-background-color : white;
 	-fx-text-fill : black;
 	-fx-font-size: 1.3em;
 	-fx-border-width : 1.0;
-	-fx-border-color : black;
-	
+	-fx-border-color : black;	
 }
 
 .demoGraphicFieldMessageLabel{
@@ -981,6 +1027,12 @@ Working on new Css by taleev
 
 .operatorAuthenticationStyleTextTypeOne{
 	-fx-text-fill: #666666;
+}
+.operatorAuthenticationStyleTextTypeOne:focused{
+	-fx-text-fill: #666666;
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
 }
 
 .attempts{
@@ -1260,6 +1312,12 @@ Working on new Css by taleev
 	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
   	-fx-border-width: 0.0 0.0 1.0 0.0;	
 }
+.uinUpdateTextFiledStyle:focused{
+	-fx-background-color: white;
+	-fx-border-color:#FD528C;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+}
 .uinUpdateLabelsTypeTwo{
 	-fx-text-fill : #666666;
 	-fx-font-size : 15.0px;
@@ -1276,7 +1334,7 @@ Working on new Css by taleev
 .updateUinCheckBox {
     -fx-background-color : #FFFFFF;
     -fx-border-width : 1.0 1.0 1.0 1.0;
-    -fx-border-color : #FD528C;
+    -fx-border-color : #FD518C;
     -fx-padding : 3.0 10.0 5.0 3.0;
     -fx-text-fill : #FD518C;    
 }
@@ -1355,6 +1413,14 @@ Working on new Css by taleev
 	-fx-pref-height: 39.0px; 
 	-fx-pref-width: 269.0px;
 }
+
+.authenticationStyle:focused{
+	-fx-text-fill: #666666;
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+    
 .RegbuttonStyle {
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6.0,5.0;

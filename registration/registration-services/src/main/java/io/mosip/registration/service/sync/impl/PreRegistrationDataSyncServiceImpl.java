@@ -604,8 +604,11 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 		preRegistrationList.setIsDeleted(false);
 		preRegistrationList.setCrBy(syncTransaction.getCrBy());
 		preRegistrationList.setCrDtime(new Timestamp(System.currentTimeMillis()));
-		preRegistrationList.setLastUpdatedPreRegTimeStamp(lastUpdatedTimeStamp);
-
+		if(lastUpdatedTimeStamp != null) {
+			preRegistrationList.setLastUpdatedPreRegTimeStamp(lastUpdatedTimeStamp);
+		}else {
+			preRegistrationList.setLastUpdatedPreRegTimeStamp(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()));
+		}
 		return preRegistrationList;
 
 	}
