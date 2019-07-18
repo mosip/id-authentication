@@ -6,4 +6,4 @@ set t=%t: =%
 set logfile="%d%_%t%.log"
 
 
-start jre\jre\bin\javaw -jar bin/run.jar -Xmx2048MB -Xms1024MB
+jre\jre\bin\java.exe -jar bin/run.jar -Xmx2048MB -Xms1024MB
