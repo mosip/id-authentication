@@ -4,7 +4,11 @@ import static io.mosip.registration.constants.LoggerConstants.MDM_REQUEST_RESPON
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,14 +63,15 @@ public class MdmRequestResponseBuilder {
 		bioCaptureRequestDto.setRegistrationID(String.valueOf(generateID()));
 
 		CaptureRequestDeviceDetailDto mosipBioRequest = new CaptureRequestDeviceDetailDto();
-		mosipBioRequest.setType(bioDevice.getDeviceType());
+		mosipBioRequest.setType(getDevicCode(bioDevice.getDeviceType()));
 		mosipBioRequest.setCount(1);
 		String[] excptions= {};
 		mosipBioRequest.setException(excptions);
-		mosipBioRequest.setRequestedScore("40");
+		mosipBioRequest.setRequestedScore(40);
 		mosipBioRequest.setDeviceId(bioDevice.getDeviceId());
 		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubId());
 		mosipBioRequest.setPreviousHash("");
+		bioCaptureRequestDto.setCaptureTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).toString());
 
 		List<CaptureRequestDeviceDetailDto> bioRequests = new ArrayList<>();
 		bioRequests.add(mosipBioRequest);
@@ -83,12 +88,23 @@ public class MdmRequestResponseBuilder {
 			put("Name", "name1");
 			put("Value", "value1");
 			}
-		};
+		};	
 		
-		bioCaptureRequestDto.setCustomOpts(customOpts);
+		bioCaptureRequestDto.setCustomOpts(Arrays.asList(customOpts));
 
 		return bioCaptureRequestDto;
 
+	}
+	
+	private static String getDevicCode(String deviceType) {
+		switch (deviceType.toUpperCase()) {
+		case RegistrationConstants.FINGERPRINT_UPPERCASE:
+			deviceType= "FIR";
+			break;
+		}
+		
+		return deviceType;
+		
 	}
 
 	private static long generateID() { 

@@ -110,7 +110,7 @@ public class UserOnboardServiceImpl extends BaseService implements UserOnboardSe
 				data.put(RegistrationConstants.ON_BOARD_BIO_SUB_TYPE,
 						RegistrationConstants.userOnBoardMap.get(finger.getFingerType()));
 				data.put(RegistrationConstants.ON_BOARD_BIO_VALUE,
-						Base64.getEncoder().encodeToString(finger.getFingerPrint()));
+						Base64.getEncoder().encodeToString(finger.getFingerPrintISOImage()));
 				data1.put(RegistrationConstants.ON_BOARD_BIO_DATA, data);
 				listOfBiometric.add(data1);
 

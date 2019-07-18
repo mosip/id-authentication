@@ -23,7 +23,7 @@ public class CaptureResponsBioDataDto {
 	private String env;
 	private byte[] bioValue;
 	private byte[] bioExtract;
-	private String transactionID;
+	private String registrationID;
 	private String timestamp;
 	private String requestedScore;
 	private String qualityScore;

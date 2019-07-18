@@ -4,12 +4,21 @@ import static io.mosip.registration.constants.LoggerConstants.MOSIP_BIO_DEVICE_I
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,9 +72,38 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 	public Object getDeviceInfo(String url, Class<?> responseType) throws RegBaseCheckedException {
 		LOGGER.info(MOSIP_BIO_DEVICE_INTEGERATOR, APPLICATION_NAME, APPLICATION_ID, "Getting the device info");
 
-		return serviceDelegateUtil.invokeRestService(url, MosipBioDeviceConstants.DEVICE_INFO_SERVICENAME, null,
-				responseType);
+		HttpUriRequest request = RequestBuilder
+			    .create("MOSIPDINFO")
+	            .setUri(url)
+	            .build();
+	 CloseableHttpClient client = HttpClients.createDefault();
+	 CloseableHttpResponse response=null;
+	try {
+		response = client.execute(request);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	 InputStream inputStram=null;
+	try {
+		inputStram = response.getEntity().getContent();
+	} catch (UnsupportedOperationException | IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	 BufferedReader bR = new BufferedReader(new InputStreamReader(inputStram));
+	 String s;
+	 StringBuffer sBuffer= new StringBuffer();
+	 try {
+		while((s=bR.readLine())!=null) {
+			 sBuffer.append(s);
+		 }
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
+	 return sBuffer.toString();
 	}
 
 	/*

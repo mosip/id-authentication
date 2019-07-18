@@ -46,9 +46,6 @@ public class ScanPopUpViewController extends BaseController {
 	
 	@Autowired
 	private DocumentScanController documentScanController;
-	
-	@Autowired
-	private MosipBioDeviceManager mosipBioDeviceManager;
 
 	@FXML
 	private ImageView scanImage;
@@ -70,108 +67,9 @@ public class ScanPopUpViewController extends BaseController {
 
 	private boolean isDocumentScan;
 	
-	private InputStream urlStream;
-	
-	private boolean isRunning=true;
-	
-	private final String CONTENT_LENGTH = "Content-Length:";
-
-
-	public void streamer(String bioType) {
-		new Thread(new Runnable() {
-			
-		    public void run() {
-		    	
-		    	urlStream  = mosipBioDeviceManager.stream(bioType);
-		    	
-		        while (isRunning) {
-		            try {
-		                byte[] imageBytes = retrieveNextImage();
-		                ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBytes);
-
-		                scanImage.setImage(new Image(imageStream));
-		            } catch (SocketTimeoutException ste) {
-		                stop();
-
-		            } catch (IOException e) {
-		                System.err.println("failed stream read: " + e);
-		                stop();
-		            }
-		        }
-
-		        // close streams
-		        try {
-		            urlStream.close();
-		        } catch (IOException ioe) {
-		            System.err.println("Failed to close the stream: " + ioe);
-		        }
-		    }
-
-		}).start();
-		
-	}
 
 	
-	  /**
-     * Using the urlStream get the next JPEG image as a byte[]
-     *
-     * @return byte[] of the JPEG
-     * @throws IOException
-     */
-    private byte[] retrieveNextImage() throws IOException {
-        int currByte = -1;
-
-        boolean captureContentLength = false;
-        StringWriter contentLengthStringWriter = new StringWriter(128);
-        StringWriter headerWriter = new StringWriter(128);
-
-        int contentLength = 0;
-
-        while ((currByte = urlStream.read()) > -1) {
-            if (captureContentLength) {
-                if (currByte == 10 || currByte == 13) {
-                    contentLength = Integer.parseInt(contentLengthStringWriter.toString());
-                    break;
-                }
-                contentLengthStringWriter.write(currByte);
-
-            } else {
-                headerWriter.write(currByte);
-                String tempString = headerWriter.toString();
-                int indexOf = tempString.indexOf(CONTENT_LENGTH);
-                if (indexOf > 0) {
-                    captureContentLength = true;
-                }
-            }
-        }
-
-        // 255 indicates the start of the jpeg image
-        int sI;
-        while ((sI=urlStream.read()) != 255) {
-            System.out.print(sI);
-        }
-
-        // rest is the buffer
-        byte[] imageBytes = new byte[contentLength + 1];
-        // since we ate the original 255 , shove it back in
-        imageBytes[0] = (byte) 255;
-        int offset = 1;
-        int numRead = 0;
-        while (offset < imageBytes.length
-                && (numRead = urlStream.read(imageBytes, offset, imageBytes.length - offset)) >= 0) {
-            offset += numRead;
-        }
-
-        return imageBytes;
-    }
-
-    /**
-     * Stop the loop, and allow it to clean up
-     */
-    private synchronized void stop() {
-        isRunning = false;
-    }
-
+	
 	
 	/**
 	 * @return the scanImage

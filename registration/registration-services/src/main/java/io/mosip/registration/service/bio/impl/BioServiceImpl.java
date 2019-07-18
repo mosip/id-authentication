@@ -205,15 +205,21 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throws RegBaseCheckedException {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
+		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
 		mosipBioDeviceDataResponses.forEach(captured->{
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
+			captured.setCaptureResponseData();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
 			fingerPrintDetail.setFingerPrintISOImage(captureRespoonse.getBioExtract());
 			fingerPrintDetail.setFingerType(captureRespoonse.getBioSubType());
+			fingerPrintDetail.setFingerPrint(captureRespoonse.getBioValue());
 			fingerPrintDetail.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));
 			fpDetailsDTO.getSegmentedFingerprints().add(fingerPrintDetail);
+			fpDetailsDTO.setFingerPrint(captureRespoonse.getBioValue());
 		});
 		double slapQuality = (fpDetailsDTO.getSegmentedFingerprints().stream().mapToDouble(finger->finger.getQualityScore()).sum())/4;
+		fpDetailsDTO.setFingerType(fingerType);
+		System.out.println(fingerType);
 		fpDetailsDTO.setQualityScore(slapQuality);
 	}
 

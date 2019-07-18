@@ -68,7 +68,7 @@ public class RegistrationConstants {
 	public static final String FIN="FIN";
 	public static final String FINGER_SLAB = "FINGERPRINT_SLAB";
 	public static final String MDM_ENVIRONMENT = "Staging";
-	public static final int MDM_TIMEOUT = 10000;
+	public static final int MDM_TIMEOUT = 100000;
 	public static final String MDM_VERSION="1.0";
 	
 	public static final String IRIS_PANE = "irisPane";
@@ -1316,6 +1316,7 @@ public class RegistrationConstants {
 	
 	public static final String MESSAGE = "Message";
 	public static final String HASH = "#";
+	public static final String QOUTE = "\"";
 	public static final String DOB_MESSAGE = "dobMessage";
 	public static final String DD = "dd";
 	public static final String MM = "mm";

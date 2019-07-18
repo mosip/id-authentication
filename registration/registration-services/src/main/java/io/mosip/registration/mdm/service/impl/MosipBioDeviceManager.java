@@ -97,12 +97,21 @@ public class MosipBioDeviceManager {
 		for (int port = portFrom; port <= portTo; port++) {
 
 			url = buildUrl(port, MosipBioDeviceConstants.DEVICE_INFO_ENDPOINT);
-			System.out.println(url);
 			/* check if the service is available for the current port */
 			if (RegistrationAppHealthCheckUtil.checkServiceAvailability(url)) {
-
-				List<LinkedHashMap<String, String>> deviceInfoResponseDtos = (List<LinkedHashMap<String, String>>) mosipBioDeviceIntegrator
+				System.out.println(url);
+				List<LinkedHashMap<String, String>> deviceInfoResponseDtos =null;
+				
+				
+				String reponse =(String)  mosipBioDeviceIntegrator
 						.getDeviceInfo(url, Object[].class);
+				
+				try {
+					deviceInfoResponseDtos = mapper.readValue(reponse, List.class);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
 
@@ -199,7 +208,6 @@ public class MosipBioDeviceManager {
 							+ MosipBioDeviceConstants.VALUE_DOUBLE, bioDevice);
 				}
 			}else{
-				System.out.println(bioDevice.getDeviceType().toUpperCase()+RegistrationConstants.UNDER_SCORE+bioDevice.getDeviceSubType().toUpperCase()+"Hello");
 				deviceRegistry.put(bioDevice.getDeviceType().toUpperCase()+RegistrationConstants.UNDER_SCORE+bioDevice.getDeviceSubType().toUpperCase(), bioDevice);
 			}
 		}	
@@ -262,7 +270,6 @@ public class MosipBioDeviceManager {
 			init();
 		}
 		BioDevice bioDevice = deviceRegistry.get(deviceType);
-		System.out.println(deviceType);
 		bioDevice.buildDeviceSubId(deviceId);
 		return bioDevice;
 	}

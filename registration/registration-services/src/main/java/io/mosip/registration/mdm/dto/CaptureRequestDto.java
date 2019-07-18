@@ -28,5 +28,5 @@ public class CaptureRequestDto {
 	@JsonProperty("bio")
 	private List<CaptureRequestDeviceDetailDto> mosipBioRequest;
 
-	private Map<String, String> customOpts;
+	private List<Map<String, String>> customOpts;
 }
