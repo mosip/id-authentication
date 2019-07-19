@@ -67,6 +67,7 @@ public class AuthTxnServiceImplTest {
 		autnTxn.setStatusCode("Y");
 		autnTxn.setStatusComment("success");
 		autnTxn.setRefIdType("test");
+		autnTxn.setEntityName("test");
 		valueList.add(autnTxn);
 		return valueList;
 	}

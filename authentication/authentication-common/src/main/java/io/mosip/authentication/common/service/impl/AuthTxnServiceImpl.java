@@ -73,6 +73,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 		autnTxnDto.setStatusCode(autnTxn.getStatusCode());
 		autnTxnDto.setStatusComment(autnTxn.getStatusComment());
 		autnTxnDto.setReferenceIdType(autnTxn.getRefIdType());
+		autnTxnDto.setEntityName(autnTxn.getEntityName());
 		return autnTxnDto;
 	}
 

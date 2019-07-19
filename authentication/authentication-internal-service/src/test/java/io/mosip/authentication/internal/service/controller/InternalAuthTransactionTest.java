@@ -184,6 +184,7 @@ public class InternalAuthTransactionTest {
 		autnTxn.setStatusCode("Y");
 		autnTxn.setStatusComment("success");
 		autnTxn.setRefIdType("test");
+		autnTxn.setEntityName("Test");
 		valueList.add(autnTxn);
 		return valueList;
 	}
