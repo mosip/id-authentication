@@ -186,7 +186,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The thumb slap exception. */
 	@FXML
 	private Label thumbSlapException;
-	
+
 	@FXML
 	private ImageView scanImageView;
 	@FXML
@@ -256,7 +256,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Loading of FingerprintCapture screen started");
-		
+
 		setImagesOnHover();
 
 		try {
@@ -469,9 +469,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 * @return true, if successful
 	 */
 	private boolean enableCapture(FingerprintDetailsDTO fpDetailsDTO, String palm, String fpthreshold) {
-		return fpDetailsDTO == null || (fpDetailsDTO.getFingerType().equals(palm)
-				&& fpDetailsDTO.getQualityScore() < Double.parseDouble(getValueFromApplicationContext(fpthreshold))
-				&& fpDetailsDTO.getNumRetry() < Integer
+		return fpDetailsDTO == null
+				|| (fpDetailsDTO.getFingerType().equals(palm) && fpDetailsDTO.getNumRetry() < Integer
 						.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)));
 	}
 
@@ -497,9 +496,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				fpProgress.getStyleClass().add(RegistrationConstants.PROGRESS_BAR_RED);
 			}
 		}
-		if (retries > 1) {
+		if (retries > 1 && quality < threshold) {
 			for (int ret = retries; ret > 0; --ret) {
 				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, ret);
+			}
+		} else if (retries > 1 && quality >= threshold) {
+			for (int ret = retries; ret > 0; --ret) {
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, ret);
 			}
 		}
 	}

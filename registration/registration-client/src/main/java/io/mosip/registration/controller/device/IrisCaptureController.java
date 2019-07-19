@@ -355,10 +355,7 @@ public class IrisCaptureController extends BaseController {
 			// 3. If iris is not forced captured
 			// 4. If iris is an exception iris
 			if (!isExceptionIris && (irisDetailsDTO == null
-					|| (Double.compare(irisDetailsDTO.getQualityScore(),
-							Double.parseDouble(
-									getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD))) < 0
-							&& irisDetailsDTO.getNumOfIrisRetry() < Integer
+					|| (irisDetailsDTO.getNumOfIrisRetry() < Integer
 									.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
 					|| irisDetailsDTO.isForceCaptured())) {
 				scanIris.setDisable(false);
@@ -401,9 +398,13 @@ public class IrisCaptureController extends BaseController {
 			irisQuality.getStyleClass().removeAll(RegistrationConstants.LABEL_GREEN);
 			irisQuality.getStyleClass().add(RegistrationConstants.LABEL_RED);
 		}
-		if (retries > 1) {
+		if (retries > 1 && quality < threshold) {
 			for (int ret = retries; ret > 0; --ret) {
 				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_RED, ret);
+			}
+		} else if (retries > 1 && quality >= threshold) {
+			for (int ret = retries; ret > 0; --ret) {
+				clearAttemptsBox(RegistrationConstants.QUALITY_LABEL_GREEN, ret);
 			}
 		}
 	}
