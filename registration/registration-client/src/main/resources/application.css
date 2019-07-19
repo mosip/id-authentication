@@ -2043,4 +2043,22 @@ Working on new Css by taleev
 	-fx-font-size: 18.0px;
 	-fx-text-fill: white;
 }
+.DocumentViewIcon{
+		-fx-background-image : url('/images/normal.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+		
+}
+.DocumentViewIcon:focused{
+	-fx-background-image : url('/images/pressed.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+	-fx-border-width:0;	
+} 
+.DocumentViewIcon:hover{
+	-fx-background-image : url('/images/hover.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+	
+}
 

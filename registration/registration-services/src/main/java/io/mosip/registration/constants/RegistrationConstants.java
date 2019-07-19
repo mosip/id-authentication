@@ -1490,5 +1490,8 @@ public class RegistrationConstants {
 	public static final int DAYS = 31;
 	public static final int MONTH = 12;
 	public static final int YEAR = 3;
+	public static final String EYETOOLTIP="View Details";
+	public static final String DOCUMENT_VIEW_ICON="DocumentViewIcon";
+	
 
 }

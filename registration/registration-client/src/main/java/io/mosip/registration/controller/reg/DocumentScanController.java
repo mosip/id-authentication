@@ -56,6 +56,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -649,11 +650,10 @@ public class DocumentScanController extends BaseController {
 
 		GridPane gridPane = new GridPane();
 		gridPane.setId(document);
-		gridPane.add(new Label("     "), 0, vboxElement.getChildren().size());
-		gridPane.add(createHyperLink(document.concat(RegistrationConstants.DOT + documentFormat)), 1,
-				vboxElement.getChildren().size());
-		gridPane.add(new Label("  "), 2, vboxElement.getChildren().size());
-		gridPane.add(createImageView(vboxElement), 3, vboxElement.getChildren().size());
+		gridPane.setVgap(20);
+		gridPane.setHgap(20);
+		gridPane.add(createHyperLink(document.concat(RegistrationConstants.DOT + documentFormat)), 1, 0);
+		gridPane.add(createImageView(vboxElement), 2, 0);
 
 		vboxElement.getChildren().add(gridPane);
 
@@ -835,8 +835,10 @@ public class DocumentScanController extends BaseController {
 
 		Hyperlink hyperLink = new Hyperlink();
 		hyperLink.setId(document);
-		hyperLink.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.VIEW))));
-
+		// hyperLink.setGraphic(new ImageView(new
+		// Image(this.getClass().getResourceAsStream(RegistrationConstants.VIEW))));
+		hyperLink.getStyleClass().add(RegistrationConstants.DOCUMENT_VIEW_ICON);
+		hyperLink.setTooltip(new Tooltip(RegistrationConstants.EYETOOLTIP));
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
 				"Binding OnAction event to Hyperlink to display Scanned document");
