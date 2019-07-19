@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -86,23 +88,13 @@ public class BioDevice {
 		String requestBody=null;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			 BufferedWriter bW = new BufferedWriter(new FileWriter(new File("D:\\mosip_stream\\mosipstream.txt")));
 			requestBody = mapper.writeValueAsString(mosipBioCaptureRequestDto);
 			 CloseableHttpClient client = HttpClients.createDefault();
 			   StringEntity requestEntity = new StringEntity(requestBody, ContentType.create("Content-Type", Consts.UTF_8));
 			  HttpUriRequest  request = RequestBuilder.create("RCAPTURE").setUri(url).setEntity(requestEntity).build();
 			 CloseableHttpResponse response = client.execute(request);
-			 InputStream inputStram = response.getEntity().getContent();
-			 BufferedReader bR = new BufferedReader(new InputStreamReader(inputStram));
-			 String s;
-			 StringBuffer responseBuffer = new StringBuffer();
-			 while((s=bR.readLine())!=null) {
-				 responseBuffer.append(s);
-				 bW.write(s);
-			 }
-			 bR.close();
-			 bW.close();
-			 captureResponse = mapper.readValue(responseBuffer.toString(), CaptureResponseDto.class);
+			 captureResponse = mapper.readValue(EntityUtils.toString(response.getEntity()).getBytes(), CaptureResponseDto.class);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

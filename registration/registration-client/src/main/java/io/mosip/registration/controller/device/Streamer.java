@@ -27,7 +27,7 @@ public class Streamer {
 
 	private Thread t = null;
 
-	public void startStream(String bioType, ImageView scanImage) {
+	public void startStream(String bioType, ImageView streamImage, ImageView scanImage) {
 
 		t = new Thread(new Runnable() {
 
@@ -39,8 +39,9 @@ public class Streamer {
 					try {
 						byte[] imageBytes = retrieveNextImage();
 						ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBytes);
-
-						scanImage.setImage(new Image(imageStream));
+						Image img = new Image(imageStream);
+						streamImage.setImage(img);
+						scanImage.setImage(img);
 					} catch (SocketTimeoutException ste) {
 						stop();
 
@@ -120,6 +121,7 @@ public class Streamer {
      * Stop the loop, and allow it to clean up
      */
     public synchronized void stop() {
+    	if(t!=null) {
         isRunning = false;
         t.stop();
         try {
@@ -128,7 +130,7 @@ public class Streamer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+    	}
     }
 
 

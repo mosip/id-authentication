@@ -7,11 +7,16 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -22,6 +27,9 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -204,23 +212,40 @@ public class BioServiceImpl extends BaseService implements BioService {
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
-		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
+		try {
+			decode(captureResponseDto);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
 		mosipBioDeviceDataResponses.forEach(captured->{
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
-			captured.setCaptureResponseData();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
 			fingerPrintDetail.setFingerPrintISOImage(captureRespoonse.getBioExtract());
 			fingerPrintDetail.setFingerType(captureRespoonse.getBioSubType());
 			fingerPrintDetail.setFingerPrint(captureRespoonse.getBioValue());
 			fingerPrintDetail.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));
+			fingerPrintDetail.setFingerprintImageName("FingerPrint "+captureRespoonse.getBioSubType());
 			fpDetailsDTO.getSegmentedFingerprints().add(fingerPrintDetail);
-			fpDetailsDTO.setFingerPrint(captureRespoonse.getBioValue());
 		});
-		double slapQuality = (fpDetailsDTO.getSegmentedFingerprints().stream().mapToDouble(finger->finger.getQualityScore()).sum())/4;
+		double slapQuality = (fpDetailsDTO.getSegmentedFingerprints().stream().mapToDouble(finger->finger.getQualityScore()).sum())/fpDetailsDTO.getSegmentedFingerprints().size();
 		fpDetailsDTO.setFingerType(fingerType);
-		System.out.println(fingerType);
 		fpDetailsDTO.setQualityScore(slapQuality);
+	}
+
+	private void decode(CaptureResponseDto mosipBioCaptureResponseDto) throws IOException, JsonParseException, JsonMappingException {
+		ObjectMapper mapper = new ObjectMapper();
+        for (CaptureResponseBioDto captureResponseBioDto : mosipBioCaptureResponseDto.getMosipBioDeviceDataResponses()) {
+         if (null != captureResponseBioDto) {
+               String bioJson = new String(Base64.getDecoder().decode(captureResponseBioDto.getCaptureBioData()));
+               if (null != bioJson) {
+                      CaptureResponsBioDataDto captureResponsBioDataDto = mapper.readValue(bioJson.getBytes(),
+                                   CaptureResponsBioDataDto.class);
+                      captureResponseBioDto.setCaptureResponseData(captureResponsBioDataDto);
+               }
+         }
+        }
 	}
 
 
@@ -243,11 +268,14 @@ public class BioServiceImpl extends BaseService implements BioService {
 			// can remove
 			// this.
 
-			if (fingerType.equals(RegistrationConstants.LEFTPALM)) {
+			if (fingerType.equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.LEFT.toUpperCase())) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.LEFTHAND_SLAP_FINGERPRINT_PATH);
-			} else if (fingerType.equals(RegistrationConstants.RIGHTPALM)) {
+			} else if (fingerType.equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.RIGHT.toUpperCase())) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.RIGHTHAND_SLAP_FINGERPRINT_PATH);
-			} else if (fingerType.equals(RegistrationConstants.THUMBS)) {
+			} else if (fingerType.equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.THUMBS.toUpperCase())) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
 			}
 

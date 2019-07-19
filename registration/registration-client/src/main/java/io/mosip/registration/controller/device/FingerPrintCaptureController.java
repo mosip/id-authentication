@@ -762,7 +762,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to capture fingerprint for user registration");
 			FingerprintDetailsDTO fpDetailsDTO = getFingerprintBySelectedPane().findFirst().orElse(null);
-
+			ImageView imageView=null;
 			if ((fpDetailsDTO == null || fpDetailsDTO.getNumRetry() < Integer
 					.parseInt(getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_RETRIES_COUNT)))
 					|| ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER))) {
@@ -772,13 +772,18 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				String FingerType="";
 				if (selectedPane.getId() == leftHandPalmPane.getId()) {
 					FingerType=RegistrationConstants.LEFTPALM;
+					imageView=leftHandPalmImageview;
 				}else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 					FingerType=RegistrationConstants.RIGHTPALM;
+					imageView=rightHandPalmImageview;
 				}else {
 					FingerType=RegistrationConstants.THUMBS;
+					imageView=thumbImageview;
 				}
 				scanPopUpViewController.init(this, RegistrationUIConstants.FINGERPRINT);
-				streamer.startStream(findFingerPrintType(FingerType), scanPopUpViewController.getScanImage());
+				if(bioService.isMdmEnabled()) {
+					streamer.startStream(findFingerPrintType(FingerType), scanPopUpViewController.getScanImage(),imageView );
+				}
 			}
 
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -935,7 +940,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			if (selectedPane.getId() == leftHandPalmPane.getId()) {
 
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.LEFTPALM,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+						+ RegistrationConstants.LEFT.toUpperCase(),
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, leftHandPalmImageview, leftSlapQualityScore,
 						popupStage, leftHandPalmPane,
 						Double.parseDouble(
@@ -945,7 +951,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			} else if (selectedPane.getId() == rightHandPalmPane.getId()) {
 
 				if (SessionContext.map().containsKey(RegistrationConstants.DUPLICATE_FINGER)) {
-					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
+					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+							+ RegistrationConstants.RIGHT.toUpperCase(),
 							RegistrationConstants.RIGHTHAND_SEGMNTD_FILE_PATHS, rightHandPalmImageview,
 							rightSlapQualityScore, popupStage, rightHandPalmPane,
 							Double.parseDouble(getValueFromApplicationContext(
@@ -953,7 +960,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 							rightSlapAttempt);
 
 				} else {
-					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.RIGHTPALM,
+					scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+							+ RegistrationConstants.RIGHT.toUpperCase(),
 							RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, rightHandPalmImageview,
 							rightSlapQualityScore, popupStage, rightHandPalmPane,
 							Double.parseDouble(getValueFromApplicationContext(
@@ -962,7 +970,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				}
 
 			} else if (selectedPane.getId() == thumbPane.getId()) {
-				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.THUMBS,
+				scanFingers(detailsDTO, fingerprintDetailsDTOs, RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+						+ RegistrationConstants.THUMBS.toUpperCase(),
 						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, thumbImageview, thumbsQualityScore, popupStage,
 						thumbPane,
 						Double.parseDouble(
@@ -1034,7 +1043,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						String[] path = segmentedFingerPath.split("/");
 						for (FingerprintDetailsDTO segmentedfpDetailsDTO : fingerprintDetailsDTO
 								.getSegmentedFingerprints()) {
-							if (segmentedfpDetailsDTO.getFingerType().equals(path[3])) {
+							if (segmentedfpDetailsDTO.getFingerType().replaceAll(RegistrationConstants.SPACE, RegistrationConstants.EMPTY).toUpperCase().equals(path[3].toUpperCase())) {
 								fingerprintDetailsDTO.getSegmentedFingerprints().remove(segmentedfpDetailsDTO);
 								break;
 							}
@@ -1067,14 +1076,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			return;
 		}
 
-		if (detailsDTO.getFingerPrint() != null) {
-			//scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-			System.out.println(detailsDTO.getQualityScore());
+		if (detailsDTO.getQualityScore() >= thresholdValue) {
+			if(!bioService.isMdmEnabled()) {
+				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+				imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+			}
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
-
 			popupStage.close();
 			parentPane.getStyleClass().add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
-			imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 			qualityScoreLabel.setText(getQualityScore(detailsDTO.getQualityScore()));
 			attemptSlap.setText(String.valueOf(detailsDTO.getNumRetry()));
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -1103,6 +1112,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				continueBtn.setDisable(false);
 			}
 		} else {
+			streamer.stop();
 			fingerprintDetailsDTOs.remove(detailsDTO);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
@@ -1324,8 +1334,13 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			} else {
 				if (isleftHandSlapCaptured && isrightHandSlapCaptured && isthumbsCaptured) {
 
+					try {
+					
 					isValid = fingerdeduplicationCheck(segmentedFingerprintDetailsDTOs, isValid,
 							fingerprintDetailsDTOs);
+					}catch(Exception exception) {
+						isValid=false;
+					}
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -1400,11 +1415,14 @@ public class FingerPrintCaptureController extends BaseController implements Init
 		try {
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating quality score of captured fingerprints started");
-			if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.LEFTPALM)) {
+			if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.LEFT.toUpperCase())) {
 				return validate(fingerprintDetailsDTO, RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD);
-			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.RIGHTPALM)) {
+			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.RIGHT.toUpperCase())) {
 				return validate(fingerprintDetailsDTO, RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD);
-			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.THUMBS)) {
+			} else if (fingerprintDetailsDTO.getFingerType().equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
+					+ RegistrationConstants.THUMBS.toUpperCase())) {
 				return validate(fingerprintDetailsDTO, RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD);
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
