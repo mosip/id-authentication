@@ -97,15 +97,21 @@ public class MessageSenderStageTest {
 	/** The input stream. */
 	@Mock
 	private InputStream inputStream;
-	@Mock
-	RegistrationExceptionMapperUtil registrationExceptionMapperUtil;
 
 	@Mock
-	LogDescription description;
+	private RegistrationExceptionMapperUtil registrationExceptionMapperUtil;
+
 	@Mock
-	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
+	private LogDescription description;
+
+	@Mock
+	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	MessageSenderDto messageSenderDto = Mockito.mock(MessageSenderDto.class);
+
+	private SmsResponseDto smsResponseDto = Mockito.mock(SmsResponseDto.class);
+
+	private ResponseDto responseDto = Mockito.mock(ResponseDto.class);
 
 	@InjectMocks
 	private MessageSenderStage stage = new MessageSenderStage() {
@@ -153,8 +159,10 @@ public class MessageSenderStageTest {
 		Mockito.doNothing().when(messageSenderDto).setIdType(any());
 		Mockito.doNothing().when(messageSenderDto).setSubject(any());
 		Mockito.doNothing().when(messageSenderDto).setTemplateAvailable(any(Boolean.class));
-	
-		
+
+		Mockito.when(service.sendSmsNotification(any(),any(),any(),any(),any())).thenReturn(smsResponseDto);
+		Mockito.when(service.sendEmailNotification(any(),any(),any(),any(),any(),any(),any(),any())).thenReturn(responseDto);
+
 		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("ERROR");
 		Mockito.when(registrationExceptionMapperUtil.getStatusCode(any())).thenReturn("ERROR");
 
@@ -180,16 +188,11 @@ public class MessageSenderStageTest {
 
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
-		Mockito.when(messageSenderDto.getEmailTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_GEN_EMAIL);
-		Mockito.when(messageSenderDto.getSmsTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_GEN_SMS);
-		Mockito.when(messageSenderDto.getIdType())
-		.thenReturn(IdType.UIN);
-		Mockito.when(messageSenderDto.getSubject())
-		.thenReturn("");
-		Mockito.when(messageSenderDto.isTemplateAvailable())
-		.thenReturn(Boolean.TRUE);
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_GEN_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_GEN_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
 		templateDto.setTemplateTypeCode("RPR_UIN_GEN_SMS");
 		List<TemplateDto> list = new ArrayList<TemplateDto>();
 		list.add(templateDto);
@@ -208,6 +211,8 @@ public class MessageSenderStageTest {
 				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
 				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.doReturn("success").when(smsResponseDto).getStatus();
+		Mockito.doReturn("success").when(responseDto).getStatus();
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -223,16 +228,11 @@ public class MessageSenderStageTest {
 
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
-		Mockito.when(messageSenderDto.getEmailTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_UPD_EMAIL);
-		Mockito.when(messageSenderDto.getSmsTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_UPD_SMS);
-		Mockito.when(messageSenderDto.getIdType())
-		.thenReturn(IdType.UIN);
-		Mockito.when(messageSenderDto.getSubject())
-		.thenReturn("");
-		Mockito.when(messageSenderDto.isTemplateAvailable())
-		.thenReturn(Boolean.TRUE);
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_UPD_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_UPD_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
 		templateDto.setTemplateTypeCode("RPR_UIN_UPD_SMS");
 		List<TemplateDto> list = new ArrayList<TemplateDto>();
 		list.add(templateDto);
@@ -253,6 +253,8 @@ public class MessageSenderStageTest {
 				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
 				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("success");
+		Mockito.when(responseDto.getStatus()).thenReturn("success");
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -268,16 +270,11 @@ public class MessageSenderStageTest {
 
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
-		Mockito.when(messageSenderDto.getEmailTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_REAC_EMAIL);
-		Mockito.when(messageSenderDto.getSmsTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_REAC_SMS);
-		Mockito.when(messageSenderDto.getIdType())
-		.thenReturn(IdType.UIN);
-		Mockito.when(messageSenderDto.getSubject())
-		.thenReturn("");
-		Mockito.when(messageSenderDto.isTemplateAvailable())
-		.thenReturn(Boolean.TRUE);
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_REAC_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
 		templateDto.setTemplateTypeCode("RPR_UIN_REAC_SMS");
 		List<TemplateDto> list = new ArrayList<TemplateDto>();
 		list.add(templateDto);
@@ -297,6 +294,8 @@ public class MessageSenderStageTest {
 				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
 				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("success");
+		Mockito.when(responseDto.getStatus()).thenReturn("success");
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
@@ -324,16 +323,11 @@ public class MessageSenderStageTest {
 
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
-		Mockito.when(messageSenderDto.getEmailTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_DEAC_EMAIL);
-		Mockito.when(messageSenderDto.getSmsTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_UIN_DEAC_SMS);
-		Mockito.when(messageSenderDto.getIdType())
-		.thenReturn(IdType.UIN);
-		Mockito.when(messageSenderDto.getSubject())
-		.thenReturn("");
-		Mockito.when(messageSenderDto.isTemplateAvailable())
-		.thenReturn(Boolean.TRUE);
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_DEAC_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_UIN_DEAC_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
 		templateDto.setTemplateTypeCode("RPR_UIN_DEAC_SMS");
 		List<TemplateDto> list = new ArrayList<TemplateDto>();
 		list.add(templateDto);
@@ -355,6 +349,8 @@ public class MessageSenderStageTest {
 				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
 				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("success");
+		Mockito.when(responseDto.getStatus()).thenReturn("success");
 
 		FieldValue registrationType = new FieldValue();
 		registrationType.setLabel("registrationType");
@@ -382,10 +378,8 @@ public class MessageSenderStageTest {
 
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
-		Mockito.when(messageSenderDto.getEmailTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_DUP_UIN_EMAIL);
-		Mockito.when(messageSenderDto.getSmsTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_DUP_UIN_SMS);
+		Mockito.doReturn(NotificationTemplateCode.RPR_DUP_UIN_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_DUP_UIN_SMS).when(messageSenderDto).getSmsTemplateCode();
 		Mockito.when(messageSenderDto.getIdType())
 		.thenReturn(IdType.UIN);
 		Mockito.when(messageSenderDto.getSubject())
@@ -411,6 +405,8 @@ public class MessageSenderStageTest {
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
 				.thenReturn(RegistrationTransactionStatusCode.FAILED.name());
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.REJECTED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("success");
+		Mockito.when(responseDto.getStatus()).thenReturn("success");
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -423,13 +419,10 @@ public class MessageSenderStageTest {
 	public void testMessageSentTechnicalIssue() throws Exception {
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
-
 		TemplateDto templateDto = new TemplateDto();
 		TemplateDto templateDto1 = new TemplateDto();
-		Mockito.when(messageSenderDto.getEmailTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_TEC_ISSUE_EMAIL);
-		Mockito.when(messageSenderDto.getSmsTemplateCode())
-		.thenReturn(NotificationTemplateCode.RPR_TEC_ISSUE_SMS);
+		Mockito.doReturn(NotificationTemplateCode.RPR_TEC_ISSUE_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_TEC_ISSUE_SMS).when(messageSenderDto).getSmsTemplateCode();
 		Mockito.when(messageSenderDto.getIdType())
 		.thenReturn(IdType.UIN);
 		Mockito.when(messageSenderDto.getSubject())
@@ -455,6 +448,8 @@ public class MessageSenderStageTest {
 		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
 				.thenReturn(RegistrationTransactionStatusCode.FAILED.name());
 		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.FAILED.name());
+		Mockito.when(smsResponseDto.getStatus()).thenReturn("success");
+		Mockito.when(responseDto.getStatus()).thenReturn("success");
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("85425022110000120190117110505");
@@ -524,7 +519,9 @@ public class MessageSenderStageTest {
 		list.add(templateDto1);
 		templateResponseDto.setTemplates(list);
 		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenThrow(e);
-
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("ACTIVATED");
+		Mockito.when(registrationStatusDto.getStatusCode())
+				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
 		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
 		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode())
 				.thenReturn(RegistrationTransactionTypeCode.OSI_VALIDATE.name());
@@ -535,6 +532,89 @@ public class MessageSenderStageTest {
 		dto.setRid("85425022110000120190117110505");
 		MessageDTO result = stage.process(dto);
 		assertTrue(result.getInternalError());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testMessageSentFailedLostUin() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+		Mockito.doReturn(NotificationTemplateCode.RPR_LOST_UIN_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_LOST_UIN_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
+		templateDto.setTemplateTypeCode("RPR_LOST_UIN_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_LOST_UIN_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode())
+				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("LOST");
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
+				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		Mockito.doReturn("failed").when(smsResponseDto).getStatus();
+		Mockito.doReturn("failed").when(responseDto).getStatus();
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testMessageUpdateApiException() throws Exception {
+		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
+		TemplateResponseDto templateResponseDto = new TemplateResponseDto();
+
+		TemplateDto templateDto = new TemplateDto();
+		TemplateDto templateDto1 = new TemplateDto();
+		Mockito.doReturn(NotificationTemplateCode.RPR_LOST_UIN_EMAIL).when(messageSenderDto).getEmailTemplateCode();
+		Mockito.doReturn(NotificationTemplateCode.RPR_LOST_UIN_SMS).when(messageSenderDto).getSmsTemplateCode();
+		Mockito.when(messageSenderDto.getIdType()).thenReturn(IdType.UIN);
+		Mockito.when(messageSenderDto.getSubject()).thenReturn("");
+		Mockito.when(messageSenderDto.isTemplateAvailable()).thenReturn(Boolean.TRUE);
+		templateDto.setTemplateTypeCode("RPR_LOST_UIN_SMS");
+		List<TemplateDto> list = new ArrayList<TemplateDto>();
+		list.add(templateDto);
+		templateDto1.setTemplateTypeCode("RPR_LOST_UIN_EMAIL");
+		list.add(templateDto1);
+		templateResponseDto.setTemplates(list);
+		String s = templateResponseDto.toString();
+		responseWrapper.setResponse(templateResponseDto);
+		responseWrapper.setErrors(null);
+		Mockito.when(restClientService.getApi(any(), any(), any(), any(), any())).thenReturn(responseWrapper);
+		Mockito.when(mapper.writeValueAsString(any())).thenReturn(s);
+		Mockito.when(mapper.readValue(anyString(), any(Class.class))).thenReturn(templateResponseDto);
+		Mockito.when(registrationStatusService.getRegistrationStatus(any())).thenReturn(registrationStatusDto);
+		Mockito.when(registrationStatusDto.getStatusCode()).thenReturn(RegistrationStatusCode.PROCESSED.name());
+		Mockito.when(registrationStatusDto.getLatestTransactionTypeCode())
+				.thenReturn(RegistrationTransactionTypeCode.UIN_GENERATOR.name());
+		Mockito.when(registrationStatusDto.getRegistrationType()).thenReturn("LOST");
+		Mockito.when(registrationStatusDto.getLatestTransactionStatusCode())
+				.thenReturn(RegistrationTransactionStatusCode.PROCESSED.name());
+		ApisResourceAccessException e = new ApisResourceAccessException();
+		Mockito.doThrow(e).when(service).sendSmsNotification(any(),any(),any(),any(),any());
+		Mockito.doThrow(e).when(service).sendEmailNotification(any(),any(),any(),any(),any(),any(),any(),any());
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("85425022110000120190117110505");
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
 	}
 
 }
