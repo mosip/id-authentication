@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import io.mosip.authentication.common.service.filter.DefaultInternalFilter;
 import io.mosip.authentication.common.service.filter.InternalOtpFilter;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.internal.service.filter.InternalAuthFilter;
 
 /**
@@ -42,7 +43,7 @@ public class InternalAuthFilterConfig {
 	public FilterRegistrationBean<DefaultInternalFilter> getDefaultInternalFilter() {
 		FilterRegistrationBean<DefaultInternalFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new DefaultInternalFilter());
-		registrationBean.addUrlPatterns("/auth-transactions/*");
+		registrationBean.addUrlPatterns("/" + IdAuthCommonConstants.AUTH_TRANSACTIONS + "/*");
 		registrationBean.addInitParameter("IDType", "IDType");
 		registrationBean.addInitParameter("ID", "ID");
 		registrationBean.addInitParameter("pageStart", "pageStart");

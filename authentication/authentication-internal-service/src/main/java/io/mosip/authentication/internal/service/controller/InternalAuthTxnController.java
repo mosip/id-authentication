@@ -79,7 +79,7 @@ public class InternalAuthTxnController {
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','ID_AUTHENTICATION')")
 	@ApiOperation(value = "Auth Transaction Request", response = IdAuthenticationAppException.class)
-	@GetMapping(path = "/auth-transactions/individualIdType/{IDType}/individualId/{ID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/authTransactions/individualIdType/{IDType}/individualId/{ID}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "No Records Found") })
 	public ResponseEntity<AutnTxnResponseDto> getAuthTxnDetails(@PathVariable("IDType") String individualIdType,
