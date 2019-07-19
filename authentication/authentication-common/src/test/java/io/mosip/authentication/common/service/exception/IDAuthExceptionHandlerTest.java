@@ -127,7 +127,7 @@ public class IDAuthExceptionHandlerTest {
 	public void testHandleIdAppExceptionwithInternal() {
 		Mockito.when(servletRequest.getContextPath()).thenReturn("/internal");
 		StringBuffer value = new StringBuffer();
-		value.append("http://localhost:8093/idauthentication/v1/internal/auth-transactions/");
+		value.append("http://localhost:8093/idauthentication/v1/internal/authTransactions/");
 		Mockito.when(servletRequest.getRequestURL()).thenReturn(value);
 		ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(
 				new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS), null);
