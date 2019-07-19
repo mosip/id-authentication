@@ -249,8 +249,8 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			primaryStage.show();
 
-			
-			LoggerConfiguration.logConfig(LoginController.class).info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,"Mosip client Screen loaded");
+
+			org.apache.log4j.Logger.getLogger(Initialization.class).info("Mosip client Screen loaded");
 
 			// Execute SQL file (Script files on update)
 			executeSQLFile();

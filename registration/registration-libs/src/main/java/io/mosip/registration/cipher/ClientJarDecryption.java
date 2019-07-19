@@ -335,42 +335,26 @@ public class ClientJarDecryption extends Application {
 
 									Process process = Runtime.getRuntime().exec(cmd);
 
-									closeStage();
-									
-									
+									LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+											LoggerConstants.APPLICATION_ID, "Proccess Initiated");
+
 									try (BufferedReader inputStreamReader = new BufferedReader(
 											new InputStreamReader(process.getInputStream()))) {
 
-										String consoleData;
 										String info;
-										while ((consoleData = inputStreamReader.readLine()) != null) {
+										while ((info = inputStreamReader.readLine()) != null) {
 
-											System.out.println(consoleData);
+											LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+													LoggerConstants.APPLICATION_ID, info);
+
+											if (info.contains("Mosip client Screen loaded")) {
+
+												closeStage();
+												break;
+											}
 
 										}
 									}
-											
-//									try (BufferedReader bufferedReader = new BufferedReader(
-//											new InputStreamReader(process.getErrorStream()))) {
-//
-//										try (BufferedReader inputStreamReader = new BufferedReader(
-//												new InputStreamReader(process.getInputStream()))) {
-//
-//											String consoleData;
-//											String info;
-//											while (inputStreamReader.readLine() != null) {
-//
-//												consoleData = bufferedReader.readLine();
-//
-//												if (consoleData.contains("Mosip client Screen loaded")) {
-//
-//													closeStage();
-//													break;
-//												}
-//
-//											}
-//										}
-//									}
 
 									process.getInputStream().close();
 									process.getOutputStream().close();
