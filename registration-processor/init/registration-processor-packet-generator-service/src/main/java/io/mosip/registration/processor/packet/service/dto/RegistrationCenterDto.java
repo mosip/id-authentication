@@ -88,5 +88,7 @@ public class RegistrationCenterDto {
 	private String lunchEndTime;
 
 	private Boolean isActive;
+	
+	private String zoneCode;
 
 }
