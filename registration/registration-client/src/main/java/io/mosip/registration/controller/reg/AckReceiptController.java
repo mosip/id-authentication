@@ -21,6 +21,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
@@ -60,6 +62,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@FXML
 	private Button sendNotification;
 
+	@FXML
+	private ImageView sendNotificationImageView;
+
 	@Autowired
 	private SendNotificationController sendNotificationController;
 
@@ -72,24 +77,28 @@ public class AckReceiptController extends BaseController implements Initializabl
 		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 
+		setImagesOnHover();
+
 		if (getValueFromApplicationContext(RegistrationConstants.MODE_OF_COMMUNICATION) != null
-				&& RegistrationConstants.ENABLE.equalsIgnoreCase(getValueFromApplicationContext(RegistrationConstants.NOTIFICATION_DISABLE_FLAG))) {
+				&& RegistrationConstants.ENABLE.equalsIgnoreCase(
+						getValueFromApplicationContext(RegistrationConstants.NOTIFICATION_DISABLE_FLAG))) {
 
 			sendNotification.setVisible(true);
 		} else {
 			sendNotification.setVisible(false);
 		}
 
-
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
+			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle()
+					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 		}
-		
+
 		if (getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory() != null
 				&& getRegistrationDTOFromSession().getRegistrationMetaDataDTO().getRegistrationCategory()
 						.equals(RegistrationConstants.PACKET_TYPE_LOST)) {
 
-			registrationNavLabel.setText(ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
+			registrationNavLabel.setText(
+					ApplicationContext.applicationLanguageBundle().getString(RegistrationConstants.LOSTUINLBL));
 		}
 
 		WebEngine engine = webView.getEngine();
@@ -97,6 +106,20 @@ public class AckReceiptController extends BaseController implements Initializabl
 		engine.loadContent(stringWriter.toString());
 		LOGGER.info("REGISTRATION - UI - ACKRECEIPTCONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Acknowledgement template has been loaded to webview");
+	}
+
+	private void setImagesOnHover() {
+		Image sendEmailInWhite = new Image(
+				getClass().getResourceAsStream(RegistrationConstants.SEND_EMAIL_FOCUSED_IMAGE_PATH));
+		Image sendEmailImage = new Image(getClass().getResourceAsStream(RegistrationConstants.SEND_EMAIL_IMAGE_PATH));
+
+		sendNotification.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				sendNotificationImageView.setImage(sendEmailInWhite);
+			} else {
+				sendNotificationImageView.setImage(sendEmailImage);
+			}
+		});
 	}
 
 	/**

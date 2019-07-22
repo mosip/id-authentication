@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 
@@ -148,14 +149,13 @@ public class BaseController {
 
 	@Autowired
 	private HeaderController headerController;
-	
+
 	@Autowired
 	private WebCameraController webCameraController;
-	
+
 	@Autowired
 	private HomeController homeController;
 
-	
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
@@ -293,6 +293,36 @@ public class BaseController {
 	}
 
 	/**
+	 * Alert specific for page navigation confirmation
+	 * 
+	 * @return
+	 */
+	protected boolean pageNavigantionAlert() {
+		if (!fXComponents.getScene().getRoot().getId().equals("mainBox")		
+			&& !SessionContext.map().get(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ).equals(RegistrationConstants.ENABLE)) {
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setHeaderText(null);
+			alert.setTitle(RegistrationUIConstants.INFORMATION);
+			alert.setContentText(RegistrationUIConstants.PAGE_NAVIGATION_MESSAGE);
+			alert.getDialogPane().getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			((Button) alert.getDialogPane().lookupButton(ButtonType.OK))
+					.setText(RegistrationUIConstants.PAGE_NAVIGATION_CONFIRM);
+			((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL))
+					.setText(RegistrationUIConstants.PAGE_NAVIGATION_CANCEL);
+			alert.setGraphic(null);
+			alert.setResizable(true);
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
+			Optional<ButtonType> option = alert.showAndWait();
+			if (option.isPresent())
+				return option.get() == ButtonType.OK;
+		}
+		return true;
+	}
+
+	/**
 	 * Alert creation with specified context.
 	 *
 	 * @param parentPane the parent pane
@@ -395,9 +425,13 @@ public class BaseController {
 	public void goToHomePage() {
 		webCameraController.closeWebcam();
 		try {
-			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				clearOnboardData();
+			if (pageNavigantionAlert()) {
+				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+					clearOnboardData();
+				}else {
+					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.ENABLE);
+				}
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -427,14 +461,15 @@ public class BaseController {
 	 * This method is used clear all the new registration related mapm values and
 	 * navigates to the home page.
 	 */
-	public void goToHomePageFromRegistration() {
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Going to home page");
+	public void goToHomePageFromRegistration() {		
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-		webCameraController.closeWebcam();
-		clearRegistrationData();
-		clearOnboardData();
-		goToHomePage();
+			webCameraController.closeWebcam();
+			clearRegistrationData();
+			clearOnboardData();
+			goToHomePage();
+		
 	}
 
 	/**
@@ -442,10 +477,10 @@ public class BaseController {
 	 * navigates to the home page.
 	 */
 	public void goToHomePageFromOnboard() {
-		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Going to home page");
+			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-		goToHomePage();
+			goToHomePage();
 	}
 
 	/**
@@ -490,8 +525,8 @@ public class BaseController {
 		updatePageFlow(RegistrationConstants.IRIS_CAPTURE,
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG))
 						.equalsIgnoreCase(RegistrationConstants.ENABLE));
-		
-		updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC,false);
+
+		updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
 	}
 
 	/**
@@ -499,10 +534,11 @@ public class BaseController {
 	 */
 	protected void clearOnboardData() {
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+		SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,RegistrationConstants.DISABLE);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, false);
 		SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
-		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
+		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);		
 	}
 
 	/**
@@ -846,8 +882,9 @@ public class BaseController {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"User Onboard is success and clearing Onboard data");
-				
+
 				clearOnboardData();
+				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,RegistrationConstants.ENABLE);
 				goToHomePage();
 				onboardAlertMsg();
 
@@ -916,7 +953,7 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			disableHomePage(true);
-			
+
 			Service<String> service = new Service<String>() {
 				@Override
 				protected Task<String> createTask() {
@@ -926,15 +963,14 @@ public class BaseController {
 						protected String call() {
 
 							packetHandlerController.getProgressIndicator().setVisible(true);
-							
-							
+
 							for (int i = 1; i <= 4; i++) {
 								/* starts the remap process */
 								centerMachineReMapService.handleReMapProcess(i);
 								this.updateProgress(i, 4);
 							}
-							LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-									"center remap process completed");
+							LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME,
+									APPLICATION_ID, "center remap process completed");
 							return null;
 						}
 					};
@@ -967,15 +1003,13 @@ public class BaseController {
 		packetHandlerController.getProgressIndicator().setVisible(false);
 
 		if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,
-					RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
 			headerController.logoutCleanUp();
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,
-					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
 		}
 	}
-	
+
 	private void disableHomePage(boolean isDisabled) {
 
 		if (null != homeController.getMainBox())
@@ -1134,7 +1168,7 @@ public class BaseController {
 	protected void updatePageFlow(String pageId, boolean val) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Updating page flow to naviagate next or previous");
+				RegistrationConstants.APPLICATION_ID, "Updating page flow to navigate next or previous");
 
 		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
 				.get(pageId).put(RegistrationConstants.VISIBILITY, val);

@@ -1230,8 +1230,15 @@ public class DemographicDetailController extends BaseController {
 					fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false,
 							oldValue);
 				} else {
+					ageField.getStyleClass().remove("demoGraphicTextFieldOnType");
+					ageField.getStyleClass().add("demoGraphicTextFieldFocused");
+					Label ageFieldLabel = (Label)dobParentPane.lookup("#"+ageField.getId()+"Label");
+					ageFieldLabel.getStyleClass().add("demoGraphicFieldLabel");
+					ageField.getStyleClass().remove("demoGraphicFieldLabelOnType");
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
+					System.out.println(ageField.getStyleClass());
+					
 					generateAlert(dobParentPane, RegistrationConstants.DOB, dobMessage.getText());
 					parentFieldValidation();
 				}
@@ -1266,6 +1273,8 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
 			boolean hasToBeTransliterated = true;
+			
+			
 			fxUtils.validateOnFocusOut(parentFlowPane, fullName, validation, fullNameLocalLanguage,
 					hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, addressLine1, validation, addressLine1LocalLanguage,
@@ -1291,6 +1300,9 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage,
 					!hasToBeTransliterated);
 
+			fxUtils.focusedAction(parentFlowPane,dd );
+			fxUtils.focusedAction(parentFlowPane,mm );
+			fxUtils.focusedAction(parentFlowPane,yyyy );
 			fxUtils.populateLocalComboBox(parentFlowPane, city, cityLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, province, provinceLocalLanguage);

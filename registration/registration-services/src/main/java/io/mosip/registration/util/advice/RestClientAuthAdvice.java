@@ -278,7 +278,7 @@ public class RestClientAuthAdvice {
 	private boolean handleInvalidTokenFromResponse(Object response, ProceedingJoinPoint joinPoint)
 			throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-				"Entering into the invlalid token check");
+				"Entering into the invalid token check");
 		if (response != null && (StringUtils.containsIgnoreCase(response.toString(), TOKEN_EXPIRED) || 
 				StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING))) {
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
@@ -288,7 +288,7 @@ public class RestClientAuthAdvice {
 			return true;
 		}
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-				"Completed the invlalid token check");
+				"Completed the invalid token check");
 		return false;
 	}
 	

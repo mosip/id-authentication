@@ -264,10 +264,17 @@ public class Validations extends BaseController {
 						labelBundle.getString(label) + " " + messageBundle.getString(RegistrationConstants.REG_DDC_004),
 						showAlert);
 				if (isPreviousValid && !id.contains(RegistrationConstants.ON_TYPE)) {
+					Label nodeLabel= (Label)parentPane.lookup("#"+node.getId()+"Label");
 					node.requestFocus();
 					node.getStyleClass().removeIf((s) -> {
 						return s.equals(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD);
 					});
+					node.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicTextFieldOnType");
+					});	
+					nodeLabel.getStyleClass().removeIf((s) -> {
+						return s.equals("demoGraphicFieldLabelOnType");
+					});	
 					node.getStyleClass().add(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 				}
 			}

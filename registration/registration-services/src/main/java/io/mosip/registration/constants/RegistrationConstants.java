@@ -126,7 +126,32 @@ public class RegistrationConstants {
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
 	public static final String SCAN = "/images/scan.png";
+	public static final String SCAN_FOCUSED = "/images/scanFocused.png";
+	public static final String BACK = "/images/arrowLeft.png";
+	public static final String BACK_FOCUSED = "/images/backInWhite.png";
+	public static final String WRONG_IMAGE_PATH = "/images/wrong.png";
+	public static final String REJECT_IMAGE_PATH = "/images/Reject.png";
+	public static final String SEND_EMAIL_IMAGE_PATH = "/images/SendEmail.png";
+	public static final String SEND_EMAIL_FOCUSED_IMAGE_PATH = "/images/sendEmailFocused.png";
 	public static final String LOGO = "/images/logo-final-small.png";
+	public static final String NEW_REG_IMAGE = "/images/NewReg.png";
+	public static final String NEW_REG_FOCUSED = "/images/NewRegistration.png";
+	public static final String UPDATE_UIN_IMAGE = "/images/UINUpdate.png";
+	public static final String UPDATE_UIN_FOCUSED = "/images/updateUINFocused.png";
+	public static final String LOST_UIN_IMAGE = "/images/LostUIN.png";
+	public static final String LOST_UIN_FOCUSED = "/images/lostUINFocused.png";	
+	public static final String SYNC_DATA_IMAGE = "/images/sync.png";
+	public static final String SYNC_DATA_FOCUSED = "/images/syncFocused.png";
+	public static final String DOWNLOAD_PREREG_IMAGE = "/images/DownloadPreRegData.png";
+	public static final String DOWNLOAD_PREREG_FOCUSED = "/images/DownloadPreRegDataFocused.png";
+	public static final String UPDATE_OP_BIOMETRICS_IMAGE = "/images/UpdateOperatorBiometrics.png";
+	public static final String UPDATE_OP_BIOMETRICS_FOCUSED = "/images/UpdateOperatorBiometricsFocused.png";
+	public static final String PENDING_APPROVAL_IMAGE = "/images/PendingApproval.png";
+	public static final String PENDING_APPROVAL_FOCUSED = "/images/PendingApprovalFocused.png";
+	public static final String RE_REGISTRATION_IMAGE = "/images/Re-Registration.png";
+	public static final String RE_REGISTRATION_FOCUSED = "/images/ReRegistrationFocused.png";
+	public static final String VIEW_REPORTS_IMAGE = "/images/ViewReports.png";
+	public static final String VIEW_REPORTS_FOCUSED = "/images/ViewReportsFocused.png";
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
@@ -160,6 +185,7 @@ public class RegistrationConstants {
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
 	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
+	public static final String ISPAGE_NAVIGATION_ALERT_REQ = "pageNavigationAlert";
 	public static final String USER_MACHINE_VALIDATION_MSG = "USER_MACHINE_VALIDATION_MSG"; 
 	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
 	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
@@ -1468,5 +1494,8 @@ public class RegistrationConstants {
 	public static final int DAYS = 31;
 	public static final int MONTH = 12;
 	public static final int YEAR = 3;
+	public static final String EYETOOLTIP="View Details";
+	public static final String DOCUMENT_VIEW_ICON="DocumentViewIcon";
+	
 
 }

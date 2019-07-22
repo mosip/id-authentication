@@ -269,7 +269,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 		try {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"fetching center details from reposiotry....");
+					"fetching center details from repository....");
 
 			CenterMachine regCenterMachineDtls = centerMachineRepository
 					.findByIsActiveTrueAndCenterMachineIdId(stationId);
@@ -293,7 +293,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	public Timestamp getLastUpdatedTime(String usrId) {
 		try {
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"fetching userMachineMapping details from reposiotry....");
+					"fetching userMachineMapping details from repository....");
 			UserMachineMapping userMachineMapping = machineMappingRepository.findByUserMachineMappingIdUserID(usrId);
 			return userMachineMapping != null ? userMachineMapping.getCrDtime() : null;
 		} catch (RuntimeException runtimeException) {
