@@ -74,7 +74,7 @@ public class AlertController extends BaseController implements Initializable {
 		Image image;
 		if (split[1].contains(RegistrationConstants.SUCCESS.toUpperCase())) {
 			image = new Image(RegistrationConstants.SUCCESS_IMG_PTH);
-			header.setText(RegistrationConstants.SUCCESS);
+			header.setText(RegistrationUIConstants.SUCCESS);
 			alertImage.setImage(image);
 			contextSecondMsg = gettingSecondErrorMessage(split,RegistrationConstants.SUCCESS.toUpperCase());
 		} else if(split[1].contains(RegistrationConstants.ERROR.toUpperCase())){
