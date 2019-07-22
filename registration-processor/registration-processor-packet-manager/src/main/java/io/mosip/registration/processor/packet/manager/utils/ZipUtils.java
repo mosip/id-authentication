@@ -138,7 +138,11 @@ public class ZipUtils {
 		try (ZipInputStream zis = new ZipInputStream(input)) {
 			File folder = FileUtils.getFile(desDir);
 			if (!folder.exists()) {
-				folder.mkdir();
+				if(folder.mkdir()) {
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+							folder + "created");
+					
+				}
 			}
 			ZipEntry ze = zis.getNextEntry();
 			while (ze != null) {
@@ -147,13 +151,14 @@ public class ZipUtils {
 				} else {
 					String fileName = ze.getName();
 					File newFile = FileUtils.getFile(desDir + File.separator + fileName);
-					FileUtils.getFile(newFile.getParent()).mkdirs();
+					if(FileUtils.getFile(newFile.getParent()).mkdirs()) {
 					FileOutputStream fos = new FileOutputStream(newFile);
 					int len;
 					while ((len = zis.read(buffer)) > 0) {
 						fos.write(buffer, 0, len);
 					}
 					fos.close();
+				}
 				}
 				ze = zis.getNextEntry();
 			}

@@ -195,7 +195,7 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 				boolean created=binPath.mkdir();
 				Resource resource = resourceLoader.getResource(CLASSPATH_PREFIX + WIN_UTIL);
 				if (resource.exists()) {
-					java.nio.file.Path c = Paths.get("s", "x");
+					
 					if(created) {
 					File winUtilsPath = FileUtils.getFile(binPath.toString(), resource.getFilename());
 					   FileUtils.copyInputStreamToFile(resource.getInputStream(), winUtilsPath);
@@ -204,7 +204,7 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 			}
 
 			if (isAuthEnable) {
-				configuration = initSecurityConfiguration(configuration);
+				initSecurityConfiguration(configuration);
 				configuredFileSystem = FileSystem.get(configuration);
 			} else {
 				configuredFileSystem = getDefaultConfiguredFileSystem(configuration);
@@ -242,7 +242,7 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 	 * @return
 	 * @throws Exception
 	 */
-	private Configuration initSecurityConfiguration(Configuration configuration) throws Exception {
+	private void initSecurityConfiguration(Configuration configuration) throws Exception {
 		configuration.set("dfs.data.transfer.protection", "authentication");
 		configuration.set("hadoop.security.authentication", "kerberos");
 		InputStream krbStream = getClass().getClassLoader().getResourceAsStream("krb5.conf");
@@ -251,8 +251,7 @@ public class StageHealthCheckHandler implements HealthCheckHandler {
 		System.setProperty("java.security.krb5.conf", krbPath.toString());
 		UserGroupInformation.setConfiguration(configuration);
 		String user = hdfsUserName + "@" + kdcDomain;
-		loginWithKeyTab(user, keytabPath);
-		return configuration;
+		loginWithKeyTab(user, keytabPath);		
 	}
 
 	/**

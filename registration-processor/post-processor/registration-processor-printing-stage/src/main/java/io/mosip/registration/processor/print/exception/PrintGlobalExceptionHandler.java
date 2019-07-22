@@ -16,7 +16,7 @@ import io.vertx.core.json.DecodeException;
 public class PrintGlobalExceptionHandler {
 
 	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintGlobalExceptionHandler.class);
+	private static Logger regProcLogger =  RegProcessorLogger.getLogger(PrintGlobalExceptionHandler.class);
 
 	/**
 	 * Handle timeout exception.

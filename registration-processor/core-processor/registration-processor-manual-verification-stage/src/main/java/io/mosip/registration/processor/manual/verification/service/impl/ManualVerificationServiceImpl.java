@@ -443,7 +443,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 
 	@SuppressWarnings("unchecked")
 	private void checkUserIDExistsInMasterList(UserDto dto) {
-		ResponseWrapper<UserResponseDTOWrapper> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<UserResponseDTOWrapper> responseWrapper;
 		UserResponseDTOWrapper userResponseDTOWrapper;
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(ManualVerificationConstants.USERS);

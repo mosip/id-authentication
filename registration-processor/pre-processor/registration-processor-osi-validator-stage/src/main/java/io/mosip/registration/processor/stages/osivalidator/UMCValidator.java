@@ -122,7 +122,7 @@ public class UMCValidator {
 		pathsegments.add(langCode);
 		pathsegments.add(effectiveDate);
 		RegistrationCenterResponseDto rcpdto = null;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<?> responseWrapper;
 
 		try {
 
@@ -202,7 +202,7 @@ public class UMCValidator {
 		pathsegments.add(langCode);
 		pathsegments.add(effdatetimes);
 		MachineHistoryResponseDto mhrdto;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<?> responseWrapper;
 
 		try {
 
@@ -301,7 +301,7 @@ public class UMCValidator {
 	private boolean validateMapping(List<String> pathsegments, InternalRegistrationStatusDto registrationStatusDto)
 			throws IOException, ApisResourceAccessException {
 		boolean isValidUser = false;
-		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<?> responseWrapper;
 		RegistrationCenterUserMachineMappingHistoryResponseDto userDto = null;
 
 		try {
@@ -730,7 +730,7 @@ public class UMCValidator {
 			pathsegments.add(rcmDto.getRegcntrId());
 			pathsegments.add(primaryLanguagecode);
 			pathsegments.add(rcmDto.getPacketCreationDate());
-			ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+			ResponseWrapper<?> responseWrapper;
 			RegistartionCenterTimestampResponseDto result;
 
 			responseWrapper = (ResponseWrapper<?>) registrationProcessorRestService
