@@ -130,7 +130,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 					.get());
 			
 			LOGGER.info(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
-					APPLICATION_ID, "Sync'ed audit logs updated");
+					APPLICATION_ID, "Sync audit logs updated");
 			
 			auditFactory.audit(AuditEvent.PACKET_ENCRYPTED, Components.PACKET_ENCRYPTOR,
 					registrationDTO.getRegistrationId(), AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());

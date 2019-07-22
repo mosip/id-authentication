@@ -295,7 +295,7 @@ public class BiometricExceptionController extends BaseController implements Init
 	private void fingerExceptionListener(ImageView fingerImage) {
 
 		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
-				APPLICATION_ID, "It will listen the finger click funtionality");
+				APPLICATION_ID, "It will listen the finger on click funtionality");
 
 		SimpleBooleanProperty toggleFunctionForFinger = new SimpleBooleanProperty(false);
 		toggleFunctionForFinger.addListener(new ChangeListener<Boolean>() {
@@ -488,7 +488,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 		LOGGER.info("REGISTRATION - PREVIOUS_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
-				"It will go to the previous page");
+				"Navigate to the previous page");
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {

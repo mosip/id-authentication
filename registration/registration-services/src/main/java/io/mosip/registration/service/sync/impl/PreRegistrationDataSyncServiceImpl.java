@@ -392,7 +392,7 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 
 		LOGGER.info("REGISTRATION - PRE_REGISTRATION_DATA_SYNC - PRE_REGISTRATION_DATA_SYNC_SERVICE_IMPL",
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Get Pre-Registartion ended");
+				"Get Pre-Registration ended");
 
 	}
 

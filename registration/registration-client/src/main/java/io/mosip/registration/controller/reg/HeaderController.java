@@ -431,8 +431,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected ResponseDTO call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - SYNC - HEADER_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the sync activities");
 
 						return jobConfigurationService.executeAllJobs();
 
@@ -518,8 +518,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected String call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - SOFTWARE_UPDATE - HEADER_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the Software Update activities");
 
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);

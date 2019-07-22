@@ -111,7 +111,7 @@ public class SchedulerUtil extends BaseController {
 						if (((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut)
 								&& isShowing == false) {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task remainder alert is called at interval of seconds "
+									"The time task reminder alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT,
 									APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
@@ -251,7 +251,7 @@ public class SchedulerUtil extends BaseController {
 	}
 
 	private void stop() {
-		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, "The time task auto logout login called ");
+		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, "The time task for auto logout and login called ");
 		auditFactory.audit(AuditEvent.SCHEDULER_SESSION_TIMEOUT, Components.SESSION_TIMEOUT, APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 		delay.stop();

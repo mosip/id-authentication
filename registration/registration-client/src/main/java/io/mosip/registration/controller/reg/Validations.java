@@ -421,7 +421,7 @@ public class Validations extends BaseController {
 										+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
 								false);
 
-						LOGGER.error("UIN VALIDATOIN FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						LOGGER.error("UIN VALIDATION FAILED", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 								invalidUinException.getMessage() + ExceptionUtils.getStackTrace(invalidUinException));
 						uinId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);
 						uinId.requestFocus();
@@ -446,7 +446,7 @@ public class Validations extends BaseController {
 									applicationLabelBundle.getString(regId.getId()) + " "
 											+ applicationMessageBundle.getString(RegistrationConstants.REG_DDC_004),
 									false);
-							LOGGER.error("RID VALIDATOIN FAILED", APPLICATION_NAME,
+							LOGGER.error("RID VALIDATION FAILED", APPLICATION_NAME,
 									RegistrationConstants.APPLICATION_ID, invalidRidException.getMessage()
 											+ ExceptionUtils.getStackTrace(invalidRidException));
 							regId.getStyleClass().remove(RegistrationConstants.DEMOGRAPHIC_TEXTFIELD_FOCUSED);

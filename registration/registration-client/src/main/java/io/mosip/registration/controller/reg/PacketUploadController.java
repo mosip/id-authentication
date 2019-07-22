@@ -145,7 +145,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	 */
 	public void syncAndUploadPacket() {
 
-		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNC_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
 		observableList.clear();
 		table.refresh();

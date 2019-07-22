@@ -118,7 +118,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Entering the Registration Controller");
 		try {
 			if (isEditPage() && getRegistrationDTOFromSession() != null) {
 				prepareEditPageContent();
@@ -511,7 +511,7 @@ public class RegistrationController extends BaseController {
 	 */
 	public void displayValidationMessage(String validationMessage) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Showing the validatoin message");
+				RegistrationConstants.APPLICATION_ID, "Showing the validation message");
 		if (validationMessage.length() > 0) {
 			TextArea view = new TextArea(validationMessage);
 			view.setEditable(false);
@@ -525,7 +525,7 @@ public class RegistrationController extends BaseController {
 			primaryStage.show();
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Validatoin message shown successfully");
+					RegistrationConstants.APPLICATION_ID, "Validation message shown successfully");
 		}
 	}
 

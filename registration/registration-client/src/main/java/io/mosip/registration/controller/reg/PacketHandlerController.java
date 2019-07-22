@@ -414,7 +414,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		}
 		ResponseDTO keyResponse = isKeyValid();
 		if (null != keyResponse.getSuccessResponseDTO()) {
-			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration Starting.");
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration Starting.");
 			try {
 				auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
 						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -453,7 +453,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 		} else {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration ended.");
+		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration ended.");
 	}
 
 	/**
@@ -905,7 +905,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 		if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info("REGISTRATION - LOAD_REREGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+			LOGGER.info("REGISTRATION - LOAD_RE_REGISTRATION_SCREEN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 			return;
 		}

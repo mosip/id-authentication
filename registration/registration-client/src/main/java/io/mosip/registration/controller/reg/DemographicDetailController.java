@@ -711,7 +711,7 @@ public class DemographicDetailController extends BaseController {
 	private void initialize() {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Entering the Demographic Details Screen");
 		try {
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(false);
 			if (getRegistrationDTOFromSession() == null) {
@@ -900,7 +900,7 @@ public class DemographicDetailController extends BaseController {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Entering into toggle function for toggle label 1 and toggle level 2");
+					"Entering into toggle function for parent uin or rid");
 
 			switchedOnParentUinOrRid.addListener((observableValue, oldValue, newValue) -> {
 				if (newValue) {
@@ -960,7 +960,7 @@ public class DemographicDetailController extends BaseController {
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Exiting the toggle function for toggle label 1 and toggle level 2");
+					"Exiting the toggle function for parent uin or rid");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -975,7 +975,7 @@ public class DemographicDetailController extends BaseController {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Entering into toggle function for toggle label 1 and toggle level 2");
+					"Entering into toggle function for age and date");
 
 			switchedOn.addListener((observableValue, oldValue, newValue) -> {
 				if (newValue) {
@@ -1047,7 +1047,7 @@ public class DemographicDetailController extends BaseController {
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Exiting the toggle function for toggle label 1 and toggle level 2");
+					"Exiting the toggle function for age and date");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -2112,7 +2112,7 @@ public class DemographicDetailController extends BaseController {
 			});
 
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELD FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}

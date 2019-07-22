@@ -159,7 +159,7 @@ public class MasterSyncServiceImpl extends BaseService implements MasterSyncServ
 		try {
 
 			LOGGER.info(LOG_REG_MASTER_SYNC, APPLICATION_NAME, APPLICATION_ID,
-					"Fetching the last sync and machine Id details from databse Ends");
+					"Fetching the last sync and machine Id details from database Ends");
 
 			LinkedHashMap<String, Object> masterSyncResponse = getMasterSyncJson(triggerPoint, requestParam);
 

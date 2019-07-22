@@ -232,7 +232,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 				}
 				webView.getEngine().loadContent(acknowledgementContent.toString());
 			} catch (FileNotFoundException fileNotFoundException) {
-				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
+				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMENT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(fileNotFoundException));
 			} catch (IOException ioException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - FAILED_WHILE_READING_ACKNOWLEDGEMENT", APPLICATION_NAME,

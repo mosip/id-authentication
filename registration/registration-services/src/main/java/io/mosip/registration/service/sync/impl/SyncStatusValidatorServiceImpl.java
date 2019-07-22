@@ -166,7 +166,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		SyncJobInfo syncJobInfo = syncJObDao.getSyncStatus();
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Fetched SyncJobInfo containing the synccontrol list and yettoexportpacket count");
+				"Fetched SyncJobInfo containing the sync control list and yet to export packet count");
 
 		if (syncJobInfo.getSyncControlList() != null && !syncJobInfo.getSyncControlList().isEmpty()) {
 
@@ -296,7 +296,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		Instant lastCapturedTime = (Instant) map.get(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME);
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Capturing the login time Firsttime login");
+				"Capturing the login time First time login");
 
 		return lastCapturedTime != null && Duration.between(lastCapturedTime, Instant.now()).toHours() < 24;
 	}
@@ -311,7 +311,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Getting the center latitude and longitudes from session conext");
+				"Getting the center latitude and longitudes from session context");
 
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG)))) {

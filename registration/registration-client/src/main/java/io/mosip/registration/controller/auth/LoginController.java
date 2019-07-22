@@ -284,7 +284,7 @@ public class LoginController extends BaseController implements Initializable {
 		try {
 			if (!softwareUpdateHandler.getCurrentVersion().equalsIgnoreCase(version)) {
 
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Software Updated found");
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Software Update found");
 
 				loginRoot.setDisable(true);
 				ResponseDTO responseDTO = softwareUpdateHandler
@@ -629,7 +629,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (bioLoginStatus) {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"FingerPrint validation succeded");
+					"FingerPrint validation success");
 			fingerprintPane.setVisible(false);
 			loadNextScreen(userDTO, RegistrationConstants.FINGERPRINT);
 		} else {
@@ -667,7 +667,7 @@ public class LoginController extends BaseController implements Initializable {
 			irisLoginStatus = validateInvalidLogin(userDTO, RegistrationUIConstants.IRIS_MATCH);
 		}
 		if (irisLoginStatus) {
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris validation succeded");
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris validation success");
 			irisPane.setVisible(false);
 			loadNextScreen(userDTO, RegistrationConstants.IRIS);
 		} else {
@@ -848,8 +848,8 @@ public class LoginController extends BaseController implements Initializable {
 					@Override
 					protected List<String> call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - INITIAL_SYNC - LOGIN_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the sync activities before login");
 
 						return loginService.initialSync();
 					}

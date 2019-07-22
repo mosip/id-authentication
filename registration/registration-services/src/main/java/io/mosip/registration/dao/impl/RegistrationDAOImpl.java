@@ -59,7 +59,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public void save(String zipFileName, RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		try {
-			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registartion had been started");
+			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registartion has been started");
 
 			Timestamp time = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 
@@ -94,7 +94,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			registrationRepository.create(registration);
 
-			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registration had been ended");
+			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registration has been ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.CREATE_PACKET_ENTITY,
 					runtimeException.toString());
@@ -198,7 +198,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	public Registration updateRegStatus(PacketStatusDTO registrationPacket) {
 		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Updating the packet details in the Registation table");
+				"Updating the packet details in the Registration table");
 
 		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 
@@ -228,7 +228,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	public Registration updatePacketSyncStatus(PacketStatusDTO packet) {
 		LOGGER.info("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Updating the packet details in the Registation table");
+				"Updating the packet details in the Registration table");
 
 		Timestamp timestamp = Timestamp.valueOf(DateUtils.getUTCCurrentDateTime());
 		Registration reg = registrationRepository.getOne(packet.getFileName());
@@ -249,7 +249,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
 		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Packet encryption had been ended");
+				"Packet encryption has been ended");
 
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
@@ -264,7 +264,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
 		registrationTransaction.add(regTransaction);
 		LOGGER.info("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Packet encryption had been ended");
+				"Packet encryption has been ended");
 
 		return registrationTransaction;
 	}
@@ -316,7 +316,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	public List<Registration> get(Timestamp crDtimes, String serverStatusCode) {
 
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Retriving Registrations based on crDtime and status");
+				"Retrieving Registrations based on crDtime and status");
 
 		return registrationRepository.findByCrDtimeBeforeAndServerStatusCode(crDtimes, serverStatusCode);
 
@@ -326,7 +326,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	public List<Registration> findByServerStatusCodeIn(List<String> serverStatusCodes) {
 
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Retriving Registrations based on server status codes");
+				"Retrieving Registrations based on server status codes");
 
 		return registrationRepository.findByServerStatusCodeIn(serverStatusCodes);
 
@@ -336,7 +336,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	public List<Registration> findByServerStatusCodeNotIn(List<String> serverStatusCodes) {
 
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Retriving Registrations based on server status codes");
+				"Retrieving Registrations based on server status codes");
 
 		return registrationRepository.findByServerStatusCodeNotInOrServerStatusCodeIsNull(serverStatusCodes);
 
@@ -345,7 +345,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	public List<Registration> fetchPacketsToUpload(List<String> clientStatus, String serverStatus) {
 
 		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
-				"Retriving Registrations based on client and server status codes");
+				"Retrieving Registrations based on client and server status codes");
 
 		return registrationRepository.findByClientStatusCodeInOrServerStatusCodeOrderByUpdDtimesDesc(clientStatus,
 				serverStatus);

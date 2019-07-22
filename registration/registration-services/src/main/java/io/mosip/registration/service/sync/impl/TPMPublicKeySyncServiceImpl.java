@@ -52,7 +52,7 @@ public class TPMPublicKeySyncServiceImpl implements TPMPublicKeySyncService {
 	@SuppressWarnings("unchecked")
 	public String syncTPMPublicKey() throws RegBaseCheckedException {
 
-		LOGGER.info(LoggerConstants.TPM_PUBLIC_KEY_UPLOAD, APPLICATION_NAME, APPLICATION_ID, "Sync'ing TPM Public Key");
+		LOGGER.info(LoggerConstants.TPM_PUBLIC_KEY_UPLOAD, APPLICATION_NAME, APPLICATION_ID, "Sync TPM Public Key");
 
 		try {
 			// Get the Public Key of the TPM Signing Key
@@ -97,7 +97,7 @@ public class TPMPublicKeySyncServiceImpl implements TPMPublicKeySyncService {
 					RegistrationExceptionConstants.TPM_PUBLIC_KEY_UPLOAD.getErrorMessage(), tpmPublicKeySyncRuntimeExp);
 		} finally {
 			LOGGER.info(LoggerConstants.TPM_PUBLIC_KEY_UPLOAD, APPLICATION_NAME, APPLICATION_ID,
-					"Completed sync'ing TPM Public Key");
+					"Completed sync of TPM Public Key");
 		}
 	}
 

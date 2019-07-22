@@ -452,7 +452,7 @@ public class BaseController {
 			Parent root = load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 			getStage().setScene(getScene(root));
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REDIRECLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error("REGISTRATION - REDIRECTLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 	}
@@ -791,7 +791,7 @@ public class BaseController {
 	protected String getOnboardPageDetails(String currentPage, String action) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
-				"Updating OnBoard based on visibility and returning next page details");
+				"Updating OnBoard flow based on visibility and returning next page details");
 
 		return getReturnPage((List<String>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_LIST),
 				currentPage, action);

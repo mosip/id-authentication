@@ -673,7 +673,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	private void setCapturedValues(byte[] capturedBio, double qltyScore, int retry, double thresholdValue) {
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Upadting captured values of biometrics");
+				"Updating captured values of biometrics");
 
 		biometricPane.getStyleClass().clear();
 		biometricPane.getStyleClass().add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
@@ -699,7 +699,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		}
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-				"Upadted captured values of biometrics");
+				"Updated captured values of biometrics");
 	}
 
 	/**

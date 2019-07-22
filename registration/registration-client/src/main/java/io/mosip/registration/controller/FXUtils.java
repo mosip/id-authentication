@@ -239,7 +239,7 @@ public class FXUtils {
 							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 									ApplicationContext.localLanguage(), field.getText()));
 						} catch (RuntimeException runtimeException) {
-							LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+							LOGGER.error("REGISTRATION - TRANSLITERATION ERROR ", APPLICATION_NAME,
 									RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 						}
 					} else {
@@ -319,7 +319,7 @@ public class FXUtils {
 							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 									ApplicationContext.localLanguage(), field.getText()));
 						} catch (RuntimeException runtimeException) {
-							LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+							LOGGER.error("REGISTRATION - TRANSLITERATION ERROR ", APPLICATION_NAME,
 									RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 						}
 					} else {
