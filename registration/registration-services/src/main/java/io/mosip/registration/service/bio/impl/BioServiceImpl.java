@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -710,6 +711,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * 
 	 * @return byte[] of captured Face
 	 */
+	@Override
 	public byte[] captureFace() {
 
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Face");
@@ -717,13 +719,14 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		try {
 			if (isMdmEnabled()) {
-				CaptureResponseDto captureResponseDto=null;
-					captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
+				CaptureResponseDto captureResponseDto = null;
+				captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
 				capturedByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
 			} else
 				capturedByte = RegistrationConstants.FACE.toLowerCase().getBytes();
 		} catch (RegBaseCheckedException | RuntimeException | IOException exception) {
 			exception.printStackTrace();
+
 		}
 		return capturedByte;
 	}

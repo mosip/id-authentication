@@ -186,4 +186,6 @@ public interface BioService {
 	 */
 	boolean validateFaceAgainstDb(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails);
 
+	byte[] captureFace();
+
 }

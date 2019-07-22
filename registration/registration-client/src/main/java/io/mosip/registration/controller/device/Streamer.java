@@ -46,7 +46,9 @@ public class Streamer {
 						ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBytes);
 						Image img = new Image(imageStream);
 						streamImage.setImage(img);
-						scanImage.setImage(img);
+						if (null != scanImage) {
+							scanImage.setImage(img);
+						}
 					} catch (IOException e) {
 						stop();
 					} 

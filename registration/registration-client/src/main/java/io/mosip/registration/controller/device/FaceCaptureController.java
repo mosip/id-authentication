@@ -426,7 +426,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				guardianBiometricsController.getBiometricPane().getStyleClass().clear();
 				guardianBiometricsController.getBiometricPane().getStyleClass()
 						.add(RegistrationConstants.FINGERPRINT_PANES_SELECTED);
-				guardianBiometricsController.setParentBufferedImage(capturedImage);
+//				guardianBiometricsController.setParentBufferedImage(capturedImage);
 				guardianBiometricsController.getContinueBtn().setDisable(false);
 			} catch (Exception ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
