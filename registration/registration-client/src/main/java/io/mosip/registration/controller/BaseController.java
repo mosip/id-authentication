@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 
@@ -37,7 +36,10 @@ import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
+import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.controller.device.WebCameraController;
+import io.mosip.registration.controller.eodapproval.RegistrationApprovalController;
+import io.mosip.registration.controller.reg.AlertController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
 import io.mosip.registration.controller.reg.HeaderController;
@@ -70,6 +72,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -85,7 +88,10 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 /**
@@ -155,6 +161,15 @@ public class BaseController {
 
 	@Autowired
 	private HomeController homeController;
+
+	@Autowired
+	private AlertController alertController;
+
+	@Autowired
+	private ScanPopUpViewController scanPopUpViewController;
+
+	@Autowired
+	private RegistrationApprovalController registrationApprovalController;
 
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
@@ -253,20 +268,38 @@ public class BaseController {
 	 * @param context alert context
 	 */
 	protected void generateAlert(String title, String context) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setHeaderText(null);
-		alert.setContentText(context);
-		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
-		alert.setGraphic(null);
-		alert.getDialogPane().getStylesheets().add(
-				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
-		alert.setResizable(true);
-		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-		alert.showAndWait();
+		try {
+			Stage alertStage = new Stage();
+			Pane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.ALERT_GENERATION));
+			Scene scene = new Scene(authRoot);
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			alertStage.initStyle(StageStyle.UNDECORATED);
+			alertStage.setScene(scene);
+			alertStage.initModality(Modality.WINDOW_MODAL);
+			alertController.getAlertGridPane().setPrefHeight(context.length() / 2 + 110);
+			if (scanPopUpViewController.getPopupStage() != null
+					&& scanPopUpViewController.getPopupStage().isShowing()) {
+				alertController.generateAlertResponse(title, context);
+				alertStage.initOwner(scanPopUpViewController.getPopupStage());
+				alertStage.showAndWait();
+			} else if (registrationApprovalController.getPrimaryStage() != null
+					&& registrationApprovalController.getPrimaryStage().isShowing()) {
+				alertController.generateAlertResponse(title, context);
+				alertStage.initOwner(registrationApprovalController.getPrimaryStage());
+				alertStage.showAndWait();
+			} else {
+				alertStage.initOwner(fXComponents.getStage());
+				alertStage.show();
+				alertController.generateAlertResponse(title, context);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - ALERT - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - ALERT - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
 	}
 
 	/**
@@ -276,20 +309,7 @@ public class BaseController {
 	 * @param context alert context
 	 */
 	protected void generateAlertLanguageSpecific(String title, String context) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setHeaderText(null);
-		alert.setContentText(RegistrationUIConstants.getMessageLanguageSpecific(context));
-		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
-		alert.getDialogPane().getStylesheets().add(
-				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
-		alert.setGraphic(null);
-		alert.setResizable(true);
-		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-		alert.showAndWait();
+		generateAlert(title, RegistrationUIConstants.getMessageLanguageSpecific(context));
 	}
 
 	/**
@@ -298,26 +318,28 @@ public class BaseController {
 	 * @return
 	 */
 	protected boolean pageNavigantionAlert() {
-		if (!fXComponents.getScene().getRoot().getId().equals("mainBox")		
-			&& !SessionContext.map().get(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ).equals(RegistrationConstants.ENABLE)) {
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setHeaderText(null);
-			alert.setTitle(RegistrationUIConstants.INFORMATION);
-			alert.setContentText(RegistrationUIConstants.PAGE_NAVIGATION_MESSAGE);
-			alert.getDialogPane().getStylesheets().add(ClassLoader.getSystemClassLoader()
-					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-			((Button) alert.getDialogPane().lookupButton(ButtonType.OK))
-					.setText(RegistrationUIConstants.PAGE_NAVIGATION_CONFIRM);
-			((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL))
-					.setText(RegistrationUIConstants.PAGE_NAVIGATION_CANCEL);
-			alert.setGraphic(null);
-			alert.setResizable(true);
-			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-			Optional<ButtonType> option = alert.showAndWait();
-			if (option.isPresent())
-				return option.get() == ButtonType.OK;
+		if (!fXComponents.getScene().getRoot().getId().equals("mainBox") && !SessionContext.map()
+				.get(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ).equals(RegistrationConstants.ENABLE)) {
+
+			Alert alert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.INFORMATION,
+					RegistrationUIConstants.ALERT_NOTE_LABEL, RegistrationUIConstants.PAGE_NAVIGATION_MESSAGE,
+					RegistrationConstants.PAGE_NAVIGATION_CONFIRM, RegistrationConstants.PAGE_NAVIGATION_CANCEL);
+
+			alert.show();
+			Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();		
+			Double xValue = screenSize.getWidth()/2 - alert.getWidth()+250;
+			Double yValue = screenSize.getHeight()/2 - alert.getHeight();
+			alert.hide();
+			alert.setX(xValue);
+			alert.setY(yValue);
+			alert.showAndWait();
+			/* Get Option from user */
+			ButtonType result = alert.getResult();
+			if (result == ButtonType.OK) {
+				return true;
+			}else{
+				return false;
+			}
 		}
 		return true;
 	}
@@ -339,8 +361,11 @@ public class BaseController {
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
-			label.setText(context);
+		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB))) {
+			String[] split = context.split("#TYPE#");
+			label.setText(split[0]);
+		}
+
 		Tooltip tool = new Tooltip(context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 		label.setTooltip(tool);
@@ -429,8 +454,9 @@ public class BaseController {
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					clearOnboardData();
-				}else {
-					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.ENABLE);
+				} else {
+					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+							RegistrationConstants.ENABLE);
 				}
 			}
 		} catch (IOException ioException) {
@@ -461,15 +487,15 @@ public class BaseController {
 	 * This method is used clear all the new registration related mapm values and
 	 * navigates to the home page.
 	 */
-	public void goToHomePageFromRegistration() {		
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Going to home page");
+	public void goToHomePageFromRegistration() {
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-			webCameraController.closeWebcam();
-			clearRegistrationData();
-			clearOnboardData();
-			goToHomePage();
-		
+		webCameraController.closeWebcam();
+		clearRegistrationData();
+		clearOnboardData();
+		goToHomePage();
+
 	}
 
 	/**
@@ -477,10 +503,10 @@ public class BaseController {
 	 * navigates to the home page.
 	 */
 	public void goToHomePageFromOnboard() {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Going to home page");
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-			goToHomePage();
+		goToHomePage();
 	}
 
 	/**
@@ -534,11 +560,11 @@ public class BaseController {
 	 */
 	protected void clearOnboardData() {
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-		SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,RegistrationConstants.DISABLE);
+		SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.DISABLE);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, false);
 		SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
-		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);		
+		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 	}
 
 	/**
@@ -884,7 +910,8 @@ public class BaseController {
 						"User Onboard is success and clearing Onboard data");
 
 				clearOnboardData();
-				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,RegistrationConstants.ENABLE);
+				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+						RegistrationConstants.ENABLE);
 				goToHomePage();
 				onboardAlertMsg();
 
@@ -1057,6 +1084,7 @@ public class BaseController {
 	 */
 	protected Alert createAlert(AlertType alertType, String title, String header, String context,
 			String confirmButtonText, String cancelButtonText) {
+
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
@@ -1064,6 +1092,7 @@ public class BaseController {
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		alert.getDialogPane().setMinWidth(500);
 		alert.getDialogPane().getStylesheets().add(
 				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
@@ -1073,7 +1102,9 @@ public class BaseController {
 			Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
 			cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
 		}
-
+		alert.initStyle(StageStyle.UNDECORATED);
+		alert.initModality(Modality.WINDOW_MODAL);
+		alert.initOwner(fXComponents.getStage());
 		return alert;
 	}
 

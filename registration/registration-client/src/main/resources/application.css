@@ -2023,8 +2023,9 @@ Working on new Css by taleev
 
  
  .dialog-pane{
-  -fx-background-color : #FFFFFF;
- }
+-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1); }
  
  .dialog-pane .button{
    -fx-background-color:#FF4081;
@@ -2034,7 +2035,8 @@ Working on new Css by taleev
  }
  
  .dialog-pane:header .header-panel {
-  -fx-background-color: #FFFFFF;
+    -fx-background-color: #FFFFFF;
+    -fx-background-insets: 1;
 }
 
 .schedulerMsg{
@@ -2096,8 +2098,32 @@ Working on new Css by taleev
 	-fx-background-image : url('/images/hover.png');
 			-fx-pref-height: 20;
 	-fx-pref-width: 20;
-	
 }
 
+.alertBox{
+	-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1);
+}
+.dialog-pane:header .header-panel .label{
+  -fx-text-fill:#FF4081;
+  -fx-font-size:28.0px;
+  -fx-padding:20.0 0.0 0.0 10.0
+}
+.dialog-pane > .content.label {
+   -fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+   -fx-padding:0.0 0.0 20.0 20.0
+}
 
-
+.alertHeader{
+	-fx-text-fill:#FF4081;
+    -fx-font-size:28.0px;
+}
+.alertContext{
+	-fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+}
+#alertImage{
+	-fx-background-size: 90.0px 90.0px;
+}

@@ -182,6 +182,20 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private Map<String, Integer> packetIds = new HashMap<>();
 
+	/**
+	 * @return the primaryStage
+	 */
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	/**
+	 * @param primaryStage the primaryStage to set
+	 */
+	public void setPrimaryStage(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

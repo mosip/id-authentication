@@ -356,4 +356,8 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	// SYNC DATE TIME
 	public static final String LAST_DOWNLOADED = bundle.getString("LAST_DOWNLOADED");
 	public static final String LAST_UPDATED = bundle.getString("LAST_UPDATED");
+	
+	//Alert
+	public static final String ALERT_NOTE_LABEL = bundle.getString("ALERT_NOTE_LABEL");
+	public static final String ALERT_FAILED_LABEL = bundle.getString("ALERT_FAILED_LABEL");
 }
