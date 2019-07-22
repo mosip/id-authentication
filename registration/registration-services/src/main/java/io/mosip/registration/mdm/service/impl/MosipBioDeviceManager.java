@@ -237,8 +237,9 @@ public class MosipBioDeviceManager {
 	 * @return CaptureResponseDto - captured biometric values from the device
 	 * @throws RegBaseCheckedException
 	 *             - generalised exception with errorCode and errorMessage
+	 * @throws IOException 
 	 */
-	public CaptureResponseDto scan(String deviceType) throws RegBaseCheckedException {
+	public CaptureResponseDto scan(String deviceType) throws RegBaseCheckedException, IOException {
 
 		BioDevice bioDevice = findDeviceToScan(deviceType);
 		if (bioDevice != null) {
@@ -248,8 +249,8 @@ public class MosipBioDeviceManager {
 		} else {
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device not found in the device registery");
-			throw new RegBaseCheckedException();
 		}
+		throw new RegBaseCheckedException();
 
 	}
 
@@ -274,19 +275,13 @@ public class MosipBioDeviceManager {
 		return bioDevice;
 	}
 	
-	public InputStream stream(String deviceType) {
+	public InputStream stream(String deviceType) throws RegBaseCheckedException, IOException {
 
 		BioDevice bioDevice=null;
-		try {
 			bioDevice = findDeviceToScan(deviceType);
 			if (bioDevice != null) 
 				return bioDevice.stream();
 			return null;
-		} catch (RegBaseCheckedException | IOException exception ) {
-			exception.printStackTrace();
-		}
-		return null;
-
 	
 	}
 

@@ -208,16 +208,17 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 *            the finger type
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
+	 * @throws IOException 
 	 */
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
-			throws RegBaseCheckedException {
+			throws RegBaseCheckedException, IOException {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
+		if(captureResponseDto==null)
+			throw new RegBaseCheckedException("","Decice is not available");
+		if(captureResponseDto.getError().getErrorCode().equals(""))
+			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
-		try {
-			decode(captureResponseDto);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		decode(captureResponseDto);
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
 		mosipBioDeviceDataResponses.forEach(captured->{
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
@@ -268,14 +269,11 @@ public class BioServiceImpl extends BaseService implements BioService {
 			// can remove
 			// this.
 
-			if (fingerType.equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.LEFT.toUpperCase())) {
+			if (fingerType.equals(RegistrationConstants.FINGERPRINT_SLAB_LEFT)) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.LEFTHAND_SLAP_FINGERPRINT_PATH);
-			} else if (fingerType.equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.RIGHT.toUpperCase())) {
+			} else if (fingerType.equals(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.RIGHTHAND_SLAP_FINGERPRINT_PATH);
-			} else if (fingerType.equals(RegistrationConstants.FINGER_SLAB + RegistrationConstants.UNDER_SCORE
-					+ RegistrationConstants.THUMBS.toUpperCase())) {
+			} else if (fingerType.equals(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)) {
 				fingerMap = getFingerPrintScannedImageWithStub(RegistrationConstants.BOTH_THUMBS_FINGERPRINT_PATH);
 			}
 
@@ -366,9 +364,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 *            the finger type
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
+	 * @throws IOException 
 	 */
 	public void getFingerPrintImageAsDTO(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
-			throws RegBaseCheckedException {
+			throws RegBaseCheckedException, IOException {
 
 		if (isMdmEnabled())
 			getFingerPrintImageAsDTOWithMdm(fpDetailsDTO, fingerType);
@@ -568,7 +567,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * registration.dto.biometric.IrisDetailsDTO, java.lang.String)
 	 */
 	@Override
-	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException {
+	public void getIrisImageAsDTO(IrisDetailsDTO irisDetailsDTO, String irisType) throws RegBaseCheckedException, IOException {
 
 		if (RegistrationConstants.ENABLE
 				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
@@ -583,8 +582,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @param detailsDTO
 	 * @param eyeType
 	 * @throws RegBaseCheckedException
+	 * @throws IOException 
 	 */
-	private void getIrisImageAsDTOWithMdm(IrisDetailsDTO detailsDTO, String eyeType) throws RegBaseCheckedException {
+	private void getIrisImageAsDTOWithMdm(IrisDetailsDTO detailsDTO, String eyeType) throws RegBaseCheckedException, IOException {
 
 		String type = eyeType;
 		switch (eyeType) {
@@ -717,11 +717,12 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		try {
 			if (isMdmEnabled()) {
-				CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
+				CaptureResponseDto captureResponseDto=null;
+					captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
 				capturedByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
 			} else
 				capturedByte = RegistrationConstants.FACE.toLowerCase().getBytes();
-		} catch (RegBaseCheckedException | RuntimeException exception) {
+		} catch (RegBaseCheckedException | RuntimeException | IOException exception) {
 			exception.printStackTrace();
 		}
 		return capturedByte;

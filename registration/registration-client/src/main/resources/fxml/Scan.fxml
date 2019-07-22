@@ -28,7 +28,7 @@
                   <Label fx:id="popupTitle" layoutX="250.0" layoutY="9.0" styleClass="scanPopupHeaderTitle" />
                   <Hyperlink layoutX="528.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit">
                      <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="close" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#Close" >
                            <image>
                               <Image url="@../images/DocumentClose.png" />
                            </image>
@@ -86,7 +86,7 @@
                                     <Text fx:id="totalScannedPages" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
                                     <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#save" styleClass="scanButton" text="%save">
                                     </Button>
-                                    <Button mnemonicParsing="false" onAction="#scan" styleClass="scanButton" text="%scan">
+                                    <Button mnemonicParsing="false" onAction="#scan" styleClass="scanButton" text="%capture">
                                     </Button>
                                  </children>
                               </VBox>
