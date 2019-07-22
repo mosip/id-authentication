@@ -9,6 +9,7 @@ import java.net.SocketTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,15 +26,19 @@ public class Streamer {
 	@Autowired
 	private MosipBioDeviceManager mosipBioDeviceManager;
 
-	private Thread t = null;
+	private Thread streamer_thread = null;
 
 	public void startStream(String bioType, ImageView streamImage, ImageView scanImage) {
 
-		t = new Thread(new Runnable() {
+		streamer_thread = new Thread(new Runnable() {
 
 			public void run() {
 
-				urlStream = mosipBioDeviceManager.stream(bioType);
+				try {
+					urlStream = mosipBioDeviceManager.stream(bioType);
+				} catch (RegBaseCheckedException | IOException e1) {
+					stop();
+				} 
 				isRunning = true;
 				while (isRunning) {
 					try {
@@ -42,26 +47,15 @@ public class Streamer {
 						Image img = new Image(imageStream);
 						streamImage.setImage(img);
 						scanImage.setImage(img);
-					} catch (SocketTimeoutException ste) {
-						stop();
-
 					} catch (IOException e) {
-						System.err.println("failed stream read: " + e);
 						stop();
-					}
-				}
-
-				// close streams
-				try {
-					urlStream.close();
-				} catch (IOException ioe) {
-					System.err.println("Failed to close the stream: " + ioe);
+					} 
 				}
 			}
 
 		}, "STREAMER_THREAD");
 
-		t.start();
+		streamer_thread.start();
 
 	}
 	
@@ -121,9 +115,9 @@ public class Streamer {
      * Stop the loop, and allow it to clean up
      */
     public synchronized void stop() {
-    	if(t!=null) {
+    	if(streamer_thread!=null) {
         isRunning = false;
-        t.stop();
+        streamer_thread.stop();
         try {
 			urlStream.close();
 		} catch (IOException e) {

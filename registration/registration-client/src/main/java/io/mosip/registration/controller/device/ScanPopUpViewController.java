@@ -67,6 +67,8 @@ public class ScanPopUpViewController extends BaseController {
 
 	private boolean isDocumentScan;
 	
+	@Autowired
+	private Streamer streamer;
 
 	
 	
@@ -199,6 +201,11 @@ public class ScanPopUpViewController extends BaseController {
 
 	public void setScanningMsg(Text scanningMsg) {
 		this.scanningMsg = scanningMsg;
+	}
+	
+	@FXML
+	public void Close() {
+		streamer.stop();
 	}
 
 }

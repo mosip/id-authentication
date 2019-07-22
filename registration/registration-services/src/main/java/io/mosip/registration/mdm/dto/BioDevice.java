@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.Consts;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -64,8 +65,8 @@ public class BioDevice {
 	private String deviceProviderName;
 	private String deviceProviderId;
 	private String timestamp;
-	
-	private Map<String, Integer>  deviceSubIdMapper = new HashMap<String,Integer>() {
+
+	private Map<String, Integer> deviceSubIdMapper = new HashMap<String, Integer>() {
 		{
 
 			put("LEFT", 1);
@@ -73,38 +74,31 @@ public class BioDevice {
 			put("THUMBS", 3);
 		}
 	};
-	
 
 	private IMosipBioDeviceIntegrator mosipBioDeviceIntegrator;
 
-	public CaptureResponseDto capture() throws RegBaseCheckedException {
+	public CaptureResponseDto capture() throws RegBaseCheckedException, IOException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.CAPTURE_ENDPOINT;
-		
+
 		CaptureResponseDto captureResponse = null;
 
 		/* build the request object for capture */
 		CaptureRequestDto mosipBioCaptureRequestDto = MdmRequestResponseBuilder.buildMosipBioCaptureRequestDto(this);
-		String requestBody=null;
+		String requestBody = null;
 		ObjectMapper mapper = new ObjectMapper();
-		try {
-			requestBody = mapper.writeValueAsString(mosipBioCaptureRequestDto);
-			 CloseableHttpClient client = HttpClients.createDefault();
-			   StringEntity requestEntity = new StringEntity(requestBody, ContentType.create("Content-Type", Consts.UTF_8));
-			  HttpUriRequest  request = RequestBuilder.create("RCAPTURE").setUri(url).setEntity(requestEntity).build();
-			 CloseableHttpResponse response = client.execute(request);
-			 captureResponse = mapper.readValue(EntityUtils.toString(response.getEntity()).getBytes(), CaptureResponseDto.class);
+		requestBody = mapper.writeValueAsString(mosipBioCaptureRequestDto);
+		CloseableHttpClient client = HttpClients.createDefault();
+		StringEntity requestEntity = new StringEntity(requestBody, ContentType.create("Content-Type", Consts.UTF_8));
+		HttpUriRequest request = RequestBuilder.create("RCAPTURE").setUri(url).setEntity(requestEntity).build();
+		CloseableHttpResponse response = client.execute(request);
+		captureResponse = mapper.readValue(EntityUtils.toString(response.getEntity()).getBytes(),
+				CaptureResponseDto.class);
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
 		return captureResponse;
 
 	}
-	
+
 	public InputStream stream() throws IOException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.STREAM_ENDPOINT;
@@ -124,9 +118,8 @@ public class BioDevice {
 		con.setReadTimeout(5000);
 		con.connect();
 		InputStream urlStream = con.getInputStream();
-		
-		return urlStream;
 
+		return urlStream;
 
 	}
 
@@ -134,7 +127,7 @@ public class BioDevice {
 		return null;
 
 	}
-	
+
 	public void buildDeviceSubId(String slapType) {
 		setDeviceSubId(deviceSubIdMapper.get(slapType));
 	}
