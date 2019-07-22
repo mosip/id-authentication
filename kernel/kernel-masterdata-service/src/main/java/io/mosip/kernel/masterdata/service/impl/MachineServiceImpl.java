@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.constant.MachineErrorCode;
+import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
@@ -32,6 +33,7 @@ import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Machine;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
@@ -40,6 +42,7 @@ import io.mosip.kernel.masterdata.entity.MachineType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachine;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDevice;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachine;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -59,6 +62,7 @@ import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.OptionalFilter;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
@@ -109,6 +113,9 @@ public class MachineServiceImpl implements MachineService {
 
 	@Autowired
 	private FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	private ZoneUtils zoneUtils;
 
 	/*
 	 * (non-Javadoc)
@@ -373,15 +380,26 @@ public class MachineServiceImpl implements MachineService {
 	 * kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<MachineExtnDto> searchMachine(SearchDto dto) {
-		PageResponseDto<MachineExtnDto> pageDto = new PageResponseDto<>();
-		List<MachineExtnDto> machines = null;
+	public PageResponseDto<MachineSearchDto> searchMachine(SearchDto dto) {
+		PageResponseDto<MachineSearchDto> pageDto = new PageResponseDto<>();
+		List<MachineSearchDto> machines = null;
 		List<SearchFilter> addList = new ArrayList<>();
 		List<SearchFilter> removeList = new ArrayList<>();
 		List<String> mappedMachineIdList = null;
-
+		List<SearchFilter> zoneFilter = new ArrayList<>();
+		List<Zone> zones = null;
+		boolean flag = true;
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
+			if (MasterDataConstant.ZONE.equalsIgnoreCase(column)) {
+				Zone zone = getZone(filter);
+				if (zone != null) {
+					zones = zoneUtils.getZones(zone);
+					zoneFilter.addAll(buildZoneFilter(zones));
+				}
+				removeList.add(filter);
+				flag = false;
+			}
 
 			if (column.equalsIgnoreCase("mapStatus")) {
 
@@ -445,21 +463,110 @@ public class MachineServiceImpl implements MachineService {
 			}
 
 		}
+		if (flag) {
+			zones = zoneUtils.getUserZones();
+			if (zones != null && !zones.isEmpty())
+				zoneFilter.addAll(buildZoneFilter(zones));
+			else
+				throw new MasterDataServiceException(MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorCode(),
+						MachineErrorCode.MACHINE_NOT_TAGGED_TO_ZONE.getErrorMessage());
+		}
 		dto.getFilters().removeAll(removeList);
 
-		if (filterValidator.validate(MachineExtnDto.class, dto.getFilters())) {
+		if (filterValidator.validate(MachineSearchDto.class, dto.getFilters())) {
 			OptionalFilter optionalFilter = new OptionalFilter(addList);
+			OptionalFilter zoneOptionalFilter = new OptionalFilter(zoneFilter);
 			Page<Machine> page = masterdataSearchHelper.searchMasterdata(Machine.class, dto,
-					new OptionalFilter[] { optionalFilter });
+					new OptionalFilter[] { optionalFilter, zoneOptionalFilter });
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
-				machines = MapperUtils.mapAll(page.getContent(), MachineExtnDto.class);
+				machines = MapperUtils.mapAll(page.getContent(), MachineSearchDto.class);
+				setMachineMetadata(machines, zones);
 				pageDto.setData(machines);
 			}
 
 		}
 		return pageDto;
+	}
 
+	/**
+	 * Method to set each machine zone meta data.
+	 * 
+	 * @param list
+	 *            list of {@link MachineSearchDto}.
+	 * @param zones
+	 *            the list of zones.
+	 */
+	public void setMachineMetadata(List<MachineSearchDto> list, List<Zone> zones) {
+		list.forEach(i -> setZoneMetadata(i, zones));
+	}
+
+	/**
+	 * Method to set Zone metadata
+	 * 
+	 * @param machines
+	 *            metadata to be added
+	 * @param zones
+	 *            list of zones
+	 * 
+	 */
+	private void setZoneMetadata(MachineSearchDto machines, List<Zone> zones) {
+		Optional<Zone> zone = zones.stream().filter(
+				i -> i.getCode().equals(machines.getZoneCode()) && i.getLangCode().equals(machines.getLangCode()))
+				.findFirst();
+		if (zone.isPresent()) {
+			machines.setZone(zone.get().getName());
+		}
+	}
+
+	/**
+	 * Search the zone in the based on the received input filter
+	 * 
+	 * @param filter
+	 *            search input
+	 * @return {@link Zone} if successful otherwise throws
+	 *         {@link MasterDataServiceException}
+	 */
+	public Zone getZone(SearchFilter filter) {
+		filter.setColumnName(MasterDataConstant.NAME);
+		Page<Zone> zones = masterdataSearchHelper.searchMasterdata(Zone.class,
+				new SearchDto(Arrays.asList(filter), Collections.emptyList(), new Pagination(), null), null);
+		if (zones.hasContent()) {
+			return zones.getContent().get(0);
+		} else {
+			throw new MasterDataServiceException(MachineErrorCode.ZONE_NOT_EXIST.getErrorCode(),
+					String.format(MachineErrorCode.ZONE_NOT_EXIST.getErrorMessage(), filter.getValue()));
+		}
+	}
+
+	/**
+	 * Creating Search filter from the passed zones
+	 * 
+	 * @param zones
+	 *            filter to be created with the zones
+	 * @return list of {@link SearchFilter}
+	 */
+	public List<SearchFilter> buildZoneFilter(List<Zone> zones) {
+		if (zones != null && !zones.isEmpty()) {
+			return zones.stream().filter(Objects::nonNull).map(Zone::getCode).distinct().map(this::buildZoneFilter)
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Method to create SearchFilter for the recieved zoneCode
+	 * 
+	 * @param zoneCode
+	 *            input from the {@link SearchFilter} has to be created
+	 * @return {@link SearchFilter}
+	 */
+	private SearchFilter buildZoneFilter(String zoneCode) {
+		SearchFilter filter = new SearchFilter();
+		filter.setColumnName(MasterDataConstant.ZONE_CODE);
+		filter.setType(FilterTypeEnum.EQUALS.name());
+		filter.setValue(zoneCode);
+		return filter;
 	}
 
 	/**
@@ -562,18 +669,16 @@ public class MachineServiceImpl implements MachineService {
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				masterDataFilterHelper.filterValues(Machine.class, filterDto.getColumnName(), filterDto.getType(),
-						filterValueDto.getLanguageCode()).forEach(filterValue -> {
-							if (filterValue != null) {
-								ColumnValue columnValue = new ColumnValue();
-								columnValue.setFieldID(filterDto.getColumnName());
-								columnValue.setFieldValue(filterValue.toString());
-								columnValueList.add(columnValue);
-							}
-						});
+				List<?> filterValues = masterDataFilterHelper.filterValues(Machine.class, filterDto,
+						filterValueDto);
+				filterValues.forEach(filterValue -> {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.toString());
+					columnValueList.add(columnValue);
+				});
 			}
 			filterResponseDto.setFilters(columnValueList);
-
 		}
 		return filterResponseDto;
 	}

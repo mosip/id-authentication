@@ -55,8 +55,6 @@ import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
-import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
-import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
@@ -84,6 +82,9 @@ import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
+import io.mosip.preregistration.core.common.entity.RegistrationBookingPK;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
@@ -703,11 +704,10 @@ public class BookingServiceUtil {
 	 * @return
 	 */
 	public RegistrationBookingEntity bookingEntitySetter(String preRegistrationId,
-			BookingRequestDTO bookingRequestDTO) {
+			BookingRequestDTO bookingRequestDTO) {// should set preid
 		log.info("sessionId", "idType", "id", "In bookingEntitySetter method of Booking Service Util");
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
-		entity.setBookingPK(
-				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
+		entity.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		entity.setRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
 		entity.setId(UUIDGeneratorUtil.generateId());
 		entity.setLangCode("12L");
@@ -716,6 +716,9 @@ public class BookingServiceUtil {
 		entity.setRegDate(LocalDate.parse(bookingRequestDTO.getRegDate()));
 		entity.setSlotFromTime(LocalTime.parse(bookingRequestDTO.getSlotFromTime()));
 		entity.setSlotToTime(LocalTime.parse(bookingRequestDTO.getSlotToTime()));
+		DemographicEntity demographicEntity = new DemographicEntity();
+		demographicEntity.setPreRegistrationId(preRegistrationId);
+		entity.setDemographicEntity(demographicEntity);
 		return entity;
 	}
 

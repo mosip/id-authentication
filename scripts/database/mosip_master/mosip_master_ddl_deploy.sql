@@ -70,5 +70,9 @@
 \ir ddl/master-user_role.sql
 \ir ddl/master-valid_document.sql
 
-\ir ddl/AlterFK_master_schema.sql
-\ir ddl/AlterFK_master_dropLang.sql
+\ir ddl/master-zone.sql
+\ir ddl/master-zone_user.sql
+\ir ddl/master-zone_user_h.sql
+
+\ir ddl/master-fk.sql
+\ir ddl/master-drop_fk.sql

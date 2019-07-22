@@ -1,0 +1,118 @@
+testdata: 
+  Authentication_Demographic_Address_With_fra and ara_IntegrationTest_smoke_pos_01:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine30: $TestData:primary_lang_code$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      identityReq.languageaddressLine10: $TestData:primary_lang_code$
+      identityReq.languageaddressLine20: $TestData:primary_lang_code$
+      identityReq.languageaddressLine31: $TestData:secondary_lang_code$
+      identityReq.valueaddressLine11: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:secondary_lang_code$
+      identityReq.valueaddressLine21: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:secondary_lang_code$
+      identityReq.valueaddressLine31: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:secondary_lang_code$
+      identityReq.languageaddressLine11: $TestData:secondary_lang_code$
+      identityReq.languageaddressLine21: $TestData:secondary_lang_code$
+      identityReq.valueregion1:  $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:secondary_lang_code$
+      identityReq.valueregion0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      identityReq.languageregion1: $TestData:secondary_lang_code$ 
+      identityReq.languageregion0: $TestData:primary_lang_code$
+      identityReq.valueprovince1:  $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:secondary_lang_code$
+      identityReq.valueprovince0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      identityReq.languageprovince1: $TestData:secondary_lang_code$
+      identityReq.languageprovince0: $TestData:primary_lang_code$
+      identityReq.valuecity1: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:secondary_lang_code$
+      identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      identityReq.languagecity0: $TestData:primary_lang_code$
+      identityReq.languagecity1: $TestData:secondary_lang_code$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: $TestData:auth_Pass_status$
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$
+      
+  Authentication_Demographic_Address_With_fra_IntegrationTest_smoke_pos_02:
+    endpoint.url:
+      partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
+    input.demo-auth-request:
+      AuthReq.individualId: $UIN$
+      AuthReq.requestTime: $TIMESTAMP$
+      AuthReq.transactionID: $RANDOM:N:10$
+    input.identity-encrypt-data:
+      identityReq.languageaddressLine30: $TestData:primary_lang_code$
+      identityReq.valueaddressLine10: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine1:langcode:TestData:primary_lang_code$
+      identityReq.valueaddressLine20: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine2:langcode:TestData:primary_lang_code$
+      identityReq.valueaddressLine30: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueaddressLine3:langcode:TestData:primary_lang_code$
+      identityReq.languageaddressLine10: $TestData:primary_lang_code$
+      identityReq.languageaddressLine20: $TestData:primary_lang_code$
+      identityReq.languageaddressLine31: $REMOVE$
+      identityReq.valueaddressLine11: $REMOVE$
+      identityReq.valueaddressLine21: $REMOVE$
+      identityReq.valueaddressLine31: $REMOVE$
+      identityReq.languageaddressLine11: $REMOVE$
+      identityReq.languageaddressLine21: $REMOVE$
+      identityReq.valueregion1: $REMOVE$
+      identityReq.valueregion0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueregion:langcode:TestData:primary_lang_code$
+      identityReq.languageregion1: $REMOVE$ 
+      identityReq.languageregion0: $TestData:primary_lang_code$
+      identityReq.valueprovince1:  $REMOVE$
+      identityReq.valueprovince0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valueprovince:langcode:TestData:primary_lang_code$
+      identityReq.languageprovince1: $REMOVE$
+      identityReq.languageprovince0: $TestData:primary_lang_code$
+      identityReq.valuecity1: $REMOVE$
+      identityReq.valuecity0: $idrepo~$input.demo-auth-request:AuthReq.individualId$~valuecity:langcode:TestData:primary_lang_code$
+      identityReq.languagecity0: $TestData:primary_lang_code$
+      identityReq.languagecity1: $REMOVE$
+      #identityReq.postalCode: $idrepo~$input.demo-auth-request:AuthReq.individualId$~postalCode:langcode:TestData:primary_lang_code$      
+      #identityReq.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      identityReq.timestamp: $TIMESTAMP$
+    output.output-1-expected-y-res:
+      output.1.response.y.status: $TestData:auth_Pass_status$
+      output.1.response.y.responseTime: $TIMESTAMP$
+      output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
+      output.1.response.y.staticToken: $TOKENID~$input.demo-auth-request:AuthReq.individualId$~$endpoint.url:partnerIDMispLK$
+    #audit log
+    audit.auth_transaction:
+      refId: $input.demo-auth-request:AuthReq.individualId$
+      txnId: $input.demo-auth-request:AuthReq.transactionID$
+      authTypeCode: $TestData:auth_transaction_DEMO_authTypeCode$
+      statusCode: $TestData:auth_transaction_success_statusCode$
+      reqTime: $FETCH$
+      resTime: $FETCH$
+      statusComment: $TestData:auth_transaction_DEMO_success_statusComment$
+      idType: $TestData:auth_transaction_UIN_idType$
+    audit.audit_log:
+      refId:  $input.demo-auth-request:AuthReq.individualId$
+      eventId: $TestData:audit_log_eventId$
+      eventName: $TestData:audit_log_auth_eventName$
+      appId: $TestData:audit_log_ida_appId$
+      appName: $TestData:audit_log_ida_appName$
+      moduleName: $TestData:audit_log_demo_moduleName$
+      refIdType: $TestData:audit_log_UIN_refIdType$

@@ -329,7 +329,7 @@ testdata:
       output.1.response.n.err.errorCode: $errors:MissingtransactionID:errorCode$
       output.1.response.y.transactionID: $input.demo-auth-request:AuthReq.transactionID$
    
-  Authentication_Demographic_PhoneNumber_smoke_For VID_Pos_21:
+  Authentication_Demographic_PhoneNumber_For VID_Pos_21:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidPIDMLK$
     input.demo-auth-request:

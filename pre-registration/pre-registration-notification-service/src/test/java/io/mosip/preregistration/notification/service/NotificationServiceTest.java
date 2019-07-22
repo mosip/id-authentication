@@ -136,7 +136,7 @@ public class NotificationServiceTest {
 		notificationDTO.setPreRegistrationId("20180396713560");
 		notificationDTO.setMobNum("8124567898");
 		notificationDTO.setEmailID("sanober.noor2@mindtree.com");
-		notificationDTO.setAppointmentDate("12/01/2018");
+		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("09:00 AM");
 		notificationDTO.setAdditionalRecipient(true);
 		notificationDTO.setIsBatch(false);
@@ -174,7 +174,7 @@ public class NotificationServiceTest {
 
 
 		BookingRegistrationDTO bookingResponse = new BookingRegistrationDTO();
-		bookingResponse.setRegDate("12/01/2018");
+		bookingResponse.setRegDate("2019-01-22");
 		bookingResponse.setRegistrationCenterId("1");
 		bookingResponse.setSlotFromTime("09:00");
 		bookingResponse.setSlotToTime("10:00");
@@ -342,8 +342,68 @@ public class NotificationServiceTest {
 	 * 
 	 * @throws JsonProcessingException
 	 */
-	//@Test(expected = MandatoryFieldException.class)
-	public void sendNotificationExceptionTest() throws JsonProcessingException {
+	@Test(expected = MandatoryFieldException.class)
+	public void sendNotificationExceptionTest1() throws JsonProcessingException {
+		notificationDTO = new NotificationDTO();
+		notificationDTO.setName("sanober Noor");
+		notificationDTO.setPreRegistrationId("1234567890");
+		notificationDTO.setMobNum(null);
+		notificationDTO.setEmailID(null);
+		notificationDTO.setAppointmentDate(null);
+		notificationDTO.setAppointmentTime("22:57");
+		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setIsBatch(false);
+		mainReqDto.setRequest(notificationDTO);
+		responseDTO = new MainResponseDTO<>();
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		String stringjson = mapper.writeValueAsString(mainReqDto);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
+		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
+
+	}
+	
+	@Test(expected = MandatoryFieldException.class)
+	public void sendNotificationExceptionTest2() throws JsonProcessingException {
+		notificationDTO = new NotificationDTO();
+		notificationDTO.setName("sanober Noor");
+		notificationDTO.setPreRegistrationId("1234567890");
+		notificationDTO.setMobNum(null);
+		notificationDTO.setEmailID(null);
+		notificationDTO.setAppointmentDate("2019-01-20");
+		notificationDTO.setAppointmentTime("22:57");
+		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setIsBatch(false);
+		mainReqDto.setRequest(notificationDTO);
+		responseDTO = new MainResponseDTO<>();
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		String stringjson = mapper.writeValueAsString(mainReqDto);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
+		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
+
+	}
+	
+	@Test(expected = MandatoryFieldException.class)
+	public void sendNotificationExceptionTest3() throws JsonProcessingException {
 		notificationDTO = new NotificationDTO();
 		notificationDTO.setName("sanober Noor");
 		notificationDTO.setPreRegistrationId("1234567890");
@@ -352,16 +412,142 @@ public class NotificationServiceTest {
 		notificationDTO.setAppointmentDate("2019-01-22");
 		notificationDTO.setAppointmentTime("22:57");
 		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setIsBatch(false);
 		mainReqDto.setRequest(notificationDTO);
 		responseDTO = new MainResponseDTO<>();
 		response.setMessage("Email and sms request successfully submitted");
 		responseDTO.setResponse(response);
 		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
 		String stringjson = mapper.writeValueAsString(mainReqDto);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
 		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
 		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
-		assertEquals("MOBILE_NUMBER_OR_EMAIL_ADDRESS_NOT_FILLED", response.getResponse());
+
+	}
+	
+	@Test(expected = MandatoryFieldException.class)
+	public void sendNotificationExceptionTest4() throws JsonProcessingException {
+		notificationDTO = new NotificationDTO();
+		notificationDTO.setName("sanober Noor");
+		notificationDTO.setPreRegistrationId("1234567890");
+		notificationDTO.setMobNum(null);
+		notificationDTO.setEmailID(null);
+		notificationDTO.setAppointmentDate("2019-01-22");
+		notificationDTO.setAppointmentTime(null);
+		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setIsBatch(false);
+		mainReqDto.setRequest(notificationDTO);
+		responseDTO = new MainResponseDTO<>();
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		String stringjson = mapper.writeValueAsString(mainReqDto);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
+		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
 
 	}
 
+	@Test(expected = MandatoryFieldException.class)
+	public void sendNotificationExceptionTest5() throws JsonProcessingException {
+		notificationDTO = new NotificationDTO();
+		notificationDTO.setName("sanober Noor");
+		notificationDTO.setPreRegistrationId("1234567890");
+		notificationDTO.setMobNum(null);
+		notificationDTO.setEmailID(null);
+		notificationDTO.setAppointmentDate("2019-01-22");
+		notificationDTO.setAppointmentTime("09:00 AM");
+		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setIsBatch(false);
+		mainReqDto.setRequest(notificationDTO);
+		responseDTO = new MainResponseDTO<>();
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		String stringjson = mapper.writeValueAsString(mainReqDto);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
+		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
+
+	}
+	
+	@Test(expected = MandatoryFieldException.class)
+	public void sendNotificationExceptionTest6() throws JsonProcessingException {
+		notificationDTO = new NotificationDTO();
+		notificationDTO.setName("sanober Noor");
+		notificationDTO.setPreRegistrationId("1234567890");
+		notificationDTO.setMobNum("23456677");
+		notificationDTO.setEmailID("@mindtree.com");
+		notificationDTO.setAppointmentDate("2019-01-22");
+		notificationDTO.setAppointmentTime("09:00 AM");
+		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setIsBatch(false);
+		mainReqDto.setRequest(notificationDTO);
+		responseDTO = new MainResponseDTO<>();
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		String stringjson = mapper.writeValueAsString(mainReqDto);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
+		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
+
+	}
+	@Test(expected = MandatoryFieldException.class)
+	public void sendNotificationExceptionTest7() throws JsonProcessingException {
+		notificationDTO = new NotificationDTO();
+		notificationDTO.setName("sanober Noor");
+		notificationDTO.setPreRegistrationId("1234567890");
+		notificationDTO.setMobNum(null);
+		notificationDTO.setEmailID("@mindtree.com");
+		notificationDTO.setAppointmentDate("2019-01-22");
+		notificationDTO.setAppointmentTime("09:00 AM");
+		notificationDTO.setAdditionalRecipient(true);
+		notificationDTO.setIsBatch(false);
+		mainReqDto.setRequest(notificationDTO);
+		responseDTO = new MainResponseDTO<>();
+		response.setMessage("Email and sms request successfully submitted");
+		responseDTO.setResponse(response);
+		responseDTO.setResponsetime(serviceUtil.getCurrentResponseTime());
+		String stringjson = mapper.writeValueAsString(mainReqDto);
+		ResponseEntity<MainResponseDTO<DemographicResponseDTO>> demores = new ResponseEntity<>(demographicdto, HttpStatus.OK);
+		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> bookingres = new ResponseEntity<>(bookingResultDto, HttpStatus.OK);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DemographicResponseDTO>>() {
+				}))).thenReturn(demores);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+				}),Mockito.anyMap())).thenReturn(bookingres);
+		MultipartFile file = new MockMultipartFile("test.txt", "test.txt", null, new byte[1100]);
+		MainResponseDTO<ResponseDTO> response = service.sendNotification(stringjson, "eng", file);
+
+	}
 }

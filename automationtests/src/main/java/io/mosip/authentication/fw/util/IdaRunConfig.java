@@ -75,6 +75,43 @@ public class IdaRunConfig extends RunConfig{
 	private String internalEncryptionPath;
 	private String validateSignaturePath;
 	private String encryptionPort;
+	private String idRepoRegenerateVID;
+	private String idRepoRetrieveUINByVIDPath;
+	private String dbIdrepoUrl;
+	private String dbIdrepoTableName;
+	private String dbIdrepoSchemaName;
+	private String dbIdrepoUserName;
+	public String getDbIdrepoUrl() {
+		return dbIdrepoUrl;
+	}
+	public void setDbIdrepoUrl(String dbIdrepoUrl) {
+		this.dbIdrepoUrl = dbIdrepoUrl;
+	}
+	public String getDbIdrepoTableName() {
+		return dbIdrepoTableName;
+	}
+	public void setDbIdrepoTableName(String dbIdrepoTableName) {
+		this.dbIdrepoTableName = dbIdrepoTableName;
+	}
+	public String getDbIdrepoSchemaName() {
+		return dbIdrepoSchemaName;
+	}
+	public void setDbIdrepoSchemaName(String dbIdrepoSchemaName) {
+		this.dbIdrepoSchemaName = dbIdrepoSchemaName;
+	}
+	public String getDbIdrepoUserName() {
+		return dbIdrepoUserName;
+	}
+	public void setDbIdrepoUserName(String dbIdrepoUserName) {
+		this.dbIdrepoUserName = dbIdrepoUserName;
+	}
+	public String getDbIdrepoPwd() {
+		return dbIdrepoPwd;
+	}
+	public void setDbIdrepoPwd(String dbIdrepoPwd) {
+		this.dbIdrepoPwd = dbIdrepoPwd;
+	}
+	private String dbIdrepoPwd;
 	
 	public String getEncryptionPort() {
 		return encryptionPort;
@@ -362,7 +399,7 @@ public class IdaRunConfig extends RunConfig{
 		setAuthPath(AuthTestsUtil.getPropertyValue("authPath"));
 		setInternalAuthPath(AuthTestsUtil.getPropertyValue("internalAuthPath"));
 		setOtpPath(AuthTestsUtil.getPropertyValue("otpPath"));
-		setEncryptionPort(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".encryptionPort"));
+		setEncryptionPort(AuthTestsUtil.getPropertyValue(RunConfigUtil.getRunEvironment()+".encryptionPort"));
 		setEncryptUtilBaseUrl(AuthTestsUtil.getPropertyValue("encryptUtilBaseUrl"));
 		setEncryptionPath(AuthTestsUtil.getPropertyValue("encryptionPath"));
 		setEncodePath(AuthTestsUtil.getPropertyValue("encodePath"));
@@ -376,6 +413,8 @@ public class IdaRunConfig extends RunConfig{
 		setIdRepoRetrieveDataPath(AuthTestsUtil.getPropertyValue("idRepoRetrieveDataPath"));
 		setIdRepoCreateVIDRecordPath(AuthTestsUtil.getPropertyValue("idRepoCreateVIDRecordPath"));
 		setIdRepoUpdateVIDStatusPath(AuthTestsUtil.getPropertyValue("idRepoUpdateVIDStatusPath"));
+		setIdRepoRegenerateVID(AuthTestsUtil.getPropertyValue("idRepoRegenerateVidPath"));
+		setIdRepoRetrieveUINByVIDPath(AuthTestsUtil.getPropertyValue("idRepoRetrieveUinByVidPath"));
 		setDbKernelTableName(AuthTestsUtil.getPropertyValue("dbKernelTableName"));
 		setDbKernelSchemaName(AuthTestsUtil.getPropertyValue("dbKernelSchemaName"));
 		setDbKernelUserName(AuthTestsUtil.getPropertyValue("dbKernelUserName"));
@@ -398,13 +437,18 @@ public class IdaRunConfig extends RunConfig{
 		setDbAuditPwd(AuthTestsUtil.getPropertyValue("dbAuditPwd"));
 		setEncodeFilePath(AuthTestsUtil.getPropertyValue("encodeFilePath"));
 		setDecodeFilePath(AuthTestsUtil.getPropertyValue("decodeFilePath"));
-		setDbKernelUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbKernelUrl"));
-		setDbIdaUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbIdaUrl"));
-		setDbAuditUrl(AuthTestsUtil.getPropertyValue(System.getProperty("env.user")+".dbAuditUrl"));
+		setDbKernelUrl(AuthTestsUtil.getPropertyValue(RunConfigUtil.getRunEvironment()+".dbKernelUrl"));
+		setDbIdaUrl(AuthTestsUtil.getPropertyValue(RunConfigUtil.getRunEvironment()+".dbIdaUrl"));
+		setDbAuditUrl(AuthTestsUtil.getPropertyValue(RunConfigUtil.getRunEvironment()+".dbAuditUrl"));
 		setClientidsecretkey(AuthTestsUtil.getPropertyValue("clientidsecretkey"));
 		//loadingConfigFile
 		loadErrorsData(getErrorsConfigPath());
 		setUinIdentityMapper(AuthTestsUtil.getPropertyValue("uinIdentityMapper"));
+		setDbIdrepoUrl(AuthTestsUtil.getPropertyValue(RunConfigUtil.getRunEvironment()+".dbIdrepoUrl"));
+		setDbIdrepoTableName(AuthTestsUtil.getPropertyValue("dbIdrepoTableName"));
+		setDbIdrepoSchemaName(AuthTestsUtil.getPropertyValue("dbIdrepoSchemaName"));
+		setDbIdrepoUserName(AuthTestsUtil.getPropertyValue("dbIdrepoUserName"));
+		setDbIdrepoPwd(AuthTestsUtil.getPropertyValue("dbIdrepoPwd"));
 	}	
 	
 	/**
@@ -934,13 +978,11 @@ public class IdaRunConfig extends RunConfig{
 	}
 	@Override
 	public String getIdRepoRetrieveUINByVIDPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.idRepoRetrieveUINByVIDPath;
 	}
 	@Override
 	public void setIdRepoRetrieveUINByVIDPath(String idRepoRetrieveUINByVIDPath) {
-		// TODO Auto-generated method stub
-		
+		this.idRepoRetrieveUINByVIDPath=idRepoRetrieveUINByVIDPath;	
 	}
 	@Override
 	public String getIdRepoRetrieveIdentityByRid() {
@@ -954,12 +996,10 @@ public class IdaRunConfig extends RunConfig{
 	}
 	@Override
 	public String getIdRepoRegenerateVID() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.idRepoRegenerateVID;
 	}
 	@Override
-	public void setIdRepoidRepoRegenerateVID(String idRepoRegenerateVID) {
-		// TODO Auto-generated method stub
-		
+	public void setIdRepoRegenerateVID(String idRepoRegenerateVID) {
+		this.idRepoRegenerateVID=idRepoRegenerateVID;		
 	}
 }

@@ -62,7 +62,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 		StageHealthCheckHandler healthCheckHandler = new StageHealthCheckHandler(vertx, null, objectMapper,
 				environment);
 		router.get(servletPath + HealthConstant.HEALTH_ENDPOINT).handler(healthCheckHandler);
-		if (servletPath.contains("receiver") || servletPath.contains("uploader")) {
+		if (servletPath.contains("packetreceiver") || servletPath.contains("uploader")) {
 			healthCheckHandler.register("virusscanner", healthCheckHandler::virusScanHealthChecker);
 			healthCheckHandler.register(
 					servletPath.substring(servletPath.lastIndexOf("/") + 1, servletPath.length()) + "Verticle",
@@ -80,7 +80,7 @@ public abstract class MosipVerticleAPIManager extends MosipVerticleManager {
 						healthCheckHandler.consumerHealthHandler(future, vertx, consumeAddress);
 					});
 		}
-		if (servletPath.contains("external")  || servletPath.contains("bioauth")) {
+		if (servletPath.contains("external") || servletPath.contains("bioauth")) {
 			healthCheckHandler.register(
 					servletPath.substring(servletPath.lastIndexOf("/") + 1, servletPath.length()) + "Send", future -> {
 						healthCheckHandler.senderHealthHandler(future, vertx, sendAddress);

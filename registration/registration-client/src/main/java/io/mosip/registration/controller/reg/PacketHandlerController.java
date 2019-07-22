@@ -53,6 +53,7 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.config.JobConfigurationService;
 import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -708,6 +709,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+				
+				if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+				}
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -747,7 +752,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
 			}
 		} else {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
+			if (response.getErrorResponseDTOs() != null && response.getErrorResponseDTOs().get(0).getCode()
+					.equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+			} else {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
+			}
 		}
 		return response;
 	}
@@ -786,8 +796,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	/**
 	 * Update packet status.
+	 * @throws RegBaseCheckedException 
 	 */
-	private void updatePacketStatus() {
+	private void updatePacketStatus() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 				"Auto Approval of Packet when EOD process disabled started");
 

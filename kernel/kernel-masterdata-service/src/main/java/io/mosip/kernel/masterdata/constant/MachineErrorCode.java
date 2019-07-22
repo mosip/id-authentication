@@ -20,7 +20,9 @@ public enum MachineErrorCode {
 	MACHINE_ID_ALREADY_MAPPED_EXCEPTION("KER-MSD-327","No unassigned Machines found"),
 	INVALID_MACHINE_FILTER_VALUE_EXCEPTION("KER-MSD-328","Invalid Filter value for Mapstatus column"),
 	MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-329","No Machine exist for Machine Type name:%s"),
-	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-330","No Machine Specification found for the Machine Type name:%s");
+	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-330","No Machine Specification found for the Machine Type name:%s"),
+	MACHINE_NOT_TAGGED_TO_ZONE("KER-MSD-342","Machine is not tagged to zone"),
+	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist");
 
 	private final String errorCode;
 	private final String errorMessage;

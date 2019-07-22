@@ -522,12 +522,21 @@ public class RegistrationApprovalController extends BaseController implements In
 				uploadPacketsInBackground(regIds);
 
 			}*/
-		} catch (RuntimeException runtimeException) {
+		} catch(RegBaseCheckedException regBaseCheckedException) {
+			
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"unable to approve or reject packets" + regBaseCheckedException.getMessage()
+							+ ExceptionUtils.getStackTrace(regBaseCheckedException));
+
+			if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+			}
+		}  catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 					"unable to sync and upload of packets" + runtimeException.getMessage()
 							+ ExceptionUtils.getStackTrace(runtimeException));
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_SYNC_AND_UPLOAD);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_FAILURE);
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");

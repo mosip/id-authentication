@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, Injector } from '@angular/core';
 import smoothscroll from 'smoothscroll-polyfill';
 import { MatDialog } from '@angular/material';
 import { DialougComponent } from '../../../shared/dialoug/dialoug.component';
@@ -14,13 +14,15 @@ import Utils from 'src/app/app.util';
 import * as appConstants from '../../../app.constants';
 import { ConfigService } from 'src/app/core/services/config.service';
 import { RequestModel } from 'src/app/shared/models/request-model/RequestModel';
+import { BookingDeactivateGuardService } from 'src/app/shared/can-deactivate-guard/booking-guard/booking-deactivate-guard.service';
+import LanguageFactory from 'src/assets/i18n';
 
 @Component({
   selector: 'app-time-selection',
   templateUrl: './time-selection.component.html',
   styleUrls: ['./time-selection.component.css']
 })
-export class TimeSelectionComponent implements OnInit, OnDestroy {
+export class TimeSelectionComponent extends BookingDeactivateGuardService implements OnInit, OnDestroy {
   @ViewChild('widgetsContent', { read: ElementRef }) public widgetsContent;
   @ViewChild('cardsContent', { read: ElementRef }) public cardsContent;
   registrationCenter: String;
@@ -44,8 +46,9 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   showAfternoon: boolean;
   disableContinueButton = false;
   spinner = true;
+  canDeactivateFlag = true;
   DAYS: any;
-
+  primaryLangCode = localStorage.getItem('langCode');
   constructor(
     private bookingService: BookingService,
     private dialog: MatDialog,
@@ -55,8 +58,9 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private configService: ConfigService
   ) {
+    super();
     smoothscroll.polyfill();
-    this.translate.use(localStorage.getItem('langCode'));
+    this.translate.use(this.primaryLangCode);
   }
 
   ngOnInit() {
@@ -69,12 +73,11 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
     this.bookingService.resetNameList();
     this.registrationCenter = this.registrationService.getRegCenterId();
     this.getSlotsforCenter(this.registrationCenter);
-
-    this.dataService.getSecondaryLanguageLabels(localStorage.getItem('langCode')).subscribe(response => {
-      this.secondaryLanguagelabels = response['timeSelection'].booking;
-      this.errorlabels = response['error'];
-      this.DAYS = response['DAYS'];
-    });
+    let factory = new LanguageFactory(this.primaryLangCode);
+    let response = factory.getCurrentlanguage();
+    this.secondaryLanguagelabels = response['timeSelection'].booking;
+    this.errorlabels = response['error'];
+    this.DAYS = response['DAYS'];
   }
 
   public scrollRight(): void {
@@ -159,8 +162,9 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
       });
       element.TotalAvailable = sumAvailability;
       element.inActive = false;
-      element.displayDate = Utils.getBookingDateTime(element.date, '', localStorage.getItem('langCode'));
-      element.displayDay = this.DAYS[new Date(Date.parse(element.date)).getDay()];
+      element.displayDate = Utils.getBookingDateTime(element.date, '', this.primaryLangCode);
+      let index = new Date(Date.parse(element.date)).getDay();
+      element.displayDay = this.DAYS[index];
       if (!element.inActive) {
         this.availabilityData.push(element);
       }
@@ -227,6 +231,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   makeBooking(): void {
+    this.canDeactivateFlag = false;
     this.disableContinueButton = true;
     this.bookingDataList = [];
     this.availabilityData.forEach(data => {
@@ -314,7 +319,9 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
               this.router.navigateByUrl(url);
             });
         } else {
-          this.displayMessage('Error', this.errorlabels.error, { error: response });
+          this.displayMessage('Error', this.errorlabels.error, {
+            error: response
+          });
         }
       },
       error => {
@@ -366,6 +373,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
   }
 
   navigateDashboard() {
+    this.canDeactivateFlag = false;
     this.router.navigate(['dashboard']);
   }
 
@@ -378,6 +386,7 @@ export class TimeSelectionComponent implements OnInit, OnDestroy {
 
   navigateBack() {
     this.reloadData();
+    this.canDeactivateFlag = false;
     const url = Utils.getURL(this.router.url, 'pick-center');
     this.router.navigateByUrl(url);
   }

@@ -375,8 +375,8 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			InternalRegistrationStatusDto dto, LogDescription description) throws IOException {
 		boolean isValidHash = false;
 		byte[] isbytearray = IOUtils.toByteArray(inputStream);
-		HMACUtils.update(isbytearray);
-		String hashSequence = HMACUtils.digestAsPlainText(HMACUtils.updatedHash());
+		byte[] dataByte = HMACUtils.generateHash(isbytearray);
+		String hashSequence = HMACUtils.digestAsPlainText(dataByte);
 		String packetHashSequence = regEntity.getPacketHashValue();
 		if (!(MessageDigest.isEqual(packetHashSequence.getBytes(), hashSequence.getBytes()))) {
 			description.setMessage(

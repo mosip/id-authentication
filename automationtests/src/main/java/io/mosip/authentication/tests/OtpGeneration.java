@@ -28,6 +28,7 @@ import io.mosip.authentication.fw.util.OutputValidationUtil;
 import io.mosip.authentication.fw.util.ReportUtil;
 import io.mosip.authentication.fw.util.RunConfig;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.fw.util.StoreAuthenticationAppLogs;
 import io.mosip.authentication.fw.util.TestParameters;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -145,6 +146,8 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
 			f.setAccessible(true);
 			f.set(baseTestMethod, OtpGeneration.testCaseName);
+			if(!result.isSuccess())
+				StoreAuthenticationAppLogs.storeApplicationLog(RunConfigUtil.getOtpGenerateSeriveName(), logFileName, getTestFolder());
 		} catch (Exception e) {
 			Reporter.log("Exception : " + e.getMessage());
 		}
@@ -170,6 +173,7 @@ public class OtpGeneration extends AuthTestsUtil implements ITest {
 		String extUrl = getExtendedUrl(new File(objTestParameters.getTestCaseFile() + "/url.properties"));
 		logger.info("************* Otp generation request ******************");
 		Reporter.log("<b><u>Otp generation request</u></b>");
+		displayContentInFile(testCaseName.listFiles(), "request");
 		displayContentInFile(testCaseName.listFiles(), "request");
 		logger.info("******Post request Json to EndPointUrl: " + RunConfigUtil.objRunConfig.getEndPointUrl() + RunConfigUtil.objRunConfig.getOtpPath()
 				+ extUrl + " *******");

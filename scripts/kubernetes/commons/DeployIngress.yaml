@@ -206,6 +206,26 @@ spec:
         backend:
           serviceName: registration-processor-biometric-authentication-stage
           servicePort: 8020
+      - path: /registrationprocessor/v1/camelbridge
+        backend:
+          serviceName: registration-processor-common-camel-bridge
+          servicePort: 8022
+      - path: /registrationprocessor/v1/biodedupe
+        backend:
+          serviceName: registration-processor-bio-dedupe-stage
+          servicePort: 9096
+      - path: /registrationprocessor/v1/demodedupe
+        backend:
+         serviceName: registration-processor-demo-dedupe-stage
+         servicePort: 8091
+      - path: /registrationprocessor/v1/uin-generator
+        backend:
+          serviceName: registration-processor-uin-generator-stage
+          servicePort: 8099
+      - path: /registrationprocessor/v1/sender-stage
+        backend:
+          serviceName: registration-processor-message-sender-stage
+          servicePort: 8088
       - path: /config
         backend:
           serviceName: kernel-config-server

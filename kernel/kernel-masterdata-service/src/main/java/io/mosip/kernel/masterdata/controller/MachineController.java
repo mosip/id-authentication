@@ -26,6 +26,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.MachineSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.MachineService;
@@ -233,9 +234,10 @@ public class MachineController {
 	 */
 	@ResponseFilter
 	@PostMapping("/machines/search")
-	public ResponseWrapper<PageResponseDto<MachineExtnDto>> searchMachine(
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<MachineSearchDto>> searchMachine(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		ResponseWrapper<PageResponseDto<MachineExtnDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageResponseDto<MachineSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.searchMachine(request.getRequest()));
 		return responseWrapper;
 	}

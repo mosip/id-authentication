@@ -160,7 +160,7 @@ public class LocationController {
 	 *            language code
 	 * @return list of location hierarchies
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ZONAL_ADMIN')")
 	@ResponseFilter
 	@GetMapping(value = "immediatechildren/{locationcode}/{langcode}")
 	public ResponseWrapper<LocationResponseDto> getImmediateChildrenByLocCodeAndLangCode(

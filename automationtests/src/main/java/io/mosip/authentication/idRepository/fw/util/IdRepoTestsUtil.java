@@ -90,7 +90,7 @@ public class IdRepoTestsUtil extends AuthTestsUtil{
 	public static void copyIdrepoTestResource() {
 		try {
 			File source = new File(RunConfigUtil.getGlobalResourcePath() + "/idRepository");
-			File destination = new File(RunConfigUtil.getGlobalResourcePath() + "/AuthenticationTestResource");
+			File destination = new File(RunConfigUtil.getGlobalResourcePath() + "/"+RunConfigUtil.resourceFolderName);
 			FileUtils.copyDirectoryToDirectory(source, destination);
 			IDAREPOSCRIPT_LOGGER.info("Copied the idrepository test resource successfully");
 		} catch (Exception e) {
