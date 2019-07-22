@@ -93,7 +93,7 @@ deploymentsAndServices:
        servicePort: 8081
        dockerImageName: kernel-auditmanager-service
     kernel-otpmanager-service:
-       servicePath: /v1/cryptomanager
+       servicePath: /v1/otpmanager
        servicePort: 8085
        dockerImageName: kernel-otpmanager-service
     kernel-emailnotification-service:
