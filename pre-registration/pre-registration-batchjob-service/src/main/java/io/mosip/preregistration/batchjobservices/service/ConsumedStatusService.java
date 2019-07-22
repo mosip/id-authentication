@@ -6,7 +6,6 @@ package io.mosip.preregistration.batchjobservices.service;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjobservices.entity.DemographicEntityConsumed;
-import io.mosip.preregistration.batchjobservices.entity.DocumentEntity;
 import io.mosip.preregistration.batchjobservices.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.ProcessedPreRegEntity;
-import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjobservices.entity.RegistrationBookingPKConsumed;
 import io.mosip.preregistration.batchjobservices.exception.util.BatchServiceExceptionCatcher;
@@ -33,6 +30,8 @@ import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
+import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
@@ -69,10 +68,10 @@ public class ConsumedStatusService {
 	 */
 	@Autowired
 	private BatchServiceDAO batchServiceDAO;
-	
+
 	@Autowired
 	AuditLogUtil auditLogUtil;
-	
+
 	public AuthUserDetails authUserDetails() {
 		return (AuthUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
@@ -106,7 +105,16 @@ public class ConsumedStatusService {
 				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
 				if (demographicEntity != null) {
 
-					BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+					demographicEntityConsumed.setApplicantDetailJson(demographicEntity.getApplicantDetailJson());
+					demographicEntityConsumed.setCrAppuserId(demographicEntity.getCrAppuserId());
+					demographicEntityConsumed.setCreateDateTime(demographicEntity.getCreateDateTime());
+					demographicEntityConsumed.setCreatedBy(demographicEntity.getCreatedBy());
+					demographicEntityConsumed.setDemogDetailHash(demographicEntity.getDemogDetailHash());
+					demographicEntityConsumed.setEncryptedDateTime(demographicEntity.getEncryptedDateTime());
+					demographicEntityConsumed.setLangCode(demographicEntity.getLangCode());
+					demographicEntityConsumed.setPreRegistrationId(demographicEntity.getPreRegistrationId());
+					demographicEntityConsumed.setUpdateDateTime(demographicEntity.getUpdateDateTime());
+					demographicEntityConsumed.setUpdatedBy(demographicEntity.getUpdatedBy());
 					demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 					batchServiceDAO.updateConsumedDemographic(demographicEntityConsumed);
 
@@ -115,18 +123,41 @@ public class ConsumedStatusService {
 						documentEntityList.forEach(documentEntity -> {
 
 							DocumentEntityConsumed documentEntityConsumed = new DocumentEntityConsumed();
-							BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+							documentEntityConsumed.setCrBy(documentEntity.getCrBy());
+							documentEntityConsumed.setCrDtime(documentEntity.getCrDtime());
+							documentEntityConsumed.setDocCatCode(documentEntity.getDocCatCode());
+							documentEntityConsumed.setDocFileFormat(documentEntity.getDocFileFormat());
+							documentEntityConsumed.setDocHash(documentEntity.getDocHash());
+							documentEntityConsumed.setDocId(documentEntity.getDocId());
+							documentEntityConsumed.setDocName(documentEntity.getDocName());
+							documentEntityConsumed.setDocTypeCode(documentEntity.getDocTypeCode());
+							documentEntityConsumed.setDocumentId(documentEntity.getDocumentId());
+							documentEntityConsumed.setEncryptedDateTime(documentEntity.getEncryptedDateTime());
+							documentEntityConsumed.setLangCode(documentEntity.getLangCode());
+							documentEntityConsumed.setPreregId(documentEntity.getDemographicEntity().getPreRegistrationId());
+							documentEntityConsumed.setStatusCode(documentEntity.getStatusCode());
+							documentEntityConsumed.setUpdBy(documentEntity.getUpdBy());
+							documentEntityConsumed.setUpdDtime(documentEntity.getUpdDtime());
 							batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
 
 						});
 
 					}
 					RegistrationBookingEntity bookingEntity = batchServiceDAO.getPreRegId(preRegId);
-					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
 					RegistrationBookingPKConsumed consumedPk = new RegistrationBookingPKConsumed();
 					consumedPk.setBookingDateTime(bookingEntity.getBookingPK().getBookingDateTime());
-					consumedPk.setPreregistrationId(bookingEntity.getBookingPK().getPreregistrationId());
+					consumedPk.setPreregistrationId(bookingEntity.getDemographicEntity().getPreRegistrationId());
 					bookingEntityConsumed.setBookingPK(consumedPk);
+					bookingEntityConsumed.setCrBy(bookingEntity.getCrBy());
+					bookingEntityConsumed.setCrDate(bookingEntity.getCrDate());
+					bookingEntityConsumed.setId(bookingEntity.getId());
+					bookingEntityConsumed.setLangCode(bookingEntity.getLangCode());
+					bookingEntityConsumed.setRegDate(bookingEntity.getRegDate());
+					bookingEntityConsumed.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
+					bookingEntityConsumed.setSlotFromTime(bookingEntity.getSlotFromTime());
+					bookingEntityConsumed.setSlotToTime(bookingEntity.getSlotToTime());
+					bookingEntityConsumed.setUpBy(bookingEntity.getUpBy());
+					bookingEntityConsumed.setUpdDate(bookingEntity.getUpdDate());
 					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
 
 					if (documentEntityList != null) {
@@ -145,12 +176,11 @@ public class ConsumedStatusService {
 				}
 
 			});
-			isSaveSuccess=true;
+			isSaveSuccess = true;
 
 		} catch (Exception e) {
 			new BatchServiceExceptionCatcher().handle(e, response);
-		}
-		finally {
+		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_412.toString(), EventName.CONSUMEDSTATUS.toString(),
 						EventType.BUSINESS.toString(),
@@ -159,8 +189,8 @@ public class ConsumedStatusService {
 						authUserDetails().getUsername(), null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null);
+						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(),
+						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			}
 		}
 		response.setResponsetime(GenericUtil.getCurrentResponseTime());
@@ -170,7 +200,6 @@ public class ConsumedStatusService {
 		return response;
 	}
 
-		
 	/**
 	 * This method is used to audit all the consumed status events
 	 * 

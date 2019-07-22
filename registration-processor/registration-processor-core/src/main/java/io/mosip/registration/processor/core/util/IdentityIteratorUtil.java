@@ -31,11 +31,13 @@ public class IdentityIteratorUtil {
 	 * @return the hash sequence
 	 */
 	public List<String> getHashSequence(List<FieldValueArray> hashSequence, String field) {
+
 		for (FieldValueArray hash : hashSequence) {
 			if (hash.getLabel().equalsIgnoreCase(field)) {
 				return hash.getValue();
 			}
 		}
+
 		return Collections.emptyList();
 
 	}
@@ -50,11 +52,14 @@ public class IdentityIteratorUtil {
 	 * @return the metadata label value
 	 */
 	public String getMetadataLabelValue(List<FieldValue> metaDataList, String field) {
+
 		for (FieldValue metadataObjects : metaDataList) {
 			if (metadataObjects.getLabel().equalsIgnoreCase(field)) {
+
 				return metadataObjects.getValue();
 			}
 		}
+
 		return null;
 
 	}
@@ -69,6 +74,7 @@ public class IdentityIteratorUtil {
 	 * @return the field value
 	 */
 	public String getFieldValue(List<FieldValue> data, String label) {
+
 		String fieldValue = null;
 		for (FieldValue field : data) {
 			if (field.getLabel().equalsIgnoreCase(label)) {
@@ -78,7 +84,7 @@ public class IdentityIteratorUtil {
 			}
 
 		}
-		
+
 		return fieldValue;
 	}
 }

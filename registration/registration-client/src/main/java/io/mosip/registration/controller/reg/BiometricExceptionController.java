@@ -108,6 +108,10 @@ public class BiometricExceptionController extends BaseController implements Init
 	@FXML
 	private GridPane leftEyePaneHolder;
 	@FXML
+	private Pane leftEyePane;
+	@FXML
+	private Pane rightEyePane;
+	@FXML
 	private GridPane registrationExceptionHeader;
 	@FXML
 	private GridPane operatorExceptionHeader;
@@ -258,6 +262,8 @@ public class BiometricExceptionController extends BaseController implements Init
 		irisException();
 		rightEyePaneHolder.getStyleClass().clear();
 		leftEyePaneHolder.getStyleClass().clear();
+		leftEyePane.getStyleClass().clear();
+		rightEyePane.getStyleClass().clear();
 	}
 	
 	/**

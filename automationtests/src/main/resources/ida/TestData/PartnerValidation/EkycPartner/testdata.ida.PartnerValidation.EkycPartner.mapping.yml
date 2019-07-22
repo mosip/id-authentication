@@ -306,7 +306,7 @@ testdata:
       output.1.response.n.err.errorMessage: $IGNORE$ 
       output.1.response.n.err.errorCode:  $IGNORE$
       
-  Autheticate_EkycPartner_smoke_For VID_Pos_18:
+  Autheticate_EkycPartner_For VID_Pos_18:
     endpoint.url:
       partnerIDMispLK: $PIDMLKURL:ValidEkycPIDMLK$
     input.auth-request:

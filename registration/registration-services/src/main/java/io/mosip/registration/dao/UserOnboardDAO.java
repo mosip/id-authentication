@@ -1,5 +1,7 @@
 package io.mosip.registration.dao;
 
+import java.sql.Timestamp;
+
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.entity.UserMachineMapping;
@@ -54,4 +56,12 @@ public interface UserOnboardDAO {
 	 */
 	String save();
 	
+	
+	/**
+	 * Gets the last updated operator bio-metric date time.
+	 *
+	 * @param usrID the usr ID
+	 * @return the last updated operator bio-metric date time
+	 */
+	Timestamp getLastUpdatedTime(String usrId);
 }

@@ -22,7 +22,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -50,7 +54,52 @@ public class CommonLibrary extends BaseTestCase {
 	private static Logger logger = Logger.getLogger(CommonLibrary.class);
 	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-	
+	/**
+	 * @param response
+	 * this method is for validating the response time is in UTC
+	 */
+	private void checkResponseUTCTime(Response response) {
+		String responseTime = response.jsonPath().get("responsetime").toString();
+		String cuurentUTC = (String) getCurrentUTCTime();
+		 SimpleDateFormat sdf = new SimpleDateFormat("mm");
+		    try {
+				Date d1 = sdf.parse(responseTime.substring(14,16));
+				 Date d2 = sdf.parse(cuurentUTC.substring(14,16));
+				 
+				 long elapse = Math.abs(d1.getTime()-d2.getTime());
+				 if(elapse>300000) {
+					 Assert.assertTrue(false, "Response time is not UTC, response time : "+responseTime);
+				 }
+
+			} catch (java.text.ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		   		
+	} 
+/**
+ * @return this method is for getting the curretn UTC time
+ */
+public Object getCurrentUTCTime() {
+		String DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATEFORMAT);
+		 LocalDateTime time= LocalDateTime.now(Clock.systemUTC());
+		 String utcTime = time.format(dateFormat);		    
+		 return utcTime;
+		
+
+	}
+	/** this method is for getting the local current time
+	 * @return
+	 */
+	private Object getCurrentLocalTime() {
+		String DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DATEFORMAT);
+		 LocalDateTime time= LocalDateTime.now();
+		 String currentTime = time.format(dateFormat);		    
+		 return currentTime;	
+
+	}
 	
 	/**
 	 * @param folderRelativePath
@@ -380,7 +429,7 @@ public class CommonLibrary extends BaseTestCase {
 		logger.info("Name of the file is" + file.getName());
 		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
 		Response postResponse = given().cookie(builder.build()).relaxedHTTPSValidation().multiPart(fileKeyName, file)
-				.formParams(formParams).contentType(contentHeader).expect().when().post(url);
+				.formParams(formParams).contentType(contentHeader).expect().when().post(url).then().log().all().extract().response();
 		// log then response
 		logger.info("REST-ASSURED: The response from request is: " + postResponse.asString());
 		logger.info("REST-ASSURED: the response time is: " + postResponse.time());
@@ -822,8 +871,16 @@ public class CommonLibrary extends BaseTestCase {
 		return getResponse;
 	} 
 	
- 
-public Response Post_JSONwithFile(Object body, File file, String url, String contentHeader,String cookie) {
+ /**
+  * Ashish
+  * @param body
+  * @param file
+  * @param url
+  * @param contentHeader
+  * @param cookie
+  * @return
+  */
+public Response postJSONwithFile(Object body, File file, String url, String contentHeader,String cookie) {
 		Response getResponse = null;
 		/*
 		 * Fetch to get the param name to be passed in the request

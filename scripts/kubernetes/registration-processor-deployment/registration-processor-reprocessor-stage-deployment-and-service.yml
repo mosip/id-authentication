@@ -38,6 +38,9 @@ spec:
         ports:
           - name: hazelcast-port
             containerPort: 5701
+        ports:
+        - name: verticle-port
+          containerPort: 8021
         env:
         - name: active_profile_env
           value: dev
@@ -48,3 +51,13 @@ spec:
         imagePullPolicy: Always
       imagePullSecrets:
       - name: pvt-reg-cred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registration-processor-reprocessor-stage
+spec:
+  ports:
+  - port: 8021
+  selector:
+    app: registration-processor-reprocessor-stage

@@ -18,11 +18,13 @@ import io.mosip.authentication.idRepository.fw.util.IdRepoTestsUtil;
  */
 public class AuthenticationTestsListener extends AuthTestsUtil implements IAnnotationTransformer{
 
+	public static String currentTestMethod;
 	/**
 	 * The method to set the invocationcount for authentication tests provided in runConfiguration property file
 	 */
 	@Override
 	public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
+		currentTestMethod=testMethod.toString();
 		if (testMethod.toString().contains("io.mosip.authentication.tests."))
 			annotation.setInvocationCount(
 					Integer.parseInt(getPropertyAsMap(new File(getRunConfigFile()).getAbsolutePath().toString())

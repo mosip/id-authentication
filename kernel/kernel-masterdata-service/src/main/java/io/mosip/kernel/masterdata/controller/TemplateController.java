@@ -11,18 +11,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -31,6 +40,7 @@ import io.swagger.annotations.ApiResponses;
  * 
  * @author Neha
  * @author Uday kumar
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -172,6 +182,60 @@ public class TemplateController {
 
 		ResponseWrapper<TemplateResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.getAllTemplateByTemplateTypeCode(templateTypeCode));
+		return responseWrapper;
+	}
+
+	/**
+	 * This controller method provides with all templates.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param pageSize
+	 *            the size of each page
+	 * @param sortBy
+	 *            the attributes by which it should be ordered
+	 * @param orderBy
+	 *            the order to be used
+	 * 
+	 * @return the response i.e. pages containing the templates.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/all")
+	@ApiOperation(value = "Retrieve all the templates with additional metadata", notes = "Retrieve all the templates with the additional metadata")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
+	public ResponseWrapper<PageDto<TemplateExtnDto>> getTemplates(
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
+			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
+			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		ResponseWrapper<PageDto<TemplateExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.getTemplates(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	@PostMapping("/search")
+	@ApiOperation(value = "Search template details")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
+	public ResponseWrapper<PageResponseDto<TemplateExtnDto>> searchTemplates(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<TemplateExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.searchTemplates(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PostMapping("/filter")
+	@ApiOperation(value = "filter template details")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
+	public ResponseWrapper<FilterResponseDto> filterTemplates(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.filterTemplates(request.getRequest()));
 		return responseWrapper;
 	}
 }

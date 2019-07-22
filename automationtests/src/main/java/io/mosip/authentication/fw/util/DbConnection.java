@@ -40,7 +40,7 @@ public class DbConnection {
 	}
 	
 	/**
-	 * Ida db connection to get generated otp value
+	 * Ida db connection
 	 * 
 	 * @return dbConnection
 	 */
@@ -58,7 +58,7 @@ public class DbConnection {
 	}
 	
 	/**
-	 * Ida db connection to get generated otp value
+	 * Audit db connection
 	 * 
 	 * @return dbConnection
 	 */
@@ -92,27 +92,55 @@ public class DbConnection {
 				stmt = getIdaDbConnection().createStatement();
 			else if (moduleName.equals("AUDIT"))
 				stmt = getAuditDbConnection().createStatement();
+			else if (moduleName.equals("IDREPO"))
+				stmt = getIdrepoDbConnection().createStatement();
 			DBCONNECTION_LOGGER.info("Query: " +query);
-			ResultSet rs = stmt.executeQuery(query);
-			ResultSetMetaData md = rs.getMetaData();
-			int columns = md.getColumnCount();
-			Map<String, Object> row = new HashMap<String, Object>();
-			while (rs.next()) {
-				for (int i = 1; i <= columns; i++) {
-					row.put(md.getColumnName(i), rs.getObject(i));
+			if (query.toLowerCase().startsWith("delete".toLowerCase())) {
+				stmt.executeUpdate(query);
+				Map<String, String> returnMap = new HashMap<String, String>();
+				returnMap.put(query, "true");
+				return returnMap;
+			} else {
+				ResultSet rs = stmt.executeQuery(query);
+				ResultSetMetaData md = rs.getMetaData();
+				int columns = md.getColumnCount();
+				Map<String, Object> row = new HashMap<String, Object>();
+				while (rs.next()) {
+					for (int i = 1; i <= columns; i++) {
+						row.put(md.getColumnName(i), rs.getObject(i));
+					}
 				}
+				stmt.close();
+				Map<String, String> returnMap = new HashMap<String, String>();
+				for (Entry<String, Object> entry : row.entrySet()) {
+					if (entry.getValue().toString().equals(null) || entry.getValue().toString() == null)
+						returnMap.put(entry.getKey(), "null");
+					else
+						returnMap.put(entry.getKey(), entry.getValue().toString());
+				}
+				return returnMap;
 			}
-			stmt.close();
-			Map<String, String> returnMap = new HashMap<String, String>();
-			for (Entry<String, Object> entry : row.entrySet()) {
-				if (entry.getValue().toString().equals(null) || entry.getValue().toString() == null)
-					returnMap.put(entry.getKey(), "null");
-				else
-					returnMap.put(entry.getKey(), entry.getValue().toString());
-			}
-			return returnMap;
 		} catch (Exception e) {
 			DBCONNECTION_LOGGER.error("Execption in execution statement: " + e);
+			return null;
+		}
+	}
+	
+	/**
+	 * Idrepo db connection
+	 * 
+	 * @return dbConnection
+	 */
+	public static Connection getIdrepoDbConnection() {
+		try {
+			Class.forName("org.postgresql.Driver");
+			Connection connection = DriverManager.getConnection(
+					RunConfigUtil.objRunConfig.getDbIdrepoUrl() + "/"
+							+ RunConfigUtil.objRunConfig.getDbIdrepoTableName(),
+					RunConfigUtil.objRunConfig.getDbIdrepoUserName(), RunConfigUtil.objRunConfig.getDbIdrepoPwd());
+			return connection;
+		} catch (Exception e) {
+			DBCONNECTION_LOGGER.error("Execption in db connection: " + e);
 			return null;
 		}
 	}

@@ -2,12 +2,15 @@ package io.mosip.registrationProcessor.tests;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.testng.ITest;
 import org.testng.ITestContext;
@@ -90,6 +93,34 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		}
 
 	} 
+	
+/*	@Test(dataProvider = "IntegrationScenarios")
+	public void assignmentSmokeDecisionSmoke(File[] listOfInvpackets)
+			throws FileNotFoundException, IOException, ParseException {
+		File file1=new File(listOfInvpackets[0].getPath());
+		File[] folder=file1.listFiles();
+		for (File file : folder) {
+			if (file.getName().equals("ManualVerification")) {
+				File[] listOfPackets=file.listFiles();
+				for(File packet:listOfPackets) {
+					if(packet.getName().contains("assignementRequest")) {
+					JSONObject assignmentRequestJson = (JSONObject) new JSONParser().parse(new FileReader(packet.getPath()));
+
+					boolean assignmentResponse = scenario.asssignment(assignmentRequestJson);
+					if (assignmentResponse) {
+						scenario.decision("valid");
+						
+						
+					}
+				}
+				}
+			
+
+			}
+		}
+
+	} */
+	
 	@BeforeMethod(alwaysRun=true)
 	public  void getTestCaseName(Method method, Object[] testdata, ITestContext ctx) {
 		Object[] obj =  (Object[]) testdata[0];

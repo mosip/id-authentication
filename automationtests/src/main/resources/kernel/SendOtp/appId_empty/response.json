@@ -1,0 +1,13 @@
+{
+  "id": "string",
+  "version": "string",
+  "responsetime": "2019-07-05T09:08:34.275Z",
+  "metadata": null,
+  "response": null,
+  "errors": [
+    {
+      "errorCode": "KER-ATH-008",
+      "message": "Invalid datasource and Please check the application id"
+    }
+  ]
+}

@@ -16,16 +16,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<role name="dbadmin"
-      createdb="true"
-      replication="true"
-      createrole="true"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
 <role name="appadmin"
       inherit="true"
       login="true"
@@ -43,206 +33,317 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <database name="mosip_ida" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
 	<role name="sysadmin"/>
 	<tablespace name="pg_default"/>
-	<comment><![CDATA[Database to store all ID Authentication module data and transaction data.]]></comment>
+	<comment><![CDATA[ID Authorization related requests, transactions and mapping related data like virtual ids, tokens, etc. will be stored in this database]]></comment>
 </database>
 
 <schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
 <schema name="ida" rect-visible="true" fill-color="#83af1f">
-	<role name="postgres"/>
+	<role name="sysadmin"/>
 </schema>
 
 <table name="auth_transaction">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
-	<comment><![CDATA[auth_transaction table is used to store all authentication request transaction details]]></comment>
-	<position x="50" y="50"/>
+	<comment><![CDATA[Authentication Transaction : To track all authentication transactions steps / stages in the process flow.]]></comment>
+	<position x="40" y="60"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: This is unique transaction id assigned for each authentication transaction]]></comment>
 	</column>
 	<column name="request_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Request Datetimestamp : Timestamp of Authentication request received from client system.]]></comment>
 	</column>
 	<column name="response_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Response Datetimestamp : Date timestamp of response sent back to client system for the authentication request. ]]></comment>
 	</column>
 	<column name="request_trn_id">
 		<type name="character varying" length="64"/>
+		<comment><![CDATA[Request Transaction Id : Unique Authentication request transaction id assigned for each request received from client system.]]></comment>
 	</column>
 	<column name="auth_type_code" not-null="true">
 		<type name="character varying" length="36"/>
+		<comment><![CDATA[Authentication Type Code : Type of authentication for the specific transaction, for ex.,  OTP, BIO, DEMO, etc]]></comment>
 	</column>
 	<column name="status_code" not-null="true">
 		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code : Current Status code of the transaction in a process flow.]]></comment>
 	</column>
 	<column name="status_comment">
 		<type name="character varying" length="1024"/>
+		<comment><![CDATA[Status Comment : Description for the status entered/updated by user or system assigned for the specific transaction.]]></comment>
 	</column>
 	<column name="lang_code" not-null="true">
 		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
 	</column>
 	<column name="ref_id_type">
 		<type name="character varying" length="36"/>
+		<comment><![CDATA[Reference Id Type: Type of reference id entered in reference id column for ex., USER, VIRTUALID, UIN, PREREG, etc.]]></comment>
 	</column>
 	<column name="ref_id">
 		<type name="character varying" length="64"/>
+		<comment><![CDATA[Reference Id: Reference ID for any cross reference purpose relevant for tracking, for ex., user id, uin, vid, prereg id, rid etc.]]></comment>
+	</column>
+	<column name="uin">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[UIN: UIN of an individual which is validated by system after the authentication is successful. The authentication can be done using UIN or VID or any other ids that are associated to an UIN. The UIN stored here is encrypted. This field is mainly used to get the list of authentication requests of an individual.]]></comment>
+	</column>
+	<column name="uin_hash">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[UIN Hash: Hash value of the UIN which was authenticated, this will have value if the UIN is a valid UIN. The authentication can be done using UIN or VID or any other ids that are associated to an UIN. The UIN stored here is hashed. This field is mainly used to get the list of authentication requests of an individual.]]></comment>
+	</column>
+	<column name="requested_entity_type">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Requested Entity Type: Type of entity through which the authentication request was initiated. It can from a partner, internal authenticaition, etc.]]></comment>
+	</column>
+	<column name="requested_entity_id">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Requested Entity Id: ID of the entity through which the authentication request was initiated.]]></comment>
+	</column>
+	<column name="requested_entity_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Requested Entity Name: Name of the entity through which the authentication request was initiated.]]></comment>
 	</column>
 	<column name="static_tkn_id">
 		<type name="character varying" length="64"/>
+		<comment><![CDATA[Static Token Id : This is a static token id assigned for each authentication request. Static token id is combination of TSPID + UIN generated for any TSP or Individuls and sent back in response. End user can use this id while authenticating themselves. ]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
 	</column>
 	<column name="cr_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
 	</column>
 	<column name="upd_by">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
 	</column>
 	<column name="upd_dtimes">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
 	<column name="is_deleted">
 		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
 	<constraint name="pk_authtrn_id" type="pk-constr" table="ida.auth_transaction">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="vid">
+<index name="idx1_authtrn_authtyp_refid" table="ida.auth_transaction"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="auth_type_code"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="ref_id_type"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="ref_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="request_dtimes"/>
+		</idxelement>
+</index>
+
+<table name="token_seed">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
-	<comment><![CDATA[To store generated list of Virtual IDs for Authentication]]></comment>
-	<position x="412.016" y="50"/>
-	<column name="id" not-null="true">
-		<type name="character varying" length="36"/>
-		<comment><![CDATA[Unique Virtual id generated by the system for authentication]]></comment>
-	</column>
-	<column name="uin" not-null="true">
-		<type name="character varying" length="28"/>
-	</column>
-	<column name="generated_dtimes">
-		<type name="timestamp" length="0"/>
-	</column>
-	<column name="validation_retry_count">
-		<type name="smallint" length="0"/>
-	</column>
-	<column name="expiry_dtimes">
-		<type name="timestamp" length="0"/>
-	</column>
-	<column name="is_active" not-null="true">
-		<type name="boolean" length="0"/>
+	<comment><![CDATA[Token ID Seed: Stores a random number that will be used as seed in the algorithm to generate a token ID. This seed value is encrypted/hashed and used along with a counter in the algorithm to generate a unique random number. Only one seed value would be available for the generation of token ID and this will never change.]]></comment>
+	<position x="900" y="100"/>
+	<column name="seed_no" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Seed Number: Seed number is the random number generated which will be used as seed in the algorithm to generate token ID.]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
 	</column>
 	<column name="cr_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
-	</column>
-	<column name="upd_by">
-		<type name="character varying" length="32"/>
-	</column>
-	<column name="upd_dtimes">
-		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
 	</column>
 	<column name="is_deleted">
 		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
-	<constraint name="pk_vid_id" type="pk-constr" table="ida.vid">
+	<constraint name="pk_tknsd" type="pk-constr" table="ida.token_seed">
+		<columns names="seed_no" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="token_seq">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Token ID Sequence: Stores sequence numbers that are used in the algorithm to generate token. Stores a incremental sequence number that will be used as salt in the algorithm to generate a token ID. This salt value is encrypted/hashed and used along with a seed number in the algorithm to generate a unique random number.]]></comment>
+	<position x="900" y="260"/>
+	<column name="seq_no" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Sequence Number: Sequence number is the number generated which is used in the algorithm to generate token ID.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_tknseq" type="pk-constr" table="ida.token_seq">
+		<columns names="seq_no" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_hash_salt">
+	<schema name="ida"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.]]></comment>
+	<position x="60" y="520"/>
+	<column name="id" not-null="true">
+		<type name="bigint" length="0"/>
+		<comment><![CDATA[Id: Unique id generated for the salts that is used to hash the uin field.]]></comment>
+	</column>
+	<column name="salt" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Salt: Random generated number used as salt to hash the uin field.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<constraint name="pk_uinhs" type="pk-constr" table="ida.uin_hash_salt">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="static_pin">
+<table name="uin_encrypt_salt">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
-	<comment><![CDATA[To store generated list of static pin for Authentication]]></comment>
-	<position x="803.033" y="50"/>
-	<column name="uin" not-null="true">
-		<type name="character varying" length="28"/>
+	<comment><![CDATA[UIN Encript Salt: Stores the salt used to encrypt an uin of an individual in the encryption algorithm.]]></comment>
+	<position x="420" y="520"/>
+	<column name="id" not-null="true">
+		<type name="bigint" length="0"/>
+		<comment><![CDATA[Id: Unique id generated for the salts that is used to encrypt the uin field.]]></comment>
 	</column>
-	<column name="pin" not-null="true">
+	<column name="salt" not-null="true">
 		<type name="character varying" length="36"/>
-		<comment><![CDATA[Static pin generated by the system for authentication]]></comment>
-	</column>
-	<column name="generated_dtimes">
-		<type name="timestamp" length="0"/>
-	</column>
-	<column name="is_active" not-null="true">
-		<type name="boolean" length="0"/>
+		<comment><![CDATA[Salt: Random generated number used as salt to encrypt the uin field.]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
 	</column>
 	<column name="cr_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
 	</column>
 	<column name="upd_by">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
 	</column>
 	<column name="upd_dtimes">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
-	<column name="is_deleted">
-		<type name="boolean" length="0"/>
-	</column>
-	<column name="del_dtimes">
-		<type name="timestamp" length="0"/>
-	</column>
-	<constraint name="pk_spin_id" type="pk-constr" table="ida.static_pin">
-		<columns names="uin" ref-type="src-columns"/>
+	<constraint name="pk_uines" type="pk-constr" table="ida.uin_encrypt_salt">
+		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="static_pin_h">
+<table name="uin_auth_lock" alias="uinal">
 	<schema name="ida"/>
 	<role name="sysadmin"/>
-	<comment><![CDATA[To store generated list of static pin for Authentication]]></comment>
-	<position x="1172.05" y="50"/>
+	<comment><![CDATA[UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table. ]]></comment>
+	<position x="440" y="60"/>
 	<column name="uin" not-null="true">
-		<type name="character varying" length="28"/>
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Unique Identification Number: Unique Identification Number of an individual for which an authentication type is locked.]]></comment>
 	</column>
-	<column name="pin" not-null="true">
+	<column name="uin_hash" not-null="true">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Unique Identification Number Hash: Unique Identification Number Hash value of an individual for which an authentication type is locked.]]></comment>
+	</column>
+	<column name="auth_type_code" not-null="true">
 		<type name="character varying" length="36"/>
-		<comment><![CDATA[Static pin generated by the system for authentication]]></comment>
+		<comment><![CDATA[Authentication Type Code: Unique code of an authentication type that is being locked by an individual]]></comment>
 	</column>
-	<column name="generated_dtimes">
-		<type name="timestamp" length="0"/>
+	<column name="lock_request_datetime" not-null="true">
+		<type name="timestamp" length="64"/>
+		<comment><![CDATA[Lock Request Datetime: Data and time when the lock was requested.]]></comment>
 	</column>
-	<column name="is_active" not-null="true">
-		<type name="boolean" length="0"/>
+	<column name="lock_start_datetime" not-null="true">
+		<type name="timestamp" length="64"/>
+		<comment><![CDATA[Lock Start Datetime: Start Date and time when the UIN authentication was locked.]]></comment>
+	</column>
+	<column name="lock_end_datetime">
+		<type name="timestamp" length="64"/>
+		<comment><![CDATA[Lock End Datetime: End date and time when the UIN Authentication lock was released.]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
 	</column>
 	<column name="cr_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
 	</column>
 	<column name="upd_by">
-		<type name="character varying" length="32"/>
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
 	</column>
 	<column name="upd_dtimes">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
 	</column>
 	<column name="is_deleted">
 		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
 	</column>
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
 	</column>
-	<column name="eff_dtimes" not-null="true">
-		<type name="timestamp" length="0"/>
-	</column>
-	<constraint name="pk_spinh_id" type="pk-constr" table="ida.static_pin_h">
-		<columns names="uin,eff_dtimes" ref-type="src-columns"/>
+	<constraint name="pk_uinal" type="pk-constr" table="ida.uin_auth_lock">
+		<columns names="uin,auth_type_code,lock_request_datetime" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uk_uinal" type="uq-constr" table="ida.uin_auth_lock">
+		<columns names="uin_hash,auth_type_code,lock_request_datetime" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -267,7 +368,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </permission>
 <permission>
 	<object name="ida" type="schema"/>
-	<roles names="postgres"/>
+	<roles names="sysadmin"/>
 	<privileges create="true" usage="true"/>
 </permission>
 <permission>
@@ -281,18 +382,28 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
 </permission>
 <permission>
-	<object name="ida.vid" type="table"/>
+	<object name="ida.auth_transaction" type="table"/>
+	<roles names="idauser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="ida.uin_hash_salt" type="table"/>
 	<roles names="sysadmin"/>
 	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
 </permission>
 <permission>
-	<object name="ida.static_pin" type="table"/>
+	<object name="ida.uin_hash_salt" type="table"/>
+	<roles names="idauser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
+</permission>
+<permission>
+	<object name="ida.uin_encrypt_salt" type="table"/>
 	<roles names="sysadmin"/>
 	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
 </permission>
 <permission>
-	<object name="ida.static_pin_h" type="table"/>
-	<roles names="sysadmin"/>
-	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+	<object name="ida.uin_encrypt_salt" type="table"/>
+	<roles names="idauser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
 </permission>
 </dbmodel>

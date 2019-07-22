@@ -1451,23 +1451,17 @@ public class IntegrationScenarios extends BaseTestCase implements ITest {
 		// Create PreReg
 
 		String preRegID = null;
-		String createdBy = null;
 		Response createApplicationResponse = null;
-		try {
-			createApplicationResponse = lib.CreatePreReg(individualToken);
-			preRegID = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
-			createdBy = createApplicationResponse.jsonPath().get("response.createdBy").toString();
-			Response uploadDoc = lib.documentUpload(createApplicationResponse,individualToken);
-			String docId = uploadDoc.jsonPath().get("response.docId").toString();
-			Response discardApp = lib.discardApplication(preRegID,individualToken);
-			Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId, preRegID,individualToken);
-			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].errorCode").toString(), "PRG_PAM_DOC_005");
-			lib.compareValues(delDocumentByDocId.jsonPath().get("errors[0].message").toString(), "Documents is not found for the requested pre-registration id");
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage());
-		}
+		createApplicationResponse = lib.CreatePreReg(individualToken);
+		preRegID = createApplicationResponse.jsonPath().get("response.preRegistrationId").toString();
+		Response uploadDoc = lib.documentUpload(createApplicationResponse, individualToken);
+		String docId = uploadDoc.jsonPath().get("response.docId").toString();
+		Response discardApp = lib.discardApplication(preRegID, individualToken);
+		Response delDocumentByDocId = lib.deleteAllDocumentByDocId(docId, preRegID, individualToken);
+		lib.compareValues(lib.getErrorCode(delDocumentByDocId), "PRG_PAM_APP_005");
+		lib.compareValues(lib.getErrorMessage(delDocumentByDocId),
+				"No data found for the requested pre-registration id");
 
 	}
 

@@ -125,6 +125,7 @@ public class PacketInfo extends BaseTestCase implements ITest {
 				readFolder = ReadFolder.readFolders(folderPath, outputFile, requestKeyFile, "smokeAndRegression");
 			}
 		} catch (IOException | ParseException e) {
+			e.printStackTrace();
 			Assert.assertTrue(false, "not able to read the folder in PacketInfo class in readData method: "+ e.getCause());
 		}
 		return readFolder;
@@ -166,12 +167,24 @@ public class PacketInfo extends BaseTestCase implements ITest {
 			innerKeys.add("createdDateTime");
 			innerKeys.add("updatedDateTime");
 			innerKeys.add("qualityScore");
+			boolean noRecord = false;
 
+			/*if(object.get("testCaseName").toString().contains("smoke")) {
+				finalStatus = "Pass";
+				softAssert.assertAll();
+				object.put("status", finalStatus);
+				arr.add(object);
+				noRecord = true;
+			}*/
+			
+			
+			
+		if(!noRecord) {
 			// Assertion of actual and expected response
-			status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
-
-			logger.info("Status after assertion : " + status);
-			Assert.assertTrue(status, "object are not equal");
+						status = AssertResponses.assertResponses(actualResponse, expectedResponse, outerKeys, innerKeys);
+						logger.info("Status after assertion : " + status);
+						Assert.assertTrue(status, "object are not equal");
+						logger.info("Status after assertion : " + status);
 			if (status) {
 
 				boolean isError = false;
@@ -188,7 +201,9 @@ public class PacketInfo extends BaseTestCase implements ITest {
 					logger.info("response : "+response );
 					if(response!=null) {
 						finalStatus = "Pass";
-						softAssert.assertTrue(true);
+						softAssert.assertAll();
+						object.put("status", finalStatus);
+						arr.add(object);
 					}
 
 
@@ -219,6 +234,9 @@ public class PacketInfo extends BaseTestCase implements ITest {
 				}else {
 					finalStatus="Fail";
 				}
+		}
+			
+			
 
 				boolean setFinalStatus = false;
 				if (finalStatus.equals("Fail"))

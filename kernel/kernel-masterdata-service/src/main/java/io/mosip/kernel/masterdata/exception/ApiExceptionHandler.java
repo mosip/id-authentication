@@ -9,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -41,6 +43,7 @@ import io.mosip.kernel.masterdata.constant.RequestErrorCode;
  * @since 1.0.0
  */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler {
 
 	@Autowired
@@ -49,14 +52,12 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
 			final HttpServletRequest httpServletRequest, final MasterDataServiceException e) throws IOException {
-		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataNotFoundException(
 			final HttpServletRequest httpServletRequest, final DataNotFoundException e) throws IOException {
-		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
@@ -105,7 +106,6 @@ public class ApiExceptionHandler {
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
-		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -132,6 +132,15 @@ public class ApiExceptionHandler {
 		responseWrapper.setId(reqNode.path("id").asText());
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> validationException(HttpServletRequest httpServletRequest,
+			final ValidationException exception) throws IOException {
+		//ExceptionUtils.logRootCause(exception);
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getErrors());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

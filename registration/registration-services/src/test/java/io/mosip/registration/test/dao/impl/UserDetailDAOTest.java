@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -149,6 +150,7 @@ public class UserDetailDAOTest {
 		Mockito.when(userDetailRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		Mockito.when(userPwdRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
 		Mockito.when(userRoleRepository.saveAll(Mockito.anyCollection())).thenReturn(new ArrayList<>());
+		doNothing().when(userRoleRepository).deleteByUserRoleIdUsrId(Mockito.any());
 		userDetailDAOImpl.save(userDetailsResponse);
 	}
 	

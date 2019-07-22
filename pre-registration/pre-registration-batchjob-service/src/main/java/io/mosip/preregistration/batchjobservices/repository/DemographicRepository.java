@@ -1,7 +1,5 @@
 package io.mosip.preregistration.batchjobservices.repository;
 
-
-
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 

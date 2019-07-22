@@ -343,7 +343,7 @@ export class DashBoardComponent implements OnInit {
     return dialogRef;
   }
 
-  removeApplicant(preRegId: string) {
+   removeApplicant(preRegId: string) {
     let x: number = -1;
     for (let i of this.allApplicants) {
       x++;
@@ -355,13 +355,15 @@ export class DashBoardComponent implements OnInit {
     this.bookingService.addApplicants(this.allApplicants);
   }
 
-  deletePreregistration(element: any) {
+    deletePreregistration(element: any) {
     this.dataStorageService.deleteRegistration(element.applicationID).subscribe(
-      response => {
+       response => {
         if (!response['errors']) {
-          this.removeApplicant(element.applicationID);
-          const index = this.users.indexOf(element);
+         this.removeApplicant(element.applicationID);
+          let index = this.users.indexOf(element);
           this.users.splice(index, 1);
+          index = this.selectedUsers.indexOf(element);
+           this.selectedUsers.splice(index, 1);
           if (this.users.length == 0) {
             this.onNewApplication();
             localStorage.setItem('newApplicant', 'true');
@@ -508,7 +510,7 @@ export class DashBoardComponent implements OnInit {
     if (event && event.checked) {
       this.selectedUsers.push(user);
     } else {
-      this.selectedUsers.splice(this.selectedUsers.indexOf(user));
+      this.selectedUsers.splice(this.selectedUsers.indexOf(user),1);
     }
     if (this.selectedUsers.length > 0) {
       this.disableModifyAppointmentButton = false;

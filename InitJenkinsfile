@@ -8,7 +8,7 @@ node{
   def gitUrl =env.scmUrl
   def dockerImagesTagVersion = 'NaV' //This will ensure that docker images tag should have 1-1 relation ship with project version
   def registryUrl = env.dockerRegistryUrl
-  def registryName =  registryUrl.replace("https://", "").replace("/docker-registry", "")
+  def registryName =  registryUrl.replace("https://", "")
   def registryCredentials = env.dockerRegistryCredentials
   def dmzDeploymentServer = "${env.environment}DmzDeploymentServer" // example devDmzDeploymentServer
   def keymanagerDeploymentServer = "${env.environment}KeymanagerDeploymentServer" // example devKeymanagerDeploymentServer
@@ -35,6 +35,8 @@ node{
   containersNames = ""
 
   stage('checkout'){
+    // Clean the workspace to avoid conflicts
+  	cleanWs()
     checkout([$class: 'GitSCM',
     branches: [
      [name: branch]
@@ -288,7 +290,7 @@ node{
       sh 'helm ls --debug'
       sh 'helm delete --purge mosip-complete || true'
       sh """
-        helm install --name mosip-complete ./scripts/helm-charts/mosip-init --set commons.dockerRegistry.url=$registryName --set commons.dockerRegistry.dockerImageTag=$dockerImagesTagVersion.$BUILD_NUMBER --set secrets.pvt-reg-cred.\"\\.dockercfg"=${env.privateRegistrySecret} --set commons.configServer.configLabel=$branch --set commons.configServer.activeProfile=${env.environment} --set commons.ingress.ingressServiceLoadbalancerIP=$deploymentsClusterAddressValue --set secrets.config-server-keystore.\"server\\.keystore\"=${env.keystoreContent} --set secrets.config-server-keystore-values-secret.alias=${env.KeystoreAlias} --set secrets.config-server-keystore-values-secret.password=${env.KeystoreStorePassword} --set secrets.config-server-keystore-values-secret.secret=${env.KeystoreKeySecret} --set secrets.config-server-secret.id_rsa=${env.gitPrivateKey} --set secrets.config-server-secret.\"id_rsa\\.pub\"=${env.gitPublicKey} --set secrets.config-server-secret.known_hosts=${env.gitKnownHosts} --set-string configMaps.pre-registration-ui-configuration.\"config\\.json\"='\\{ carriagereturnnewline \\"BASE_URL\\":\\"$proxyServerAddressValue/\\"\\, carriagereturnnewline \\"PRE_REG_URL\\":\\"preregistration/v1/\\" carriagereturnnewline \\}' --set deploymentsAndServices.config-server.internalLoadBalancerIP=${env.deploymentsClusterInternalLoadBalancerIp} --set deploymentsAndServices.config-server.configServerEnvironments.gitUrlEnv=${env.gitConfigRepositorySshUrl} --set deploymentsAndServices.config-server.configServerEnvironments.gitConfigFolderEnv=${env.gitConfigFolder}
+        helm install --name mosip-complete ./scripts/helm-charts/mosip-init --set commons.dockerRegistry.url=$registryName --set commons.dockerRegistry.dockerImageTag=$dockerImagesTagVersion.$BUILD_NUMBER --set secrets.pvt-reg-cred.\"\\.dockercfg"=${env.privateRegistrySecret} --set commons.configServer.configLabel=$branch --set commons.configServer.activeProfile=${env.environment} --set commons.ingress.ingressServiceLoadbalancerIP=$deploymentsClusterAddressValue --set secrets.config-server-keystore.\"server\\.keystore\"=${env.keystoreContent} --set secrets.config-server-keystore-values-secret.alias=${env.KeystoreAlias} --set secrets.config-server-keystore-values-secret.password=${env.KeystoreStorePassword} --set secrets.config-server-keystore-values-secret.secret=${env.KeystoreKeySecret} --set secrets.config-server-secret.id_rsa=${env.gitPrivateKey} --set secrets.config-server-secret.\"id_rsa\\.pub\"=${env.gitPublicKey} --set secrets.config-server-secret.known_hosts=${env.gitKnownHosts} --set-string configMaps.pre-registration-ui-configuration.\"config\\.json\"='\\{ carriagereturnnewline \\"BASE_URL\\":\\"$proxyServerAddressValue/\\"\\, carriagereturnnewline \\"PRE_REG_URL\\":\\"preregistration/v1/\\" carriagereturnnewline \\}' --set deploymentsAndServices.kernel-uingenerator-service.environmentVariables[0].name  --set deploymentsAndServices.config-server.internalLoadBalancerIP=${env.deploymentsClusterInternalLoadBalancerIp} --set deploymentsAndServices.config-server.configServerEnvironments.gitUrlEnv=${env.gitConfigRepositorySshUrl} --set deploymentsAndServices.config-server.configServerEnvironments.gitConfigFolderEnv=${env.gitConfigFolder}  --set deploymentsAndServices.kernel-uingenerator-service.environmentVariables[0].name=spring.cloud.config.label --set deploymentsAndServices.kernel-uingenerator-service.environmentVariables[0].value=$branch --set deploymentsAndServices.kernel-uingenerator-service.environmentVariables[1].name=spring.profiles.active --set deploymentsAndServices.kernel-uingenerator-service.environmentVariables[1].value=${env.environment} --set deploymentsAndServices.kernel-uingenerator-service.environmentVariables[2].name=spring.cloud.config.uri --set deploymentsAndServices.kernel-uingenerator-service.environmentVariables[2].value=http://config-server:51000/config
       """
     }
   }

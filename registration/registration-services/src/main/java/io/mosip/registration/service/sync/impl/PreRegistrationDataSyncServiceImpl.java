@@ -12,14 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,6 @@ import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.PreRegistrationDataSyncDAO;
 import io.mosip.registration.dto.MainResponseDTO;
@@ -740,6 +738,14 @@ public class PreRegistrationDataSyncServiceImpl extends BaseService implements P
 				RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Fetching pre registration records for deletion");
 		return preRegistrationDAO.get(preRegistrationId);
+	}
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.sync.PreRegistrationDataSyncService#lastPreRegPacketDownloadedTime()
+	 */
+	@Override
+	public Timestamp getLastPreRegPacketDownloadedTime() {
+		return preRegistrationDAO.getLastPreRegPacketDownloadedTime();
 	}
 
 }

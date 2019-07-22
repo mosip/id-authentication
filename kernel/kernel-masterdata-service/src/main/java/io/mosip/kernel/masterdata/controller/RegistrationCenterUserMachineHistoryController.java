@@ -33,10 +33,14 @@ public class RegistrationCenterUserMachineHistoryController {
 	/**
 	 * Get api to fetch user machine mappings based on user inputs
 	 * 
-	 * @param effectiveTimestamp   effective timestamp provided by user
-	 * @param registrationCenterId registration center provided by user
-	 * @param machineId            machine id provided by user
-	 * @param userId               user id provided by user
+	 * @param effectiveTimestamp
+	 *            effective timestamp provided by user
+	 * @param registrationCenterId
+	 *            registration center provided by user
+	 * @param machineId
+	 *            machine id provided by user
+	 * @param userId
+	 *            user id provided by user
 	 * @return {@link RegistrationCenterUserMachineMappingHistoryResponseDto} based
 	 *         on user inputs
 	 */

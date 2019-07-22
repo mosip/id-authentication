@@ -158,7 +158,7 @@ public class BaseTestCase{
 			PreRegistrationLibrary pil=new PreRegistrationLibrary();
 			pil.PreRegistrationResourceIntialize();
 			AuthTestsUtil.initiateAuthTest();
-			new PreregistrationDAO().makeAllRegistartionCenterActive();
+			//new PreregistrationDAO().makeAllRegistartionCenterActive();
 			//authToken=pil.getToken();
 			/*htmlReporter=new ExtentHtmlReporter(System.getProperty("user.dir")+"/test-output/MyOwnReport.html");
 			extent=new ExtentReports();

@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -44,13 +46,16 @@ import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.dto.SyncDataProcessDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
-import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
+import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.entity.PreRegistrationList;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
+import io.mosip.registration.service.config.JobConfigurationService;
+import io.mosip.registration.service.operator.UserOnboardService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.packet.ReRegistrationService;
@@ -103,6 +108,27 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	@FXML
 	private Label reRegistrationCountLbl;
+
+	@FXML
+	private Label lastBiometricTime;
+	
+	@FXML
+	private Label lastPreRegPacketDownloadedTime;
+	
+	@FXML
+	private Label lastSyncTime;
+	
+	@Autowired
+	private JobConfigurationService jobConfigurationService;
+	
+	public void setLastUpdateTime() {
+		try {
+		String  latestUpdateTime= ((List<SyncDataProcessDTO>) jobConfigurationService.getLastCompletedSyncJobs().getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.SYNC_DATA_DTO)).stream().sorted((sync1, sync2)->Timestamp.valueOf(sync2.getLastUpdatedTimes()).compareTo(Timestamp.valueOf(sync1.getLastUpdatedTimes()))).findFirst().get().getLastUpdatedTimes();
+		lastSyncTime.setText(Timestamp.valueOf(latestUpdateTime).toLocalDateTime().format(DateTimeFormatter.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT)));
+		}catch(RuntimeException expception) {
+			lastSyncTime.setText("---");
+		}
+	}
 
 	@FXML
 	private GridPane eodProcessGridPane;
@@ -166,6 +192,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 	@Autowired
 	private DemographicDetailController demographicDetailController;
 
+	@Autowired
+	private UserOnboardService userOnboardService;
+
 	@FXML
 	ProgressIndicator progressIndicator;
 
@@ -196,7 +225,7 @@ public class PacketHandlerController extends BaseController implements Initializ
 			eodProcessGridPane.setVisible(false);
 			eodLabel.setVisible(false);
 		}
-
+		setLastUpdateTime();
 		pendingApprovalCountLbl.setText(RegistrationUIConstants.NO_PENDING_APPLICATIONS);
 		reRegistrationCountLbl.setText(RegistrationUIConstants.NO_RE_REGISTER_APPLICATIONS);
 
@@ -223,7 +252,18 @@ public class PacketHandlerController extends BaseController implements Initializ
 					btnNode.setManaged(false);
 				}
 			});
-
+		}
+		
+		DateTimeFormatter format = DateTimeFormatter
+				.ofPattern(RegistrationConstants.ONBOARD_LAST_BIOMETRIC_UPDTAE_FORMAT);
+		Timestamp ts = userOnboardService.getLastUpdatedTime(SessionContext.userId());
+		Timestamp lastPreRegPacketDownloaded = preRegistrationDataSyncService.getLastPreRegPacketDownloadedTime();
+		if (ts != null) {
+			lastBiometricTime.setText(lastBiometricTime.getText() + " " + ts.toLocalDateTime().format(format));
+		}
+		if (lastPreRegPacketDownloaded != null) {
+			lastPreRegPacketDownloadedTime.setText(lastPreRegPacketDownloadedTime.getText() + " "
+					+ lastPreRegPacketDownloaded.toLocalDateTime().format(format));
 		}
 
 		if (!(getValueFromApplicationContext(RegistrationConstants.LOST_UIN_CONFIG_FLAG))
@@ -669,6 +709,10 @@ public class PacketHandlerController extends BaseController implements Initializ
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID,
 						regBaseCheckedException.getMessage() + ExceptionUtils.getStackTrace(regBaseCheckedException));
+				
+				if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+				}
 			} catch (RuntimeException runtimeException) {
 				LOGGER.error("REGISTRATION - SAVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
@@ -696,6 +740,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 								.with(location -> location.setRegion(individualIdentity.getRegion() != null
 										? individualIdentity.getRegion().get(0).getValue()
 										: null))
+								.with(location -> location.setLocalAdministrativeAuthority(individualIdentity.getLocalAdministrativeAuthority() != null
+										? individualIdentity.getLocalAdministrativeAuthority().get(0).getValue()
+										: null))
 								.with(location -> location.setPostalCode(
 										individualIdentity.getPostalCode() != null ? individualIdentity.getPostalCode()
 												: null))
@@ -705,7 +752,12 @@ public class PacketHandlerController extends BaseController implements Initializ
 				SessionContext.map().put(RegistrationConstants.ADDRESS_KEY, addressDTO);
 			}
 		} else {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
+			if (response.getErrorResponseDTOs() != null && response.getErrorResponseDTOs().get(0).getCode()
+					.equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+			} else {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.PACKET_CREATION_FAILURE);
+			}
 		}
 		return response;
 	}
@@ -744,8 +796,9 @@ public class PacketHandlerController extends BaseController implements Initializ
 
 	/**
 	 * Update packet status.
+	 * @throws RegBaseCheckedException 
 	 */
-	private void updatePacketStatus() {
+	private void updatePacketStatus() throws RegBaseCheckedException {
 		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
 				"Auto Approval of Packet when EOD process disabled started");
 

@@ -153,5 +153,22 @@ public class RegProcApiRequests extends BaseTestCase {
 	public String getResourcePath() {
 		return MosipTestRunner.getGlobalResourcePath()+"/";
 	}
+	
+	/**
+	 * @param url
+	 * @param cookie
+	 * @return this method is for get request with authentication(cookie) and
+	 *         without any param.
+	 */
+	public Response getWithoutParams(String url, String cookie) {
+		logger.info("REST-ASSURED: Sending a Get request to " + url);
+		Cookie.Builder builder = new Cookie.Builder("Authorization", cookie);
+		Response getResponse = given().cookie(builder.build()).relaxedHTTPSValidation().log().all().when().get(url);
+		// log then response
+		//responseLogger(getResponse);
+		logger.info("REST-ASSURED: the response Time is: " + getResponse.time());
+		logger.info("REST-ASSURED: the response from request is: " + getResponse.asString());
+		return getResponse;
+	}
 
 }

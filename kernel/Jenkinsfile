@@ -37,6 +37,7 @@ node {
      only if there is any change in Kernel Module
      */
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
+     [$class: 'CloneOption', noTags: false, reference: '', shallow: true, timeout: 120, depth: 1, refspec:"+refs/heads/"+branch+":refs/remotes/origin/"+branch],
      /*
      Checkout only Kernel Module through sparse checkout class
      */
@@ -93,6 +94,28 @@ stage('---------- SonarQube Analysis --------------') {
    pomFile = readMavenPom file: projectToBuild+'/pom.xml'
    dockerImagesTagVersion = pomFile.parent.version
    echo dockerImagesTagVersion
+	  
+	  
+      // Creating custom image for KeyManager
+    echo "Creating custom image for KeyManager"
+    sh "find . -name 'Dockerfile_DO_NOT_BUILD'> testdirectoryDockerFiles" // find keymanager dockerfile
+    locationOfDockerFiles = readFile("testdirectoryDockerFiles").split("\\r?\\n")
+    sh "rm -f testdirectoryDockerFiles"
+
+    //finding directory name for the Dockerfile_DO_NOT_BUILD
+    sh "dirname `find . -name 'Dockerfile_DO_NOT_BUILD'`> directoryDockerFiles"
+    locationOfDockerFileDirectory = readFile("directoryDockerFiles").split("\\r?\\n")
+    sh "rm -f directoryDockerFiles"
+    echo locationOfDockerFiles[0]  
+
+    docker.withRegistry(registryUrl, registryCredentials) {
+      def buildName = registryName+'/kernel-keymanager-service'+ ":$dockerImagesTagVersion.$BUILD_NUMBER"
+      def modulePath = locationOfDockerFileDirectory[0].substring(2)
+      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[0] + ' --build-arg docker_registry_url='+registryName+' '+ modulePath)
+      newApp.push()
+      newApp.push 'latest'
+      sh "docker rmi $buildName" //removing local copy of docker image
+     }
  
    /*
      Checking if there is any Dockerfile present to build, if not, returning from this stage
@@ -110,6 +133,8 @@ stage('---------- SonarQube Analysis --------------') {
    sh "dirname `find . -name 'Dockerfile'`> directoryDockerFiles"
    locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
    sh "rm -f directoryDockerFiles"
+   echo locationOfDockerFiles[0]	  
+     
    /*
    If build paramerter is passed as Build All (All submodules have to be built)
    */
@@ -132,11 +157,9 @@ stage('---------- SonarQube Analysis --------------') {
      */
      modulePath = locationOfDockerFiles[i].substring(2);
      
-     //kernel-keymanager-service will be deployed in another VM, not inside the cluster
-     if(!(moduleName == 'kernel-keymanager-service')){
          updatedServices.add(moduleName)
          updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
-     }
+     
      /*
      Updating containersToRun List
      */
@@ -183,12 +206,10 @@ stage('---------- SonarQube Analysis --------------') {
      Getting path of the module to be built
      */
      modulePath = changedModulesLocation[i].substring(2);
-     
-     //kernel-keymanager-service will be deployed in another VM, not inside the cluster
-     if(!(moduleName == 'kernel-keymanager-service')){
+
            updatedServices.add(moduleName)
            updatedDockerImages.add(registryName + '/' + moduleName + ":$dockerImagesTagVersion.$BUILD_NUMBER")
-     }
+   
      /*
      Updating containersToRun List
      */

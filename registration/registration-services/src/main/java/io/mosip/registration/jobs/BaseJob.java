@@ -78,7 +78,17 @@ public abstract class BaseJob extends QuartzJobBean {
 	}
 
 	/**
-	 * To execute the specified Job invocation
+	 * The executeJob will execute the service class defined in the functionality.
+	 * 
+	 * As after executing the service it will update the job execution information
+	 * in sync_transaction and in sync_control tables.
+	 * 
+	 * If service response is success : It will update the status
+	 * JOB_EXECUTION_SUCCESS in sync_transaction and in sync_control.
+	 * 
+	 * If service response is failure : It will update the status
+	 * JOB_EXECUTION_FAILURE in sync_transaction.
+	 * 
 	 * 
 	 * @param triggerPoint
 	 *            the triggered person
@@ -89,8 +99,21 @@ public abstract class BaseJob extends QuartzJobBean {
 	public abstract ResponseDTO executeJob(String triggerPoint, String jobId);
 
 	/**
-	 * If there is any job called by the currently running job then this method will
-	 * gets called to finish the child jobs first
+	 * The executeChildJob will check for any parent jobs associated to the current
+	 * job.
+	 * 
+	 * If current job has any parent job : The Parent job will internally call
+	 * {@value executeJob} and continues same as executing the service class defined
+	 * in the functionality which and continue for the same.
+	 * 
+	 * As after executing the service it will update the job execution information
+	 * in sync_transaction and in sync_control tables.
+	 * 
+	 * If service response is success : It will update the status
+	 * JOB_EXECUTION_SUCCESS in sync_transaction and in sync_control.
+	 * 
+	 * If service response is failure : It will update the status
+	 * JOB_EXECUTION_FAILURE in sync_transaction.
 	 * 
 	 * @param currentJobID
 	 *            current job executing
@@ -140,8 +163,13 @@ public abstract class BaseJob extends QuartzJobBean {
 	}
 
 	/**
-	 * Once all the jobs are completed then this method will save this transaction
-	 * in the table
+	 * The syncTransactionUpdate will update the job execution information for sync_transaction and sync_control in database.
+	 * 
+	 * If response in a parameter is success : It will update the status
+	 * JOB_EXECUTION_SUCCESS in sync_transaction and in sync_control.
+	 * 
+	 * If service response is failure or null: It will update the status
+	 * JOB_EXECUTION_FAILURE in sync_transaction.
 	 * 
 	 * @param responseDTO
 	 *            - the {@link ResponseDTO}
@@ -177,6 +205,7 @@ public abstract class BaseJob extends QuartzJobBean {
 		}
 
 	}
+
 
 	protected synchronized String loadContext(JobExecutionContext context) {
 		try {

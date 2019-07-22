@@ -149,4 +149,16 @@ public class LoginControllerTest {
 		 mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
+	@Test
+	public void refreshConfigTest() throws Exception {
+		MainResponseDTO<String> mainResponseDTO=new MainResponseDTO<>();
+		Mockito.when(authService.refreshConfig()).thenReturn(mainResponseDTO);
+		 RequestBuilder requestBuilder=MockMvcRequestBuilders
+				 .get("/refreshconfig")
+				 .contentType(MediaType.APPLICATION_JSON_VALUE)
+				 .characterEncoding("UTF-8")
+				 .accept(MediaType.APPLICATION_JSON_VALUE);
+		 mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
 }

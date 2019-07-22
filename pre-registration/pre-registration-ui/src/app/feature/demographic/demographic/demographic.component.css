@@ -2,6 +2,13 @@
   --text-size: 0.8rem;
 }
 
+:ng-deep .mat-focused {
+  border-bottom: 1px solid #22a8c9;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #22a8c9;
+}
 .spinner {
   flex-direction: column;
   align-items: center;
@@ -16,7 +23,7 @@
   margin: 0px 2vw;
   padding-top: 0;
   padding-bottom: 0;
-  color: #000000;
+  color: #666666;
 }
 
 .user {
@@ -38,7 +45,7 @@
 }
 
 .user hr {
-  border-top: 1.5px solid red;
+  border-top: 1.5px solid #fd518c;
   position: relative;
   left: -31.8px;
   margin-top: 0.5rem;
@@ -78,6 +85,7 @@
   margin: 0;
   padding-left: 3px;
   padding-bottom: 8px;
+  text-transform: capitalize;
 }
 
 mat-icon {
@@ -92,7 +100,7 @@ mat-icon {
   /* width: 92%; */
   width: 95%;
   padding: 3px;
-  color: #000000;
+  color: #838383;
   font-size: 0.8rem;
 }
 
@@ -168,7 +176,7 @@ mat-icon {
 .user__genderAndForeigner mat-button-toggle {
   font-family: Helvetica, Regular;
   font-size: 0.8rem;
-  margin: 10px 10px 10px 10px;
+  margin: 10px 0px 10px 0px;
   color: #fd518c;
   width: 80%;
   max-width: 124px;
@@ -228,11 +236,11 @@ mat-icon {
   text-decoration: none;
   display: inline-block;
   font-size: 0.8rem;
-  margin: 4px 2px;
+  margin: 6px 2px 4px 2px;
   margin-right: 2rem;
   cursor: pointer;
   border-radius: 2px;
-  text-transform:uppercase;
+  text-transform: uppercase;
 }
 
 .user__btn--back {
@@ -240,10 +248,12 @@ mat-icon {
   background-color: white;
   color: #ff4081;
   margin-left: 2rem;
+  text-transform: uppercase;
 }
 
 .user__btn--continue {
   margin-right: 61px;
+  text-transform: uppercase;
 }
 
 .user__btn:disabled,
@@ -252,6 +262,20 @@ mat-icon {
   background-color: lightgray;
   color: #2f3033;
   cursor: default;
+}
+
+::ng-deep .mat-button-toggle-button {
+  text-transform: uppercase;
+}
+
+:ng-deep .mat-form-field-invalid .mat-input-element {
+  caret-color: #ff0000;
+  color: #ff0000;
+}
+
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: lightgrey;
+  border-bottom: 2px solid #22a8c9;
 }
 
 @media (max-width: 798px) {

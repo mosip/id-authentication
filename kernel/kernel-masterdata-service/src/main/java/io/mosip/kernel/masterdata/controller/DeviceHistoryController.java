@@ -40,9 +40,12 @@ public class DeviceHistoryController {
 	 * Get api to fetch a device history details based on given Device ID, Language
 	 * code and effective date time
 	 * 
-	 * @param id          input device Id from User
-	 * @param langCode    input Language Code from user
-	 * @param dateAndTime input effective date and time from user
+	 * @param id
+	 *            input device Id from User
+	 * @param langCode
+	 *            input Language Code from user
+	 * @param dateAndTime
+	 *            input effective date and time from user
 	 * 
 	 * @return DeviceHistoryResponseDto returning device history detail based on
 	 *         given Device ID, Language code and effective date time

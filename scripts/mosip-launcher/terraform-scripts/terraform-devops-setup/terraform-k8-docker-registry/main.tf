@@ -42,7 +42,7 @@ resource "helm_release" "docker_registry" {
 
     set_string {
         name = "Docker.Registry.Url"
-        value = "${var.domain_name}/docker-registry"
+        value = "${var.domain_name}"
     }
     set_string {
         name = "Docker.Registry.Username"

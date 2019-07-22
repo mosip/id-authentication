@@ -22,8 +22,12 @@ import java.util.jar.Manifest;
 
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.constants.LoggerConstants;
+import io.mosip.registration.util.LoggerFactory;
 
 /**
  * Update the Application
@@ -40,8 +44,7 @@ public class SoftwareInstallationHandler {
 		Properties properties = new Properties();
 		properties.load(fileInputStream);
 		serverRegClientURL = properties.getProperty("mosip.reg.client.url");
-		serverMosipXmlFileUrl = properties.getProperty("mosip.reg.xml.file.url");
-
+		
 		latestVersion = properties.getProperty("mosip.reg.version");
 
 		getLocalManifest();
@@ -54,8 +57,7 @@ public class SoftwareInstallationHandler {
 
 	private static String manifestFile = "MANIFEST.MF";
 
-	private static String serverRegClientURL;
-	private static String serverMosipXmlFileUrl;
+	private  String serverRegClientURL;
 
 	private static String libFolder = "lib/";
 	private String binFolder = "bin/";
@@ -70,12 +72,19 @@ public class SoftwareInstallationHandler {
 
 	private String mosip = "mosip";
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(SoftwareInstallationHandler.class);
+
 	private String getLatestVersion() {
+		LOGGER.info(LoggerConstants.SOFTWARE_INSTALLATION_HANDLER, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Getting latest version : " + latestVersion);
 
 		return latestVersion;
 	}
 
 	public String getCurrentVersion() throws IOException {
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Getting current version started");
 
 		// Get Local manifest file
 		getLocalManifest();
@@ -83,17 +92,26 @@ public class SoftwareInstallationHandler {
 			setCurrentVersion((String) localManifest.getMainAttributes().get(Attributes.Name.MANIFEST_VERSION));
 		}
 
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Getting current version completed");
+
 		return currentVersion;
 	}
 
 	public void installJars() throws IOException, io.mosip.kernel.core.exception.IOException {
 
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Started installing jars");
+
 		// Get Latest Version
 		getLatestVersion();
-		System.out.println("Current Version fetch finished");
+
 		// Get Server Manifest
 		getServerManifest();
-		System.out.println("Server Manifet fetch finished");
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Started downloading server manifest and replacing");
+
 		// replace local manifest with Server manifest
 		serverManifest.write(new FileOutputStream(new File(manifestFile)));
 
@@ -147,10 +165,16 @@ public class SoftwareInstallationHandler {
 		// Un-Modified jars exist or not
 		checkJars(latestVersion, checkableJars);
 
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Completed installing jars");
+
 	}
 
-	private void checkJars(String version, List<String> checkableJars) throws IOException {
-		Long t1 = System.currentTimeMillis();
+	private void checkJars(String version, List<String> checkableJars) {
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Checking jars : " + checkableJars.toString());
+
 		ExecutorService executorService = Executors.newFixedThreadPool(5);
 		for (String jarFile : checkableJars) {
 
@@ -158,7 +182,7 @@ public class SoftwareInstallationHandler {
 				public void run() {
 
 					try {
-						System.out.println("Current Thread*****" + Thread.currentThread());
+
 						String folder = jarFile.contains(mosip) ? binFolder : libFolder;
 
 						File jarInFolder = new File(folder + jarFile);
@@ -172,7 +196,12 @@ public class SoftwareInstallationHandler {
 						}
 
 					} catch (IOException ioException) {
-						ioException.printStackTrace();
+						LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+								LoggerConstants.APPLICATION_ID,
+								ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+						LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+								LoggerConstants.APPLICATION_ID, "Terminating application");
 
 						// TODO Need to terminate from here.
 						System.exit(0);
@@ -186,14 +215,16 @@ public class SoftwareInstallationHandler {
 			executorService.awaitTermination(500, TimeUnit.SECONDS);
 		} catch (Exception exception) {
 			executorService.shutdown();
-			exception.printStackTrace();
+			LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+					LoggerConstants.APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
 		}
-		Long t2 = System.currentTimeMillis() - t1;
-		System.out.println("Time in Millis-------->>>>" + t2 / (1000));
 	}
 
 	private InputStream getInputStreamOfJar(String version, String jarName) throws IOException {
-		System.out.println("Downloading " + jarName);
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Started Downloading of : " + jarName);
+
 		return getInputStreamOf(serverRegClientURL + version + SLASH + libFolder + jarName);
 
 	}
@@ -207,6 +238,10 @@ public class SoftwareInstallationHandler {
 	}
 
 	private void deleteJar(String jarName) throws io.mosip.kernel.core.exception.IOException {
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Started Deleting : " + jarName);
+
 		File deleteFile = null;
 
 		String deleteFolder = jarName.contains(mosip) ? binFolder : libFolder;
@@ -218,6 +253,10 @@ public class SoftwareInstallationHandler {
 			FileUtils.forceDelete(deleteFile);
 
 		}
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Completed Deleting : " + jarName);
+
 	}
 
 	private Manifest getLocalManifest() throws IOException {
@@ -235,12 +274,18 @@ public class SoftwareInstallationHandler {
 
 	private Manifest getServerManifest() throws IOException {
 
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Started Downloading manifest of version :" + getLatestVersion());
+
 		// Get latest Manifest from server
 
 		// Get latest Manifest from server
 		setServerManifest(
 				new Manifest(getInputStreamOf(serverRegClientURL + getLatestVersion() + SLASH + manifestFile)));
 		setLatestVersion(serverManifest.getMainAttributes().getValue(Attributes.Name.MANIFEST_VERSION));
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Completed Downloading manifest of version :" + getLatestVersion());
 
 		return serverManifest;
 
@@ -264,6 +309,9 @@ public class SoftwareInstallationHandler {
 
 	public boolean hasRequiredJars() {
 
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Checking required jars of local started");
+
 		Map<String, Attributes> localAttributes = localManifest.getEntries();
 
 		List<String> checkableJars = new LinkedList<>();
@@ -275,6 +323,9 @@ public class SoftwareInstallationHandler {
 		if (!checkableJars.isEmpty()) {
 			return checkLocalJars(checkableJars);
 		}
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Completed required jars of local started");
 
 		return true;
 	}
@@ -295,6 +346,10 @@ public class SoftwareInstallationHandler {
 	}
 
 	private boolean isCheckSumValid(File jarFile, Manifest manifest) {
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Checking check sum for : " + jarFile.getName());
+
 		String checkSum;
 		try {
 			checkSum = HMACUtils.digestAsPlainText(HMACUtils.generateHash(Files.readAllBytes(jarFile.toPath())));
@@ -304,9 +359,22 @@ public class SoftwareInstallationHandler {
 			return manifestCheckSum.equals(checkSum);
 
 		} catch (IOException ioException) {
+			
+			LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+					LoggerConstants.APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
 			try {
+				LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+						LoggerConstants.APPLICATION_ID, "Deleting : " + jarFile.getName());
+
 				FileUtils.forceDelete(jarFile);
 			} catch (io.mosip.kernel.core.exception.IOException exception) {
+				
+				LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+						LoggerConstants.APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
 				return false;
 			}
 			return false;
@@ -316,30 +384,40 @@ public class SoftwareInstallationHandler {
 
 	private boolean hasSpace(int bytes) {
 
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "space check for : " + bytes +" in bytes");
+
 		return bytes < new File("/").getFreeSpace();
 	}
 
 	private InputStream getInputStreamOf(String url) throws IOException {
-		InputStream is = null;
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Getting Inputstream for url : "+url);
+
+		InputStream inputStream = null;
 		try {
-			System.out.println("Inside Url connnection");
 			URLConnection connection = new URL(url).openConnection();
 			connection.setConnectTimeout(10000);
-			System.out.println("End Url connnection");
 			// Space Check
 			if (hasSpace(connection.getContentLength())) {
-				is = connection.getInputStream();
+				inputStream = connection.getInputStream();
 			} else {
 				throw new IOException("No Disk Space");
 			}
 		} catch (NoRouteToHostException noRouteToHostException) {
-			System.out.println("Error in connection");
+			LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+					LoggerConstants.APPLICATION_ID,
+					noRouteToHostException.getMessage() + ExceptionUtils.getStackTrace(noRouteToHostException));
+
 			throw noRouteToHostException;
 		}
-		return is;
+		return inputStream;
 	}
 
 	private void deleteUnNecessaryJars() {
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Deletion of un-necessary jars started");
 
 		// Bin Folder
 		File bin = new File(binFolder);
@@ -367,13 +445,23 @@ public class SoftwareInstallationHandler {
 			try {
 				deleteFiles(deletableJars);
 			} catch (io.mosip.kernel.core.exception.IOException ioException) {
-				ioException.printStackTrace();
+				LOGGER.error(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+						LoggerConstants.APPLICATION_ID,
+						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
 			}
 		}
+
+		LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+				LoggerConstants.APPLICATION_ID, "Deletion of un-necessary jars completed");
 	}
 
 	private void deleteFiles(List<File> deletableJars) throws io.mosip.kernel.core.exception.IOException {
 		for (File jar : deletableJars) {
+			
+
+			LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
+					LoggerConstants.APPLICATION_ID, "Deleting jar : "+jar.getName());
 			// Delete Jar
 			FileUtils.forceDelete(jar);
 		}

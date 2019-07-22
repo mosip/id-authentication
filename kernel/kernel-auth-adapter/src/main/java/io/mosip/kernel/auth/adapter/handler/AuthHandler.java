@@ -31,6 +31,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -42,6 +43,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.mosip.kernel.auth.adapter.config.LoggerConfiguration;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterConstant;
 import io.mosip.kernel.auth.adapter.constant.AuthAdapterErrorCode;
@@ -71,7 +74,7 @@ import io.vertx.ext.web.RoutingContext;
  * details with the AuthUserDetails that extends Spring Security's UserDetails.
  * 
  * @author Ramadurai Saravana Pandian
- * @author Raj Jha 
+ * @author Raj Jha
  * @author Urvil Joshi
  * @since 1.0.0
  */
@@ -83,6 +86,15 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	@Value("${auth.server.validate.url}")
 	private String validateUrl;
+	
+	@Value("${auth.server.admin.validate.url:https://dev.mosip.io/r2/v1/authmanager/authorize/admin/validateToken}")
+	private String adminValidateUrl;
+	
+	@Value("${auth.jwt.base:Mosip-Token}")
+	private String authJwtBase;
+	
+	@Value("${auth.jwt.secret:authjwtsecret}")
+	private String authJwtSecret;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -100,19 +112,31 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 		AuthToken authToken = (AuthToken) usernamePasswordAuthenticationToken;
 		token = authToken.getToken();
 		MosipUserDto mosipUserDto = null;
-
-		response = getValidatedUserResponse(token);
-		List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
-		if (!validationErrorsList.isEmpty()) {
-			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
-		}
+		//added for keycloak impl
+		if (token.startsWith(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX)) {
+             
+             response = getKeycloakValidatedUserResponse(token);
+             List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(response.getBody());
+     		if (!validationErrorsList.isEmpty()) {
+     			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), validationErrorsList);
+     		}
+     		try {
+     			ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
+     			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
+     					MosipUserDto.class);
+     		} catch (Exception e) {
+     			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+     		}
+		}else {
+		Claims claims;
 		try {
-			ResponseWrapper<?> responseObject = objectMapper.readValue(response.getBody(), ResponseWrapper.class);
-			mosipUserDto = objectMapper.readValue(objectMapper.writeValueAsString(responseObject.getResponse()),
-					MosipUserDto.class);
-		} catch (Exception e) {
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
+			claims = getClaims(token);
+		} catch (Exception e1) {
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e1.getMessage(), e1);
 		}
+		mosipUserDto = buildDto(claims);
+		}
+			
 		List<GrantedAuthority> grantedAuthorities = AuthorityUtils
 				.commaSeparatedStringToAuthorityList(mosipUserDto.getRole());
 		AuthUserDetails authUserDetails = new AuthUserDetails(mosipUserDto, token);
@@ -121,14 +145,65 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 
 	}
 
+	private Claims getClaims(String token) throws Exception {
+		String token_base = authJwtBase;
+		String secret = authJwtSecret;
+		Claims claims = null;
+
+		if (token == null || !token.startsWith(token_base)) {
+			throw new NonceExpiredException("Invalid Token");
+		}
+//		try {
+		claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.substring(token_base.length())).getBody();
+
+//		} catch (SignatureException e) {
+//			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
+//		} catch (JwtException e) {
+//			if( e instanceof ExpiredJwtException)
+//			{
+//				System.out.println("Token expired message "+ e.getMessage() + " Token "+token);
+//				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(), AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
+//			}
+//			else
+//			{
+//				throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
+//			}
+//			
+//		}
+		return claims;
+	}
+
+	private MosipUserDto buildDto(Claims claims) {
+		MosipUserDto mosipUserDto = new MosipUserDto();
+		mosipUserDto.setUserId(claims.getSubject());
+		mosipUserDto.setName((String) claims.get("name"));
+		mosipUserDto.setRole((String) claims.get("role"));
+		mosipUserDto.setMail((String) claims.get("mail"));
+		mosipUserDto.setMobile((String) claims.get("mobile"));
+		mosipUserDto.setRId((String) claims.get("rId"));
+		return mosipUserDto;
+	}
+
 	private ResponseEntity<String> getValidatedUserResponse(String token) {
 		HttpHeaders headers = new HttpHeaders();
-		//System.out.println("\nInside Auth Handler");
-		//System.out.println("Token details " + System.currentTimeMillis() + " : " + token + "\n");
+		// System.out.println("\nInside Auth Handler");
+		// System.out.println("Token details " + System.currentTimeMillis() + " : " +
+		// token + "\n");
 		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
 		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 		try {
 			return getRestTemplate().exchange(validateUrl, HttpMethod.POST, entity, String.class);
+		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
+		}
+	}
+	
+	private ResponseEntity<String> getKeycloakValidatedUserResponse(String token) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(AuthAdapterConstant.AUTH_HEADER_COOKIE, AuthAdapterConstant.AUTH_COOOKIE_HEADER + token);
+		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+		try {
+			return getRestTemplate().exchange(adminValidateUrl, HttpMethod.GET, entity, String.class);
 		} catch (RestClientException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
 			throw new AuthManagerException(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage(), e);
 		}

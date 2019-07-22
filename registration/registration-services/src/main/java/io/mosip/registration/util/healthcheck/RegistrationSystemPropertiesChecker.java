@@ -25,6 +25,10 @@ import io.mosip.registration.constants.RegistrationConstants;
 public class RegistrationSystemPropertiesChecker {
 
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationSystemPropertiesChecker.class);
+	private static final String MAC_PATTERN = "([a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-"
+			+ "[a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-" + "[a-zA-Z0-9][a-zA-Z0-9]-"
+			+ "[a-zA-Z0-9][a-zA-Z0-9])";
+	private static final String ETHERNET = "Ethernet";
 
 	private RegistrationSystemPropertiesChecker() {
 
@@ -64,35 +68,34 @@ public class RegistrationSystemPropertiesChecker {
 
 	private static String getWindowsMacAddress() throws IOException {
 		String windowsMachineId = "";
-		String command = "ipconfig /all";
-		BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
-		while (true) {
-			String line = bufferedReader.readLine();
-			if (line != null) {
-				Pattern englishPattern = Pattern.compile(".*Physical Address.*: (.*)");
-				Pattern frenchPattern = Pattern.compile(".*Adresse physique.*: (.*)");
-				Pattern arabicPattern = Pattern.compile(".*العنوان الفعلي.*: (.*)");
+		LOGGER.info(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+				"Enternig to find the windows mac address");
 
-				Matcher englishMatcher = englishPattern.matcher(line);
-				if (englishMatcher.matches()) {
-					windowsMachineId = englishMatcher.group(1);
-					break;
-				}
+		Process process = Runtime.getRuntime().exec("getmac /fo csv /v");
 
-				Matcher frenchMatcher = frenchPattern.matcher(line);
-				if (frenchMatcher.matches()) {
-					windowsMachineId = frenchMatcher.group(1);
-					break;
-				}
-
-				Matcher arabicMatcher = arabicPattern.matcher(line);
-				if (arabicMatcher.matches()) {
-					windowsMachineId = arabicMatcher.group(1);
-					break;
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));) {
+			String line;
+			while (null != (line = in.readLine())) {
+				String[] lineSplitter = line.replaceAll("\"", "").split(",");
+				if (lineSplitter[0].equals(ETHERNET)) {
+					Pattern pattern = Pattern.compile(MAC_PATTERN);
+					Matcher matcher = pattern.matcher(line);
+					if (matcher.find()) {
+						LOGGER.info(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+								RegistrationConstants.APPLICATION_ID, "MAC Address : " + matcher.group(0));
+						windowsMachineId = matcher.group(0);
+						break;
+					}
 				}
 			}
+			LOGGER.info(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Leaving the find windows mac address method ");
+		} catch (IOException ioException) {
+			LOGGER.error(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
+
 		return windowsMachineId;
 	}
 

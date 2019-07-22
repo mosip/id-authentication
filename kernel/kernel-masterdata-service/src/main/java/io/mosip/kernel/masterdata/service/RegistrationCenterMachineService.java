@@ -11,6 +11,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
  * for registration center id and machine id.
  * 
  * @author Bal Vikash Sharma
+ * @author Megha Tanga
  * @since 1.0.0
  */
 public interface RegistrationCenterMachineService {
@@ -38,4 +39,6 @@ public interface RegistrationCenterMachineService {
 	 * @return {@link RegistrationCenterMachineID}
 	 */
 	public RegistrationCenterMachineID deleteRegistrationCenterMachineMapping(String regCenterId, String machineId);
+	
+	
 }

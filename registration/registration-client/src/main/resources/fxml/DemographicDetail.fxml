@@ -241,8 +241,8 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
@@ -440,8 +440,8 @@
                                                             </GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
@@ -558,8 +558,8 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
@@ -568,8 +568,8 @@
 																		</GridPane>
 																		<GridPane fx:id="residenceParentpane" prefHeight="50.0" prefWidth="${scrollParentPane.width}">
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
@@ -684,7 +684,7 @@
 																				</GridPane>
 																			</children>
 																		</GridPane>
-																		<GridPane fx:id="addressParentPane" prefHeight="550.0" prefWidth="${scrollParentPane.width}">
+																		<GridPane fx:id="addressParentPane" prefHeight="625.0" prefWidth="${scrollParentPane.width}">
 																			<children>
 																				<GridPane fx:id="applicatoinAddressPane">
 																					<children>
@@ -761,8 +761,10 @@
 																										</VBox>
 																										<VBox fx:id="applicationlocalAdminAuthority" spacing="5.0">
 																											<children>
-																												<Label fx:id="localAdminAuthorityLabel" prefWidth="${applicationCityHbox.width/2}" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="false" />
-																												<ComboBox fx:id="localAdminAuthority" onAction="#populatePincode" prefWidth="${applicationCityHbox.width/2}" promptText="%localAdminAuthority" styleClass="demographicCombobox" />
+																																<Label fx:id="localAdminAuthorityLabel" prefWidth="${applicationCityHbox.width/2}" styleClass="demoGraphicFieldLabel" text="%localAdminAuthority" visible="false">
+				                                                                                      </Label>
+																												<ComboBox fx:id="localAdminAuthority" onAction="#populatePincode" prefWidth="${applicationCityHbox.width/2}" promptText="%localAdminAuthority" styleClass="demographicCombobox">
+																												<tooltip><Tooltip text="%localAdminAuthority" styleClass="toolTip_address"/></tooltip></ComboBox>
 																												<Label fx:id="localAdminAuthorityMessage" prefWidth="${applicationCityHbox.width/2}" styleClass="demoGraphicFieldMessageLabel" text="localAdminAuthority message" visible="false" />
 																											</children>
 																										</VBox>
@@ -998,8 +1000,8 @@
 																				</GridPane>
 																			</children>
 																			<columnConstraints>
-																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
 																				<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
 																			</columnConstraints>
 																			<rowConstraints>
@@ -1109,8 +1111,8 @@
                                                             </GridPane>
                                                          </children>
                                                          <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="48.0" prefWidth="100.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="7.0" prefWidth="100.0" />
                                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="45.0" prefWidth="100.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>

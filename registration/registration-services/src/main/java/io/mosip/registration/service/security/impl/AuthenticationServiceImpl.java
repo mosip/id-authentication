@@ -59,8 +59,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.security.AuthenticationServiceImpl#authValidator(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public AuthTokenDTO authValidator(String validatorType, String userId, String otp) {		
-		return otpValidatorImpl.validate(userId, otp);
+	public AuthTokenDTO authValidator(String validatorType, String userId, String otp, boolean haveToSaveAuthToken) {		
+		return otpValidatorImpl.validate(userId, otp, haveToSaveAuthToken);
 	}
 
 	/* (non-Javadoc)

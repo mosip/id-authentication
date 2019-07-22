@@ -1,0 +1,17 @@
+testdata:  
+  IdRepository_RetrieveIdentity_With Deactivated UIN:
+    input.uin:
+      uin: $UIN:WITH:Deactivated$
+    output.output-1-expected-n-res:
+      output.1.res.n.version: $version$
+      output.1.res.n.status: $TestData:DeactivatedStatus_valid$
+      output.1.res.n.responsetime: $IGNORE$
+      
+  IdRepository_RetrieveIdentity_With Invalid UIN:
+    input.uin:
+      uin: $TestData:uin_invalid$
+    output.output-1-expected-err-res:
+      output.2.res.n.version: $version$
+      output.2.res.n.responsetime: $IGNORE$ 
+      output.2.res.n.errorCode: $errors:InvalidUinForRetrieve:errorCode$
+      output.2.res.n.errormessage: $errors:InvalidUinForRetrieve:errorMessage$

@@ -2,11 +2,10 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
@@ -32,16 +31,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "title", schema = "master")
+@IdClass(CodeAndLanguageCodeID.class)
 public class Title extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1323331283383315822L;
 
-	@EmbeddedId
+	/*@EmbeddedId
 	@AttributeOverrides({
 			@AttributeOverride(name = "code", column = @Column(name = "code", nullable = false, length = 16)),
-			@AttributeOverride(name = "lang_code", column = @Column(name = "lang_code", nullable = false, length = 3)) })
+			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
 	@Column(name = "code", unique = true, nullable = false, length = 16)
-	private CodeAndLanguageCodeID id;
+	private CodeAndLanguageCodeID id;*/
+	@Id
+	@Column(name="code")
+	private String code;
+	@Id
+	@Column(name="lang_code",nullable=false)
+	private String langCode;
 
 	@Column(name = "name", unique = true, nullable = false, length = 64)
 	private String titleName;

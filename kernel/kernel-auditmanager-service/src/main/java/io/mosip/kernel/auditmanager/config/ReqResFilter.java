@@ -37,7 +37,7 @@ public class ReqResFilter implements Filter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		ContentCachingRequestWrapper requestWrapper = null;
 		ContentCachingResponseWrapper responseWrapper = null;
-		try {
+		
 			// Default processing for url ends with .stream
 			if (httpServletRequest.getRequestURI().endsWith(".stream")) {
 				chain.doFilter(request, response);
@@ -48,10 +48,6 @@ public class ReqResFilter implements Filter {
 			chain.doFilter(requestWrapper, responseWrapper);
 			responseWrapper.copyBodyToResponse();
 
-		} catch (Exception e) {
-			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
-			mosipLogger.error("", "", "", e.getMessage());
-		}
 	}
 
 	@Override

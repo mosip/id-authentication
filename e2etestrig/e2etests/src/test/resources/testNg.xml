@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Mosip E2E Suite">
+
+<listeners>
+		<listener class-name="io.mosip.e2e.report.CustomTestNGReporter" />
+		<!-- <listener class-name="io.mosip.e2e.report.ExtentReportListener"></listener> -->
+	</listeners>
+
+ 
+ <test name="PacketGenerator" preserve-order="true">
+		<classes>
+	 	<class name="io.mosip.e2e.tests.PacketGeneratorTest"/>  
+		</classes>
+	</test>  
+  <test name="E2E Tests" preserve-order="true">
+		<classes> 
+			 <class name="io.mosip.e2e.tests.EndToEndRun" /> 
+		</classes>
+	</test>  
+ <test name="AuthenticationTests" preserve-order="true">
+		<classes>
+	 	<class name="io.mosip.e2e.tests.AuthenticationTests"/>  
+		</classes>
+	</test>   
+	
+</suite>

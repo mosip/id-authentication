@@ -40,24 +40,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
       password="********">
 </role>
 
-<role name="admuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
-<role name="repuser"
-      inherit="true"
-      login="true"
-      encrypted="true"
-      password="********">
-</role>
-
 <database name="mosip_audit" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
 	<role name="sysadmin"/>
 	<tablespace name="pg_default"/>
-	<comment><![CDATA[Database to store all transaction audit details for all the module applications]]></comment>
+	<comment><![CDATA[Audit related logs and the data is stored in this database]]></comment>
 </database>
 
 <schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
@@ -71,7 +57,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="audit"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Application Audit Log : To track application related audit details for analysing, auditing and reporting purposes]]></comment>
-	<position x="50" y="50"/>
+	<position x="60" y="60"/>
 	<column name="log_id" not-null="true">
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Log Id: Unique audit log id for each audit event log entry across the system.]]></comment>
@@ -149,11 +135,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<extension name="pg_stat_statements" cur-version="1.5">
-	<schema name="public"/>
-	<comment><![CDATA[track execution statistics of all SQL statements executed]]></comment>
-</extension>
-
 <permission>
 	<object name="mosip_audit" type="database"/>
 	<privileges connect="true" temporary="true"/>
@@ -171,7 +152,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <permission>
 	<object name="mosip_audit" type="database"/>
 	<roles names="audituser"/>
-	<privileges create="true" connect="true" temporary="true"/>
+	<privileges connect="true"/>
 </permission>
 <permission>
 	<object name="audit" type="schema"/>
@@ -185,12 +166,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </permission>
 <permission>
 	<object name="audit.app_audit_log" type="table"/>
-	<roles names="appadmin"/>
+	<roles names="sysadmin"/>
 	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
 </permission>
 <permission>
 	<object name="audit.app_audit_log" type="table"/>
-	<roles names="repuser"/>
-	<privileges select="true" references="true"/>
+	<roles names="audituser"/>
+	<privileges select="true" delete="true" insert="true" update="true" references="true"/>
 </permission>
 </dbmodel>

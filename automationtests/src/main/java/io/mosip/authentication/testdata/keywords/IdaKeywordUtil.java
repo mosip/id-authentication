@@ -23,6 +23,8 @@ import io.mosip.authentication.fw.util.IdRepoUtil;
 import io.mosip.authentication.fw.util.AuthTestsUtil;
 import io.mosip.authentication.fw.precon.XmlPrecondtion;
 import io.mosip.authentication.fw.util.RunConfigUtil;
+import io.mosip.authentication.fw.util.UINUtil;
+import io.mosip.authentication.fw.util.VIDUtil;
 import io.mosip.authentication.testdata.TestDataConfig;
 import io.mosip.authentication.testdata.TestDataProcessor;
 import io.mosip.authentication.testdata.TestDataUtil;
@@ -205,7 +207,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 					otpId = "%" + tempOut.get("uin") + "%";
 				}
 				else if (tempOut.get("uin").length() == 16) {
-					otpId="%"+ RunConfigUtil.getUinForVid(tempOut.get("uin"))+"%";
+					otpId="%"+ UINUtil.getUinForVid(tempOut.get("uin"))+"%";
 				}
 				String OtpFindQuery = baseQuery + "'" + otpId + "'" + ":" + getValue[1];
 				returnMap.put(entry.getKey(), OtpFindQuery);
@@ -234,7 +236,7 @@ public class IdaKeywordUtil extends KeywordUtil{
 			}
 			// Keyword to get UIN Number
 			else if (entry.getValue().contains("$UIN") && !entry.getValue().contains("UIN-PIN")) {
-				returnMap.put(entry.getKey(), RunConfigUtil.getUinNumber(entry.getValue()));
+				returnMap.put(entry.getKey(), UINUtil.getUinNumber(entry.getValue()));
 			} else if (entry.getValue().contains("$VID") && !entry.getValue().contains("VID-PIN")) {
 				if (entry.getValue().contains("VID:WHERE:") && entry.getValue().contains("WHERE")
 						&& entry.getValue().contains("WITH") && entry.getValue().contains("UIN")) {
@@ -242,10 +244,10 @@ public class IdaKeywordUtil extends KeywordUtil{
 					Map<String, String> tempIn = new HashMap<String, String>();
 					tempIn.put("uin", uinKeyword);
 					Map<String, String> tempOut = precondtionKeywords(tempIn);
-					returnMap.put(entry.getKey(), RunConfigUtil.getVidKey(tempOut.get("uin").toString()));
+					returnMap.put(entry.getKey(), VIDUtil.getVidKey(tempOut.get("uin").toString()));
 				} else if (entry.getValue().contains("VID:WITH")) {
 					String vidKeyword = entry.getValue().replace("VID:WITH:", "").replace("$", "");
-					returnMap.put(entry.getKey(), RunConfigUtil.getVidForvidkey(vidKeyword));
+					returnMap.put(entry.getKey(), VIDUtil.getVidForvidkey(vidKeyword));
 				} else
 					returnMap.put(entry.getKey(), getVidNumber());
 			} else if (entry.getValue().contains("UIN-PIN")) {
@@ -271,11 +273,11 @@ public class IdaKeywordUtil extends KeywordUtil{
 					returnMap.put(entry.getKey(), entry.getValue());
 				} else {
 					if (value.length() == 16) {
-						RunConfigUtil.getStaticPinVidPropertyValue(RunConfigUtil.getStaticPinVidPropertyPath());
+						VIDUtil.getStaticPinVidPropertyValue(RunConfigUtil.getStaticPinVidPropertyPath());
 						String pin = VidStaticPinDto.getVidStaticPin().get(value).toString();
 						returnMap.put(entry.getKey(), pin);
 					} else {
-						RunConfigUtil.getStaticPinUinPropertyValue(RunConfigUtil.getStaticPinUinPropertyPath());
+						UINUtil.getStaticPinUinPropertyValue(RunConfigUtil.getStaticPinUinPropertyPath());
 						String pin = UinStaticPinDto.getUinStaticPin().get(value).toString();
 						returnMap.put(entry.getKey(), pin);
 					}
@@ -303,10 +305,11 @@ public class IdaKeywordUtil extends KeywordUtil{
 	 */
 	private String generateCurrentTimeStampWithTimeZone()
 	{
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'+'");
+		DateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MINUTE, -2);
-		return dateFormatter.format(cal.getTime()) + "05:30";
+		return dateFormatter.format(cal.getTime());
 	}
 	/**
 	 * Method generate timestamp
@@ -317,7 +320,8 @@ public class IdaKeywordUtil extends KeywordUtil{
 	 * @return string
 	 */
 	private String generateTimeStamp(String calendarType, String addsub, int number) {
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'+'");
+		DateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Calendar cal = Calendar.getInstance();
 		if (calendarType.equals("HOUR") && addsub.equals("-")) {
 			int append = Integer.parseInt(addsub + number);
@@ -335,13 +339,13 @@ public class IdaKeywordUtil extends KeywordUtil{
 		} else if (calendarType.equals("SECOND") && addsub.equals("+")) {
 			cal.add(Calendar.SECOND, number);
 		}
-		return dateFormatter.format(cal.getTime()) + "05:30";
+		return dateFormatter.format(cal.getTime());
 	}	
 	/**
 E	 * 
 	 * @return string
 	 */
-	private String generateTimeStampWithZTimeZone() {
+	public static String generateTimeStampWithZTimeZone() {
 			Date date = new Date();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 			dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -364,7 +368,7 @@ E	 *
 	 * @return static pin
 	 */
 	private String getStaticPinUinNumber() {
-		return RunConfigUtil.getRandomStaticPinUINKey();
+		return UINUtil.getRandomStaticPinUINKey();
 	}
 	/**
 	 * The method get static pin for VID number
@@ -372,7 +376,7 @@ E	 *
 	 * @return static pin
 	 */
 	private String getStaticPinVidNumber() {
-		return RunConfigUtil.getRandomStaticPinVIDKey();
+		return VIDUtil.getRandomStaticPinVIDKey();
 	}
 	/**
 	 * The method generate random VID number
@@ -380,7 +384,7 @@ E	 *
 	 * @return VID
 	 */
 	private String getVidNumber() {
-		return RunConfigUtil.getRandomVidKey();
+		return VIDUtil.getRandomVidKey();
 	}
 	/**
 	 * The method get modified OTP template

@@ -164,7 +164,7 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		try {
 			 fetchAppStr = fetchAppDet.jsonPath().get("response.appointment_date").toString();
 		} catch (NullPointerException e) {
-			Assert.fail("Exception while fetching appointment details");
+			Assert.fail("Exception while fetching appointment details"+fetchAppDet.toString());
 		}
 		
 		logger.info("Fetch App Res::" + fetchAppStr);
@@ -186,6 +186,10 @@ public class RetriveAllPreRegIdByRegCenterId extends BaseTestCase implements ITe
 		else if (testCaseName.contains("toDate"))
 		{
 			toDate= actualRequest.get("to_date").toString();
+		}
+		else if(testCaseName.contains("toDate_withEmptyValue"))
+		{
+			frmDate="2020-05-31";
 		}
 		
 		

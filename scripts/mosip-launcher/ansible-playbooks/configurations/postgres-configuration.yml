@@ -7,32 +7,32 @@
 
 
 # password postgres user  used to create all other users and roles etc
-postgres_password: Mosipadm@dev123  #Password@postgres
+postgres_password: Mosip@dev123  #Password@postgres
 # password kerneluser  used in Kernel admin service, Database mappings uin, kernel keymanager Service, kernel otp manager
-kerneluser_password: Mosipadm@dev123 #Password@kernel
+kerneluser_password: Mosip@dev123 #Password@kernel
 
 # password audituser    used in kernel auditmanager service
-audituser_password: Mosipadm@dev123 #Password@audit
+audituser_password: Mosip@dev123 #Password@audit
 
 # password masteruser   used in kernel masterdata service, licensekeymanager, syncdata
-masteruser_password: Mosipadm@dev123 #Password@masterdata
+masteruser_password: Mosip@dev123 #Password@masterdata
 
 # password regprcuser  used in kernel rid generator, packet-info-storage-service
-regprcuser_password: Mosipadm@dev123 #Password@registrationprocessor
+regprcuser_password: Mosip@dev123 #Password@registrationprocessor
 
 # password iamuser  used in  kernel authmanager service
-iamuser_password: Mosipadm@dev123 #Password@iam
+iamuser_password: Mosip@dev123 #Password@iam
 
 # password prereguser used in registration processor and preregistartion services
-prereguser_password: Mosipadm@dev123 #Password@prereg
+prereguser_password: Mosip@dev123 #Password@prereg
 
 # idauser passowrd  used in id-authentication services
-idauser_password: Mosipadm@dev123 #Password@ida
+idauser_password: Mosip@dev123 #Password@ida
 
 # idrepouser used in id-repository services
-idrepouser_password: Mosipadm@dev123 #Password@idrepo
+idrepouser_password: Mosip@dev123 #Password@idrepo
 
 # idmapuser used in id-repository vid service
-idmapuser_password: Mosipadm@dev123 #Password@idma
+idmapuser_password: Mosip@dev123 #Password@idma
 
-sysadmin_password: Mosipadm@dev123 #Password@sysadmin
+sysadmin_password: Mosip@dev123 #Password@sysadmin

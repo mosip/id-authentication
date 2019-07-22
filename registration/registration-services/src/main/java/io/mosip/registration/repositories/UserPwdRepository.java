@@ -11,5 +11,7 @@ import io.mosip.registration.entity.UserPassword;
  *
  */
 public interface UserPwdRepository extends BaseRepository<UserPassword, String> {
+	
+	void deleteByUsrId(String id);
 
 }

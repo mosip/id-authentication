@@ -97,7 +97,6 @@ public class SwaggerConfig {
 						"Operations related to registration center,user,machine history"))
 				.groupName(TITLE).select().apis(RequestHandlerSelectors.any())
 				.paths(PathSelectors.regex("(?!/(error).*).*")).build();
-
 		if (swaggerBaseUrlSet) {
 			docket.protocols(protocols()).host(hostWithPort);
 			System.out.println("\nSwagger Base URL: " + proto + "://" + hostWithPort + "\n");

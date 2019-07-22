@@ -2,6 +2,7 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,5 +75,12 @@ public class PreRegistrationDAOImplTest {
 		Mockito.when(registrationRepository.findAll()).thenReturn(list);
 		preRegistrationDAOImpl.getAllPreRegPackets();
 	}
-
+	
+	@Test
+	public void getLastUpdatedTime() {
+		PreRegistrationList userMachineMapping = new PreRegistrationList();		
+		userMachineMapping.setLastUpdatedPreRegTimeStamp(new Timestamp(System.currentTimeMillis()));		
+		Mockito.when(registrationRepository.findTopByOrderByLastUpdatedPreRegTimeStampDesc()).thenReturn(userMachineMapping);
+		Assert.assertNotNull(preRegistrationDAOImpl.getLastPreRegPacketDownloadedTime());
+	}
 }
