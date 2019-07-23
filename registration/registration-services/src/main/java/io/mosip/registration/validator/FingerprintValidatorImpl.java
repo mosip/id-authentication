@@ -94,7 +94,7 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 				.convert(capturedFingerPrintDto.getFingerPrint());
 		minutiae = fingerprintTemplate.serialize();
 		}catch (Exception e) {
-			return true;
+			return false;
 		}
 		BIR capturedBir = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
 

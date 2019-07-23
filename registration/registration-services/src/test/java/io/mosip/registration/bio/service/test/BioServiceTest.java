@@ -345,7 +345,7 @@ public class BioServiceTest {
        }
 
        @Test(expected = NullPointerException.class)
-       public void testGetIrisImageAsDTORuntimeException() throws RegBaseCheckedException {
+       public void testGetIrisImageAsDTORuntimeException() throws RegBaseCheckedException, IOException {
              bioService.getIrisImageAsDTO(null, "LeftEye");
        }
 
@@ -526,19 +526,19 @@ public class BioServiceTest {
        }
        
          @Test
-           public void nonMdmTest() throws RegBaseCheckedException
+           public void nonMdmTest() throws RegBaseCheckedException, IOException
            {
            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
               bioService.getIrisImageAsDTO(new IrisDetailsDTO(), "LeftEye");
            }
          @Test
-           public void getFingerPrintImageAsDtoTest() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDtoTest() throws RegBaseCheckedException, IOException
            {
             ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "Y");
              bioService.getIrisImageAsDTO(new IrisDetailsDTO(), "LeftEye");
            }
          @Test
-           public void getFingerPrintImageAsDTOWithMdmThumbsTest() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOWithMdmThumbsTest() throws RegBaseCheckedException, IOException
            {
            CaptureResponseDto captureResponseDto=new CaptureResponseDto();
            Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
@@ -547,7 +547,7 @@ public class BioServiceTest {
               
            }
          @Test
-         public void getFingerPrintImageAsDTOWithMdmrightSlapTest() throws RegBaseCheckedException
+         public void getFingerPrintImageAsDTOWithMdmrightSlapTest() throws RegBaseCheckedException, IOException
          {
          CaptureResponseDto captureResponseDto=new CaptureResponseDto();
          Mockito.when(mosipBioDeviceManager.scan(Mockito.anyString())).thenReturn(captureResponseDto);
@@ -556,28 +556,28 @@ public class BioServiceTest {
             
          } 
           @Test
-           public void getFingerPrintImageAsDTOWithMdmleftSlapTest() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOWithMdmleftSlapTest() throws RegBaseCheckedException, IOException
            {
            Mockito.when(mosipBioDeviceManager.scan(Mockito.any())).thenReturn(Mockito.any());
               bioService.getFingerPrintImageAsDTOWithMdm(new FingerprintDetailsDTO(),"leftSlap_onboard");
               
            }
            @Test
-           public void getFingerPrintImageAsDTOWithMdmThumbsOnboardTest() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOWithMdmThumbsOnboardTest() throws RegBaseCheckedException, IOException
            {
            Mockito.when(mosipBioDeviceManager.scan(Mockito.any())).thenReturn(Mockito.any());
               bioService.getFingerPrintImageAsDTOWithMdm(new FingerprintDetailsDTO(),"thumbs_onboard");
               
            }
            @Test
-           public void getFingerPrintImageAsDTOWithMdmrightSlapOnboardTest() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOWithMdmrightSlapOnboardTest() throws RegBaseCheckedException, IOException
            {
            Mockito.when(mosipBioDeviceManager.scan(Mockito.any())).thenReturn(Mockito.any());
               bioService.getFingerPrintImageAsDTOWithMdm(new FingerprintDetailsDTO(),"rightSlap_onboard");
               
            }
            @Test
-           public void getFingerPrintImageAsDTOWithMdmrightSlapDefaultTest() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOWithMdmrightSlapDefaultTest() throws RegBaseCheckedException, IOException
            {
            Mockito.when(mosipBioDeviceManager.scan(Mockito.any())).thenReturn(Mockito.any());
               bioService.getFingerPrintImageAsDTOWithMdm(new FingerprintDetailsDTO(),"default");
@@ -585,7 +585,7 @@ public class BioServiceTest {
            }
            
            @Test
-           public void getFingerPrintImageAsDTOTest1() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOTest1() throws RegBaseCheckedException, IOException
            {
            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
               FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
@@ -594,7 +594,7 @@ public class BioServiceTest {
            }
            
            @Test
-           public void getFingerPrintImageAsDTOTest2() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOTest2() throws RegBaseCheckedException, IOException
            {
            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
               FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();
@@ -603,7 +603,7 @@ public class BioServiceTest {
            }
            
            @Test
-           public void getFingerPrintImageAsDTOTest3() throws RegBaseCheckedException
+           public void getFingerPrintImageAsDTOTest3() throws RegBaseCheckedException, IOException
            {
            ApplicationContext.getInstance().getApplicationMap().put("mosip.mdm.enabled", "N");
               FingerprintDetailsDTO fingerprintDetailsDTO=new FingerprintDetailsDTO();

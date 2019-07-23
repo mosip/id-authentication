@@ -1469,16 +1469,16 @@ public class RegistrationConstants {
 	public static final Map<String, String> userOnBoardMap = new HashMap<String, String>() {
 
 		{
-			put("leftIndex", "LEFT_INDEX");
-			put("leftLittle", "LEFT_LITTLE");
-			put("leftMiddle", "LEFT_MIDDLE");
-			put("leftRing", "LEFT_RING");
-			put("leftThumb", "LEFT_THUMB");
-			put("rightIndex", "RIGHT_INDEX");
-			put("rightLittle", "RIGHT_LITTLE");
-			put("rightMiddle", "RIGHT_MIDDLE");
-			put("rightRing", "RIGHT_RING");
-			put("rightThumb", "RIGHT_THUMB");
+			put("leftIndex", "LF_INDEX");
+			put("leftLittle", "LF_LITTLE");
+			put("leftMiddle", "LF_MIDDLE");
+			put("leftRing", "LF_RING");
+			put("leftThumb", "LF_THUMB");
+			put("rightIndex", "RF_INDEX");
+			put("rightLittle", "RF_LITTLE");
+			put("rightMiddle", "RF_MIDDLE");
+			put("rightRing", "RF_RING");
+			put("rightThumb", "RF_THUMB");
 			put("LeftEye.png", "LEFT");
 			put("RightEye.png", "RIGHT");
 		}

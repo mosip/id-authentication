@@ -17,6 +17,7 @@ import java.util.Random;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.mdm.dto.BioDevice;
 import io.mosip.registration.mdm.dto.CaptureRequestDeviceDetailDto;
 import io.mosip.registration.mdm.dto.CaptureRequestDto;
@@ -66,7 +67,7 @@ public class MdmRequestResponseBuilder {
 		mosipBioRequest.setType(getDevicCode(bioDevice.getDeviceType()));
 		mosipBioRequest.setCount(1);
 		String[] excptions= {};
-		mosipBioRequest.setException(excptions);
+		mosipBioRequest.setException(((ArrayList<String>)SessionContext.map().get("CAPTURE_EXCEPTION")).toArray(excptions));
 		mosipBioRequest.setRequestedScore(40);
 		mosipBioRequest.setDeviceId(bioDevice.getDeviceId());
 		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubId());

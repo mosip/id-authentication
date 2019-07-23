@@ -1,11 +1,22 @@
 package io.mosip.registration.constants;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.ResourceBundle;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.context.ApplicationContext;
 
 public class RegistrationUIConstants {
 
+	/**
+	 * Instance of {@link Logger}
+	 */
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationUIConstants.class);
+	
 	// Key values to read value from messages.properties file
 
 	public static final ResourceBundle bundle = ApplicationContext.applicationMessagesBundle();
@@ -13,7 +24,16 @@ public class RegistrationUIConstants {
 	public static final String MINUTES = bundle.getString("MINUTES");
 
 	public static String getMessageLanguageSpecific(String key) {
-		return bundle.getString(key);
+		String message = "ERROR";
+		try {
+			message = bundle.getString(key);
+		}catch(Exception runtimeException) {
+			LOGGER.error("REGISTRATION_UI_CONSTANTS", APPLICATION_NAME, APPLICATION_ID,
+					String.format(
+							"%s -> Exception while initializing Fingerprint Capture page for user registration  %s",
+							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException)));
+		}
+		return message;
 	}
 
 	// ALERT

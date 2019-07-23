@@ -253,6 +253,35 @@ public class MosipBioDeviceManager {
 		}
 
 	}
+	
+	/**
+	 * Triggers the biometric capture based on the device type and returns the
+	 * biometric value from MDM
+	 * 
+	 * @param deviceType
+	 *            - The type of the device
+	 * @return CaptureResponseDto - captured biometric values from the device
+	 * @throws RegBaseCheckedException
+	 *             - generalised exception with errorCode and errorMessage
+	 * @throws IOException 
+	 */
+	public CaptureResponseDto authScan(String deviceType) throws RegBaseCheckedException, IOException {
+
+		BioDevice bioDevice = findDeviceToScan(deviceType);
+		stream(deviceType);
+		if (bioDevice != null) {
+			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+					"Device found in the device registery");
+			return bioDevice.capture();
+		} else {
+			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
+					"Device not found in the device registery");
+			return null;
+		}
+
+	}
+	
+	
 
 
 	private BioDevice findDeviceToScan(String deviceType) throws RegBaseCheckedException {

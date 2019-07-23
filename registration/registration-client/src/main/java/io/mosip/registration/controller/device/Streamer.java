@@ -28,9 +28,6 @@ public class Streamer {
 	private MosipBioDeviceManager mosipBioDeviceManager;
 
 	@Autowired
-	private BioService bioService;
-	
-	@Autowired
 	private ScanPopUpViewController scanPopUpViewController;
 
 	private Thread streamer_thread = null;
@@ -40,21 +37,24 @@ public class Streamer {
 		streamer_thread = new Thread(new Runnable() {
 
 			public void run() {
-
+				isRunning = true;
 				try {
+					if(urlStream!=null) {
+						urlStream.close();
+						urlStream=null;
+					}
 					urlStream = mosipBioDeviceManager.stream(bioType);
-					if(urlStream!=null)
-						scanPopUpViewController.enableCloseButton();
+					scanPopUpViewController.enableCloseButton();
 				} catch (RegBaseCheckedException | IOException | NullPointerException e1) {
+					scanPopUpViewController.enableCloseButton();
 					stop();
 				}
-				isRunning = true;
 				while (isRunning) {
 					try {
 						byte[] imageBytes = retrieveNextImage();
 						ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBytes);
 						Image img = new Image(imageStream);
-						streamImage.setImage(img);
+						streamImage.setImage(img);	
 						if (null != scanImage) {
 							scanImage.setImage(img);
 						}
@@ -124,21 +124,18 @@ public class Streamer {
 	/**
 	 * Stop the loop, and allow it to clean up
 	 */
-	public synchronized boolean stop() {
-		if (!bioService.isMdmEnabled())
-			return true;
+	public synchronized void stop() {
 
 		if (streamer_thread != null) {
 			try {
 				isRunning = false;
-				urlStream.close();
+				if(urlStream!=null)
+					urlStream.close();
 				streamer_thread=null;
-					return true;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return true;
 	}
 
 }

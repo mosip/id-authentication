@@ -77,7 +77,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(BioServiceImpl.class);
 
-	private byte[] isoTemplate;
+	private byte[] isoImage;
 
 	/**
 	 * Returns Authentication validator Dto that will be passed 
@@ -98,15 +98,28 @@ public class BioServiceImpl extends BaseService implements BioService {
 		LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID, "Invoking FingerPrint validator");
 
 		AuthenticationValidatorDTO authenticationValidatorDTO=null;
+		CaptureResponseDto captureResponseDto=null;
+		CaptureResponsBioDataDto captureResponseData=null;
+		String bioType= "Right little";
+
 		if (isMdmEnabled()) {
-			CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FINGER_SINGLE);
-			isoTemplate = mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
+			captureResponseDto= mosipBioDeviceManager.authScan(RegistrationConstants.FINGERPRINT_SLAB_LEFT);
+			if(captureResponseDto==null)
+				throw new RegBaseCheckedException("","Decice is not available");
+			if(captureResponseDto.getError().getErrorCode().equals("202"))
+				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
+			if(captureResponseDto.getError().getErrorCode().equals("403"))
+
+			decode(captureResponseDto);
+			captureResponseData =  captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData();
+			bioType=captureResponseData.getBioType();
+			isoImage = captureResponseData.getBioExtract();
 		} else {
-			isoTemplate = IOUtils.toByteArray(
+			isoImage = IOUtils.toByteArray(
 					this.getClass().getResourceAsStream("/UserOnboard/rightHand/rightLittle/ISOTemplate.iso"));
 		}
 
-		if (isoTemplate == null) {
+		if (isoImage == null) {
 			return null;
 		} else {
 			LOGGER.info(LoggerConstants.BIO_SERVICE, APPLICATION_NAME, APPLICATION_ID,
@@ -115,8 +128,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 			authenticationValidatorDTO = new AuthenticationValidatorDTO();
 			List<FingerprintDetailsDTO> fingerprintDetailsDTOs = new ArrayList<>();
 			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
-			fingerprintDetailsDTO.setFingerPrint(isoTemplate);
-			fingerprintDetailsDTO.setFingerType("Right little");
+			fingerprintDetailsDTO.setFingerPrintISOImage(isoImage);
+			fingerprintDetailsDTO.setFingerType(bioType);
 			fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 			authenticationValidatorDTO.setUserId(userId);
