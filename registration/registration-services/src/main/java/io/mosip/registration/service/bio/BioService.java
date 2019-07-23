@@ -9,6 +9,7 @@ import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.UserBiometric;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 
 /**
  * This class {@code BioService} handles all the biometric captures and
@@ -186,6 +187,10 @@ public interface BioService {
 	 */
 	boolean validateFaceAgainstDb(FaceDetailsDTO faceDetail, List<UserBiometric> userFaceDetails);
 
-	byte[] captureFace();
+	CaptureResponseDto captureFace();
+
+	byte[] getSingleBioValue(CaptureResponseDto captureResponseDto);
+
+	byte[] getSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto);
 
 }

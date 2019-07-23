@@ -22,6 +22,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.device.webcam.IMosipWebcamService;
 import io.mosip.registration.device.webcam.PhotoCaptureFacade;
+import io.mosip.registration.mdm.dto.CaptureResponseDto;
 import io.mosip.registration.service.bio.BioService;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
@@ -135,13 +136,13 @@ public class WebCameraController extends BaseController implements Initializable
 		if (capturedImage != null) {
 			capturedImage.flush();
 		}
+		CaptureResponseDto captureResponseDto =null;
 		if (bioService.isMdmEnabled()) {
 
-			/* TODO : video stream has to be added */
-			byte[] faceImage = bioService.captureFace();
-			if (null != faceImage) {
+			captureResponseDto = bioService.captureFace();
+			if (null != captureResponseDto) {
 				try {
-					capturedImage = ImageIO.read(new ByteArrayInputStream(faceImage));
+					capturedImage = ImageIO.read(new ByteArrayInputStream(bioService.getSingleBioValue(captureResponseDto)));
 				} catch (IOException exception) {
 					LOGGER.error("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 							String.format("%s Exception while getting the captured Face details : %s ",
@@ -152,7 +153,7 @@ public class WebCameraController extends BaseController implements Initializable
 		} else {
 			capturedImage = photoProvider.captureImage();
 		}
-		parentController.saveApplicantPhoto(capturedImage, imageType);
+		parentController.saveApplicantPhoto(capturedImage, imageType,captureResponseDto);
 		parentController.calculateRecaptureTime(imageType);
 		capture.setDisable(true);
 

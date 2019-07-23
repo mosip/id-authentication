@@ -7,13 +7,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -32,7 +27,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.LoggerConstants;
@@ -558,7 +552,13 @@ public class BioServiceImpl extends BaseService implements BioService {
 	public AuthenticationValidatorDTO getFaceAuthenticationDto(String userId) {
 		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		FaceDetailsDTO faceDetailsDTO = new FaceDetailsDTO();
-		faceDetailsDTO.setFace(captureFace());
+		CaptureResponseDto captureResponseDto = captureFace();
+		byte[] faceBytes = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
+		if (null != faceBytes) {
+			faceDetailsDTO.setFace(faceBytes);
+		} else {
+			faceDetailsDTO.setFace(RegistrationConstants.FACE.toLowerCase().getBytes());
+		}
 		authenticationValidatorDTO.setUserId(userId);
 		authenticationValidatorDTO.setFaceDetail(faceDetailsDTO);
 		return authenticationValidatorDTO;
@@ -715,25 +715,34 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @return byte[] of captured Face
 	 */
 	@Override
-	public byte[] captureFace() {
+	public CaptureResponseDto captureFace() {
 
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Face");
-		byte[] capturedByte = null;
-
+		CaptureResponseDto captureResponseDto = null;
 		try {
 			if (isMdmEnabled()) {
-				CaptureResponseDto captureResponseDto = null;
+
 				captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
-				capturedByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
-			} else
-				capturedByte = RegistrationConstants.FACE.toLowerCase().getBytes();
+			}
 		} catch (RegBaseCheckedException | RuntimeException | IOException exception) {
 			exception.printStackTrace();
 
 		}
-		return capturedByte;
+		return captureResponseDto;
 	}
 
+	@Override
+	public byte[] getSingleBioValue(CaptureResponseDto captureResponseDto) {
+
+		return mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
+	}
+
+	@Override
+	public byte[] getSingleBiometricIsoTemplate(CaptureResponseDto captureResponseDto) {
+
+		return mosipBioDeviceManager.getSingleBiometricIsoTemplate(captureResponseDto);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
