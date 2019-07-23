@@ -397,6 +397,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		table.getSelectionModel().selectFirst();
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
+			approvalBtn.setDisable(false);
+			rejectionBtn.setDisable(false);
+		}else {
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
+			approvalBtn.setDisable(true);
+			rejectionBtn.setDisable(true);
 		}
 	}
 

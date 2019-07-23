@@ -1,11 +1,17 @@
 package io.mosip.registration.controller.reg;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_ALERT_GENERATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.controller.BaseController;
@@ -26,6 +32,7 @@ import javafx.stage.Stage;
 @Component
 public class AlertController extends BaseController implements Initializable {
 
+	private static final Logger LOGGER = AppConfig.getLogger(AlertController.class);
 	@FXML
 	private ImageView alertImage;
 	@FXML
@@ -69,6 +76,8 @@ public class AlertController extends BaseController implements Initializable {
 
 	
 	public void generateAlertResponse(String title, String contextString) {
+		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert generation has been started");
+
 		String[] split = contextString.split(RegistrationConstants.SPLITTER);
 		String contextSecondMsg = RegistrationConstants.EMPTY;
 		Image image;
@@ -97,6 +106,9 @@ public class AlertController extends BaseController implements Initializable {
 		if(context.getText().length()>50) {
 			imageVbox.setAlignment(Pos.TOP_CENTER);
 		}
+		
+		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert generation has been ended");
+
 	}
 
 	private String gettingSecondErrorMessage(String[] split,String splitter) {
@@ -109,6 +121,8 @@ public class AlertController extends BaseController implements Initializable {
 	
 	@FXML
 	private void alertWindowExit() {
+		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert closing has been started");
+
 		Stage stage = (Stage) exit.getScene().getWindow();
 		stage.close();
 		fXComponents.getScene().getRoot().setDisable(false);
@@ -119,5 +133,7 @@ public class AlertController extends BaseController implements Initializable {
 				&& registrationApprovalController.getPrimaryStage().isShowing()) {
 			registrationApprovalController.getPrimaryStage().getScene().getRoot().setDisable(false);
 		}
+		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert closing has been ended");
+
 	}
 }

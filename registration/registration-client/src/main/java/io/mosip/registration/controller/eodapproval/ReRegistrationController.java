@@ -418,6 +418,12 @@ public class ReRegistrationController extends BaseController implements Initiali
 		table.getSelectionModel().selectFirst();
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
+			informedBtn.setDisable(false);
+			notInformedBtn.setDisable(false);
+		}else {
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
+			informedBtn.setDisable(true);
+			notInformedBtn.setDisable(true);
 		}
 	}
 }
