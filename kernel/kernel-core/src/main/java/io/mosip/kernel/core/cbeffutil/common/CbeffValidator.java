@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -27,10 +26,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.xml.sax.SAXException;
 
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
-import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
-import io.mosip.kernel.core.cbeffutil.entity.BIR;
-import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
 import io.mosip.kernel.core.cbeffutil.exception.CbeffException;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
@@ -71,7 +66,7 @@ public class CbeffValidator {
 				}
 				if (birType.getBDBInfo() != null) {
 					BDBInfoType bdbInfo = birType.getBDBInfo();
-					if (!bdbInfo.getFormatOwner().equals(CbeffConstant.FORMAT_OWNER)) {
+					if (!Long.valueOf(bdbInfo.getFormat().getType()).equals(CbeffConstant.FORMAT_OWNER)) {
 						throw new CbeffException("Patron Format Owner should be standard specified of value "
 								+ CbeffConstant.FORMAT_OWNER);
 					}
@@ -79,9 +74,9 @@ public class CbeffValidator {
 					if (singleTypeList == null || singleTypeList.isEmpty()) {
 						throw new CbeffException("Type value needs to be provided");
 					}
-					if (!validateFormatType(bdbInfo.getFormatType(), singleTypeList)) {
+					/*if (!validateFormatType(Long.valueOf(bdbInfo.getFormat().getType()), singleTypeList)) {
 						throw new CbeffException("Patron Format type is invalid");
-					}
+					}*/
 				} else {
 					throw new CbeffException("BDB information can't be empty");
 				}
@@ -161,6 +156,7 @@ public class CbeffValidator {
 		OutputStreamWriter writer = new OutputStreamWriter(baos);
 		jaxbMarshaller.marshal(bir, writer);
 		byte[] savedData = baos.toByteArray();
+		System.out.println(new String(savedData));
 		writer.close();
 		try {
 			CbeffXSDValidator.validateXML(xsd, savedData);
@@ -236,7 +232,7 @@ public class CbeffValidator {
 				if (bdbInfo != null) {
 					List<String> singleSubTypeList = bdbInfo.getSubtype();
 					List<SingleType> singleTypeList = bdbInfo.getType();
-					Long bdbFormatType = bdbInfo.getFormatType();
+					String bdbFormatType = bdbInfo.getFormat().getType();
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
 						bdbMap.put(
@@ -287,7 +283,7 @@ public class CbeffValidator {
 						singleSubTypeList = new ArrayList<>();
 						singleSubTypeList.add("No Subtype");
 					}
-					Long bdbFormatType = bdbInfo.getFormatType();
+					String bdbFormatType = bdbInfo.getFormat().getType();
 					bdbMap.put(
 							String.join(" ", singleTypeList.get(0).toString()) + "_"
 									+ String.join(" ", singleSubTypeList) + "_" + String.valueOf(bdbFormatType) + "_"
@@ -370,7 +366,7 @@ public class CbeffValidator {
 				if (bdbInfo != null) {
 					List<String> singleSubTypeList = bdbInfo.getSubtype();
 					List<SingleType> singleTypeList = bdbInfo.getType();
-					Long bdbFormatType = bdbInfo.getFormatType();
+					String bdbFormatType = bdbInfo.getFormat().getType();
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
 						bdbMap.put(
@@ -398,57 +394,5 @@ public class CbeffValidator {
 			}
 		}
 		return bdbMap;
-	}
-
-	public static List<BIR> convertBIRTypeToBIR(List<BIRType> birType) {
-		List<BIR> birTypeList = getBIRList(birType);
-		return birTypeList;
-	}
-
-	private static List<BIR> getBIRList(List<BIRType> birTypeList) {
-		List<BIR> birList = new ArrayList<>();
-		for(BIRType birType:birTypeList)
-		{
-			BIR bir = new BIR.BIRBuilder().withBdb(birType.getBDB()).withElement(birType.getAny())
-					.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(birType.getBIRInfo().isIntegrity()).build())
-					.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(birType.getBDBInfo().getFormatOwner()).withFormatType(birType.getBDBInfo().getFormatType())
-							.withQuality(birType.getBDBInfo().getQuality())
-							.withType(birType.getBDBInfo().getType())
-							.withSubtype(birType.getBDBInfo().getSubtype())
-							.withPurpose(birType.getBDBInfo().getPurpose())
-							.withLevel(birType.getBDBInfo().getLevel())
-							.withEncryption(birType.getBDBInfo().getEncryption())
-							.withCreationDate(birType.getBDBInfo().getCreationDate()).build())
-					.build();
-			birList.add(bir);
-		}
-		return birList;
-	}
-
-	public static List<BIRType> getBIRDataFromXMLType(byte[] xmlBytes, String type) throws Exception {
-		SingleType singleType = null;
-		List<BIRType> updatedBIRList = new ArrayList<>();
-		JAXBContext jaxbContext = JAXBContext.newInstance(BIRType.class);
-		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		JAXBElement<BIRType> jaxBir = unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(xmlBytes)),
-				BIRType.class);
-		BIRType bir = jaxBir.getValue();
-		for(BIRType birType : bir.getBIR())
-		{
-			if (type != null) {
-				singleType = getSingleType(type);
-				BDBInfoType bdbInfo = birType.getBDBInfo();
-				if(bdbInfo!=null)
-				{
-					List<SingleType> singleTypeList = bdbInfo.getType();
-					if(singleTypeList!=null && singleTypeList.contains(singleType))
-					{
-						System.out.println(singleType);
-						updatedBIRList.add(birType);
-					}
-				}
-			}
-		}
-		return updatedBIRList;
 	}
 }

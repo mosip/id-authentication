@@ -30,7 +30,7 @@ public class CbeffISOReader {
 	 * @exception Exception exception
 	 * 
 	 */
-	/*public static byte[] readISOImage(String path, String type) throws Exception {
+	public static byte[] readISOImage(String path, String type) throws Exception {
 		File testFile = new File(path);
 		DataInputStream in = new DataInputStream(new FileInputStream(testFile));
 		int formatId = in.readInt();
@@ -47,7 +47,7 @@ public class CbeffISOReader {
 			throw new CbeffException(
 					"Format Identifier is wrong for the image,Please upload correct image of type : " + type);
 		}
-	}*/
+	}
 
 	/**
 	 * Method used for validating Format Identifiers based on type

@@ -24,34 +24,45 @@ import java.util.Set;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import io.mosip.kernel.core.cbeffutil.common.CbeffISOReader;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.QualityType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
-////@RunWith(SpringRunner.class)
-////@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 public class CbeffImplTest {
 
-	// @Autowired
+	//@Autowired
 	private CbeffUtil cbeffUtilImpl;
 
 	/*
 	 * XSD storage path from config server
 	 */
 
-	// @Value("${mosip.kernel.xsdstorage-uri}")
+	//@Value("${mosip.kernel.xsdstorage-uri}")
 	private String configServerFileStorageURL;
 
 	/*
 	 * XSD file name
 	 */
 
-	// @Value("${mosip.kernel.xsdfile}")
+	//@Value("${mosip.kernel.xsdfile}")
 	private String schemaName;
 
 	private List<BIR> createList;
@@ -59,114 +70,210 @@ public class CbeffImplTest {
 	private static final String localpath = "./src/main/resources";
 
 	//@Before
-	/*public void setUp() throws Exception {
-		byte[] fingerImg = CbeffISOReader.readISOImage(localpath + "/images/" + "ISOImage.iso", "Finger");
-		byte[] irisImg = CbeffISOReader.readISOImage(localpath + "/images/" + "Sample_IRIS.iso", "Iris");
-		JAXBElement<String> jaxbElementUnique = new JAXBElement<String>(new QName("testschema", "TestFinger"),
-				String.class, "Unique");
-		JAXBElement<String> jaxbElementDulicate = new JAXBElement<String>(new QName("testschema", "TestFinger"),
-				String.class, "Duplicate");
-		BIR rFinger = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementUnique))
+	public void setUp() throws Exception {
+		byte[] rindexFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightIndexFingerImage.iso", "Finger");
+		byte[] rmiddleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightMiddleFingerImage.iso", "Finger");
+		byte[] rringFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightRingFingerImage.iso", "Finger");
+		byte[] rlittleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightLittleFingerImage.iso", "Finger");
+		byte[] rightthumb = CbeffISOReader.readISOImage(localpath + "/images/" + "RightThumbFingerImage.iso", "Finger");
+		byte[] lindexFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftIndexFingerImage.iso", "Finger");
+		byte[] lmiddleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftMiddleFingerImage.iso", "Finger");
+		byte[] lringFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftRingFingerImage.iso", "Finger");
+		byte[] llittleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftLittleFingerImage.iso", "Finger");
+		byte[] leftthumb = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftThumbFingerImage.iso", "Finger");
+		byte[] irisImg1 = CbeffISOReader.readISOImage(localpath + "/images/" + "IrisImageRight.iso", "Iris");
+		byte[] irisImg2 = CbeffISOReader.readISOImage(localpath + "/images/" + "IrisImageLeft.iso", "Iris");
+		byte[] faceImg = CbeffISOReader.readISOImage(localpath + "/images/" + "faceImage.iso", "Face");
+		RegistryIDType format = new RegistryIDType();
+		format.setOrganization("Mosip");
+		format.setType("257");
+		QualityType Qtype = new QualityType();
+		Qtype.setScore(new Long(100));
+		RegistryIDType algorithm = new RegistryIDType();
+		algorithm.setOrganization("HMAC");
+		algorithm.setType("SHA-256");
+		Qtype.setAlgorithm(algorithm);
+		createList = new ArrayList<>();
+		BIR rIndexFinger = new BIR.BIRBuilder().withBdb(rindexFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
-						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Right IndexFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+				.build();
+		
+		createList.add(rIndexFinger);
+		
+		BIR rMiddleFinger = new BIR.BIRBuilder().withBdb(rmiddleFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Right MiddleFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+				.build();
+		
+		createList.add(rMiddleFinger);
+		
+		BIR rRingFinger = new BIR.BIRBuilder().withBdb(rringFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Right RingFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+				.build();
+		
+		createList.add(rRingFinger);
+		
+		BIR rLittleFinger = new BIR.BIRBuilder().withBdb(rlittleFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Right LittleFinger"))
 						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
 						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
 
-		BIR lFinger = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementDulicate))
+		createList.add(rLittleFinger);
+
+		BIR lIndexFinger = new BIR.BIRBuilder().withBdb(lindexFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
-						.withSubtype(Arrays.asList("Left IndexFinger MiddleFinger RingFinger LittleFinger"))
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Left IndexFinger"))
 						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
 						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
 				.build();
-
-		BIR thumb = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementUnique))
+		
+		createList.add(lIndexFinger);
+		
+		BIR lMiddleFinger = new BIR.BIRBuilder().withBdb(lmiddleFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
-						.withSubtype(Arrays.asList("Left Right Thumb")).withPurpose(PurposeType.ENROLL)
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Left MiddleFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+				.build();
+		
+		createList.add(lMiddleFinger);
+		
+		BIR lRightFinger = new BIR.BIRBuilder().withBdb(lringFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Left RingFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+				.build();
+		
+		createList.add(lRightFinger);
+		
+		BIR lLittleFinger = new BIR.BIRBuilder().withBdb(llittleFinger)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Left LittleFinger"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+				.build();
+		
+		createList.add(lLittleFinger);
+
+		BIR rightThumb = new BIR.BIRBuilder().withBdb(rightthumb)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Right Thumb")).withPurpose(PurposeType.ENROLL)
 						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
 						.build())
 				.build();
-
-		BIR face = new BIR.BIRBuilder().withBdb(new String("Test").getBytes())
-				.withElement(Arrays.asList(jaxbElementUnique))
+		
+		createList.add(rightThumb);
+		
+		BIR leftThumb = new BIR.BIRBuilder().withBdb(leftthumb)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(8))
-						.withQuality(90).withType(Arrays.asList(SingleType.FACE)).withPurpose(PurposeType.ENROLL)
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList("Left Thumb")).withPurpose(PurposeType.ENROLL)
 						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
 						.build())
 				.build();
+		
+		createList.add(leftThumb);
 
-		BIR leftIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
-				.withElement(Arrays.asList(jaxbElementUnique))
+		BIR face = new BIR.BIRBuilder().withBdb(faceImg)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
-						.withQuality(80).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Left"))
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.FACE)).withPurpose(PurposeType.ENROLL)
+						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
+						.build())
+				.build();
+		
+		createList.add(face);
+
+		BIR leftIris = new BIR.BIRBuilder().withBdb(irisImg1)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Right"))
 						.withPurpose(PurposeType.ENROLL).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
 						.withLevel(ProcessedLevelType.RAW).build())
 				.build();
-
-		BIR rightIris = new BIR.BIRBuilder().withBdb(new String(irisImg).getBytes())
-				.withElement(Arrays.asList(jaxbElementUnique))
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(9))
-						.withQuality(90).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Right"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
-						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
-				.build();
-
-		createList = new ArrayList<>();
-		createList.add(rFinger);
-		createList.add(lFinger);
-		createList.add(thumb);
+		
 		createList.add(leftIris);
+
+		BIR rightIris = new BIR.BIRBuilder().withBdb(irisImg2)
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+						.withQuality(Qtype).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Left"))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+				.build();
+		
 		createList.add(rightIris);
-		createList.add(face);
-
-		// Finger Minutiae is of Single Type - Finger and BDB Format Type - 2
-		BIR fingerMinutiae1 = new BIR.BIRBuilder().withBdb(fingerImg).withElement(Arrays.asList(jaxbElementUnique))
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
-						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
-						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
-				.build();
-
-		BIR fingerMinutiae2 = new BIR.BIRBuilder().withBdb(new String("fingerminutae").getBytes())
-				.withElement(Arrays.asList(jaxbElementUnique))
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(2))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
-						.withSubtype(Arrays.asList("Right IndexFinger MiddleFinger RingFinger LittleFinger"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
-						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
-				.build();
-
-		updateList = new ArrayList<>();
-		updateList.add(fingerMinutiae1);
-		updateList.add(fingerMinutiae2);
 
 	}
-*/
 	//@Test
 	public void testCreateXML() throws Exception {
 		byte[] createXml = cbeffUtilImpl.createXML(createList);
-		createXMLFile(createXml, "createCbeff");
-		assertEquals(new String(createXml), new String(readCreatedXML("createCbeff")));
+		createXMLFile(createXml, "createCbeffLatest");
+		assertEquals(new String(createXml), new String(readCreatedXML("createCbeffLatest")));
 
 	}
 
-	// @Test
+	//@Test
 	public void testCreateXMLFromLocal() throws Exception {
-		byte[] createXml = cbeffUtilImpl.createXML(createList, readXSD("cbeff"));
-		createXMLFile(createXml, "createCbeffLocal");
-		assertEquals(new String(createXml), new String(readCreatedXML("createCbeffLocal")));
+		byte[] createXml = cbeffUtilImpl.createXML(createList, readXSD("updatedcbeff"));
+		createXMLFile(createXml, "createCbeffLatest1");
+		assertEquals(new String(createXml), new String(readCreatedXML("createCbeffLatest1")));
 
 	}
 
