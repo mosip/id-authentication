@@ -2,6 +2,9 @@ package io.mosip.preregistration.batchjobservices.test.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,20 +154,53 @@ public class ConsumedStatusServiceTest {
 		DocumentEntity documentEntity = new DocumentEntity();
 		DemographicEntity demographicEntity = new DemographicEntity();
 		demographicEntity.setPreRegistrationId(preregId);
+		demographicEntity.setApplicantDetailJson(encryptedDemographicDetails);
+		demographicEntity.setCrAppuserId("kishan@gmail.com");
+		demographicEntity.setCreateDateTime(LocalDateTime.now());
+		demographicEntity.setCreatedBy("Kishan");
+		demographicEntity.setDemogDetailHash("demo hash");
+		demographicEntity.setEncryptedDateTime(LocalDateTime.now());
+		demographicEntity.setLangCode("ENG");
+		demographicEntity.setUpdateDateTime(LocalDateTime.now());
+		demographicEntity.setUpdatedBy("Kishan");
+		
+		documentEntity.setCrBy("KISHAN");
+		documentEntity.setCrDtime(LocalDateTime.now());
+		documentEntity.setDocCatCode("POA");
+		documentEntity.setDocFileFormat("PDF");
+		documentEntity.setDocHash("doc hash");
+		documentEntity.setDocId("1234567");
+		documentEntity.setDocName("doc");
+		documentEntity.setDocTypeCode("Address");
+		documentEntity.setDocumentId("1234567");
+		documentEntity.setEncryptedDateTime(LocalDateTime.now());
+		documentEntity.setLangCode("ENG");
+		documentEntity.setStatusCode("Booked");
+		documentEntity.setUpdBy("kishan");
+		documentEntity.setUpdDtime(LocalDateTime.now());
+		
 		documentEntity.setDemographicEntity(demographicEntity);
 		documentEntityList.add(documentEntity);
 		documentEntityConsumed.setPreregId(preregId);
 
 		bookingEntity.setDemographicEntity(demographicEntity);
-		bookingEntity.setBookingPK(bookingPK);
-
-		bookingPKConsumed.setPreregistrationId(preregId);
-		bookingEntityConsumed.setBookingPK(bookingPKConsumed);
-
+		bookingEntity.setCrBy("KISHAN");
+		bookingEntity.setCrDate(LocalDateTime.now());
+		bookingEntity.setId("1234567");
+		bookingEntity.setLangCode("ENG");
+		bookingEntity.setRegDate(LocalDate.now().plusDays(6));
+		bookingEntity.setRegistrationCenterId("10001");
+		bookingEntity.setSlotFromTime(LocalTime.now());
+		bookingEntity.setSlotToTime(LocalTime.now());
+		bookingEntity.setUpBy("KISHAN");
+		bookingEntity.setUpdDate(LocalDateTime.now());
+		RegistrationBookingPK bookingPk=new RegistrationBookingPK();
+		bookingPk.setBookingDateTime(LocalDateTime.now());
+		bookingEntity.setBookingPK(bookingPk);
 		processedEntity.setPreRegistrationId(preregId);
 		processedEntity.setStatusCode("Consumed");
 		processedEntity.setStatusComments(STATUS_COMMENTS);
-
+ 
 		preRegList.add(processedEntity);
 
 		logger.info("demographicEntity " + demographicEntity);

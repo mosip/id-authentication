@@ -754,7 +754,7 @@ export class FileUploadComponent implements OnInit {
 
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
-        if (response['errors'] == null) {
+        if (response['response'] !== null) {
           this.updateUsers(response);
         } else {
           this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);

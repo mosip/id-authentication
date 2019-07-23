@@ -6,7 +6,6 @@ package io.mosip.preregistration.batchjobservices.service;
 
 import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -106,7 +105,16 @@ public class ConsumedStatusService {
 				DemographicEntity demographicEntity = batchServiceDAO.getApplicantDemographicDetails(preRegId);
 				if (demographicEntity != null) {
 
-					BeanUtils.copyProperties(demographicEntity, demographicEntityConsumed);
+					demographicEntityConsumed.setApplicantDetailJson(demographicEntity.getApplicantDetailJson());
+					demographicEntityConsumed.setCrAppuserId(demographicEntity.getCrAppuserId());
+					demographicEntityConsumed.setCreateDateTime(demographicEntity.getCreateDateTime());
+					demographicEntityConsumed.setCreatedBy(demographicEntity.getCreatedBy());
+					demographicEntityConsumed.setDemogDetailHash(demographicEntity.getDemogDetailHash());
+					demographicEntityConsumed.setEncryptedDateTime(demographicEntity.getEncryptedDateTime());
+					demographicEntityConsumed.setLangCode(demographicEntity.getLangCode());
+					demographicEntityConsumed.setPreRegistrationId(demographicEntity.getPreRegistrationId());
+					demographicEntityConsumed.setUpdateDateTime(demographicEntity.getUpdateDateTime());
+					demographicEntityConsumed.setUpdatedBy(demographicEntity.getUpdatedBy());
 					demographicEntityConsumed.setStatusCode(StatusCodes.CONSUMED.getCode());
 					batchServiceDAO.updateConsumedDemographic(demographicEntityConsumed);
 
@@ -115,18 +123,41 @@ public class ConsumedStatusService {
 						documentEntityList.forEach(documentEntity -> {
 
 							DocumentEntityConsumed documentEntityConsumed = new DocumentEntityConsumed();
-							BeanUtils.copyProperties(documentEntity, documentEntityConsumed);
+							documentEntityConsumed.setCrBy(documentEntity.getCrBy());
+							documentEntityConsumed.setCrDtime(documentEntity.getCrDtime());
+							documentEntityConsumed.setDocCatCode(documentEntity.getDocCatCode());
+							documentEntityConsumed.setDocFileFormat(documentEntity.getDocFileFormat());
+							documentEntityConsumed.setDocHash(documentEntity.getDocHash());
+							documentEntityConsumed.setDocId(documentEntity.getDocId());
+							documentEntityConsumed.setDocName(documentEntity.getDocName());
+							documentEntityConsumed.setDocTypeCode(documentEntity.getDocTypeCode());
+							documentEntityConsumed.setDocumentId(documentEntity.getDocumentId());
+							documentEntityConsumed.setEncryptedDateTime(documentEntity.getEncryptedDateTime());
+							documentEntityConsumed.setLangCode(documentEntity.getLangCode());
+							documentEntityConsumed.setPreregId(documentEntity.getDemographicEntity().getPreRegistrationId());
+							documentEntityConsumed.setStatusCode(documentEntity.getStatusCode());
+							documentEntityConsumed.setUpdBy(documentEntity.getUpdBy());
+							documentEntityConsumed.setUpdDtime(documentEntity.getUpdDtime());
 							batchServiceDAO.updateConsumedDocument(documentEntityConsumed);
 
 						});
 
 					}
 					RegistrationBookingEntity bookingEntity = batchServiceDAO.getPreRegId(preRegId);
-					BeanUtils.copyProperties(bookingEntity, bookingEntityConsumed);
 					RegistrationBookingPKConsumed consumedPk = new RegistrationBookingPKConsumed();
 					consumedPk.setBookingDateTime(bookingEntity.getBookingPK().getBookingDateTime());
 					consumedPk.setPreregistrationId(bookingEntity.getDemographicEntity().getPreRegistrationId());
 					bookingEntityConsumed.setBookingPK(consumedPk);
+					bookingEntityConsumed.setCrBy(bookingEntity.getCrBy());
+					bookingEntityConsumed.setCrDate(bookingEntity.getCrDate());
+					bookingEntityConsumed.setId(bookingEntity.getId());
+					bookingEntityConsumed.setLangCode(bookingEntity.getLangCode());
+					bookingEntityConsumed.setRegDate(bookingEntity.getRegDate());
+					bookingEntityConsumed.setRegistrationCenterId(bookingEntity.getRegistrationCenterId());
+					bookingEntityConsumed.setSlotFromTime(bookingEntity.getSlotFromTime());
+					bookingEntityConsumed.setSlotToTime(bookingEntity.getSlotToTime());
+					bookingEntityConsumed.setUpBy(bookingEntity.getUpBy());
+					bookingEntityConsumed.setUpdDate(bookingEntity.getUpdDate());
 					batchServiceDAO.updateConsumedBooking(bookingEntityConsumed);
 
 					if (documentEntityList != null) {

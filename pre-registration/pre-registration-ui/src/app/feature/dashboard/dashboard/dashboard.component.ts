@@ -360,9 +360,10 @@ export class DashBoardComponent implements OnInit {
        response => {
         if (!response['errors']) {
          this.removeApplicant(element.applicationID);
-          const index = this.users.indexOf(element);
+          let index = this.users.indexOf(element);
           this.users.splice(index, 1);
-          this.selectedUsers.splice(index,1);
+          index = this.selectedUsers.indexOf(element);
+           this.selectedUsers.splice(index, 1);
           if (this.users.length == 0) {
             this.onNewApplication();
             localStorage.setItem('newApplicant', 'true');
@@ -509,7 +510,7 @@ export class DashBoardComponent implements OnInit {
     if (event && event.checked) {
       this.selectedUsers.push(user);
     } else {
-      this.selectedUsers.splice(this.selectedUsers.indexOf(user));
+      this.selectedUsers.splice(this.selectedUsers.indexOf(user),1);
     }
     if (this.selectedUsers.length > 0) {
       this.disableModifyAppointmentButton = false;
