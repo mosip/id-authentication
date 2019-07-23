@@ -216,7 +216,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
 		if(captureResponseDto==null)
 			throw new RegBaseCheckedException("","Decice is not available");
-		if(captureResponseDto.getError().getErrorCode().equals(""))
+		if(captureResponseDto.getError().getErrorCode().equals("202"))
+			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
+		if(captureResponseDto.getError().getErrorCode().equals("403"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
 		decode(captureResponseDto);
@@ -232,6 +234,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			fpDetailsDTO.getSegmentedFingerprints().add(fingerPrintDetail);
 		});
 		double slapQuality = (fpDetailsDTO.getSegmentedFingerprints().stream().mapToDouble(finger->finger.getQualityScore()).sum())/fpDetailsDTO.getSegmentedFingerprints().size();
+		fpDetailsDTO.setCaptured(true);
 		fpDetailsDTO.setFingerType(fingerType);
 		fpDetailsDTO.setQualityScore(slapQuality);
 	}

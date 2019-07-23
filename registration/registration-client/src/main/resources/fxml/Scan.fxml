@@ -26,9 +26,9 @@
             <AnchorPane styleClass="documentScanHeader">
                <children>
                   <Label fx:id="popupTitle" layoutX="250.0" layoutY="9.0" styleClass="scanPopupHeaderTitle" />
-                  <Hyperlink layoutX="528.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit">
+                  <Hyperlink fx:id="closeButton" layoutX="528.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit" disable="true">
                      <graphic>
-                        <ImageView fx:id="close" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#Close" >
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/DocumentClose.png" />
                            </image>

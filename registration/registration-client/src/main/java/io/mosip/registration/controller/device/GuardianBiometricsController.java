@@ -126,9 +126,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	@FXML
 	private GridPane thresholdBox;
-	
+
 	@FXML
 	private Label photoAlert;
+
+	@Autowired
+	private Streamer streamer;
 
 	/** The scan popup controller. */
 	@Autowired
@@ -149,20 +152,20 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/** The iris facade. */
 	@Autowired
 	private BioServiceImpl bioService;
-	
+
 	@Autowired
 	private Transliteration<String> transliteration;
-	
+
 	@Autowired
 	private MasterSyncService masterSync;
-	
+
 	@Autowired
 	private WebCameraController webCameraController;
-	
+
 	private String bioValue;
-	
+
 	private FXUtils fxUtils;
-	
+
 	public ImageView getBiometricImage() {
 		return biometricImage;
 	}
@@ -182,6 +185,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	public GridPane getBiometricPane() {
 		return biometricPane;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -197,7 +201,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 		fxUtils.setTransliteration(transliteration);
 		bioValue = RegistrationUIConstants.SELECT;
 		biometricBox.setVisible(false);
-		retryBox.setVisible(false);		
+		retryBox.setVisible(false);
 		continueBtn.setDisable(true);
 		populateBiometrics();
 		renderBiometrics();
@@ -229,8 +233,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying biometrics to capture");
-		
-		if(null != biometricTypecombo.getValue()) {
+
+		if (null != biometricTypecombo.getValue()) {
 			if (biometricTypecombo.getValue().getName().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				updateBiometric(biometricTypecombo.getValue().getName(), RegistrationConstants.RIGHTPALM_IMG_PATH,
 						RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD,
@@ -251,7 +255,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 						RegistrationConstants.IRIS_THRESHOLD, RegistrationConstants.IRIS_RETRY_COUNT);
 			}
 		}
-		
+
 		if (!bioValue.equalsIgnoreCase(RegistrationUIConstants.SELECT)) {
 			scanBtn.setDisable(false);
 			continueBtn.setDisable(true);
@@ -278,12 +282,22 @@ public class GuardianBiometricsController extends BaseController implements Init
 			faceCaptureController.openWebCamWindow(RegistrationConstants.GUARDIAN_IMAGE);
 		} else {
 			String headerText = "";
-			if (RegistrationConstants.BIO_TYPE.contains(biometricType.getText())) {
+			String fingerType = "";
+			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
 				headerText = RegistrationUIConstants.FINGERPRINT;
+				fingerType = RegistrationConstants.FINGERPRINT_SLAB_RIGHT;
+			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
+				headerText = RegistrationUIConstants.FINGERPRINT;
+				fingerType = RegistrationConstants.FINGERPRINT_SLAB_LEFT;
+			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
+				headerText = RegistrationUIConstants.FINGERPRINT;
+				fingerType = RegistrationConstants.FINGERPRINT_SLAB_THUMBS;
 			} else if (biometricType.getText().contains(RegistrationConstants.IRIS_LOWERCASE)) {
 				headerText = RegistrationUIConstants.IRIS_SCAN;
 			}
 			scanPopUpViewController.init(this, headerText);
+			if (bioService.isMdmEnabled())
+				streamer.startStream(fingerType, scanPopUpViewController.getScanImage(), biometricImage);
 		}
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -304,16 +318,16 @@ public class GuardianBiometricsController extends BaseController implements Init
 					"Scan process started for capturing biometrics");
 
 			if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_SLAP)) {
-				scanFingers(RegistrationConstants.RIGHTPALM,
+				scanFingers(RegistrationConstants.FINGERPRINT_SLAB_RIGHT,
 						RegistrationConstants.RIGHTHAND_SEGMNTD_DUPLICATE_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.LEFT_SLAP)) {
-				scanFingers(RegistrationConstants.LEFTPALM,
+				scanFingers(RegistrationConstants.FINGERPRINT_SLAB_LEFT,
 						RegistrationConstants.LEFTHAND_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.THUMBS)) {
-				scanFingers(RegistrationConstants.THUMBS, RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS,
-						popupStage, Double.parseDouble(
+				scanFingers(RegistrationConstants.FINGERPRINT_SLAB_THUMBS,
+						RegistrationConstants.THUMBS_SEGMNTD_FILE_PATHS, popupStage, Double.parseDouble(
 								getValueFromApplicationContext(RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)));
 			} else if (biometricType.getText().equalsIgnoreCase(RegistrationUIConstants.RIGHT_IRIS)) {
 				scanIris(RegistrationConstants.RIGHT.concat(RegistrationConstants.EYE), popupStage,
@@ -354,7 +368,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Navigates to previous section");
-		
+
 		webCameraController.closeWebcam();
 
 		if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -386,7 +400,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Navigates to next section");
 
 		webCameraController.closeWebcam();
-		
+
 		if (isChild()) {
 			SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, false);
 			if (!RegistrationConstants.DISABLE
@@ -562,18 +576,22 @@ public class GuardianBiometricsController extends BaseController implements Init
 				fingerprintDetailsDTOs.add(detailsDTO);
 			}
 		}
-		
+
 		try {
 
 			bioService.getFingerPrintImageAsDTO(detailsDTO, fingerType);
-			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath,fingerType);
+			streamer.stop();
+			bioService.segmentFingerPrintImage(detailsDTO, segmentedFingersPath, fingerType);
 		} catch (Exception exception) {
+			streamer.stop();
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
 							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
+			return;
 		}
 
-		if (detailsDTO.getFingerPrint() != null) {
+		if (detailsDTO.isCaptured()) {
 
 			scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 
@@ -725,7 +743,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 	/**
 	 * Fingerdeduplication check.
 	 *
-	 * @param fingerprintDetailsDTOs          the fingerprint details DT os
+	 * @param fingerprintDetailsDTOs the fingerprint details DT os
 	 * @return true, if successful
 	 */
 	private boolean fingerdeduplicationCheck(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
@@ -857,7 +875,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 				scanBtn.setText(RegistrationUIConstants.TAKE_PHOTO);
 				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
 				retryBox.setVisible(false);
-				if (getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace().getFace() == null) {
+				if (getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
+						.getFace() == null) {
 					scanBtn.setDisable(false);
 					continueBtn.setDisable(true);
 					updateBiometric(RegistrationUIConstants.PHOTO, RegistrationConstants.IMAGE_PATH, "",
@@ -876,34 +895,34 @@ public class GuardianBiometricsController extends BaseController implements Init
 				scanBtn.setText(RegistrationUIConstants.SCAN);
 				duplicateCheckLbl.setText(RegistrationConstants.EMPTY);
 				photoAlert.setVisible(false);
-					if (exceptionCount.get(RegistrationConstants.LEFTSLAPCOUNT) == 4) {
-						modifyBiometricType(RegistrationUIConstants.LEFT_SLAP);	
-					}
-					if (exceptionCount.get(RegistrationConstants.RIGHTSLAPCOUNT) == 4) {
-						modifyBiometricType(RegistrationUIConstants.RIGHT_SLAP);
-					}
-					if (exceptionCount.get(RegistrationConstants.THUMBCOUNT) == 2) {
-						modifyBiometricType(RegistrationUIConstants.THUMBS);
-					}				
-					if (anyIrisException(RegistrationConstants.LEFT)) {
-						modifyBiometricType(RegistrationUIConstants.LEFT_IRIS);
-					}
-					if (anyIrisException(RegistrationConstants.RIGHT)) {
-						modifyBiometricType(RegistrationUIConstants.RIGHT_IRIS);
-					}
-					List<String> bioList = new ArrayList<>();
-					biometricTypecombo.getItems().forEach(bio -> bioList.add(bio.getName()));
-					if(!bioList.contains(bioValue)) {
-						bioValue = RegistrationUIConstants.SELECT;
-						clearCapturedBioData();
-					}
+				if (exceptionCount.get(RegistrationConstants.LEFTSLAPCOUNT) == 4) {
+					modifyBiometricType(RegistrationUIConstants.LEFT_SLAP);
+				}
+				if (exceptionCount.get(RegistrationConstants.RIGHTSLAPCOUNT) == 4) {
+					modifyBiometricType(RegistrationUIConstants.RIGHT_SLAP);
+				}
+				if (exceptionCount.get(RegistrationConstants.THUMBCOUNT) == 2) {
+					modifyBiometricType(RegistrationUIConstants.THUMBS);
+				}
+				if (anyIrisException(RegistrationConstants.LEFT)) {
+					modifyBiometricType(RegistrationUIConstants.LEFT_IRIS);
+				}
+				if (anyIrisException(RegistrationConstants.RIGHT)) {
+					modifyBiometricType(RegistrationUIConstants.RIGHT_IRIS);
+				}
+				List<String> bioList = new ArrayList<>();
+				biometricTypecombo.getItems().forEach(bio -> bioList.add(bio.getName()));
+				if (!bioList.contains(bioValue)) {
+					bioValue = RegistrationUIConstants.SELECT;
+					clearCapturedBioData();
+				}
 			}
 
 		}
 		biometricTypecombo.getSelectionModel().clearSelection();
 		biometricTypecombo.setPromptText(bioValue);
 		if (bioProgress.getProgress() != 0) {
-			if(!scanBtn.getText().equalsIgnoreCase(RegistrationUIConstants.TAKE_PHOTO)) {
+			if (!scanBtn.getText().equalsIgnoreCase(RegistrationUIConstants.TAKE_PHOTO)) {
 				scanBtn.setDisable(true);
 			}
 			continueBtn.setDisable(false);
@@ -911,7 +930,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 			continueBtn.setDisable(true);
 		}
 	}
-	
+
 	/**
 	 * Modifying the combobox details
 	 */
@@ -919,12 +938,12 @@ public class GuardianBiometricsController extends BaseController implements Init
 		List<BiometricAttributeDto> biometricAttributeDtos = biometricTypecombo.getItems();
 		List<BiometricAttributeDto> bio = new ArrayList<>();
 		bio.addAll(biometricAttributeDtos);
-		for(BiometricAttributeDto biometricAttributeDto2 : biometricAttributeDtos) {
-			if(biometricAttributeDto2.getName().equalsIgnoreCase(biometricType)){
+		for (BiometricAttributeDto biometricAttributeDto2 : biometricAttributeDtos) {
+			if (biometricAttributeDto2.getName().equalsIgnoreCase(biometricType)) {
 				bio.remove(biometricAttributeDto2);
 				break;
 			}
-			
+
 		}
 		biometricTypecombo.getItems().clear();
 		biometricTypecombo.getItems().addAll(bio);
@@ -949,13 +968,13 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info("REGISTRATION - INDIVIDUAL_REGISTRATION - RENDER_COMBOBOXES", RegistrationConstants.APPLICATION_ID,
 				RegistrationConstants.APPLICATION_NAME, "Rendering of comboboxes ended");
 	}
-	
+
 	private void populateBiometrics() {
 		biometricTypecombo.getItems().addAll(masterSync.getBiometricType(ApplicationContext.applicationLanguage()));
 	}
-	
+
 	private boolean validateFingerprint(List<FingerprintDetailsDTO> fingerprintDetailsDTOs) {
-		AuthenticationValidatorDTO authenticationValidatorDTO=new AuthenticationValidatorDTO();
+		AuthenticationValidatorDTO authenticationValidatorDTO = new AuthenticationValidatorDTO();
 		authenticationValidatorDTO.setUserId(SessionContext.userContext().getUserId());
 		authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 		authenticationValidatorDTO.setAuthValidationType("multiple");

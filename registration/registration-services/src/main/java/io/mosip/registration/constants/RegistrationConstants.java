@@ -71,7 +71,7 @@ public class RegistrationConstants {
 	public static final String FINGERPRINT_SLAB_RIGHT = "FINGERPRINT_SLAB_RIGHT";
 	public static final String FINGERPRINT_SLAB_THUMBS = "FINGERPRINT_SLAB_THUMBS";
 	public static final String MDM_ENVIRONMENT = "Staging";
-	public static final int MDM_TIMEOUT = 100000;
+	public static final int MDM_TIMEOUT = 10000;
 	public static final String MDM_VERSION="1.0";
 	
 	public static final String IRIS_PANE = "irisPane";

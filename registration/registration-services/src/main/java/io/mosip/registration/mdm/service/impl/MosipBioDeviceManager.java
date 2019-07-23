@@ -249,8 +249,8 @@ public class MosipBioDeviceManager {
 		} else {
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device not found in the device registery");
+			return null;
 		}
-		throw new RegBaseCheckedException();
 
 	}
 

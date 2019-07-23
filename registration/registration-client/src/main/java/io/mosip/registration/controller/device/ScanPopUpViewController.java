@@ -29,6 +29,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -69,9 +70,10 @@ public class ScanPopUpViewController extends BaseController {
 	
 	@Autowired
 	private Streamer streamer;
+	
+	@FXML
+	private Hyperlink closeButton;
 
-	
-	
 	
 	/**
 	 * @return the scanImage
@@ -154,15 +156,23 @@ public class ScanPopUpViewController extends BaseController {
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Calling exit window to close the popup");
 
-		popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		popupStage.close();
-		
-		if (documentScanController.getScannedPages() != null) {
-			documentScanController.getScannedPages().clear();
+		if(streamer.stop()) {
+
+			popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+			popupStage.close();
+			
+			if (documentScanController.getScannedPages() != null) {
+				documentScanController.getScannedPages().clear();
+			}	
 		}
+		
 
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
 
+	}
+	
+	public void enableCloseButton() {
+		closeButton.setDisable(false);
 	}
 
 	@FXML
@@ -201,11 +211,6 @@ public class ScanPopUpViewController extends BaseController {
 
 	public void setScanningMsg(Text scanningMsg) {
 		this.scanningMsg = scanningMsg;
-	}
-	
-	@FXML
-	public void Close() {
-		streamer.stop();
 	}
 
 }

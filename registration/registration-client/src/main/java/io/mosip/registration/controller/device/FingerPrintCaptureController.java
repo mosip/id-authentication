@@ -1112,11 +1112,11 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
 							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
 			fingerprintDetailsDTOs.remove(detailsDTO);
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
 			return;
 		}
 
-		if (detailsDTO.getQualityScore() >= thresholdValue) {
+		if (detailsDTO.isCaptured()) {
 			if(!bioService.isMdmEnabled()) {
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 				imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
