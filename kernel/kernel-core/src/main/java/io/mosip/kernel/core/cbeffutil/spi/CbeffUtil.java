@@ -30,8 +30,4 @@ public interface CbeffUtil {
 	public Map<String, String> getAllBDBData(byte[] xmlBytes, String type, String subType) throws Exception;
 
 	public byte[] createXML(List<BIR> birList, byte[] xsd) throws Exception;
-	
-	public List<BIR> convertBIRTypeToBIR(List<BIRType> birType);
-	
-	public List<BIRType> getBIRDataFromXMLType(byte[] xmlBytes,String type) throws Exception;
 }
