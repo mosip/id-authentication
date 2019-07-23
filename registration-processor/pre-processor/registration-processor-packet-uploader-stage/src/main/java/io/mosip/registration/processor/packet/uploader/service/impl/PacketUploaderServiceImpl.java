@@ -229,6 +229,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (TablenotAccessibleException e) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
+			dto.setStatusComment(e.getMessage());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -241,6 +242,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (PacketNotFoundException ex) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_NOT_FOUND_EXCEPTION));
+			dto.setStatusComment(ex.getMessage());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -251,6 +253,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (FSAdapterException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
+			dto.setStatusComment(e.getMessage());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -260,6 +263,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (JschConnectionException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.JSCH_CONNECTION));
+			dto.setStatusComment(e.getMessage());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -270,6 +274,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (SftpFileOperationException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION));
+			dto.setStatusComment(e.getMessage());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -280,6 +285,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (IOException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
+			dto.setStatusComment(e.getMessage());
 			messageDTO.setIsValid(false);
 			messageDTO.setInternalError(true);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -291,6 +297,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (Exception e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
+			dto.setStatusComment(e.getMessage());
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
