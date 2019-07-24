@@ -68,7 +68,7 @@ public class CbeffValidator {
 				}
 				if (birType.getBDBInfo() != null) {
 					BDBInfoType bdbInfo = birType.getBDBInfo();
-					if (!Long.valueOf(bdbInfo.getFormat().getType()).equals(CbeffConstant.FORMAT_OWNER)) {
+					if (!Long.valueOf(bdbInfo.getFormat().getOrganization()).equals(CbeffConstant.FORMAT_OWNER)) {
 						throw new CbeffException("Patron Format Owner should be standard specified of value "
 								+ CbeffConstant.FORMAT_OWNER);
 					}
@@ -76,9 +76,9 @@ public class CbeffValidator {
 					if (singleTypeList == null || singleTypeList.isEmpty()) {
 						throw new CbeffException("Type value needs to be provided");
 					}
-//					if (!validateFormatType(Long.valueOf(bdbInfo.getFormat().getType()), singleTypeList)) {
-//						throw new CbeffException("Patron Format type is invalid");
-//					}
+					if (!validateFormatType(Long.valueOf(bdbInfo.getFormat().getType()), singleTypeList)) {
+					throw new CbeffException("Patron Format type is invalid");
+					}
 				} else {
 					throw new CbeffException("BDB information can't be empty");
 				}
