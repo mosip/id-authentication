@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RefreshScope
 @RestController
-@Api(tags = "Request Handler")
+@Api(tags = "Packet Generator")
 public class PacketGeneratorController {
 
 	/** The packet generator service. */
