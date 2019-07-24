@@ -91,7 +91,7 @@ public class RegistrationTransactionController {
 			errorDTO.setErrorCode(e.getErrorCode());
 			errorDTO.setMessage(e.getMessage());
 			errors.add(errorDTO);
-			response=ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+			response=ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
 					buildRegistrationTransactionResponse(dtoList,errors));
 		}
 		catch (InvalidTokenException e) {
