@@ -30,14 +30,14 @@ public class CbeffImpl implements CbeffUtil {
 	 * XSD storage path from config server
 	 */
 
-	//@Value("${mosip.kernel.xsdstorage-uri}")
+	@Value("${mosip.kernel.xsdstorage-uri}")
 	private String configServerFileStorageURL;
 
 	/*
 	 * XSD file name
 	 */
 
-	//@Value("${mosip.kernel.xsdfile}")
+	@Value("${mosip.kernel.xsdfile}")
 	private String schemaName;
 
 	/**
@@ -54,8 +54,8 @@ public class CbeffImpl implements CbeffUtil {
 	public byte[] createXML(List<BIR> birList) throws Exception {
 		CbeffContainerImpl cbeffContainer = new CbeffContainerImpl();
 		BIRType bir = cbeffContainer.createBIRType(birList);
-		//byte[] xsd = getXSDfromConfigServer();
-		byte[] xmlByte = CbeffValidator.createXMLBytes(bir, null);
+		byte[] xsd = getXSDfromConfigServer();
+		byte[] xmlByte = CbeffValidator.createXMLBytes(bir, xsd);
 		return xmlByte;
 	}
 
@@ -188,6 +188,18 @@ public class CbeffImpl implements CbeffUtil {
 		BIRType bir = CbeffValidator.getBIRFromXML(xmlBytes);
 		Map<String, String> bdbMap = CbeffValidator.getAllBDBData(bir, type, subType);
 		return bdbMap;
+	}
+
+	@Override
+	public List<BIR> convertBIRTypeToBIR(List<BIRType> birType) {
+		List<BIR> birList = CbeffValidator.convertBIRTypeToBIR(birType);
+		return birList;
+	}
+	
+	@Override
+	public List<BIRType> getBIRDataFromXMLType(byte[] xmlBytes,String type) throws Exception {
+		List<BIRType> birTypeList = CbeffValidator.getBIRDataFromXMLType(xmlBytes,type);
+		return birTypeList;
 	}
 
 }
