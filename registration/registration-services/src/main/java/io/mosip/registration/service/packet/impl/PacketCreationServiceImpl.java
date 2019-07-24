@@ -32,8 +32,11 @@ import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
+import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.QualityType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.exception.BaseCheckedException;
@@ -455,13 +458,39 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private BIR buildBIR(byte[] bdb, long isoFormatOwner, long formatType, int qualityScore, List<SingleType> type,
 			List<String> subType) {
 
+		// Format
+		RegistryIDType birFormat = new RegistryIDType();
+		birFormat.setOrganization(getValueFromApplicationContext(RegistrationConstants.CBEFF_FORMAT_ORG,
+				RegistrationConstants.CBEFF_DEFAULT_FORMAT_ORG));
+		birFormat.setType(getValueFromApplicationContext(RegistrationConstants.CBEFF_FORMAT_TYPE,
+				RegistrationConstants.CBEFF_DEFAULT_FORMAT_TYPE));
+
+		// Algorithm
+		RegistryIDType birAlgorithm = new RegistryIDType();
+		birAlgorithm.setOrganization(getValueFromApplicationContext(RegistrationConstants.CBEFF_ALG_ORG,
+				RegistrationConstants.CBEFF_DEFAULT_ALG_ORG));
+		birAlgorithm.setType(getValueFromApplicationContext(RegistrationConstants.CBEFF_ALG_TYPE,
+				RegistrationConstants.CBEFF_DEFAULT_ALG_TYPE));
+
+		// Quality Type
+		QualityType qualityType = new QualityType();
+		qualityType.setAlgorithm(birAlgorithm);
+		qualityType.setScore((long) qualityScore);
+
 		return new BIR.BIRBuilder().withBdb(bdb).withElement(Arrays.asList(getCBEFFTestTag(type.get(0))))
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(isoFormatOwner).withFormatType(formatType)
-						.withQuality(qualityScore).withType(type).withSubtype(subType).withPurpose(PurposeType.ENROLL)
-						.withLevel(ProcessedLevelType.INTERMEDIATE).withCreationDate(LocalDateTime.now(ZoneOffset.UTC))
-						.withIndex(UUID.randomUUID().toString()).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(birFormat).withQuality(qualityType).withType(type)
+						.withSubtype(subType).withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now(ZoneOffset.UTC)).withIndex(UUID.randomUUID().toString())
+						.build())
 				.build();
+	}
+
+	private String getValueFromApplicationContext(Object key, String defaultValue) {
+		Object valueFromAppContext = ApplicationContext.map().get(key);
+		return valueFromAppContext == null ? defaultValue : String.valueOf(valueFromAppContext);
 	}
 
 	private JAXBElement<String> getCBEFFTestTag(SingleType biometricType) {
