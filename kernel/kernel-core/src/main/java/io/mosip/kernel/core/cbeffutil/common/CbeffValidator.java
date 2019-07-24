@@ -5,10 +5,7 @@ package io.mosip.kernel.core.cbeffutil.common;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +16,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
@@ -30,10 +26,10 @@ import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
 import io.mosip.kernel.core.cbeffutil.exception.CbeffException;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -46,8 +42,6 @@ import io.mosip.kernel.core.util.CryptoUtil;
  *
  */
 public class CbeffValidator {
-
-	private static final String tempPath = "./src/main/resources";
 
 	/**
 	 * Method used for custom validation of the BIR
@@ -71,7 +65,7 @@ public class CbeffValidator {
 				}
 				if (birType.getBDBInfo() != null) {
 					BDBInfoType bdbInfo = birType.getBDBInfo();
-					if (!bdbInfo.getFormatOwner().equals(CbeffConstant.FORMAT_OWNER)) {
+					if (!Long.valueOf(bdbInfo.getFormat().getType()).equals(CbeffConstant.FORMAT_OWNER)) {
 						throw new CbeffException("Patron Format Owner should be standard specified of value "
 								+ CbeffConstant.FORMAT_OWNER);
 					}
@@ -79,7 +73,7 @@ public class CbeffValidator {
 					if (singleTypeList == null || singleTypeList.isEmpty()) {
 						throw new CbeffException("Type value needs to be provided");
 					}
-					if (!validateFormatType(bdbInfo.getFormatType(), singleTypeList)) {
+					if (!validateFormatType(Long.valueOf(bdbInfo.getFormat().getType()), singleTypeList)) {
 						throw new CbeffException("Patron Format type is invalid");
 					}
 				} else {
@@ -161,6 +155,7 @@ public class CbeffValidator {
 		OutputStreamWriter writer = new OutputStreamWriter(baos);
 		jaxbMarshaller.marshal(bir, writer);
 		byte[] savedData = baos.toByteArray();
+		System.out.println(new String(savedData));
 		writer.close();
 		try {
 			CbeffXSDValidator.validateXML(xsd, savedData);
@@ -236,7 +231,7 @@ public class CbeffValidator {
 				if (bdbInfo != null) {
 					List<String> singleSubTypeList = bdbInfo.getSubtype();
 					List<SingleType> singleTypeList = bdbInfo.getType();
-					Long bdbFormatType = bdbInfo.getFormatType();
+					String bdbFormatType = bdbInfo.getFormat().getType();
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
 						bdbMap.put(
@@ -287,7 +282,7 @@ public class CbeffValidator {
 						singleSubTypeList = new ArrayList<>();
 						singleSubTypeList.add("No Subtype");
 					}
-					Long bdbFormatType = bdbInfo.getFormatType();
+					String bdbFormatType = bdbInfo.getFormat().getType();
 					bdbMap.put(
 							String.join(" ", singleTypeList.get(0).toString()) + "_"
 									+ String.join(" ", singleSubTypeList) + "_" + String.valueOf(bdbFormatType) + "_"
@@ -370,7 +365,7 @@ public class CbeffValidator {
 				if (bdbInfo != null) {
 					List<String> singleSubTypeList = bdbInfo.getSubtype();
 					List<SingleType> singleTypeList = bdbInfo.getType();
-					Long bdbFormatType = bdbInfo.getFormatType();
+					String bdbFormatType = bdbInfo.getFormat().getType();
 					boolean formatMatch = bdbFormatType.equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
 						bdbMap.put(
@@ -399,7 +394,7 @@ public class CbeffValidator {
 		}
 		return bdbMap;
 	}
-
+	
 	public static List<BIR> convertBIRTypeToBIR(List<BIRType> birType) {
 		List<BIR> birTypeList = getBIRList(birType);
 		return birTypeList;
@@ -409,15 +404,17 @@ public class CbeffValidator {
 		List<BIR> birList = new ArrayList<>();
 		for(BIRType birType:birTypeList)
 		{
+			RegistryIDType format = new RegistryIDType();
+			format.setOrganization(birType.getBDBInfo().getFormat().getOrganization());
+			format.setType(birType.getBDBInfo().getFormat().getType());
 			BIR bir = new BIR.BIRBuilder().withBdb(birType.getBDB()).withElement(birType.getAny())
 					.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(birType.getBIRInfo().isIntegrity()).build())
-					.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(birType.getBDBInfo().getFormatOwner()).withFormatType(birType.getBDBInfo().getFormatType())
+					.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
 							.withQuality(birType.getBDBInfo().getQuality())
 							.withType(birType.getBDBInfo().getType())
 							.withSubtype(birType.getBDBInfo().getSubtype())
 							.withPurpose(birType.getBDBInfo().getPurpose())
 							.withLevel(birType.getBDBInfo().getLevel())
-							.withEncryption(birType.getBDBInfo().getEncryption())
 							.withCreationDate(birType.getBDBInfo().getCreationDate()).build())
 					.build();
 			birList.add(bir);
@@ -443,7 +440,6 @@ public class CbeffValidator {
 					List<SingleType> singleTypeList = bdbInfo.getType();
 					if(singleTypeList!=null && singleTypeList.contains(singleType))
 					{
-						System.out.println(singleType);
 						updatedBIRList.add(birType);
 					}
 				}
