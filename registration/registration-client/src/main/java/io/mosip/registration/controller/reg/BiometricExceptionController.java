@@ -36,8 +36,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -45,6 +43,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -135,6 +134,10 @@ public class BiometricExceptionController extends BaseController implements Init
 	private Label irisExceptionLabel;
 	@FXML
 	private Label fpExceptionLabel;
+	@FXML
+	private Button backBtn;
+	@FXML
+	private ImageView backImageView;
 
 	@Autowired
 	private RegistrationController registrationController;
@@ -166,6 +169,24 @@ public class BiometricExceptionController extends BaseController implements Init
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+
+		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+
+		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});
+		previousBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});
 
 		applicationLabelBundle = ApplicationContext.getInstance().getApplicationLanguageBundle();
 
@@ -265,7 +286,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		leftEyePane.getStyleClass().clear();
 		rightEyePane.getStyleClass().clear();
 	}
-	
+
 	/**
 	 * This method is used to capture the finger click from the UI
 	 * 
@@ -274,15 +295,14 @@ public class BiometricExceptionController extends BaseController implements Init
 	private void fingerExceptionListener(ImageView fingerImage) {
 
 		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
-				APPLICATION_ID, "It will listen the finger click funtionality");
+				APPLICATION_ID, "It will listen the finger on click funtionality");
 
 		SimpleBooleanProperty toggleFunctionForFinger = new SimpleBooleanProperty(false);
 		toggleFunctionForFinger.addListener(new ChangeListener<Boolean>() {
 			/*
 			 * (non-Javadoc)
 			 * 
-			 * @see
-			 * javafx.beans.value.ChangeListener#changed(javafx.beans.value.
+			 * @see javafx.beans.value.ChangeListener#changed(javafx.beans.value.
 			 * ObservableValue, java.lang.Object, java.lang.Object)
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -310,7 +330,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		});
 
 		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER_END - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
-				APPLICATION_ID, "End of Functionality");
+				APPLICATION_ID, "End of functionality");
 
 	}
 
@@ -345,9 +365,9 @@ public class BiometricExceptionController extends BaseController implements Init
 		irisImage.setOnMouseClicked(event -> {
 			auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_MARKING, Components.REG_BIOMETRICS, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-			if(irisImage.getParent().getStyleClass().contains(RegistrationConstants.BIO_IRIS_SELECTED)) {
+			if (irisImage.getParent().getStyleClass().contains(RegistrationConstants.BIO_IRIS_SELECTED)) {
 				irisImage.getParent().getStyleClass().remove(RegistrationConstants.BIO_IRIS_SELECTED);
-			}else {
+			} else {
 				irisImage.getParent().getStyleClass().add(RegistrationConstants.BIO_IRIS_SELECTED);
 			}
 			toggleFunctionForIris.set(!toggleFunctionForIris.get());
@@ -461,14 +481,14 @@ public class BiometricExceptionController extends BaseController implements Init
 	}
 
 	/**
-	 * This method will call on click of previous button and toggle the
-	 * visibility based
+	 * This method will call on click of previous button and toggle the visibility
+	 * based
 	 */
 	public void goToPreviousPage() {
 		auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 		LOGGER.info("REGISTRATION - PREVIOUS_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
-				"It will go to the previous page");
+				"Navigate to the previous page");
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {

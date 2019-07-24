@@ -50,6 +50,7 @@ public class UserOnboardController extends BaseController implements Initializab
 		BiometricDTO biometricDTO = new BiometricDTO();
 		biometricDTO.setOperatorBiometricDTO(createBiometricInfoDTO());
 		SessionContext.map().put(RegistrationConstants.USER_ONBOARD_DATA, biometricDTO);
+		SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.DISABLE);
 		userOnboardParentController.showCurrentPage(RegistrationConstants.ONBOARD_USER_PARENT,
 				getOnboardPageDetails(RegistrationConstants.ONBOARD_USER_PARENT, RegistrationConstants.NEXT));
 		clearAllValues();

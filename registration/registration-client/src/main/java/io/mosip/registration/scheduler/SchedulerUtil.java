@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -21,6 +22,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.WebCameraController;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -74,6 +76,9 @@ public class SchedulerUtil extends BaseController {
 	private boolean isShowing;
 	private PauseTransition delay;
 	private int duration;
+	
+	@Autowired
+	private WebCameraController webCameraController;
 
 	/**
 	 * Constructor to invoke scheduler method once login success.
@@ -106,7 +111,7 @@ public class SchedulerUtil extends BaseController {
 						if (((endTime - startTime) >= refreshTime && (endTime - startTime) < sessionTimeOut)
 								&& isShowing == false) {
 							LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
-									"The time task remainder alert is called at interval of seconds "
+									"The time task reminder alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							auditFactory.audit(AuditEvent.SCHEDULER_REFRESHED_TIMEOUT, Components.REFRESH_TIMEOUT,
 									APPLICATION_NAME, AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
@@ -246,7 +251,7 @@ public class SchedulerUtil extends BaseController {
 	}
 
 	private void stop() {
-		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, "The time task auto logout login called ");
+		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, "The time task for auto logout and login called ");
 		auditFactory.audit(AuditEvent.SCHEDULER_SESSION_TIMEOUT, Components.SESSION_TIMEOUT, APPLICATION_NAME,
 				AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());
 		delay.stop();
@@ -255,6 +260,10 @@ public class SchedulerUtil extends BaseController {
 		stopScheduler();
 		// to clear the session object
 		SessionContext.destroySession();
+		//close webcam window, if open.
+		if(webCameraController.getWebCameraStage() != null && webCameraController.getWebCameraStage().isShowing()) {
+			webCameraController.getWebCameraStage().close();
+		}
 		// load login screen
 		loadLoginScreen();
 		isShowing = false;

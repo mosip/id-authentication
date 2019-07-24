@@ -446,6 +446,8 @@ public class SyncStatusValidatorServiceTest {
 		applicationMap.put("mosip.registration.last_export_registration_config_time", "1");
 		applicationMap.put("mosip.registration.reg_pak_max_cnt_apprv_limit", "5");
 		applicationMap.put("mosip.registration.reg_pak_max_time_apprv_limit", "5");
+		applicationMap.put("mosip.registration.disk_space_size", "1");
+		applicationMap.put("mosip.registration.registration_packet_store_location", "../");
 		applicationMap.put(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG, "Y");
 		applicationMap.put(RegistrationConstants.IS_SOFTWARE_UPDATE_AVAILABLE, "N");
 		applicationMap.put(RegistrationConstants.SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ, "5");
@@ -468,14 +470,13 @@ public class SyncStatusValidatorServiceTest {
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 
 		assertNotNull(errorResponseDTOs);
-		assertEquals("REG-ICS‌-002", errorResponseDTOs.get(1).getCode());
-		assertEquals("OPT_TO_REG_TIME_EXPORT_EXCEED", errorResponseDTOs.get(1).getMessage());
-		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(0).getCode());
-		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(0).getMessage());
-		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(2).getCode());
-		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(2).getMessage());
-		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
-		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(3).getMessage());
+		assertEquals("REG-ICS‌-001", errorResponseDTOs.get(1).getCode());
+		assertEquals("OPT_TO_REG_TIME_EXPORT_EXCEED", errorResponseDTOs.get(2).getMessage());
+		assertEquals("OPT_TO_REG_TIME_SYNC_EXCEED", errorResponseDTOs.get(1).getMessage());
+		assertEquals("REG-ICS‌-003", errorResponseDTOs.get(3).getCode());
+		assertEquals("OPT_TO_REG_REACH_MAX_LIMIT", errorResponseDTOs.get(3).getMessage());
+		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(4).getCode());
+		assertEquals("OPT_TO_REG_INSERT_GPS", errorResponseDTOs.get(4).getMessage());
 
 	}
 

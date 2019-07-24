@@ -82,7 +82,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	 */
 	@Override
 	public String packetSync(List<PacketStatusDTO> packetsToBeSynched) throws RegBaseCheckedException {
-		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNC_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
 		String syncErrorStatus = "";
 		try {
@@ -143,9 +143,9 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				syncErrorStatus = RegistrationConstants.SYNC_FAILURE;
 			}
 		} catch (RegBaseCheckedException | JsonProcessingException | URISyntaxException exception) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNC_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID,
-					"Error while Synching packets to the server" + ExceptionUtils.getStackTrace(exception));
+					"Error while Syncing packets to the server" + ExceptionUtils.getStackTrace(exception));
 
 			syncErrorStatus = exception.getMessage();
 
@@ -165,8 +165,8 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	 */
 	@Override
 	public List<PacketStatusDTO> fetchPacketsToBeSynched() {
-		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
+		LOGGER.info("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "Fetch the packets that needs to be synced to the server");
 		List<PacketStatusDTO> idsToBeSynched = new ArrayList<>();
 		List<Registration> packetsToBeSynched = syncRegistrationDAO.fetchPacketsToUpload(
 				RegistrationConstants.PACKET_STATUS_UPLOAD, RegistrationConstants.SERVER_STATUS_RESEND);
@@ -203,7 +203,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	@SuppressWarnings("unchecked")
 	public ResponseDTO syncPacketsToServer(String encodedString, String triggerPoint)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
-		LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.info("REGISTRATION - SYNC_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Sync the packets to the server");
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -225,22 +225,22 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 				errorResponseDTO.setMessage(response.get("errors").toString());
 				errorResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-				LOGGER.info("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+				LOGGER.info("REGISTRATION - SYNC_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 						APPLICATION_ID, response.get("errors").toString());
 			}
 		} catch (HttpClientErrorException e) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNC_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID,
 					e.getRawStatusCode() + "Error in sync packets to the server" + ExceptionUtils.getStackTrace(e));
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
 		} catch (RuntimeException e) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_RUNTIME - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNC_PACKETS_TO_SERVER_RUNTIME - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID,
 					e.getMessage() + "Error in sync and push packets to the server" + ExceptionUtils.getStackTrace(e));
 			throw new RegBaseUncheckedException(RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 		} catch (SocketTimeoutException e) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNC_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID,
 					e.getMessage() + "Error in sync packets to the server" + ExceptionUtils.getStackTrace(e));
 			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
@@ -260,7 +260,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	@Override
 	public Boolean updateSyncStatus(List<PacketStatusDTO> synchedPackets) {
 		LOGGER.info("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"Updating the status of the synched packets to the database");
+				"Updating the status of the synced packets to the database");
 		for (PacketStatusDTO syncPacket : synchedPackets) {
 			syncRegistrationDAO.updatePacketSyncStatus(syncPacket);
 		}
@@ -278,7 +278,7 @@ public class PacketSynchServiceImpl extends BaseService implements PacketSynchSe
 	@Override
 	public String packetSync(String rId) throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"Updating the status of the synched packets to the database");
+				"Updating the status of the synced packets to the database");
 
 		Registration registration = syncRegistrationDAO
 				.getRegistrationById(RegistrationClientStatusCode.APPROVED.getCode(), rId);

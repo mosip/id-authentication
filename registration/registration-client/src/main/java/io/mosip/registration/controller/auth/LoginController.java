@@ -4,7 +4,10 @@ package io.mosip.registration.controller.auth;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -125,6 +129,12 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private Label otpValidity;
+	
+	@FXML
+	private Hyperlink forgotUsrnme;
+	
+	@FXML
+	private Hyperlink resetPword;
 
 	@Autowired
 	private LoginService loginService;
@@ -248,6 +258,9 @@ public class LoginController extends BaseController implements Initializable {
 			primaryStage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			primaryStage.show();
 
+
+			org.apache.log4j.Logger.getLogger(Initialization.class).info("Mosip client Screen loaded");
+
 			// Execute SQL file (Script files on update)
 			executeSQLFile();
 
@@ -280,7 +293,7 @@ public class LoginController extends BaseController implements Initializable {
 		try {
 			if (!softwareUpdateHandler.getCurrentVersion().equalsIgnoreCase(version)) {
 
-				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Software Updated found");
+				LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Software Update found");
 
 				loginRoot.setDisable(true);
 				ResponseDTO responseDTO = softwareUpdateHandler
@@ -298,7 +311,7 @@ public class LoginController extends BaseController implements Initializable {
 						SessionContext.destroySession();
 					} else {
 						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
-						
+
 						new Initialization().stop();
 
 					}
@@ -309,9 +322,9 @@ public class LoginController extends BaseController implements Initializable {
 		} catch (RuntimeException | IOException runtimeException) {
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
-			
+
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2);
-			
+
 			new Initialization().stop();
 
 		}
@@ -351,53 +364,58 @@ public class LoginController extends BaseController implements Initializable {
 					generateAlertLanguageSpecific(RegistrationConstants.ERROR,
 							errorResponseDTOList.get(0).getMessage());
 				} else {
-					isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
-							.getErrorResponseDTOs() != null;
-					if (isUserNewToMachine) {
-						initialSetUpOrNewUserLaunch();
-					} else {
-						loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(), (Set<String>) responseDTO
-								.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.ROLES_LIST));
 
-						String fingerprintDisableFlag = getValueFromApplicationContext(
-								RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
-						String irisDisableFlag = getValueFromApplicationContext(
-								RegistrationConstants.IRIS_DISABLE_FLAG);
-						String faceDisableFlag = getValueFromApplicationContext(
-								RegistrationConstants.FACE_DISABLE_FLAG);
-
-						LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-								"Ignoring FingerPrint login if the configuration is off");
-
-						removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
-						removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
-						removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
-
-						String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
-								: null;
-
-						LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-								"Retrieved corresponding Login mode");
-
-						if (loginMode == null) {
-							userIdPane.setVisible(false);
-							errorPane.setVisible(true);
+					if (validateInvalidLogin((UserDTO) responseDTO.getSuccessResponseDTO().getOtherAttributes()
+							.get(RegistrationConstants.USER_DTO), "")) {
+						isUserNewToMachine = machineMappingService.isUserNewToMachine(userId.getText())
+								.getErrorResponseDTOs() != null;
+						if (isUserNewToMachine) {
+							initialSetUpOrNewUserLaunch();
 						} else {
+							loginList = loginService.getModesOfLogin(ProcessNames.LOGIN.getType(),
+									(Set<String>) responseDTO.getSuccessResponseDTO().getOtherAttributes()
+											.get(RegistrationConstants.ROLES_LIST));
 
-							if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
-									&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
-									|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
-											&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
-									|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
-											&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
+							String fingerprintDisableFlag = getValueFromApplicationContext(
+									RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+							String irisDisableFlag = getValueFromApplicationContext(
+									RegistrationConstants.IRIS_DISABLE_FLAG);
+							String faceDisableFlag = getValueFromApplicationContext(
+									RegistrationConstants.FACE_DISABLE_FLAG);
 
-								generateAlert(RegistrationConstants.ERROR,
-										RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
-												.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+							LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+									"Ignoring FingerPrint login if the configuration is off");
 
-							} else {
+							removeLoginParam(fingerprintDisableFlag, RegistrationConstants.FINGERPRINT);
+							removeLoginParam(irisDisableFlag, RegistrationConstants.IRIS);
+							removeLoginParam(faceDisableFlag, RegistrationConstants.FINGERPRINT);
+
+							String loginMode = !loginList.isEmpty() ? loginList.get(RegistrationConstants.PARAM_ZERO)
+									: null;
+
+							LOGGER.debug(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+									"Retrieved corresponding Login mode");
+
+							if (loginMode == null) {
 								userIdPane.setVisible(false);
-								loadLoginScreen(loginMode);
+								errorPane.setVisible(true);
+							} else {
+
+								if ((RegistrationConstants.DISABLE.equalsIgnoreCase(fingerprintDisableFlag)
+										&& RegistrationConstants.FINGERPRINT.equalsIgnoreCase(loginMode))
+										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+												&& RegistrationConstants.IRIS.equalsIgnoreCase(loginMode))
+										|| (RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)
+												&& RegistrationConstants.FACE.equalsIgnoreCase(loginMode))) {
+
+									generateAlert(RegistrationConstants.ERROR,
+											RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_1
+													.concat(RegistrationUIConstants.BIOMETRIC_DISABLE_SCREEN_2));
+
+								} else {
+									userIdPane.setVisible(false);
+									loadLoginScreen(loginMode);
+								}
 							}
 						}
 					}
@@ -620,7 +638,7 @@ public class LoginController extends BaseController implements Initializable {
 
 		if (bioLoginStatus) {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-					"FingerPrint validation succeded");
+					"FingerPrint validation success");
 			fingerprintPane.setVisible(false);
 			loadNextScreen(userDTO, RegistrationConstants.FINGERPRINT);
 		} else {
@@ -658,7 +676,7 @@ public class LoginController extends BaseController implements Initializable {
 			irisLoginStatus = validateInvalidLogin(userDTO, RegistrationUIConstants.IRIS_MATCH);
 		}
 		if (irisLoginStatus) {
-			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris validation succeded");
+			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID, "Iris validation success");
 			irisPane.setVisible(false);
 			loadNextScreen(userDTO, RegistrationConstants.IRIS);
 		} else {
@@ -746,6 +764,52 @@ public class LoginController extends BaseController implements Initializable {
 		if (!loginList.isEmpty()) {
 			loginList.remove(RegistrationConstants.PARAM_ZERO);
 		}
+	}
+	
+	/**
+	 * Redirects to mosip.io in case of user forgot user name
+	 * 
+	 * @param event
+	 *            event for forgot user name
+	 */
+	public void forgotUsrname(ActionEvent event) {
+		forgotUsrnme.setOnAction(e -> {
+		    if(Desktop.isDesktopSupported())
+		    {
+		        try {
+		            Desktop.getDesktop().browse(new URI(RegistrationConstants.MOSIP_URL));
+		        } catch (IOException ioException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		        } catch (URISyntaxException uriSyntaxException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+		        			uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
+		        }
+		    }
+		});
+	}
+
+	/**
+	 * Redirects to mosip.io in case of user reset pword
+	 * 
+	 * @param event
+	 *            event for reset pword
+	 */
+	public void resetPwd(ActionEvent event) {
+		resetPword.setOnAction(e -> {
+		    if(Desktop.isDesktopSupported())
+		    {
+		        try {
+		            Desktop.getDesktop().browse(new URI(RegistrationConstants.MOSIP_URL));
+		        } catch (IOException ioException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		        } catch (URISyntaxException uriSyntaxException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+		        			uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
+		        }
+		    }
+		});
 	}
 
 	/**
@@ -839,8 +903,8 @@ public class LoginController extends BaseController implements Initializable {
 					@Override
 					protected List<String> call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - INITIAL_SYNC - LOGIN_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the sync activities before login");
 
 						return loginService.initialSync();
 					}

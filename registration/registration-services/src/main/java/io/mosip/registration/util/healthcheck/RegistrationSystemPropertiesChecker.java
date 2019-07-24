@@ -69,7 +69,7 @@ public class RegistrationSystemPropertiesChecker {
 	private static String getWindowsMacAddress() throws IOException {
 		String windowsMachineId = "";
 		LOGGER.info(LOG_REG_MAC_ADDRESS, RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-				"Enternig to find the windows mac address");
+				"Entering to find the windows mac address");
 
 		Process process = Runtime.getRuntime().exec("getmac /fo csv /v");
 

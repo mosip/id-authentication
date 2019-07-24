@@ -11,6 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Hyperlink?>
 
 <BorderPane id="loginScreen" prefHeight="553.0" prefWidth="523.0" styleClass="loginBorderPaneStyle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.auth.LoginController">
 	<top>
@@ -47,7 +48,9 @@
                 	<Label layoutX="57.0" layoutY="41.0" styleClass="higlightedLoginLable" text="%registrationlogin" AnchorPane.leftAnchor="57.0" AnchorPane.topAnchor="41.0" />
       				<PasswordField fx:id="password" layoutX="57.0" layoutY="116.0" onAction="#validateCredentials" promptText="%withpword" styleClass="loginTextStyle" AnchorPane.leftAnchor="53.0" />
       				<Button layoutX="52.0" layoutY="171.0" mnemonicParsing="false" onAction="#validateCredentials" styleClass="loginSubmitStyle" text="%submit" />
-                  <Button layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="loginSubmitStyle" text="%resetPassword" />
+<!--                   <Button layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="loginSubmitStyle" text="%resetPassword" /> -->
+                  <Hyperlink layoutX="270.0" layoutY="222.0" mnemonicParsing="false" styleClass="hyperLinkStyle" text="%resetPassword" onAction="#resetPwd" fx:id="resetPword"/>
+                  <Hyperlink layoutX="52.0" layoutY="222.0" mnemonicParsing="false" styleClass="hyperLinkStyle" text="%forgotUsername" onAction="#forgotUsrname" fx:id="forgotUsrnme"/>
                   <ProgressIndicator fx:id="passwordProgressIndicator" layoutX="130.0" layoutY="50.0" progress="0.0" visible="false" />
               
                </children>

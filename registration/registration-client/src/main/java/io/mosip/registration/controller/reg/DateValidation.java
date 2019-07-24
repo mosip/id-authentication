@@ -62,7 +62,7 @@ public class DateValidation extends BaseController {
 
 			});
 			fxUtils.onTypeFocusUnfocusListener(parentPane, localField);
-
+			
 		} catch (RuntimeException runTimeException) {
 			LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					runTimeException.getMessage() + ExceptionUtils.getStackTrace(runTimeException));
@@ -144,16 +144,28 @@ public class DateValidation extends BaseController {
 						ageLocalField.setText(age + "");
 						dobMessage.setText("");
 						dobMessage.setVisible(false);
+						date.getStyleClass().removeIf((s) -> {
+							return s.equals("demoGraphicTextFieldFocused");
+						});
+						month.getStyleClass().removeIf((s) -> {
+							return s.equals("demoGraphicTextFieldFocused");
+						});
+						year.getStyleClass().removeIf((s) -> {
+							return s.equals("demoGraphicTextFieldFocused");
+						});
+						date.getStyleClass().add("demoGraphicTextField");
+						month.getStyleClass().add("demoGraphicTextField");
+						year.getStyleClass().add("demoGraphicTextField");
 						demographicDetailController.ageValidation(false);
 					} else {
 						ageField.clear();
 						ageLocalField.clear();
 						dobMessage.setText(RegistrationUIConstants.FUTURE_DOB);
-						dobMessage.setVisible(true);
-						generateAlert(parentPane, RegistrationConstants.DOB, dobMessage.getText());
+						dobMessage.setVisible(true);						
+						generateAlert(parentPane, RegistrationConstants.DOB, dobMessage.getText());						
 					}
 				} catch (Exception exception) {
-					setErrorMsg(ageField, dobMessage);
+					setErrorMsg(parentPane, date, month, year, ageField, dobMessage);
 					generateAlert(parentPane, RegistrationConstants.DOB, dobMessage.getText());
 					LOGGER.error(LoggerConstants.DATE_VALIDATION, APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID,
@@ -165,13 +177,25 @@ public class DateValidation extends BaseController {
 							|| (((LocalDate.now().getYear() - Integer.parseInt(year.getText()))
 									> Integer.parseInt(getValueFromApplicationContext(RegistrationConstants.MAX_AGE)))
 									&& year.getText().length() > RegistrationConstants.YEAR)))) {
-				setErrorMsg(ageField, dobMessage);
+				setErrorMsg(parentPane, date, month, year, ageField, dobMessage);
 				generateAlert(parentPane, RegistrationConstants.DOB, dobMessage.getText());
 			}
 		}
 	}
 
-	private void setErrorMsg(TextField ageField, Label dobMessage) {
+	private void setErrorMsg(Pane parentPane, TextField date, TextField month, TextField year, TextField ageField, Label dobMessage) {
+		date.getStyleClass().removeIf((s) -> {
+			return s.equals("demoGraphicTextFieldOnType");
+		});
+		month.getStyleClass().removeIf((s) -> {
+			return s.equals("demoGraphicTextFieldOnType");
+		});
+		year.getStyleClass().removeIf((s) -> {
+			return s.equals("demoGraphicTextFieldOnType");
+		});
+		date.getStyleClass().add("demoGraphicTextFieldFocused");
+		month.getStyleClass().add("demoGraphicTextFieldFocused");
+		year.getStyleClass().add("demoGraphicTextFieldFocused");
 		dobMessage.setText(RegistrationUIConstants.INVALID_DATE);
 		ageField.clear();
 		dobMessage.setVisible(true);

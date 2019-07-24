@@ -132,7 +132,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	public void deleteAllProcessedRegPackets() {
 
 		LOGGER.info("REGISTRATION - DELETE-PACKETS-WHEN-MACHINE-REMAPPED - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
-				APPLICATION_ID, "packet deletion when the machine ios remapped is started");
+				APPLICATION_ID, "packet deletion when the machine is remapped is started");
 
 		List<Registration> registrations = registrationDAO
 				.findByServerStatusCodeIn(RegistrationConstants.PACKET_STATUS_CODES_FOR_REMAPDELETE);
@@ -399,7 +399,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	 */
 	public ResponseDTO syncPacket(String triggerPoint) {
 
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - SYNC_PACKETS_TO_SERVER - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
@@ -459,12 +459,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 				successResponseDTO.setMessage(RegistrationConstants.SUCCESS);
 				responseDTO.setSuccessResponseDTO(successResponseDTO);
 			}
-			LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER_END - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
+			LOGGER.debug("REGISTRATION - SYNC_PACKETS_TO_SERVER_END - REG_PACKET_STATUS_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, "Sync the packets to the server ending");
 
 		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException
 				| URISyntaxException exception) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNC_PACKETS_TO_SERVER - REG_PACKET_STATUS_SYNC", APPLICATION_NAME,
 					APPLICATION_ID, exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setMessage(exception.getMessage());

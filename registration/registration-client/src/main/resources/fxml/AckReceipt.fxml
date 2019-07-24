@@ -66,7 +66,7 @@
                      <children>
                         <Button fx:id="sendNotification" graphicTextGap="10.0" mnemonicParsing="false" onAction="#sendNotification" styleClass="ackBackButton" text="%sendEmail" visible="false">
                            <graphic>
-                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="sendNotificationImageView" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/SendEmail.png" />
                                  </image>
