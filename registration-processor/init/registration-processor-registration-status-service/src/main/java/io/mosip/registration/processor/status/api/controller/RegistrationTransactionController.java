@@ -72,8 +72,8 @@ public class RegistrationTransactionController {
 			@ApiResponse(code = 400, message = "Unable to fetch Transaction Entity/Entities") })
 	public ResponseEntity<RegTransactionResponseDTO> getTransactionsbyRid(@PathVariable String rid,@CookieValue(value = "Authorization") String token)
 			throws RegStatusAppException {
-		ResponseEntity<RegTransactionResponseDTO> response=null;
-		List<RegistrationTransactionDto> dtoList=null;
+		ResponseEntity<RegTransactionResponseDTO> response=new ResponseEntity<RegTransactionResponseDTO>(null);
+		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
 		List<ErrorDTO> errors=new ArrayList<>();
 		HttpHeaders headers = new HttpHeaders();
 		try {	
