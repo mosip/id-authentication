@@ -572,6 +572,8 @@ public class PacketUploadController extends BaseController implements Initializa
 		fileNameColumn.setResizable(false);
 		checkBoxColumn.setResizable(false);
 		regDate.setResizable(false);
+		
+		disableColumnsReorder(table);
 		// fileColumn.setResizable(false);
 		// statusColumn.setResizable(false);
 	}

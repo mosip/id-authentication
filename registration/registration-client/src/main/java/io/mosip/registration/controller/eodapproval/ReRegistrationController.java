@@ -145,6 +145,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 				"Page loading has been started");
 		reloadTableView();
 		tableCellColorChangeListener();
+		disableColumnsReorder(table);
 	}
 
 	private void tableCellColorChangeListener() {
