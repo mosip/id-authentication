@@ -130,7 +130,7 @@ public class RegistrationTransactionController {
 		}
 		regTransactionResponseDTO.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
 		regTransactionResponseDTO.setVersion(env.getProperty(REG_TRANSACTION_APPLICATION_VERSION));
-		if(dtoList.isEmpty()) {
+		if(dtoList.isEmpty() && errors.isEmpty() ) {
 			ErrorDTO errorDTO=new ErrorDTO();
 			errorDTO.setErrorCode("RPR-RPN-001");
 			errorDTO.setMessage("RID Not Found");
