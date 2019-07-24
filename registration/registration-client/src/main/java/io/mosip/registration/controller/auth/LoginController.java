@@ -4,7 +4,10 @@ package io.mosip.registration.controller.auth;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -15,7 +18,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.auth.adapter.config.LoggerConfiguration;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
@@ -58,6 +60,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
@@ -126,6 +129,12 @@ public class LoginController extends BaseController implements Initializable {
 
 	@FXML
 	private Label otpValidity;
+	
+	@FXML
+	private Hyperlink forgotUsrnme;
+	
+	@FXML
+	private Hyperlink resetPword;
 
 	@Autowired
 	private LoginService loginService;
@@ -755,6 +764,52 @@ public class LoginController extends BaseController implements Initializable {
 		if (!loginList.isEmpty()) {
 			loginList.remove(RegistrationConstants.PARAM_ZERO);
 		}
+	}
+	
+	/**
+	 * Redirects to mosip.io in case of user forgot user name
+	 * 
+	 * @param event
+	 *            event for forgot user name
+	 */
+	public void forgotUsrname(ActionEvent event) {
+		forgotUsrnme.setOnAction(e -> {
+		    if(Desktop.isDesktopSupported())
+		    {
+		        try {
+		            Desktop.getDesktop().browse(new URI(RegistrationConstants.MOSIP_URL));
+		        } catch (IOException ioException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		        } catch (URISyntaxException uriSyntaxException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+		        			uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
+		        }
+		    }
+		});
+	}
+
+	/**
+	 * Redirects to mosip.io in case of user reset pword
+	 * 
+	 * @param event
+	 *            event for reset pword
+	 */
+	public void resetPwd(ActionEvent event) {
+		resetPword.setOnAction(e -> {
+		    if(Desktop.isDesktopSupported())
+		    {
+		        try {
+		            Desktop.getDesktop().browse(new URI(RegistrationConstants.MOSIP_URL));
+		        } catch (IOException ioException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		        } catch (URISyntaxException uriSyntaxException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+		        			uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
+		        }
+		    }
+		});
 	}
 
 	/**

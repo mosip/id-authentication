@@ -110,6 +110,8 @@ public class RegistrationConstants {
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
 
+	public static final String MOSIP_URL = "http://mosip.io";
+	
 	// Images path
 	public static final String CLOSE_IMAGE_PATH = "/images/Close.png";
 	public static final String DONE_IMAGE_PATH = "/images/done.png";

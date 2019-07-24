@@ -398,6 +398,13 @@
 	-fx-pref-width: 221.0px;
 }
 
+.hyperLinkStyle{
+	-fx-text-fill: #E63A74;
+	-fx-underline: false;
+	-fx-border-color: transparent;
+	-fx-font-size : 10.0px;
+}
+
 .loginSubmitStyle{
 	-fx-pref-height: 30.0px;
 	-fx-pref-width: 81.0px;
