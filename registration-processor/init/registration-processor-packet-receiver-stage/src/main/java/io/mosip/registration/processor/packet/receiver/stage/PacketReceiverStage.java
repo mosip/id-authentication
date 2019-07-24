@@ -140,6 +140,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	public void processPacket(RoutingContext ctx) {
 		File file=null;
 		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "PacketReceiverStage::processPacket()::entry");
 			file=getFileFromCtx(ctx);
 			MessageDTO messageDTO = packetReceiverService.processPacket(file);
 			messageDTO.setMessageBusAddress(MessageBusAddress.PACKET_RECEIVER_OUT);
@@ -157,6 +159,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 				}
 			}
 		 }
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"", "PacketReceiverStage::processPacket()::exit");
 
 	}
 
@@ -169,6 +173,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 	public void processURL(RoutingContext ctx) throws PacketReceiverAppException {
 
 		try {
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "PacketReceiverStage::processURL()::entry");
 			List<String> listObj = new ArrayList<>();
 			listObj.add(env.getProperty(MODULE_ID));
 			File file=getFileFromCtx(ctx);
@@ -184,7 +190,8 @@ public class PacketReceiverStage extends MosipVerticleAPIManager {
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 			throw new UnexpectedException(e.getMessage());
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				"", "PacketReceiverStage::processURL()::exit");
 		ctx.next();
 	}
 

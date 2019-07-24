@@ -49,7 +49,7 @@ public enum RegistrationExceptionConstants {
 	REG_PACKET_SIZE_EXCEEDED_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PES-001", "Registration packet size exceeded the configured file size"),
 	REG_PACKET_BIO_CBEFF_GENERATION_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-002", "Exception while creating CBEFF file for biometrics"),
 	REG_PACKET_JSON_VALIDATOR_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PCS-003", "Exception while validating ID json file"),
-	AUTHZ_ADDING_AUTHZ_HEADER("REG-RCA-001", "Exception while adding authorization token to web-service request"),
+	AUTHZ_ADDING_AUTHZ_HEADER("REG-RCA-001", "Exception while invoking web-service request"),
 	INVALID_OTP("REG-SDU-003", "OTP is either invalid or expired"),
 	INVALID_RESPONSE_HEADER("REG-SDU-004", "Response header received from the web-service is not as expected"),
 	AUTHZ_ADDING_REQUEST_SIGN("REG-RCA-002", "Exception while generating the signature of resquest body"),
@@ -73,7 +73,10 @@ public enum RegistrationExceptionConstants {
 	ID_OBJECT_MASTER_DATA_VALIDATOR("REG-IOS-003", "Invalid Master Data Object Pattern"),
 
 	// TPM Public Key Upload
-	TPM_PUBLIC_KEY_UPLOAD("REG-TPK-001", "Exception while uploading the TPM Public Key");
+	TPM_PUBLIC_KEY_UPLOAD("REG-TPK-001", "Exception while uploading the TPM Public Key"),
+	
+	//Invalid User
+	AUTH_ADVICE_USR_ERROR("REG-SER-ATAD","Provided user id not allowed to do this operation");
 
 	/**
 	 * The constructor

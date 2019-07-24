@@ -281,6 +281,8 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	public static final String EOD_REGISTRATIONDATE_LABEL = bundle.getString("EOD_REGISTRATIONDATE_LABEL");
 	public static final String EOD_STATUS_LABEL = bundle.getString("EOD_STATUS_LABEL");
 	public static final String PACKETUPLOAD_PACKETID_LABEL = bundle.getString("PACKETUPLOAD_PACKETID_LABEL");
+	public static final String AUTH_FAILURE = bundle.getString("AUTH_FAILURE");
+	public static final String AUTH_ADVICE_FAILURE = bundle.getString("AUTH_ADVICE_FAILURE");
 
 	// Virus Scan
 	public static final String VIRUS_SCAN_ERROR_FIRST_PART = bundle.getString("VIRUS_SCAN_ERROR_FIRST_PART");

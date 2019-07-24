@@ -94,7 +94,6 @@ import io.mosip.preregistration.core.common.dto.DemographicResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteDTO;
 import io.mosip.preregistration.core.common.dto.DocumentDeleteResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
-import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.ExceptionJSONInfoDTO;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
@@ -263,7 +262,7 @@ public class DemographicServiceTest {
 	String preId = "";
 	String identityMappingJson = "";
 
-	MainResponseDTO<DocumentsMetaData> documentResultDto = new MainResponseDTO<>();
+	MainResponseDTO<DocumentMultipartResponseDTO> documentResultDto = new MainResponseDTO<>();
 	DocumentMultipartResponseDTO documentMultipartResponseDTO = new DocumentMultipartResponseDTO();
 
 	// @Mock
@@ -391,11 +390,7 @@ public class DemographicServiceTest {
 		documentMultipartResponseDTO.setDocTypCode("RNC");
 		documentMultipartResponseDTO.setLangCode("fra");
 		documentMultipartResponseDTO.setDocumentId("a11n3hbr3o30a2");
-		List<DocumentMultipartResponseDTO> docList = new ArrayList<>();
-		docList.add(documentMultipartResponseDTO);
-		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
-		documentsMetaData.setDocumentsMetaData(docList);
-		documentResultDto.setResponse(documentsMetaData);
+		documentResultDto.setResponse(documentMultipartResponseDTO);
 	}
 
 	@Test
@@ -693,7 +688,7 @@ public class DemographicServiceTest {
 		Page<DemographicEntity> page = new PageImpl<>(userEntityDetails);
 		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> resBook = new ResponseEntity<>(bookingResultDto,
 				HttpStatus.OK);
-		ResponseEntity<MainResponseDTO<DocumentsMetaData>> resDoc = new ResponseEntity<>(documentResultDto,
+		ResponseEntity<MainResponseDTO<DocumentMultipartResponseDTO>> resDoc = new ResponseEntity<>(documentResultDto,
 				HttpStatus.OK);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
@@ -703,13 +698,17 @@ public class DemographicServiceTest {
 		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(String.class)))
 				.thenReturn(identityMappingJson);
 		Mockito.when(serviceUtil.getJson(Mockito.any())).thenReturn(identityMappingJson);
-		Mockito.when(serviceUtil.getPreregistrationIdentityJson()).thenReturn(demographicIdentityRequestDTO);
-		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
-				}), Mockito.anyMap())).thenReturn(resDoc);
-		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
-				}), Mockito.anyMap())).thenReturn(resBook);
+		// Mockito.when(serviceUtil.getPreregistrationIdentityJson()).thenReturn(demographicIdentityRequestDTO);
+		// Mockito.when(restTemplate1.exchange(Mockito.anyString(),
+		// Mockito.eq(HttpMethod.GET), Mockito.any(),
+		// Mockito.eq(new
+		// ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
+		// }), Mockito.anyMap())).thenReturn(resDoc);
+		// Mockito.when(restTemplate1.exchange(Mockito.anyString(),
+		// Mockito.eq(HttpMethod.GET), Mockito.any(),
+		// Mockito.eq(new
+		// ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
+		// }), Mockito.anyMap())).thenReturn(resBook);
 
 		MainResponseDTO<DemographicMetadataDTO> actualRes = preRegistrationService.getAllApplicationDetails(userId, "");
 		assertEquals(actualRes.getVersion(), response.getVersion());
@@ -751,7 +750,7 @@ public class DemographicServiceTest {
 		Page<DemographicEntity> page = new PageImpl<>(userEntityDetails);
 		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> resBook = new ResponseEntity<>(bookingResultDto,
 				HttpStatus.OK);
-		ResponseEntity<MainResponseDTO<DocumentsMetaData>> resDoc = new ResponseEntity<>(documentResultDto,
+		ResponseEntity<MainResponseDTO<DocumentMultipartResponseDTO>> resDoc = new ResponseEntity<>(documentResultDto,
 				HttpStatus.OK);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
@@ -761,9 +760,9 @@ public class DemographicServiceTest {
 		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(String.class)))
 				.thenReturn(identityMappingJson);
 		Mockito.when(serviceUtil.getJson(Mockito.any())).thenReturn(identityMappingJson);
-		Mockito.when(serviceUtil.getPreregistrationIdentityJson()).thenReturn(demographicIdentityRequestDTO);
+		// Mockito.when(serviceUtil.getPreregistrationIdentityJson()).thenReturn(demographicIdentityRequestDTO);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentMultipartResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(resDoc);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {
@@ -806,7 +805,7 @@ public class DemographicServiceTest {
 		Page<DemographicEntity> page = new PageImpl<>(userEntityDetails);
 		ResponseEntity<MainResponseDTO<BookingRegistrationDTO>> resBook = new ResponseEntity<>(bookingResultDto,
 				HttpStatus.OK);
-		ResponseEntity<MainResponseDTO<DocumentsMetaData>> resDoc = new ResponseEntity<>(documentResultDto,
+		ResponseEntity<MainResponseDTO<DocumentMultipartResponseDTO>> resDoc = new ResponseEntity<>(documentResultDto,
 				HttpStatus.OK);
 		Mockito.when(cryptoUtil.decrypt(Mockito.any(), Mockito.any()))
 				.thenReturn(userEntityDetails.get(0).getApplicantDetailJson());
@@ -816,9 +815,9 @@ public class DemographicServiceTest {
 		Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(String.class)))
 				.thenReturn(identityMappingJson);
 		Mockito.when(serviceUtil.getJson(Mockito.any())).thenReturn(identityMappingJson);
-		Mockito.when(serviceUtil.getPreregistrationIdentityJson()).thenReturn(demographicIdentityRequestDTO);
+		// Mockito.when(getPreregistrationIdentityJson()).thenReturn(demographicIdentityRequestDTO);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
-				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentsMetaData>>() {
+				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<DocumentMultipartResponseDTO>>() {
 				}), Mockito.anyMap())).thenReturn(resDoc);
 		Mockito.when(restTemplate1.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.GET), Mockito.any(),
 				Mockito.eq(new ParameterizedTypeReference<MainResponseDTO<BookingRegistrationDTO>>() {

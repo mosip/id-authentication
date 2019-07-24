@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -15,6 +14,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
 import io.mosip.kernel.core.util.DateUtils;
@@ -59,7 +59,7 @@ public class Decryptor {
 	private static final String REG_PROC_APPLICATION_VERSION = "mosip.registration.processor.application.version";
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
-	private static final String DECRYPTION_SUCCESS = "Decryption success for RegistrationId : {}";
+	private static final String DECRYPTION_SUCCESS = "Decryption success";
 	private static final String DECRYPTION_FAILURE = "Virus scan decryption failed for  registrationId ";
 	private static final String IO_EXCEPTION = "Exception Converting encrypted packet inputStream to string";
 
@@ -121,10 +121,11 @@ public class Decryptor {
 						CryptomanagerResponseDto.class);
 				byte[] decryptedPacket = CryptoUtil.decodeBase64(cryptomanagerResponseDto.getData());
 				decryptedData = new String(decryptedPacket);
-			}else {
-				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-						"", IO_EXCEPTION);
-				throw new PacketDecryptionFailureException(response.getErrors().get(0).getErrorCode(),response.getErrors().get(0).getMessage());
+			} else {
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "", IO_EXCEPTION);
+				throw new PacketDecryptionFailureException(response.getErrors().get(0).getErrorCode(),
+						response.getErrors().get(0).getMessage());
 			}
 
 			isTransactionSuccessful = true;

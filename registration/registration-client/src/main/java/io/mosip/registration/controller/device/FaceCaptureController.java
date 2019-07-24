@@ -246,7 +246,6 @@ public class FaceCaptureController extends BaseController implements Initializab
 					}
 				} else {
 					applicantBufferedImage = null;
-					applicantImage.setImage(defaultImage);
 					saveBiometricDetailsBtn.setDisable(true);
 				}
 			}
@@ -522,10 +521,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 			hasLowBiometrics = validateBiometrics(hasBiometricException);
 
 			/* if there is no missing biometric, check for low quality of biometrics */
-			if (hasMissingBiometrics || hasLowBiometrics) {
-				hasBiometricException = true;
-				SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, hasBiometricException);
-			}
+			hasBiometricException = hasMissingBiometrics || hasLowBiometrics;
+			SessionContext.userMap().put(RegistrationConstants.IS_LOW_QUALITY_BIOMETRICS, hasBiometricException);
 		}
 
 		/* get the selected pane to capture photo */

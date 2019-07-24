@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
+import io.mosip.registration.processor.core.abstractverticle.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -19,10 +20,6 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -49,7 +46,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * 
  * @author M1048358 Alok Ranjan
  */
-public class QualityCheckerStage extends MosipVerticleManager {
+public class QualityCheckerStage extends MosipVerticleAPIManager {
 
 	/** The Constant FINGER. */
 	private static final String FINGER = "FINGER";
@@ -102,6 +99,10 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	@Value("${mosip.registration.facequalitythreshold}")
 	private Integer faceThreshold;
 
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
 	/** The adapter. */
 	@Autowired
 	private PacketManager adapter;
@@ -117,6 +118,10 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	/** The utilities. */
 	@Autowired
 	private Utilities utilities;
+
+	/** Mosip router for APIs */
+	@Autowired
+	private MosipRouter router;
 
 	/** The bio Api. */
 	@Autowired
@@ -136,17 +141,30 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = File.separator;
 
+	private MosipEventBus mosipEventBus = null;
+
 	/**
 	 * Deploy verticle.
 	 */
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.QUALITY_CHECKER_BUS_IN,
 				MessageBusAddress.QUALITY_CHECKER_BUS_OUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	@Override
+	public void start() {
+		router.setRoute(
+				this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.OSI_BUS_IN, MessageBusAddress.OSI_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
+	 * java.lang.Object)
 	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
@@ -202,7 +220,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 				List<BIR> birList = cbeffUtil.convertBIRTypeToBIR(birTypeList);
 				int scoreCounter = 0;
 				for (BIR bir : birList) {
-					SingleType singleType = bir.getBdbInfo().getType().get(0);;
+					SingleType singleType = bir.getBdbInfo().getType().get(0);
+					;
 					List<String> subtype = bir.getBdbInfo().getSubtype();
 					Integer threshold = getThresholdBasedOnType(singleType, subtype);
 					QualityScore qualityScore = bioAPi.checkQuality(bir, null);
@@ -226,6 +245,8 @@ public class QualityCheckerStage extends MosipVerticleManager {
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
+					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), regId, "QualityCheckerImpl::success");
 				}
 			}
 
@@ -279,8 +300,7 @@ public class QualityCheckerStage extends MosipVerticleManager {
 
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, regId);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
-					"QualityCheckerStage::process()::exit");
+
 		}
 
 		return object;
@@ -289,8 +309,10 @@ public class QualityCheckerStage extends MosipVerticleManager {
 	/**
 	 * Gets the threshold based on type.
 	 *
-	 * @param singleType the single type
-	 * @param subtype the subtype
+	 * @param singleType
+	 *            the single type
+	 * @param subtype
+	 *            the subtype
 	 * @return the threshold based on type
 	 */
 	private Integer getThresholdBasedOnType(SingleType singleType, List<String> subtype) {

@@ -104,7 +104,7 @@ public class RegistrationApprovalServiceTest {
 	}
 
 	@Test
-	public void testPacketUpdateStatus() {
+	public void testPacketUpdateStatus() throws RegBaseCheckedException {
 		Registration regobject = new Registration();
 		UserDetail regUserDetail = new UserDetail();
 

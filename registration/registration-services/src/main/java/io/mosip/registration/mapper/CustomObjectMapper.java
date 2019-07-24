@@ -84,8 +84,8 @@ public class CustomObjectMapper extends ConfigurableMapper {
 		.customize(new CustomMapper<UserRole, UserRoleDTO>() {
 			@Override
 			public void mapAtoB(UserRole a, UserRoleDTO b, MappingContext context) {
-				b.setUsrId(a.getUserRoleID().getUsrId());
-				b.setRoleCode(a.getUserRoleID().getRoleCode());
+				b.setUsrId(a.getUserRoleId().getUsrId());
+				b.setRoleCode(a.getUserRoleId().getRoleCode());
 				b.setLangCode(a.getLangCode());
 				b.setActive(a.getIsActive());
 			}

@@ -136,5 +136,16 @@ public class LoginController {
 		return  new ResponseEntity<>( loginService.getConfig(),HttpStatus.OK);
 		
 	}
+	
+	@GetMapping(path="/refreshconfig" ,produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Refresh global and Pre-Registration config data")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "global and Pre-Registration config data successfully updated") })
+	public ResponseEntity<MainResponseDTO<String>> refreshConfigParams() {
+		log.info("sessionId", "idType", "id",
+				"In Login controller for updating config values ");
+		return  new ResponseEntity<>( loginService.refreshConfig(),HttpStatus.OK);
+		
+	}
+
 
 }

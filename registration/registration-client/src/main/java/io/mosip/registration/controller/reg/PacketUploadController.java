@@ -43,6 +43,7 @@ import io.mosip.registration.controller.vo.PacketStatusVO;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketUploadService;
 import io.mosip.registration.service.sync.PacketSynchService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
@@ -154,8 +155,11 @@ public class PacketUploadController extends BaseController implements Initializa
 				if (!selectedPackets.isEmpty()) {
 					List<PacketStatusDTO> packetsToBeSynced = new ArrayList<>();
 					selectedPackets.forEach(packet -> {
-						if (packet.getPacketServerStatus() == null || !packet.getPacketServerStatus()
-								.equalsIgnoreCase(RegistrationConstants.SERVER_STATUS_RESEND)) {
+						if (packet.getPacketServerStatus() == null
+								|| !packet.getPacketServerStatus()
+										.equalsIgnoreCase(RegistrationConstants.SERVER_STATUS_RESEND)
+								|| !RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
+										.equalsIgnoreCase(packet.getPacketClientStatus())) {
 							PacketStatusDTO packetStatusVO = new PacketStatusDTO();
 							packetStatusVO.setClientStatusComments(packet.getClientStatusComments());
 							packetStatusVO.setFileName(packet.getFileName());
@@ -316,8 +320,13 @@ public class PacketUploadController extends BaseController implements Initializa
 
 									synchedPacket.setUploadStatus(
 											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
-									tableMap.put(synchedPacket.getFileName(),
-											RegistrationUIConstants.PACKET_UPLOAD_SERVICE_ERROR);
+									if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+										tableMap.put(synchedPacket.getFileName(),
+												RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+									} else {
+										tableMap.put(synchedPacket.getFileName(),
+												RegistrationUIConstants.PACKET_UPLOAD_SERVICE_ERROR);
+									}
 									packetUploadList.add(synchedPacket);
 
 								} catch (RuntimeException runtimeException) {

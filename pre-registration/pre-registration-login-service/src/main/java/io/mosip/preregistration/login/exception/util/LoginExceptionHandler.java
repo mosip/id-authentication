@@ -109,7 +109,7 @@ public class LoginExceptionHandler {
 	 */
 	@ExceptionHandler(ConfigFileNotFoundException.class)
 	public ResponseEntity<MainResponseDTO<?>> configFileNotFoundException(final ConfigFileNotFoundException e) {
-		return GenericUtil.errorResponse(e, e.getMainResposneDto());
+		return GenericUtil.errorResponse(e,e.getMainResposneDto());
 	}
 	
 	@ExceptionHandler(InvalidFormatException.class)

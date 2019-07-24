@@ -418,6 +418,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@Override
 	public RegistrationSyncRequestDTO decryptAndGetSyncRequest(Object encryptedSyncMetaInfo, String referenceId,
 			String timeStamp, List<SyncResponseDto> syncResponseList) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::entry");
+		
 		RegistrationSyncRequestDTO registrationSyncRequestDTO = null;
 		try {
 			String decryptedSyncMetaData = decryptor.decrypt(encryptedSyncMetaInfo, referenceId, timeStamp);
@@ -454,6 +457,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			syncResponseFailureDto.setErrorCode(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode());
 			syncResponseList.add(syncResponseFailureDto);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				"", "SyncRegistrationServiceImpl::decryptAndGetSyncRequest()::exit");
+		
 		return registrationSyncRequestDTO;
 	}
 }
