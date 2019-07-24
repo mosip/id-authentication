@@ -5,6 +5,6 @@ package io.mosip.registration.processor.request.handler.service;
  *
  * @author Ranjitha
  */
-public interface ResidentServiceRePrintService {
+public interface UinCardRePrintService {
 
 }

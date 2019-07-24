@@ -6,7 +6,7 @@ import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages
  * The Class RegStatusValidationException.
  * @author Rishabh Keshari
  */
-public class PacketGeneratorValidationException extends RegBaseCheckedException {
+public class RequestHandlerValidationException extends RegBaseCheckedException {
 
 
 	
@@ -16,7 +16,7 @@ public class PacketGeneratorValidationException extends RegBaseCheckedException 
 	/**
 	 * Instantiates a new id repo data validation exception.
 	 */
-	public PacketGeneratorValidationException() {
+	public RequestHandlerValidationException() {
 		super();
 	}
 
@@ -26,7 +26,7 @@ public class PacketGeneratorValidationException extends RegBaseCheckedException 
 	 * @param errorCode the error code
 	 * @param errorMessage the error message
 	 */
-	public PacketGeneratorValidationException(String errorCode, String errorMessage) {
+	public RequestHandlerValidationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 
@@ -37,7 +37,7 @@ public class PacketGeneratorValidationException extends RegBaseCheckedException 
 	 * @param errorMessage the error message
 	 * @param rootCause the root cause
 	 */
-	public PacketGeneratorValidationException(String errorCode, String errorMessage, Throwable rootCause) {
+	public RequestHandlerValidationException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 	}
 
@@ -46,7 +46,7 @@ public class PacketGeneratorValidationException extends RegBaseCheckedException 
 	 *
 	 * @param exceptionConstant the exception constant
 	 */
-	public PacketGeneratorValidationException(PlatformErrorMessages exceptionConstant) {
+	public RequestHandlerValidationException(PlatformErrorMessages exceptionConstant) {
 	super(exceptionConstant);
 	}
 
@@ -56,7 +56,7 @@ public class PacketGeneratorValidationException extends RegBaseCheckedException 
 	 * @param exceptionConstant the exception constant
 	 * @param rootCause the root cause
 	 */
-	public PacketGeneratorValidationException(PlatformErrorMessages  exceptionConstant, Throwable rootCause) {
+	public RequestHandlerValidationException(PlatformErrorMessages  exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant, rootCause);
 	}
 

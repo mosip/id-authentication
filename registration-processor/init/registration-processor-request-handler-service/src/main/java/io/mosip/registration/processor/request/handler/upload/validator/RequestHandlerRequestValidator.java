@@ -17,7 +17,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorRequestDto;
-import io.mosip.registration.processor.request.handler.service.exception.PacketGeneratorValidationException;
+import io.mosip.registration.processor.request.handler.service.exception.RequestHandlerValidationException;
 
 /**
  * The Class PacketGeneratorRequestValidator.
@@ -25,7 +25,7 @@ import io.mosip.registration.processor.request.handler.service.exception.PacketG
  * @author Rishabh Keshari
  */
 @Component
-public class PacketGeneratorRequestValidator {
+public class RequestHandlerRequestValidator {
 
 	/** The Constant VER. */
 	private static final String VER = "version";
@@ -37,10 +37,10 @@ public class PacketGeneratorRequestValidator {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
 	/** The mosip logger. */
-	Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorRequestValidator.class);
+	Logger regProcLogger = RegProcessorLogger.getLogger(RequestHandlerRequestValidator.class);
 
 	/** The Constant ID_REPO_SERVICE. */
-	private static final String PACKET_GENERATOR_SERVICE = "PacketGenerationService";
+	private static final String REQUEST_HANDLER_SERVICE = "RequestHandlerService";
 
 	/** The Constant TIMESTAMP. */
 	private static final String TIMESTAMP = "requesttime";
@@ -50,6 +50,8 @@ public class PacketGeneratorRequestValidator {
 
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
+	
+	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.packetgenerator.version";
@@ -71,14 +73,15 @@ public class PacketGeneratorRequestValidator {
 	 *
 	 * @param request
 	 *            the request
-	 * @throws PacketGeneratorValidationException
+	 * @throws RequestHandlerValidationException
 	 *             the packet generator validation exception
 	 */
-	public void validate(PacketGeneratorRequestDto request) throws PacketGeneratorValidationException {
+	public void validate(String requestTime, String requestId, String requestVersion) throws RequestHandlerValidationException {
 		id.put("status", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
-		validateReqTime(request.getRequesttime());
-		validateId(request.getId());
-		validateVersion(request.getVersion());
+		id.put("status", env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
+		validateReqTime(requestTime);
+		validateId(requestId);
+		validateVersion(requestVersion);
 
 	}
 
@@ -87,19 +90,19 @@ public class PacketGeneratorRequestValidator {
 	 *
 	 * @param id
 	 *            the id
-	 * @throws PacketGeneratorValidationException
+	 * @throws RequestHandlerValidationException
 	 *             the packet generator validation exception
 	 */
-	private void validateId(String id) throws PacketGeneratorValidationException {
-		PacketGeneratorValidationException exception = new PacketGeneratorValidationException();
+	private void validateId(String id) throws RequestHandlerValidationException {
+		RequestHandlerValidationException exception = new RequestHandlerValidationException();
 		if (Objects.isNull(id)) {
-			throw new PacketGeneratorValidationException(
+			throw new RequestHandlerValidationException(
 					PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), ID_FIELD),
 					exception);
 
 		} else if (!this.id.containsValue(id)) {
-			throw new PacketGeneratorValidationException(
+			throw new RequestHandlerValidationException(
 					PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), ID_FIELD),
 					exception);
@@ -112,19 +115,19 @@ public class PacketGeneratorRequestValidator {
 	 *
 	 * @param ver
 	 *            the ver
-	 * @throws PacketGeneratorValidationException
+	 * @throws RequestHandlerValidationException
 	 *             the packet generator validation exception
 	 */
-	private void validateVersion(String ver) throws PacketGeneratorValidationException {
+	private void validateVersion(String ver) throws RequestHandlerValidationException {
 		String version = env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION);
-		PacketGeneratorValidationException exception = new PacketGeneratorValidationException();
+		RequestHandlerValidationException exception = new RequestHandlerValidationException();
 		if (Objects.isNull(ver)) {
-			throw new PacketGeneratorValidationException(
+			throw new RequestHandlerValidationException(
 					PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), VER), exception);
 
 		} else if (!version.equals(ver)) {
-			throw new PacketGeneratorValidationException(
+			throw new RequestHandlerValidationException(
 					PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), VER), exception);
 
@@ -136,13 +139,13 @@ public class PacketGeneratorRequestValidator {
 	 *
 	 * @param timestamp
 	 *            the timestamp
-	 * @throws PacketGeneratorValidationException
+	 * @throws RequestHandlerValidationException
 	 *             the packet generator validation exception
 	 */
-	private void validateReqTime(String timestamp) throws PacketGeneratorValidationException {
-		PacketGeneratorValidationException exception = new PacketGeneratorValidationException();
+	private void validateReqTime(String timestamp) throws RequestHandlerValidationException {
+		RequestHandlerValidationException exception = new RequestHandlerValidationException();
 		if (Objects.isNull(timestamp)) {
-			throw new PacketGeneratorValidationException(
+			throw new RequestHandlerValidationException(
 					PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getCode(),
 					String.format(PlatformErrorMessages.RPR_PGS_MISSING_INPUT_PARAMETER.getMessage(), TIMESTAMP),
 					exception);
@@ -157,10 +160,10 @@ public class PacketGeneratorRequestValidator {
 							.isAfter(new DateTime().minusSeconds(gracePeriod))
 							&& DateTime.parse(timestamp, timestampFormat.createDateTimeFormatter())
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
-						regProcLogger.error(PACKET_GENERATOR_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
+						regProcLogger.error(REQUEST_HANDLER_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
 								"\n" + PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage());
 						
-						throw new PacketGeneratorValidationException(
+						throw new RequestHandlerValidationException(
 								PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 								String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
 										TIMESTAMP),
@@ -170,9 +173,9 @@ public class PacketGeneratorRequestValidator {
 
 				}
 			} catch (IllegalArgumentException e) {
-				regProcLogger.error(PACKET_GENERATOR_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
+				regProcLogger.error(REQUEST_HANDLER_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
 						"\n" + ExceptionUtils.getStackTrace(e));
-				throw new PacketGeneratorValidationException(
+				throw new RequestHandlerValidationException(
 						PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 						String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(), TIMESTAMP),
 						exception);

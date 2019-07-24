@@ -28,7 +28,7 @@ import io.mosip.registration.processor.request.handler.service.exception.VidCrea
 /**
  * The Class ResidentServiceRePrintServiceImpl.
  */
-public class ResidentServiceRePrintServiceImpl {
+public class UinCardRePrintServiceImpl {
 
 	@Autowired
 	private Environment env;
@@ -45,7 +45,7 @@ public class ResidentServiceRePrintServiceImpl {
 
 	public static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(ResidentServiceRePrintServiceImpl.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinCardRePrintServiceImpl.class);
 
 	@SuppressWarnings("unchecked")
 	private void check(String requestUin, String requestVid, String cardType, String registrationId)

@@ -2,7 +2,7 @@ package io.mosip.registration.processor.request.handler.upload.utils;
 
 import org.springframework.validation.Errors;
 
-import io.mosip.registration.processor.request.handler.service.exception.PacketGeneratorValidationException;
+import io.mosip.registration.processor.request.handler.service.exception.RequestHandlerValidationException;
 
 
 /**
@@ -23,11 +23,11 @@ public final class PacketGeneratorValidationUtil {
 	 * Validate.
 	 *
 	 * @param errors the errors
-	 * @throws PacketGeneratorValidationException the packet generator validation exception
+	 * @throws RequestHandlerValidationException the packet generator validation exception
 	 */
-	public static void validate(Errors errors) throws PacketGeneratorValidationException {
+	public static void validate(Errors errors) throws RequestHandlerValidationException {
 		if (errors.hasErrors()) {
-			PacketGeneratorValidationException exception = new PacketGeneratorValidationException();
+			RequestHandlerValidationException exception = new RequestHandlerValidationException();
 			errors.getAllErrors().forEach(error -> exception.addInfo(error.getCode(), error.getDefaultMessage()));
 			throw exception;
 		}

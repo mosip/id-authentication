@@ -26,9 +26,9 @@ import io.mosip.registration.processor.request.handler.service.PacketGeneratorSe
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResponseDto;
-import io.mosip.registration.processor.request.handler.service.exception.PacketGeneratorValidationException;
+import io.mosip.registration.processor.request.handler.service.exception.RequestHandlerValidationException;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
-import io.mosip.registration.processor.request.handler.upload.validator.PacketGeneratorRequestValidator;
+import io.mosip.registration.processor.request.handler.upload.validator.RequestHandlerRequestValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -69,7 +69,7 @@ public class PacketGeneratorController {
 
 	/** The validator. */
 	@Autowired
-	private PacketGeneratorRequestValidator validator;
+	private RequestHandlerRequestValidator validator;
 
 	@Value("${registration.processor.signature.isEnabled}")
 	Boolean isEnabled;
@@ -100,7 +100,8 @@ public class PacketGeneratorController {
 		tokenValidator.validate("Authorization=" + token, "packetgenerator");
 
 		try {
-			validator.validate(packerGeneratorRequestDto);
+			validator.validate(packerGeneratorRequestDto.getRequesttime(), packerGeneratorRequestDto.getId(),
+					packerGeneratorRequestDto.getVersion());
 			PacketGeneratorResDto packerGeneratorResDto;
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
 
@@ -111,7 +112,7 @@ public class PacketGeneratorController {
 				return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
-		} catch (PacketGeneratorValidationException e) {
+		} catch (RequestHandlerValidationException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RGS_DATA_VALIDATION_FAILED, e);
 
 		}
