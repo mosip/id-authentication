@@ -1,63 +1,70 @@
-.body-height{
-    height: 60px;
+::ng-deep .mat-dialog-container {
+  padding: 10px 1.5rem 1.5rem 1.7rem;
+  border-radius: 0px;
+}
+.body-height {
+  height: 60px;
 }
 
-.button-placer{
-    margin: 0 0 0 20px;
+.button-placer {
+  margin: 0 0 0 20px;
 }
 
 .close-button-sizing {
-    color: red;
-    margin-left: 4px;
-    font-size: 12px;
+  color: red;
+  margin-left: 4px;
+  font-size: 12px;
 }
 
 .table-container td {
-    padding-right: 10px;
+  padding-right: 10px;
 }
-.consent-popup-title{
-  font-size:14px;
-  margin:0px;
+.consent-popup-title {
+  font-size: 1rem;
+  margin: 0px;
+  color: #fd518c;
 }
 /* consent story desgin css */
-.consent-popup-subtitle{
-font-size:10px;
-margin:0px;
+.consent-popup-subtitle {
+  font-size: 0.8rem;
+  margin: 0px;
+  font-weight: 600;
 }
-.accept-button{
-  margin: 0 auto;
+.accept-button {
+  margin: 10px auto;
   color: white;
   background-color: #ff4081;
+  border-radius: 2px;
 }
-.accept-button-disabled{
-  margin: 0 auto;
+.accept-button-disabled {
+  margin: 10px auto;
   color: white;
   background-color: gray;
 }
-.consentpopup-content{
-  font-size:14px;
+.consentpopup-content {
+  font-size: 0.8rem;
   max-height: 100px;
 }
 .consentpopup-content::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  background-color: #F5F5F5;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
 }
 .consentpopup-content::-webkit-scrollbar-thumb {
   background-color: #ff4081;
 }
 .consentpopup-content::-webkit-scrollbar {
   width: 3px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 
-.consent-popup-parent{
+.consent-popup-parent {
   position: relative;
 }
 
-.consent-popup-cross{
+.consent-popup-cross {
   position: absolute;
-  top: -8%;
-  right: -4%;
+  top: 0;
+  right: 0;
   width: 17px;
   height: 16px;
   background: transparent;
@@ -67,4 +74,16 @@ margin:0px;
   cursor: pointer;
 }
 
+.consent-popup-cross-icon {
+  font-size: 1rem;
+}
+
+.checkbox-accept {
+  font-size: 0.8rem;
+}
+
 /* consent story desgin css  */
+
+.error-dialog {
+  margin-bottom: 15px;
+}

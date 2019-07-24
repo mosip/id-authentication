@@ -200,7 +200,8 @@ public class MasterDataPaginationIntegrationTest {
 		title.setDeletedDateTime(null);
 		title.setIsActive(true);
 		title.setIsDeleted(false);
-		title.setId(codeAndLanguageCodeID);
+		title.setCode("TEST_CODE");
+		title.setLangCode("eng");
 		title.setTitleDescription(null);
 		title.setTitleName("TEST_TITLE");
 		title.setUpdatedBy(null);

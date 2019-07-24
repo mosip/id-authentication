@@ -30,7 +30,10 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class OTPRequestValidator extends IdAuthValidator {
-
+	
+	
+	private static final String OTP_CHANNEL = "otpChannel";
+	
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	private static final String OTP_VALIDATOR = "OTP_VALIDATOR";
@@ -92,9 +95,10 @@ public class OTPRequestValidator extends IdAuthValidator {
 					.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
 					.collect(Collectors.joining(","));
 			if (!channels.isEmpty()) {
-				errors.reject(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-								"otpChannel - " + channels));
+				errors.rejectValue(OTP_CHANNEL,
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new String[] {"otpChannel - ".concat(channels)},
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 			}
 		}
 	}

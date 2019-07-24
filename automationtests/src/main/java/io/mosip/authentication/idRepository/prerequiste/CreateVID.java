@@ -120,7 +120,10 @@ public class CreateVID extends AuthTestsUtil implements ITest {
 				if (resVIDJson.contains("\"VID\":")) {
 					String vid = JsonPrecondtion.getValueFromJson(resVIDJson, "response.VID");
 					String vidType = JsonPrecondtion.getValueFromJson(reqVidJson, "request.vidType");
-					vidMap.put(entry.getKey(), vid + "." + vidType + ".ACTIVE");
+					if (vidType.equalsIgnoreCase("temporary"))
+						vidMap.put(entry.getKey(), vid + "." + vidType + ".ACTIVE" + "."+RunConfigUtil.getVidUsageCount());
+					else
+						vidMap.put(entry.getKey(), vid + "." + vidType + ".ACTIVE");
 				}
 				else
 					status=false;

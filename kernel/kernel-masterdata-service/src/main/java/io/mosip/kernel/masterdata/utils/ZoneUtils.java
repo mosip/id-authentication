@@ -14,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.masterdata.constant.ZoneErrorCode;
 import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -40,13 +41,22 @@ public class ZoneUtils {
 
 	public List<Zone> getUserZones(List<Zone> zones) {
 		List<Zone> zoneIds = new ArrayList<>();
+		List<ZoneUser> userZones = null;
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-		List<ZoneUser> userZones = zoneUserRepository.findByUserIdNonDeleted(userName);
+		try {
+			userZones = zoneUserRepository.findByUserIdNonDeleted(userName);
+		} catch (DataAccessException e) {
+			throw new MasterDataServiceException(ZoneErrorCode.USER_ZONE_FETCH_EXCEPTION.getErrorCode(),
+					ZoneErrorCode.USER_ZONE_FETCH_EXCEPTION.getErrorMessage());
+		}
 		if (userZones != null && !userZones.isEmpty()) {
 			initialize(zones);
 			for (ZoneUser zu : userZones) {
 				searchZones(zones, zoneIds, zu);
 			}
+		} else {
+			throw new MasterDataServiceException(ZoneErrorCode.USER_ZONE_UNAVAILABLE.getErrorCode(),
+					String.format(ZoneErrorCode.USER_ZONE_UNAVAILABLE.getErrorMessage(), userName));
 		}
 		return zoneIds;
 	}
@@ -71,7 +81,8 @@ public class ZoneUtils {
 		try {
 			zones = zoneRepository.findAllNonDeleted();
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException("XXXXXXX", e.getMessage());
+			throw new MasterDataServiceException(ZoneErrorCode.ZONE_FETCH_EXCEPTION.getErrorCode(),
+					ZoneErrorCode.ZONE_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (zones != null && !zones.isEmpty()) {

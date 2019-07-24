@@ -1,0 +1,12 @@
+{
+  "id": "mosip.id.read",
+  "version": "v1",
+  "responsetime": "2019-06-26T10:54:55.526Z",
+  "metadata": null,
+  "response": {
+    "status": "ACTIVATED",
+    "identity": "$IGNORE$",
+    "documents": "$IGNORE$"
+  },
+  "errors": []
+}

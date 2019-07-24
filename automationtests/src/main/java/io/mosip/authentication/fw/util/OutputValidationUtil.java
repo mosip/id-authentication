@@ -28,6 +28,7 @@ import com.google.common.base.Verify;
 
 import io.mosip.authentication.fw.dto.OutputValidationDto;
 import io.mosip.authentication.fw.precon.JsonPrecondtion;
+import io.mosip.authentication.fw.precon.MessagePrecondtion;
 
 /**
  * Perform output validation between expected and actual json file or message
@@ -49,13 +50,10 @@ public class OutputValidationUtil extends AuthTestsUtil{
 	public static Map<String, List<OutputValidationDto>> doOutputValidation(String actualOutputFile,
 			String expOutputFile) {
 		try {
-			JsonPrecondtion objJsonPrecondtion = new JsonPrecondtion(
-					new String(Files.readAllBytes(Paths.get(actualOutputFile))));
-			Map<String, String> actual = JsonPrecondtion.getJsonFieldValue(actualOutputFile,
-					objJsonPrecondtion.getPathList(actualOutputFile));
-			objJsonPrecondtion = new JsonPrecondtion(new String(Files.readAllBytes(Paths.get(expOutputFile))));
-			Map<String, String> exp = JsonPrecondtion.getJsonFieldValue(expOutputFile,
-					objJsonPrecondtion.getPathList(expOutputFile));
+			Map<String, String> actual = MessagePrecondtion.getPrecondtionObject(actualOutputFile)
+					.retrieveMappingAndItsValueToPerformOutputValidation(actualOutputFile);
+			Map<String, String> exp = MessagePrecondtion.getPrecondtionObject(expOutputFile)
+					.retrieveMappingAndItsValueToPerformOutputValidation(expOutputFile);
 			actualOutputFile = actualOutputFile.substring(actualOutputFile.lastIndexOf("/") + 1,
 					actualOutputFile.length());
 			expOutputFile = expOutputFile.substring(expOutputFile.lastIndexOf("/") + 1, expOutputFile.length());
@@ -103,7 +101,7 @@ public class OutputValidationUtil extends AuthTestsUtil{
 						objOpDto.setExpValue(expEntry.getValue());
 						objOpDto.setStatus("PASS");
 					} else if (expEntry.getValue().equals("$TIMESTAMP$")) {
-						if (validateTimestamp(actual.get(expEntry.getKey()))) {
+						if (validateTimestampZ(actual.get(expEntry.getKey()))) {
 							objOpDto.setFieldName(expEntry.getKey());
 							objOpDto.setFieldHierarchy(expEntry.getKey());
 							objOpDto.setActualValue(actual.get(expEntry.getKey()));
@@ -418,4 +416,5 @@ public class OutputValidationUtil extends AuthTestsUtil{
 		}
 		return true;
 	}
+	
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 
 /**
  * Class that provides generic methods for implementation of filter values
@@ -48,23 +49,43 @@ public class MasterDataFilterHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E, T> List<T> filterValues(Class<E> entity, String columnName, String columnType, String languageCode) {
+	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
 		Root<E> root = criteriaQuery.from(entity);
-		Path<Object> path = root.get(columnName);
-		return (List<T>) filterValuesByType(entity, path.getJavaType(), columnName, columnType, languageCode);
+		Path<Object> path = root.get(filterDto.getColumnName());
+		return (List<T>) filterValuesByType(entity, path.getJavaType(), filterDto, filterValueDto.getLanguageCode());
 	}
 
-	private <E, T> List<T> filterValuesByType(Class<E> entity, Class<T> type, String columnName, String columnType,
+	private <E, T> List<T> filterValuesByType(Class<E> entity, Class<T> type, FilterDto filterDto,
 			String languageCode) {
+		String columnName = filterDto.getColumnName();
+		String text = filterDto.getText();
+		String columnType = filterDto.getType();
 		List<T> results;
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
+
 		Root<E> root = criteriaQuery.from(entity);
+
+		Predicate langCodePredicate = criteriaBuilder.equal(root.get(LANGCODE_COLUMN_NAME), languageCode);
+		Predicate wildCardPredicate = criteriaBuilder.like(root.get(filterDto.getColumnName()),
+				WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER);
+		Predicate caseInsensitiveWildCardPredicate = criteriaBuilder.like(root.get(filterDto.getColumnName()),
+				WILD_CARD_CHARACTER + filterDto.getText().toLowerCase() + WILD_CARD_CHARACTER);
+
 		criteriaQuery.select(root.get(columnName));
+
+		if (!(root.get(columnName).getJavaType().equals(Boolean.class))) {
+			criteriaQuery.where(criteriaBuilder.and(langCodePredicate,
+					criteriaBuilder.or(wildCardPredicate, caseInsensitiveWildCardPredicate)));
+		}
 		criteriaQuery.orderBy(criteriaBuilder.asc(root.get(columnName)));
-		criteriaQuery.where(criteriaBuilder.equal(root.get(LANGCODE_COLUMN_NAME), languageCode));
+
+		if (root.get(columnName).getJavaType().equals(Boolean.class) && columnType.equals(FILTER_VALUE_UNIQUE)) {
+			buildFilterColumnListForBoolean(columnName, text, criteriaBuilder, criteriaQuery, root);
+		}
+
 		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
 			criteriaQuery.distinct(true);
 		} else if (columnType.equals(FILTER_VALUE_ALL)) {
@@ -73,6 +94,15 @@ public class MasterDataFilterHelper {
 		TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
 		results = typedQuery.setMaxResults(filterValueMaxColumns).getResultList();
 		return results;
+	}
+
+	private <E, T> void buildFilterColumnListForBoolean(String columnName, String text, CriteriaBuilder criteriaBuilder,
+			CriteriaQuery<T> criteriaQuery, Root<E> root) {
+		boolean statusValue = false;
+		if (text.equals(STATUS_TRUE_FLAG)) {
+			statusValue = true;
+		}
+		criteriaQuery.where(criteriaBuilder.equal(root.get(columnName), statusValue));
 	}
 
 	public <E> List<E> filterValueEntities(Class<E> entity, FilterDto filterDto, String languageCode) {

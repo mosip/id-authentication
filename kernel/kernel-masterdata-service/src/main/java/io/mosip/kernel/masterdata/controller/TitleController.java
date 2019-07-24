@@ -22,7 +22,9 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TitleService;
@@ -36,6 +38,7 @@ import io.swagger.annotations.ApiResponses;
  * Controller class for fetching titles from master data
  * 
  * @author Sidhant Agarwal
+ * @author Srinivasan
  * @since 1.0.0
  *
  */
@@ -173,8 +176,9 @@ public class TitleController {
 	 *            the request
 	 * @return response wrapper
 	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
 	@ResponseFilter
-	@GetMapping("/search")
+	@PostMapping("title/search")
 	@ApiOperation(value = "Search title details")
 	@ApiResponses({ @ApiResponse(code = 200, message = "list of titles"),
 			@ApiResponse(code = 500, message = "Error occured while searching title") })
@@ -182,6 +186,18 @@ public class TitleController {
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<TitleExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(titleService.searchTitles(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PostMapping("title/filter")
+	@ApiOperation(value = "filter title details")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of title"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
+	public ResponseWrapper<FilterResponseDto> filterTemplates(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(titleService.filterTitles(request.getRequest()));
 		return responseWrapper;
 	}
 }

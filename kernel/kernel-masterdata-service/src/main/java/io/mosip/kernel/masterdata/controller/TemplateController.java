@@ -23,7 +23,9 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TemplateResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TemplateExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.TemplateService;
@@ -222,6 +224,18 @@ public class TemplateController {
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
 		ResponseWrapper<PageResponseDto<TemplateExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(templateService.searchTemplates(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	@ResponseFilter
+	@PostMapping("/filter")
+	@ApiOperation(value = "filter template details")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of templates"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving templates") })
+	public ResponseWrapper<FilterResponseDto> filterTemplates(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(templateService.filterTemplates(request.getRequest()));
 		return responseWrapper;
 	}
 }

@@ -1,0 +1,19 @@
+----------------------------------------------------------------
+Tue May 28 17:00:59 IST 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.13.1.1 - (1765088): instance a816c00e-016a-fe35-2f97-00000e7f8240 
+on database directory D:\Reg_Client_Services\E2E\registrationClientE2E\src\main\resources\reg with class loader sun.misc.Launcher$AppClassLoader@2b193f2d 
+Loaded from file:/C:/Program%20Files/Java/jdk1.8.0_181/db/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_181-b13
+user.dir=D:\Reg_Client_Services\E2E\registrationClientE2E\src\test
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Tue May 28 17:02:26 IST 2019: Shutting down Derby engine
+----------------------------------------------------------------
+Tue May 28 17:02:26 IST 2019:
+Shutting down instance a816c00e-016a-fe35-2f97-00000e7f8240 on database directory D:\Reg_Client_Services\E2E\registrationClientE2E\src\main\resources\reg with class loader sun.misc.Launcher$AppClassLoader@2b193f2d 
+----------------------------------------------------------------

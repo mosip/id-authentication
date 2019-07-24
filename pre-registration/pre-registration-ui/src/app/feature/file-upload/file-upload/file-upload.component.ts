@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 
-import { ActivatedRoute, Router, Params } from '@angular/router';
+import { Router } from '@angular/router';
 import * as appConstants from '../../../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewChild } from '@angular/core';
@@ -153,6 +153,7 @@ export class FileUploadComponent implements OnInit {
     const temp = JSON.parse(JSON.stringify(this.allApplicants.push(this.noneApplicant)));
 
     let noneCount: Boolean = this.isNoneAvailable();
+
     for (let applicant of this.allApplicants) {
       if (applicant.preRegistrationId == this.users[0].preRegId) {
         this.allApplicants.splice(i, 1);
@@ -403,7 +404,6 @@ export class FileUploadComponent implements OnInit {
     this.updateApplicants();
     this.allApplicants = this.getApplicantsName(this.applicants);
     const temp = JSON.parse(JSON.stringify(this.allApplicants));
-
     this.setNoneApplicant();
   }
 
@@ -580,6 +580,13 @@ export class FileUploadComponent implements OnInit {
    * @memberof FileUploadComponent
    */
   handleFileInput(event) {
+    let notSelectedFile: number;
+    if (this.fileUrl) {
+      this.users[0].files.documentsMetaData.filter((data, i) => {
+        if (data.docName !== event.target.files[0].name) notSelectedFile = i;
+      });
+      this.viewFileByIndex(notSelectedFile);
+    }
     const extensionRegex = new RegExp('(?:pdf|jpg|png|jpeg)');
     this.fileExtension = event.target.files[0].name.substring(event.target.files[0].name.indexOf('.') + 1);
     this.fileExtension = this.fileExtension.toLowerCase();
@@ -612,7 +619,7 @@ export class FileUploadComponent implements OnInit {
                 break;
             }
           });
-          this.setJsonString(event);
+          this.setJsonString();
           this.sendFile(event);
         } else {
           this.displayMessage(
@@ -698,7 +705,7 @@ export class FileUploadComponent implements OnInit {
    * @param {number} index
    * @memberof FileUploadComponent
    */
-  openedChange(event, index: number) {
+  openedChange(index: number) {
     this.documentCategory = this.LOD[index].code;
     this.documentIndex = index;
     if (this.selectedDocuments.length > 0) {
@@ -710,7 +717,7 @@ export class FileUploadComponent implements OnInit {
     }
   }
 
-  onFilesChange(fileList: FileList) {}
+  onFilesChange() {}
   /**
    *@description method to remove the preview of a file.
    *
@@ -728,7 +735,7 @@ export class FileUploadComponent implements OnInit {
    * @param {*} event
    * @memberof FileUploadComponent
    */
-  setJsonString(event) {
+  setJsonString() {
     this.documentUploadRequestBody.docCatCode = this.documentCategory;
     this.documentUploadRequestBody.langCode = localStorage.getItem('langCode');
     this.documentUploadRequestBody.docTypCode = this.documentType;
@@ -747,7 +754,7 @@ export class FileUploadComponent implements OnInit {
 
     this.dataStroage.sendFile(this.formData, this.users[0].preRegId).subscribe(
       response => {
-        if (response['errors'] == null) {
+        if (response['response'] !== null) {
           this.updateUsers(response);
         } else {
           this.displayMessage(this.fileUploadLanguagelabels.uploadDocuments.error, this.errorlabels.error);

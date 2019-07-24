@@ -170,7 +170,6 @@ public class DocumentController {
 
 	@PreAuthorize("hasAnyRole('INDIVIDUAL')")
 	@DeleteMapping(path = "/documents/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-
 	@ApiOperation(value = "Delete document by document Id")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Document successfully deleted")})
 	public ResponseEntity<MainResponseDTO<DocumentDeleteResponseDTO>> deleteDocument(

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.mosip.preregistration</groupId>
 		<artifactId>pre-registration-parent</artifactId>
-		<version>0.12.16</version>
+		<version>0.12.18</version>
 	</parent>
 
 	<artifactId>pre-registration-login-service</artifactId>

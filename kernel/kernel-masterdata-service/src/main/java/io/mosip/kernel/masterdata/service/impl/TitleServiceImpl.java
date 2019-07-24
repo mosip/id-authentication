@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -19,9 +20,12 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.TitleResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.TitleExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
-import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -31,9 +35,11 @@ import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
@@ -55,6 +61,12 @@ public class TitleServiceImpl implements TitleService {
 	
 	@Autowired
 	private MasterdataSearchHelper masterDataSearchHelper;
+	
+	@Autowired
+	private FilterColumnValidator filterColumnValidator;
+	
+	@Autowired
+	private MasterDataFilterHelper masterDataFilterHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -238,7 +250,7 @@ public class TitleServiceImpl implements TitleService {
 		PageResponseDto<TitleExtnDto> pageDto = new PageResponseDto<>();
 		List<TitleExtnDto> titles = null;
 		if (filterTypeValidator.validate(TitleExtnDto.class, searchDto.getFilters())) {
-			Page<Template> page = masterDataSearchHelper.searchMasterdata(Template.class, searchDto, null);
+			Page<Title> page = masterDataSearchHelper.searchMasterdata(Title.class, searchDto, null);
 			if (page.getContent() != null && !page.getContent().isEmpty()) {
 				pageDto = PageUtils.pageResponse(page);
 				titles = MapperUtils.mapAll(page.getContent(), TitleExtnDto.class);
@@ -247,6 +259,30 @@ public class TitleServiceImpl implements TitleService {
 		}
 		return pageDto;
 		
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.masterdata.service.TemplateService#filterTemplates(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	 */
+	@Override
+	public FilterResponseDto filterTitles(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		
+	       if(filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+	    	  filterValueDto.getFilters().stream().forEach(filter ->{
+	    		  masterDataFilterHelper.filterValues(Title.class, filter, filterValueDto).forEach(filteredValue ->{
+	    			  if(filteredValue!=null) {
+	    				  ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filter.getColumnName());
+							columnValue.setFieldValue(filteredValue.toString());
+							columnValueList.add(columnValue);
+	    			  }
+	    		  });
+	    	  });
+	    	  filterResponseDto.setFilters(columnValueList);
+	       }
+		return filterResponseDto;
 	}
 
 }

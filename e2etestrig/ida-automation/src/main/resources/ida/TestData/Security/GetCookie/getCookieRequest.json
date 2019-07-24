@@ -1,0 +1,10 @@
+{
+	"id": "string",
+	"request": {
+		"clientId": "ida_app_user",
+		"secretKey": "5debb60adbfcf8feea4a6ed6160092ec",
+		"appId": "ida"
+	},
+	"requesttime": "2019-04-23T13:10:21.870Z",
+	"version": "string"
+}	

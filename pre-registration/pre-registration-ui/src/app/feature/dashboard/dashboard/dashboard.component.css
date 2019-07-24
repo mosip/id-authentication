@@ -76,7 +76,7 @@ img {
 }
 .card-header {
   font-family: Roboto;
-  font-size: 12px;
+  font-size: 0.8rem;
   opacity: 100%;
   display: flex;
   background-color: #d8f7ff;
@@ -120,6 +120,7 @@ img {
   font-size: 9px;
   margin: 2px;
   padding: 1px 10px 1px 10px;
+  text-transform: none;
 }
 .download-btn-img {
   height: 14px;
@@ -143,6 +144,7 @@ img {
 
 .modify-app-img {
   height: 15px;
+  transform: translateY(0.1rem);
 }
 .create-app-img {
   height: 11px;
