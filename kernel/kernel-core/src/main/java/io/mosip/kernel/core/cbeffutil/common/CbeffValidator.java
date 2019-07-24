@@ -76,9 +76,9 @@ public class CbeffValidator {
 					if (singleTypeList == null || singleTypeList.isEmpty()) {
 						throw new CbeffException("Type value needs to be provided");
 					}
-					if (!validateFormatType(Long.valueOf(bdbInfo.getFormat().getType()), singleTypeList)) {
-						throw new CbeffException("Patron Format type is invalid");
-					}
+//					if (!validateFormatType(Long.valueOf(bdbInfo.getFormat().getType()), singleTypeList)) {
+//						throw new CbeffException("Patron Format type is invalid");
+//					}
 				} else {
 					throw new CbeffException("BDB information can't be empty");
 				}
