@@ -230,6 +230,7 @@ public class BiometricAuthenticationStage extends MosipVerticleAPIManager {
 			if (isTransactionSuccessful) {
 				object.setIsValid(Boolean.TRUE);
 				object.setInternalError(Boolean.FALSE);
+				registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto
 						.setStatusComment(PlatformSuccessMessages.RPR_PKR_BIOMETRIC_AUTHENTICATION.getMessage());
 			} else {

@@ -1,5 +1,8 @@
 package io.mosip.registration.processor.status.service;
 
+import java.util.List;
+
+import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 	
@@ -32,5 +35,7 @@ public interface TransactionService<U> {
 	 * @return the transaction by reg id and status code
 	 */
 	public TransactionDto getTransactionByRegIdAndStatusCode(String regId, String statusCode);
+	
+	public List<RegistrationTransactionDto> getTransactionByRegId(String regId);
 
 }

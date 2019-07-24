@@ -23,6 +23,9 @@ import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
  */
 @Repository
 public interface RegistrationRepositary<T extends BaseRegistrationEntity, E> extends BaseRepository<T, E> {
+	
+	@Query("SELECT trn FROM TransactionEntity trn WHERE trn.registrationId=:regId")
+	public List<T> getTransactionByRegId(@Param("regId") String regId);
 
 	@Query("SELECT trn FROM TransactionEntity trn WHERE trn.registrationId=:regId and trn.statusCode=:statusCode")
 	public List<T> getTransactionByRegIdAndStatusCode(@Param("regId") String regId,

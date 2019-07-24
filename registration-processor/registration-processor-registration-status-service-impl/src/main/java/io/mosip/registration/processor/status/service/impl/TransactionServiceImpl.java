@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
@@ -93,6 +95,21 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 				regId, "TransactionServiceImpl::addRegistrationTransaction()::exit");
 		return dto;
 	}
+	
+
+	@Override
+	public List<RegistrationTransactionDto> getTransactionByRegId(String regId) {
+		// TODO Auto-generated method stub
+		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
+		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
+		for (TransactionEntity transactionEntity : transactionEntityList) {
+			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
+		}
+		return dtoList;
+	}
+
 
 	/**
 	 * Convert entity to dto.
@@ -104,6 +121,13 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	private TransactionDto convertEntityToDto(TransactionEntity entity) {
 		return new TransactionDto(entity.getId(), entity.getRegistrationId(), entity.getParentid(),
 				entity.getTrntypecode(), entity.getRemarks(), entity.getStatusCode(), entity.getStatusComment());
+
+	}
+	
+	private RegistrationTransactionDto convertEntityToRegistrationTransactionDto(TransactionEntity entity) {
+		return new RegistrationTransactionDto(entity.getId(), entity.getRegistrationId(), entity.getParentid(),
+				entity.getTrntypecode(), entity.getRemarks(), entity.getStatusCode(), entity.getStatusComment(), 
+				entity.getCreatedBy(),entity.getCreateDateTime());
 
 	}
 }
