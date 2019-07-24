@@ -71,6 +71,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
@@ -607,6 +608,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			stage.initOwner(fXComponents.getStage());
 			stage.setResizable(false);
 			stage.setScene(scene);
+			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			stage.show();
 			stage.setOnCloseRequest((e) -> {
 				saveToDevice.setDisable(false);
