@@ -99,7 +99,7 @@ public class RegistrationTransactionController {
 			errorDTO.setErrorCode(e.getErrorCode());
 			errorDTO.setMessage(e.getMessage());
 			errors.add(errorDTO);
-			response=ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+			response=ResponseEntity.status(HttpStatus.FORBIDDEN).body(
 					buildRegistrationTransactionResponse(dtoList,errors));
 		}
 		catch (AccessDeniedException e) {
