@@ -36,12 +36,14 @@ import io.mosip.registration.processor.core.exception.PacketDecryptionFailureExc
 import io.mosip.registration.processor.core.exception.RegistrationProcessorCheckedException;
 import io.mosip.registration.processor.core.exception.RegistrationProcessorUnCheckedException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -54,6 +56,7 @@ import io.mosip.registration.processor.packet.storage.exception.IdRepoAppExcepti
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
 import io.mosip.registration.processor.packet.storage.exception.QueueConnectionNotFound;
+import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
@@ -559,6 +562,32 @@ public class Utilities {
 		}
 
 		return value;
+	}
+
+	public String getUinByVid(String vid) throws IOException, PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, VidCreationException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"Utilities::getUinByVid():: entry");
+		List<String> pathSegments = new ArrayList<>();
+		pathSegments.add(vid);
+		String uin = null;
+		ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<>();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"Stage::methodname():: RETRIEVEIUINBYVID GET service call Started");
+
+		response = (ResponseWrapper<VidResponseDTO>) restClientService.getApi(ApiName.GETUINBYVID, pathSegments, "", "",
+				ResponseWrapper.class);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
+				"Utilities::getUinByVid():: RETRIEVEIUINBYVID GET service call ended successfully");
+
+		if (!response.getErrors().isEmpty()) {
+			throw new VidCreationException(PlatformErrorMessages.RPR_PGS_VID_EXCEPTION.getMessage(),
+					"VID creation exception");
+
+		} else {
+			uin = response.getResponse().getUin().toString();
+		}
+		return uin;
 	}
 
 }

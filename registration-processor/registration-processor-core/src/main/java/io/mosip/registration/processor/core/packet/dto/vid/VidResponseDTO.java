@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.request.handler.service.dto;
+package io.mosip.registration.processor.core.packet.dto.vid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

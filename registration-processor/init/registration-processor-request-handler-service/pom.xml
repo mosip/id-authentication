@@ -129,6 +129,11 @@
 			<artifactId>registration-processor-packet-manager</artifactId>
 			<version>${packet.manager.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-core</artifactId>
+			<version>${registration.processor.core.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

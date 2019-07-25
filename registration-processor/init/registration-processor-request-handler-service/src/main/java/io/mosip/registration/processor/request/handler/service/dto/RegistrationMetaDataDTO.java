@@ -4,36 +4,69 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+// TODO: Auto-generated Javadoc
 /**
- * This class contains the meta-information of the Registration
- * 
- * @author Sowmya
- * 
+ * This class contains the meta-information of the Registration.
  *
+ * @author Sowmya
+ */
+
+/**
+ * Instantiates a new registration meta data DTO.
  */
 @Data
 public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3536354184046165658L;
+
+	/** The geo latitude loc. */
 	private double geoLatitudeLoc;
+
+	/** The geo longitude loc. */
 	private double geoLongitudeLoc;
+
+	/** The application type. */
 	// New , update , correction, lost UIN
 	private String applicationType;
+
+	/** The registration category. */
 	// Document Based or Introducer Based
 	private String registrationCategory;
+
+	/** The machine id. */
 	private String machineId;
+
+	/** The center id. */
 	private String centerId;
+
+	/** The previous RID. */
 	private String previousRID;
+
+	/** The uin. */
 	private String uin;
+
+	/** The consent of applicant. */
 	private String consentOfApplicant;
+
+	/** The parent or guardian UIN or RID. */
 	private String parentOrGuardianUINOrRID;
+
+	/** The device id. */
 	private String deviceId;
+
+	/** The applicant type code. */
 	private String applicantTypeCode;
 
+	/** The vid. */
+	private String vid;
+
+	/** The card type. */
+	private String cardType;
+
 	/**
+	 * Gets the consent of applicant.
+	 *
 	 * @return the consentOfApplicant
 	 */
 	public String getConsentOfApplicant() {
@@ -41,6 +74,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the consent of applicant.
+	 *
 	 * @param consentOfApplicant
 	 *            the consentOfApplicant to set
 	 */
@@ -49,6 +84,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the geo latitude loc.
+	 *
 	 * @return the geoLatitudeLoc
 	 */
 	public double getGeoLatitudeLoc() {
@@ -56,6 +93,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the geo latitude loc.
+	 *
 	 * @param geoLatitudeLoc
 	 *            the geoLatitudeLoc to set
 	 */
@@ -64,6 +103,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the geo longitude loc.
+	 *
 	 * @return the geoLongitudeLoc
 	 */
 	public double getGeoLongitudeLoc() {
@@ -71,6 +112,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the geo longitude loc.
+	 *
 	 * @param geoLongitudeLoc
 	 *            the geoLongitudeLoc to set
 	 */
@@ -79,6 +122,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the application type.
+	 *
 	 * @return the applicationType
 	 */
 	public String getApplicationType() {
@@ -86,6 +131,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the application type.
+	 *
 	 * @param applicationType
 	 *            the applicationType to set
 	 */
@@ -94,6 +141,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the registration category.
+	 *
 	 * @return the registrationCategory
 	 */
 	public String getRegistrationCategory() {
@@ -101,6 +150,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the registration category.
+	 *
 	 * @param registrationCategory
 	 *            the registrationCategory to set
 	 */
@@ -109,6 +160,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the machine id.
+	 *
 	 * @return the machineId
 	 */
 	public String getMachineId() {
@@ -116,6 +169,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the machine id.
+	 *
 	 * @param machineId
 	 *            the machineId to set
 	 */
@@ -124,6 +179,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the center id.
+	 *
 	 * @return the centerId
 	 */
 	public String getCenterId() {
@@ -131,6 +188,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the center id.
+	 *
 	 * @param centerId
 	 *            the centerId to set
 	 */
@@ -139,6 +198,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the previous RID.
+	 *
 	 * @return the previousRID
 	 */
 	public String getPreviousRID() {
@@ -146,6 +207,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the previous RID.
+	 *
 	 * @param previousRID
 	 *            the previousRID to set
 	 */
@@ -154,6 +217,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the uin.
+	 *
 	 * @return the uin
 	 */
 	public String getUin() {
@@ -161,6 +226,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the uin.
+	 *
 	 * @param uin
 	 *            the uin to set
 	 */
@@ -169,6 +236,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the parent or guardian UIN or RID.
+	 *
 	 * @return the parentOrGuardianUINOrRID
 	 */
 	public String getParentOrGuardianUINOrRID() {
@@ -176,6 +245,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the parent or guardian UIN or RID.
+	 *
 	 * @param parentOrGuardianUINOrRID
 	 *            the parentOrGuardianUINOrRID to set
 	 */
@@ -184,6 +255,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the device id.
+	 *
 	 * @return the deviceId
 	 */
 	public String getDeviceId() {
@@ -191,6 +264,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the device id.
+	 *
 	 * @param deviceId
 	 *            the deviceId to set
 	 */
@@ -199,6 +274,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Gets the applicant type code.
+	 *
 	 * @return the applicantTypeCode
 	 */
 	public String getApplicantTypeCode() {
@@ -206,6 +283,8 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 	}
 
 	/**
+	 * Sets the applicant type code.
+	 *
 	 * @param applicantTypeCode
 	 *            the applicantTypeCode to set
 	 */
@@ -213,4 +292,41 @@ public class RegistrationMetaDataDTO extends BaseDTO implements Serializable {
 		this.applicantTypeCode = applicantTypeCode;
 	}
 
+	/**
+	 * Gets the vid.
+	 *
+	 * @return the vid
+	 */
+	public String getVid() {
+		return vid;
+	}
+
+	/**
+	 * Sets the vid.
+	 *
+	 * @param vid
+	 *            the new vid
+	 */
+	public void setVid(String vid) {
+		this.vid = vid;
+	}
+
+	/**
+	 * Gets the card type.
+	 *
+	 * @return the card type
+	 */
+	public String getCardType() {
+		return cardType;
+	}
+
+	/**
+	 * Sets the card type.
+	 *
+	 * @param cardType
+	 *            the new card type
+	 */
+	public void setCardType(String cardType) {
+		this.cardType = cardType;
+	}
 }

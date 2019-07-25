@@ -1,29 +1,48 @@
 package io.mosip.registration.processor.request.handler.service.impl;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.web.client.HttpClientErrorException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
+import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.vid.VidRequestDto;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.request.handler.service.dto.VidRequestDto;
-import io.mosip.registration.processor.request.handler.service.dto.VidResponseDTO;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.request.handler.service.PacketCreationService;
+import io.mosip.registration.processor.request.handler.service.dto.RegistrationDTO;
+import io.mosip.registration.processor.request.handler.service.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.processor.request.handler.service.dto.demographic.DemographicDTO;
+import io.mosip.registration.processor.request.handler.service.dto.demographic.DemographicInfoDTO;
+import io.mosip.registration.processor.request.handler.service.dto.demographic.MoroccoIdentity;
+import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.service.exception.VidCreationException;
+import io.mosip.registration.processor.request.handler.upload.SyncUploadEncryptionService;
 
 /**
  * The Class ResidentServiceRePrintServiceImpl.
@@ -35,6 +54,15 @@ public class UinCardRePrintServiceImpl {
 
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
+
+	@Autowired
+	private PacketCreationService packetCreationService;
+
+	@Autowired
+	SyncUploadEncryptionService syncUploadEncryptionService;
+
+	@Autowired
+	Utilities utilities;
 
 	@Value("${registration.processor.id.repo.vidType}")
 	private String vidType;
@@ -49,10 +77,14 @@ public class UinCardRePrintServiceImpl {
 
 	@SuppressWarnings("unchecked")
 	private void check(String requestUin, String requestVid, String cardType, String registrationId)
-			throws ApisResourceAccessException, IOException, VidCreationException {
+			throws ApisResourceAccessException, IOException, VidCreationException, RegBaseCheckedException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException,
+			io.mosip.registration.processor.packet.storage.exception.VidCreationException,
+			IdObjectValidationFailedException, IdObjectIOException, ParseException {
 
 		String uin = requestUin;
 		String vid = requestVid;
+		byte[] packetZipBytes = null;
 
 		if (cardType == "vid" && vid == null) {
 
@@ -88,27 +120,106 @@ public class UinCardRePrintServiceImpl {
 			}
 
 		} else if (cardType == "uin" && uin == null) {
-			List<String> pathSegments = new ArrayList<>();
-			pathSegments.add(vid);
-
-			ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<>();
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "Stage::methodname():: RETRIEVEIUINBYVID GET service call Started");
-
-			response = (ResponseWrapper<VidResponseDTO>) restClientService.getApi(ApiName.GETUINBYVID, pathSegments, "",
-					"", ResponseWrapper.class);
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
-					"Stage::methodname():: RETRIEVEIUINBYVID GET service call ended successfully");
-
-			if (!response.getErrors().isEmpty()) {
-				throw new VidCreationException(PlatformErrorMessages.RPR_PGS_VID_EXCEPTION.getMessage(),
-						"VID creation exception");
-
-			} else {
-				uin = response.getResponse().getUin().toString();
-			}
-
+			utilities.getUinByVid(vid);
 		}
 
+		RegistrationDTO registrationDTO = createRegistrationDTOObject(uin, "", "", "", vid, cardType);
+		packetZipBytes = packetCreationService.create(registrationDTO);
+		String rid = registrationDTO.getRegistrationId();
+		String packetCreatedDateTime = rid.substring(rid.length() - 14);
+		String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
+				+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
+		LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+		String creationTime = ldt.toString() + ".000Z";
+
+		/*
+		 * packerGeneratorResDto =
+		 * syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId
+		 * (), creationTime, request.getRegistrationType(), packetZipBytes);
+		 * 
+		 * return packerGeneratorResDto;
+		 */
+	}
+
+	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
+			String machineId, String vid, String cardType) throws RegBaseCheckedException {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+		registrationDTO.setDemographicDTO(getDemographicDTO(uin));
+		RegistrationMetaDataDTO registrationMetaDataDTO = getRegistrationMetaDataDTO(uin, registrationType, centerId,
+				machineId, vid, cardType);
+		String registrationId = generateRegistrationId(registrationMetaDataDTO.getCenterId(),
+				registrationMetaDataDTO.getMachineId());
+		registrationDTO.setRegistrationId(registrationId);
+		registrationDTO.setRegistrationMetaDataDTO(registrationMetaDataDTO);
+		return registrationDTO;
+
+	}
+
+	private RegistrationMetaDataDTO getRegistrationMetaDataDTO(String uin, String registrationType, String centerId,
+			String machineId, String vid, String cardType) {
+		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
+
+		registrationMetaDataDTO.setCenterId(centerId);
+		registrationMetaDataDTO.setMachineId(machineId);
+		registrationMetaDataDTO.setRegistrationCategory(registrationType);
+		registrationMetaDataDTO.setUin(uin);
+		registrationMetaDataDTO.setVid(vid);
+		registrationMetaDataDTO.setCardType(cardType);
+		return registrationMetaDataDTO;
+
+	}
+
+	private DemographicDTO getDemographicDTO(String uin) {
+		DemographicDTO demographicDTO = new DemographicDTO();
+		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
+		MoroccoIdentity identity = new MoroccoIdentity();
+		identity.setIdSchemaVersion(1.0);
+		identity.setUin(new BigInteger(uin));
+		demographicInfoDTO.setIdentity(identity);
+		demographicDTO.setDemographicInfoDTO(demographicInfoDTO);
+		return demographicDTO;
+	}
+
+	private String generateRegistrationId(String centerId, String machineId) throws RegBaseCheckedException {
+
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(centerId);
+		pathsegments.add(machineId);
+		String rid = null;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		JSONObject ridJson = new JSONObject();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+
+			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					"", "PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call started");
+			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "", "",
+					ResponseWrapper.class);
+			if (responseWrapper.getErrors() == null) {
+				ridJson = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), JSONObject.class);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(ridJson));
+				rid = (String) ridJson.get("rid");
+
+			} else {
+				List<ErrorDTO> error = responseWrapper.getErrors();
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
+								+ error.get(0).getMessage());
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.get(0).getMessage(), new Throwable());
+			}
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getMessage(), e);
+			}
+		} catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getMessage(), e);
+		}
+		return rid;
 	}
 }
