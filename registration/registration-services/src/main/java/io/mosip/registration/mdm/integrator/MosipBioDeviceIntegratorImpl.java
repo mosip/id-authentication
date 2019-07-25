@@ -191,8 +191,7 @@ public class MosipBioDeviceIntegratorImpl implements IMosipBioDeviceIntegrator {
 									CaptureResponsBioDataDto.class);
 							if (null != captureResponsBioDataDto) {
 								if (null != captureResponsBioDataDto.getBioExtract())
-									captureResponsBioDataDto.setBioExtract(
-											Base64.getDecoder().decode(captureResponsBioDataDto.getBioExtract()));
+									captureResponsBioDataDto.setBioExtract(captureResponsBioDataDto.getBioExtract());
 								if (null != captureResponsBioDataDto.getBioValue())
 									captureResponsBioDataDto.setBioValue(
 											Base64.getDecoder().decode(captureResponsBioDataDto.getBioValue()));

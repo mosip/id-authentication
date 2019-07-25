@@ -113,7 +113,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			decode(captureResponseDto);
 			captureResponseData =  captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData();
 			bioType=captureResponseData.getBioType();
-			isoImage = captureResponseData.getBioExtract();
+			isoImage = Base64.getDecoder().decode(captureResponseData.getBioExtract());
 		} else {
 			isoImage = IOUtils.toByteArray(
 					this.getClass().getResourceAsStream("/UserOnboard/rightHand/rightLittle/ISOTemplate.iso"));
@@ -233,7 +233,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 		mosipBioDeviceDataResponses.forEach(captured->{
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
-			fingerPrintDetail.setFingerPrintISOImage(captureRespoonse.getBioExtract());
+			fingerPrintDetail.setFingerPrintISOImage(Base64.getDecoder().decode(captureRespoonse.getBioExtract()));
 			fingerPrintDetail.setFingerType(captureRespoonse.getBioSubType());
 			fingerPrintDetail.setFingerPrint(captureRespoonse.getBioValue());
 			fingerPrintDetail.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));

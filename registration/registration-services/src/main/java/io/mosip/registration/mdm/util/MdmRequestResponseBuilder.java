@@ -66,8 +66,9 @@ public class MdmRequestResponseBuilder {
 		CaptureRequestDeviceDetailDto mosipBioRequest = new CaptureRequestDeviceDetailDto();
 		mosipBioRequest.setType(getDevicCode(bioDevice.getDeviceType()));
 		mosipBioRequest.setCount(1);
-		String[] excptions= {};
-		mosipBioRequest.setException(((ArrayList<String>)SessionContext.map().get("CAPTURE_EXCEPTION")).toArray(excptions));
+		String[] exceptions= {};
+		exceptions = ((ArrayList<String>)SessionContext.map().get("CAPTURE_EXCEPTION")).toArray(exceptions);
+		mosipBioRequest.setException(exceptions);
 		mosipBioRequest.setRequestedScore(40);
 		mosipBioRequest.setDeviceId(bioDevice.getDeviceId());
 		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubId());

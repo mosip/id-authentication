@@ -73,7 +73,7 @@ public class MosipBioDeviceIntegratorTest {
 		CaptureResponsBioDataDto captureResponsBioDataDto = new CaptureResponsBioDataDto();
 		captureResponsBioDataDto.setBioExtract(
 				"ExtractbioExtractbioExtractctbioExtractctbExtractioExtractbioExtractbioExtractctbioExtractctbioExtract"
-						.getBytes());
+						);
 		captureResponsBioDataDto.setBioSubType("bioSubType");
 		captureResponsBioDataDto.setBioType("bioType");
 		captureResponsBioDataDto.setBioValue("bio".getBytes());
@@ -135,7 +135,7 @@ public class MosipBioDeviceIntegratorTest {
 		captureResponseBioDto.setSignature("signature");
 
 		CaptureResponsBioDataDto captureResponsBioDataDto = new CaptureResponsBioDataDto();
-		captureResponsBioDataDto.setBioExtract("Extract".getBytes());
+		captureResponsBioDataDto.setBioExtract("Extract");
 		captureResponsBioDataDto.setBioSubType("bioSubType");
 		captureResponsBioDataDto.setBioType("bioType");
 		captureResponsBioDataDto.setBioValue("bio".getBytes());

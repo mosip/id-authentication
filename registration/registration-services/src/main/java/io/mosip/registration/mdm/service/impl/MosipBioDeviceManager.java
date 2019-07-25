@@ -7,6 +7,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -353,7 +354,7 @@ public class MosipBioDeviceManager {
 
 			CaptureResponseBioDto captureResponseBioDtos = captureResponseDto.getMosipBioDeviceDataResponses().get(0);
 			if (null != captureResponseBioDtos && null != captureResponseBioDtos.getCaptureResponseData()) {
-				return captureResponseBioDtos.getCaptureResponseData().getBioExtract();
+				return Base64.getDecoder().decode(captureResponseBioDtos.getCaptureResponseData().getBioExtract());
 			}
 		}
 		return capturedByte;
