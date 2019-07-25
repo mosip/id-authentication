@@ -275,7 +275,13 @@ public class LoginController extends BaseController implements Initializable {
 				jobConfigurationService.startScheduler();
 			}
 
-		} catch (IOException | RuntimeException runtimeException) {
+		} catch (IOException ioException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_LOGIN_SCREEN);
+		} catch (RuntimeException runtimeException) {
 
 			LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));

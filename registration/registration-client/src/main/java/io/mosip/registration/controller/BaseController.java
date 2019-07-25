@@ -21,6 +21,8 @@ import java.util.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
@@ -82,6 +84,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -1295,6 +1298,25 @@ public class BaseController {
 	 */
 	protected Timestamp getCurrentTimestamp() {
 		return Timestamp.from(Instant.now());
+	}
+
+	/**
+	 * Restricts the re-ordering of the columns in {@link TableView}. This is
+	 * generic method.
+	 * 
+	 * @param table
+	 *            the instance of {@link TableView} for which re-ordering of columns
+	 *            had to be restricted
+	 */
+	@SuppressWarnings("restriction")
+	protected void disableColumnsReorder(TableView<?> table) {
+		if (table != null) {
+			table.widthProperty().addListener((source, oldWidth, newWidth) -> {
+				TableHeaderRow header = (TableHeaderRow) table.lookup("TableHeaderRow");
+				header.reorderingProperty()
+						.addListener((observable, oldValue, newValue) -> header.setReordering(false));
+			});
+		}
 	}
 
 }
