@@ -297,6 +297,10 @@ public class MosipBioDeviceManager {
 			deviceId=deviceType.substring("FINGERPRINT_SLAB".length()+1, deviceType.length());
 			deviceType="FINGERPRINT_SLAB";
 		}
+		if(deviceType.contains("FACE_FULL")) {
+			deviceId=deviceType.substring("FACE_FULL".length()+1, deviceType.length());
+			deviceType="FACE_FULL FACE";
+		}
 		if (deviceRegistry.isEmpty() || deviceRegistry.get(deviceType) == null) {
 			init();
 		}

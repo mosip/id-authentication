@@ -166,6 +166,7 @@ public class ScanPopUpViewController extends BaseController {
 	}
 	
 	public void enableCloseButton() {
+		if(null!=closeButton)
 		closeButton.setDisable(false);
 	}
 

@@ -4,7 +4,6 @@ import static io.mosip.registration.constants.LoggerConstants.MDM_REQUEST_RESPON
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -66,9 +65,13 @@ public class MdmRequestResponseBuilder {
 		CaptureRequestDeviceDetailDto mosipBioRequest = new CaptureRequestDeviceDetailDto();
 		mosipBioRequest.setType(getDevicCode(bioDevice.getDeviceType()));
 		mosipBioRequest.setCount(1);
-		String[] exceptions= {};
-		exceptions = ((ArrayList<String>)SessionContext.map().get("CAPTURE_EXCEPTION")).toArray(exceptions);
-		mosipBioRequest.setException(exceptions);
+
+		String[] excptions= {};
+		List<String> ls = (ArrayList<String>)SessionContext.map().get("CAPTURE_EXCEPTION");
+		if(ls!=null) {
+			excptions = (ls).toArray(excptions);
+		}
+		mosipBioRequest.setException(excptions);
 		mosipBioRequest.setRequestedScore(40);
 		mosipBioRequest.setDeviceId(bioDevice.getDeviceId());
 		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubId());

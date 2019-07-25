@@ -172,6 +172,7 @@ public class RegistrationConstants {
 	public static final String PWORD = "PWD";
 	public static final String OTP = "OTP";
 	public static final String FACE = "FACE";
+	public static final String FACE_FULLFACE = "FACE_FULL FACE";
 	public static final String IRIS = "IRIS";
 	
 	public static final String FNR = "FNR";

@@ -733,9 +733,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 		LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID, "Stub data for Face");
 		CaptureResponseDto captureResponseDto = null;
 		try {
-			if (isMdmEnabled()) {
+//			if (isMdmEnabled()) {
+			if (true) {
 
-				captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE);
+				captureResponseDto = mosipBioDeviceManager.scan(RegistrationConstants.FACE_FULLFACE);
 			}
 		} catch (RegBaseCheckedException | RuntimeException | IOException exception) {
 			exception.printStackTrace();

@@ -1,14 +1,8 @@
 package io.mosip.registration.mdm.dto;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.Consts;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -26,7 +19,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -73,6 +65,7 @@ public class BioDevice {
 			put("LEFT", 1);
 			put("RIGHT", 2);
 			put("THUMBS", 3);
+			put("FACE",0);
 		}
 	};
 
