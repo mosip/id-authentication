@@ -105,9 +105,11 @@ public class PacketGeneratorController {
 			packerGeneratorResDto = packetGeneratorService.createPacket(packerGeneratorRequestDto.getRequest());
 
 			if (isEnabled) {
+				PacketGeneratorResponseDto response =buildPacketGeneratorResponse(packerGeneratorResDto);
+				Gson gson = new GsonBuilder().create();
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility
-						.getDigitalSignature(buildSignaturePacketGeneratorResponse(packerGeneratorResDto)));
+						.getDigitalSignature(gson.toJson(response)));
 				return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
@@ -137,17 +139,5 @@ public class PacketGeneratorController {
 		return response;
 	}
 	
-	public String buildSignaturePacketGeneratorResponse(PacketGeneratorResDto packerGeneratorResDto) {
-
-		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
-		if (Objects.isNull(response.getId())) {
-			response.setId(env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
-		}
-		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-		response.setVersion(env.getProperty(REG_PACKET_GENERATOR_APPLICATION_VERSION));
-		response.setResponse(packerGeneratorResDto);
-		response.setErrors(null);
-		Gson gson = new GsonBuilder().create();
-		return gson.toJson(response);
-	}
+	
 }
