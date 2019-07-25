@@ -68,10 +68,10 @@ public class CbeffValidator {
 				}
 				if (birType.getBDBInfo() != null) {
 					BDBInfoType bdbInfo = birType.getBDBInfo();
-					if (!Long.valueOf(bdbInfo.getFormat().getOrganization()).equals(CbeffConstant.FORMAT_OWNER)) {
-						throw new CbeffException("Patron Format Owner should be standard specified of value "
-								+ CbeffConstant.FORMAT_OWNER);
-					}
+//					if (!Long.valueOf(bdbInfo.getFormat().getOrganization()).equals(CbeffConstant.FORMAT_OWNER)) {
+//						throw new CbeffException("Patron Format Owner should be standard specified of value "
+//								+ CbeffConstant.FORMAT_OWNER);
+//					}
 					List<SingleType> singleTypeList = bdbInfo.getType();
 					if (singleTypeList == null || singleTypeList.isEmpty()) {
 						throw new CbeffException("Type value needs to be provided");
