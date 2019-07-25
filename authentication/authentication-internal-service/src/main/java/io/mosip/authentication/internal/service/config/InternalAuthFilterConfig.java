@@ -4,6 +4,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.mosip.authentication.common.service.filter.DefaultAuthTypeFilter;
 import io.mosip.authentication.common.service.filter.DefaultInternalFilter;
 import io.mosip.authentication.common.service.filter.InternalOtpFilter;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -49,6 +50,16 @@ public class InternalAuthFilterConfig {
 		registrationBean.addInitParameter("pageStart", "pageStart");
 		registrationBean.addInitParameter("pageFetch", "pageFetch");
 		return registrationBean;
+	}
+
+	@Bean
+	public FilterRegistrationBean<DefaultAuthTypeFilter> getDefaultAuthtypeFilter() {
+		FilterRegistrationBean<DefaultAuthTypeFilter> authTypeBean = new FilterRegistrationBean<>();
+		authTypeBean.setFilter(new DefaultAuthTypeFilter());
+		authTypeBean.addUrlPatterns("/authtypes/status/*");
+		authTypeBean.addInitParameter("IDType", "IDType");
+		authTypeBean.addInitParameter("ID", "ID");
+		return authTypeBean;
 	}
 
 }

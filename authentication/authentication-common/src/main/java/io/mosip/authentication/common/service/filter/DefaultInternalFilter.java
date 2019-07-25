@@ -26,9 +26,6 @@ import io.mosip.kernel.core.util.StringUtils;
 @Component
 public class DefaultInternalFilter extends IdAuthFilter {
 
-	
-	
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -102,6 +99,8 @@ public class DefaultInternalFilter extends IdAuthFilter {
 						id = attribute + contextPath;
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
 						id = attribute + IdAuthConfigKeyConstants.AUTH_TRANSACTION;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
+						id = attribute + IdAuthConfigKeyConstants.AUTH_TYPE;
 					}
 				}
 			}

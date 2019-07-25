@@ -15,6 +15,7 @@ import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
+import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
@@ -59,7 +60,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, AuditHelper.class,
 		PinAuthServiceImpl.class, PinValidatorImpl.class, BioMatcherUtil.class, BioApiImpl.class,
 		IdObjectPatternValidator.class, DemoNormalizerImpl.class, OTPServiceImpl.class, OTPRequestValidator.class,
-		AuthTxnServiceImpl.class })
+		AuthTxnServiceImpl.class,AuthtypeStatusImpl.class })
 @ComponentScan({ "io.mosip.authentication.internal.service.*", "io.mosip.kernel.auth.adapter.*" })
 public class InternalAuthenticationApplication {
 

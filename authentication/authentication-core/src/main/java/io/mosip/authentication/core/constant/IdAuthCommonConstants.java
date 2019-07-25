@@ -78,4 +78,6 @@ public final class IdAuthCommonConstants {
 	public static final String INTERNAL_URL = "/internal";
 
 	public static final String AUTH_TRANSACTIONS = "authTransactions";
+
+	public static final String AUTH_TYPE = "authtypes";
 }

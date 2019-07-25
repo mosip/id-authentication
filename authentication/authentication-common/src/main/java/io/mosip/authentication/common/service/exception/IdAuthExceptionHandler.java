@@ -23,6 +23,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.autntxn.dto.AutnTxnResponseDto;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -200,25 +201,23 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				IDDataValidationException validationException = (IDDataValidationException) ex;
 				List<Object[]> args = validationException.getArgs();
 				List<String> actionArgs = validationException.getActionargs();
-				errors = IntStream.range(0, errorCodes.size())
-						.mapToObj(i -> {
-							String errorMessage;
-							if (args != null && !args.isEmpty()) {
-								errorMessage = String.format(errorMessages.get(i), args.get(i));
-							} else {
-								errorMessage = errorMessages.get(i);
-							}
-							
-							String actionMessage;
-							if (args != null && !args.isEmpty() && actionArgs != null && !actionArgs.contains(null)) {
-								actionMessage = String.format(actionArgs.get(i), args.get(i));
-							} else {
-								actionMessage = actionArgs.get(i);
-							}
-							
-							return createAuthError(validationException, errorCodes.get(i), errorMessage, actionMessage);
-						})
-						.distinct().collect(Collectors.toList());
+				errors = IntStream.range(0, errorCodes.size()).mapToObj(i -> {
+					String errorMessage;
+					if (args != null && !args.isEmpty()) {
+						errorMessage = String.format(errorMessages.get(i), args.get(i));
+					} else {
+						errorMessage = errorMessages.get(i);
+					}
+
+					String actionMessage;
+					if (args != null && !args.isEmpty() && actionArgs != null && !actionArgs.contains(null)) {
+						actionMessage = String.format(actionArgs.get(i), args.get(i));
+					} else {
+						actionMessage = actionArgs.get(i);
+					}
+
+					return createAuthError(validationException, errorCodes.get(i), errorMessage, actionMessage);
+				}).distinct().collect(Collectors.toList());
 			} else {
 				errors = IntStream.range(0, errorCodes.size())
 						.mapToObj(i -> createAuthError(baseException, errorCodes.get(i), errorMessages.get(i), null))
@@ -246,6 +245,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						type = IdAuthCommonConstants.OTP;
 					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TRANSACTIONS)) {
 						type = IdAuthCommonConstants.AUTH_TRANSACTIONS;
+					} else if (contextPath.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
+						type = IdAuthCommonConstants.AUTH_TYPE;
 					}
 				}
 			}
@@ -286,6 +287,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				autnTxnResponseDto.setErrors(errors);
 				autnTxnResponseDto.setResponseTime(responseTime);
 				return autnTxnResponseDto;
+			} else if (Objects.nonNull(type) && type.equalsIgnoreCase(IdAuthCommonConstants.AUTH_TYPE)) {
+				AuthtypeResponseDto authtypeResponseDto = new AuthtypeResponseDto();
+				authtypeResponseDto.setErrors(errors);
+				authtypeResponseDto.setResponseTime(responseTime);
+				return authtypeResponseDto;
 			}
 
 		default:
