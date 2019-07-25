@@ -36,6 +36,8 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.SftpJschConnectionDto;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.uploader.archiver.util.PacketArchiver;
@@ -138,6 +140,11 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 	/** The packet archiver. */
 	@Autowired
 	private PacketArchiver packetArchiver;
+	
+	/*
+	 * java class to trim exception message
+	 */
+	private TrimExceptionMessage trimExpMessage = new TrimExceptionMessage();
 
 	/*
 	 * (non-Javadoc)
@@ -207,7 +214,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 							dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 									.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 							dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-							dto.setStatusComment("Packet upload to packet store failed for " + registrationId);
+							dto.setStatusComment(StatusUtil.PACKET_UPLOAD_FAILED.getMessage() + registrationId);
 							dto.setUpdatedBy(USER);
 							regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 									LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -221,7 +228,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-				dto.setStatusComment("Packet is not available in landing zone " + registrationId);
+				dto.setStatusComment(StatusUtil.PACKET_NOT_FOUND_LANDING_ZIONE.getMessage() + registrationId);
 				dto.setUpdatedBy(USER);
 
 			}
@@ -338,7 +345,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				description.setMessage("Packet virus scan failed  in packet Uploader for registrationId ::"
 						+ registrationId + PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCAN_FAILED.getMessage());
 				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-				dto.setStatusComment(StatusMessage.VIRUS_SCAN_FAILED);
+				dto.setStatusComment(StatusUtil.VIRUS_SCANNER_FAILED_UPLOADER.getMessage());
 				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -349,7 +356,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 
 			description.setMessage("Virus scanner service failed ::" + registrationId);
 			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-			dto.setStatusComment(StatusMessage.VIRUS_SCANNER_SERVICE_FAILED);
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE.getMessage()+e.getMessage()));
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -384,7 +391,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 			dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-			dto.setStatusComment(StatusMessage.PACKET_SYNC_HASH_VALIDATION_FAILED);
+			dto.setStatusComment(StatusUtil.PACKET_HASHCODE_VALIDATION_FAILED.getMessage());
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, PlatformErrorMessages.RPR_PKR_PACKET_HASH_NOT_EQUALS_SYNCED_HASH.getMessage());
 
