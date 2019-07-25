@@ -21,6 +21,10 @@ public final class StatusConstants {
     public static final String PACKET_UPLOADER_MODULE_SUCCESS = PACKET_UPLOADER_MODULE + SUCCESS;
     public static final String PACKET_UPLOADER_MODULE_FAILED = PACKET_UPLOADER_MODULE + FAILED;
     
+    //Quality checker stage
+    public static final String QUALITY_CHECKER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "QCK";
+    public static final String QUALITY_CHECKER_MODULE_SUCCESS = QUALITY_CHECKER_MODULE + SUCCESS;
+    public static final String QUALITY_CHECKER_MODULE_FAILED = QUALITY_CHECKER_MODULE + FAILED;
     //System Exceptions
     public static final String SYSTEM_EXCEPTION_CODE = RPR_REGISTRATION_PROCESSOR_PREFIX + SYSTEM_EXCEPTION;
 
