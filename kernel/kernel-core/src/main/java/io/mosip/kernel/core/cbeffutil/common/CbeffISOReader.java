@@ -60,15 +60,15 @@ public class CbeffISOReader {
 	 * 
 	 */
 	private static boolean checkFormatIdentifier(int formatId, String type) {
-		switch (type) {
-		case "Finger":
-			return CbeffConstant.FINGER_FORMAT_IDENTIFIER == formatId;
-		case "Iris":
-			return CbeffConstant.IRIS_FORMAT_IDENTIFIER == formatId;
-		case "Face":
-			return CbeffConstant.FACE_FORMAT_IDENTIFIER == formatId;
-		}
-		return false;
+//		switch (type) {
+//		case "Finger":
+//			return CbeffConstant.FINGER_FORMAT_IDENTIFIER == formatId;
+//		case "Iris":
+//			return CbeffConstant.IRIS_FORMAT_IDENTIFIER == formatId;
+//		case "Face":
+//			return CbeffConstant.FACE_FORMAT_IDENTIFIER == formatId;
+//		}
+		return true;
 	}
 
 }

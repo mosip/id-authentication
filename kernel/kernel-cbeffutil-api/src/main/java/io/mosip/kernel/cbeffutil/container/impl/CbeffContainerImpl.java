@@ -72,8 +72,8 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	@Override
 	public BIRType updateBIRType(List<BIR> birList, byte[] fileBytes) throws Exception {
 		BIRType birType = CbeffValidator.getBIRFromXML(fileBytes);
-		birType.getVersion().setMajor(birType.getVersion().getMajor() + 1);
-		birType.getCBEFFVersion().setMajor(birType.getCBEFFVersion().getMajor());
+		//birType.getVersion().setMajor(birType.getVersion().getMajor() + 1);
+		//birType.getCBEFFVersion().setMajor(birType.getCBEFFVersion().getMajor());
 		for (BIR bir : birList) {
 			birType.getBIR().add(bir.toBIRType(bir));
 		}

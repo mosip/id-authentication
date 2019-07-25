@@ -44,49 +44,49 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class CbeffImplTest {
 
-	//@Autowired
+	@Autowired
 	private CbeffUtil cbeffUtilImpl;
 
 	/*
 	 * XSD storage path from config server
 	 */
 
-	//@Value("${mosip.kernel.xsdstorage-uri}")
+	@Value("${mosip.kernel.xsdstorage-uri}:test")
 	private String configServerFileStorageURL;
 
 	/*
 	 * XSD file name
 	 */
 
-	//@Value("${mosip.kernel.xsdfile}")
+	@Value("${mosip.kernel.xsdfile}:test")
 	private String schemaName;
 
 	private List<BIR> createList;
 	private List<BIR> updateList;
 	private static final String localpath = "./src/main/resources";
 
-	//@Before
+	@Before
 	public void setUp() throws Exception {
-		byte[] rindexFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightIndexFingerImage.iso", "Finger");
-		byte[] rmiddleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightMiddleFingerImage.iso", "Finger");
-		byte[] rringFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightRingFingerImage.iso", "Finger");
-		byte[] rlittleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "RightLittleFingerImage.iso", "Finger");
-		byte[] rightthumb = CbeffISOReader.readISOImage(localpath + "/images/" + "RightThumbFingerImage.iso", "Finger");
-		byte[] lindexFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftIndexFingerImage.iso", "Finger");
-		byte[] lmiddleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftMiddleFingerImage.iso", "Finger");
-		byte[] lringFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftRingFingerImage.iso", "Finger");
-		byte[] llittleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftLittleFingerImage.iso", "Finger");
-		byte[] leftthumb = CbeffISOReader.readISOImage(localpath + "/images/" + "LeftThumbFingerImage.iso", "Finger");
-		byte[] irisImg1 = CbeffISOReader.readISOImage(localpath + "/images/" + "IrisImageRight.iso", "Iris");
-		byte[] irisImg2 = CbeffISOReader.readISOImage(localpath + "/images/" + "IrisImageLeft.iso", "Iris");
-		byte[] faceImg = CbeffISOReader.readISOImage(localpath + "/images/" + "faceImage.iso", "Face");
+		byte[] rindexFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintRight_Index.iso", "Finger");
+		byte[] rmiddleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintRight_Middle.iso", "Finger");
+		byte[] rringFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintRight_Ring.iso", "Finger");
+		byte[] rlittleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintRight_Little.iso", "Finger");
+		byte[] rightthumb = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintRight_Thumb.iso", "Finger");
+		byte[] lindexFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintLeft_Index.iso", "Finger");
+		byte[] lmiddleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintLeft_Middle.iso", "Finger");
+		byte[] lringFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintLeft_Ring.iso", "Finger");
+		byte[] llittleFinger = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintLeft_Little.iso", "Finger");
+		byte[] leftthumb = CbeffISOReader.readISOImage(localpath + "/images/" + "FingerPrintLeft_Thumb.iso", "Finger");
+		//byte[] irisImg1 = CbeffISOReader.readISOImage(localpath + "/images/" + "IrisImageRight.iso", "Iris");
+		//byte[] irisImg2 = CbeffISOReader.readISOImage(localpath + "/images/" + "IrisImageLeft.iso", "Iris");
+		//byte[] faceImg = CbeffISOReader.readISOImage(localpath + "/images/" + "faceImage.iso", "Face");
 		RegistryIDType format = new RegistryIDType();
-		format.setOrganization("Mosip");
-		format.setType("257");
+		format.setOrganization("257");
+		format.setType("7");
 		QualityType Qtype = new QualityType();
 		Qtype.setScore(new Long(100));
 		RegistryIDType algorithm = new RegistryIDType();
@@ -224,41 +224,41 @@ public class CbeffImplTest {
 		
 		createList.add(leftThumb);
 
-		BIR face = new BIR.BIRBuilder().withBdb(faceImg)
-				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
-				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
-						.withQuality(Qtype).withType(Arrays.asList(SingleType.FACE)).withPurpose(PurposeType.ENROLL)
-						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
-						.build())
-				.build();
-		
-		createList.add(face);
-
-		BIR leftIris = new BIR.BIRBuilder().withBdb(irisImg1)
-				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
-				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
-						.withQuality(Qtype).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Right"))
-						.withPurpose(PurposeType.ENROLL).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
-						.withLevel(ProcessedLevelType.RAW).build())
-				.build();
-		
-		createList.add(leftIris);
-
-		BIR rightIris = new BIR.BIRBuilder().withBdb(irisImg2)
-				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
-				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
-						.withQuality(Qtype).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Left"))
-						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
-						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
-				.build();
-		
-		createList.add(rightIris);
+//		BIR face = new BIR.BIRBuilder().withBdb(faceImg)
+//				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+//				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+//				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+//				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+//						.withQuality(Qtype).withType(Arrays.asList(SingleType.FACE)).withPurpose(PurposeType.ENROLL)
+//						.withLevel(ProcessedLevelType.RAW).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
+//						.build())
+//				.build();
+//		
+//		createList.add(face);
+//
+//		BIR leftIris = new BIR.BIRBuilder().withBdb(irisImg1)
+//				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+//				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+//				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+//				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+//						.withQuality(Qtype).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Right"))
+//						.withPurpose(PurposeType.ENROLL).withCreationDate(LocalDateTime.now(ZoneId.of("UTC")))
+//						.withLevel(ProcessedLevelType.RAW).build())
+//				.build();
+//		
+//		createList.add(leftIris);
+//
+//		BIR rightIris = new BIR.BIRBuilder().withBdb(irisImg2)
+//				.withVersion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+//				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMinor(1).withMajor(1).build())
+//				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+//				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(format)
+//						.withQuality(Qtype).withType(Arrays.asList(SingleType.IRIS)).withSubtype(Arrays.asList("Left"))
+//						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+//						.withCreationDate(LocalDateTime.now(ZoneId.of("UTC"))).build())
+//				.build();
+//		
+//		createList.add(rightIris);
 
 	}
 	//@Test
@@ -269,11 +269,11 @@ public class CbeffImplTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testCreateXMLFromLocal() throws Exception {
 		byte[] createXml = cbeffUtilImpl.createXML(createList, readXSD("updatedcbeff"));
-		createXMLFile(createXml, "createCbeffLatest1");
-		assertEquals(new String(createXml), new String(readCreatedXML("createCbeffLatest1")));
+		createXMLFile(createXml, "createCbeffLatest2");
+		assertEquals(new String(createXml), new String(readCreatedXML("createCbeffLatest2")));
 
 	}
 
