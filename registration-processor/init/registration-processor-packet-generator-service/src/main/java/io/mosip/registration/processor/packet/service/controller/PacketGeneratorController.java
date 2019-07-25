@@ -110,7 +110,7 @@ public class PacketGeneratorController {
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE, digitalSignatureUtility
 						.getDigitalSignature(gson.toJson(response)));
-				return ResponseEntity.ok().headers(headers).body(buildPacketGeneratorResponse(packerGeneratorResDto));
+				return ResponseEntity.ok().headers(headers).body(response);
 			}
 			return ResponseEntity.ok().body(buildPacketGeneratorResponse(packerGeneratorResDto));
 		} catch (PacketGeneratorValidationException e) {
