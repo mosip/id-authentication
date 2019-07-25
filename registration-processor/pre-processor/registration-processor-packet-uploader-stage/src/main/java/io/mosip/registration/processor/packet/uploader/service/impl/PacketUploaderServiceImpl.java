@@ -214,7 +214,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 							dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 									.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 							dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-							dto.setStatusComment(StatusUtil.PACKET_UPLOAD_FAILED.getMessage() + registrationId);
+							dto.setStatusComment(StatusUtil.PACKET_UPLOAD_FAILED.getMessage());
 							dto.setUpdatedBy(USER);
 							regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 									LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
@@ -228,7 +228,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
 				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
-				dto.setStatusComment(StatusUtil.PACKET_NOT_FOUND_LANDING_ZIONE.getMessage() + registrationId);
+				dto.setStatusComment(StatusUtil.PACKET_NOT_FOUND_LANDING_ZIONE.getMessage());
 				dto.setUpdatedBy(USER);
 
 			}
@@ -236,6 +236,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (TablenotAccessibleException e) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -248,6 +249,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (PacketNotFoundException ex) {
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_NOT_FOUND_EXCEPTION));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.PACKET_NOT_FOUND_PACKET_STORE.getMessage() + ex.getMessage()));
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -258,35 +260,39 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (FSAdapterException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_STORE_NOT_ACCESSIBLE.name() + ExceptionUtils.getStackTrace(e));
 
 			description.setMessage("DFS not accessible for registrationId " + registrationId + "::" + e.getMessage());
 		} catch (JschConnectionException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.JSCH_CONNECTION));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.JSCH_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_JSCH_NOT_CONNECTED.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PUM_JSCH_NOT_CONNECTED.name() + ExceptionUtils.getStackTrace(e));
 
 			description.setMessage(
 					"The JSCH connection failed for registrationId " + registrationId + "::" + e.getMessage());
 		} catch (SftpFileOperationException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.SFTP_OPERATION_EXCEPTION));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.SFTP_FILE_OPERATION_EXCEPTION.getMessage() + e.getMessage()));
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.name() + e.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PUM_SFTP_FILE_OPERATION_FAILED.name() + ExceptionUtils.getStackTrace(e));
 
 			description.setMessage("The Sftp operation failed during file processing for registrationId "
 					+ registrationId + "::" + e.getMessage());
 		} catch (IOException e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.IO_EXCEPTION.getMessage() + e.getMessage()));
 			messageDTO.setIsValid(false);
 			messageDTO.setInternalError(true);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -298,6 +304,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 		} catch (Exception e) {
 			dto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
+			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 			messageDTO.setInternalError(true);
 			messageDTO.setIsValid(false);
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -360,7 +367,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 			dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage());
+					registrationId, PlatformErrorMessages.RPR_PUM_PACKET_VIRUS_SCANNER_SERVICE_FAILED.getMessage()+ExceptionUtils.getStackTrace(e));
 
 		}
 		return isInputFileClean;
@@ -434,7 +441,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 						DirectoryPathDto.ARCHIVE_LOCATION, jschConnectionDto)) {
 
 					dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
-					dto.setStatusComment("Packet " + registrationId + " is uploaded in file system.");
+					dto.setStatusComment(StatusUtil.PACKET_UPLOADED.getMessage());
 					dto.setUpdatedBy(USER);
 					object.setInternalError(false);
 					object.setIsValid(true);
@@ -449,7 +456,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 					dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
 					dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 							.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
-					dto.setStatusComment("Packet " + registrationId + " is failed during cleanup");
+					dto.setStatusComment(StatusUtil.PACKET_CLEANUP_FAILED.getMessage());
 					dto.setUpdatedBy(USER);
 					object.setInternalError(true);
 					object.setIsValid(false);
@@ -462,7 +469,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService<MessageD
 				dto.setStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED.toString());
 				dto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UPLOADER_FAILED));
-				dto.setStatusComment("Packet " + registrationId + " is failed during archival process");
+				dto.setStatusComment(StatusUtil.PACKET_ARCHIVAL_FAILED.getMessage());
 				dto.setUpdatedBy(USER);
 				object.setInternalError(true);
 				object.setIsValid(false);
