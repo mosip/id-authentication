@@ -15,6 +15,7 @@ import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
+import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
 
@@ -98,14 +99,23 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	
 
 	@Override
-	public List<RegistrationTransactionDto> getTransactionByRegId(String regId) {
-		// TODO Auto-generated method stub
+	public List<RegistrationTransactionDto> getTransactionByRegId(String regId) throws TransactionsUnavailableException {
 		List<RegistrationTransactionDto> dtoList = new ArrayList<RegistrationTransactionDto>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
 				regId, "TransactionServiceImpl::getTransactionByRegId()::entry");
+		try {
 		List<TransactionEntity> transactionEntityList = transactionRepositary.getTransactionByRegId(regId);
+		if(transactionEntityList.isEmpty()) {
+			throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
+					PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
+		}
+		
 		for (TransactionEntity transactionEntity : transactionEntityList) {
 			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
+		}
+		} catch (DataAccessLayerException e) {
+			throw new TransactionTableNotAccessibleException(
+					PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		}
 		return dtoList;
 	}

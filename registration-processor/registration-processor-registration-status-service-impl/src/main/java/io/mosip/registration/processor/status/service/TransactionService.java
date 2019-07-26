@@ -5,6 +5,7 @@ import java.util.List;
 import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
+import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 	
 /**
  * This service is used to perform crud operations(get/addd/update) on
@@ -36,6 +37,6 @@ public interface TransactionService<U> {
 	 */
 	public TransactionDto getTransactionByRegIdAndStatusCode(String regId, String statusCode);
 	
-	public List<RegistrationTransactionDto> getTransactionByRegId(String regId);
+	public List<RegistrationTransactionDto> getTransactionByRegId(String regId) throws TransactionsUnavailableException;
 
 }

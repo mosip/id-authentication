@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.api.controller.handler;
+package io.mosip.registration.processor.transaction.api.controller.handler;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,10 +27,11 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
-import io.mosip.registration.processor.status.api.controller.RegistrationTransactionController;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
-import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
+import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.sync.response.dto.RegTransactionResponseDTO;
+import io.mosip.registration.processor.transaction.api.controller.RegistrationTransactionController;
 
 @RestControllerAdvice(assignableTypes=RegistrationTransactionController.class)
 public class RegistrationTransactionExceptionHandler {
@@ -58,10 +59,16 @@ public class RegistrationTransactionExceptionHandler {
 				e.getErrorCode(), e.getMessage());
 		return buildRegTransactionExceptionResponse((Exception) e);
 	}	
-
-	@ExceptionHandler(TablenotAccessibleException.class)
-	public ResponseEntity<RegTransactionResponseDTO> duplicateentry(TablenotAccessibleException e, WebRequest request) {
-		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getCause().toString());
+	
+	@ExceptionHandler(TransactionTableNotAccessibleException.class)
+	public ResponseEntity<RegTransactionResponseDTO> handleTransactionTableNotAccessibleException(TransactionTableNotAccessibleException e, WebRequest request) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getMessage());
+		return buildRegTransactionExceptionResponse((Exception)e);
+	}
+	
+	@ExceptionHandler(TransactionsUnavailableException.class)
+	public ResponseEntity<RegTransactionResponseDTO> handleTransactionsUnavailableException(TransactionsUnavailableException e, WebRequest request) {
+		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),LoggerFileConstant.APPLICATIONID.toString(),e.getErrorCode(), e.getMessage());
 		return buildRegTransactionExceptionResponse((Exception)e);
 	}
 	

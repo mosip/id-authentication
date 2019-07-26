@@ -836,7 +836,9 @@ public enum PlatformErrorMessages {
 	UNABLE_TO_FETCH_BIO_INFO(PlatformConstants.ABIS + "07", "Unable to fetch biometric details"),
 
 	/** The missing mandatory fields. */
-	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing");
+	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing"),
+	
+	TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.TRANSACTIONS_NOT_AVAILABLE+"001","RID Not Found");
 
 	/** The error message. */
 	private final String errorMessage;

@@ -96,7 +96,8 @@ public final class PlatformConstants {
 	public static final String ABIS = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-";
 
 	public static final String RPR_ABIS_MIDDLEWARE = RPR_REGISTRATION_PROCESSOR_PREFIX + "ABIS-MIDDLEWARE-";
-
+	
+	public static final String TRANSACTIONS_NOT_AVAILABLE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RTS-";
 	/**
 	 * Instantiates a new RPR platform error codes.
 	 */
