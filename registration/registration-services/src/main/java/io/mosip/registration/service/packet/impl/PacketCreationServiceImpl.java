@@ -351,7 +351,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				if (isListNotEmpty(biometricInfoDTO.getIrisDetailsDTO())) {
 					for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
 
-						BIR bir = buildBIR(iris.getIris(), CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_IRIS,
+						BIR bir = buildBIR(iris.getIris(), CbeffConstant.FORMAT_TYPE_IRIS,
 								(int) Math.round(iris.getQualityScore()), Arrays.asList(SingleType.IRIS),
 								Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
 										? SingleAnySubtypeType.LEFT.value()
@@ -395,8 +395,8 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			int qualityScore, String imageType) {
 		if (image != null) {
 			// TODO: Replace the stub image with original image once Face SDK is implemented
-			BIR bir = buildBIR(RegistrationConstants.STUB_FACE.getBytes(), CbeffConstant.FORMAT_OWNER,
-					CbeffConstant.FORMAT_TYPE_FACE, qualityScore, Arrays.asList(SingleType.FACE), Arrays.asList());
+			BIR bir = buildBIR(RegistrationConstants.STUB_FACE.getBytes(), CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
+					Arrays.asList(SingleType.FACE), Arrays.asList());
 
 			birs.add(bir);
 			birUUIDs.put(personType.concat(imageType).toLowerCase(), bir.getBdbInfo().getIndex());
@@ -450,20 +450,18 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	}
 
 	private BIR buildFingerprintBIR(FingerprintDetailsDTO fingerprint, byte[] fingerprintImageInBytes) {
-		return buildBIR(fingerprintImageInBytes, CbeffConstant.FORMAT_OWNER, CbeffConstant.FORMAT_TYPE_FINGER,
+		return buildBIR(fingerprintImageInBytes, CbeffConstant.FORMAT_TYPE_FINGER,
 				(int) Math.round(fingerprint.getQualityScore()), Arrays.asList(SingleType.FINGER),
 				getFingerSubType(fingerprint.getFingerType()));
 	}
 
-	private BIR buildBIR(byte[] bdb, long isoFormatOwner, long formatType, int qualityScore, List<SingleType> type,
-			List<String> subType) {
+	private BIR buildBIR(byte[] bdb, long formatType, int qualityScore, List<SingleType> type, List<String> subType) {
 
 		// Format
 		RegistryIDType birFormat = new RegistryIDType();
 		birFormat.setOrganization(getValueFromApplicationContext(RegistrationConstants.CBEFF_FORMAT_ORG,
 				RegistrationConstants.CBEFF_DEFAULT_FORMAT_ORG));
-		birFormat.setType(getValueFromApplicationContext(RegistrationConstants.CBEFF_FORMAT_TYPE,
-				RegistrationConstants.CBEFF_DEFAULT_FORMAT_TYPE));
+		birFormat.setType(String.valueOf(formatType));
 
 		// Algorithm
 		RegistryIDType birAlgorithm = new RegistryIDType();
