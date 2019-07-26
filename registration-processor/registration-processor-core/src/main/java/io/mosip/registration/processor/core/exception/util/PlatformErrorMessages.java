@@ -838,7 +838,9 @@ public enum PlatformErrorMessages {
 	/** The missing mandatory fields. */
 	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing"),
 	
-	TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.TRANSACTIONS_NOT_AVAILABLE+"001","RID Not Found");
+	TRANSACTIONS_NOT_AVAILABLE(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"001","RID Not Found"),
+	
+	RPR_RTS_UNKNOWN_EXCEPTION(PlatformConstants.REGISTRATION_TRANSACTIONS_SERVICE+"002","Unknown Exception Occured");
 
 	/** The error message. */
 	private final String errorMessage;

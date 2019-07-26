@@ -31,11 +31,12 @@ import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
-import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.status.exception.RegTransactionAppException;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
 import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.sync.response.dto.RegTransactionResponseDTO;
+import io.mosip.registration.processor.transaction.api.util.Utilities;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -48,6 +49,9 @@ public class RegistrationTransactionController {
 	
 	@Autowired
 	TransactionService<TransactionDto> transactionService;
+	
+	@Autowired
+	Utilities utilities;
 	
 	@Autowired
 	private Environment env;
@@ -67,11 +71,12 @@ public class RegistrationTransactionController {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 	
-	@GetMapping(path = "/search/{rid}")
+	@GetMapping(path = "/search/{rid}/{langCode}")
 	@ApiOperation(value = "Get the transaction entity/entities")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Transaction Entity/Entities successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch Transaction Entity/Entities") })
-	public ResponseEntity<RegTransactionResponseDTO> getTransactionsbyRid(@PathVariable String rid,HttpServletRequest request)
+	public ResponseEntity<RegTransactionResponseDTO> getTransactionsbyRid(@PathVariable("rid") String rid,
+			@PathVariable("langCode") String langCode,HttpServletRequest request)
 			throws Exception {
 		List<RegistrationTransactionDto> dtoList=new ArrayList<>();
 		HttpHeaders headers = new HttpHeaders();
@@ -81,7 +86,7 @@ public class RegistrationTransactionController {
 		}	
 		try {	
 			tokenValidator.validate("Authorization=" + token.getValue(), "transaction");
-			dtoList = transactionService.getTransactionByRegId(rid);	
+			dtoList =utilities.getTransactionsInPreferedLanguage(transactionService.getTransactionByRegId(rid),langCode);	
 			RegTransactionResponseDTO responseDTO=buildRegistrationTransactionResponse(dtoList);
 			if (isEnabled) {		 
 				headers.add(RESPONSE_SIGNATURE,
@@ -95,7 +100,8 @@ public class RegistrationTransactionController {
 				throw e;
 			}
 			else {
-				throw new RegStatusAppException(PlatformErrorMessages.RPR_RGS_UNKNOWN_EXCEPTION, e);
+				throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(), 
+						PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage()+" -->"+e.getMessage());
 			}
 		}
 	}

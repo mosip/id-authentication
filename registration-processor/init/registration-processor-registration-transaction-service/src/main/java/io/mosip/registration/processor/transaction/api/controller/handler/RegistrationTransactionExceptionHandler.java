@@ -28,6 +28,7 @@ import io.mosip.registration.processor.core.token.validation.exception.AccessDen
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.exception.RegStatusAppException;
+import io.mosip.registration.processor.status.exception.RegTransactionAppException;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
 import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.sync.response.dto.RegTransactionResponseDTO;
@@ -72,8 +73,8 @@ public class RegistrationTransactionExceptionHandler {
 		return buildRegTransactionExceptionResponse((Exception)e);
 	}
 	
-	@ExceptionHandler(RegStatusAppException.class)
-	protected ResponseEntity<RegTransactionResponseDTO> handleRegStatusException(RegStatusAppException e, WebRequest request) {
+	@ExceptionHandler(RegTransactionAppException.class)
+	protected ResponseEntity<RegTransactionResponseDTO> handleRegStatusException(RegTransactionAppException e, WebRequest request) {
 		return buildRegTransactionExceptionResponse((Exception)e);
 
 	}

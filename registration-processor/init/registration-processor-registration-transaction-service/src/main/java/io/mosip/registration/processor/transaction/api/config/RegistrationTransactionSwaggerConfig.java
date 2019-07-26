@@ -16,6 +16,6 @@ public class RegistrationTransactionSwaggerConfig {
 	public Docket registrationTransactionBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Registration Transaction").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.processor.transaction.api.controller"))
-				.paths(PathSelectors.ant("/*/*")).build();
+				.paths(PathSelectors.ant("/*/*/*")).build();
 	}
 }
