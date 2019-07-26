@@ -111,6 +111,10 @@ public class MdmRequestResponseBuilder {
 		case RegistrationConstants.FINGERPRINT_UPPERCASE:
 			deviceType= "FIR";
 			break;
+			
+		case RegistrationConstants.IRIS:
+			deviceType= "IIR";
+			break;
 		}
 		
 		return deviceType;

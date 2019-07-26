@@ -594,14 +594,19 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		if(captureResponseDto.getError().getErrorCode().equals("403"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
+		
+		detailsDTO.setIrises(new ArrayList<IrisDetailsDTO>());
+		
+		
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
 		mosipBioDeviceDataResponses.forEach(captured->{
 			IrisDetailsDTO irisDetails = new IrisDetailsDTO();
 			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
 			irisDetails.setIrisIso((Base64.getDecoder().decode(captureRespoonse.getBioExtract())));
-			irisDetails.setIrisImageName("FingerPrint "+captureRespoonse.getBioSubType());
+			irisDetails.setIrisImageName(captureRespoonse.getBioSubType());
 			irisDetails.setIris((captureRespoonse.getBioValue()));
 			irisDetails.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));
+			irisDetails.setIrisType(captureRespoonse.getBioSubType());
 			detailsDTO.getIrises().add(irisDetails);
 		});
 		detailsDTO.setCaptured(true);
