@@ -35,6 +35,7 @@ import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessor
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.request.handler.service.PacketCreationService;
+import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.request.handler.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.request.handler.service.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.processor.request.handler.service.dto.demographic.DemographicDTO;
@@ -76,12 +77,13 @@ public class UinCardRePrintServiceImpl {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinCardRePrintServiceImpl.class);
 
 	@SuppressWarnings("unchecked")
-	private void check(String requestUin, String requestVid, String cardType, String registrationId)
-			throws ApisResourceAccessException, IOException, VidCreationException, RegBaseCheckedException,
-			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException,
+	private PacketGeneratorResDto check(String requestUin, String requestVid, String cardType, String registrationId)
+			throws ApisResourceAccessException, IOException, RegBaseCheckedException, PacketDecryptionFailureException,
+			io.mosip.kernel.core.exception.IOException,
 			io.mosip.registration.processor.packet.storage.exception.VidCreationException,
-			IdObjectValidationFailedException, IdObjectIOException, ParseException {
+			IdObjectValidationFailedException, IdObjectIOException, ParseException, VidCreationException {
 
+		PacketGeneratorResDto packerGeneratorResDto = null;
 		String uin = requestUin;
 		String vid = requestVid;
 		byte[] packetZipBytes = null;
@@ -132,13 +134,10 @@ public class UinCardRePrintServiceImpl {
 		LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
 		String creationTime = ldt.toString() + ".000Z";
 
-		/*
-		 * packerGeneratorResDto =
-		 * syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId
-		 * (), creationTime, request.getRegistrationType(), packetZipBytes);
-		 * 
-		 * return packerGeneratorResDto;
-		 */
+		packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
+				creationTime, "---regtype---", packetZipBytes);
+
+		return packerGeneratorResDto;
 	}
 
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,

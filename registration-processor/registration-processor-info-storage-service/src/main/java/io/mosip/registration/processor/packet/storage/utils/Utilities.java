@@ -564,8 +564,8 @@ public class Utilities {
 		return value;
 	}
 
-	public String getUinByVid(String vid) throws IOException, PacketDecryptionFailureException,
-			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, VidCreationException {
+	@SuppressWarnings("unchecked")
+	public String getUinByVid(String vid) throws ApisResourceAccessException, VidCreationException {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"Utilities::getUinByVid():: entry");
 		List<String> pathSegments = new ArrayList<>();
