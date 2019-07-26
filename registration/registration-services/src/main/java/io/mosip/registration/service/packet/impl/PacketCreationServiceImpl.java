@@ -611,11 +611,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					RegistrationExceptionConstants.REG_PKT_INVALID_MACHINE_ID_EXCEPTION.getErrorMessage());
 		}
 
-		if (isStringEmpty(metaData.getDeviceId())) {
-			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_INVALID_DEVICE_ID_EXCEPTION.getErrorCode(),
-					RegistrationExceptionConstants.REG_PKT_INVALID_DEVICE_ID_EXCEPTION.getErrorMessage());
-		}
-
 		if (isStringEmpty(metaData.getConsentOfApplicant())) {
 			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_INVALID_APPLICANT_CONSENT_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_PKT_INVALID_APPLICANT_CONSENT_EXCEPTION.getErrorMessage());
@@ -746,7 +741,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			isBiometricCaptured = false;
 		} else {
 			isBiometricCaptured = !(isListEmpty(biometrics.getFingerprintDetailsDTO())
-					|| isListEmpty(biometrics.getIrisDetailsDTO()) || validateFace(biometrics.getFace()));
+					&& isListEmpty(biometrics.getIrisDetailsDTO()) && validateFace(biometrics.getFace()));
 		}
 
 		return isBiometricCaptured;

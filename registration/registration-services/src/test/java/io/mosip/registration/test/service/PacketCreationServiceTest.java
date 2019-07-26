@@ -418,19 +418,6 @@ public class PacketCreationServiceTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void testInvalidRegistrationDeviceMetaData() throws Throwable {
-		try {
-			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
-			metaData.setRegistrationCategory("New");
-			metaData.setCenterId("10001");
-			metaData.setMachineId("10011");
-			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
-		} catch (RuntimeException exception) {
-			throw exception.getCause();
-		}
-	}
-
-	@Test(expected = RegBaseCheckedException.class)
 	public void testInvalidApplicantConsentMetaData() throws Throwable {
 		try {
 			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
