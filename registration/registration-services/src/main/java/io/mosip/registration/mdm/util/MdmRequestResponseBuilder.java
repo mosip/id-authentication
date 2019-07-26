@@ -72,7 +72,12 @@ public class MdmRequestResponseBuilder {
 			excptions = (ls).toArray(excptions);
 		}
 		mosipBioRequest.setException(excptions);
-		mosipBioRequest.setRequestedScore(40);
+		if (mosipBioRequest.getType().equalsIgnoreCase("FACE")) {
+			mosipBioRequest.setType("FACE");
+			mosipBioRequest.setRequestedScore(60);
+		} else {
+			mosipBioRequest.setRequestedScore(40);
+		}
 		mosipBioRequest.setDeviceId(bioDevice.getDeviceId());
 		mosipBioRequest.setDeviceSubId(bioDevice.getDeviceSubId());
 		mosipBioRequest.setPreviousHash("");

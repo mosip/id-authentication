@@ -360,7 +360,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				}
 
 				// Add Face
-				createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFace().getFace(),
+				createFaceBIR(personType, birUUIDs, birs, biometricInfoDTO.getFace().getFaceISO(),
 						(int) Math.round(biometricInfoDTO.getFace().getQualityScore()),
 						RegistrationConstants.VALIDATION_TYPE_FACE);
 

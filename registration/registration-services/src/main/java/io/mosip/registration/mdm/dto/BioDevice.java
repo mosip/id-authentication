@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -90,10 +93,29 @@ public class BioDevice {
 		captureResponse = mapper.readValue(EntityUtils.toString(response.getEntity()).getBytes(StandardCharsets.UTF_8),
 				CaptureResponseDto.class);
 
+		decode(captureResponse);
 		return captureResponse;
 
 	}
 
+	private void decode(CaptureResponseDto mosipBioCaptureResponseDto)
+			throws IOException, JsonParseException, JsonMappingException {
+		ObjectMapper mapper = new ObjectMapper();
+		if (null != mosipBioCaptureResponseDto && null != mosipBioCaptureResponseDto.getMosipBioDeviceDataResponses()) {
+			for (CaptureResponseBioDto captureResponseBioDto : mosipBioCaptureResponseDto
+					.getMosipBioDeviceDataResponses()) {
+				if (null != captureResponseBioDto) {
+					String bioJson = new String(Base64.getDecoder().decode(captureResponseBioDto.getCaptureBioData()));
+					if (null != bioJson) {
+						CaptureResponsBioDataDto captureResponsBioDataDto = mapper.readValue(bioJson.getBytes(),
+								CaptureResponsBioDataDto.class);
+						captureResponseBioDto.setCaptureResponseData(captureResponsBioDataDto);
+					}
+				}
+			}
+		}
+	}
+	
 	public InputStream stream() throws IOException {
 
 		String url = runningUrl + ":" + runningPort + "/" + MosipBioDeviceConstants.STREAM_ENDPOINT;

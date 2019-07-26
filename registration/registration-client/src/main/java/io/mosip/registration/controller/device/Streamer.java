@@ -49,7 +49,7 @@ public class Streamer {
 					scanPopUpViewController.enableCloseButton();
 					stop();
 				}
-				while (isRunning) {
+				while (isRunning && null!=urlStream) {
 					try {
 						byte[] imageBytes = retrieveNextImage();
 						ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBytes);
@@ -76,6 +76,7 @@ public class Streamer {
 	 * @throws IOException
 	 */
 	private byte[] retrieveNextImage() throws IOException {
+		
 		int currByte = -1;
 
 		boolean captureContentLength = false;

@@ -3,6 +3,9 @@ package io.mosip.registration.mdm.dto;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -22,7 +25,9 @@ public class CaptureRequestDto {
 	private String mosipProcess;
 	private String version;
 	private int timeout;
+	@JsonIgnore
 	private String captureTime;
+	@JsonIgnore
 	private String registrationID;
 
 	@JsonProperty("bio")

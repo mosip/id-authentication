@@ -109,8 +109,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			if(captureResponseDto.getError().getErrorCode().equals("202"))
 				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 			if(captureResponseDto.getError().getErrorCode().equals("403"))
-
-			decode(captureResponseDto);
+			
 			captureResponseData =  captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData();
 			bioType=captureResponseData.getBioType();
 			isoImage = Base64.getDecoder().decode(captureResponseData.getBioExtract());
@@ -228,7 +227,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 		if(captureResponseDto.getError().getErrorCode().equals("403"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
-		decode(captureResponseDto);
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
 		mosipBioDeviceDataResponses.forEach(captured->{
 			FingerprintDetailsDTO fingerPrintDetail = new FingerprintDetailsDTO();
@@ -244,20 +242,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 		fpDetailsDTO.setCaptured(true);
 		fpDetailsDTO.setFingerType(fingerType);
 		fpDetailsDTO.setQualityScore(slapQuality);
-	}
-
-	private void decode(CaptureResponseDto mosipBioCaptureResponseDto) throws IOException, JsonParseException, JsonMappingException {
-		ObjectMapper mapper = new ObjectMapper();
-        for (CaptureResponseBioDto captureResponseBioDto : mosipBioCaptureResponseDto.getMosipBioDeviceDataResponses()) {
-         if (null != captureResponseBioDto) {
-               String bioJson = new String(Base64.getDecoder().decode(captureResponseBioDto.getCaptureBioData()));
-               if (null != bioJson) {
-                      CaptureResponsBioDataDto captureResponsBioDataDto = mapper.readValue(bioJson.getBytes(),
-                                   CaptureResponsBioDataDto.class);
-                      captureResponseBioDto.setCaptureResponseData(captureResponsBioDataDto);
-               }
-         }
-        }
 	}
 
 
@@ -610,7 +594,6 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		if(captureResponseDto.getError().getErrorCode().equals("403"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
-		decode(captureResponseDto);
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
 		mosipBioDeviceDataResponses.forEach(captured->{
 			IrisDetailsDTO irisDetails = new IrisDetailsDTO();

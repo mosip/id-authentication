@@ -60,7 +60,7 @@ public class WebCameraController extends BaseController implements Initializable
 	private Button clear;
 	
 	@FXML
-	private ImageView camImageView;
+	protected ImageView camImageView;
 
 	@FXML
 	private Button close;
@@ -100,7 +100,7 @@ public class WebCameraController extends BaseController implements Initializable
 			if (true) {
 			camImageView.setVisible(true);
 			webcamera.setVisible(false);
-			streamer.startStream(RegistrationConstants.FACE_FULLFACE, camImageView, null);
+			/*streamer.startStream(RegistrationConstants.FACE_FULLFACE, camImageView, null);*/
 		} else {
 			camImageView.setVisible(false);
 			webcamera.setVisible(true);
@@ -142,7 +142,7 @@ public class WebCameraController extends BaseController implements Initializable
 		if (true) {
 
 			captureResponseDto = bioService.captureFace();
-			if (null != captureResponseDto) {
+			if (null != captureResponseDto && null!=captureResponseDto.getMosipBioDeviceDataResponses()) {
 				try {
 					capturedImage = ImageIO.read(new ByteArrayInputStream(bioService.getSingleBioValue(captureResponseDto)));
 				} catch (IOException exception) {

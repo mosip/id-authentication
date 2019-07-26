@@ -115,6 +115,9 @@ public class FaceCaptureController extends BaseController implements Initializab
 	
 	@Autowired
 	private BioService bioService;
+	
+	@Autowired
+	private Streamer streamer;
 
 	private Timestamp lastPhotoCaptured;
 
@@ -245,7 +248,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
-		if (webCameraController.isWebcamPluggedIn()) {
+		if (true) {
 			try {
 				Stage primaryStage = new Stage();
 				primaryStage.initStyle(StageStyle.UNDECORATED);
@@ -269,6 +272,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 						RegistrationConstants.APPLICATION_ID,
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
+			streamer.startStream(RegistrationConstants.FACE_FULLFACE, webCameraController.camImageView, null);
 		} else {
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.WEBCAM_ALERT_CONTEXT);
 		}
