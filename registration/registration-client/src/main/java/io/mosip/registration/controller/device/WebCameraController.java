@@ -175,11 +175,13 @@ public class WebCameraController extends BaseController implements Initializable
 	public void closeWindow(ActionEvent event) {
 		LOGGER.info("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"closing the webcam window");
+		streamer.stop();
 		if (capturedImage != null) {
 			capturedImage.flush();
 		}
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
+		
 	}
 
 	public void closeWebcam() {
