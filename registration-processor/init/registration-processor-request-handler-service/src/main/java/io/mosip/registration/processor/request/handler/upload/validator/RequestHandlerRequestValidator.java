@@ -1,23 +1,50 @@
 package io.mosip.registration.processor.request.handler.upload.validator;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
 import org.joda.time.DateTime;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.UinValidator;
+import io.mosip.kernel.core.idvalidator.spi.VidValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
+import io.mosip.registration.processor.request.handler.service.dto.MachineResponseDto;
+import io.mosip.registration.processor.request.handler.service.dto.PackerGeneratorFailureDto;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorRequestDto;
+import io.mosip.registration.processor.request.handler.service.dto.RegistrationCenterResponseDto;
+import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.service.exception.RequestHandlerValidationException;
+import io.mosip.registration.processor.status.code.RegistrationType;
 
 /**
  * The Class PacketGeneratorRequestValidator.
@@ -47,6 +74,10 @@ public class RequestHandlerRequestValidator {
 
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
+	
+	private static final String UIN = "UIN";
+	
+	private static final String VID = "VID";
 
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
@@ -67,6 +98,26 @@ public class RequestHandlerRequestValidator {
 	/** The grace period. */
 	@Value("${mosip.registration.processor.grace.period}")
 	private int gracePeriod;
+	
+	/** The primary languagecode. */
+	@Value("${mosip.primary-language}")
+	private String primaryLanguagecode;
+	
+	/** The rest client service. */
+	@Autowired
+	private RegistrationProcessorRestClientService<Object> restClientService;
+	
+	@Autowired
+	private ObjectMapper mapper = new ObjectMapper();
+	
+	@Autowired
+	private UinValidator<String> uinValidatorImpl;
+	
+	@Autowired
+	private VidValidator<String> vidValidatorImpl;
+	
+	@Autowired
+	private Utilities utilities;
 
 	/**
 	 * Validate.
@@ -77,8 +128,8 @@ public class RequestHandlerRequestValidator {
 	 *             the packet generator validation exception
 	 */
 	public void validate(String requestTime, String requestId, String requestVersion) throws RequestHandlerValidationException {
-		id.put("status", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
-		id.put("status", env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
+		id.put("packet_generator", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
+		id.put("uincard_reprint_status", env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
 		validateReqTime(requestTime);
 		validateId(requestId);
 		validateVersion(requestVersion);
@@ -182,6 +233,214 @@ public class RequestHandlerRequestValidator {
 
 			}
 		}
+	}
+	
+	/**
+	 * Checks if is valid center.
+	 *
+	 * @param centerId
+	 *            the center id
+	 * @param dto
+	 *            the dto
+	 * @return true, if is valid center
+	 * @throws RegBaseCheckedException
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	public boolean isValidCenter(String centerId)
+			throws RegBaseCheckedException, IOException {
+		boolean isValidCenter = false;
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(centerId);
+		pathsegments.add(primaryLanguagecode);
+		RegistrationCenterResponseDto rcpdto;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		try {
+			if (centerId != null && !centerId.isEmpty()) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"PacketGeneratorServiceImpl::isValidCenter():: Centerdetails Api call started");
+				responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.CENTERDETAILS, pathsegments, "",
+						"", ResponseWrapper.class);
+				rcpdto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+						RegistrationCenterResponseDto.class);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::isValidCenter():: Centerdetails Api call  ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(rcpdto));
+				if (responseWrapper.getErrors() == null && !rcpdto.getRegistrationCenters().isEmpty()) {
+					isValidCenter = true;
+				} else {
+					List<ErrorDTO> error = responseWrapper.getErrors();
+
+					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+							error.get(0).getMessage(), new Throwable());
+				}
+			} else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						"Center id is mandatory", new Throwable());
+			}
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				List<ErrorDTO> error = responseWrapper.getErrors();
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.get(0).getMessage(), e);
+
+			}
+
+		}
+		return isValidCenter;
+	}
+	
+	/**
+	 * Checks if is valid machine.
+	 *
+	 * @param machine
+	 *            the machine
+	 * @param dto
+	 *            the dto
+	 * @return true, if is valid machine
+	 * @throws RegBaseCheckedException
+	 * @throws IOException
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
+	 */
+	public boolean isValidMachine(String machine)
+			throws RegBaseCheckedException, IOException {
+		boolean isValidMachine = false;
+		List<String> pathsegments = new ArrayList<>();
+		pathsegments.add(machine);
+		pathsegments.add(primaryLanguagecode);
+		MachineResponseDto machinedto;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		try {
+
+			if (machine != null && !machine.isEmpty()) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"PacketGeneratorServiceImpl::isValidMachine():: MachineDetails Api call started");
+				responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.MACHINEDETAILS, pathsegments,
+						"", "", ResponseWrapper.class);
+				machinedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
+						MachineResponseDto.class);
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"\"PacketGeneratorServiceImpl::isValidMachine():: MachienDetails Api call  ended with response data : "
+								+ JsonUtil.objectMapperObjectToJson(machinedto));
+				if (responseWrapper.getErrors() == null && !machinedto.getMachines().isEmpty()) {
+					isValidMachine = true;
+				} else {
+					List<ErrorDTO> error = responseWrapper.getErrors();
+					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+							error.get(0).getMessage(), new Throwable());
+				}
+			} else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						"Machine id is mandatory", new Throwable());
+			}
+
+		} catch (ApisResourceAccessException e) {
+			if (e.getCause() instanceof HttpClientErrorException) {
+				List<ErrorDTO> error = responseWrapper.getErrors();
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						error.get(0).getMessage(), e);
+
+			}
+
+		}
+		return isValidMachine;
+
+	}
+	
+	public boolean isValidUin(String uin) throws RegBaseCheckedException {
+		boolean isValidUIN = false;
+		try {
+			isValidUIN = uinValidatorImpl.validateId(uin);
+			JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(uin));
+			if (isValidUIN && jsonObject != null) {
+				isValidUIN = true;
+			} else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid",
+						new Throwable());
+
+			}
+		} catch (InvalidIDException ex) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
+
+		} catch (IdRepoAppException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (NumberFormatException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
+		} catch (ApisResourceAccessException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
+		}
+		return isValidUIN;
+	}
+	
+	public boolean isValidRegistrationType(String registrationType)
+			throws RegBaseCheckedException {
+		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.RES_REPRINT.toString())
+				|| registrationType.equalsIgnoreCase(RegistrationType.RES_REPRINT.toString()))) {
+			return true;
+		} else {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+					"Invalid RegistrationType:Enter RES_REPRINT", new Throwable());
+		}
+
+	}
+	
+	public boolean isValidVid(String vid) throws RegBaseCheckedException {
+		boolean isValidVID = false;
+		try {
+			isValidVID = vidValidatorImpl.validateId(vid);
+			JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(vid));
+			if (isValidVID && jsonObject != null) {
+				isValidVID = true;
+			} else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "VID is not valid",
+						new Throwable());
+
+			}
+		} catch (InvalidIDException ex) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
+
+		} catch (IdRepoAppException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (NumberFormatException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
+		} catch (ApisResourceAccessException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
+		}
+		return isValidVID;
+	}
+	
+	public boolean isValidIdType(String idType)
+			throws RegBaseCheckedException {
+		if (idType != null && (idType.equalsIgnoreCase(UIN))) {
+			return true;
+		} else {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+					"Invalid IdType:Enter UIN", new Throwable());
+		}
+
+	}
+	
+	public boolean isValidCardType(String cardType)
+			throws RegBaseCheckedException {
+		if (cardType != null && (cardType.equalsIgnoreCase(VID))) {
+			return true;
+		} else {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+					"Invalid IdType:Enter VID", new Throwable());
+		}
+
 	}
 
 }
