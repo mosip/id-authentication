@@ -66,6 +66,7 @@ public class BioDevice {
 			put("RIGHT", 2);
 			put("THUMBS", 3);
 			put("FACE",0);
+			put("DOUBLE", 3);
 		}
 	};
 

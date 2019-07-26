@@ -1208,6 +1208,11 @@ public class BaseController {
 		return getIrisExceptions().stream().anyMatch(exceptionIris -> exceptionIris.isMarkedAsException() && StringUtils
 				.containsIgnoreCase(exceptionIris.getMissingBiometric(), (iris).concat(RegistrationConstants.EYE)));
 	}
+	
+
+	public void getExceptionIdentifier(List<String> exception, String exceptionType) {
+			exception.add(RegistrationConstants.userOnBoardMap.get(exceptionType));
+	}
 
 	/**
 	 * To get the current timestamp

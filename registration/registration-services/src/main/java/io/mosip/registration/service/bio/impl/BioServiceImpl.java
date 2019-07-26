@@ -588,7 +588,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		if (RegistrationConstants.ENABLE
 				.equalsIgnoreCase(((String) ApplicationContext.map().get(RegistrationConstants.MDM_ENABLED))))
-			getIrisImageAsDTOWithMdm(irisDetailsDTO, irisType);
+			getIrisImageAsDTOWithMdm(irisDetailsDTO, "IRIS_DOUBLE");
 		else
 			getIrisImageAsDTONonMdm(irisDetailsDTO, irisType);
 	}
@@ -603,32 +603,25 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 */
 	private void getIrisImageAsDTOWithMdm(IrisDetailsDTO detailsDTO, String eyeType) throws RegBaseCheckedException, IOException {
 
-		String type = eyeType;
-		switch (eyeType) {
-		case RegistrationConstants.LEFT + RegistrationConstants.EYE:
-			eyeType = RegistrationConstants.IRIS_SINGLE;
-			detailsDTO.setIrisImageName(RegistrationConstants.LEFT + RegistrationConstants.EYE);
-			break;
-		case RegistrationConstants.RIGHT + RegistrationConstants.EYE:
-			eyeType = RegistrationConstants.IRIS_SINGLE;
-			detailsDTO.setIrisImageName(RegistrationConstants.RIGHT + RegistrationConstants.EYE);
-			break;
-		case RegistrationConstants.IRIS_DOUBLE:
-			eyeType = RegistrationConstants.IRIS_DOUBLE;
-			detailsDTO.setIrisImageName(RegistrationConstants.IRIS_DOUBLE);
-			break;
-
-		default:
-			break;
-
-		}
-
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(eyeType);
-		byte[] irisByte = mosipBioDeviceManager.getSingleBioValue(captureResponseDto);
-		detailsDTO.setIris(irisByte);
-		detailsDTO.setIrisType(type);
-		detailsDTO.setQualityScore(80);
-
+		if(captureResponseDto==null)
+			throw new RegBaseCheckedException("","Decice is not available");
+		if(captureResponseDto.getError().getErrorCode().equals("202"))
+			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
+		if(captureResponseDto.getError().getErrorCode().equals("403"))
+			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
+		decode(captureResponseDto);
+		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
+		mosipBioDeviceDataResponses.forEach(captured->{
+			IrisDetailsDTO irisDetails = new IrisDetailsDTO();
+			CaptureResponsBioDataDto captureRespoonse = captured.getCaptureResponseData();
+			irisDetails.setIrisIso((Base64.getDecoder().decode(captureRespoonse.getBioExtract())));
+			irisDetails.setIrisImageName("FingerPrint "+captureRespoonse.getBioSubType());
+			irisDetails.setIris((captureRespoonse.getBioValue()));
+			irisDetails.setQualityScore(Integer.parseInt(captureRespoonse.getQualityScore()));
+			detailsDTO.getIrises().add(irisDetails);
+		});
+		detailsDTO.setCaptured(true);
 	}
 
 	/**
@@ -641,7 +634,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 	 * @throws RegBaseCheckedException
 	 *             the reg base checked exception
 	 */
-	private void getIrisImageAsDTONonMdm(IrisDetailsDTO irisDetailsDTO, String irisType)
+	private void getIrisImageAsDTONonMdm(IrisDetailsDTO irisDetails, String irisType)
 			throws RegBaseCheckedException {
 		try {
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,
@@ -653,6 +646,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 				qualityScore = (double) scannedIrisMap.get(RegistrationConstants.IMAGE_SCORE_KEY);
 			}
 
+			IrisDetailsDTO irisDetailsDTO = new IrisDetailsDTO();
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)
 					|| Double.compare(irisDetailsDTO.getQualityScore(), qualityScore) < 0) {
 				// Set the values in IrisDetailsDTO object
@@ -664,9 +658,10 @@ public class BioServiceImpl extends BaseService implements BioService {
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					irisDetailsDTO.setQualityScore(qualityScore);
 				}
-				if (irisDetailsDTO.getNumOfIrisRetry() > 1) {
 					irisDetailsDTO.setQualityScore(91.0);
-				}
+					irisDetails.setIrises(new ArrayList<IrisDetailsDTO>());
+					irisDetails.getIrises().add(irisDetailsDTO);
+					irisDetails.setCaptured(true);
 			}
 
 			LOGGER.info(LOG_REG_IRIS_FACADE, APPLICATION_NAME, APPLICATION_ID,

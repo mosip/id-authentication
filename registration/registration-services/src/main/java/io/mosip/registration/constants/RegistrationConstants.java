@@ -1480,6 +1480,8 @@ public class RegistrationConstants {
 			put("rightMiddle", "RF_MIDDLE");
 			put("rightRing", "RF_RING");
 			put("rightThumb", "RF_THUMB");
+			put("LeftEye", "L_IRIS");
+			put("RightEye", "R_IRIS");
 			put("LeftEye.png", "LEFT");
 			put("RightEye.png", "RIGHT");
 		}

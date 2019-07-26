@@ -199,18 +199,7 @@ public class MosipBioDeviceManager {
 			bioDevice.setDeviceExpiry(deviceInfo.getDeviceExpiry());
 			bioDevice.setCertification(deviceInfo.getCertification());
 			bioDevice.setTimestamp(deviceInfo.getTimestamp());
-			String deviceSubType = deviceInfoResponse.getSubType();
-			if(deviceInfoResponse.getType().toUpperCase().equals(MosipBioDeviceConstants.VALUE_IRIS)){
-				if ((MosipBioDeviceConstants.VALUE_SINGLE).equalsIgnoreCase(deviceSubType)) {
-					deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
-							+ MosipBioDeviceConstants.VALUE_SINGLE, bioDevice);
-				} else if (MosipBioDeviceConstants.VALUE_DOUBLE.equalsIgnoreCase(deviceSubType)) {
-					deviceRegistry.put(MosipBioDeviceConstants.VALUE_IRIS + "_"
-							+ MosipBioDeviceConstants.VALUE_DOUBLE, bioDevice);
-				}
-			}else{
-				deviceRegistry.put(bioDevice.getDeviceType().toUpperCase()+RegistrationConstants.UNDER_SCORE+bioDevice.getDeviceSubType().toUpperCase(), bioDevice);
-			}
+			deviceRegistry.put(bioDevice.getDeviceType().toUpperCase()+RegistrationConstants.UNDER_SCORE+bioDevice.getDeviceSubType().toUpperCase(), bioDevice);
 		}	
 	}
 
@@ -296,6 +285,9 @@ public class MosipBioDeviceManager {
 		if(deviceType.contains("FINGERPRINT_SLAB")) {
 			deviceId=deviceType.substring("FINGERPRINT_SLAB".length()+1, deviceType.length());
 			deviceType="FINGERPRINT_SLAB";
+		}else if (deviceType.contains("IRIS_DOUBLE")) {
+			deviceType="IRIS_DOUBLE";
+			deviceId="DOUBLE";
 		}
 		if(deviceType.contains("FACE_FULL")) {
 			deviceId=deviceType.substring("FACE_FULL".length()+1, deviceType.length());

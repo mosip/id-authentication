@@ -848,10 +848,6 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 	}
 	
-	private void getExceptionIdentifier(List<String> exception, String exceptionType) {
-		exception.add(RegistrationConstants.userOnBoardMap.get(exceptionType));
-	}
-	
 	/**
 	 * Exception fingers count.
 	 */
