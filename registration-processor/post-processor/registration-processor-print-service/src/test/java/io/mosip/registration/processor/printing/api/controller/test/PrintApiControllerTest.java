@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.printing.api.controller.test;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,7 +27,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.Errors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -102,7 +100,7 @@ public class PrintApiControllerTest {
 	@WithUserDetails("reg-admin")
 	@Test
 	public void testpdfSuccess() throws Exception {
-		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
+		Mockito.when(printservice.getDocuments(any(), any(), any())).thenReturn(map);
 
 		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -127,8 +125,8 @@ public class PrintApiControllerTest {
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
-		this.mockMvc.perform(post("/uincard")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+				.andExpect(status().isOk());
 	}
 
 	@WithUserDetails("reg-admin")
@@ -143,14 +141,14 @@ public class PrintApiControllerTest {
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
-		this.mockMvc.perform(post("/uincard")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+				.andExpect(status().isOk());
 	}
 
 	@WithUserDetails("reg-admin")
 	@Test
 	public void testPdfSuccessUIN() throws Exception {
-		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
+		Mockito.when(printservice.getDocuments(any(), any(), any())).thenReturn(map);
 		PrintRequest request = new PrintRequest();
 		request.setId("mosip.registration.print");
 		RequestDTO dto = new RequestDTO();
@@ -161,8 +159,8 @@ public class PrintApiControllerTest {
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
-		this.mockMvc.perform(post("/uincard")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+				.andExpect(status().isOk());
 	}
 
 	@WithUserDetails("reg-admin")
@@ -174,8 +172,8 @@ public class PrintApiControllerTest {
 		request.setVersion("1.0");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		json = gson.toJson(request);
-		this.mockMvc.perform(post("/uincard")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).content(json)).andExpect(status().isOk());
+		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON_VALUE).content(json))
+				.andExpect(status().isOk());
 	}
 
 }

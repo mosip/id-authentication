@@ -93,14 +93,16 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	@Value("${mosip.secondary-language}")
 	private String secondaryLang;
 
+	@Value("${registration.processor.unMaskedUin.length}")
+	private int unMaskedLength;
+
+	@Value("${mosip.kernel.uin.length}")
+	private int uinLength;
+
 	/** The Constant UIN_CARD_TEMPLATE. */
 	private static final String UIN_CARD_TEMPLATE = "RPR_UIN_CARD_TEMPLATE";
 
-	/** The Constant UIN. */
-	private static final String UIN = "UIN";
-
-	/** The Constant RID. */
-	private static final String RID = "RID";
+	private static final String MASKED_UIN_CARD_TEMPLATE = "RPR_MASKED_UIN_CARD_TEMPLATE";
 
 	/** The Constant FACE. */
 	private static final String FACE = "Face";
@@ -123,10 +125,6 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	/** The core audit request builder. */
 	@Autowired
 	private AuditLogRequestBuilder auditLogRequestBuilder;
-
-	/** The utility. */
-	@Autowired
-	private Utilities utility;
 
 	/** The template generator. */
 	@Autowired
@@ -168,7 +166,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Map<String, byte[]> getDocuments(IdType idType, String idValue) {
+	public Map<String, byte[]> getDocuments(IdType idType, String idValue, String regId) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PrintServiceImpl::getDocuments()::entry");
 
@@ -177,22 +175,26 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		String description = null;
 		Map<String, Object> attributes = new LinkedHashMap<>();
 		boolean isTransactionSuccessful = false;
+		IdResponseDTO1 response = null;
+		String template = UIN_CARD_TEMPLATE;
 		try {
-			if (idType.toString().equalsIgnoreCase(UIN)) {
+			if (idType.toString().equalsIgnoreCase(IdType.UIN.toString())) {
 				uin = idValue;
-			} else if (idType.toString().equalsIgnoreCase(RID)) {
-				JSONObject jsonObject = utilities.retrieveUIN(idValue);
-				Long value = JsonUtil.getJSONValue(jsonObject, UIN);
-				uin = Long.toString(value);
-				if (uin == null) {
+				response = getIdRepoResponse(idType.toString(), uin);
+			} else if (idType.toString().equalsIgnoreCase(IdType.RID.toString())
+					|| idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
+				JSONObject jsonObject = utilities.retrieveUIN(regId);
+				Long value = JsonUtil.getJSONValue(jsonObject, IdType.UIN.toString());
+				if (value == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), null,
 							PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name());
 					throw new UINNotFoundInDatabase(PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.getCode());
 				}
-			}
+				uin = Long.toString(value);
 
-			IdResponseDTO1 response = getIdRepoResponse(idValue);
+				response = getIdRepoResponse(idType.toString(), regId);
+			}
 
 			boolean isPhotoSet = setApplicantPhoto(response, attributes);
 			if (!isPhotoSet) {
@@ -202,7 +204,14 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			}
 			String jsonString = new JSONObject((Map) response.getResponse().getIdentity()).toString();
 			setTemplateAttributes(jsonString, attributes);
-			attributes.put(UIN, uin);
+			if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
+				template = MASKED_UIN_CARD_TEMPLATE;
+				attributes.put(IdType.VID.toString(), idValue);
+				String maskedUin = maskString(uin, uinLength - unMaskedLength, '*');
+				attributes.put(IdType.UIN.toString(), maskedUin);
+			} else {
+				attributes.put(IdType.UIN.toString(), uin);
+			}
 
 			byte[] textFileByte = createTextFile(attributes);
 			byteMap.put(UIN_TEXT_FILE, textFileByte);
@@ -215,10 +224,10 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			}
 
 			// getting template and placing original values
-			InputStream uinArtifact = templateGenerator.getTemplate(UIN_CARD_TEMPLATE, attributes, primaryLang);
+			InputStream uinArtifact = templateGenerator.getTemplate(template, attributes, primaryLang);
 			if (uinArtifact == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), idValue,
+						LoggerFileConstant.REGISTRATIONID.toString(), regId,
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name());
 				throw new TemplateProcessingFailureException(
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
@@ -230,23 +239,23 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			byte[] pdfbytes = pdf.toByteArray();
 			byteMap.put(UIN_CARD_PDF, pdfbytes);
 
-			byte[] uinbyte = attributes.get(UIN).toString().getBytes();
-			byteMap.put(UIN, uinbyte);
+			byte[] uinbyte = attributes.get(IdType.UIN.toString()).toString().getBytes();
+			byteMap.put(IdType.UIN.toString(), uinbyte);
 
 			isTransactionSuccessful = true;
 
 		} catch (QrcodeGenerationException e) {
 			description = "Error while QR Code Generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idValue, PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
+					regId, PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (UINNotFoundInDatabase e) {
-			description = "UIN not found in database for id" + idValue;
+			description = "UIN not found in database for id" + regId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idValue, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
+					regId, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -254,23 +263,23 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		} catch (TemplateProcessingFailureException e) {
 			description = "Error while Template Processing";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idValue, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
+					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 
 		} catch (PDFGeneratorException e) {
 			description = "Error while pdf generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idValue, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
+					regId, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
-			description = "Internal error occurred while processing packet id" + idValue;
+			description = "Internal error occurred while processing packet id" + regId;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idValue, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
+					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -278,7 +287,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		} catch (Exception ex) {
 			description = "Process stopped due to some internal error";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					idValue, description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
+					regId, description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 
@@ -316,15 +325,20 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 * @throws ApisResourceAccessException
 	 *             the apis resource access exception
 	 */
-	private IdResponseDTO1 getIdRepoResponse(String idValue) throws ApisResourceAccessException {
+	private IdResponseDTO1 getIdRepoResponse(String idType, String idValue) throws ApisResourceAccessException {
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(idValue);
 
 		String queryParamName = "type";
 		String queryParamValue = "all";
-
-		IdResponseDTO1 response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID,
-				pathsegments, queryParamName, queryParamValue, IdResponseDTO1.class);
+		IdResponseDTO1 response = null;
+		if (idType.equalsIgnoreCase(IdType.UIN.toString())) {
+			response = (IdResponseDTO1) restClientService.getApi(ApiName.IDREPOGETIDBYUIN, pathsegments, queryParamName,
+					queryParamValue, IdResponseDTO1.class);
+		} else {
+			response = (IdResponseDTO1) restClientService.getApi(ApiName.RETRIEVEIDENTITYFROMRID, pathsegments,
+					queryParamName, queryParamValue, IdResponseDTO1.class);
+		}
 
 		if (response == null || response.getResponse() == null) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -370,7 +384,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 
 		jsonDto.setRequest(request);
 
-		File jsonText = FileUtils.getFile(attributes.get(UIN).toString() + TXT);
+		File jsonText = FileUtils.getFile(attributes.get(IdType.UIN.toString()).toString() + TXT);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 		mapper.writeValue(jsonText, jsonDto);
@@ -467,11 +481,11 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			if (demographicIdentity == null)
 				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
-			String mapperJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
-					utility.getGetRegProcessorIdentityJson());
+			String mapperJsonString = Utilities.getJson(utilities.getConfigServerFileStorageURL(),
+					utilities.getGetRegProcessorIdentityJson());
 			JSONObject mapperJson = JsonUtil.objectMapperReadValue(mapperJsonString, JSONObject.class);
 			JSONObject mapperIdentity = JsonUtil.getJSONObject(mapperJson,
-					utility.getGetRegProcessorDemographicIdentity());
+					utilities.getGetRegProcessorDemographicIdentity());
 
 			List<String> mapperJsonKeys = new ArrayList<>(mapperIdentity.keySet());
 			for (String key : mapperJsonKeys) {
@@ -499,4 +513,19 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		}
 	}
 
+	private String maskString(String uin, int maskLength, char maskChar) {
+		if (uin == null || uin.equals(""))
+			return "";
+
+		if (maskLength == 0)
+			return uin;
+
+		StringBuilder sbMaskString = new StringBuilder(maskLength);
+
+		for (int i = 0; i < maskLength; i++) {
+			sbMaskString.append(maskChar);
+		}
+
+		return sbMaskString.toString() + uin.substring(0 + maskLength);
+	}
 }
