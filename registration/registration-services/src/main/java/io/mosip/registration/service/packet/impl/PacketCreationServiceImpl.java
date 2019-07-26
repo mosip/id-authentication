@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -56,9 +57,12 @@ import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.BaseDTO;
+import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
@@ -118,6 +122,9 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	public byte[] create(final RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		LOGGER.info(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
 		try {
+
+			validateRegistrationDTO(registrationDTO);
+			
 			String rid = registrationDTO.getRegistrationId();
 			String loggerMessageForCBEFF = "Byte array of %s file generated successfully";
 
@@ -555,6 +562,206 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 	private boolean isListNotEmpty(List<? extends BaseDTO> listToValidate) {
 		return !(listToValidate == null || listToValidate.isEmpty());
+	}
+
+	private void validateRegistrationDTO(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
+		if (registrationDTO == null) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_NULL_PACKET_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_NULL_PACKET_EXCEPTION.getErrorMessage());
+		}
+
+		if (isStringEmpty(registrationDTO.getRegistrationId())) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_INVALID_RID_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_INVALID_RID_EXCEPTION.getErrorMessage());
+		}
+
+		validateRegistrationMetaData(registrationDTO.getRegistrationMetaDataDTO());
+
+		boolean isFingerprintOrIrisCaptureEnabled = isDeviceEnabled(RegistrationConstants.FINGERPRINT_DISABLE_FLAG)
+				|| isDeviceEnabled(RegistrationConstants.IRIS_DISABLE_FLAG);
+
+		boolean isFaceCaptureEnabled = isDeviceEnabled(RegistrationConstants.FACE_DISABLE_FLAG);
+		Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+
+		if (isFingerprintOrIrisCaptureEnabled || isFaceCaptureEnabled) {
+			biometricsCapturedFlags = validateBiometrics(registrationDTO, isFingerprintOrIrisCaptureEnabled, isFaceCaptureEnabled);
+		}
+
+		validateOSIData(registrationDTO, biometricsCapturedFlags);
+	}
+
+	private void validateRegistrationMetaData(RegistrationMetaDataDTO metaData) throws RegBaseCheckedException {
+		if (metaData == null) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_METADATA_NULL_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_METADATA_NULL_EXCEPTION.getErrorMessage());
+		}
+
+		if (isStringEmpty(metaData.getRegistrationCategory())) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_INVALID_REG_CATEGORY_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_INVALID_REG_CATEGORY_EXCEPTION.getErrorMessage());
+		}
+
+		if (isStringEmpty(metaData.getCenterId())) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_INVALID_CENTER_ID_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_INVALID_CENTER_ID_EXCEPTION.getErrorMessage());
+		}
+
+		if (isStringEmpty(metaData.getMachineId())) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_INVALID_MACHINE_ID_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_INVALID_MACHINE_ID_EXCEPTION.getErrorMessage());
+		}
+
+		if (isStringEmpty(metaData.getDeviceId())) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_INVALID_DEVICE_ID_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_INVALID_DEVICE_ID_EXCEPTION.getErrorMessage());
+		}
+
+		if (isStringEmpty(metaData.getConsentOfApplicant())) {
+			throw new RegBaseCheckedException(RegistrationExceptionConstants.REG_PKT_INVALID_APPLICANT_CONSENT_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_INVALID_APPLICANT_CONSENT_EXCEPTION.getErrorMessage());
+		}
+	}
+
+	private void validateOSIData(RegistrationDTO registrationDTO, Map<String, Boolean> biometricsCapturedFlags)
+			throws RegBaseCheckedException {
+		OSIDataDTO osiData = registrationDTO.getOsiDataDTO();
+
+		if (osiData == null) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PKT_OSIDATA_NULL_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_OSIDATA_NULL_EXCEPTION.getErrorMessage());
+		}
+
+		if (isStringEmpty(osiData.getOperatorID())) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PKT_OFFICER_ID_NULL_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_OFFICER_ID_NULL_EXCEPTION.getErrorMessage());
+		}
+
+		if (!(osiData.isOperatorAuthenticatedByPassword() || osiData.isOperatorAuthenticatedByPIN()
+				|| biometricsCapturedFlags.getOrDefault(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED, false))) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PKT_OFFICER_AUTH_INVALID_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_OFFICER_AUTH_INVALID_EXCEPTION.getErrorMessage());
+		}
+
+		if (biometricsCapturedFlags.getOrDefault(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, false)) {
+			if (isStringEmpty(osiData.getSupervisorID())) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_PKT_SUPERVISOR_ID_NULL_EXCEPTION.getErrorCode(),
+						RegistrationExceptionConstants.REG_PKT_SUPERVISOR_ID_NULL_EXCEPTION.getErrorMessage());
+			}
+
+			if (!(osiData.isSuperviorAuthenticatedByPassword() || osiData.isSuperviorAuthenticatedByPIN()
+					|| biometricsCapturedFlags.getOrDefault(RegistrationConstants.IS_SUPERVISOR_BIOMETRICS_CAPTURED,
+							false))) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_PKT_SUPERVISOR_AUTH_INVALID_EXCEPTION.getErrorCode(),
+						RegistrationExceptionConstants.REG_PKT_SUPERVISOR_AUTH_INVALID_EXCEPTION.getErrorMessage());
+			}
+		}
+	}
+
+	private Map<String, Boolean> validateBiometrics(RegistrationDTO registration, boolean isFingerprintOrIrisCaptureEnabled,
+			boolean isFaceCaptureEnabled) throws RegBaseCheckedException {
+
+		Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+
+		if (registration.getBiometricDTO() == null) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PKT_BIOMETRICS_NULL_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_BIOMETRICS_NULL_EXCEPTION.getErrorMessage());
+		}
+
+		BiometricInfoDTO applicantBiometrics = registration.getBiometricDTO().getApplicantBiometricDTO();
+		BiometricInfoDTO authenticationBiometrics = registration.getBiometricDTO().getIntroducerBiometricDTO();
+
+		if (applicantBiometrics == null) {
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PKT_APPLICANT_BIOMETRICS_NULL_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PKT_APPLICANT_BIOMETRICS_NULL_EXCEPTION.getErrorMessage());
+		}
+
+		boolean hasApplicantBiometricException = false;
+		boolean hasAuthenticationBiometricException = false;
+		if (isFingerprintOrIrisCaptureEnabled) {
+			hasApplicantBiometricException = isListNotEmpty(applicantBiometrics.getBiometricExceptionDTO());
+
+			if (authenticationBiometrics != null) {
+				hasAuthenticationBiometricException = isListNotEmpty(
+						authenticationBiometrics.getBiometricExceptionDTO());
+			}
+		}
+
+		validateFace(isFaceCaptureEnabled, applicantBiometrics, authenticationBiometrics,
+				hasApplicantBiometricException, hasAuthenticationBiometricException);
+
+		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED,
+				hasApplicantBiometricException || hasAuthenticationBiometricException);
+		biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED,
+				isBiometricCaptured(registration.getBiometricDTO().getOperatorBiometricDTO()));
+		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_BIOMETRICS_CAPTURED,
+				isBiometricCaptured(registration.getBiometricDTO().getSupervisorBiometricDTO()));
+
+		return biometricsCapturedFlags;
+	}
+
+	private void validateFace(boolean isFaceCaptureEnabled, BiometricInfoDTO applicantBiometrics,
+			BiometricInfoDTO authenticationBiometrics, boolean hasApplicantBiometricException,
+			boolean hasAuthenticationBiometricException) throws RegBaseCheckedException {
+		if (isFaceCaptureEnabled) {
+			if (validateFace(applicantBiometrics.getFace()) && authenticationBiometrics != null
+					&& validateFace(authenticationBiometrics.getFace())) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_PKT_APPLICANT_BIO_INVALID_FACE_EXCEPTION.getErrorCode(),
+						RegistrationExceptionConstants.REG_PKT_APPLICANT_BIO_INVALID_FACE_EXCEPTION.getErrorMessage());
+			}
+
+			if (hasApplicantBiometricException && validateFace(applicantBiometrics.getExceptionFace())) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_PKT_APPLICANT_BIO_INVALID_EXCEPTION_FACE_EXCEPTION
+								.getErrorCode(),
+						RegistrationExceptionConstants.REG_PKT_APPLICANT_BIO_INVALID_EXCEPTION_FACE_EXCEPTION
+								.getErrorMessage());
+			}
+
+			if (hasAuthenticationBiometricException && validateFace(authenticationBiometrics.getExceptionFace())) {
+				throw new RegBaseCheckedException(
+						RegistrationExceptionConstants.REG_PKT_AUTHENTICATION_BIO_INVALID_EXCEPTION_FACE_EXCEPTION
+								.getErrorCode(),
+						RegistrationExceptionConstants.REG_PKT_AUTHENTICATION_BIO_INVALID_EXCEPTION_FACE_EXCEPTION
+								.getErrorMessage());
+			}
+		}
+	}
+
+	private boolean validateFace(FaceDetailsDTO face) {
+		return face == null || face.getFace() == null;
+	}
+
+	private boolean isBiometricCaptured(BiometricInfoDTO biometrics) {
+		boolean isBiometricCaptured = true;
+
+		if (biometrics == null) {
+			isBiometricCaptured = false;
+		} else {
+			isBiometricCaptured = !(isListEmpty(biometrics.getFingerprintDetailsDTO())
+					|| isListEmpty(biometrics.getIrisDetailsDTO()) || validateFace(biometrics.getFace()));
+		}
+
+		return isBiometricCaptured;
+	}
+
+	private boolean isStringEmpty(String stringToBeValidated) {
+		return stringToBeValidated == null || stringToBeValidated.isEmpty();
+	}
+
+	private boolean isDeviceEnabled(String key) {
+		return String.valueOf(ApplicationContext.map().get(key)).equalsIgnoreCase(RegistrationConstants.ENABLE);
+	}
+
+	private boolean isListEmpty(List<?> listToBeValidated) {
+		return listToBeValidated == null || listToBeValidated.isEmpty();
 	}
 
 }

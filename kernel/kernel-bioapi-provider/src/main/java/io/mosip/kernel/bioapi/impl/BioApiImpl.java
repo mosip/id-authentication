@@ -15,6 +15,7 @@ import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.QualityType;
 
 /**
  * The Class BioApiImpl.
@@ -30,7 +31,8 @@ public class BioApiImpl implements IBioApi{
 	@Override
 	public QualityScore checkQuality(BIR sample, KeyValuePair[] flags) {
 		QualityScore qualityScore = new QualityScore();
-		int major = Optional.ofNullable(sample.getBdbInfo()).map(BDBInfo::getQuality).orElse(0);
+		int major = Optional.ofNullable(sample.getBdbInfo()).map(BDBInfo::getQuality)
+				.map(QualityType::getScore).orElse(0L).intValue();
 		qualityScore.setInternalScore(major);
 		return qualityScore;
 	}

@@ -53,7 +53,7 @@ public class AlertController extends BaseController implements Initializable {
 	private ScanPopUpViewController scanPopUpViewController;
 	@Autowired
 	private RegistrationApprovalController registrationApprovalController;
-	
+
 	/**
 	 * @return the alertGridPane
 	 */
@@ -64,9 +64,8 @@ public class AlertController extends BaseController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		fXComponents.getScene().getRoot().setDisable(true);
-		
-		if (scanPopUpViewController.getPopupStage() != null
-				&& scanPopUpViewController.getPopupStage().isShowing()) {
+
+		if (scanPopUpViewController.getPopupStage() != null && scanPopUpViewController.getPopupStage().isShowing()) {
 			scanPopUpViewController.getPopupStage().getScene().getRoot().setDisable(true);
 		} else if (registrationApprovalController.getPrimaryStage() != null
 				&& registrationApprovalController.getPrimaryStage().isShowing()) {
@@ -74,7 +73,6 @@ public class AlertController extends BaseController implements Initializable {
 		}
 	}
 
-	
 	public void generateAlertResponse(String title, String contextString) {
 		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert generation has been started");
 
@@ -85,13 +83,13 @@ public class AlertController extends BaseController implements Initializable {
 			image = new Image(RegistrationConstants.SUCCESS_IMG_PTH);
 			header.setText(RegistrationUIConstants.SUCCESS);
 			alertImage.setImage(image);
-			contextSecondMsg = gettingSecondErrorMessage(split,RegistrationConstants.SUCCESS.toUpperCase());
-		} else if(split[1].contains(RegistrationConstants.ERROR.toUpperCase())){
+			contextSecondMsg = gettingSecondErrorMessage(split, RegistrationConstants.SUCCESS.toUpperCase());
+		} else if (split[1].contains(RegistrationConstants.ERROR.toUpperCase())) {
 			image = new Image(RegistrationConstants.FAILURE_IMG_PTH);
 			header.setText(RegistrationUIConstants.ALERT_FAILED_LABEL);
 			alertImage.setImage(image);
-			contextSecondMsg = gettingSecondErrorMessage(split,RegistrationConstants.ERROR.toUpperCase());
-		}else if(split[1].contains(RegistrationConstants.INFO)){
+			contextSecondMsg = gettingSecondErrorMessage(split, RegistrationConstants.ERROR.toUpperCase());
+		} else {
 			header.setText(RegistrationUIConstants.ALERT_NOTE_LABEL);
 			alertImage.setDisable(false);
 			alertImage.setVisible(false);
@@ -99,26 +97,26 @@ public class AlertController extends BaseController implements Initializable {
 			alertHbox.setManaged(false);
 			imageVbox.setVisible(false);
 			imageVbox.setManaged(false);
-			contextSecondMsg = gettingSecondErrorMessage(split,RegistrationConstants.INFO);
+			contextSecondMsg = gettingSecondErrorMessage(split, RegistrationConstants.INFO);
 		}
-		context.setText(split[0].trim()+contextSecondMsg);
-		
-		if(context.getText().length()>50) {
+		context.setText(split[0].trim() + contextSecondMsg);
+
+		if (context.getText().length() > 50) {
 			imageVbox.setAlignment(Pos.TOP_CENTER);
 		}
-		
+
 		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert generation has been ended");
 
 	}
 
-	private String gettingSecondErrorMessage(String[] split,String splitter) {
-		StringBuilder errorMessage=new StringBuilder();
-		for(int i=1;i<split.length;i++) {
-			errorMessage = errorMessage.append(split[i].replaceAll(splitter,RegistrationConstants.SPACE));
+	private String gettingSecondErrorMessage(String[] split, String splitter) {
+		StringBuilder errorMessage = new StringBuilder();
+		for (int i = 1; i < split.length; i++) {
+			errorMessage = errorMessage.append(split[i].replaceAll(splitter, RegistrationConstants.SPACE));
 		}
 		return errorMessage.toString();
 	}
-	
+
 	@FXML
 	private void alertWindowExit() {
 		LOGGER.info(LOG_ALERT_GENERATION, APPLICATION_NAME, APPLICATION_ID, "Alert closing has been started");
@@ -126,8 +124,7 @@ public class AlertController extends BaseController implements Initializable {
 		Stage stage = (Stage) exit.getScene().getWindow();
 		stage.close();
 		fXComponents.getScene().getRoot().setDisable(false);
-		if (scanPopUpViewController.getPopupStage() != null
-				&& scanPopUpViewController.getPopupStage().isShowing()) {
+		if (scanPopUpViewController.getPopupStage() != null && scanPopUpViewController.getPopupStage().isShowing()) {
 			scanPopUpViewController.getPopupStage().getScene().getRoot().setDisable(false);
 		} else if (registrationApprovalController.getPrimaryStage() != null
 				&& registrationApprovalController.getPrimaryStage().isShowing()) {

@@ -417,6 +417,8 @@ public class DataProvider {
 		registrationMetaDataDTO.setMachineId("yyeqy26356");
 		registrationMetaDataDTO.setRegistrationCategory("New");
 		registrationMetaDataDTO.setApplicantTypeCode("007");
+		registrationMetaDataDTO.setDeviceId("11143");
+		registrationMetaDataDTO.setConsentOfApplicant("Yes");
 		
 		return registrationMetaDataDTO;
 	}
@@ -426,6 +428,8 @@ public class DataProvider {
 		osiDataDTO.setOperatorID("op0r0s12");
 		osiDataDTO.setSupervisorID("s9ju2jhu");
 		osiDataDTO.setIntroducerType(IntroducerType.PARENT.getCode());
+		osiDataDTO.setOperatorAuthenticatedByPassword(true);
+		osiDataDTO.setSuperviorAuthenticatedByPIN(true);
 		return osiDataDTO;
 	}
 

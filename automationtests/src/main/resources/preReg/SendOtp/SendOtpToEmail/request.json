@@ -1,8 +1,0 @@
-{
-  "id": "mosip.pre-registration.login.sendotp",
-	"version": "1.0",
-	"requesttime": "2019-04-09T07:24:47.605Z",
-  "request": {
-    "userId": "lavanya.ranganathan@mindtree.com"
-  }
-}
