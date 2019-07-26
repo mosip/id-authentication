@@ -145,6 +145,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 				"Page loading has been started");
 		reloadTableView();
 		tableCellColorChangeListener();
+		disableColumnsReorder(table);
 	}
 
 	private void tableCellColorChangeListener() {
@@ -232,7 +233,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 				}
 				webView.getEngine().loadContent(acknowledgementContent.toString());
 			} catch (FileNotFoundException fileNotFoundException) {
-				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
+				LOGGER.error("RE_REGISTRATION_CONTROLLER - REGSITRATION_ACKNOWLEDGEMENT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(fileNotFoundException));
 			} catch (IOException ioException) {
 				LOGGER.error("RE_REGISTRATION_CONTROLLER - FAILED_WHILE_READING_ACKNOWLEDGEMENT", APPLICATION_NAME,
@@ -418,6 +419,12 @@ public class ReRegistrationController extends BaseController implements Initiali
 		table.getSelectionModel().selectFirst();
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
+			informedBtn.setDisable(false);
+			notInformedBtn.setDisable(false);
+		}else {
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
+			informedBtn.setDisable(true);
+			notInformedBtn.setDisable(true);
 		}
 	}
 }

@@ -53,7 +53,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	public synchronized void triggerMisfired(Trigger trigger) {
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "trigger mis-fired started");
+				RegistrationConstants.APPLICATION_ID, "trigger misfired started");
 
 		/*
 		 * ------------------Trigger MisFired ---------------
@@ -70,7 +70,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "trigger mis-fired ended");
+				RegistrationConstants.APPLICATION_ID, "trigger misfired ended");
 
 	}
 

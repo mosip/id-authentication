@@ -385,7 +385,7 @@
                                              <children>
                                                 <Button fx:id="scanIris" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan">
                                                    <graphic>
-                                                      <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                      <ImageView fx:id="scanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
                                                             <Image url="@../images/scan.png" />
                                                          </image>
@@ -394,7 +394,7 @@
                                                 </Button>
                                                 <Button fx:id="startOverBtn" mnemonicParsing="false" onAction="#clearIrisData" styleClass="onboardScanBtn" text="%startOver">
                                                    <graphic>
-                                                      <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                      <ImageView fx:id="startOverImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
                                                             <Image url="@../images/scan.png" />
                                                          </image>
@@ -621,7 +621,7 @@
                      <children>
                         <Button fx:id="backBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#previousSection" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                            <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/arrowLeft.png" />
                                  </image>

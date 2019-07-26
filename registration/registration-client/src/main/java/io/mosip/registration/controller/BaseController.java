@@ -21,6 +21,8 @@ import java.util.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
@@ -36,7 +38,10 @@ import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
+import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.controller.device.WebCameraController;
+import io.mosip.registration.controller.eodapproval.RegistrationApprovalController;
+import io.mosip.registration.controller.reg.AlertController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
 import io.mosip.registration.controller.reg.HeaderController;
@@ -69,6 +74,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -78,13 +84,17 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 /**
@@ -148,14 +158,22 @@ public class BaseController {
 
 	@Autowired
 	private HeaderController headerController;
-	
+
 	@Autowired
 	private WebCameraController webCameraController;
-	
+
 	@Autowired
 	private HomeController homeController;
 
-	
+	@Autowired
+	private AlertController alertController;
+
+	@Autowired
+	private ScanPopUpViewController scanPopUpViewController;
+
+	@Autowired
+	private RegistrationApprovalController registrationApprovalController;
+
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
@@ -253,20 +271,38 @@ public class BaseController {
 	 * @param context alert context
 	 */
 	protected void generateAlert(String title, String context) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setHeaderText(null);
-		alert.setContentText(context);
-		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
-		alert.setGraphic(null);
-		alert.getDialogPane().getStylesheets().add(
-				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
-		alert.setResizable(true);
-		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-		alert.showAndWait();
+		try {
+			Stage alertStage = new Stage();
+			Pane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.ALERT_GENERATION));
+			Scene scene = new Scene(authRoot);
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			alertStage.initStyle(StageStyle.UNDECORATED);
+			alertStage.setScene(scene);
+			alertStage.initModality(Modality.WINDOW_MODAL);
+			alertController.getAlertGridPane().setPrefHeight(context.length() / 2 + 110);
+			if (scanPopUpViewController.getPopupStage() != null
+					&& scanPopUpViewController.getPopupStage().isShowing()) {
+				alertController.generateAlertResponse(title, context);
+				alertStage.initOwner(scanPopUpViewController.getPopupStage());
+				alertStage.showAndWait();
+			} else if (registrationApprovalController.getPrimaryStage() != null
+					&& registrationApprovalController.getPrimaryStage().isShowing()) {
+				alertController.generateAlertResponse(title, context);
+				alertStage.initOwner(registrationApprovalController.getPrimaryStage());
+				alertStage.showAndWait();
+			} else {
+				alertStage.initOwner(fXComponents.getStage());
+				alertStage.show();
+				alertController.generateAlertResponse(title, context);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - ALERT - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - ALERT - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
 	}
 
 	/**
@@ -276,20 +312,39 @@ public class BaseController {
 	 * @param context alert context
 	 */
 	protected void generateAlertLanguageSpecific(String title, String context) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setHeaderText(null);
-		alert.setContentText(RegistrationUIConstants.getMessageLanguageSpecific(context));
-		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
-		alert.getDialogPane().getStylesheets().add(
-				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
-		alert.setGraphic(null);
-		alert.setResizable(true);
-		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-		alert.showAndWait();
+		generateAlert(title, RegistrationUIConstants.getMessageLanguageSpecific(context));
+	}
+
+	/**
+	 * Alert specific for page navigation confirmation
+	 * 
+	 * @return
+	 */
+	protected boolean pageNavigantionAlert() {
+		if (!fXComponents.getScene().getRoot().getId().equals("mainBox") && !SessionContext.map()
+				.get(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ).equals(RegistrationConstants.ENABLE)) {
+
+			Alert alert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.INFORMATION,
+					RegistrationUIConstants.ALERT_NOTE_LABEL, RegistrationUIConstants.PAGE_NAVIGATION_MESSAGE,
+					RegistrationConstants.PAGE_NAVIGATION_CONFIRM, RegistrationConstants.PAGE_NAVIGATION_CANCEL);
+
+			alert.show();
+			Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();		
+			Double xValue = screenSize.getWidth()/2 - alert.getWidth()+250;
+			Double yValue = screenSize.getHeight()/2 - alert.getHeight();
+			alert.hide();
+			alert.setX(xValue);
+			alert.setY(yValue);
+			alert.showAndWait();
+			/* Get Option from user */
+			ButtonType result = alert.getResult();
+			if (result == ButtonType.OK) {
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -309,8 +364,11 @@ public class BaseController {
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
-			label.setText(context);
+		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB))) {
+			String[] split = context.split("#TYPE#");
+			label.setText(split[0]);
+		}
+
 		Tooltip tool = new Tooltip(context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 		label.setTooltip(tool);
@@ -395,9 +453,14 @@ public class BaseController {
 	public void goToHomePage() {
 		webCameraController.closeWebcam();
 		try {
-			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				clearOnboardData();
+			if (pageNavigantionAlert()) {
+				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+					clearOnboardData();
+				} else {
+					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+							RegistrationConstants.ENABLE);
+				}
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REDIRECTHOME - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -418,7 +481,7 @@ public class BaseController {
 			Parent root = load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 			getStage().setScene(getScene(root));
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REDIRECLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error("REGISTRATION - REDIRECTLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 	}
@@ -435,6 +498,7 @@ public class BaseController {
 		clearRegistrationData();
 		clearOnboardData();
 		goToHomePage();
+
 	}
 
 	/**
@@ -490,8 +554,8 @@ public class BaseController {
 		updatePageFlow(RegistrationConstants.IRIS_CAPTURE,
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.IRIS_DISABLE_FLAG))
 						.equalsIgnoreCase(RegistrationConstants.ENABLE));
-		
-		updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC,false);
+
+		updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
 	}
 
 	/**
@@ -499,6 +563,7 @@ public class BaseController {
 	 */
 	protected void clearOnboardData() {
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
+		SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.DISABLE);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, false);
 		SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
@@ -755,7 +820,7 @@ public class BaseController {
 	protected String getOnboardPageDetails(String currentPage, String action) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
-				"Updating OnBoard based on visibility and returning next page details");
+				"Updating OnBoard flow based on visibility and returning next page details");
 
 		return getReturnPage((List<String>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_LIST),
 				currentPage, action);
@@ -846,8 +911,10 @@ public class BaseController {
 
 				LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
 						"User Onboard is success and clearing Onboard data");
-				
+
 				clearOnboardData();
+				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+						RegistrationConstants.ENABLE);
 				goToHomePage();
 				onboardAlertMsg();
 
@@ -916,7 +983,7 @@ public class BaseController {
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, message);
 
 			disableHomePage(true);
-			
+
 			Service<String> service = new Service<String>() {
 				@Override
 				protected Task<String> createTask() {
@@ -926,15 +993,14 @@ public class BaseController {
 						protected String call() {
 
 							packetHandlerController.getProgressIndicator().setVisible(true);
-							
-							
+
 							for (int i = 1; i <= 4; i++) {
 								/* starts the remap process */
 								centerMachineReMapService.handleReMapProcess(i);
 								this.updateProgress(i, 4);
 							}
-							LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-									"center remap process completed");
+							LOGGER.info("BASECONTROLLER_REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME,
+									APPLICATION_ID, "center remap process completed");
 							return null;
 						}
 					};
@@ -967,15 +1033,13 @@ public class BaseController {
 		packetHandlerController.getProgressIndicator().setVisible(false);
 
 		if (!centerMachineReMapService.isPacketsPendingForProcessing()) {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,
-					RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_SUCCESS);
 			headerController.logoutCleanUp();
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION,
-					RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_PROCESS_STILL_PENDING);
 		}
 	}
-	
+
 	private void disableHomePage(boolean isDisabled) {
 
 		if (null != homeController.getMainBox())
@@ -1023,6 +1087,7 @@ public class BaseController {
 	 */
 	protected Alert createAlert(AlertType alertType, String title, String header, String context,
 			String confirmButtonText, String cancelButtonText) {
+
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
@@ -1030,6 +1095,7 @@ public class BaseController {
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		alert.getDialogPane().setMinWidth(500);
 		alert.getDialogPane().getStylesheets().add(
 				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
@@ -1039,7 +1105,9 @@ public class BaseController {
 			Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
 			cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
 		}
-
+		alert.initStyle(StageStyle.UNDECORATED);
+		alert.initModality(Modality.WINDOW_MODAL);
+		alert.initOwner(fXComponents.getStage());
 		return alert;
 	}
 
@@ -1134,7 +1202,7 @@ public class BaseController {
 	protected void updatePageFlow(String pageId, boolean val) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Updating page flow to naviagate next or previous");
+				RegistrationConstants.APPLICATION_ID, "Updating page flow to navigate next or previous");
 
 		((Map<String, Map<String, Boolean>>) ApplicationContext.map().get(RegistrationConstants.REGISTRATION_MAP))
 				.get(pageId).put(RegistrationConstants.VISIBILITY, val);
@@ -1230,6 +1298,25 @@ public class BaseController {
 	 */
 	protected Timestamp getCurrentTimestamp() {
 		return Timestamp.from(Instant.now());
+	}
+
+	/**
+	 * Restricts the re-ordering of the columns in {@link TableView}. This is
+	 * generic method.
+	 * 
+	 * @param table
+	 *            the instance of {@link TableView} for which re-ordering of columns
+	 *            had to be restricted
+	 */
+	@SuppressWarnings("restriction")
+	protected void disableColumnsReorder(TableView<?> table) {
+		if (table != null) {
+			table.widthProperty().addListener((source, oldWidth, newWidth) -> {
+				TableHeaderRow header = (TableHeaderRow) table.lookup("TableHeaderRow");
+				header.reorderingProperty()
+						.addListener((observable, oldValue, newValue) -> header.setReordering(false));
+			});
+		}
 	}
 
 }

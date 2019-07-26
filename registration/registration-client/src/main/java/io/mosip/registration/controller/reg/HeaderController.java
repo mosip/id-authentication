@@ -45,6 +45,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -59,6 +60,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 
 /**
  * Class for Registration Officer details
@@ -176,19 +178,21 @@ public class HeaderController extends BaseController {
 	 *            logout event
 	 */
 	public void logout(ActionEvent event) {
-		auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
-				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+		if (pageNavigantionAlert()) {
+			auditFactory.audit(AuditEvent.LOGOUT_USER, Components.NAVIGATION, SessionContext.userContext().getUserId(),
+					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-		LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
+			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
 
-		if (SessionContext.authTokenDTO() != null && SessionContext.authTokenDTO().getCookie() != null
-				&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			if (SessionContext.authTokenDTO() != null && SessionContext.authTokenDTO().getCookie() != null
+					&& RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 
-			serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
+				serviceDelegateUtil.invalidateToken(SessionContext.authTokenDTO().getCookie());
 
+			}
+
+			logoutCleanUp();
 		}
-
-		logoutCleanUp();
 	}
 
 	/**
@@ -219,8 +223,7 @@ public class HeaderController extends BaseController {
 	/**
 	 * Redirecting to Home page
 	 * 
-	 * @param event
-	 *            event for redirecting to home
+	 * @param event event for redirecting to home
 	 */
 	public void redirectHome(ActionEvent event) {
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -237,32 +240,35 @@ public class HeaderController extends BaseController {
 	 *            the event
 	 */
 	public void syncData(ActionEvent event) {
+		if (pageNavigantionAlert()) {
 
-		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			if (isMachineRemapProcessStarted()) {
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				if (isMachineRemapProcessStarted()) {
 
-				LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-						RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-				return;
-			}
-			try {
-				auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
-						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-				executeSyncDataTask();
-				while (restartController.isToBeRestarted()) {
-					/* Clear the completed job map */
-					BaseJob.clearCompletedJobMap();
-
-					/* Restart the application */
-					restartController.restart();
+					LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+							RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+					return;
 				}
+				try {
+					auditFactory.audit(AuditEvent.NAV_SYNC_DATA, Components.NAVIGATION,
+							SessionContext.userContext().getUserId(),
+							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+					executeSyncDataTask();
+					while (restartController.isToBeRestarted()) {
+						/* Clear the completed job map */
+						BaseJob.clearCompletedJobMap();
 
-			} catch (RuntimeException runtimeException) {
-				LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-						runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+						/* Restart the application */
+						restartController.restart();
+					}
+
+				} catch (RuntimeException runtimeException) {
+					LOGGER.error(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+							runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+				}
+			} else {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 			}
-		} else {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
 	}
 
@@ -309,65 +315,68 @@ public class HeaderController extends BaseController {
 	 */
 	@FXML
 	public void downloadPreRegData(ActionEvent event) {
-		if (isMachineRemapProcessStarted()) {
+		if (pageNavigantionAlert()) {
+			if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
+				LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+						RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+				return;
+			}
+			auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+			executeDownloadPreRegDataTask(homeController.getMainBox(), packetHandlerController.getProgressIndicator());
+
 		}
-		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
-				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-		executeDownloadPreRegDataTask(homeController.getMainBox(), packetHandlerController.getProgressIndicator());
-		
-		
 	}
 
 	public void uploadPacketToServer() {
-		if (isMachineRemapProcessStarted()) {
+		if (pageNavigantionAlert()) {
+			if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
+				LOGGER.info(LoggerConstants.LOG_REG_HEADER, APPLICATION_NAME, APPLICATION_ID,
+						RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+				return;
+			}
+			auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
+					SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+			packetHandlerController.uploadPacket();
 		}
-		auditFactory.audit(AuditEvent.SYNC_PRE_REGISTRATION_PACKET, Components.SYNC_SERVER_TO_CLIENT,
-				SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-		packetHandlerController.uploadPacket();
 	}
 
 	public void intiateRemapProcess() {
+		if (pageNavigantionAlert()) {
 
-		masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
-				RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
+					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 
-		if (!isMachineRemapProcessStarted()) {
+			if (!isMachineRemapProcessStarted()) {
 
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.REMAP_NOT_APPLICABLE);
+			}
 		}
-
 	}
 
 	@FXML
 	public void hasUpdate(ActionEvent event) {
+		if (pageNavigantionAlert()) {
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				boolean hasUpdate = hasUpdate();
+				if (hasUpdate) {
 
-		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			boolean hasUpdate = hasUpdate();
-			if (hasUpdate) {
+					softwareUpdate(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
+							RegistrationUIConstants.UPDATE_LATER, true);
 
-				softwareUpdate(homeController.getMainBox(), packetHandlerController.getProgressIndicator(),
-						RegistrationUIConstants.UPDATE_LATER, true);
+				} else {
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_UPDATES_FOUND);
+
+				}
 
 			} else {
-				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_UPDATES_FOUND);
-
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 			}
-
-		} else {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.NO_INTERNET_CONNECTION);
 		}
-		// Check for updates
-
 	}
 
 	public boolean hasUpdate() {
@@ -424,8 +433,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected ResponseDTO call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - SYNC - HEADER_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the sync activities");
 
 						return jobConfigurationService.executeAllJobs();
 
@@ -453,7 +462,7 @@ public class HeaderController extends BaseController {
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
 
 				}
-				gridPane.setDisable(false);
+				//gridPane.setDisable(false);
 				progressIndicator.setVisible(false);
 			}
 		});
@@ -511,8 +520,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected String call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - SOFTWARE_UPDATE - HEADER_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the Software Update activities");
 
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);
@@ -552,11 +561,19 @@ public class HeaderController extends BaseController {
 
 	public void softwareUpdate(Pane pane, ProgressIndicator progressIndicator, String context,
 			boolean isPreLaunchTaskToBeStopped) {
-
-		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
-				RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
+		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+				RegistrationUIConstants.ALERT_NOTE_LABEL, context, RegistrationConstants.UPDATE_NOW_LABEL,
+				RegistrationConstants.UPDATE_LATER_LABEL);
 
 		pane.setDisable(true);
+
+		updateAlert.show();
+		Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();		
+		Double xValue = screenSize.getWidth()/2 - updateAlert.getWidth()+250;
+		Double yValue = screenSize.getHeight()/2 - updateAlert.getHeight();
+		updateAlert.hide();
+		updateAlert.setX(xValue);
+		updateAlert.setY(yValue);
 		updateAlert.showAndWait();
 
 		/* Get Option from user */
@@ -566,9 +583,17 @@ public class HeaderController extends BaseController {
 			softwareUpdateInitiate(pane, progressIndicator, context, isPreLaunchTaskToBeStopped);
 
 		} else if (result == ButtonType.CANCEL && (statusValidatorService.isToBeForceUpdate())) {
-			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null,
-					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
+			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+					RegistrationUIConstants.ALERT_NOTE_LABEL, RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED,
+					RegistrationConstants.UPDATE_NOW_LABEL, null);
 
+			alert.show();
+			Rectangle2D systemScreenSize = Screen.getPrimary().getVisualBounds();		
+			Double xPosValue = systemScreenSize.getWidth()/2 - alert.getWidth()+250;
+			Double yPosValue = systemScreenSize.getHeight()/2 - alert.getHeight();
+			alert.hide();
+			alert.setX(xPosValue);
+			alert.setY(yPosValue);
 			alert.showAndWait();
 
 			/* Get Option from user */

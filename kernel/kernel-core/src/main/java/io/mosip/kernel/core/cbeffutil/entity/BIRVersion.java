@@ -55,7 +55,7 @@ public class BIRVersion {
 	public VersionType toVersion() {
 		VersionType version = new VersionType();
 		if (getMinor() > 0)
-			version.setMajor(getMinor());
+			version.setMinor(getMinor());
 		if (getMajor() > 0)
 			version.setMajor(getMajor());
 		return version;

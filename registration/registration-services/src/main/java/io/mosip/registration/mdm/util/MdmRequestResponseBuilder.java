@@ -93,7 +93,7 @@ public class MdmRequestResponseBuilder {
 	public static Map<String, byte[]> parseBioCaptureResponse(CaptureResponseDto mosipBioCaptureResponseDto) {
 
 		LOGGER.info(MDM_REQUEST_RESPONSE_BUILDER, APPLICATION_NAME, APPLICATION_ID,
-				"Parsing the resonse dto");
+				"Parsing the response dto");
 
 		Map<String, byte[]> responseBioData = new HashMap<>();
 

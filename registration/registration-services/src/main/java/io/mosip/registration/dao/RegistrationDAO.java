@@ -175,10 +175,10 @@ public interface RegistrationDAO {
 	 * This method is used to find list of registrations by CrDtimes and client status code.
 	 *
 	 * @param crDtimes     the date upto packets to be deleted
-	 * @param clientStatus status of resgistrationPacket
+	 * @param serverStatusCode status of resgistrationPacket
 	 * @return list of registrations
 	 */
-	List<Registration> get(Timestamp crDtimes, String clientStatus);
+	List<Registration> get(Timestamp crDtimes, String serverStatusCode);
 
 	/**
 	 * This method is used to find list of registrations by server status code in.

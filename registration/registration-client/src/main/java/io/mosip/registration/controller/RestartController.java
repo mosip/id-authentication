@@ -23,8 +23,10 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Screen;
 import javafx.scene.control.ButtonType;
 import javafx.util.Duration;
 
@@ -68,7 +70,6 @@ public class RestartController extends BaseController {
 
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Is to be restart check started");
-
 		/* Check any eligible restart-able jobs completed with success */
 		SuccessResponseDTO successResponseDTO = jobConfigurationService.isRestart().getSuccessResponseDTO();
 
@@ -83,12 +84,18 @@ public class RestartController extends BaseController {
 					(String) successResponseDTO.getOtherAttributes().get(RegistrationConstants.JOB_ID));
 
 			/* Generate alert */
-			Alert restartAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.SYNC_SUCCESS,
-					successResponseDTO.getMessage(), RegistrationUIConstants.RESTART_APPLICATION,
+			Alert restartAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.SYNC_SUCCESS,RegistrationUIConstants.ALERT_NOTE_LABEL,
+					successResponseDTO.getMessage()+RegistrationConstants.SPACE+ RegistrationUIConstants.RESTART_APPLICATION,
 					RegistrationConstants.OK_MSG, RegistrationConstants.CANCEL_MSG);
 
 			generatedAlerts.add(restartAlert);
-
+			restartAlert.show();
+			Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();		
+			Double xValue = screenSize.getWidth()/2 - restartAlert.getWidth()+250;
+			Double yValue = screenSize.getHeight()/2 - restartAlert.getHeight();
+			restartAlert.hide();
+			restartAlert.setX(xValue);
+			restartAlert.setY(yValue);
 			restartAlert.showAndWait();
 
 			/* Get Option from user */
