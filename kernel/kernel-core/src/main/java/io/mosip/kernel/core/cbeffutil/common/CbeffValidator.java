@@ -235,7 +235,7 @@ public class CbeffValidator {
 					List<String> singleSubTypeList = bdbInfo.getSubtype();
 					List<SingleType> singleTypeList = bdbInfo.getType();
 					String bdbFormatType = bdbInfo.getFormat().getType();
-					boolean formatMatch = bdbFormatType.equals(formatType);
+					boolean formatMatch = Long.valueOf(bdbFormatType).equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
 						bdbMap.put(
 								singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"
@@ -369,7 +369,7 @@ public class CbeffValidator {
 					List<String> singleSubTypeList = bdbInfo.getSubtype();
 					List<SingleType> singleTypeList = bdbInfo.getType();
 					String bdbFormatType = bdbInfo.getFormat().getType();
-					boolean formatMatch = bdbFormatType.equals(formatType);
+					boolean formatMatch = Long.valueOf(bdbFormatType).equals(formatType);
 					if (singleAnySubType == null && singleTypeList.contains(singleType) && formatMatch) {
 						bdbMap.put(
 								singleType.toString() + "_" + String.join(" ", singleSubTypeList) + "_"

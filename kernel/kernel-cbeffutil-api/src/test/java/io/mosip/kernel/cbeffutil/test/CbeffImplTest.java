@@ -327,23 +327,23 @@ public class CbeffImplTest {
 
 	}
 
-	// @Test
+	//@Test
 	public void testGetBDBBasedOnType() throws IOException, Exception {
-		Map<String, String> testMap = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", "Right");
+		Map<String, String> testMap = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("createCbeffLatest2"), "Finger", "Right");
 		Set<String> testSet1 = new HashSet<>();
-		testSet1.add("FINGER_Right_2");
+		testSet1.add("FINGER_Right");
 		assertEquals(testMap.keySet(), testSet1);
-		Map<String, String> testMap1 = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", null);
-		Set<String> testSet2 = new HashSet<>();
-		testSet2.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_2");
-		assertEquals(testMap1.keySet(), testSet2);
-		Map<String, String> testMap2 = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), null, "Right");
-		Set<String> testSet3 = new HashSet<>();
-		testSet3.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_7");
-		testSet3.add("IRIS_Right_9");
-		testSet3.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_2");
-		testSet3.add("FINGER_Left Right Thumb_7");
-		assertEquals(testMap2.keySet(), testSet3);
+//		Map<String, String> testMap1 = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), "FMR", null);
+//		Set<String> testSet2 = new HashSet<>();
+//		testSet2.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_2");
+//		assertEquals(testMap1.keySet(), testSet2);
+//		Map<String, String> testMap2 = cbeffUtilImpl.getBDBBasedOnType(readCreatedXML("updateCbeff"), null, "Right");
+//		Set<String> testSet3 = new HashSet<>();
+//		testSet3.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_7");
+//		testSet3.add("IRIS_Right_9");
+//		testSet3.add("FINGER_Right IndexFinger MiddleFinger RingFinger LittleFinger_2");
+//		testSet3.add("FINGER_Left Right Thumb_7");
+//		assertEquals(testMap2.keySet(), testSet3);
 	}
 
 }
