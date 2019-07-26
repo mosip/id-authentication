@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,6 +28,7 @@ import org.mockito.junit.MockitoRule;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
@@ -39,7 +41,15 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.AuditLogControlDAO;
 import io.mosip.registration.dao.MachineMappingDAO;
+import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.dto.biometric.BiometricDTO;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
+import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.entity.RegDeviceMaster;
 import io.mosip.registration.entity.RegDeviceSpec;
 import io.mosip.registration.entity.RegDeviceType;
@@ -144,11 +154,11 @@ public class PacketCreationServiceTest {
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
-		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenReturn(registrationAuditDates);
+		when(auditLogControlDAO.getLatestRegistrationAuditDates()).thenThrow(new NullPointerException("date"));
 		when(auditDAO.getAudits(Mockito.any(RegistrationAuditDates.class))).thenReturn(getAudits());
 		when(machineMappingDAO.getDevicesMappedToRegCenter(Mockito.anyString())).thenReturn(new ArrayList<>());
 
-		packetCreationServiceImpl.create(null);
+		packetCreationServiceImpl.create(registrationDTO);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -272,6 +282,510 @@ public class PacketCreationServiceTest {
 		audit.setModuleName("New Registration");
 		audit.setDescription(description);
 		audits.add(audit);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testNullRegistration() throws Throwable {
+		try {
+			RegistrationDTO registrationDTO = null;
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationDTO", registrationDTO);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidRID() throws Throwable {
+		try {
+			Map<String, Object> appMap = new HashMap<>();
+			appMap.put(RegistrationConstants.CBEFF_UNQ_TAG, RegistrationConstants.GLOBAL_CONFIG_TRUE_VALUE);
+
+			PowerMockito.mockStatic(ApplicationContext.class);
+			PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+			RegistrationDTO registrationDTO = new RegistrationDTO();
+			registrationDTO.setRegistrationId(RegistrationConstants.EMPTY);
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationDTO", registrationDTO);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testFingerPrintDisabled() throws Throwable {
+		try {
+			Map<String, Object> appMap = new HashMap<>();
+			appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.DISABLE);
+			appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.ENABLE);
+			appMap.put(RegistrationConstants.FACE_DISABLE_FLAG, RegistrationConstants.DISABLE);
+
+			PowerMockito.mockStatic(ApplicationContext.class);
+			PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+			RegistrationDTO registrationDTO = new RegistrationDTO();
+			registrationDTO.setRegistrationId("781716175165137614615186");
+			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+			metaData.setCenterId("10001");
+			metaData.setMachineId("10001");
+			metaData.setDeviceId("10001");
+			metaData.setConsentOfApplicant("Yes");
+			metaData.setRegistrationCategory("New");
+			registrationDTO.setRegistrationMetaDataDTO(metaData);
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationDTO", registrationDTO);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testIrisDisabled() throws Throwable {
+		try {
+			Map<String, Object> appMap = new HashMap<>();
+			appMap.put(RegistrationConstants.FINGERPRINT_DISABLE_FLAG, RegistrationConstants.ENABLE);
+			appMap.put(RegistrationConstants.IRIS_DISABLE_FLAG, RegistrationConstants.DISABLE);
+			appMap.put(RegistrationConstants.FACE_DISABLE_FLAG, RegistrationConstants.ENABLE);
+
+			PowerMockito.mockStatic(ApplicationContext.class);
+			PowerMockito.doReturn(appMap).when(ApplicationContext.class, "map");
+
+			RegistrationDTO registrationDTO = new RegistrationDTO();
+			registrationDTO.setRegistrationId("781716175165137614615186");
+			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+			metaData.setCenterId("10001");
+			metaData.setMachineId("10001");
+			metaData.setDeviceId("10001");
+			metaData.setConsentOfApplicant("Yes");
+			metaData.setRegistrationCategory("New");
+			registrationDTO.setRegistrationMetaDataDTO(metaData);
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationDTO", registrationDTO);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test
+	public void testValidMetaData() throws Throwable {
+		RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+		metaData.setCenterId("10001");
+		metaData.setMachineId("10001");
+		metaData.setDeviceId("10001");
+		metaData.setConsentOfApplicant("Yes");
+		metaData.setRegistrationCategory("New");
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testNullMetaData() throws Throwable {
+		try {
+			RegistrationMetaDataDTO metaData = null;
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidRegistrationCategoryMetaData() throws Throwable {
+		try {
+			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidRegistrationCenterMetaData() throws Throwable {
+		try {
+			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+			metaData.setRegistrationCategory("New");
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidRegistrationMachineMetaData() throws Throwable {
+		try {
+			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+			metaData.setRegistrationCategory("New");
+			metaData.setCenterId("10001");
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidRegistrationDeviceMetaData() throws Throwable {
+		try {
+			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+			metaData.setRegistrationCategory("New");
+			metaData.setCenterId("10001");
+			metaData.setMachineId("10011");
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidApplicantConsentMetaData() throws Throwable {
+		try {
+			RegistrationMetaDataDTO metaData = new RegistrationMetaDataDTO();
+			metaData.setRegistrationCategory("New");
+			metaData.setCenterId("10001");
+			metaData.setMachineId("10011");
+			metaData.setDeviceId("10001");
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateRegistrationMetaData", metaData);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testNullOSIData() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+					biometricsCapturedFlags);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidOfficerIdOSIData() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			OSIDataDTO osiData = new OSIDataDTO();
+			registration.setOsiDataDTO(osiData);
+			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+					biometricsCapturedFlags);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidOfficerAuthOSIData() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			OSIDataDTO osiData = new OSIDataDTO();
+			osiData.setOperatorID("10001");
+			registration.setOsiDataDTO(osiData);
+			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+					biometricsCapturedFlags);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testOfficerAuthByPasswordOSIData() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			OSIDataDTO osiData = new OSIDataDTO();
+			osiData.setOperatorID("10001");
+			osiData.setOperatorAuthenticatedByPassword(true);
+			registration.setOsiDataDTO(osiData);
+			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+			biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, true);
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+					biometricsCapturedFlags);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testOfficerAuthByPINOSIData() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			OSIDataDTO osiData = new OSIDataDTO();
+			osiData.setOperatorID("10001");
+			osiData.setOperatorAuthenticatedByPIN(true);
+			registration.setOsiDataDTO(osiData);
+			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+			biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, true);
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+					biometricsCapturedFlags);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testOfficerAuthByBiometricsOSIData() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			OSIDataDTO osiData = new OSIDataDTO();
+			osiData.setOperatorID("10001");
+			registration.setOsiDataDTO(osiData);
+			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+			biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED, true);
+			biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, true);
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+					biometricsCapturedFlags);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidSupervisorAuthOSIData() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			OSIDataDTO osiData = new OSIDataDTO();
+			osiData.setOperatorID("10001");
+			osiData.setSupervisorID("10001");
+			registration.setOsiDataDTO(osiData);
+			Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+			biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED, true);
+			biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, true);
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+					biometricsCapturedFlags);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test
+	public void testSupervisorAuthByPasswordOSIData() throws Throwable {
+		RegistrationDTO registration = new RegistrationDTO();
+		OSIDataDTO osiData = new OSIDataDTO();
+		osiData.setOperatorID("10001");
+		osiData.setSupervisorID("10001");
+		osiData.setSuperviorAuthenticatedByPassword(true);
+		registration.setOsiDataDTO(osiData);
+		Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+		biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED, true);
+		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, true);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+				biometricsCapturedFlags);
+	}
+
+	@Test
+	public void testSupervisorAuthByPinOSIData() throws Throwable {
+		RegistrationDTO registration = new RegistrationDTO();
+		OSIDataDTO osiData = new OSIDataDTO();
+		osiData.setOperatorID("10001");
+		osiData.setSupervisorID("10001");
+		osiData.setSuperviorAuthenticatedByPIN(true);
+		registration.setOsiDataDTO(osiData);
+		Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+		biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED, true);
+		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, true);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+				biometricsCapturedFlags);
+	}
+
+	@Test
+	public void testSupervisorAuthByBiometricsOSIData() throws Throwable {
+		RegistrationDTO registration = new RegistrationDTO();
+		OSIDataDTO osiData = new OSIDataDTO();
+		osiData.setOperatorID("10001");
+		osiData.setSupervisorID("10001");
+		registration.setOsiDataDTO(osiData);
+		Map<String, Boolean> biometricsCapturedFlags = new WeakHashMap<>();
+		biometricsCapturedFlags.put(RegistrationConstants.IS_OFFICER_BIOMETRICS_CAPTURED, true);
+		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_AUTH_REQUIRED, true);
+		biometricsCapturedFlags.put(RegistrationConstants.IS_SUPERVISOR_BIOMETRICS_CAPTURED, true);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateOSIData", registration,
+				biometricsCapturedFlags);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testInvalidApplicantBiometrics() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			BiometricDTO biometrics = new BiometricDTO();
+			registration.setBiometricDTO(biometrics);
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateBiometrics", registration,
+					true, true);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testMissingFace() throws Throwable {
+		try {
+			RegistrationDTO registration = new RegistrationDTO();
+			BiometricDTO biometrics = new BiometricDTO();
+			BiometricInfoDTO applicantBiometrics = new BiometricInfoDTO();
+			List<BiometricExceptionDTO> biometricExceptions = new ArrayList<>();
+			BiometricExceptionDTO biometricsException = new BiometricExceptionDTO();
+			biometricExceptions.add(biometricsException);
+			applicantBiometrics.setBiometricExceptionDTO(biometricExceptions);
+			biometrics.setApplicantBiometricDTO(applicantBiometrics);
+			biometrics.setIntroducerBiometricDTO(applicantBiometrics);
+			registration.setBiometricDTO(biometrics);
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateBiometrics", registration,
+					true, true);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test
+	public void testBiometrics() throws Throwable {
+		RegistrationDTO registration = new RegistrationDTO();
+		BiometricDTO biometrics = new BiometricDTO();
+		BiometricInfoDTO applicantBiometrics = new BiometricInfoDTO();
+		List<BiometricExceptionDTO> biometricExceptions = new ArrayList<>();
+		BiometricExceptionDTO biometricsException = new BiometricExceptionDTO();
+		biometricExceptions.add(biometricsException);
+		applicantBiometrics.setBiometricExceptionDTO(biometricExceptions);
+		FaceDetailsDTO face = new FaceDetailsDTO();
+		face.setFace("face".getBytes());
+		applicantBiometrics.setFace(face);
+		biometrics.setApplicantBiometricDTO(applicantBiometrics);
+		biometrics.setIntroducerBiometricDTO(applicantBiometrics);
+		registration.setBiometricDTO(biometrics);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateBiometrics", registration, false, true);
+	}
+
+	@Test
+	public void testWithoutIntroducerBiometrics() throws Throwable {
+		RegistrationDTO registration = new RegistrationDTO();
+		BiometricDTO biometrics = new BiometricDTO();
+		BiometricInfoDTO applicantBiometrics = new BiometricInfoDTO();
+		List<BiometricExceptionDTO> biometricExceptions = new ArrayList<>();
+		BiometricExceptionDTO biometricsException = new BiometricExceptionDTO();
+		biometricExceptions.add(biometricsException);
+		applicantBiometrics.setBiometricExceptionDTO(biometricExceptions);
+		biometrics.setApplicantBiometricDTO(applicantBiometrics);
+		registration.setBiometricDTO(biometrics);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateBiometrics", registration, true, false);
+	}
+
+	@Test
+	public void testEmptyApplicantBiometrics() throws Throwable {
+		RegistrationDTO registration = new RegistrationDTO();
+		BiometricDTO biometrics = new BiometricDTO();
+		BiometricInfoDTO applicantBiometrics = new BiometricInfoDTO();
+		List<BiometricExceptionDTO> biometricExceptions = new ArrayList<>();
+		BiometricExceptionDTO biometricsException = new BiometricExceptionDTO();
+		biometricExceptions.add(biometricsException);
+		applicantBiometrics.setBiometricExceptionDTO(biometricExceptions);
+		biometrics.setIntroducerBiometricDTO(applicantBiometrics);
+		biometrics.setApplicantBiometricDTO(new BiometricInfoDTO());
+		registration.setBiometricDTO(biometrics);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateBiometrics", registration, true, false);
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testMissingExceptionFace() throws Throwable {
+		try {
+			BiometricInfoDTO applicantBiometrics = new BiometricInfoDTO();
+			FaceDetailsDTO face = new FaceDetailsDTO();
+			face.setFace("face".getBytes());
+			applicantBiometrics.setFace(face);
+			BiometricInfoDTO authenticationBiometrics = new BiometricInfoDTO();
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateFace", true, applicantBiometrics, authenticationBiometrics,
+					true, true);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test(expected = RegBaseCheckedException.class)
+	public void testMissingAuthenticationExceptionFace() throws Throwable {
+		try {
+			BiometricInfoDTO applicantBiometrics = new BiometricInfoDTO();
+			FaceDetailsDTO face = new FaceDetailsDTO();
+			face.setFace("face".getBytes());
+			applicantBiometrics.setFace(face);
+			BiometricInfoDTO authenticationBiometrics = new BiometricInfoDTO();
+			authenticationBiometrics.setExceptionFace(new FaceDetailsDTO());
+
+			ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateFace", true, applicantBiometrics, authenticationBiometrics,
+					false, true);
+		} catch (RuntimeException exception) {
+			throw exception.getCause();
+		}
+	}
+
+	@Test
+	public void testExceptionFaces() throws Throwable {
+		BiometricInfoDTO applicantBiometrics = new BiometricInfoDTO();
+		FaceDetailsDTO face = new FaceDetailsDTO();
+		face.setFace("face".getBytes());
+		applicantBiometrics.setFace(face);
+		applicantBiometrics.setExceptionFace(face);
+		BiometricInfoDTO authenticationBiometrics = new BiometricInfoDTO();
+		authenticationBiometrics.setExceptionFace(face);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "validateFace", true, applicantBiometrics,
+				authenticationBiometrics, true, true);
+	}
+
+	@Test
+	public void testBiometricCaptured() throws Throwable {
+		BiometricInfoDTO biometrics = new BiometricInfoDTO();
+		FaceDetailsDTO face = new FaceDetailsDTO();
+		face.setFace("face".getBytes());
+		biometrics.setFace(face);
+		biometrics.setFingerprintDetailsDTO(new ArrayList<>());
+		List<IrisDetailsDTO> iris = new ArrayList<>();
+		iris.add(new IrisDetailsDTO());
+		biometrics.setIrisDetailsDTO(iris);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "isBiometricCaptured", biometrics);
+	}
+
+	@Test
+	public void testWithoutBiometrics() throws Throwable {
+		BiometricInfoDTO biometrics = new BiometricInfoDTO();
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "isBiometricCaptured", biometrics);
+	}
+
+	@Test
+	public void testBiometricsWithoutFace() throws Throwable {
+		BiometricInfoDTO biometrics = new BiometricInfoDTO();
+		List<FingerprintDetailsDTO> fingers = new ArrayList<>();
+		fingers.add(new FingerprintDetailsDTO());
+		biometrics.setFingerprintDetailsDTO(fingers);
+		List<IrisDetailsDTO> iris = new ArrayList<>();
+		iris.add(new IrisDetailsDTO());
+		biometrics.setIrisDetailsDTO(iris);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "isBiometricCaptured", biometrics);
+	}
+
+	@Test
+	public void testAllBiometrics() throws Throwable {
+		BiometricInfoDTO biometrics = new BiometricInfoDTO();
+		List<FingerprintDetailsDTO> fingers = new ArrayList<>();
+		fingers.add(new FingerprintDetailsDTO());
+		biometrics.setFingerprintDetailsDTO(fingers);
+		FaceDetailsDTO face= new FaceDetailsDTO();
+		face.setFace("face".getBytes());
+		biometrics.setFace(face);
+
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "isBiometricCaptured", biometrics);
 	}
 
 }
