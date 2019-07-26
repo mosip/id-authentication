@@ -357,8 +357,6 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_DATE_FORMAT_FOR_FILE= "yyyyMMddHHmmss";
 	public static final String AUTH_ADVICE_FAILURE = "AUTH_ADVICE_FAILURE";
 
-
-
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
 	public static final String PACKET_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
@@ -396,6 +394,9 @@ public class RegistrationConstants {
 	public static final String CBEFF_FORMAT_TYPE = "mosip.registration.cbeff_format_type";
 	public static final String CBEFF_ALG_ORG = "mosip.registration.cbeff_algorithm_org";
 	public static final String CBEFF_ALG_TYPE = "mosip.registration.cbeff_algorithm_type";
+	public static final String IS_SUPERVISOR_AUTH_REQUIRED = "isSupervisorAuthRequired";
+	public static final String IS_SUPERVISOR_BIOMETRICS_CAPTURED = "isSupervisorBiometricsCaptured";
+	public static final String IS_OFFICER_BIOMETRICS_CAPTURED = "isOfficerBiometricsCaptured";
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP = "Fingerprint";

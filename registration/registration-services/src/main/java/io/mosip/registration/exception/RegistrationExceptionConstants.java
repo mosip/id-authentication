@@ -76,7 +76,27 @@ public enum RegistrationExceptionConstants {
 	TPM_PUBLIC_KEY_UPLOAD("REG-TPK-001", "Exception while uploading the TPM Public Key"),
 	
 	//Invalid User
-	AUTH_ADVICE_USR_ERROR("REG-SER-ATAD","Provided user id not allowed to do this operation");
+	AUTH_ADVICE_USR_ERROR("REG-SER-ATAD","Provided user id not allowed to do this operation"),
+
+	// Registration Packet Validation
+	REG_NULL_PACKET_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-004", "RegistrationDTO can not be null"),
+	REG_INVALID_RID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-005", "RID can not be null or empty"),
+	REG_PKT_METADATA_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-006", "Registration Meta Data can not be null"),
+	REG_PKT_INVALID_CENTER_ID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-007", "Registration Center ID can not be null or empty"),
+	REG_PKT_INVALID_MACHINE_ID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-008", "Machine ID can not be null or empty"),
+	REG_PKT_INVALID_DEVICE_ID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-09", "Device ID can not be null or empty"),
+	REG_PKT_INVALID_REG_CATEGORY_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-010", "Registration Category can not be null or empty"),
+	REG_PKT_INVALID_APPLICANT_CONSENT_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-011", "Consent of Applicant can not be null or empty"),
+	REG_PKT_BIOMETRICS_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-012", "Biometrics can not be null"),
+	REG_PKT_APPLICANT_BIOMETRICS_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-013", "Applicant Biometrics can not be null"),
+	REG_PKT_APPLICANT_BIO_INVALID_FACE_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-014", "Applicant Face can not be null"),
+	REG_PKT_APPLICANT_BIO_INVALID_EXCEPTION_FACE_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-015", "Applicant Exception Face can not be null"),
+	REG_PKT_AUTHENTICATION_BIO_INVALID_EXCEPTION_FACE_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-016", "Applicant Exception Face can not be null"),
+	REG_PKT_OSIDATA_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-017", "OSI Data can not be null"),
+	REG_PKT_OFFICER_ID_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-018", "Officer ID in OSI Data can not be null or empty"),
+	REG_PKT_OFFICER_AUTH_INVALID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-019", "Officer authentication can not be empty"),
+	REG_PKT_SUPERVISOR_ID_NULL_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-018", "Supervisor ID in OSI Data can not be null or empty"),
+	REG_PKT_SUPERVISOR_AUTH_INVALID_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-019", "Supervisor authentication can not be empty");
 
 	/**
 	 * The constructor
