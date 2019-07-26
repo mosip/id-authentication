@@ -858,7 +858,7 @@ public class RegistrationConstants {
 	public static final String INVALID_LOGIN_TIME = "mosip.registration.invalid_login_time";
 	public static final String FACE_RECAPTURE_TIME = "mosip.registration.face_recapture_time";
 	public static final String NOTIFICATION_DISABLE_FLAG = "mosip.registration.send_notification_disable_flag";
-	public static final String MIN_AGE = "mosip.registration.age_limit_for_child";
+	public static final String MIN_AGE = "mosip.kernel.applicant.type.age.limit";
 	public static final String MAX_AGE = "mosip.registration.max_age";
 	public static final String DOC_SIZE = "mosip.registration.document_size";
 	public static final String DOC_TYPE = "mosip.registration.document_scanner_doctype";
