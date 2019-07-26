@@ -423,22 +423,22 @@ public class RequestHandlerRequestValidator {
 	
 	public boolean isValidIdType(String idType)
 			throws RegBaseCheckedException {
-		if (idType != null && (idType.equalsIgnoreCase(UIN))) {
+		if (idType != null && (idType.equalsIgnoreCase(UIN) || idType.equalsIgnoreCase(VID))) {
 			return true;
 		} else {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-					"Invalid IdType:Enter UIN", new Throwable());
+					"Invalid IdType : Enter UIN or VID", new Throwable());
 		}
 
 	}
 	
 	public boolean isValidCardType(String cardType)
 			throws RegBaseCheckedException {
-		if (cardType != null && (cardType.equalsIgnoreCase(VID))) {
+		if (cardType != null && (cardType.equalsIgnoreCase(UIN) || cardType.equalsIgnoreCase(VID))) {
 			return true;
 		} else {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-					"Invalid IdType:Enter VID", new Throwable());
+					"Invalid CardType : Enter UIN or VID", new Throwable());
 		}
 
 	}

@@ -21,7 +21,7 @@ import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.token.validation.exception.AccessDeniedException;
 import io.mosip.registration.processor.core.token.validation.exception.InvalidTokenException;
-import io.mosip.registration.processor.request.handler.service.controller.PacketGeneratorController;
+import io.mosip.registration.processor.request.handler.service.controller.UinCardRePrintController;
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResponseDto;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseUnCheckedException;
@@ -29,15 +29,15 @@ import io.mosip.registration.processor.request.handler.service.exception.RegBase
 /**
  * The Class PacketGeneratorExceptionHandler.
  */
-@RestControllerAdvice(assignableTypes=PacketGeneratorController.class)
-public class PacketGeneratorExceptionHandler {
+@RestControllerAdvice(assignableTypes=UinCardRePrintController.class)
+public class UinCardRePrintExceptionHandler {
 
 	/** The env. */
 	@Autowired
 	private Environment env;
 
-	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
-	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
+	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
+	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
 	private static final String REG_PACKET_GENERATOR_APPLICATION_VERSION = "mosip.registration.processor.application.version";
@@ -46,7 +46,7 @@ public class PacketGeneratorExceptionHandler {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
 	/** The reg proc logger. */
-	private static Logger regProcLogger = RegProcessorLogger.getLogger(PacketGeneratorExceptionHandler.class);
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinCardRePrintExceptionHandler.class);
 
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<Object> accessDenied(AccessDeniedException e) {
@@ -102,7 +102,7 @@ public class PacketGeneratorExceptionHandler {
 		PacketGeneratorResponseDto response = new PacketGeneratorResponseDto();
 
 		if (Objects.isNull(response.getId())) {
-			response.setId(env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
+			response.setId(env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
 		}
 		if (ex instanceof BaseCheckedException)
 

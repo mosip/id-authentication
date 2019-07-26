@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,16 +39,19 @@ import io.mosip.registration.processor.request.handler.service.PacketCreationSer
 import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorResDto;
 import io.mosip.registration.processor.request.handler.service.dto.RegistrationDTO;
 import io.mosip.registration.processor.request.handler.service.dto.RegistrationMetaDataDTO;
+import io.mosip.registration.processor.request.handler.service.dto.UinCardRePrintRequestDto;
 import io.mosip.registration.processor.request.handler.service.dto.demographic.DemographicDTO;
 import io.mosip.registration.processor.request.handler.service.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.processor.request.handler.service.dto.demographic.MoroccoIdentity;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.service.exception.VidCreationException;
 import io.mosip.registration.processor.request.handler.upload.SyncUploadEncryptionService;
+import io.mosip.registration.processor.request.handler.upload.validator.RequestHandlerRequestValidator;
 
 /**
  * The Class ResidentServiceRePrintServiceImpl.
  */
+@Service
 public class UinCardRePrintServiceImpl {
 
 	@Autowired
@@ -61,6 +65,10 @@ public class UinCardRePrintServiceImpl {
 
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
+	
+	/** The validator. */
+	@Autowired
+	private RequestHandlerRequestValidator validator;
 
 	@Autowired
 	Utilities utilities;
@@ -220,5 +228,35 @@ public class UinCardRePrintServiceImpl {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getMessage(), e);
 		}
 		return rid;
+	}
+	
+	public PacketGeneratorResDto methodToCall(UinCardRePrintRequestDto uinCardRePrintRequestDto)
+			throws RegBaseCheckedException, IOException {
+		PacketGeneratorResDto packetGeneratorResDto = new PacketGeneratorResDto();
+		validator.validate(uinCardRePrintRequestDto.getRequesttime(), uinCardRePrintRequestDto.getId(),
+				uinCardRePrintRequestDto.getVersion());
+		myMethod(uinCardRePrintRequestDto);
+		return packetGeneratorResDto;
+	}
+	
+	public void myMethod(UinCardRePrintRequestDto uinCardRePrintRequestDto)
+			throws RegBaseCheckedException, IOException {
+		if (validator.isValidCenter(uinCardRePrintRequestDto.getRequest().getCenterId())
+				&& validator.isValidMachine(uinCardRePrintRequestDto.getRequest().getMachineId())
+				&& validator.isValidRegistrationType(uinCardRePrintRequestDto.getRequest().getRegistrationType())
+				&& validator.isValidIdType(uinCardRePrintRequestDto.getRequest().getIdType())
+				&& validator.isValidCardType(uinCardRePrintRequestDto.getRequest().getCardType())
+				&& isValidUinVID(uinCardRePrintRequestDto)) {			
+		}
+	}
+
+	public boolean isValidUinVID(UinCardRePrintRequestDto uinCardRePrintRequestDto) throws RegBaseCheckedException {
+		boolean isValid = false;
+		if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase("UIN")) {
+			isValid = validator.isValidUin(uinCardRePrintRequestDto.getRequest().getId());
+		}else if(uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase("VID")) {
+			isValid = validator.isValidVid(uinCardRePrintRequestDto.getRequest().getId());
+		}
+		return isValid;
 	}
 }
