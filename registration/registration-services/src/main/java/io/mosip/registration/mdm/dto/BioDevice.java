@@ -135,7 +135,6 @@ public class BioDevice {
 		con.setReadTimeout(5000);
 		con.connect();
 		InputStream urlStream = con.getInputStream();
-
 		return urlStream;
 
 	}

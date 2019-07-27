@@ -110,7 +110,6 @@ public class ScanPopUpViewController extends BaseController {
 				totalScannedPages.setVisible(false);
 				saveBtn.setVisible(false);
 				scannedPagesLabel.setVisible(false);
-				scanningMsg.setVisible(false);
 			} else {
 				isDocumentScan = false;
 			}
@@ -167,7 +166,13 @@ public class ScanPopUpViewController extends BaseController {
 	
 	public void enableCloseButton() {
 		if(null!=closeButton)
-		closeButton.setDisable(false);
+			closeButton.setDisable(false);
+	}
+	
+	
+	public void disableCloseButton() {
+		if(null!=closeButton)
+			closeButton.setDisable(true);
 	}
 
 	@FXML
@@ -204,8 +209,9 @@ public class ScanPopUpViewController extends BaseController {
 		return scanningMsg;
 	}
 
-	public void setScanningMsg(Text scanningMsg) {
-		this.scanningMsg = scanningMsg;
+	public void setScanningMsg(String msg) {
+		scanningMsg.setText(msg);
+		scanningMsg.getStyleClass().add("scanButton");
 	}
 
 }

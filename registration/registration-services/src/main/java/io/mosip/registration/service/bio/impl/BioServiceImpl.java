@@ -101,17 +101,20 @@ public class BioServiceImpl extends BaseService implements BioService {
 		CaptureResponseDto captureResponseDto=null;
 		CaptureResponsBioDataDto captureResponseData=null;
 		String bioType= "Right little";
-
 		if (isMdmEnabled()) {
+			List<String> exceptionList = new ArrayList<String>();
+			exceptionList.add("LF_MIDDLE");
+			exceptionList.add("LF_RING");
+			exceptionList.add("LF_LITTLE");
+			ApplicationContext.map().put("CAPTURE_EXCEPTION", exceptionList);
 			captureResponseDto= mosipBioDeviceManager.authScan(RegistrationConstants.FINGERPRINT_SLAB_LEFT);
+			ApplicationContext.map().remove("CAPTURE_EXCEPTION");
 			if(captureResponseDto==null)
-				throw new RegBaseCheckedException("","Decice is not available");
-			if(captureResponseDto.getError().getErrorCode().equals("202"))
+				throw new RegBaseCheckedException("202","Decice is not available");
+			if(captureResponseDto.getError().getErrorCode().matches("202|403|404"))
 				throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
-			if(captureResponseDto.getError().getErrorCode().equals("403"))
-			
 			captureResponseData =  captureResponseDto.getMosipBioDeviceDataResponses().get(0).getCaptureResponseData();
-			bioType=captureResponseData.getBioType();
+			bioType=captureResponseData.getBioSubType();
 			isoImage = Base64.getDecoder().decode(captureResponseData.getBioExtract());
 		} else {
 			isoImage = IOUtils.toByteArray(
@@ -129,6 +132,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 			FingerprintDetailsDTO fingerprintDetailsDTO = new FingerprintDetailsDTO();
 			fingerprintDetailsDTO.setFingerPrintISOImage(isoImage);
 			fingerprintDetailsDTO.setFingerType(bioType);
+			fingerprintDetailsDTO.setForceCaptured(true);
 			fingerprintDetailsDTOs.add(fingerprintDetailsDTO);
 			authenticationValidatorDTO.setFingerPrintDetails(fingerprintDetailsDTOs);
 			authenticationValidatorDTO.setUserId(userId);
@@ -221,10 +225,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 			throws RegBaseCheckedException, IOException {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
 		if(captureResponseDto==null)
-			throw new RegBaseCheckedException("","Decice is not available");
-		if(captureResponseDto.getError().getErrorCode().equals("202"))
-			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
-		if(captureResponseDto.getError().getErrorCode().equals("403"))
+			throw new RegBaseCheckedException("202","Decice is not available");
+		if(captureResponseDto.getError().getErrorCode().matches("202|403|404"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
@@ -280,6 +282,7 @@ public class BioServiceImpl extends BaseService implements BioService {
 						.concat((String) fingerMap.get(RegistrationConstants.IMAGE_FORMAT_KEY)));
 				fpDetailsDTO.setFingerType(fingerType);
 				fpDetailsDTO.setForceCaptured(false);
+				fpDetailsDTO.setCaptured(true);
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					fpDetailsDTO.setQualityScore((double) fingerMap.get(RegistrationConstants.IMAGE_SCORE_KEY));
 				}
@@ -589,10 +592,8 @@ public class BioServiceImpl extends BaseService implements BioService {
 
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(eyeType);
 		if(captureResponseDto==null)
-			throw new RegBaseCheckedException("","Decice is not available");
-		if(captureResponseDto.getError().getErrorCode().equals("202"))
-			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
-		if(captureResponseDto.getError().getErrorCode().equals("403"))
+			throw new RegBaseCheckedException("202","Device is not available");
+		if(captureResponseDto.getError().getErrorCode().matches("202|403|404"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		
 		detailsDTO.setIrises(new ArrayList<IrisDetailsDTO>());

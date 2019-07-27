@@ -109,9 +109,8 @@ public class MosipBioDeviceManager {
 				
 				try {
 					deviceInfoResponseDtos = mapper.readValue(reponse, List.class);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (IOException exception) {
+					throw new RegBaseCheckedException("202", "Device not found");
 				}
 
 				if (MosioBioDeviceHelperUtil.isListNotEmpty(deviceInfoResponseDtos)) {
@@ -258,11 +257,16 @@ public class MosipBioDeviceManager {
 	public CaptureResponseDto authScan(String deviceType) throws RegBaseCheckedException, IOException {
 
 		BioDevice bioDevice = findDeviceToScan(deviceType);
-		stream(deviceType);
+		InputStream streaming =  stream(deviceType);
 		if (bioDevice != null) {
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device found in the device registery");
-			return bioDevice.capture();
+			CaptureResponseDto captureResponse =  bioDevice.capture();
+			if(captureResponse.getError().getErrorCode().matches("202|403|404")) {
+				streaming.close();
+			}
+			return captureResponse;
+
 		} else {
 			LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
 					"Device not found in the device registery");
@@ -297,6 +301,8 @@ public class MosipBioDeviceManager {
 			init();
 		}
 		BioDevice bioDevice = deviceRegistry.get(deviceType);
+		if(bioDevice==null)
+			return null;
 		bioDevice.buildDeviceSubId(deviceId);
 		return bioDevice;
 	}

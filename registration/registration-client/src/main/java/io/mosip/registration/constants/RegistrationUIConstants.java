@@ -139,7 +139,7 @@ public class RegistrationUIConstants {
 	public static final String APPLICANT_IMAGE_ERROR = bundle.getString("APPLICANT_IMAGE_ERROR");
 	public static final String DEMOGRAPHIC_DETAILS_ERROR_CONTEXT = bundle
 			.getString("DEMOGRAPHIC_DETAILS_ERROR_CONTEXT");
-
+	
 	// REGISTRATION
 	public static final String AGE_WARNING = bundle.getString("AGE_WARNING");
 	public static final String TO = bundle.getString("TO");
@@ -149,6 +149,9 @@ public class RegistrationUIConstants {
 	public static final String POR_DOCUMENT_EMPTY = bundle.getString("porDocuments");
 	public static final String DOB_DOCUMENT_EMPTY = bundle.getString("dobDocuments");
 	public static final String SCAN_DOCUMENT_ERROR = bundle.getString("SCAN_DOCUMENT_ERROR");
+	public static final String STREAMING_PREP_MESSAGE = bundle.getString("STREAMING_PREP_MESSAGE");
+	public static final String STREAMING_INIT_MESSAGE = bundle.getString("STREAMING_INIT_MESSAGE");
+	public static final String CAPTURING = bundle.getString("CAPTURING");
 	public static final String UNABLE_LOAD_SCAN_POPUP = bundle.getString("UNABLE_LOAD_SCAN_POPUP");
 	public static final String SCAN_DOC_TITLE = bundle.getString("SCAN_DOC_TITLE");
 	public static final String SCAN_DOC_CATEGORY_MULTIPLE = bundle.getString("SCAN_DOC_CATEGORY_MULTIPLE");

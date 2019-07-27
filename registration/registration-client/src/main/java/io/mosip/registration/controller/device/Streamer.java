@@ -9,11 +9,14 @@ import java.net.SocketTimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mdm.service.impl.MosipBioDeviceManager;
 import io.mosip.registration.service.bio.BioService;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 
 @Component
 public class Streamer {
@@ -31,27 +34,32 @@ public class Streamer {
 	private ScanPopUpViewController scanPopUpViewController;
 
 	private Thread streamer_thread = null;
+	
+	public byte[] imageBytes=null;
 
 	public void startStream(String bioType, ImageView streamImage, ImageView scanImage) {
-
 		streamer_thread = new Thread(new Runnable() {
 
 			public void run() {
+				scanPopUpViewController.disableCloseButton();
 				isRunning = true;
 				try {
 					if(urlStream!=null) {
 						urlStream.close();
 						urlStream=null;
 					}
+					scanPopUpViewController.setScanningMsg(RegistrationUIConstants.STREAMING_PREP_MESSAGE);
 					urlStream = mosipBioDeviceManager.stream(bioType);
 					scanPopUpViewController.enableCloseButton();
+					scanPopUpViewController.setScanningMsg(RegistrationUIConstants.STREAMING_INIT_MESSAGE);
 				} catch (RegBaseCheckedException | IOException | NullPointerException e1) {
 					scanPopUpViewController.enableCloseButton();
-					stop();
+					scanPopUpViewController.setScanningMsg(RegistrationUIConstants.getMessageLanguageSpecific("202_MESSAGE"));
+					isRunning=false;
 				}
 				while (isRunning && null!=urlStream) {
 					try {
-						byte[] imageBytes = retrieveNextImage();
+						imageBytes = retrieveNextImage();
 						ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBytes);
 						Image img = new Image(imageStream);
 						streamImage.setImage(img);	

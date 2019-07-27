@@ -10,10 +10,18 @@
 	-fx-font-size:10.0px;
 }
 
+#imageParent{
+	-fx-border-width:1.0 1.0 1.0 1.0;
+	-fx-border-color: #FF4081;
+}
 
+.scanPageLabel{
+	-fx-tex-fill: #FF4081;
+	-fx-font-size: 1.2em;
+}
 
 #syncProgressBar > .bar{
-	-fx-background-color : red;
+	 -fx-background-color : red;
 	 -fx-padding: 0;
 	 -fx-background-insets : 0;
 }

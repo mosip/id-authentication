@@ -89,6 +89,8 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		int i = 0;
 		BIR[] registeredBir = new BIR[userFingerprintDetails.size()];
 		String minutiae=null;
+		if(capturedFingerPrintDto.isForceCaptured())
+			return true;
 		try {
 		FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
 				.convert(capturedFingerPrintDto.getFingerPrint());

@@ -7,9 +7,8 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -883,7 +882,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 */
 	@Override
 	public void scan(Stage popupStage) {
-
+		
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			operatorBiometricScan(popupStage);
 		} else {
@@ -1136,6 +1135,8 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if(!bioService.isMdmEnabled()) {
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
 				imageView.setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
+			}else {
+				detailsDTO.setFingerPrint(streamer.imageBytes);
 			}
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 			popupStage.close();

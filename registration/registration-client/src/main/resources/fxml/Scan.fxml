@@ -26,7 +26,7 @@
             <AnchorPane styleClass="documentScanHeader">
                <children>
                   <Label fx:id="popupTitle" layoutX="250.0" layoutY="9.0" styleClass="scanPopupHeaderTitle" />
-                  <Hyperlink fx:id="closeButton" layoutX="528.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit" disable="true">
+                  <Hyperlink fx:id="closeButton" layoutX="528.0" layoutY="10.0" onAction="#exitWindow" styleClass="exit">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -67,7 +67,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <ImageView fx:id="scanImage" fitHeight="${imageParent.height}" fitWidth="${imageParent.width}" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                              <ImageView fx:id="scanImage" fitHeight="${imageParent.height-5}" fitWidth="${imageParent.width-5}" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                            </children>
                         </GridPane>
                         <GridPane GridPane.columnIndex="2">
@@ -81,7 +81,7 @@
                            <children>
                               <VBox alignment="TOP_RIGHT" spacing="15.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <children>
-                                    <Text fx:id="scanningMsg" styleClass="scanPageLabel" text="%scanning" />
+                                    <Text fx:id="scanningMsg" text="%scanning"/>
                                     <Label fx:id="scannedPagesLabel" styleClass="scanButton" text="%totalpages" />
                                     <Text fx:id="totalScannedPages" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
                                     <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#save" styleClass="scanButton" text="%save">

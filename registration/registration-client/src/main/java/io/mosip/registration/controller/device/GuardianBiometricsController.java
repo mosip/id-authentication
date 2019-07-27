@@ -603,7 +603,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 
 			if(!bioService.isMdmEnabled())
 				scanPopUpViewController.getScanImage().setImage(convertBytesToImage(detailsDTO.getFingerPrint()));
-
+			else
+				detailsDTO.setFingerPrint(streamer.imageBytes);
 			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.FP_CAPTURE_SUCCESS);
 
 			setCapturedValues(detailsDTO.getQualityScore(), detailsDTO.getNumRetry(),
