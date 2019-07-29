@@ -86,13 +86,15 @@ public class UinCardRePrintServiceImpl {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinCardRePrintServiceImpl.class);
 
 	@SuppressWarnings("unchecked")
-	private PacketGeneratorResDto createPacket(UinCardRePrintRequestDto uinCardRePrintRequestDto)
+	public PacketGeneratorResDto createPacket(UinCardRePrintRequestDto uinCardRePrintRequestDto)
 			throws RegBaseCheckedException, IOException {
 
-		PacketGeneratorResDto packerGeneratorResDto = null;
 		String uin = null;
 		String vid = null;
 		byte[] packetZipBytes = null;
+		PacketGeneratorResDto packetGeneratorResDto = new PacketGeneratorResDto();
+		validator.validate(uinCardRePrintRequestDto.getRequesttime(), uinCardRePrintRequestDto.getId(),
+				uinCardRePrintRequestDto.getVersion());
 		if (validator.isValidCenter(uinCardRePrintRequestDto.getRequest().getCenterId())
 				&& validator.isValidMachine(uinCardRePrintRequestDto.getRequest().getMachineId())
 				&& validator.isValidRegistrationType(uinCardRePrintRequestDto.getRequest().getRegistrationType())
@@ -161,7 +163,7 @@ public class UinCardRePrintServiceImpl {
 						DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
 				String creationTime = ldt.toString() + ".000Z";
 
-				packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
+				packetGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
 						creationTime, regType, packetZipBytes);
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -173,7 +175,7 @@ public class UinCardRePrintServiceImpl {
 			}
 
 		}
-		return packerGeneratorResDto;
+		return packetGeneratorResDto;
 	}
 
 	private RegistrationDTO createRegistrationDTOObject(String uin, String registrationType, String centerId,
@@ -256,15 +258,6 @@ public class UinCardRePrintServiceImpl {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getMessage(), e);
 		}
 		return rid;
-	}
-
-	public PacketGeneratorResDto methodToCall(UinCardRePrintRequestDto uinCardRePrintRequestDto)
-			throws RegBaseCheckedException, IOException {
-		PacketGeneratorResDto packetGeneratorResDto = new PacketGeneratorResDto();
-		validator.validate(uinCardRePrintRequestDto.getRequesttime(), uinCardRePrintRequestDto.getId(),
-				uinCardRePrintRequestDto.getVersion());
-		createPacket(uinCardRePrintRequestDto);
-		return packetGeneratorResDto;
 	}
 
 	public boolean isValidUinVID(UinCardRePrintRequestDto uinCardRePrintRequestDto) throws RegBaseCheckedException {

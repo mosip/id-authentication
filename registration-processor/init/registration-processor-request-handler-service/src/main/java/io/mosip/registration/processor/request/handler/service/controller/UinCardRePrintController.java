@@ -80,7 +80,7 @@ public class UinCardRePrintController {
 		tokenValidator.validate("Authorization=" + token, "requesthandler");
 		try {	
 			PacketGeneratorResDto packetGeneratorResDto = new PacketGeneratorResDto();
-			packetGeneratorResDto = uinCardRePrintServiceImpl.methodToCall(uinCardRePrintRequestDto);
+			packetGeneratorResDto = uinCardRePrintServiceImpl.createPacket(uinCardRePrintRequestDto);
 			
 			if (isEnabled) {
 				HttpHeaders headers = new HttpHeaders();
