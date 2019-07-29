@@ -2,7 +2,6 @@ package io.mosip.registration.processor.request.handler.service.impl;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,15 +16,13 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectIOException;
-import io.mosip.kernel.core.idobjectvalidator.exception.IdObjectValidationFailedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
-import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.RequestWrapper;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -65,7 +62,7 @@ public class UinCardRePrintServiceImpl {
 
 	@Autowired
 	SyncUploadEncryptionService syncUploadEncryptionService;
-	
+
 	/** The validator. */
 	@Autowired
 	private RequestHandlerRequestValidator validator;
@@ -82,69 +79,90 @@ public class UinCardRePrintServiceImpl {
 
 	public static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 
+	public static final String UIN = "UIN";
+
+	public static final String VID = "VID";
+
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(UinCardRePrintServiceImpl.class);
 
 	@SuppressWarnings("unchecked")
-	private PacketGeneratorResDto check(String requestUin, String requestVid, String cardType, String registrationId)
-			throws ApisResourceAccessException, IOException, RegBaseCheckedException, PacketDecryptionFailureException,
-			io.mosip.kernel.core.exception.IOException,
-			io.mosip.registration.processor.packet.storage.exception.VidCreationException,
-			IdObjectValidationFailedException, IdObjectIOException, ParseException, VidCreationException {
+	private PacketGeneratorResDto createPacket(UinCardRePrintRequestDto uinCardRePrintRequestDto)
+			throws RegBaseCheckedException {
 
 		PacketGeneratorResDto packerGeneratorResDto = null;
-		String uin = requestUin;
-		String vid = requestVid;
+		String uin = null;
+		String vid = null;
 		byte[] packetZipBytes = null;
 
-		if (cardType == "vid" && vid == null) {
+		try {
+			String cardType = uinCardRePrintRequestDto.getRequest().getCardType();
+			String regType = uinCardRePrintRequestDto.getRequest().getRegistrationType();
 
-			VidRequestDto vidRequestDto = new VidRequestDto();
-			RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
-			ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<>();
-			vidRequestDto.setUIN(requestUin);
-			vidRequestDto.setVidType(vidType);
-			request.setId(env.getProperty(VID_CREATE_ID));
-			request.setRequest(vidRequestDto);
-			DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
-			LocalDateTime localdatetime = LocalDateTime
-					.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
-			request.setRequesttime(localdatetime);
-			request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
+			if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase(UIN))
+				uin = uinCardRePrintRequestDto.getRequest().getId();
+			else
+				vid = uinCardRePrintRequestDto.getRequest().getId();
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "Stage::methodName():: post CREATEVID service call started with request data : "
-							+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
+			if (cardType.equalsIgnoreCase(VID) && vid == null) {
 
-			response = (ResponseWrapper<VidResponseDTO>) restClientService.postApi(ApiName.CREATEVID, "", "", request,
-					ResponseWrapper.class);
+				VidRequestDto vidRequestDto = new VidRequestDto();
+				RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
+				ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<>();
+				vidRequestDto.setUIN(uin);
+				vidRequestDto.setVidType(vidType);
+				request.setId(env.getProperty(VID_CREATE_ID));
+				request.setRequest(vidRequestDto);
+				DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
+				LocalDateTime localdatetime = LocalDateTime
+						.parse(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)), format);
+				request.setRequesttime(localdatetime);
+				request.setVersion(env.getProperty(REG_PROC_APPLICATION_VERSION));
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, "Stage::methodName():: post CREATEVID service call ended successfully");
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"UinCardRePrintServiceImpl::methodName():: post CREATEVID service call started with request data : "
+								+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
 
-			if (!response.getErrors().isEmpty()) {
-				throw new VidCreationException(PlatformErrorMessages.RPR_PGS_VID_EXCEPTION.getMessage(),
-						"VID creation exception");
+				response = (ResponseWrapper<VidResponseDTO>) restClientService.postApi(ApiName.CREATEVID, "", "",
+						request, ResponseWrapper.class);
 
-			} else {
-				vid = response.getResponse().getVid().toString();
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						"Stage::methodName():: post CREATEVID service call ended successfully");
+
+				if (!response.getErrors().isEmpty()) {
+					throw new VidCreationException(PlatformErrorMessages.RPR_PGS_VID_EXCEPTION.getMessage(),
+							"VID creation exception");
+
+				} else {
+					vid = response.getResponse().getVid().toString();
+				}
+
+			} else if (cardType == "uin" && uin == null) {
+				uin = utilities.getUinByVid(vid);
 			}
 
-		} else if (cardType == "uin" && uin == null) {
-			utilities.getUinByVid(vid);
+			RegistrationDTO registrationDTO = createRegistrationDTOObject(uin,
+					uinCardRePrintRequestDto.getRequest().getRegistrationType(),
+					uinCardRePrintRequestDto.getRequest().getCenterId(),
+					uinCardRePrintRequestDto.getRequest().getMachineId(), vid, cardType);
+			packetZipBytes = packetCreationService.create(registrationDTO);
+			String rid = registrationDTO.getRegistrationId();
+			String packetCreatedDateTime = rid.substring(rid.length() - 14);
+			String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
+					+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
+			LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
+			String creationTime = ldt.toString() + ".000Z";
+
+			packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
+					creationTime, regType, packetZipBytes);
+		} catch (Exception e) {
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					PlatformErrorMessages.RPR_RHS_REG_BASE_EXCEPTION.getMessage(), ExceptionUtils.getStackTrace(e));
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_RHS_REG_BASE_EXCEPTION,
+					ExceptionUtils.getStackTrace(e), e);
+
 		}
-
-		RegistrationDTO registrationDTO = createRegistrationDTOObject(uin, "", "", "", vid, cardType);
-		packetZipBytes = packetCreationService.create(registrationDTO);
-		String rid = registrationDTO.getRegistrationId();
-		String packetCreatedDateTime = rid.substring(rid.length() - 14);
-		String formattedDate = packetCreatedDateTime.substring(0, 8) + "T"
-				+ packetCreatedDateTime.substring(packetCreatedDateTime.length() - 6);
-		LocalDateTime ldt = LocalDateTime.parse(formattedDate, DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
-		String creationTime = ldt.toString() + ".000Z";
-
-		packerGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
-				creationTime, "---regtype---", packetZipBytes);
-
 		return packerGeneratorResDto;
 	}
 
@@ -229,7 +247,7 @@ public class UinCardRePrintServiceImpl {
 		}
 		return rid;
 	}
-	
+
 	public PacketGeneratorResDto methodToCall(UinCardRePrintRequestDto uinCardRePrintRequestDto)
 			throws RegBaseCheckedException, IOException {
 		PacketGeneratorResDto packetGeneratorResDto = new PacketGeneratorResDto();
@@ -238,7 +256,7 @@ public class UinCardRePrintServiceImpl {
 		myMethod(uinCardRePrintRequestDto);
 		return packetGeneratorResDto;
 	}
-	
+
 	public void myMethod(UinCardRePrintRequestDto uinCardRePrintRequestDto)
 			throws RegBaseCheckedException, IOException {
 		if (validator.isValidCenter(uinCardRePrintRequestDto.getRequest().getCenterId())
@@ -246,7 +264,8 @@ public class UinCardRePrintServiceImpl {
 				&& validator.isValidRegistrationType(uinCardRePrintRequestDto.getRequest().getRegistrationType())
 				&& validator.isValidIdType(uinCardRePrintRequestDto.getRequest().getIdType())
 				&& validator.isValidCardType(uinCardRePrintRequestDto.getRequest().getCardType())
-				&& isValidUinVID(uinCardRePrintRequestDto)) {			
+				&& isValidUinVID(uinCardRePrintRequestDto)) {
+			createPacket(uinCardRePrintRequestDto);
 		}
 	}
 
@@ -254,7 +273,7 @@ public class UinCardRePrintServiceImpl {
 		boolean isValid = false;
 		if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase("UIN")) {
 			isValid = validator.isValidUin(uinCardRePrintRequestDto.getRequest().getId());
-		}else if(uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase("VID")) {
+		} else if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase("VID")) {
 			isValid = validator.isValidVid(uinCardRePrintRequestDto.getRequest().getId());
 		}
 		return isValid;

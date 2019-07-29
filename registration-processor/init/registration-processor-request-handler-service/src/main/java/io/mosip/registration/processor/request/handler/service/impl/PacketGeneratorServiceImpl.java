@@ -87,7 +87,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 
 	@Autowired
 	private Utilities utilities;
-	
+
 	@Autowired
 	RequestHandlerRequestValidator validator;
 
@@ -107,7 +107,8 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 				"PacketGeneratorServiceImpl ::createPacket()::entry");
 		byte[] packetZipBytes = null;
 		if (validator.isValidCenter(request.getCenterId()) && validator.isValidMachine(request.getMachineId())
-				&& validator.isValidUin(request.getUin()) && validator.isValidRegistrationType(request.getRegistrationType())) {
+				&& validator.isValidUin(request.getUin())
+				&& validator.isValidRegistrationType(request.getRegistrationType())) {
 			try {
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", "Packet Generator Validation successfull");
@@ -129,8 +130,7 @@ public class PacketGeneratorServiceImpl implements PacketGeneratorService {
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(),
-						PlatformErrorMessages.RPR_PGS_JSON_PROCESSING_EXCEPTION.getMessage(),
-						ExceptionUtils.getStackTrace(e));
+						PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION.getMessage(), ExceptionUtils.getStackTrace(e));
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 						ExceptionUtils.getStackTrace(e), e);
 

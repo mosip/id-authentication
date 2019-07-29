@@ -834,7 +834,10 @@ public enum PlatformErrorMessages {
 	UNABLE_TO_FETCH_BIO_INFO(PlatformConstants.ABIS + "07", "Unable to fetch biometric details"),
 
 	/** The missing mandatory fields. */
-	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing");
+	MISSING_MANDATORY_FIELDS(PlatformConstants.ABIS + "08", "Mandatory request fields are missing"),
+
+	RPR_RHS_REG_BASE_EXCEPTION(PlatformConstants.RPR_PACKET_REQUEST_HANDLER_MODULE + "004",
+			"reg Based checked exception");
 
 	/** The error message. */
 	private final String errorMessage;
