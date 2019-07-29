@@ -30,13 +30,12 @@ import io.mosip.registration.processor.core.token.validation.exception.InvalidTo
 import io.mosip.registration.processor.core.util.DigitalSignatureUtility;
 import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
-import io.mosip.registration.processor.status.exception.RegStatusAppException;
 import io.mosip.registration.processor.status.exception.RegTransactionAppException;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
 import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.sync.response.dto.RegTransactionResponseDTO;
-import io.mosip.registration.processor.transaction.api.util.Utilities;
+import io.mosip.registration.processor.status.utilities.TransactionUtilities;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -49,9 +48,6 @@ public class RegistrationTransactionController {
 	
 	@Autowired
 	TransactionService<TransactionDto> transactionService;
-	
-	@Autowired
-	Utilities utilities;
 	
 	@Autowired
 	private Environment env;
@@ -86,7 +82,7 @@ public class RegistrationTransactionController {
 		}	
 		try {	
 			tokenValidator.validate("Authorization=" + token.getValue(), "transaction");
-			dtoList =utilities.getTransactionsInPreferedLanguage(transactionService.getTransactionByRegId(rid),langCode);	
+			dtoList =transactionService.getTransactionByRegId(rid,langCode);	
 			RegTransactionResponseDTO responseDTO=buildRegistrationTransactionResponse(dtoList);
 			if (isEnabled) {		 
 				headers.add(RESPONSE_SIGNATURE,
@@ -95,7 +91,7 @@ public class RegistrationTransactionController {
 			}
 				return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 		}catch (Exception e) {
-			if( e instanceof InvalidTokenException |e instanceof AccessDeniedException 
+			if( e instanceof InvalidTokenException |e instanceof AccessDeniedException | e instanceof RegTransactionAppException
 				| e instanceof TransactionsUnavailableException | e instanceof TransactionTableNotAccessibleException ) {
 				throw e;
 			}

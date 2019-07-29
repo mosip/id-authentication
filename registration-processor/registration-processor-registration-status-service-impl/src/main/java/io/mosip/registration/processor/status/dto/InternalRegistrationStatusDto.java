@@ -73,6 +73,9 @@ public class InternalRegistrationStatusDto implements Serializable {
 
 	/** The reg process retry count. */
 	private Integer reProcessRetryCount;
+	
+	/** the subStatusCode */
+	private String subStatusCode;
 
 	/**
 	 * Instantiates a new registration status dto.
@@ -475,6 +478,23 @@ public class InternalRegistrationStatusDto implements Serializable {
 	public void setReProcessRetryCount(Integer reProcessRetryCount) {
 		this.reProcessRetryCount = reProcessRetryCount;
 	}
+	/**
+	 * Gets the subStatusCode.
+	 *
+	 * @return the subStatusCode
+	 */
+	public String getSubStatusCode() {
+		return subStatusCode;
+	}
+	/**
+	 * Sets the subStatusCode.
+	 *
+	 * @param subStatusCode
+	 *            the subStatusCode
+	 */
+	public void setSubStatusCode(String subStatusCode) {
+		this.subStatusCode = subStatusCode;
+	}
 
 	@Override
 	public String toString() {
@@ -488,8 +508,10 @@ public class InternalRegistrationStatusDto implements Serializable {
 				+ ", latestTransactionTypeCode=" + latestTransactionTypeCode + ", latestTransactionStatusCode="
 				+ latestTransactionStatusCode + ", latestTransactionTimes=" + latestTransactionTimes
 				+ ", registrationStageName=" + registrationStageName + ", reProcessRetryCount=" + reProcessRetryCount
-				+ "]";
+				+ ", subStatusCode=" + subStatusCode + "]";
 	}
+
+	
 	
 	
 

@@ -5,17 +5,44 @@ import java.time.LocalDateTime;
 public class RegistrationTransactionDto {
 	
 	/** The transaction id. */
-	private String transactionId;
+	private String id;
 
 	/** The registration id. */
 	private String registrationId;
+	
+	/** The trntypecode. */
+	private String transactionTypeCode;
+	
+	/** The parentid. */
+	private String parentTransactionId;
 
-	public String getTransactionId() {
-		return transactionId;
+	/** The status code. */
+	private String statusCode;
+
+	/** The status comment. */
+	private String statusComment;
+
+	/** The reference id. */
+	private LocalDateTime createdDateTimes;
+
+	public RegistrationTransactionDto(String id, String registrationId, String transactionTypeCode,
+			String parentTransactionId, String statusCode, String statusComment, LocalDateTime createdDateTimes) {
+		
+		this.id = id;
+		this.registrationId = registrationId;
+		this.transactionTypeCode = transactionTypeCode;
+		this.parentTransactionId = parentTransactionId;
+		this.statusCode = statusCode;
+		this.statusComment = statusComment;
+		this.createdDateTimes = createdDateTimes;
 	}
 
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getRegistrationId() {
@@ -26,28 +53,20 @@ public class RegistrationTransactionDto {
 		this.registrationId = registrationId;
 	}
 
-	public String getParentid() {
-		return parentid;
+	public String getTransactionTypeCode() {
+		return transactionTypeCode;
 	}
 
-	public void setParentid(String parentid) {
-		this.parentid = parentid;
+	public void setTransactionTypeCode(String transactionTypeCode) {
+		this.transactionTypeCode = transactionTypeCode;
 	}
 
-	public String getRemarks() {
-		return remarks;
+	public String getParentTransactionId() {
+		return parentTransactionId;
 	}
 
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
-	}
-
-	public String getTrntypecode() {
-		return trntypecode;
-	}
-
-	public void setTrntypecode(String trntypecode) {
-		this.trntypecode = trntypecode;
+	public void setParentTransactionId(String parentTransactionId) {
+		this.parentTransactionId = parentTransactionId;
 	}
 
 	public String getStatusCode() {
@@ -66,57 +85,13 @@ public class RegistrationTransactionDto {
 		this.statusComment = statusComment;
 	}
 
-	public String getCr_by() {
-		return cr_by;
+	public LocalDateTime getCreatedDateTimes() {
+		return createdDateTimes;
 	}
 
-	public void setCr_by(String cr_by) {
-		this.cr_by = cr_by;
+	public void setCreatedDateTimes(LocalDateTime createdDateTimes) {
+		this.createdDateTimes = createdDateTimes;
 	}
-
-	public LocalDateTime getCr_dtimes() {
-		return cr_dtimes;
-	}
-
-	public void setCr_dtimes(LocalDateTime cr_dtimes) {
-		this.cr_dtimes = cr_dtimes;
-	}
-	
-	public RegistrationTransactionDto(String transactionId, String registrationId, String parentid, String trntypecode,
-			String remarks, String statusCode, String statusComment, String cr_by, LocalDateTime cr_dtimes) {
-		super();
-		this.parentid = parentid;
-		this.remarks = remarks;
-		this.trntypecode = trntypecode;
-		this.statusCode = statusCode;
-		this.statusComment = statusComment;
-
-		this.transactionId = transactionId;
-		this.registrationId = registrationId;
-		this.cr_by = cr_by;
-		this.cr_dtimes = cr_dtimes;
-	}
-
-	/** The parentid. */
-	private String parentid;
-	
-	/** The remarks. */
-	private String remarks;
-
-	/** The trntypecode. */
-	private String trntypecode;
-
-	/** The status code. */
-	private String statusCode;
-
-	/** The status comment. */
-	private String statusComment;
-
-	/** The is active. */
-	private String cr_by;
-
-	/** The reference id. */
-	private LocalDateTime cr_dtimes;
 
 	
 }

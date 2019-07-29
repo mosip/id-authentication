@@ -35,6 +35,10 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	/** The status code. */
 	@Column(name = "status_code")
 	private String statusCode;
+	
+	/** The sub status code. */
+	@Column(name = "sub_status_code")
+	private String subStatusCode;
 
 	/** The lang code. */
 	@Column(name = "lang_code")
@@ -97,14 +101,14 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	 * @param statusComment the status comment
 	 */
 	public TransactionEntity(String transactionId, String registrationId, String parentid, String trntypecode,
-			String statusCode, String statusComment) {
+			String subStatusCode,String statusCode, String statusComment) {
 		id = transactionId;
 		this.registrationId = registrationId;
 		this.parentid = parentid;
 		this.trntypecode = trntypecode;
 		this.statusCode = statusCode;
 		this.statusComment = statusComment;
-
+		this.subStatusCode=subStatusCode;
 	}
 
 	/**
@@ -200,6 +204,24 @@ public class TransactionEntity extends BaseRegistrationEntity {
 	 */
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
+	}
+	
+	/**
+	 * Get sub Status Code from transaction table.
+	 * @return
+	 * 		the subStatusCode
+	 */
+	public String getSubStatusCode() {
+		return subStatusCode;
+	}
+
+	/**
+	 * Set sub status Code to transaction table.
+	 * @param subStatusCode
+	 * 						the subStatusCode to set
+	 */
+	public void setSubStatusCode(String subStatusCode) {
+		this.subStatusCode = subStatusCode;
 	}
 
 	/**
