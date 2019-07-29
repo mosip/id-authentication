@@ -220,7 +220,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			object.setIsValid(false);
 			description = e.getMessage();
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
-			internalRegDto.setStatusComment(e.getMessage());
+			internalRegDto.setStatusComment(e.getClass().getSimpleName());
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
 		} catch (Exception e) {

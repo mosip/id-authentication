@@ -71,6 +71,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
@@ -145,7 +146,7 @@ public class PacketUploadController extends BaseController implements Initializa
 	 */
 	public void syncAndUploadPacket() {
 
-		LOGGER.info("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+		LOGGER.info("REGISTRATION - SYNC_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets and push it to the server");
 		observableList.clear();
 		table.refresh();
@@ -571,6 +572,8 @@ public class PacketUploadController extends BaseController implements Initializa
 		fileNameColumn.setResizable(false);
 		checkBoxColumn.setResizable(false);
 		regDate.setResizable(false);
+		
+		disableColumnsReorder(table);
 		// fileColumn.setResizable(false);
 		// statusColumn.setResizable(false);
 	}
@@ -607,6 +610,7 @@ public class PacketUploadController extends BaseController implements Initializa
 			stage.initOwner(fXComponents.getStage());
 			stage.setResizable(false);
 			stage.setScene(scene);
+			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
 			stage.show();
 			stage.setOnCloseRequest((e) -> {
 				saveToDevice.setDisable(false);

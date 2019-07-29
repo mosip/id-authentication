@@ -68,7 +68,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
-				"Entering to featch GPS inforamtion" + "Port Name" + portNo + "wait time" + portReadWaitTime);
+				"Entering to fetch GPS inforamtion" + "Port Name" + portNo + "wait time" + portReadWaitTime);
 		try {
 
 			@SuppressWarnings("unchecked")
@@ -158,7 +158,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 			throws IOException, PortInUseException, TooManyListenersException, UnsupportedCommOperationException {
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Reading date from GPS devie");
+				RegistrationConstants.APPLICATION_ID, "Reading data from GPS devie");
 
 		if (serialPortId != null) {
 			serialPortId.removeEventListener();
@@ -174,7 +174,7 @@ public class GPSBU343Connector implements MosipGPSProvider, SerialPortEventListe
 		inputStream = serialPortId.getInputStream();
 
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Ends Reading date from GPS devie");
+				RegistrationConstants.APPLICATION_ID, "Ends Reading data from GPS devie");
 	}
 
 	/**

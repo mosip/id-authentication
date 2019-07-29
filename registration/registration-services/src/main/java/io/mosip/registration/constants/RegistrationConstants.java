@@ -56,7 +56,8 @@ public class RegistrationConstants {
 	public static final String BIO_EXCEPTION_PAGE = "/fxml/BiometricException.fxml";
 	public static final String SEND_NOTIFICATION_PAGE = "/fxml/SendNotification.fxml";
 	public static final String PACKET_UPLOAD_STATUS_UI = "/fxml/PacketUploadStatus.fxml";
-
+	public static final String ALERT_GENERATION = "/fxml/Alert.fxml";
+	
 	// FXML Id
 	public static final String DEMOGRAPHIC_DETAIL = "demographicDetail";
 	public static final String DOCUMENT_SCAN = "documentScan";
@@ -109,6 +110,8 @@ public class RegistrationConstants {
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
 
+	public static final String MOSIP_URL = "http://mosip.io";
+	
 	// Images path
 	public static final String CLOSE_IMAGE_PATH = "/images/Close.png";
 	public static final String DONE_IMAGE_PATH = "/images/done.png";
@@ -123,7 +126,34 @@ public class RegistrationConstants {
 	public static final String LEFT_IRIS_IMG_PATH = "/images/Eye.png";
 	public static final String VIEW = "/images/View.png";
 	public static final String SCAN = "/images/scan.png";
+	public static final String SCAN_FOCUSED = "/images/scanFocused.png";
+	public static final String BACK = "/images/arrowLeft.png";
+	public static final String BACK_FOCUSED = "/images/backInWhite.png";
+	public static final String WRONG_IMAGE_PATH = "/images/wrong.png";
+	public static final String REJECT_IMAGE_PATH = "/images/Reject.png";
+	public static final String SEND_EMAIL_IMAGE_PATH = "/images/SendEmail.png";
+	public static final String SEND_EMAIL_FOCUSED_IMAGE_PATH = "/images/sendEmailFocused.png";
 	public static final String LOGO = "/images/logo-final-small.png";
+	public static final String NEW_REG_IMAGE = "/images/NewReg.png";
+	public static final String NEW_REG_FOCUSED = "/images/NewRegistration.png";
+	public static final String UPDATE_UIN_IMAGE = "/images/UINUpdate.png";
+	public static final String UPDATE_UIN_FOCUSED = "/images/updateUINFocused.png";
+	public static final String LOST_UIN_IMAGE = "/images/LostUIN.png";
+	public static final String LOST_UIN_FOCUSED = "/images/lostUINFocused.png";	
+	public static final String SYNC_DATA_IMAGE = "/images/sync.png";
+	public static final String SYNC_DATA_FOCUSED = "/images/syncFocused.png";
+	public static final String DOWNLOAD_PREREG_IMAGE = "/images/DownloadPreRegData.png";
+	public static final String DOWNLOAD_PREREG_FOCUSED = "/images/DownloadPreRegDataFocused.png";
+	public static final String UPDATE_OP_BIOMETRICS_IMAGE = "/images/UpdateOperatorBiometrics.png";
+	public static final String UPDATE_OP_BIOMETRICS_FOCUSED = "/images/UpdateOperatorBiometricsFocused.png";
+	public static final String PENDING_APPROVAL_IMAGE = "/images/PendingApproval.png";
+	public static final String PENDING_APPROVAL_FOCUSED = "/images/PendingApprovalFocused.png";
+	public static final String RE_REGISTRATION_IMAGE = "/images/Re-Registration.png";
+	public static final String RE_REGISTRATION_FOCUSED = "/images/ReRegistrationFocused.png";
+	public static final String VIEW_REPORTS_IMAGE = "/images/ViewReports.png";
+	public static final String VIEW_REPORTS_FOCUSED = "/images/ViewReportsFocused.png";
+	public static final String SUCCESS_IMG_PTH = "/images/success.png";
+	public static final String FAILURE_IMG_PTH = "/images/failure.png";
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";
@@ -132,6 +162,8 @@ public class RegistrationConstants {
 	public static final String OTP_VALIDATION_SUCCESS = "success";
 	public static final String SUCCESS = "Success";
 	public static final String FAILURE = "Fail";
+	public static final String INFO = "INFO";
+	public static final String SPLITTER = "#TYPE#";
 	public static final String RESTART = "Restart";
 	public static final String SUPERVISOR = "REGISTRATION_SUPERVISOR";
 	public static final String OFFICER = "REGISTRATION_OFFICER";
@@ -157,6 +189,7 @@ public class RegistrationConstants {
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final String ONBOARD_USER = "isOnboardUser";
 	public static final String ONBOARD_USER_UPDATE = "updateOnboard";
+	public static final String ISPAGE_NAVIGATION_ALERT_REQ = "pageNavigationAlert";
 	public static final String USER_MACHINE_VALIDATION_MSG = "USER_MACHINE_VALIDATION_MSG"; 
 	public static final String BLOCKED_USER_ERROR = "BLOCKED_USER_ERROR";
 	public static final String ROLES_EMPTY_ERROR = "ROLES_EMPTY_ERROR";
@@ -324,8 +357,6 @@ public class RegistrationConstants {
 	public static final String EOD_PROCESS_DATE_FORMAT_FOR_FILE= "yyyyMMddHHmmss";
 	public static final String AUTH_ADVICE_FAILURE = "AUTH_ADVICE_FAILURE";
 
-
-
 	// Packet Store Location Constants
 	public static final String PACKET_STORE_LOCATION = "mosip.registration.registration_packet_store_location";
 	public static final String PACKET_STORE_DATE_FORMAT = "mosip.registration.packet_store_date_format";
@@ -355,6 +386,17 @@ public class RegistrationConstants {
 	public static final String FACE_EXCEPTION = "ExceptionFace";
 	public static final String IDENTITY_JSON_FILE_NAME = "mosip-identity-json-schema.json";
 	public static final String CBEFF_SCHEMA_FILE_PATH = "/cbeff.xsd";
+	public static final String CBEFF_DEFAULT_FORMAT_ORG = "Mosip";
+	public static final String CBEFF_DEFAULT_FORMAT_TYPE = "257";
+	public static final String CBEFF_DEFAULT_ALG_ORG = "HMAC";
+	public static final String CBEFF_DEFAULT_ALG_TYPE = "SHA-256";
+	public static final String CBEFF_FORMAT_ORG = "mosip.registration.cbeff_format_org";
+	public static final String CBEFF_FORMAT_TYPE = "mosip.registration.cbeff_format_type";
+	public static final String CBEFF_ALG_ORG = "mosip.registration.cbeff_algorithm_org";
+	public static final String CBEFF_ALG_TYPE = "mosip.registration.cbeff_algorithm_type";
+	public static final String IS_SUPERVISOR_AUTH_REQUIRED = "isSupervisorAuthRequired";
+	public static final String IS_SUPERVISOR_BIOMETRICS_CAPTURED = "isSupervisorBiometricsCaptured";
+	public static final String IS_OFFICER_BIOMETRICS_CAPTURED = "isOfficerBiometricsCaptured";
 
 	// Validation Types
 	public static final String VALIDATION_TYPE_FP = "Fingerprint";
@@ -739,6 +781,7 @@ public class RegistrationConstants {
 	public static final String SOFTWARE_UPDATE_SUCCESS_MSG = "SoftWareUpdate Flag Updated to Y!";
 	public static final String SOFTWARE_UPDATE_FAILURE_MSG = "SoftWareUpdate Flag Updated to N!";
 	public static final String SOFTWARE_UPDATE_MAX_CONFIGURED_FREQ = "mosip.registration.softwareUpdateCheck_configured_frequency";
+	public static final String DSC_CODE_ONE = "REG-DSC‌-001";
 
 	/** Packet Status Sync Constants */
 	public static final String SYNC_PROGRESS_BAR_VALUE = "syncProgressVlaue";
@@ -816,7 +859,7 @@ public class RegistrationConstants {
 	public static final String INVALID_LOGIN_TIME = "mosip.registration.invalid_login_time";
 	public static final String FACE_RECAPTURE_TIME = "mosip.registration.face_recapture_time";
 	public static final String NOTIFICATION_DISABLE_FLAG = "mosip.registration.send_notification_disable_flag";
-	public static final String MIN_AGE = "mosip.registration.age_limit_for_child";
+	public static final String MIN_AGE = "mosip.kernel.applicant.type.age.limit";
 	public static final String MAX_AGE = "mosip.registration.max_age";
 	public static final String DOC_SIZE = "mosip.registration.document_size";
 	public static final String DOC_TYPE = "mosip.registration.document_scanner_doctype";
@@ -851,6 +894,7 @@ public class RegistrationConstants {
 	public static final String PRE_REG_PACKET_LOCATION = "mosip.registration.registration_pre_reg_packet_location";
 	public static final String IS_SOFTWARE_UPDATE_AVAILABLE = "mosip.registration.is_software_update_available";
 	public static final String PROVIDER_NAME = "mosip.registration.provider_name";
+	public static final String DISK_SPACE = "mosip.registration.disk_space_size";
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
@@ -1153,6 +1197,7 @@ public class RegistrationConstants {
 	// PACKET
 	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "PACKET_STATUS_SYNC_ERROR_RESPONSE";
 	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "PACKET_STATUS_SYNC_SUCCESS_MESSAGE";
+	public static final String PACKET_CREATION_DISK_SPACE_CHECK = "PACKET_CREATION_DISK_SPACE_CHECK";
 
 	// OTP
 	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "OTP_GENERATION_SUCCESS_MESSAGE";
@@ -1367,7 +1412,9 @@ public class RegistrationConstants {
 	public static final String DTAE_MONTH_YEAR_REGEX = "dd|mm|yyyy|ddLocalLanguage|mmLocalLanguage|yyyyLocalLanguage|ageField";
 
 	public static final String UIN_UPDATE_PARENTGUARDIAN_DETAILS = "parentOrGuardianDetails";	
-
+	
+	public static final String PAGE_NAVIGATION_CONFIRM = "PAGE_NAVIGATION_CONFIRM";
+	public static final String PAGE_NAVIGATION_CANCEL = "PAGE_NAVIGATION_CANCEL";
 	public static final String UPDATE_NOW_LABEL = "UPDATE_NOW_LABEL";
 	public static final String UPDATE_LATER_LABEL = "UPDATE_LATER_LABEL";
 	public static String CANCEL_MSG = "CANCEL_LABEL";
@@ -1427,6 +1474,7 @@ public class RegistrationConstants {
 	public static final String DATE_OF_BIRTH = "dateOfBirth";
 
 	public static final String STUB_FACE="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";
+
 	
 	// TPM Public Key Sync
 	public static final String RESPONSE = "response";
@@ -1464,5 +1512,8 @@ public class RegistrationConstants {
 	public static final int DAYS = 31;
 	public static final int MONTH = 12;
 	public static final int YEAR = 3;
+	public static final String EYETOOLTIP="View Details";
+	public static final String DOCUMENT_VIEW_ICON="DocumentViewIcon";
+	
 
 }

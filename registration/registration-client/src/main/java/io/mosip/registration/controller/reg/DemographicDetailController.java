@@ -711,7 +711,7 @@ public class DemographicDetailController extends BaseController {
 	private void initialize() {
 
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Entering the Demographic Details Screen");
 		try {
 			RegistrationConstants.CNI_MANDATORY = String.valueOf(false);
 			if (getRegistrationDTOFromSession() == null) {
@@ -900,7 +900,7 @@ public class DemographicDetailController extends BaseController {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Entering into toggle function for toggle label 1 and toggle level 2");
+					"Entering into toggle function for parent uin or rid");
 
 			switchedOnParentUinOrRid.addListener((observableValue, oldValue, newValue) -> {
 				if (newValue) {
@@ -960,7 +960,7 @@ public class DemographicDetailController extends BaseController {
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Exiting the toggle function for toggle label 1 and toggle level 2");
+					"Exiting the toggle function for parent uin or rid");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -975,7 +975,7 @@ public class DemographicDetailController extends BaseController {
 		try {
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Entering into toggle function for toggle label 1 and toggle level 2");
+					"Entering into toggle function for age and date");
 
 			switchedOn.addListener((observableValue, oldValue, newValue) -> {
 				if (newValue) {
@@ -1047,7 +1047,7 @@ public class DemographicDetailController extends BaseController {
 
 			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
-					"Exiting the toggle function for toggle label 1 and toggle level 2");
+					"Exiting the toggle function for age and date");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error("REGISTRATION - TOGGLING OF DOB AND AGE FAILED ", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -1230,8 +1230,15 @@ public class DemographicDetailController extends BaseController {
 					fxUtils.validateOnFocusOut(dobParentPane, ageField, validation, ageFieldLocalLanguage, false,
 							oldValue);
 				} else {
+					ageField.getStyleClass().remove("demoGraphicTextFieldOnType");
+					ageField.getStyleClass().add("demoGraphicTextFieldFocused");
+					Label ageFieldLabel = (Label)dobParentPane.lookup("#"+ageField.getId()+"Label");
+					ageFieldLabel.getStyleClass().add("demoGraphicFieldLabel");
+					ageField.getStyleClass().remove("demoGraphicFieldLabelOnType");
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
+					System.out.println(ageField.getStyleClass());
+					
 					generateAlert(dobParentPane, RegistrationConstants.DOB, dobMessage.getText());
 					parentFieldValidation();
 				}
@@ -1266,6 +1273,8 @@ public class DemographicDetailController extends BaseController {
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, "Populating the local language fields");
 			boolean hasToBeTransliterated = true;
+			
+			
 			fxUtils.validateOnFocusOut(parentFlowPane, fullName, validation, fullNameLocalLanguage,
 					hasToBeTransliterated);
 			fxUtils.validateOnFocusOut(parentFlowPane, addressLine1, validation, addressLine1LocalLanguage,
@@ -1291,6 +1300,9 @@ public class DemographicDetailController extends BaseController {
 			fxUtils.validateOnFocusOut(parentFlowPane, cniOrPinNumber, validation, cniOrPinNumberLocalLanguage,
 					!hasToBeTransliterated);
 
+			fxUtils.focusedAction(parentFlowPane,dd );
+			fxUtils.focusedAction(parentFlowPane,mm );
+			fxUtils.focusedAction(parentFlowPane,yyyy );
 			fxUtils.populateLocalComboBox(parentFlowPane, city, cityLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, region, regionLocalLanguage);
 			fxUtils.populateLocalComboBox(parentFlowPane, province, provinceLocalLanguage);
@@ -1671,14 +1683,17 @@ public class DemographicDetailController extends BaseController {
 	@SuppressWarnings("unchecked")
 	private List<ValuesDTO> buildValues(String platformLanguageCode, String localLanguageCode, String valueInAppLang,
 			String valueInLocalLang) {
-		return (List<ValuesDTO>) Builder.build(LinkedList.class)
+		List<ValuesDTO> valuesDTO = (List<ValuesDTO>) Builder.build(LinkedList.class)
 				.with(values -> values
 						.add(Builder.build(ValuesDTO.class).with(value -> value.setLanguage(platformLanguageCode))
 								.with(value -> value.setValue(valueInAppLang)).get()))
-				.with(values -> values
-						.add(Builder.build(ValuesDTO.class).with(value -> value.setLanguage(localLanguageCode))
-								.with(value -> value.setValue(valueInLocalLang)).get()))
 				.get();
+
+		if (localLanguageCode != null && !platformLanguageCode.equalsIgnoreCase(localLanguageCode))
+			valuesDTO.add(Builder.build(ValuesDTO.class).with(value -> value.setLanguage(localLanguageCode))
+					.with(value -> value.setValue(valueInLocalLang)).get());
+
+		return valuesDTO;
 	}
 
 	private String buildDemoTextValue(TextField demoField, boolean isTextFieldNotRequired) {
@@ -2097,7 +2112,7 @@ public class DemographicDetailController extends BaseController {
 			});
 
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELED FAILED", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SETTING FOCUS ON LOCAL FIELD FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
 					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
 		}

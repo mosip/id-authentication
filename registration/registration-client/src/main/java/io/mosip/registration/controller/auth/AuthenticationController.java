@@ -126,7 +126,23 @@ public class AuthenticationController extends BaseController implements Initiali
 	private Button getOTP;
 	@FXML
 	private ImageView irisImageView;
-
+	@FXML
+	private Button backBtn;
+	@FXML
+	private ImageView backImageView;
+	@FXML
+	private Button fpScanBtn;
+	@FXML
+	private ImageView fpScanImageView;
+	@FXML
+	private Button irisScanBtn;
+	@FXML
+	private ImageView irisScanImageView;
+	@FXML
+	private Button faceScanBtn;
+	@FXML
+	private ImageView faceScanImageView;
+	
 	@Autowired
 	private PacketHandlerController packetHandlerController;
 
@@ -174,7 +190,7 @@ public class AuthenticationController extends BaseController implements Initiali
 				Components.REG_OS_AUTH, otpUserId.getText(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
 		LOGGER.info("REGISTRATION - OPERATOR_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
-				"Generate OTP for OTP based Authentication");
+				"Generate OTP for OTP based Authentication");		
 
 		if (!otpUserId.getText().isEmpty()) {
 			// Response obtained from server
@@ -943,6 +959,9 @@ public class AuthenticationController extends BaseController implements Initiali
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		setImageOnHover();	
+		
 		irisImageView.setImage(
 				new Image(getClass().getResource(RegistrationConstants.RIGHT_IRIS_IMG_PATH).toExternalForm()));
 		int otpExpirySeconds = Integer
@@ -964,6 +983,42 @@ public class AuthenticationController extends BaseController implements Initiali
 			registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
 					.getString(RegistrationConstants.UIN_UPDATE_UINUPDATENAVLBL));
 		}
+	}
+
+	private void setImageOnHover() {
+		Image backInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK_FOCUSED));
+		Image backImage = new Image(getClass().getResourceAsStream(RegistrationConstants.BACK));
+		Image scanInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN_FOCUSED));
+		Image scanImage = new Image(getClass().getResourceAsStream(RegistrationConstants.SCAN));
+
+		backBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				backImageView.setImage(backInWhite);
+			} else {
+				backImageView.setImage(backImage);
+			}
+		});
+		fpScanBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				fpScanImageView.setImage(scanInWhite);
+			} else {
+				fpScanImageView.setImage(scanImage);
+			}
+		});
+		irisScanBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				irisScanImageView.setImage(scanInWhite);
+			} else {
+				irisScanImageView.setImage(scanImage);
+			}
+		});
+		faceScanBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				faceScanImageView.setImage(scanInWhite);
+			} else {
+				faceScanImageView.setImage(scanImage);
+			}
+		});
 	}
 
 	public void goToPreviousPage() {

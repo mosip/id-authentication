@@ -5,24 +5,17 @@ package io.mosip.registration.processor.print.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Message;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
@@ -53,14 +46,14 @@ public class PrintPostServiceImpl {
 
 	@Value("${registration.processor.queue.address}")
 	private String address;
-	
+
+	/** The print & postal service provider address. */
+	/** The address. */
 	@Value("${registration.processor.queue.printpostaladdress}")
 	private String printPostalAddress;
 
 	@Value("${registration.processor.PRINT_POSTAL_SERVICE}")
 	private String printPostServiceDirectory;
-
-
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(PrintPostServiceImpl.class);
@@ -69,7 +62,8 @@ public class PrintPostServiceImpl {
 
 	boolean isConnection = false;
 
-	public void generatePrintandPostal(String regId, MosipQueue queue, MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
+	public void generatePrintandPostal(String regId, MosipQueue queue,
+			MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
 
 		if (!isConnection) {
 			QueueListener listener = new QueueListener() {
@@ -86,7 +80,8 @@ public class PrintPostServiceImpl {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected boolean consumeLogic(Message message, MosipQueue queue, MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
+	protected boolean consumeLogic(Message message, MosipQueue queue,
+			MosipQueueManager<MosipQueue, byte[]> mosipQueueManager) {
 		boolean isPdfAddedtoQueue = false;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PrintPostServiceImpl::consumeLogic()::entry");
@@ -102,25 +97,26 @@ public class PrintPostServiceImpl {
 			ByteArrayInputStream in = new ByteArrayInputStream(data);
 
 			ObjectInputStream is = new ObjectInputStream(in);
-			
+
 			printQueueDTO = (PrintQueueDTO) is.readObject();
 
-			if (!printQueueDTO.getUin().isEmpty()) {
+			if (!printQueueDTO.getRegId().isEmpty()) {
 				response = new JSONObject();
-				response.put("UIN", printQueueDTO.getUin());
+				response.put("RegId", printQueueDTO.getRegId());
 				response.put("Status", "Success");
 			} else {
 				response = new JSONObject();
-				response.put("UIN", printQueueDTO.getUin());
+				response.put("RegId", printQueueDTO.getRegId());
 				response.put("Status", "Resend");
 			}
 
 			isPdfAddedtoQueue = mosipQueueManager.send(queue, response.toString().getBytes("UTF-8"),
 					printPostalAddress);
-			File dirPathObj = FileUtils.getFile(printPostServiceDirectory + seperator + printQueueDTO.getUin());
-			
-			//Path dirPathObj = Paths.get(printPostServiceDirectory + seperator + printQueueDTO.getUin()).normalize();;
-			boolean dirExists = dirPathObj.exists();//exists(dirPathObj);
+			File dirPathObj = FileUtils.getFile(printPostServiceDirectory + seperator + printQueueDTO.getRegId());
+
+			// Path dirPathObj = Paths.get(printPostServiceDirectory + seperator +
+			// printQueueDTO.getUin()).normalize();;
+			boolean dirExists = dirPathObj.exists();// exists(dirPathObj);
 			if (dirExists) {
 				printConsumedFileFromQueue(dirPathObj, printQueueDTO);
 
@@ -134,8 +130,8 @@ public class PrintPostServiceImpl {
 
 		} catch (IOException | JMSException | ClassNotFoundException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(),
-					printQueueDTO.getUin(), PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name() + e.getMessage()
-							+ ExceptionUtils.getStackTrace(e));
+					printQueueDTO.getRegId(), PlatformErrorMessages.RPR_PRT_PRINT_POST_ACK_FAILED.name()
+							+ e.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"PrintPostServiceImpl::consumeLogic()::exit");
@@ -145,11 +141,13 @@ public class PrintPostServiceImpl {
 
 	private void printConsumedFileFromQueue(File dirPathObj, PrintQueueDTO printQueueDTO) throws IOException {
 
-		try (OutputStream out = FileUtils.openOutputStream(FileUtils.getFile(dirPathObj + seperator + printQueueDTO.getUin() + ".pdf"));) {
+		try (OutputStream out = FileUtils
+				.openOutputStream(FileUtils.getFile(dirPathObj + seperator + printQueueDTO.getRegId() + ".pdf"));) {
 			out.write(printQueueDTO.getPdfBytes());
 		}
 
-		try (OutputStream out1 = FileUtils.openOutputStream(FileUtils.getFile(dirPathObj + seperator + printQueueDTO.getUin() + ".txt"));) {
+		try (OutputStream out1 = FileUtils
+				.openOutputStream(FileUtils.getFile(dirPathObj + seperator + printQueueDTO.getRegId() + ".txt"));) {
 			out1.write(printQueueDTO.getTextBytes());
 		}
 
