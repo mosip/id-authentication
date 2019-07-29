@@ -110,7 +110,7 @@ public class ApplicationContext {
 		try {
 
 			if (null != applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE)
-					&& "" != applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE)) {
+					&& !applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE).equals("")) {
 				applicationLanguge = (String) applicationMap.get(RegistrationConstants.PRIMARY_LANGUAGE);
 			} else {
 				applicationLanguge = Locale.getDefault().getDisplayLanguage() != null

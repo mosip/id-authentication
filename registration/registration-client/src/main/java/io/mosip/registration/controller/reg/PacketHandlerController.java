@@ -406,91 +406,22 @@ public class PacketHandlerController extends BaseController implements Initializ
 	 * acknowledgement form
 	 */
 	public void createPacket() {
-		if (isMachineRemapProcessStarted()) {
+		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
+				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
-			LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		ResponseDTO keyResponse = isKeyValid();
-		if (null != keyResponse.getSuccessResponseDTO()) {
-			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration Starting.");
-			try {
-				auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
-						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-				Parent createRoot = BaseController.load(
-						getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
-						applicationContext.getApplicationLanguageBundle());
-				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-						APPLICATION_ID, "Validating Create Packet screen for specific role");
-
-				if (!validateScreenAuthorization(createRoot.getId())) {
-					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
-				} else {
-					StringBuilder errorMessage = new StringBuilder();
-					ResponseDTO responseDTO;
-					responseDTO = validateSyncStatus();
-					List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-					if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-						for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-							errorMessage.append(
-									RegistrationUIConstants.getMessageLanguageSpecific(errorResponseDTO.getMessage())
-											+ "\n\n");
-						}
-						generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
-					} else {
-						getScene(createRoot).setRoot(createRoot);
-					}
-				}
-
-			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
-
-				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
-			}
-		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
-		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration ended.");
-	}
-
-	/**
-	 * Validating screen authorization and Creating Packet in case of Lost UIN
-	 */
-	public void lostUIN() {
-		if (isMachineRemapProcessStarted()) {
-
-			LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		String fingerPrintDisableFlag = getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
-		String irisDisableFlag = getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG);
-		String faceDisableFlag = getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG);
-
-		if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag)
-				&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
-				&& RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.LOST_UIN_REQUEST_ERROR);
-		} else {
 			if (isMachineRemapProcessStarted()) {
+
 				LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
 						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
 				return;
 			}
 			ResponseDTO keyResponse = isKeyValid();
 			if (null != keyResponse.getSuccessResponseDTO()) {
-				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
-						"Creating of Registration for lost UIN Starting.");
+				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration Starting.");
 				try {
 					auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
 							SessionContext.userContext().getUserId(),
 							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
-
-					/* Mark Registration Category as Lost UIN */
-					registrationController.initializeLostUIN();
 
 					Parent createRoot = BaseController.load(
 							getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
@@ -513,21 +444,104 @@ public class PacketHandlerController extends BaseController implements Initializ
 							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
 						} else {
 							getScene(createRoot).setRoot(createRoot);
-							demographicDetailController.lostUIN();
 						}
 					}
+
 				} catch (IOException ioException) {
-					LOGGER.error("REGISTRATION - UI- Officer Packet Create for Lost UIN", APPLICATION_NAME,
-							APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+					LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 
 					generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
 				}
 			} else {
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 			}
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creation of Registration ended.");
+		} else {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
 		}
+	}
 
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Creating of Registration for lost UIN ended.");
+	/**
+	 * Validating screen authorization and Creating Packet in case of Lost UIN
+	 */
+	public void lostUIN() {
+		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
+				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
+
+			if (isMachineRemapProcessStarted()) {
+
+				LOGGER.info("REGISTRATION - lost UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+				return;
+			}
+			String fingerPrintDisableFlag = getValueFromApplicationContext(
+					RegistrationConstants.FINGERPRINT_DISABLE_FLAG);
+			String irisDisableFlag = getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG);
+			String faceDisableFlag = getValueFromApplicationContext(RegistrationConstants.FACE_DISABLE_FLAG);
+
+			if (RegistrationConstants.DISABLE.equalsIgnoreCase(fingerPrintDisableFlag)
+					&& RegistrationConstants.DISABLE.equalsIgnoreCase(irisDisableFlag)
+					&& RegistrationConstants.DISABLE.equalsIgnoreCase(faceDisableFlag)) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.LOST_UIN_REQUEST_ERROR);
+			} else {
+				if (isMachineRemapProcessStarted()) {
+					LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+							APPLICATION_NAME, APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+					return;
+				}
+				ResponseDTO keyResponse = isKeyValid();
+				if (null != keyResponse.getSuccessResponseDTO()) {
+					LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
+							"Creating of Registration for lost UIN Starting.");
+					try {
+						auditFactory.audit(AuditEvent.NAV_NEW_REG, Components.NAVIGATION,
+								SessionContext.userContext().getUserId(),
+								AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+						/* Mark Registration Category as Lost UIN */
+						registrationController.initializeLostUIN();
+
+						Parent createRoot = BaseController.load(
+								getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE),
+								applicationContext.getApplicationLanguageBundle());
+						LOGGER.info("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Validating Create Packet screen for specific role");
+
+						if (!validateScreenAuthorization(createRoot.getId())) {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+						} else {
+							StringBuilder errorMessage = new StringBuilder();
+							ResponseDTO responseDTO;
+							responseDTO = validateSyncStatus();
+							List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+							if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+								for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+									errorMessage.append(RegistrationUIConstants
+											.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+								}
+								generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+							} else {
+								getScene(createRoot).setRoot(createRoot);
+								demographicDetailController.lostUIN();
+							}
+						}
+					} catch (IOException ioException) {
+						LOGGER.error("REGISTRATION - UI- Officer Packet Create for Lost UIN", APPLICATION_NAME,
+								APPLICATION_ID, ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_LOAD_REG_PAGE);
+					}
+				} else {
+					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
+				}
+			}
+
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID,
+					"Creating of Registration for lost UIN ended.");
+		} else {
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
+		}
 	}
 
 	public void showReciept() {
@@ -661,61 +675,68 @@ public class PacketHandlerController extends BaseController implements Initializ
 	}
 
 	public void updateUIN() {
-		if (isMachineRemapProcessStarted()) {
+		if (null != ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE)
+				&& !("").equals(ApplicationContext.map().get(RegistrationConstants.SECONDARY_LANGUAGE))) {
 
-			LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-					APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
-			return;
-		}
-		ResponseDTO keyResponse = isKeyValid();
-		if (null != keyResponse.getSuccessResponseDTO()) {
+			if (isMachineRemapProcessStarted()) {
 
-			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
-			try {
-				auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
-						SessionContext.userContext().getUserId(), AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+				LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
+						APPLICATION_ID, RegistrationConstants.MACHINE_CENTER_REMAP_MSG);
+				return;
+			}
+			ResponseDTO keyResponse = isKeyValid();
+			if (null != keyResponse.getSuccessResponseDTO()) {
 
-				if (RegistrationConstants.DISABLE.equalsIgnoreCase(
-						getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
-						&& RegistrationConstants.DISABLE.equalsIgnoreCase(
-								getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
+				LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen started.");
+				try {
+					auditFactory.audit(AuditEvent.NAV_UIN_UPDATE, Components.NAVIGATION,
+							SessionContext.userContext().getUserId(),
+							AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 
-					generateAlert(RegistrationConstants.ERROR,
-							RegistrationUIConstants.UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT);
-				} else {
-					Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
+					if (RegistrationConstants.DISABLE.equalsIgnoreCase(
+							getValueFromApplicationContext(RegistrationConstants.FINGERPRINT_DISABLE_FLAG))
+							&& RegistrationConstants.DISABLE.equalsIgnoreCase(
+									getValueFromApplicationContext(RegistrationConstants.IRIS_DISABLE_FLAG))) {
 
-					LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER", APPLICATION_NAME,
-							APPLICATION_ID, "updating UIN");
-
-					if (!validateScreenAuthorization(root.getId())) {
-						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
+						generateAlert(RegistrationConstants.ERROR,
+								RegistrationUIConstants.UPDATE_UIN_NO_BIOMETRIC_CONFIG_ALERT);
 					} else {
+						Parent root = BaseController.load(getClass().getResource(RegistrationConstants.UIN_UPDATE));
 
-						StringBuilder errorMessage = new StringBuilder();
-						ResponseDTO responseDTO;
-						responseDTO = validateSyncStatus();
-						List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
-						if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
-							for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-								errorMessage.append(RegistrationUIConstants
-										.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
-							}
-							generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+						LOGGER.info("REGISTRATION - update UIN - REGISTRATION_OFFICER_PACKET_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "updating UIN");
 
+						if (!validateScreenAuthorization(root.getId())) {
+							generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTHORIZATION_ERROR);
 						} else {
-							getScene(root);
+
+							StringBuilder errorMessage = new StringBuilder();
+							ResponseDTO responseDTO;
+							responseDTO = validateSyncStatus();
+							List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+							if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+								for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+									errorMessage.append(RegistrationUIConstants
+											.getMessageLanguageSpecific(errorResponseDTO.getMessage()) + "\n\n");
+								}
+								generateAlert(RegistrationConstants.ERROR, errorMessage.toString().trim());
+
+							} else {
+								getScene(root);
+							}
 						}
 					}
+				} catch (IOException ioException) {
+					LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 				}
-			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION - UI- UIN Update", APPLICATION_NAME, APPLICATION_ID,
-						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+			} else {
+				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
 			}
+			LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 		} else {
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.INVALID_KEY);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SECONDARY_LANG_MISSING);
 		}
-		LOGGER.info(PACKET_HANDLER, APPLICATION_NAME, APPLICATION_ID, "Loading Update UIN screen ended.");
 	}
 
 	/**
