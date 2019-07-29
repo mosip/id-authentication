@@ -9,6 +9,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -50,18 +51,18 @@ import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
+import io.mosip.registration.dto.biometric.FaceDetailsDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.CBEFFFilePropertiesDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.IndividualIdentity;
+import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.dto.demographic.ValuesDTO;
 import io.mosip.registration.dto.mastersync.LocationDto;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.sync.MasterSyncService;
 import io.mosip.registration.service.sync.PreRegistrationDataSyncService;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -1123,6 +1124,28 @@ public class DemographicDetailController extends BaseController {
 							}
 						}
 					} else {
+						if (getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO() != null) {
+
+							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+									.setFingerprintDetailsDTO(new ArrayList<>());
+
+							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+									.setIrisDetailsDTO(new ArrayList<>());
+
+							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+									.setBiometricExceptionDTO(new ArrayList<>());
+
+							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+									.setExceptionFace(new FaceDetailsDTO());
+
+							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+									.setFace(new FaceDetailsDTO());
+
+							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+									.setHasExceptionPhoto(false);
+
+						}
+
 						updatePageFlow(RegistrationConstants.GUARDIAN_BIOMETRIC, false);
 						updateBioPageFlow(RegistrationConstants.FINGERPRINT_DISABLE_FLAG,
 								RegistrationConstants.FINGERPRINT_CAPTURE);
