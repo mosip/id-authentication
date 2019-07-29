@@ -31,6 +31,11 @@ public final class StatusConstants {
     public static final String PACKET_VALIDATOR_MODULE_SUCCESS = RPR_REGISTRATION_PROCESSOR_PREFIX + SUCCESS;
     public static final String PACKET_VALIDATOR_MODULE_FAILED = RPR_REGISTRATION_PROCESSOR_PREFIX + FAILED;
 
+    //External stage
+    public static final String EXTERNAL_SATGE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "EXS-";
+    public static final String EXTERNAL_SATGE_MODULE_SUCCESS = EXTERNAL_SATGE_MODULE + SUCCESS;
+    public static final String EXTERNAL_SATGE_MODULE_FAILED = EXTERNAL_SATGE_MODULE + FAILED;
+
     
     //System Exceptions
     public static final String SYSTEM_EXCEPTION_CODE = RPR_REGISTRATION_PROCESSOR_PREFIX + SYSTEM_EXCEPTION;
