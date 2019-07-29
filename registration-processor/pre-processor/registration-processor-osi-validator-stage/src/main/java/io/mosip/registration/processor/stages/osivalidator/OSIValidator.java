@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.packet.dto.masterdata.UserResponseDt
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.manager.idreposervice.IdRepoService;
@@ -173,7 +174,7 @@ public class OSIValidator {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET));
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-			registrationStatusDto.setStatusComment(StatusMessage.SUPERVISORID_AND_OFFICERID_NOT_PRESENT_IN_PACKET);
+			registrationStatusDto.setStatusComment(StatusUtil.SUPERVISOR_OFFICER_NOT_FOUND_PACKET.getMessage());
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "Both Officer and Supervisor ID are not present in Packet");
 			return false;
@@ -183,7 +184,13 @@ public class OSIValidator {
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.SUPERVISOR_OR_OFFICER_WAS_INACTIVE));
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-				registrationStatusDto.setStatusComment(StatusMessage.SUPERVISOR_OR_OFFICER_WAS_INACTIVE);
+				String userId;
+				if (regOsi.getOfficerId() != null || !regOsi.getOfficerId().isEmpty()) {
+					userId = regOsi.getOfficerId();
+				}else {
+					userId = regOsi.getSupervisorId();
+				}
+				registrationStatusDto.setStatusComment(StatusUtil.SUPERVISOR_OR_OFFICER_WAS_INACTIVE.getMessage() + userId);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						StatusMessage.SUPERVISOR_OR_OFFICER_WAS_INACTIVE);
@@ -210,15 +217,12 @@ public class OSIValidator {
 			if (officerResponse.getErrors() == null) {
 				wasOfficerActiveDuringPCT = officerResponse.getResponse().getUserResponseDto().get(0).getIsActive();
 				if (!wasOfficerActiveDuringPCT) {
-					statusMessage = statusMessage + " " + StatusMessage.OFFICER_NOT_ACTIVE;
-					registrationStatusDto.setStatusComment(statusMessage);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.OFFICER_NOT_ACTIVE);
 				}
 			} else {
 				List<ServerError> errors = officerResponse.getErrors();
-				statusMessage = statusMessage + " " + "Officer : " + errors.get(0).getMessage();
-				registrationStatusDto.setStatusComment(statusMessage);
+				registrationStatusDto.setStatusComment(StatusUtil.OFFICER_AUTHENTICATION_FAILED.getMessage() + errors.get(0).getMessage());
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "", errors.get(0).getMessage());
 			}
@@ -231,8 +235,6 @@ public class OSIValidator {
 				wasSupervisorActiveDuringPCT = supervisorResponse.getResponse().getUserResponseDto().get(0)
 						.getIsActive();
 				if (!wasSupervisorActiveDuringPCT) {
-					statusMessage = statusMessage + " " + StatusMessage.SUPERVISOR_NOT_ACTIVE;
-					registrationStatusDto.setStatusComment(statusMessage);
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "", StatusMessage.SUPERVISOR_NOT_ACTIVE);
 				}
@@ -712,7 +714,7 @@ public class OSIValidator {
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET));
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
-			registrationStatusDto.setStatusComment(StatusMessage.PACKET_CREATION_DATE_NOT_PRESENT_IN_PACKET);
+			registrationStatusDto.setStatusComment(StatusUtil.PACKET_CREATION_DATE_NOT_FOUND_IN_PACKET.getMessage());
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, "packet creationDate is null");
 

@@ -39,6 +39,7 @@ import io.mosip.registration.processor.core.packet.dto.regcentermachine.Registra
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryDto;
 import io.mosip.registration.processor.core.packet.dto.regcentermachine.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.stages.osivalidator.utils.OSIUtils;
@@ -114,7 +115,7 @@ public class UMCValidator {
 			InternalRegistrationStatusDto registrationStatusDto) throws ApisResourceAccessException, IOException {
 		boolean activeRegCenter = false;
 		if (registrationCenterId == null || effectiveDate == null) {
-			registrationStatusDto.setStatusComment(StatusMessage.CENTER_ID_NOT_FOUND);
+			registrationStatusDto.setStatusComment(StatusUtil.CENTER_ID_NOT_FOUND.getMessage());
 			return false;
 		}
 		List<String> pathsegments = new ArrayList<>();
@@ -139,7 +140,7 @@ public class UMCValidator {
 			if (responseWrapper.getErrors() == null) {
 				activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
 				if (!activeRegCenter) {
-					registrationStatusDto.setStatusComment(StatusMessage.CENTER_NOT_ACTIVE);
+					registrationStatusDto.setStatusComment(StatusUtil.CENTER_ID_INACTIVE.getMessage() + registrationCenterId);
 				}
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
@@ -193,7 +194,7 @@ public class UMCValidator {
 
 		boolean isActiveMachine = false;
 		if (machineId == null) {
-			registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
+			registrationStatusDto.setStatusComment(StatusUtil.MACHINE_ID_NOT_FOUND.getMessage());
 			return false;
 		}
 
@@ -220,11 +221,11 @@ public class UMCValidator {
 				if (dto.getId() != null && dto.getId().matches(machineId)) {
 					isActiveMachine = dto.getIsActive();
 					if (!isActiveMachine) {
-						registrationStatusDto.setStatusComment(StatusMessage.MACHINE_NOT_ACTIVE);
+						registrationStatusDto.setStatusComment(StatusUtil.MACHINE_ID_NOT_ACTIVE.getMessage() + machineId);
 					}
 
 				} else {
-					registrationStatusDto.setStatusComment(StatusMessage.MACHINE_ID_NOT_FOUND);
+					registrationStatusDto.setStatusComment(StatusUtil.MACHINE_ID_NOT_FOUND_MASTER_DB.getMessage());
 				}
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
@@ -293,7 +294,7 @@ public class UMCValidator {
 
 		}
 		if (!supervisorActive && !officerActive) {
-			registrationStatusDto.setStatusComment("Registration Center, Machine, User not found");
+			registrationStatusDto.setStatusComment(StatusUtil.SUPERVISOR_OFFICER_NOT_ACTIVE.getMessage());
 		}
 		return supervisorActive || officerActive;
 	}
@@ -388,7 +389,7 @@ public class UMCValidator {
 
 		if (rcmDto.getLatitude() == null || rcmDto.getLongitude() == null || rcmDto.getLatitude().trim().isEmpty()
 				|| rcmDto.getLongitude().trim().isEmpty()) {
-			registrationStatusDto.setStatusComment(StatusMessage.GPS_DATA_NOT_PRESENT);
+			registrationStatusDto.setStatusComment(StatusUtil.GPS_DETAILS_NOT_FOUND.getMessage());
 		}
 
 		else if (isWorkingHourValidationRequired
@@ -522,8 +523,7 @@ public class UMCValidator {
 								registrationCenterDeviceHistoryResponseDto, deviceId, rcmDto.getRegcntrId(),
 								rcmDto.getRegId(), registrationStatusDto);
 						if (!isDeviceMappedWithCenter) {
-							registrationStatusDto.setStatusComment(
-									StatusMessage.OSI_VALIDATION_FAILURE + IS_DEVICE_MAPPED_WITH_CENTER + deviceId);
+							registrationStatusDto.setStatusComment(StatusUtil.CENTER_DEVICE_MAPPING_NOT_FOUND.getMessage() + rcmDto.getRegcntrId() + deviceId);
 							break;
 						}
 					} else {
@@ -571,8 +571,7 @@ public class UMCValidator {
 		if (registrationCenterDeviceHistoryDto.getIsActive()) {
 			isDeviceMappedWithCenter = true;
 		} else {
-			registrationStatusDto.setStatusComment(StatusMessage.DEVICE_ID + " " + deviceId + StatusMessage.CENTER_ID
-					+ " " + centerId + StatusMessage.DEVICE_WAS_IN_ACTIVE + " " + regId);
+			registrationStatusDto.setStatusComment(StatusUtil.CENTER_DEVICE_MAPPING_INACTIVE.getMessage() + centerId + " -" + deviceId);
 
 		}
 
@@ -625,8 +624,7 @@ public class UMCValidator {
 						isDeviceActive = validateDeviceResponse(deviceHistoryResponsedto, deviceId, rcmDto.getRegId(),
 								registrationStatusDto);
 						if (!isDeviceActive) {
-							registrationStatusDto.setStatusComment(
-									StatusMessage.OSI_VALIDATION_FAILURE + NO_DEVICE_HISTORY_FOUND + deviceId);
+							registrationStatusDto.setStatusComment(StatusUtil.DEVICE_NOT_FOUND_MASTER_DB.getMessage() + deviceId);
 							break;
 
 						}
@@ -680,8 +678,7 @@ public class UMCValidator {
 			if (deviceHistoryDto.getIsActive()) {
 				isDeviceActive = true;
 			} else {
-				registrationStatusDto.setStatusComment(
-						StatusMessage.DEVICE_ID + " " + deviceId + StatusMessage.DEVICE_WAS_IN_ACTIVE + " " + regId);
+				registrationStatusDto.setStatusComment(StatusUtil.DEVICE_ID_INACTIVE.getMessage() + deviceId);
 
 			}
 
@@ -736,8 +733,7 @@ public class UMCValidator {
 				if (result.getStatus().equals(VALID)) {
 					isValid = true;
 				} else {
-					registrationStatusDto.setStatusComment(StatusMessage.TIMESTAMP_VALIDATION1 + " " + rcmDto.getRegId()
-							+ StatusMessage.TIMESTAMP_VALIDATION2 + " " + rcmDto.getRegcntrId());
+					registrationStatusDto.setStatusComment(StatusUtil.PACKET_CREATION_WORKING_HOURS.getMessage() + rcmDto.getPacketCreationDate());
 				}
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
