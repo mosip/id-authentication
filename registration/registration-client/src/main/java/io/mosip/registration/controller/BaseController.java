@@ -283,14 +283,29 @@ public class BaseController {
 			alertController.getAlertGridPane().setPrefHeight(context.length() / 2 + 110);
 			if (scanPopUpViewController.getPopupStage() != null
 					&& scanPopUpViewController.getPopupStage().isShowing()) {
-				alertController.generateAlertResponse(title, context);
-				alertStage.initOwner(scanPopUpViewController.getPopupStage());
-				alertStage.showAndWait();
+				if(context.contains(RegistrationConstants.INFO)) {
+					
+					alertStage.initOwner(scanPopUpViewController.getPopupStage());
+					alertStage.show();
+					alertController.generateAlertResponse(title, context);
+				}else {
+					alertController.generateAlertResponse(title, context);
+					alertStage.initOwner(scanPopUpViewController.getPopupStage());
+					alertStage.showAndWait();
+				}		
 			} else if (registrationApprovalController.getPrimaryStage() != null
 					&& registrationApprovalController.getPrimaryStage().isShowing()) {
-				alertController.generateAlertResponse(title, context);
-				alertStage.initOwner(registrationApprovalController.getPrimaryStage());
-				alertStage.showAndWait();
+				
+					if(context.contains(RegistrationConstants.INFO)) {
+					
+					alertStage.initOwner(registrationApprovalController.getPrimaryStage());
+					alertStage.show();
+					alertController.generateAlertResponse(title, context);
+				}else {
+					alertController.generateAlertResponse(title, context);
+					alertStage.initOwner(registrationApprovalController.getPrimaryStage());
+					alertStage.showAndWait();
+				}
 			} else {
 				alertStage.initOwner(fXComponents.getStage());
 				alertStage.show();
