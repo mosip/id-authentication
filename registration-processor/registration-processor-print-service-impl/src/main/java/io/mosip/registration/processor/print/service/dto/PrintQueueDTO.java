@@ -14,7 +14,7 @@ public class PrintQueueDTO implements Serializable{
 	
 	private byte[] textBytes;
 	
-	private String uin;
+	private String regId;
 	
 	public byte[] getPdfBytes() {
         if(pdfBytes!=null)
