@@ -117,7 +117,7 @@ public class UinCardRePrintServiceImpl {
 					RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
 					ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<>();
 					vidRequestDto.setUIN(uin);
-					vidRequestDto.setVidType(vidType);
+					vidRequestDto.setVidType("Temporary");
 					request.setId(env.getProperty(VID_CREATE_ID));
 					request.setRequest(vidRequestDto);
 					DateTimeFormatter format = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
@@ -262,9 +262,9 @@ public class UinCardRePrintServiceImpl {
 
 	public boolean isValidUinVID(UinCardRePrintRequestDto uinCardRePrintRequestDto) throws RegBaseCheckedException {
 		boolean isValid = false;
-		if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase("UIN")) {
+		if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase(UIN)) {
 			isValid = validator.isValidUin(uinCardRePrintRequestDto.getRequest().getId());
-		} else if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase("VID")) {
+		} else if (uinCardRePrintRequestDto.getRequest().getIdType().equalsIgnoreCase(VID)) {
 			isValid = validator.isValidVid(uinCardRePrintRequestDto.getRequest().getId());
 		}
 		return isValid;
