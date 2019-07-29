@@ -44,5 +44,7 @@ public interface VidRepo extends JpaRepository<Vid, String> {
 	 */
 	@Query("select uin from Vid where vid = :vid")
 	public String retrieveUinByVid(@Param("vid") String vid);
+	
+	List<Vid> findByUinHashAndStatusCodeAndExpiryDTimesAfter(String uinHash, String statusCode, LocalDateTime currentTime);
 
 }

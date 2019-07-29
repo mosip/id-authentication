@@ -11,7 +11,7 @@ import io.mosip.idrepository.core.exception.IdRepoAppException;
  * @param <RESPONSE> the Response Object
  */
 public interface VidService<REQUEST, RESPONSE> {
-	
+
 	/**
 	 * This method will generate new Vid based on the provided request and based on
 	 * the conditions provided by vid policy.
@@ -35,7 +35,7 @@ public interface VidService<REQUEST, RESPONSE> {
 	 * This method will update the vid status based on the conditions provided by
 	 * vid policy.
 	 *
-	 * @param vid the vid
+	 * @param vid     the vid
 	 * @param request the request
 	 * @return The Vid Response
 	 * @throws IdRepoAppException the id repo app exception
@@ -43,11 +43,30 @@ public interface VidService<REQUEST, RESPONSE> {
 	RESPONSE updateVid(String vid, REQUEST request) throws IdRepoAppException;
 
 	/**
-	 * This method will regenerate vid based on the conditions provided by vid policy.
+	 * This method will regenerate vid based on the conditions provided by vid
+	 * policy.
 	 *
 	 * @param vid the vid
 	 * @return the response
 	 * @throws IdRepoAppException the id repo app exception
 	 */
 	RESPONSE regenerateVid(String vid) throws IdRepoAppException;
+
+	/**
+	 * This method will deactivate all the active vid's for an respective uin.
+	 * 
+	 * @param uin the uin
+	 * @return the response
+	 * @throws IdRepoAppException the id repo app exception
+	 */
+	RESPONSE deactivateVIDsForUIN(String uin) throws IdRepoAppException;
+	
+	/**
+	 * This method will reactivate all the deactivated vid's for an respective uin.
+	 * 
+	 * @param uin the uin
+	 * @return the response
+	 * @throws IdRepoAppException the id repo app exception
+	 */
+	RESPONSE reactivateVIDsForUIN(String uin) throws IdRepoAppException;
 }
