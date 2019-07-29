@@ -18,7 +18,7 @@ public enum IdObjectValidatorConstant {
 	ERROR("error"), 
 	PATH_SEPERATOR("/"),
 	CNIE_NUMBER_REGEX("^([0-9]{10,30})$"),
-	DOB_FORMAT("yyyy/MM/dd"),
+	DOB_FORMAT("uuuu/MM/dd"),
 	INVALID_ATTRIBUTE("Invalid attribute"),
 	ROOT_PATH("identity"),
 	IDENTITY_CNIE_NUMBER_PATH("identity.CNIENumber"),
