@@ -277,11 +277,13 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			throw new RegBaseCheckedException(
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptionConstants.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
-					runtimeException.toString());
 		} catch (BaseCheckedException baseCheckedException) {
-			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText());
+			throw new RegBaseCheckedException(baseCheckedException.getErrorCode(), baseCheckedException.getErrorText(),
+					baseCheckedException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_PACKET_CREATION_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_CREATION_EXCEPTION.getErrorMessage(), runtimeException);
 		} finally {
 			SessionContext.map().remove(RegistrationConstants.CBEFF_BIR_UUIDS_MAP_NAME);
 		}
