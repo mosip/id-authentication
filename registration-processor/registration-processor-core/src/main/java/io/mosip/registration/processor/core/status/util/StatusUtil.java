@@ -55,7 +55,16 @@ public enum StatusUtil {
     SUPERVISOR_OFFICER_NOT_FOUND_PACKET(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "012" , "Both Officer and Supervisor IDs are NULL"),
     SUPERVISOR_OR_OFFICER_WAS_INACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "013" , "Officer or Supervisor was Not Active during Packet Creation - "),
     PACKET_CREATION_DATE_NOT_FOUND_IN_PACKET(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "014" , "Packet Creation Date is NULL"),
-    //System Exceptions
+    PASSWORD_OTP_FAILURE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "015" , "Password or OTP Verification Failed for Officer - "),
+    OFFICER_SUPERVISOR_AUTHENTICATION_FAILED(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "016" , "Officer or Supervisor Biometric Authentication Failed - "),
+    PASSWORD_OTP_FAILURE_SUPERVISOR(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "017" , "Password or OTP Verification Failed for Supervisor - "),
+    UIN_RID_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "018" , "UIN or RID of Parent Not Found in Packet"),
+    PARENT_UIN_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "019" , "Parent UIN not Found for the Given RID"),
+   PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "020" , "Parent Biometric File Name Not Found"),
+   PACKET_ON_HOLD(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "021" , "Packet On-Hold as Parent RID Not Found"),
+   CHILD_PACKET_REJECTED(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "022" , "Packet Rejected as Parent Packet is Rejected"),
+   OSI_VALIDATION_SUCCESS(StatusConstants.OSI_VALIDAOR_MODULE_SUCCESS + "001" , "OSI Validation is Successful"),
+   //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
 	PACKET_NOT_FOUND_PACKET_STORE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Packet not found in file system"),
@@ -75,6 +84,7 @@ public enum StatusUtil {
     
     
     OFFICER_AUTHENTICATION_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Officer Authentication Failed: "),
+    SUPERVISOR_AUTHENTICATION_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Supervisor Authentication Failed: "),
 
     
 	PACKET_CLEANUP_FAILED1("","");
