@@ -197,22 +197,149 @@ public class LocationSearchFilterIntegrationTest {
 	}
 
 	@Test
-	@Ignore
 	@WithUserDetails("test")
-	public void filterLocationTest() throws Exception {
+	public void filterAllEmptyTextLocationTest() throws Exception {
 		FilterDto filterDto = new FilterDto();
-		filterDto.setColumnName("hierarchyLevel");
+		filterDto.setColumnName("Zone");
 		filterDto.setType("all");
+		filterDto.setText("");
 		FilterValueDto filterValueDto = new FilterValueDto();
 		filterValueDto.setFilters(Arrays.asList(filterDto));
 		filterValueDto.setLanguageCode("eng");
 		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
 		requestDto.setRequest(filterValueDto);
 		String json = objectMapper.writeValueAsString(requestDto);
-		when(masterDataFilterHelper.filterValues(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
-				.thenReturn(Arrays.asList());
+		List<String> hierarchyNames = new ArrayList<>();
+		hierarchyNames.add("Zone");
+		List<Location> locations = new ArrayList<>();
+		Location location = new Location();
+		location.setCode("1001");
+		location.setHierarchyName("postalCode");
+		location.setLangCode("eng");
+		location.setParentLocCode("PAR");
+		location.setHierarchyLevel((short) 2);
+		location.setName("10045");
+		locations.add(location);
+		when(locationRepository.findLocationAllHierarchyNames()).thenReturn(hierarchyNames);
+		when(locationRepository.findAllHierarchyNameAndNameValueForEmptyTextFilter(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(locations);
+
 		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 
+	
+	@Test
+	@WithUserDetails("test")
+	public void filterAllWithTextLocationTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("Zone");
+		filterDto.setType("all");
+		filterDto.setText("abc");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		List<String> hierarchyNames = new ArrayList<>();
+		hierarchyNames.add("Zone");
+		List<Location> locations = new ArrayList<>();
+		Location location = new Location();
+		location.setCode("1001");
+		location.setHierarchyName("postalCode");
+		location.setLangCode("eng");
+		location.setParentLocCode("PAR");
+		location.setHierarchyLevel((short) 2);
+		location.setName("10045");
+		locations.add(location);
+		when(locationRepository.findLocationAllHierarchyNames()).thenReturn(hierarchyNames);
+		when(locationRepository.findAllHierarchyNameAndNameValueForEmptyTextFilter(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(locations);
+
+		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void filterUniqueEmptyTextLocationTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("Zone");
+		filterDto.setType("unique");
+		filterDto.setText("");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		List<String> hierarchyNames = new ArrayList<>();
+		hierarchyNames.add("Zone");
+		
+		when(locationRepository.findLocationAllHierarchyNames()).thenReturn(hierarchyNames);
+		when(locationRepository.findDistinctHierarchyNameAndNameValueForEmptyTextFilter(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(hierarchyNames);
+
+		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	@Test
+	@WithUserDetails("test")
+	public void filterUniqueWithTextLocationTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("Zone");
+		filterDto.setType("unique");
+		filterDto.setText("abc");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		List<String> hierarchyNames = new ArrayList<>();
+		hierarchyNames.add("Zone");
+		
+		when(locationRepository.findLocationAllHierarchyNames()).thenReturn(hierarchyNames);
+		when(locationRepository.findDistinctHierarchyNameAndNameValueForTextFilter(Mockito.anyString(),
+				Mockito.anyString(),Mockito.anyString())).thenReturn(hierarchyNames);
+
+		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithUserDetails("test")
+	public void filterInvalidTypeExceptionLocationTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("Zone");
+		filterDto.setType("invalidType");
+		filterDto.setText("abc");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+	
+		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+	@Test
+	@WithUserDetails("test")
+	public void filterInvalidColumnNameExceptionLocationTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("InvalidColumn");
+		filterDto.setType("all");
+		filterDto.setText("abc");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+	
+		mockMvc.perform(post("/locations/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
 }

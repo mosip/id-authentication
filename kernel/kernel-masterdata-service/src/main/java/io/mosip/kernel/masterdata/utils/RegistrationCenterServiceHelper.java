@@ -135,9 +135,9 @@ public class RegistrationCenterServiceHelper {
 	 *            zone search inputs
 	 * @return list of {@link Zone}
 	 */
-	public List<Zone> fetchUserZone(List<SearchFilter> zoneFilter) {
+	public List<Zone> fetchUserZone(List<SearchFilter> zoneFilter, String langCode) {
 		List<Zone> zones = null;
-		zones = zoneUtils.getUserZones();
+		zones = zoneUtils.getUserLeafZones(langCode);
 		if (zones != null && !zones.isEmpty())
 			zoneFilter.addAll(buildZoneFilter(zones));
 		else

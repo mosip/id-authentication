@@ -106,12 +106,6 @@ public class FieldComparator<T> implements Comparator<T> {
 			return value1.compareTo(value2);
 		}
 
-		if (type.equals(Short.class)) {
-			Short value1 = (Short) obj1;
-			Short value2 = (Short) obj2;
-			return value1.compareTo(value2);
-		}
-
 		if ("float".equals(type.toString()) || type.equals(Float.class)) {
 			Float value1 = (Float) obj1;
 			Float value2 = (Float) obj2;
