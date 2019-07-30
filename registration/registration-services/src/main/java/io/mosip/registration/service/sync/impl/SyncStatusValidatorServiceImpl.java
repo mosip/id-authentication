@@ -503,6 +503,9 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 			String packetStoreLocation = String
 					.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION));
 			File actualDiskSpace = new File(packetStoreLocation);
+			if(actualDiskSpace.getUsableSpace() == Long.valueOf(RegistrationConstants.PARAM_ZERO)) {
+				actualDiskSpace = new File("..//");
+			}
 
 			if (actualDiskSpace.getUsableSpace() < allowedDiskSpaceSizeInBytes) {
 				getErrorResponse(RegistrationConstants.DSC_CODE_ONE,
