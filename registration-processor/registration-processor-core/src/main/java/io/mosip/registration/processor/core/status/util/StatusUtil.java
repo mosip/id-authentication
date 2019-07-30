@@ -32,6 +32,7 @@ public enum StatusUtil {
 	ACTIVATE_DEACTIVATE_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "007" , "Activate/Deactivate packet validation failed"),
 	UIN_NOT_FOUND_IDREPO(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "008" , "UIN not found in ID Repositary"),
 	MANDATORY_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "009" , "Mandatory fields are not present in ID object"),
+	RID_AND_TYPE_SYNC_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "010" , "RID & Type not matched from sync table"),
 	
 	//External stage
 	EXTERNAL_STAGE_SUCCESS(StatusConstants.EXTERNAL_SATGE_MODULE_SUCCESS + "001" , "Packet processing in External stage is sucessful"),

@@ -207,6 +207,7 @@ public class PacketValidateProcessor {
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusUtil.PACKET_STRUCTURAL_VALIDATION_SUCCESS.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.PACKET_STRUCTURAL_VALIDATION_SUCCESS.getCode());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				// ReverseDataSync
 
@@ -243,6 +244,7 @@ public class PacketValidateProcessor {
 				registrationStatusDto.setRetryCount(retryCount);
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				registrationStatusDto.setStatusComment(packetValidationDto.getPacketValidaionFailure());
+				registrationStatusDto.setSubStatusCode(packetValidationDto.getPacketValidatonStatusCode());
 
 				description.setMessage(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage() + " -- "
 						+ description.getMessage());
@@ -260,6 +262,7 @@ public class PacketValidateProcessor {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto
 					.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.FS_ADAPTER_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			packetValidationDto.setTransactionSuccessful(false);
@@ -276,6 +279,7 @@ public class PacketValidateProcessor {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto
 					.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.API_RESOUCE_ACCESS_FAILED.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			description.setCode(PlatformErrorMessages.RPR_PVM_API_RESOUCE_ACCESS_FAILED.getCode());
@@ -287,6 +291,7 @@ public class PacketValidateProcessor {
 		} catch (DataAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.DB_NOT_ACCESSIBLE.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			packetValidationDto.setTransactionSuccessful(false);
@@ -302,6 +307,7 @@ public class PacketValidateProcessor {
 		} catch (IdentityNotFoundException | IOException exc) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.IO_EXCEPTION.getMessage() + exc.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.IO_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			packetValidationDto.setTransactionSuccessful(false);
@@ -318,6 +324,7 @@ public class PacketValidateProcessor {
 		} catch (ParsingException exc) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.JSON_PARSING_EXCEPTION.getMessage() + exc.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.JSON_PARSING_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.PARSE_EXCEPTION));
 			packetValidationDto.setTransactionSuccessful(false);
@@ -335,6 +342,7 @@ public class PacketValidateProcessor {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto
 					.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.DB_NOT_ACCESSIBLE.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 			object.setIsValid(Boolean.FALSE);
@@ -349,6 +357,7 @@ public class PacketValidateProcessor {
 		} catch (BaseCheckedException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.BASE_CHECKED_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.BASE_CHECKED_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BASE_CHECKED_EXCEPTION));
 			packetValidationDto.setTransactionSuccessful(false);
@@ -364,6 +373,7 @@ public class PacketValidateProcessor {
 		} catch (BaseUncheckedException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.BASE_UNCHECKED_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.BASE_UNCHECKED_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BASE_UNCHECKED_EXCEPTION));
 			packetValidationDto.setTransactionSuccessful(false);
@@ -380,6 +390,7 @@ public class PacketValidateProcessor {
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			registrationStatusDto.setStatusComment(trimMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			packetValidationDto.setTransactionSuccessful(false);
@@ -525,6 +536,8 @@ public class PacketValidateProcessor {
 			packetValidationDto.setRIdAndTypeSynched(true);
 			return packetValidationDto.isRIdAndTypeSynched();
 		}
+		packetValidationDto.setPacketValidaionFailure(StatusUtil.RID_AND_TYPE_SYNC_FAILED.getMessage());
+		packetValidationDto.setPacketValidatonStatusCode(StatusUtil.RID_AND_TYPE_SYNC_FAILED.getCode());
 		regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), regId,
 				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getCode(),
 				PlatformErrorMessages.RPR_PVM_RECORD_NOT_MATCHED_FROM_SYNC_TABLE.getMessage());
@@ -540,6 +553,10 @@ public class PacketValidateProcessor {
 				utility);
 		packetValidationDto.setMandatoryValidation(
 				mandatoryValidation.mandatoryFieldValidation(registrationStatusDto.getRegistrationId()));
+		if(!packetValidationDto.isMandatoryValidation()) {
+			packetValidationDto.setPacketValidaionFailure(StatusUtil.MANDATORY_VALIDATION_FAILED.getMessage());
+			packetValidationDto.setPacketValidatonStatusCode(StatusUtil.MANDATORY_VALIDATION_FAILED.getCode());
+		}
 		return packetValidationDto.isMandatoryValidation();
 	}
 
@@ -558,6 +575,7 @@ public class PacketValidateProcessor {
 
 		if (!packetValidationDto.isSchemaValidated()) {
 			packetValidationDto.setPacketValidaionFailure(StatusUtil.SCHEMA_VALIDATION_FAILED.getMessage());
+			packetValidationDto.setPacketValidatonStatusCode(StatusUtil.SCHEMA_VALIDATION_FAILED.getCode());
 
 		}
 
@@ -572,8 +590,10 @@ public class PacketValidateProcessor {
 		}
 		FilesValidation filesValidation = new FilesValidation(fileSystemManager, registrationStatusDto);
 		packetValidationDto.setFilesValidated(filesValidation.filesValidation(registrationStatusDto.getRegistrationId(), packetMetaInfo));
-		if (!packetValidationDto.isFilesValidated())
+		if (!packetValidationDto.isFilesValidated()) {
 			packetValidationDto.setPacketValidaionFailure(StatusUtil.FILE_VALIDATION_FAILED.getMessage());
+			packetValidationDto.setPacketValidatonStatusCode(StatusUtil.FILE_VALIDATION_FAILED.getCode());
+		}
 		return packetValidationDto.isFilesValidated();
 
 	}
@@ -588,8 +608,10 @@ public class PacketValidateProcessor {
 		CheckSumValidation checkSumValidation = new CheckSumValidation(fileSystemManager, registrationStatusDto);
 		packetValidationDto.setCheckSumValidated(
 				checkSumValidation.checksumvalidation(registrationStatusDto.getRegistrationId(), identity));
-		if (!packetValidationDto.isCheckSumValidated())
+		if (!packetValidationDto.isCheckSumValidated()) {
 			packetValidationDto.setPacketValidaionFailure(StatusUtil.CHECKSUM_VALIDATION_FAILED.getMessage());
+			packetValidationDto.setPacketValidatonStatusCode(StatusUtil.CHECKSUM_VALIDATION_FAILED.getCode());
+		}
 
 		return packetValidationDto.isCheckSumValidated();
 
@@ -612,6 +634,7 @@ public class PacketValidateProcessor {
 				String cbefFile = (String) identityJsonObject.get(VALUE);
 				if (cbefFile == null) {
 					packetValidationDto.setPacketValidaionFailure(StatusUtil.INDIVIDUAL_BIOMETRIC_VALIDATION_FAILED.getMessage());
+					packetValidationDto.setPacketValidatonStatusCode(StatusUtil.INDIVIDUAL_BIOMETRIC_VALIDATION_FAILED.getCode());
 					return false;
 				}
 				InputStream idJsonStream = fileSystemManager.getFile(registrationId,
@@ -641,8 +664,10 @@ public class PacketValidateProcessor {
 				applicantTypeDocument);
 		packetValidationDto.setApplicantDocumentValidation(
 				applicantDocumentValidation.validateDocument(registrationId, jsonString));
-		if (!packetValidationDto.isApplicantDocumentValidation())
+		if (!packetValidationDto.isApplicantDocumentValidation()) {
 			packetValidationDto.setPacketValidaionFailure(StatusUtil.APPLICANT_DOCUMENT_VALIDATION_FAILED.getMessage());
+			packetValidationDto.setPacketValidatonStatusCode(StatusUtil.APPLICANT_DOCUMENT_VALIDATION_FAILED.getCode());
+		}
 		return packetValidationDto.isApplicantDocumentValidation();
 
 	}
@@ -656,8 +681,11 @@ public class PacketValidateProcessor {
 		MasterDataValidation masterDataValidation = new MasterDataValidation(env, registrationProcessorRestService,
 				utility);
 		packetValidationDto.setMasterDataValidation(masterDataValidation.validateMasterData(jsonString));
-		if (!packetValidationDto.isMasterDataValidation())
+		if (!packetValidationDto.isMasterDataValidation()) {
 			packetValidationDto.setPacketValidaionFailure(StatusUtil.MASTER_DATA_VALIDATION_FAILED.getMessage());
+			packetValidationDto.setPacketValidatonStatusCode(StatusUtil.MASTER_DATA_VALIDATION_FAILED.getCode());
+		}
+		
 		return packetValidationDto.isMasterDataValidation();
 
 	}

@@ -254,6 +254,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 		dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 		dto.setLangCode("eng");
 		dto.setStatusComment(StatusUtil.PACKET_RECEIVED.getMessage());
+		dto.setSubStatusCode(StatusUtil.PACKET_RECEIVED.getCode());
 		dto.setReProcessRetryCount(0);
 		dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 		dto.setIsActive(true);
@@ -302,6 +303,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						+ PlatformErrorMessages.PRP_PKR_PACKET_VIRUS_SCAN_FAILED.getMessage());
 				dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 				dto.setStatusComment(StatusUtil.VIRUS_SCANNER_FAILED.getMessage());
+				dto.setSubStatusCode(StatusUtil.VIRUS_SCANNER_FAILED.getCode());
 				dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCAN_FAILED_EXCEPTION));
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -313,6 +315,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			description.setMessage(StatusUtil.VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE.getMessage() + registrationId);
 			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(trimExpMessage.trimExceptionMessage(StatusUtil.VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE.getMessage()+e.getMessage()));
+			dto.setSubStatusCode(StatusUtil.VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE.getCode());
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.VIRUS_SCANNER_SERVICE_FAILED));
 
@@ -463,6 +466,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 						DirectoryPathDto.LANDING_ZONE);
 				dto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				dto.setStatusComment(StatusUtil.PACKET_UPLOADED_TO_LANDING_ZONE.getMessage());
+				dto.setSubStatusCode(StatusUtil.PACKET_UPLOADED_TO_LANDING_ZONE.getCode());
 				dto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				messageDTO.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
@@ -503,6 +507,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<File, Me
 			messageDTO.setInternalError(Boolean.TRUE);
 			dto.setStatusCode(RegistrationStatusCode.FAILED.toString());
 			dto.setStatusComment(StatusUtil.PACKET_DECRYPTION_FAILED.getMessage());
+			dto.setSubStatusCode(StatusUtil.PACKET_DECRYPTION_FAILED.getCode());
 			dto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_DECRYPTION_FAILURE_EXCEPTION));
 			description.setMessage(PacketReceiverConstant.PACKET_DECRYPTION_FAILED + registrationId + "::"
