@@ -172,8 +172,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 	private MosipQueue queue;
 
-	private static final Map<String, MessageDTO> regIdMap = new ConcurrentHashMap<String, MessageDTO>();
-
 	/**
 	 * Deploy verticle.
 	 */
@@ -222,10 +220,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 			registrationStatusDto
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
-
-			regIdMap.put(regId, object);
 			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
-
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 
 			if (isAddedToQueue) {
@@ -329,7 +324,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			queueDto.setPdfBytes(documentBytesMap.get(UIN_CARD_PDF));
 			queueDto.setTextBytes(documentBytesMap.get(UIN_TEXT_FILE));
 			queueDto.setRegId(regId);
-
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
 			oos.writeObject(queueDto);
@@ -403,7 +397,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 			String uin = object.getString("uin");
 			String status = object.getString("status");
 			isValidUin = uinValidatorImpl.validateId(uin);
-			regIdMap.put(messageDTO.getRid(), messageDTO);
 			if (isValidUin && status.equalsIgnoreCase(RESEND)) {
 				MessageDTO responseMessageDto = resendQueueResponse(messageDTO, status);
 				if (!responseMessageDto.getIsValid()) {
@@ -429,22 +422,18 @@ public class PrintStage extends MosipVerticleAPIManager {
 		String description = null;
 		String registrationId = null;
 		boolean isTransactionSuccessful = false;
-		String regId = null;
 		try {
 
 			String response = new String(((ActiveMQBytesMessage) message).getContent().data);
 			JSONObject jsonObject = JsonUtil.objectMapperReadValue(response, JSONObject.class);
 			String status = JsonUtil.getJSONValue(jsonObject, "Status");
-			regId = JsonUtil.getJSONValue(jsonObject, "RegId");
-			if (regId != null) {
-				MessageDTO messageDTO = regIdMap.get(regId);
-				registrationId = messageDTO.getRid();
+			registrationId = JsonUtil.getJSONValue(jsonObject, "RegId");
+			if (registrationId != null) {
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationId,
 						"PrintStage::consumerListener()::entry");
 				InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 						.getRegistrationStatus(registrationId);
-				messageDTO.setReg_type(RegistrationType.valueOf(registrationStatusDto.getRegistrationType()));
 				if (status.equalsIgnoreCase(SUCCESS)) {
 					isTransactionSuccessful = true;
 					description = "Print and Post Completed for the regId : " + registrationId;
@@ -456,6 +445,9 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationStatusDto.setUpdatedBy(USER);
 					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				} else if (status.equalsIgnoreCase(RESEND)) {
+					MessageDTO messageDTO = new MessageDTO();
+					messageDTO.setReg_type(RegistrationType.valueOf(registrationStatusDto.getRegistrationType()));
+					messageDTO.setRid(registrationId);
 					description = "Re-Send uin card with regId " + registrationId + " for printing";
 					registrationStatusDto.setStatusComment(description);
 					registrationStatusDto.setLatestTransactionStatusCode(RESEND);
@@ -493,7 +485,6 @@ public class PrintStage extends MosipVerticleAPIManager {
 					: EventName.EXCEPTION.toString();
 			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
-			regIdMap.remove(regId);
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId,
 					ApiName.AUDIT);
 		}
