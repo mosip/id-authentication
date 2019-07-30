@@ -2024,10 +2024,7 @@ public class DemographicDetailController extends BaseController {
 				if (old) {
 					keyboardPane.maxHeight(parentFlowPane.getHeight());
 					fullNameLocalLanguage.requestFocus();
-				} else {
-					keyboardPane.maxHeight(200);
-					keyboardNode.setManaged(false);
-				}
+				} 
 			});
 
 		} catch (RuntimeException runtimeException) {
