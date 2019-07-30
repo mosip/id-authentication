@@ -114,7 +114,7 @@ public class IdAuthFilter extends BaseAuthFilter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void decipherBioData(Map<String, Object> request) {
+	private void decipherBioData(Map<String, Object> request) throws IdAuthenticationAppException {
 		Object biometrics = request.get(IdAuthCommonConstants.BIOMETRICS);
 		if(Objects.nonNull(biometrics) && biometrics instanceof List) {
 			List<Object> bioIdentity = (List<Object>) biometrics;
@@ -122,17 +122,23 @@ public class IdAuthFilter extends BaseAuthFilter {
 			for(Object obj : bioIdentity) {
 				if(obj instanceof Map) {
 					Map<String, Object> map = (Map<String, Object>) obj;
-					String data = map.get("data") instanceof String ? (String) map.get("data") : null;
-					String dataDto = decipherBioData(data);
-					bioIdentityInfo.add(mapper.convertValue(dataDto, Map.class));
+					Object data = Objects.nonNull(map.get("data")) ? map.get("data") : null;
+					Map<String, Object> dataDto = decipherBioData(data);
+					map.replace("data",  dataDto);
+					bioIdentityInfo.add(map);
 				}
 			}
 			request.replace(IdAuthCommonConstants.BIOMETRICS, bioIdentityInfo);
 		}
 	}
 
-	private String decipherBioData(String data) {
-		return Objects.nonNull(data) ? new String(CryptoUtil.decodeBase64(data)) : null;
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> decipherBioData(Object data) throws IdAuthenticationAppException {
+		try {
+			return Objects.nonNull(data) ? mapper.readValue(CryptoUtil.decodeBase64(data.toString()), Map.class) : null;
+		} catch (IOException e) {
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
+		}
 	}
 
 	/**
