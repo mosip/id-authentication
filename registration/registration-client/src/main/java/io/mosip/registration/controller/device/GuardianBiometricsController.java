@@ -892,7 +892,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 				"Clearing the captured biometric data");
 
 		if (getRegistrationDTOFromSession() != null && (getRegistrationDTOFromSession().isUpdateUINChild()
-				|| (Boolean) SessionContext.map().remove(RegistrationConstants.IS_Child))) {
+				|| (Boolean) SessionContext.map().get(RegistrationConstants.IS_Child))) {
 			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.setFingerprintDetailsDTO(new ArrayList<>());
 
