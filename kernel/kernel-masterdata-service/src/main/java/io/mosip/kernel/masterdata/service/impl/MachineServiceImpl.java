@@ -72,6 +72,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  * 
  * @author Megha Tanga
  * @author Ritesh Sinha
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -667,10 +668,9 @@ public class MachineServiceImpl implements MachineService {
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Machine.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				List<?> filterValues = masterDataFilterHelper.filterValues(Machine.class, filterDto,
-						filterValueDto);
+				List<?> filterValues = masterDataFilterHelper.filterValues(Machine.class, filterDto, filterValueDto);
 				filterValues.forEach(filterValue -> {
 					ColumnValue columnValue = new ColumnValue();
 					columnValue.setFieldID(filterDto.getColumnName());
@@ -681,5 +681,32 @@ public class MachineServiceImpl implements MachineService {
 			filterResponseDto.setFilters(columnValueList);
 		}
 		return filterResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.MachineService#decommissionMachine(java.
+	 * lang.String)
+	 */
+	@Override
+	@Transactional
+	public IdResponseDto decommissionMachine(String machineId) {
+		IdResponseDto machineCodeId = new IdResponseDto();
+		MapperUtils.mapFieldValues(machineId, machineCodeId);
+		try {
+			int updatedRows = machineRepository.decommissionMachine(machineId);
+			if (updatedRows < 1) {
+				throw new RequestException(MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorCode(),
+						MachineErrorCode.MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION.getErrorMessage());
+			}
+		} catch (DataAccessLayerException | DataAccessException e) {
+			throw new MasterDataServiceException(MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorCode(),
+					MachineErrorCode.MACHINE_DECOMMISSION_EXCEPTION.getErrorMessage()
+							+ ExceptionUtils.parseException(e));
+		}
+		machineCodeId.setId(machineId);
+		return machineCodeId;
 	}
 }

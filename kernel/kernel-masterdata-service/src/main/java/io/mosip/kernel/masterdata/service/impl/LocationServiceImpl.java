@@ -21,6 +21,7 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyResponseDto;
@@ -32,9 +33,13 @@ import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.request.SearchSort;
 import io.mosip.kernel.masterdata.dto.response.ColumnValue;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -46,11 +51,12 @@ import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
-import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.Node;
 import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.utils.UBtree;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
-import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
 /**
  * Class will fetch Location details based on various parameters this class is
@@ -59,6 +65,7 @@ import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
  * @author Srinivasan
  * @author Tapaswini
  * @author Sidhant Agarwal
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
@@ -72,16 +79,16 @@ public class LocationServiceImpl implements LocationService {
 	private LocationRepository locationRepository;
 
 	@Autowired
-	private FilterTypeValidator filterTypeValidator;
-
-	@Autowired
-	private MasterdataSearchHelper masterdataSearchHelper;
-
-	@Autowired
 	FilterColumnValidator filterColumnValidator;
 
 	@Autowired
 	MasterDataFilterHelper masterDataFilterHelper;
+
+	@Autowired
+	private UBtree<Location> locationTree;
+
+	@Autowired
+	private PageUtils pageUtils;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> hierarchyChildList = null;
@@ -598,33 +605,219 @@ public class LocationServiceImpl implements LocationService {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.mosip.kernel.masterdata.dto.request.SearchDto)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.LocationService#searchLocation(io.mosip.
+	 * kernel.masterdata.dto.request.SearchDto)
 	 */
 	@Override
-	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto) {
-		PageResponseDto<LocationExtnDto> pageDto = new PageResponseDto<>();
-		List<LocationExtnDto> location = null;
-		if (filterTypeValidator.validate(LocationExtnDto.class, dto.getFilters())) {
-			Page<Location> page = masterdataSearchHelper.searchMasterdata(Location.class, dto, null);
-			if (page.getContent() != null && !page.getContent().isEmpty()) {
-				pageDto = PageUtils.pageResponse(page);
-				location = MapperUtils.mapAll(page.getContent(), LocationExtnDto.class);
-				pageDto.setData(location);
+	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto) {
+		PageResponseDto<LocationSearchDto> pageDto = null;
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		List<Location> locationList = locationRepository.findAllByLangCode(dto.getLanguageCode());
+		List<Node<Location>> tree = locationTree.createTree(locationList);
+		for (SearchFilter filter : dto.getFilters()) {
+			String type = filter.getType();
+			if (type.equalsIgnoreCase(FilterTypeEnum.EQUALS.toString())) {
+				responseDto = getEqualsLocationSearch(filter, dto, tree);
+			} else {
+				if (type.equalsIgnoreCase(FilterTypeEnum.CONTAINS.toString())) {
+					responseDto = getContainsLocationSearch(filter, dto, tree);
+				} else {
+					if (type.equalsIgnoreCase(FilterTypeEnum.STARTSWITH.toString())) {
+						responseDto = getStartsWithLocationSearch(filter, dto, tree);
+					} else {
+
+						throw new RequestException(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorCode(),
+								String.format(ValidationErrorCode.FILTER_NOT_SUPPORTED.getErrorMessage(),
+										filter.getColumnName(), filter.getType()));
+					}
+
+				}
+
 			}
+
 		}
+		Pagination pagination = dto.getPagination();
+		List<SearchSort> sort = dto.getSort();
+		pageDto = pageUtils.sortPage(responseDto, sort, pagination);
 		return pageDto;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(io.mosip.kernel.masterdata.dto.request.FilterValueDto)
+	/**
+	 * Method to find Location for equal data.
+	 * 
+	 * @param filter
+	 *            the search filters provided
+	 * @param dto
+	 *            the search DTO provided.
+	 * @param tree
+	 *            the unbalanced tree of Location.
+	 * @return the list of {@link LocationSearchDto}.
+	 */
+	private List<LocationSearchDto> getEqualsLocationSearch(SearchFilter filter, SearchDto dto,
+			List<Node<Location>> tree) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		Location location = locationRepository.findLocationByHierarchyName(filter.getColumnName(), filter.getValue(),
+				dto.getLanguageCode());
+		Node<Location> node = locationTree.findNode(tree, location.getCode());
+
+		List<Node<Location>> leafNodes = locationTree.findLeafs(node);
+		leafNodes.forEach(leafNode -> {
+			List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
+
+			LocationSearchDto locationSearchDto = new LocationSearchDto();
+			leafParents.forEach(p -> {
+				if (p.getHierarchyLevel() == 1) {
+					locationSearchDto.setRegion(p.getName());
+				}
+				if (p.getHierarchyLevel() == 2) {
+					locationSearchDto.setProvince(p.getName());
+				}
+				if (p.getHierarchyLevel() == 3) {
+					locationSearchDto.setCity(p.getName());
+				}
+				if (p.getHierarchyLevel() == 4) {
+					locationSearchDto.setZone(p.getName());
+				}
+				if (p.getHierarchyLevel() == 5) {
+					locationSearchDto.setPostalCode(p.getName());
+				}
+				locationSearchDto.setCreatedBy(p.getCreatedBy());
+				locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
+				locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
+				locationSearchDto.setIsActive(p.getIsActive());
+				locationSearchDto.setIsDeleted(p.getIsDeleted());
+				locationSearchDto.setUpdatedBy(p.getUpdatedBy());
+				locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+			});
+			responseDto.add(locationSearchDto);
+		});
+
+		return responseDto;
+	}
+
+	/**
+	 * Method to find Location for contains data mentioned.
+	 * 
+	 * @param filter
+	 *            the search filters provided
+	 * @param dto
+	 *            the search DTO provided.
+	 * @param tree
+	 *            the unbalanced tree of Location.
+	 * @return the list of {@link LocationSearchDto}.
+	 */
+	private List<LocationSearchDto> getContainsLocationSearch(SearchFilter filter, SearchDto dto,
+			List<Node<Location>> tree) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		List<Location> locationList = locationRepository.findLocationByHierarchyNameContains(filter.getColumnName(),
+				"%" + filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
+		locationList.forEach(location -> {
+			Node<Location> node = locationTree.findNode(tree, location.getCode());
+			List<Node<Location>> leafNodes = locationTree.findLeafs(node);
+			leafNodes.forEach(leafNode -> {
+				List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
+				LocationSearchDto locationSearchDto = new LocationSearchDto();
+				leafParents.forEach(p -> {
+					if (p.getHierarchyLevel() == 1) {
+						locationSearchDto.setRegion(p.getName());
+					}
+					if (p.getHierarchyLevel() == 2) {
+						locationSearchDto.setProvince(p.getName());
+					}
+					if (p.getHierarchyLevel() == 3) {
+						locationSearchDto.setCity(p.getName());
+					}
+					if (p.getHierarchyLevel() == 4) {
+						locationSearchDto.setZone(p.getName());
+					}
+					if (p.getHierarchyLevel() == 5) {
+						locationSearchDto.setPostalCode(p.getName());
+					}
+					locationSearchDto.setCreatedBy(p.getCreatedBy());
+					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
+					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
+					locationSearchDto.setIsActive(p.getIsActive());
+					locationSearchDto.setIsDeleted(p.getIsDeleted());
+					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
+					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+				});
+				responseDto.add(locationSearchDto);
+			});
+
+		});
+		return responseDto;
+	}
+
+	/**
+	 * Method to find Location thats starts with provided data.
+	 * 
+	 * @param filter
+	 *            the search filters provided
+	 * @param dto
+	 *            the search DTO provided.
+	 * @param tree
+	 *            the unbalanced tree of Location.
+	 * @retun the list of {@link LocationSearchDto}.
+	 */
+	private List<LocationSearchDto> getStartsWithLocationSearch(SearchFilter filter, SearchDto dto,
+			List<Node<Location>> tree) {
+		List<LocationSearchDto> responseDto = new ArrayList<>();
+		List<Location> locationList = locationRepository.findLocationByHierarchyNameStartsWith(filter.getColumnName(),
+				filter.getValue().toLowerCase() + "%", dto.getLanguageCode());
+		locationList.forEach(location -> {
+			Node<Location> node = locationTree.findNode(tree, location.getCode());
+			List<Node<Location>> leafNodes = locationTree.findLeafs(node);
+			leafNodes.forEach(leafNode -> {
+				List<Location> leafParents = locationTree.getParentHierarchy(leafNode);
+				LocationSearchDto locationSearchDto = new LocationSearchDto();
+				leafParents.forEach(p -> {
+					if (p.getHierarchyLevel() == 1) {
+						locationSearchDto.setRegion(p.getName());
+					}
+					if (p.getHierarchyLevel() == 2) {
+						locationSearchDto.setProvince(p.getName());
+					}
+					if (p.getHierarchyLevel() == 3) {
+						locationSearchDto.setCity(p.getName());
+					}
+					if (p.getHierarchyLevel() == 4) {
+						locationSearchDto.setZone(p.getName());
+					}
+					if (p.getHierarchyLevel() == 5) {
+						locationSearchDto.setPostalCode(p.getName());
+					}
+					locationSearchDto.setCreatedBy(p.getCreatedBy());
+					locationSearchDto.setCreatedDateTime(p.getCreatedDateTime());
+					locationSearchDto.setDeletedDateTime(p.getDeletedDateTime());
+					locationSearchDto.setIsActive(p.getIsActive());
+					locationSearchDto.setIsDeleted(p.getIsDeleted());
+					locationSearchDto.setUpdatedBy(p.getUpdatedBy());
+					locationSearchDto.setUpdatedDateTime(p.getUpdatedDateTime());
+				});
+				responseDto.add(locationSearchDto);
+			});
+
+		});
+		return responseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.LocationService#locationFilterValues(io.
+	 * mosip.kernel.masterdata.dto.request.FilterValueDto)
 	 */
 	@Override
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		List<String> getValues = null;
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Location.class)) {
 			for (FilterDto filterDto : filterValueDto.getFilters()) {
 				if (filterDto.getType().equals("unique")) {
 					getValues = locationRepository.filterByDistinctHierarchyLevel(

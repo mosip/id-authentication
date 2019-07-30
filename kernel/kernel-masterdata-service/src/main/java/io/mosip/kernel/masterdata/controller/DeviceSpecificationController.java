@@ -24,6 +24,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.DeviceSpecificationResponseDto
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.Api;
@@ -189,6 +193,33 @@ public class DeviceSpecificationController {
 		ResponseWrapper<PageDto<DeviceSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(
 				deviceSpecificationService.getAllDeviceSpecifications(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	@ResponseFilter
+	@PostMapping("/devicespecifications/search")
+	public ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> deviceSpecificationSearch(
+			@RequestBody @Valid RequestWrapper<SearchDto> requestWrapper) {
+		ResponseWrapper<PageResponseDto<DeviceSpecificationExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceSpecificationService.searchDeviceSpec(requestWrapper.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/devicespecifications/filtervalues")
+	public ResponseWrapper<FilterResponseDto> deviceSpecificationFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceSpecificationService.deviceSpecFilterValues(requestWrapper.getRequest()));
 		return responseWrapper;
 	}
 

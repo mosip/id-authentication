@@ -19,8 +19,12 @@ import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryTypeMappingExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ValidDocumentExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 import io.mosip.kernel.masterdata.service.ValidDocumentService;
 import io.swagger.annotations.Api;
@@ -33,6 +37,7 @@ import io.swagger.annotations.ApiResponses;
  * Controller class to create and delete valid document.
  * 
  * @author Ritesh Sinha
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -131,6 +136,39 @@ public class ValidDocumentController {
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
 		ResponseWrapper<PageDto<ValidDocumentExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentService.getValidDocuments(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * POST API to search document type-category mapping
+	 * 
+	 * @param request
+	 *            input from user
+	 * @return dto containing mapped doc type-cat values
+	 */
+	@ResponseFilter
+	@PostMapping("/validdocuments/search")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageDto<DocumentCategoryTypeMappingExtnDto>> searchValidDocument(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageDto<DocumentCategoryTypeMappingExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.searchValidDocument(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * POST API to filter document type-category mapping
+	 * 
+	 * @param request
+	 *            input from user
+	 * @return column values of input request
+	 */
+	@ResponseFilter
+	@PostMapping("/validdocuments/filtervalues")
+	public ResponseWrapper<FilterResponseDto> categoryTypeFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentService.categoryTypeFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 }
