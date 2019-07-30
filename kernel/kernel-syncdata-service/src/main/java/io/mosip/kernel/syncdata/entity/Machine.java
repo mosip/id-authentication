@@ -97,6 +97,9 @@ public class Machine extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "key_index")
 	private String keyIndex;
+	
+	@Column(name = "zone_code", length = 36)
+	private String zoneCode;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ @JoinColumn(name = "mspec_id", referencedColumnName = "id", insertable = false, updatable = false),

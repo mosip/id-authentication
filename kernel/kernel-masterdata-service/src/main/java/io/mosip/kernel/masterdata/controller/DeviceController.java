@@ -23,10 +23,10 @@ import io.mosip.kernel.masterdata.dto.DeviceRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DeviceResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.DeviceSearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
@@ -216,14 +216,15 @@ public class DeviceController {
 	 * 
 	 * @param request
 	 *            the request DTO.
-	 * @return the pages of {@link DeviceExtnDto}.
+	 * @return the pages of {@link DeviceSearchDto}.
 	 */
 	@ResponseFilter
 	@PostMapping(value = "/search")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
 	@ApiOperation(value = "Retrieve all Devices for the given Filter parameters", notes = "Retrieve all Devices for the given Filter parameters")
-	public ResponseWrapper<PageResponseDto<DeviceExtnDto>> searchDevice(
+	public ResponseWrapper<PageResponseDto<DeviceSearchDto>> searchDevice(
 			@Valid @RequestBody RequestWrapper<SearchDto> request) {
-		ResponseWrapper<PageResponseDto<DeviceExtnDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageResponseDto<DeviceSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.searchDevice(request.getRequest()));
 		return responseWrapper;
 	}
@@ -241,6 +242,22 @@ public class DeviceController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceService.deviceFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * PUT API to decommission device
+	 * 
+	 * @param deviceId
+	 *            input from user
+	 * @return device ID of decommissioned device
+	 */
+	@ResponseFilter
+	@ApiOperation(value = "Decommission Device")
+	@PutMapping("/decommission/{deviceId}")
+	public ResponseWrapper<IdResponseDto> decommissionDevice(@PathVariable("deviceId") String deviceId) {
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceService.decommissionDevice(deviceId));
 		return responseWrapper;
 	}
 

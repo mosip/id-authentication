@@ -101,11 +101,13 @@ public class RegistrationStatusController {
 			List<RegistrationStatusDto> registrations = registrationStatusService
 					.getByIds(registrationStatusRequestDTO.getRequest());
 			if (isEnabled) {
+				RegStatusResponseDTO response =buildRegistrationStatusResponse(registrations);
+				Gson gson = new GsonBuilder().create();
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE,
-						digitalSignatureUtility.getDigitalSignature(buildSignatureRegistrationStatusResponse(registrations)));
+						digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
 				return ResponseEntity.status(HttpStatus.OK).headers(headers)
-						.body(buildRegistrationStatusResponse(registrations));
+						.body(response);
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
@@ -126,20 +128,6 @@ public class RegistrationStatusController {
 		response.setResponse(registrations);
 		response.setErrors(null);
 		return response;
-	}
-	
-	public String buildSignatureRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
-
-		RegStatusResponseDTO response = new RegStatusResponseDTO();
-		if (Objects.isNull(response.getId())) {
-			response.setId(env.getProperty(REG_STATUS_SERVICE_ID));
-		}
-		response.setResponsetime(DateUtils.getUTCCurrentDateTimeString(env.getProperty(DATETIME_PATTERN)));
-		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
-		response.setResponse(registrations);
-		response.setErrors(null);
-		Gson gson = new GsonBuilder().create();
-		return gson.toJson(response);
 	}
 
 }

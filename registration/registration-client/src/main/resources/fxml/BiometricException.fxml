@@ -624,7 +624,7 @@
                                  <children>
                                     <Button fx:id="backBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                                        <graphic>
-                                          <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/arrowLeft.png" />
                                              </image>
@@ -689,7 +689,7 @@
                                  <children>
                                     <Button fx:id="previousBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPage" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                                        <graphic>
-                                          <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../images/arrowLeft.png" />
                                              </image>

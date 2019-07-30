@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.netlib.util.booleanW;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +41,9 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
- * This is a base class for service package. The common functionality across the 'services' classes are 
- * implemented in this class to inherit this property at the required extended classes. 
+ * This is a base class for service package. The common functionality across the
+ * 'services' classes are implemented in this class to inherit this property at
+ * the required extended classes.
  * 
  */
 @Service
@@ -273,7 +275,7 @@ public class BaseService {
 
 		ApplicationContext.getInstance();
 		// Check application map
-		if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key)==null) {
+		if (ApplicationContext.map().isEmpty() || ApplicationContext.map().get(key) == null) {
 
 			// Load Global params if application map is empty
 			ApplicationContext.setApplicationMap(globalParamService.getGlobalParams());
@@ -337,6 +339,10 @@ public class BaseService {
 		DateFormat dateFormat = new SimpleDateFormat(RegistrationConstants.EOD_PROCESS_DATE_FORMAT);
 		Date date = new Date(timestamp.getTime());
 		return dateFormat.format(date);
+	}
+
+	protected boolean isNull(String val) {
+		return (val == null || val.equalsIgnoreCase("NULL"));
 	}
 
 }

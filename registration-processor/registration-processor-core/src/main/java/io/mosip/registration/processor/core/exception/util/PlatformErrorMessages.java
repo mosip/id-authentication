@@ -209,6 +209,10 @@ public enum PlatformErrorMessages {
 	/** The rpr pkm file not found in source. */
 	RPR_PKM_SFTP_FILE_OPERATION_FAILED(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "006", "SFTP Operation Failed"),
 
+	/** The rpr pkm file not found in source. */
+	RPR_PKM_PWD_PPK_NOT_PRESENT(PlatformConstants.RPR_PACKET_MANAGER_MODULE + "007",
+			"Both DMZ password and PPK file name are not available in config"),
+
 	// Registration processor camel bridge Exception error code and message
 
 	/** The rpr cmb deployment failure. */

@@ -241,7 +241,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 				keyIndex = tpmPublicKeySyncService.syncTPMPublicKey();
 			} catch (RegBaseCheckedException regBaseCheckedException) {
 				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						"Exception while sync'ing the TPM public key to server");
+						"Exception while syncing the TPM public key to server");
 				val.add(RegistrationConstants.FAILURE);
 				return val;
 			}
@@ -319,7 +319,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 		if (loginCount >= invalidLoginCount
 				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
-						- loginTime.getTime()) > invalidLoginTime) {
+						- loginTime.getTime()) >= invalidLoginTime) {
 
 			loginCount = RegistrationConstants.PARAM_ZERO;
 			userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
@@ -333,7 +333,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"validating login count and time ");
 
-			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) > invalidLoginTime) {
+			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) >= invalidLoginTime) {
 
 				userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ONE);
 
@@ -413,6 +413,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 						Map<String, Object> params = new LinkedHashMap<>();
 
 						params.put(RegistrationConstants.ROLES_LIST, roleList);
+						params.put(RegistrationConstants.USER_DTO, userDTO);
 						setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, params);
 					}
 				}

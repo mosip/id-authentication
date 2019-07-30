@@ -17,6 +17,10 @@ import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceTypeExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.swagger.annotations.Api;
@@ -29,6 +33,7 @@ import io.swagger.annotations.ApiResponses;
  * Controller with api to save Device Type Details
  * 
  * @author Megha Tanga
+ * @author Ayush Saxena
  * @since 1.0.0
  *
  */
@@ -92,6 +97,39 @@ public class DeviceTypeController {
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
 		ResponseWrapper<PageDto<DeviceTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(deviceTypeService.getAllDeviceTypes(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Api to search Device Type based on filters provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the pages of {@link DeviceTypeExtnDto}.
+	 */
+	@ResponseFilter
+	@PostMapping(value = "/devicetypes/search")
+	@ApiOperation(value = "Retrieve all Device Types for the given Filter parameters", notes = "Retrieve all Device Types for the given Filter parameters")
+	public ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> deviceTypeSearch(
+			@Valid @RequestBody RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DeviceTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceTypeService.deviceTypeSearch(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * Api to filter Device Type based on column and type provided.
+	 * 
+	 * @param request
+	 *            the request DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	@ResponseFilter
+	@PostMapping("/devicetypes/filtervalues")
+	public ResponseWrapper<FilterResponseDto> deviceTypeFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(deviceTypeService.deviceTypeFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 

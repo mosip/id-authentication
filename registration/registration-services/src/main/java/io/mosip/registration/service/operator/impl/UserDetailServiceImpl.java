@@ -82,7 +82,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 						userDetailDAO.save(userDtlsSyncDto);
 						responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
 						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
-								"User Detail Sync SuccessFull......");
+								"User Detail Sync Success......");
 					} else {
 
 						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,

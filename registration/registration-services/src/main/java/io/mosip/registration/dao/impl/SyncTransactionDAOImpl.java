@@ -45,7 +45,7 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	public SyncTransaction save(SyncTransaction syncTransaction) {
 
 		LOGGER.info(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"saving sync details to databse started");
+				"saving sync details to database started");
 		return syncTranscRepository.save(syncTransaction);
 
 	}
@@ -58,7 +58,7 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	@Override
 	public List<SyncTransaction> getAll() {
 		LOGGER.info(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetch all sync details from databse started");
+				"Fetch all sync details from database started");
 		return syncTranscRepository.findAll();
 	}
 
@@ -72,7 +72,7 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	@Override
 	public List<SyncTransaction> getSyncTransactions(Timestamp req, String syncJobId) {
 		LOGGER.info(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetch  sync details based on crDtime from databse started");
+				"Fetch  sync details based on crDtime from database started");
 		return syncTranscRepository.findByCrDtimeAfterAndSyncJobIdNotOrderByCrDtimeDesc(req, syncJobId);
 	}
 
@@ -82,7 +82,7 @@ public class SyncTransactionDAOImpl implements SyncTransactionDAO {
 	@Override
 	public List<SyncTransaction> getAll(String syncJobId, Timestamp previousFiredTime, Timestamp currentFiredTime) {
 		LOGGER.info(RegistrationConstants.SYNC_TRANSACTION_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetch  sync details based on crDtime from databse started");
+				"Fetch  sync details based on crDtime from database started");
 		return syncTranscRepository.findBySyncJobIdAndCrDtimeBetween(syncJobId, previousFiredTime, currentFiredTime);
 
 	}

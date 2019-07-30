@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,29 @@ import io.mosip.kernel.masterdata.dto.IndividualTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.IndividualTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.IndividualTypeExtnDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.IndividualType;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.IndividualTypeRepository;
 import io.mosip.kernel.masterdata.service.IndividualTypeService;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
+import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
+import io.mosip.kernel.masterdata.utils.PageUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
+import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
  * @author Bal Vikash Sharma
+ * @author Sidhant Agarwal
+ * 
+ * @since 1.0.0
  *
  */
 @Service
@@ -33,6 +48,18 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 
 	@Autowired
 	private IndividualTypeRepository individualTypeRepository;
+
+	@Autowired
+	FilterTypeValidator filterTypeValidator;
+
+	@Autowired
+	FilterColumnValidator filterColumnValidator;
+
+	@Autowired
+	MasterdataSearchHelper masterDataSearchHelper;
+
+	@Autowired
+	MasterDataFilterHelper masterDataFilterHelper;
 
 	/*
 	 * (non-Javadoc)
@@ -90,6 +117,55 @@ public class IndividualTypeServiceImpl implements IndividualTypeService {
 					IndividualTypeErrorCode.INDIVIDUAL_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		return pageDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.IndividualTypeService#searchIndividuals(io
+	 * .mosip.kernel.masterdata.dto.request.SearchDto)
+	 */
+	@Override
+	public PageResponseDto<IndividualTypeExtnDto> searchIndividuals(SearchDto dto) {
+		PageResponseDto<IndividualTypeExtnDto> pageDto = new PageResponseDto<>();
+		List<IndividualTypeExtnDto> individuals = null;
+		if (filterTypeValidator.validate(IndividualTypeExtnDto.class, dto.getFilters())) {
+			Page<IndividualType> page = masterDataSearchHelper.searchMasterdata(IndividualType.class, dto, null);
+			if (page.getContent() != null && !page.getContent().isEmpty()) {
+				pageDto = PageUtils.pageResponse(page);
+				individuals = MapperUtils.mapAll(page.getContent(), IndividualTypeExtnDto.class);
+				pageDto.setData(individuals);
+			}
+		}
+		return pageDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.IndividualTypeService#
+	 * individualsFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
+	 */
+	@Override
+	public FilterResponseDto individualsFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), IndividualType.class)) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				List<?> filterValues = masterDataFilterHelper.filterValues(IndividualType.class, filterDto,
+						filterValueDto);
+				filterValues.forEach(filterValue -> {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.toString());
+					columnValueList.add(columnValue);
+				});
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
 	}
 
 }

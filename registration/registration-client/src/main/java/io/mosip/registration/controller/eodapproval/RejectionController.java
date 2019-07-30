@@ -101,6 +101,7 @@ public class RejectionController extends BaseController implements Initializable
 		closeButton.setGraphic(new ImageView(new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 20, 20, true, true)));
 		rejectionComboBox.setItems(FXCollections
 				.observableArrayList(reasonList.stream().map(list -> list.getName()).collect(Collectors.toList())));
+		disableColumnsReorder(regRejectionTable);
 
 		LOGGER.info(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}

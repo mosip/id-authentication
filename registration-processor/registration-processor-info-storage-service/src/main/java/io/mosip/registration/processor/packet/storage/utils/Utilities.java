@@ -143,6 +143,8 @@ public class Utilities {
 	private static final String BROKERURL = "brokerUrl";
 	private static final String TYPEOFQUEUE = "typeOfQueue";
 	private static final String NAME = "name";
+	private static final String FAIL_OVER = "failover:(";
+	private static final String RANDOMIZE_FALSE =")?randomize=false";
 
 	public static String getJson(String configServerFileStorageURL, String uri) {
 		RestTemplate restTemplate = new RestTemplate();
@@ -269,12 +271,13 @@ public class Utilities {
 				String userName = validateAbisQueueJsonAndReturnValue(json, USERNAME);
 				String password = validateAbisQueueJsonAndReturnValue(json, PASSWORD);
 				String brokerUrl = validateAbisQueueJsonAndReturnValue(json, BROKERURL);
+				String failOverBrokerUrl = FAIL_OVER + brokerUrl + "," + brokerUrl + RANDOMIZE_FALSE;
 				String typeOfQueue = validateAbisQueueJsonAndReturnValue(json, TYPEOFQUEUE);
 				String inboundQueueName = validateAbisQueueJsonAndReturnValue(json, INBOUNDQUEUENAME);
 				String outboundQueueName = validateAbisQueueJsonAndReturnValue(json, OUTBOUNDQUEUENAME);
 				String queueName = validateAbisQueueJsonAndReturnValue(json, NAME);
 				MosipQueue mosipQueue = mosipConnectionFactory.createConnection(typeOfQueue, userName, password,
-						brokerUrl);
+						failOverBrokerUrl);
 				if (mosipQueue == null)
 					throw new QueueConnectionNotFound(
 							PlatformErrorMessages.RPR_PIS_ABIS_QUEUE_CONNECTION_NULL.getMessage());

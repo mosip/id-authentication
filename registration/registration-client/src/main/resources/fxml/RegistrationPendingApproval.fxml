@@ -148,7 +148,7 @@
                      <children>
                         <ToggleButton fx:id="rejectionBtn" mnemonicParsing="false" onAction="#updateStatus" styleClass="rejectButton" text="%reject">
                            <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="rejectionImageView" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/Reject.png" />
                                  </image>
@@ -157,7 +157,7 @@
                         </ToggleButton>
                         <ToggleButton fx:id="approvalBtn" mnemonicParsing="false" onAction="#updateStatus" styleClass="approveButton" text="%approve">
                            <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="approvalImageView" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/Approve.png" />
                                  </image>
