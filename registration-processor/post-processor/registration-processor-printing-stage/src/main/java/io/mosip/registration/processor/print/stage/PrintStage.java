@@ -58,7 +58,6 @@ import io.mosip.registration.processor.print.service.dto.PrintQueueDTO;
 import io.mosip.registration.processor.print.service.impl.PrintPostServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -230,30 +229,31 @@ public class PrintStage extends MosipVerticleAPIManager {
 					.setLatestTransactionTypeCode(RegistrationTransactionTypeCode.PRINT_SERVICE.toString());
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
-            regIdMap.put(regId, object);
+			regIdMap.put(regId, object);
 
-            IdType idType = IdType.RID;
+			IdType idType = IdType.RID;
 
-            String idValue = regId;
-            if (io.mosip.registration.processor.status.code.RegistrationType.RES_REPRINT.toString().equalsIgnoreCase(object.getReg_type().toString())) {
+			String idValue = regId;
+			if (io.mosip.registration.processor.status.code.RegistrationType.RES_REPRINT.toString()
+					.equalsIgnoreCase(object.getReg_type().toString())) {
 
-                PacketMetaInfo packetMetaInfo = utilities.getPacketMetaInfo(regId);
-                Identity identity = packetMetaInfo.getIdentity();
-                List<FieldValue> metadataList = identity.getMetaData();
-                IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
-                String cardType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.CARDTYPE);
+				PacketMetaInfo packetMetaInfo = utilities.getPacketMetaInfo(regId);
+				Identity identity = packetMetaInfo.getIdentity();
+				List<FieldValue> metadataList = identity.getMetaData();
+				IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+				String cardType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.CARDTYPE);
 
-                if (cardType.equalsIgnoreCase(IdType.VID.toString())) {
-                    idType = IdType.VID;
-                    idValue = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.VID);
+				if (cardType.equalsIgnoreCase(IdType.VID.toString())) {
+					idType = IdType.VID;
+					idValue = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.VID);
 
-                } else {
-                    idType = IdType.UIN;
-                    idValue = uin;
+				} else {
+					idType = IdType.UIN;
+					idValue = "";
 
-                }
-            }
-			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
+				}
+			}
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId, "");
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 
