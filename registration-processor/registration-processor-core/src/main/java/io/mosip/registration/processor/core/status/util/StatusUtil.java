@@ -44,7 +44,6 @@ public enum StatusUtil {
 	CENTER_ID_INACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "003" , "CenterId was inactive during packet creation - "),
 	MACHINE_ID_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "004" , "MachineId not found in packet"),
 	MACHINE_ID_NOT_ACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "005" , "MachineId was inactive during packet creation - "),
-	MACHINE_ID_NOT_FOUND_MASTER_DB(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "023" , "MachineId not found in master db - "),
 	SUPERVISOR_OFFICER_NOT_ACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "006" , "SupervisorId and OfficerId are inActive"),
 	CENTER_DEVICE_MAPPING_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "007" , "Center-Device Mapping Not Found - "),
 	CENTER_DEVICE_MAPPING_INACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "008" , "Center-Device Mapping was InActive during Packet Creation - "),
@@ -63,7 +62,19 @@ public enum StatusUtil {
    PARENT_BIOMETRIC_FILE_NAME_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "020" , "Parent Biometric File Name Not Found"),
    PACKET_ON_HOLD(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "021" , "Packet On-Hold as Parent RID Not Found"),
    CHILD_PACKET_REJECTED(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "022" , "Packet Rejected as Parent Packet is Rejected"),
+	MACHINE_ID_NOT_FOUND_MASTER_DB(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "023" , "MachineId not found in master db - "),
    OSI_VALIDATION_SUCCESS(StatusConstants.OSI_VALIDAOR_MODULE_SUCCESS + "001" , "OSI Validation is Successful"),
+   
+   //Message sender stage
+   NOTIFICATION_SUCESSFUL(StatusConstants.OMESSAGE_SENDER_MODULE_SUCCESS + "001" , "Notification Sent Successfully"),
+   TEMPLATE_CONFIGURATION_NOT_FOUND(StatusConstants.OMESSAGE_SENDER_MODULE_FAILED + "001" , "Template configuration and language not found"),
+   EMAIL_PHONE_TEMPLATE_NOTIFICATION_MISSING(StatusConstants.OMESSAGE_SENDER_MODULE_FAILED + "002" , "Email ID or Phone or Template or Notification Type is Missing"),
+  
+   //printing stage
+   PDF_ADDED_TO_QUEUE_SUCCESS(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "001" , "PDF is added to Queue for Printing"),
+   PDF_ADDED_TO_QUEUE_FAILED(StatusConstants.PRINT_STAGE_MODULE_FAILED + "001" , "PDF was not added to Queue due to Queue Failure"),
+   PRINT_POST_COMPLETED(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "002" , "Printing and Post Completed"),
+   RESEND_UIN_CARD(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "003" , "Re-Sent UIN Card for Printing"),
    //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),

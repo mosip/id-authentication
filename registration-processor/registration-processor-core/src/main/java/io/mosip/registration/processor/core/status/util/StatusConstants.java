@@ -40,6 +40,22 @@ public final class StatusConstants {
     public static final String OSI_VALIDAOR_MODULE =  RPR_REGISTRATION_PROCESSOR_PREFIX + "OSI-";
     public static final String OSI_VALIDAOR_MODULE_SUCCESS = OSI_VALIDAOR_MODULE + SUCCESS;
     public static final String OSI_VALIDAOR_MODULE_FAILED = OSI_VALIDAOR_MODULE + FAILED;
+    
+    //Message sender stage
+    public static final String MESSAGE_SENDER_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MSS-";
+    public static final String OMESSAGE_SENDER_MODULE_SUCCESS = OSI_VALIDAOR_MODULE + SUCCESS;
+    public static final String OMESSAGE_SENDER_MODULE_FAILED = OSI_VALIDAOR_MODULE + FAILED;
+    
+    //Printing stage
+    public static final String PRINT_STAGE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PPS-";
+    public static final String PRINT_STAGE_MODULE_SUCCESS = PRINT_STAGE_MODULE + SUCCESS;
+    public static final String PRINT_STAGE_MODULE_FAILED = PRINT_STAGE_MODULE + FAILED;
+
+    
+
+    
+
+
 
 
     

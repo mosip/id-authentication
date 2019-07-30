@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnava
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
@@ -239,7 +240,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.TRUE);
 				isTransactionSuccessful = true;
 				description = "Pdf added to the mosip queue for printing";
-				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_SUCCESS.getMessage());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				registrationStatusDto
@@ -249,7 +250,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				object.setIsValid(Boolean.FALSE);
 				isTransactionSuccessful = false;
 				description = "Pdf was not added to queue due to queue failure";
-				registrationStatusDto.setStatusComment(description);
+				registrationStatusDto.setStatusComment(StatusUtil.PDF_ADDED_TO_QUEUE_FAILED.getMessage());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				registrationStatusDto
@@ -457,7 +458,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 				if (status.equals(SUCCESS)) {
 					isTransactionSuccessful = true;
 					description = "Print and Post Completed for the regId : " + registrationId;
-					registrationStatusDto.setStatusComment(description);
+					registrationStatusDto.setStatusComment(StatusUtil.PRINT_POST_COMPLETED.getMessage());
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 					registrationStatusDto.setLatestTransactionTypeCode(
@@ -466,7 +467,7 @@ public class PrintStage extends MosipVerticleAPIManager {
 					registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				} else if (status.equals(RESEND)) {
 					description = "Re-Send uin card with regId " + registrationId + " for printing";
-					registrationStatusDto.setStatusComment(description);
+					registrationStatusDto.setStatusComment(StatusUtil.RESEND_UIN_CARD.getMessage());
 					registrationStatusDto.setLatestTransactionStatusCode(RESEND);
 					registrationStatusDto.setLatestTransactionTypeCode(
 							RegistrationTransactionTypeCode.PRINT_POSTAL_SERVICE.toString());
