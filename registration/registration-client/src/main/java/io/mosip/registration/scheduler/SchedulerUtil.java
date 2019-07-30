@@ -93,8 +93,8 @@ public class SchedulerUtil extends BaseController {
 		LOGGER.info("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 				"Timer has been called " + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
 		timer = new Timer("Timer");
-		refreshTime = TimeUnit.SECONDS.toMillis(30);
-		sessionTimeOut = TimeUnit.SECONDS.toMillis(40);
+		refreshTime = TimeUnit.SECONDS.toMillis(SessionContext.refreshedLoginTime());
+		sessionTimeOut = TimeUnit.SECONDS.toMillis(SessionContext.idealTime());
 		isShowing = false;
 		duration = (int) ((sessionTimeOut - refreshTime) / 1000);
 		startTimerForSession();
