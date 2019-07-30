@@ -3,6 +3,7 @@ package io.mosip.registration.service.sync.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -43,11 +44,13 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.sync.SyncStatusValidatorService;
 
 /**
- * It does the pre check before doing registration to ensure that the application can capture the Registration detail from individual. If the pre check
- * fails, then don't allow the application to capture the detail from individual.  Post completion of the respective sync process only 
- * the application can be used for Registration process. 
+ * It does the pre check before doing registration to ensure that the
+ * application can capture the Registration detail from individual. If the pre
+ * check fails, then don't allow the application to capture the detail from
+ * individual. Post completion of the respective sync process only the
+ * application can be used for Registration process.
  * 
- * This would be called prior to New/ Update/ Lost UIN process. 
+ * This would be called prior to New/ Update/ Lost UIN process.
  *
  * @author Chukka Sreekar
  * @author Mahesh Kumar
@@ -91,7 +94,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		List<ErrorResponseDTO> errorResponseDTOList = new ArrayList<>();
 
 		try {
-
+			validatingDiskSpace(errorResponseDTOList);
 			validatingRegisteredPacketCountAndDuration(errorResponseDTOList);
 			validatingSyncJobsConfigAndYetToExportPacketCountAndDuration(errorResponseDTOList);
 			validatingCenterToMachineDistance(errorResponseDTOList);
@@ -166,7 +169,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		SyncJobInfo syncJobInfo = syncJObDao.getSyncStatus();
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Fetched SyncJobInfo containing the synccontrol list and yettoexportpacket count");
+				"Fetched SyncJobInfo containing the sync control list and yet to export packet count");
 
 		if (syncJobInfo.getSyncControlList() != null && !syncJobInfo.getSyncControlList().isEmpty()) {
 
@@ -296,7 +299,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		Instant lastCapturedTime = (Instant) map.get(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME);
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Capturing the login time Firsttime login");
+				"Capturing the login time First time login");
 
 		return lastCapturedTime != null && Duration.between(lastCapturedTime, Instant.now()).toHours() < 24;
 	}
@@ -311,7 +314,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
 
 		LOGGER.info(LoggerConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Getting the center latitude and longitudes from session conext");
+				"Getting the center latitude and longitudes from session context");
 
 		if (RegistrationConstants.ENABLE.equalsIgnoreCase(
 				String.valueOf(ApplicationContext.map().get(RegistrationConstants.GPS_DEVICE_DISABLE_FLAG)))) {
@@ -458,7 +461,9 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.registration.service.sync.SyncStatusValidatorService#isToBeForceUpdate()
+	 * 
+	 * @see io.mosip.registration.service.sync.SyncStatusValidatorService#
+	 * isToBeForceUpdate()
 	 */
 	@Override
 	public boolean isToBeForceUpdate() {
@@ -468,7 +473,7 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 		GlobalParam globalParam = globalParamDAO.get(globalParamId);
 
 		String isSoftwareAvailable = globalParam.getVal();
-		if(null != globalParam.getUpdDtimes()) {
+		if (null != globalParam.getUpdDtimes()) {
 			Date lastSoftwareUpdatedTime = new Date(globalParam.getUpdDtimes().getTime());
 
 			try {
@@ -486,5 +491,27 @@ public class SyncStatusValidatorServiceImpl extends BaseService implements SyncS
 
 		}
 		return false;
+	}
+
+	private void validatingDiskSpace(List<ErrorResponseDTO> errorResponseDTOList) {
+		if (ApplicationContext.map().get(RegistrationConstants.DISK_SPACE) != null
+				&& !ApplicationContext.map().get(RegistrationConstants.DISK_SPACE).equals(RegistrationConstants.EMPTY)
+				&& ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION) != null) {
+			long allowedDiskSpaceSizeInBytes = Long
+					.valueOf(String.valueOf(ApplicationContext.map().get(RegistrationConstants.DISK_SPACE)).trim())
+					* 1024 * 1024;
+			String packetStoreLocation = String
+					.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION));
+			File actualDiskSpace = new File(packetStoreLocation);
+			if(actualDiskSpace.getUsableSpace() == Long.valueOf(RegistrationConstants.PARAM_ZERO)) {
+				actualDiskSpace = new File("..//");
+			}
+
+			if (actualDiskSpace.getUsableSpace() < allowedDiskSpaceSizeInBytes) {
+				getErrorResponse(RegistrationConstants.DSC_CODE_ONE,
+						RegistrationConstants.PACKET_CREATION_DISK_SPACE_CHECK, RegistrationConstants.ERROR,
+						errorResponseDTOList);
+			}
+		}
 	}
 }

@@ -406,6 +406,13 @@
 	-fx-pref-width: 221.0px;
 }
 
+.hyperLinkStyle{
+	-fx-text-fill: #E63A74;
+	-fx-underline: false;
+	-fx-border-color: transparent;
+	-fx-font-size : 10.0px;
+}
+
 .loginSubmitStyle{
 	-fx-pref-height: 30.0px;
 	-fx-pref-width: 81.0px;
@@ -845,16 +852,35 @@ Working on new Css by taleev
 	-fx-pref-width: 190.0px;
 }
 
-.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
-    -fx-background-color: #FF4081;
-    -fx-text-fill: #FFFFFF;
+.demographicCombobox:focused {
+	-fx-background-color: #ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 14.0px;
+	-fx-pref-height: 10.0px;
+	-fx-pref-width: 190.0px;
 }
+
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #E63A74;
+    -fx-text-fill: #FFFFFF;
+    
+}
+
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
+    -fx-text-fill: #FFFFFF;
+    
+}
+
+
 .documentCombobox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: black;
 	-fx-font-size: 1.2em;
 }
+
 
 #docPreviewImgViewPane{
 	-fx-border-width : 1.0;
@@ -863,8 +889,20 @@ Working on new Css by taleev
 }
 
 .documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
-    -fx-background-color: #FF4081;
+    -fx-background-color: #E63A74;
     -fx-text-fill: #FFFFFF;
+}
+
+.documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
+    -fx-text-fill: #FFFFFF;
+}
+
+.documentCombobox:focused{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 1.2em;
 }
 
 .toggleButton{
@@ -1231,8 +1269,14 @@ Working on new Css by taleev
 	-fx-font-size: 14.0px;
 }
 
+
 #rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
-    -fx-background-color: #FF4081;
+    -fx-background-color: #E63A74;
+    -fx-text-fill: #FFFFFF;
+}
+
+#rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
     -fx-text-fill: #FFFFFF;
 }
 
@@ -1994,18 +2038,19 @@ Working on new Css by taleev
 
  
  .dialog-pane{
-  -fx-background-color : #FFFFFF;
- }
+-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1); }
  
  .dialog-pane .button{
    -fx-background-color:#FF4081;
    -fx-text-fill:white;
    -fx-wrap-text: true;
    -fx-cursor:hand;
- }
- 
+ } 
  .dialog-pane:header .header-panel {
-  -fx-background-color: #FFFFFF;
+    -fx-background-color: #FFFFFF;
+    -fx-background-insets: 1;
 }
 
 .schedulerMsg{
@@ -2067,6 +2112,32 @@ Working on new Css by taleev
 	-fx-background-image : url('/images/hover.png');
 			-fx-pref-height: 20;
 	-fx-pref-width: 20;
-	
 }
 
+.alertBox{
+	-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1);
+}
+.dialog-pane:header .header-panel .label{
+  -fx-text-fill:#FF4081;
+  -fx-font-size:28.0px;
+  -fx-padding:20.0 0.0 0.0 10.0
+}
+.dialog-pane > .content.label {
+   -fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+   -fx-padding:0.0 0.0 20.0 20.0
+}
+
+.alertHeader{
+	-fx-text-fill:#FF4081;
+    -fx-font-size:28.0px;
+}
+.alertContext{
+	-fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+}
+#alertImage{
+	-fx-background-size: 90.0px 90.0px;
+}

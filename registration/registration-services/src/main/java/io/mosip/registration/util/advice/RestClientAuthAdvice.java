@@ -139,7 +139,7 @@ public class RestClientAuthAdvice {
 	 */
 	private void getNewAuthZToken(RequestHTTPDTO requestHTTPDTO) throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-				"Enterning into the new auth token generation ");
+				"Entering into the new auth token generation ");
 		String authZToken = RegistrationConstants.EMPTY;
 		boolean haveToAuthZByClientId = false;
 		LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);

@@ -45,6 +45,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -59,6 +60,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 
 /**
  * Class for Registration Officer details
@@ -431,8 +433,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected ResponseDTO call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - SYNC - HEADER_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the sync activities");
 
 						return jobConfigurationService.executeAllJobs();
 
@@ -460,7 +462,7 @@ public class HeaderController extends BaseController {
 					generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SYNC_SUCCESS);
 
 				}
-				gridPane.setDisable(false);
+				//gridPane.setDisable(false);
 				progressIndicator.setVisible(false);
 			}
 		});
@@ -518,8 +520,8 @@ public class HeaderController extends BaseController {
 					@Override
 					protected String call() {
 
-						LOGGER.info("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER",
-								APPLICATION_NAME, APPLICATION_ID, "Handling all the packet upload activities");
+						LOGGER.info("REGISTRATION - SOFTWARE_UPDATE - HEADER_CONTROLLER",
+								APPLICATION_NAME, APPLICATION_ID, "Handling all the Software Update activities");
 
 						progressIndicator.setVisible(true);
 						pane.setDisable(true);
@@ -559,11 +561,19 @@ public class HeaderController extends BaseController {
 
 	public void softwareUpdate(Pane pane, ProgressIndicator progressIndicator, String context,
 			boolean isPreLaunchTaskToBeStopped) {
-
-		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null, context,
-				RegistrationConstants.UPDATE_NOW_LABEL, RegistrationConstants.UPDATE_LATER_LABEL);
+		Alert updateAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+				RegistrationUIConstants.ALERT_NOTE_LABEL, context, RegistrationConstants.UPDATE_NOW_LABEL,
+				RegistrationConstants.UPDATE_LATER_LABEL);
 
 		pane.setDisable(true);
+
+		updateAlert.show();
+		Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();		
+		Double xValue = screenSize.getWidth()/2 - updateAlert.getWidth()+250;
+		Double yValue = screenSize.getHeight()/2 - updateAlert.getHeight();
+		updateAlert.hide();
+		updateAlert.setX(xValue);
+		updateAlert.setY(yValue);
 		updateAlert.showAndWait();
 
 		/* Get Option from user */
@@ -573,9 +583,17 @@ public class HeaderController extends BaseController {
 			softwareUpdateInitiate(pane, progressIndicator, context, isPreLaunchTaskToBeStopped);
 
 		} else if (result == ButtonType.CANCEL && (statusValidatorService.isToBeForceUpdate())) {
-			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE, null,
-					RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED, RegistrationConstants.UPDATE_NOW_LABEL, null);
+			Alert alert = createAlert(AlertType.INFORMATION, RegistrationUIConstants.UPDATE_AVAILABLE,
+					RegistrationUIConstants.ALERT_NOTE_LABEL, RegistrationUIConstants.UPDATE_FREEZE_TIME_EXCEED,
+					RegistrationConstants.UPDATE_NOW_LABEL, null);
 
+			alert.show();
+			Rectangle2D systemScreenSize = Screen.getPrimary().getVisualBounds();		
+			Double xPosValue = systemScreenSize.getWidth()/2 - alert.getWidth()+250;
+			Double yPosValue = systemScreenSize.getHeight()/2 - alert.getHeight();
+			alert.hide();
+			alert.setX(xPosValue);
+			alert.setY(yPosValue);
 			alert.showAndWait();
 
 			/* Get Option from user */

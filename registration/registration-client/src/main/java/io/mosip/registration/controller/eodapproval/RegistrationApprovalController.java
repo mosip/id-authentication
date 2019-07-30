@@ -182,6 +182,20 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private Map<String, Integer> packetIds = new HashMap<>();
 
+	/**
+	 * @return the primaryStage
+	 */
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	/**
+	 * @param primaryStage the primaryStage to set
+	 */
+	public void setPrimaryStage(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -205,6 +219,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		tableCellColorChangeListener();
 		id.setResizable(false);
 		statusComment.setResizable(false);
+		disableColumnsReorder(table);
 	}
 
 	private void tableCellColorChangeListener() {
@@ -383,6 +398,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		table.getSelectionModel().selectFirst();
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
+			approvalBtn.setDisable(false);
+			rejectionBtn.setDisable(false);
+		}else {
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
+			approvalBtn.setDisable(true);
+			rejectionBtn.setDisable(true);
 		}
 	}
 

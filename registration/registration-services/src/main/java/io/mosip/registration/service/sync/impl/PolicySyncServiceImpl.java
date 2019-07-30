@@ -62,7 +62,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 	@Override
 	synchronized public ResponseDTO fetchPolicy() {
 		LOGGER.debug("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-				"synch the public key is started");
+				"sync the public key is started");
 		KeyStore keyStore = null;
 		String centerMachineId = getCenterId(getStationId(getMacAddress())) + "_" + getStationId(getMacAddress());
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -147,7 +147,7 @@ public class PolicySyncServiceImpl extends BaseService implements PolicySyncServ
 				policySyncDAO.updatePolicy(keyStore);
 				responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.POLICY_SYNC_SUCCESS_MESSAGE, null);
 				LOGGER.info("REGISTRATION_KEY_POLICY_SYNC", APPLICATION_NAME, APPLICATION_ID,
-						"synch the public key is completed");
+						"sync the public key is completed");
 
 			} else {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();

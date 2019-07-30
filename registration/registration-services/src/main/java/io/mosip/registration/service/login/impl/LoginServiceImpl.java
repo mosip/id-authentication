@@ -241,7 +241,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 				keyIndex = tpmPublicKeySyncService.syncTPMPublicKey();
 			} catch (RegBaseCheckedException regBaseCheckedException) {
 				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						"Exception while sync'ing the TPM public key to server");
+						"Exception while syncing the TPM public key to server");
 				val.add(RegistrationConstants.FAILURE);
 				return val;
 			}

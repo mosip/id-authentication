@@ -15,8 +15,10 @@ import io.mosip.kernel.core.transliteration.spi.Transliteration;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.ApplicationContext;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.Validations;
+import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.mastersync.BiometricAttributeDto;
 import io.mosip.registration.dto.mastersync.DocumentCategoryDto;
 import io.mosip.registration.dto.mastersync.GenderDto;
@@ -230,6 +232,11 @@ public class FXUtils {
 					Label fieldLabel = (Label) parentPane.lookup("#" + field.getId() + "Label");
 					fieldLabel.getStyleClass().add("demoGraphicFieldLabelOnType");
 					fieldLabel.getStyleClass().remove("demoGraphicFieldLabel");
+
+					if (field.getId().equals("ageField")) {
+						((RegistrationDTO) SessionContext.map().get(RegistrationConstants.REGISTRATION_DATA))
+								.setAgeCalculatedByDOB(false);
+					}
 				}
 
 				hideErrorMessageLabel(parentPane, field);
@@ -239,7 +246,7 @@ public class FXUtils {
 							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 									ApplicationContext.localLanguage(), field.getText()));
 						} catch (RuntimeException runtimeException) {
-							LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+							LOGGER.error("REGISTRATION - TRANSLITERATION ERROR ", APPLICATION_NAME,
 									RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 						}
 					} else {
@@ -319,7 +326,7 @@ public class FXUtils {
 							localField.setText(transliteration.transliterate(ApplicationContext.applicationLanguage(),
 									ApplicationContext.localLanguage(), field.getText()));
 						} catch (RuntimeException runtimeException) {
-							LOGGER.error("REGISTRATION - TRANSLITRATION ERROR ", APPLICATION_NAME,
+							LOGGER.error("REGISTRATION - TRANSLITERATION ERROR ", APPLICATION_NAME,
 									RegistrationConstants.APPLICATION_ID, runtimeException.getMessage());
 						}
 					} else {

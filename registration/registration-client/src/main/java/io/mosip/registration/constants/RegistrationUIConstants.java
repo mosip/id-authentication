@@ -189,6 +189,9 @@ public class RegistrationUIConstants {
 	public static final String LEFT_IRIS = bundle.getString("LEFT_IRIS");
 	public static final String PHOTO = bundle.getString("PHOTO");
 	public static final String TAKE_PHOTO = bundle.getString("TAKE_PHOTO");
+	public static final String PACKET_CREATION_DISK_SPACE_CHECK = bundle.getString("PACKET_CREATION_DISK_SPACE_CHECK");
+	public static final String SECONDARY_LANG_MISSING = bundle.getString("SECONDARY_LANG_MISSING");
+	public static final String PRIMARY_LANG_MISSING = bundle.getString("PRIMARY_LANG_MISSING");
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
@@ -379,4 +382,8 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 	// SYNC DATE TIME
 	public static final String LAST_DOWNLOADED = bundle.getString("LAST_DOWNLOADED");
 	public static final String LAST_UPDATED = bundle.getString("LAST_UPDATED");
+	
+	//Alert
+	public static final String ALERT_NOTE_LABEL = bundle.getString("ALERT_NOTE_LABEL");
+	public static final String ALERT_FAILED_LABEL = bundle.getString("ALERT_FAILED_LABEL");
 }

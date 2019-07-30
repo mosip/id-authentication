@@ -19,13 +19,13 @@ import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.ZipCreationService;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EXTENSION;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
 /**
  * Implementation class of {@link ZipCreationService} to generate the in-memory
@@ -163,10 +163,13 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getMessage(), exception);
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_IO_ZIP_CREATION_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_IO_ZIP_CREATION_EXCEPTION.getErrorMessage(), exception);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION,
-					runtimeException.getMessage(), runtimeException);
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_ZIP_CREATION_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_ZIP_CREATION_EXCEPTION.getErrorMessage(), runtimeException);
 		}
 	}
 
@@ -205,7 +208,9 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 			zipOutputStream.write(file);
 			zipOutputStream.flush();
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_ADD_ENTRY_TO_ZIP_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_ADD_ENTRY_TO_ZIP_EXCEPTION.getErrorMessage(), ioException);
 		}
 	}
 

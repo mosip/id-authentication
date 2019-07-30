@@ -15,12 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -37,7 +38,10 @@ import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
+import io.mosip.registration.controller.device.ScanPopUpViewController;
 import io.mosip.registration.controller.device.WebCameraController;
+import io.mosip.registration.controller.eodapproval.RegistrationApprovalController;
+import io.mosip.registration.controller.reg.AlertController;
 import io.mosip.registration.controller.reg.BiometricExceptionController;
 import io.mosip.registration.controller.reg.DemographicDetailController;
 import io.mosip.registration.controller.reg.HeaderController;
@@ -71,6 +75,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -80,13 +85,17 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 /**
@@ -157,6 +166,15 @@ public class BaseController {
 	@Autowired
 	private HomeController homeController;
 
+	@Autowired
+	private AlertController alertController;
+
+	@Autowired
+	private ScanPopUpViewController scanPopUpViewController;
+
+	@Autowired
+	private RegistrationApprovalController registrationApprovalController;
+
 	protected ApplicationContext applicationContext = ApplicationContext.getInstance();
 
 	protected Scene scene;
@@ -190,8 +208,10 @@ public class BaseController {
 	/**
 	 * Load screen.
 	 *
-	 * @param screen the screen
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param screen
+	 *            the screen
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	protected void loadScreen(String screen) throws IOException {
 		Parent createRoot = BaseController.load(getClass().getResource(screen),
@@ -202,7 +222,8 @@ public class BaseController {
 	/**
 	 * Gets the scene.
 	 *
-	 * @param borderPane the border pane
+	 * @param borderPane
+	 *            the border pane
 	 * @return the scene
 	 */
 	protected Scene getScene(Parent borderPane) {
@@ -221,10 +242,13 @@ public class BaseController {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param     <T> the generic type
-	 * @param url the url
+	 * @param <T>
+	 *            the generic type
+	 * @param url
+	 *            the url
 	 * @return T
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static <T> T load(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, ApplicationContext.applicationLanguageBundle());
@@ -235,11 +259,15 @@ public class BaseController {
 	/**
 	 * Loading FXML files along with beans.
 	 *
-	 * @param          <T> the generic type
-	 * @param url      the url
-	 * @param resource the resource
+	 * @param <T>
+	 *            the generic type
+	 * @param url
+	 *            the url
+	 * @param resource
+	 *            the resource
 	 * @return T
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static <T> T load(URL url, ResourceBundle resource) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url, resource);
@@ -250,47 +278,63 @@ public class BaseController {
 	/**
 	 * /* Alert creation with specified title, header, and context.
 	 *
-	 * @param title   alert title
-	 * @param context alert context
+	 * @param title
+	 *            alert title
+	 * @param context
+	 *            alert context
 	 */
 	protected void generateAlert(String title, String context) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setHeaderText(null);
-		alert.setContentText(context);
-		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
-		alert.setGraphic(null);
-		alert.getDialogPane().getStylesheets().add(
-				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
-		alert.setResizable(true);
-		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-		alert.showAndWait();
+		try {
+			Stage alertStage = new Stage();
+			Pane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.ALERT_GENERATION));
+			Scene scene = new Scene(authRoot);
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			alertStage.initStyle(StageStyle.UNDECORATED);
+			alertStage.setScene(scene);
+			alertStage.initModality(Modality.WINDOW_MODAL);
+			alertController.getAlertGridPane().setPrefHeight(context.length() / 2 + 110);
+			if (scanPopUpViewController.getPopupStage() != null
+					&& scanPopUpViewController.getPopupStage().isShowing()) {
+				alertStage.initOwner(scanPopUpViewController.getPopupStage());
+				alertTypeCheck(title, context, alertStage);
+			} else if (registrationApprovalController.getPrimaryStage() != null
+					&& registrationApprovalController.getPrimaryStage().isShowing()) {
+				alertStage.initOwner(registrationApprovalController.getPrimaryStage());
+				alertTypeCheck(title, context, alertStage);
+			} else {
+				alertStage.initOwner(fXComponents.getStage());
+				alertTypeCheck(title, context, alertStage);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - ALERT - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error("REGISTRATION - ALERT - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+		}
+	}
+
+	private void alertTypeCheck(String title, String context, Stage alertStage) {
+		if (context.contains(RegistrationConstants.INFO)) {
+			alertStage.show();
+			alertController.generateAlertResponse(title, context);
+		} else {
+			alertController.generateAlertResponse(title, context);
+			alertStage.showAndWait();
+		}
 	}
 
 	/**
 	 * /* Alert creation with specified title, header, and context.
 	 *
-	 * @param title   the title
-	 * @param context alert context
+	 * @param title
+	 *            the title
+	 * @param context
+	 *            alert context
 	 */
 	protected void generateAlertLanguageSpecific(String title, String context) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setHeaderText(null);
-		alert.setContentText(RegistrationUIConstants.getMessageLanguageSpecific(context));
-		alert.setTitle(RegistrationUIConstants.getMessageLanguageSpecific(title));
-		alert.getDialogPane().getStylesheets().add(
-				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-		Button button = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-		button.setText(RegistrationUIConstants.getMessageLanguageSpecific(RegistrationConstants.OK_MSG));
-		alert.setGraphic(null);
-		alert.setResizable(true);
-		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-		alert.showAndWait();
+		generateAlert(title, RegistrationUIConstants.getMessageLanguageSpecific(context));
 	}
 
 	/**
@@ -299,26 +343,28 @@ public class BaseController {
 	 * @return
 	 */
 	protected boolean pageNavigantionAlert() {
-		if (!fXComponents.getScene().getRoot().getId().equals("mainBox")		
-			&& !SessionContext.map().get(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ).equals(RegistrationConstants.ENABLE)) {
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setHeaderText(null);
-			alert.setTitle(RegistrationUIConstants.INFORMATION);
-			alert.setContentText(RegistrationUIConstants.PAGE_NAVIGATION_MESSAGE);
-			alert.getDialogPane().getStylesheets().add(ClassLoader.getSystemClassLoader()
-					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-			((Button) alert.getDialogPane().lookupButton(ButtonType.OK))
-					.setText(RegistrationUIConstants.PAGE_NAVIGATION_CONFIRM);
-			((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL))
-					.setText(RegistrationUIConstants.PAGE_NAVIGATION_CANCEL);
-			alert.setGraphic(null);
-			alert.setResizable(true);
-			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-			Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-			stage.getIcons().add(new Image(getClass().getResource(RegistrationConstants.LOGO).toExternalForm()));
-			Optional<ButtonType> option = alert.showAndWait();
-			if (option.isPresent())
-				return option.get() == ButtonType.OK;
+		if (!fXComponents.getScene().getRoot().getId().equals("mainBox") && !SessionContext.map()
+				.get(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ).equals(RegistrationConstants.ENABLE)) {
+
+			Alert alert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.INFORMATION,
+					RegistrationUIConstants.ALERT_NOTE_LABEL, RegistrationUIConstants.PAGE_NAVIGATION_MESSAGE,
+					RegistrationConstants.PAGE_NAVIGATION_CONFIRM, RegistrationConstants.PAGE_NAVIGATION_CANCEL);
+
+			alert.show();
+			Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+			Double xValue = screenSize.getWidth() / 2 - alert.getWidth() + 250;
+			Double yValue = screenSize.getHeight() / 2 - alert.getHeight();
+			alert.hide();
+			alert.setX(xValue);
+			alert.setY(yValue);
+			alert.showAndWait();
+			/* Get Option from user */
+			ButtonType result = alert.getResult();
+			if (result == ButtonType.OK) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -326,9 +372,12 @@ public class BaseController {
 	/**
 	 * Alert creation with specified context.
 	 *
-	 * @param parentPane the parent pane
-	 * @param id         the id
-	 * @param context    alert context
+	 * @param parentPane
+	 *            the parent pane
+	 * @param id
+	 *            the id
+	 * @param context
+	 *            alert context
 	 */
 	protected void generateAlert(Pane parentPane, String id, String context) {
 		if (id.contains(RegistrationConstants.ONTYPE)) {
@@ -340,8 +389,11 @@ public class BaseController {
 			parentPane = (Pane) parentPane.getParent().getParent();
 		}
 		Label label = ((Label) (parentPane.lookup(RegistrationConstants.HASH + id + RegistrationConstants.MESSAGE)));
-		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB)))
-			label.setText(context);
+		if (!(label.isVisible() && id.equals(RegistrationConstants.DOB))) {
+			String[] split = context.split("#TYPE#");
+			label.setText(split[0]);
+		}
+
 		Tooltip tool = new Tooltip(context);
 		tool.getStyleClass().add(RegistrationConstants.TOOLTIP);
 		label.setTooltip(tool);
@@ -362,7 +414,8 @@ public class BaseController {
 	/**
 	 * Validating Id for Screen Authorization.
 	 *
-	 * @param screenId the screenId
+	 * @param screenId
+	 *            the screenId
 	 * @return boolean
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
@@ -373,8 +426,10 @@ public class BaseController {
 	/**
 	 * Regex validation with specified field and pattern.
 	 *
-	 * @param field        concerned field
-	 * @param regexPattern pattern need to checked
+	 * @param field
+	 *            concerned field
+	 * @param regexPattern
+	 *            pattern need to checked
 	 * @return true, if successful
 	 */
 	protected boolean validateRegex(Control field, String regexPattern) {
@@ -394,7 +449,8 @@ public class BaseController {
 	 * {@code autoCloseStage} is to close the stage automatically by itself for a
 	 * configured amount of time.
 	 *
-	 * @param stage the stage
+	 * @param stage
+	 *            the stage
 	 */
 	protected void autoCloseStage(Stage stage) {
 		PauseTransition delay = new PauseTransition(Duration.seconds(5));
@@ -430,8 +486,9 @@ public class BaseController {
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					clearOnboardData();
-				}else {
-					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.ENABLE);
+				} else {
+					SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+							RegistrationConstants.ENABLE);
 				}
 			}
 		} catch (IOException ioException) {
@@ -453,7 +510,7 @@ public class BaseController {
 			Parent root = load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 			getStage().setScene(getScene(root));
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - REDIRECLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.error("REGISTRATION - REDIRECTLOGIN - BASE_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 		}
 	}
@@ -462,15 +519,15 @@ public class BaseController {
 	 * This method is used clear all the new registration related mapm values and
 	 * navigates to the home page.
 	 */
-	public void goToHomePageFromRegistration() {		
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Going to home page");
+	public void goToHomePageFromRegistration() {
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-			webCameraController.closeWebcam();
-			clearRegistrationData();
-			clearOnboardData();
-			goToHomePage();
-		
+		webCameraController.closeWebcam();
+		clearRegistrationData();
+		clearOnboardData();
+		goToHomePage();
+
 	}
 
 	/**
@@ -478,10 +535,10 @@ public class BaseController {
 	 * navigates to the home page.
 	 */
 	public void goToHomePageFromOnboard() {
-			LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Going to home page");
+		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
-			goToHomePage();
+		goToHomePage();
 	}
 
 	/**
@@ -535,17 +592,18 @@ public class BaseController {
 	 */
 	protected void clearOnboardData() {
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER_UPDATE, false);
-		SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,RegistrationConstants.DISABLE);
+		SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ, RegistrationConstants.DISABLE);
 		SessionContext.map().put(RegistrationConstants.ONBOARD_USER, false);
 		SessionContext.map().remove(RegistrationConstants.USER_ONBOARD_DATA);
 		SessionContext.map().remove(RegistrationConstants.OLD_BIOMETRIC_EXCEPTION);
-		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);		
+		SessionContext.map().remove(RegistrationConstants.NEW_BIOMETRIC_EXCEPTION);
 	}
 
 	/**
 	 * Load child.
 	 *
-	 * @param url the url
+	 * @param url
+	 *            the url
 	 * @return the FXML loader
 	 */
 	public static FXMLLoader loadChild(URL url) {
@@ -565,7 +623,8 @@ public class BaseController {
 	/**
 	 * Scans documents.
 	 *
-	 * @param popupStage the stage
+	 * @param popupStage
+	 *            the stage
 	 */
 	public void scan(Stage popupStage) {
 
@@ -575,8 +634,10 @@ public class BaseController {
 	 * This method is for saving the Applicant Image and Exception Image which are
 	 * captured using webcam.
 	 *
-	 * @param capturedImage BufferedImage that is captured using webcam
-	 * @param imageType     Type of image that is to be saved
+	 * @param capturedImage
+	 *            BufferedImage that is captured using webcam
+	 * @param imageType
+	 *            Type of image that is to be saved
 	 */
 	public void saveApplicantPhoto(BufferedImage capturedImage, String imageType,CaptureResponseDto captureResponseDto) {
 		// will be implemented in the derived class.
@@ -585,7 +646,8 @@ public class BaseController {
 	/**
 	 * This method used to clear the images that are captured using webcam.
 	 *
-	 * @param imageType Type of image that is to be cleared
+	 * @param imageType
+	 *            Type of image that is to be cleared
 	 */
 	public void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
@@ -594,9 +656,12 @@ public class BaseController {
 	/**
 	 * it will wait for the mentioned time to get the capture image from Bio Device.
 	 *
-	 * @param count             the count
-	 * @param waitTimeInSec     the wait time in sec
-	 * @param fingerprintFacade the fingerprint facade
+	 * @param count
+	 *            the count
+	 * @param waitTimeInSec
+	 *            the wait time in sec
+	 * @param fingerprintFacade
+	 *            the fingerprint facade
 	 */
 	protected void waitToCaptureBioImage(int count, int waitTimeInSec, FingerprintFacade fingerprintFacade) {
 		int counter = 0;
@@ -620,7 +685,8 @@ public class BaseController {
 	/**
 	 * Convert bytes to image.
 	 *
-	 * @param imageBytes the image bytes
+	 * @param imageBytes
+	 *            the image bytes
 	 * @return the image
 	 */
 	protected Image convertBytesToImage(byte[] imageBytes) {
@@ -665,8 +731,10 @@ public class BaseController {
 	/**
 	 * to validate the password in case of password based authentication.
 	 *
-	 * @param username the username
-	 * @param password the password
+	 * @param username
+	 *            the username
+	 * @param password
+	 *            the password
 	 * @return the string
 	 */
 	protected String validatePwd(String username, String password) {
@@ -729,7 +797,8 @@ public class BaseController {
 	/**
 	 * Gets the notification template.
 	 *
-	 * @param templateCode the template code
+	 * @param templateCode
+	 *            the template code
 	 * @return the notification template
 	 */
 	protected Writer getNotificationTemplate(String templateCode) {
@@ -783,8 +852,10 @@ public class BaseController {
 	 * to return to the next page based on the current page and action for User
 	 * Onboarding.
 	 *
-	 * @param currentPage - Id of current Anchorpane
-	 * @param action      - action to be performed previous/next
+	 * @param currentPage
+	 *            - Id of current Anchorpane
+	 * @param action
+	 *            - action to be performed previous/next
 	 * @return id of next Anchorpane
 	 */
 
@@ -792,7 +863,7 @@ public class BaseController {
 	protected String getOnboardPageDetails(String currentPage, String action) {
 
 		LOGGER.info(LoggerConstants.LOG_REG_BASE, APPLICATION_NAME, APPLICATION_ID,
-				"Updating OnBoard based on visibility and returning next page details");
+				"Updating OnBoard flow based on visibility and returning next page details");
 
 		return getReturnPage((List<String>) ApplicationContext.map().get(RegistrationConstants.ONBOARD_LIST),
 				currentPage, action);
@@ -802,8 +873,10 @@ public class BaseController {
 	 * to return to the next page based on the current page and action for New
 	 * Registration.
 	 *
-	 * @param currentPage - Id of current Anchorpane
-	 * @param action      - action to be performed previous/next
+	 * @param currentPage
+	 *            - Id of current Anchorpane
+	 * @param action
+	 *            - action to be performed previous/next
 	 * @return id of next Anchorpane
 	 */
 	@SuppressWarnings("unchecked")
@@ -828,9 +901,12 @@ public class BaseController {
 	/**
 	 * to return to the next page based on the current page and action.
 	 *
-	 * @param pageList    - List of Anchorpane Ids
-	 * @param currentPage - Id of current Anchorpane
-	 * @param action      - action to be performed previous/next
+	 * @param pageList
+	 *            - List of Anchorpane Ids
+	 * @param currentPage
+	 *            - Id of current Anchorpane
+	 * @param action
+	 *            - action to be performed previous/next
 	 * @return id of next Anchorpane
 	 */
 	private String getReturnPage(List<String> pageList, String currentPage, String action) {
@@ -885,7 +961,8 @@ public class BaseController {
 						"User Onboard is success and clearing Onboard data");
 
 				clearOnboardData();
-				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,RegistrationConstants.ENABLE);
+				SessionContext.map().put(RegistrationConstants.ISPAGE_NAVIGATION_ALERT_REQ,
+						RegistrationConstants.ENABLE);
 				goToHomePage();
 				onboardAlertMsg();
 
@@ -905,9 +982,12 @@ public class BaseController {
 	/**
 	 * to navigate to the next page based on the current page.
 	 *
-	 * @param pageId     - Parent Anchorpane where other panes are included
-	 * @param notTosShow - Id of Anchorpane which has to be hidden
-	 * @param show       - Id of Anchorpane which has to be shown
+	 * @param pageId
+	 *            - Parent Anchorpane where other panes are included
+	 * @param notTosShow
+	 *            - Id of Anchorpane which has to be hidden
+	 * @param show
+	 *            - Id of Anchorpane which has to be shown
 	 * 
 	 */
 	protected void getCurrentPage(Pane pageId, String notTosShow, String show) {
@@ -927,7 +1007,8 @@ public class BaseController {
 	/**
 	 * to calculate the time for re-capture since last capture time.
 	 *
-	 * @param imageType the type of image that is selected to capture
+	 * @param imageType
+	 *            the type of image that is selected to capture
 	 */
 	public void calculateRecaptureTime(String imageType) {
 		// will be implemented in the derived class.
@@ -1031,9 +1112,12 @@ public class BaseController {
 	/**
 	 * Popup statge.
 	 *
-	 * @param messgae    the messgae
-	 * @param imageUrl   the image url
-	 * @param styleClass the style class
+	 * @param messgae
+	 *            the messgae
+	 * @param imageUrl
+	 *            the image url
+	 * @param styleClass
+	 *            the style class
 	 */
 	public void onboardAlertMsg() {
 		packetHandlerController.getUserOnboardMessage().setVisible(true);
@@ -1050,21 +1134,28 @@ public class BaseController {
 	/**
 	 * Create alert with given title, header and context.
 	 *
-	 * @param alertType type of alert
-	 * @param title     alert's title
-	 * @param header    alert's header
-	 * @param context   alert's context
+	 * @param alertType
+	 *            type of alert
+	 * @param title
+	 *            alert's title
+	 * @param header
+	 *            alert's header
+	 * @param context
+	 *            alert's context
 	 * @return alert
 	 */
 	protected Alert createAlert(AlertType alertType, String title, String header, String context,
 			String confirmButtonText, String cancelButtonText) {
+
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
-		alert.setContentText(context);
+		alert.setContentText(
+				context.replaceAll(RegistrationConstants.SPLITTER + (RegistrationConstants.SUCCESS.toUpperCase()), ""));
 		alert.setGraphic(null);
 		alert.setResizable(true);
 		alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+		alert.getDialogPane().setMinWidth(500);
 		alert.getDialogPane().getStylesheets().add(
 				ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 		Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
@@ -1074,7 +1165,9 @@ public class BaseController {
 			Button cancelButton = (Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL);
 			cancelButton.setText(RegistrationUIConstants.getMessageLanguageSpecific(cancelButtonText));
 		}
-
+		alert.initStyle(StageStyle.UNDECORATED);
+		alert.initModality(Modality.WINDOW_MODAL);
+		alert.initOwner(fXComponents.getStage());
 		return alert;
 	}
 
@@ -1103,7 +1196,8 @@ public class BaseController {
 	/**
 	 * Update UIN next page.
 	 *
-	 * @param pageFlag the page flag
+	 * @param pageFlag
+	 *            the page flag
 	 * @return true, if successful
 	 */
 	protected boolean updateUINNextPage(String pageFlag) {
@@ -1123,7 +1217,8 @@ public class BaseController {
 	/**
 	 * Biomertic exception count.
 	 *
-	 * @param biometric the biometric
+	 * @param biometric
+	 *            the biometric
 	 * @return the long
 	 */
 	protected long biomerticExceptionCount(String biometric) {
@@ -1134,7 +1229,8 @@ public class BaseController {
 	/**
 	 * Gets the value from application context.
 	 *
-	 * @param key the key
+	 * @param key
+	 *            the key
 	 * @return the value from application context
 	 */
 	protected String getValueFromApplicationContext(String key) {
@@ -1148,7 +1244,8 @@ public class BaseController {
 	/**
 	 * Gets the quality score.
 	 *
-	 * @param qulaityScore the qulaity score
+	 * @param qulaityScore
+	 *            the qulaity score
 	 * @return the quality score
 	 */
 	protected String getQualityScore(Double qulaityScore) {
@@ -1162,8 +1259,10 @@ public class BaseController {
 	/**
 	 * Updates the Page Flow
 	 *
-	 * @param pageId id of the page
-	 * @param val    value to be set
+	 * @param pageId
+	 *            id of the page
+	 * @param val
+	 *            value to be set
 	 */
 	@SuppressWarnings("unchecked")
 	protected void updatePageFlow(String pageId, boolean val) {
@@ -1201,7 +1300,8 @@ public class BaseController {
 	/**
 	 * Any iris exception.
 	 *
-	 * @param iris the iris
+	 * @param iris
+	 *            the iris
 	 * @return true, if successful
 	 */
 	protected boolean anyIrisException(String iris) {
@@ -1221,6 +1321,25 @@ public class BaseController {
 	 */
 	protected Timestamp getCurrentTimestamp() {
 		return Timestamp.from(Instant.now());
+	}
+
+	/**
+	 * Restricts the re-ordering of the columns in {@link TableView}. This is
+	 * generic method.
+	 * 
+	 * @param table
+	 *            the instance of {@link TableView} for which re-ordering of columns
+	 *            had to be restricted
+	 */
+	@SuppressWarnings("restriction")
+	protected void disableColumnsReorder(TableView<?> table) {
+		if (table != null) {
+			table.widthProperty().addListener((source, oldWidth, newWidth) -> {
+				TableHeaderRow header = (TableHeaderRow) table.lookup("TableHeaderRow");
+				header.reorderingProperty()
+						.addListener((observable, oldValue, newValue) -> header.setReordering(false));
+			});
+		}
 	}
 
 }

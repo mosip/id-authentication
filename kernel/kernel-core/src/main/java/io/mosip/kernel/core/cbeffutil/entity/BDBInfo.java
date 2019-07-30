@@ -6,9 +6,13 @@ package io.mosip.kernel.core.cbeffutil.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.QualityType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
 /**
@@ -19,8 +23,6 @@ public class BDBInfo {
 
 	private byte[] challengeResponse;
 	private String index;
-	private Long formatOwner;
-	private Long formatType;
 	private Boolean encryption;
 	private LocalDateTime creationDate;
 	private LocalDateTime notValidBefore;
@@ -28,16 +30,19 @@ public class BDBInfo {
 	private List<SingleType> type;
 	private List<String> subtype;
 	private ProcessedLevelType level;
-	private Long productOwner;
-	private Long productType;
+	private RegistryIDType product;
 	private PurposeType purpose;
-	private Integer quality;
+	private QualityType quality;
+	private RegistryIDType format;
+	private RegistryIDType captureDevice;
+	private RegistryIDType featureExtractionAlgorithm;
+	private RegistryIDType comparisonAlgorithm;
+	private RegistryIDType compressionAlgorithm;
 
 	public BDBInfo(BDBInfoBuilder bDBInfoBuilder) {
 		this.challengeResponse = bDBInfoBuilder.challengeResponse;
 		this.index = bDBInfoBuilder.index;
-		this.formatOwner = bDBInfoBuilder.formatOwner;
-		this.formatType = bDBInfoBuilder.formatType;
+		this.format	=bDBInfoBuilder.format;
 		this.encryption = bDBInfoBuilder.encryption;
 		this.creationDate = bDBInfoBuilder.creationDate;
 		this.notValidBefore = bDBInfoBuilder.notValidBefore;
@@ -45,10 +50,13 @@ public class BDBInfo {
 		this.type = bDBInfoBuilder.type;
 		this.subtype = bDBInfoBuilder.subtype;
 		this.level = bDBInfoBuilder.level;
-		this.productOwner = bDBInfoBuilder.productOwner;
-		this.productType = bDBInfoBuilder.productType;
+		this.product = bDBInfoBuilder.product;
 		this.purpose = bDBInfoBuilder.purpose;
 		this.quality = bDBInfoBuilder.quality;
+		this.captureDevice = bDBInfoBuilder.captureDevice;
+		this.featureExtractionAlgorithm = bDBInfoBuilder.featureExtractionAlgorithm;
+		this.comparisonAlgorithm = bDBInfoBuilder.comparisonAlgorithm;
+		this.compressionAlgorithm = bDBInfoBuilder.compressionAlgorithm;
 	}
 
 	public byte[] getChallengeResponse() {
@@ -59,12 +67,8 @@ public class BDBInfo {
 		return index;
 	}
 
-	public Long getFormatOwner() {
-		return formatOwner;
-	}
-
-	public Long getFormatType() {
-		return formatType;
+	public RegistryIDType getFormat() {
+		return format;
 	}
 
 	public Boolean getEncryption() {
@@ -95,27 +99,52 @@ public class BDBInfo {
 		return level;
 	}
 
-	public Long getProductOwner() {
-		return productOwner;
-	}
-
-	public Long getProductType() {
-		return productType;
+	public RegistryIDType getProduct() {
+		return product;
 	}
 
 	public PurposeType getPurpose() {
 		return purpose;
 	}
 
-	public Integer getQuality() {
+	public QualityType getQuality() {
 		return quality;
 	}
+
+	/**
+	 * @return the captureDevice
+	 */
+	public RegistryIDType getCaptureDevice() {
+		return captureDevice;
+	}
+
+	/**
+	 * @return the featureExtractionAlgorithm
+	 */
+	public RegistryIDType getFeatureExtractionAlgorithm() {
+		return featureExtractionAlgorithm;
+	}
+
+	/**
+	 * @return the comparisonAlgorithm
+	 */
+	public RegistryIDType getComparisonAlgorithm() {
+		return comparisonAlgorithm;
+	}
+
+	/**
+	 * @return the compressionAlgorithm
+	 */
+	public RegistryIDType getCompressionAlgorithm() {
+		return compressionAlgorithm;
+	}
+
+
 
 	public static class BDBInfoBuilder {
 		private byte[] challengeResponse;
 		private String index;
-		private Long formatOwner;
-		private Long formatType;
+		private RegistryIDType format;
 		private Boolean encryption;
 		private LocalDateTime creationDate;
 		private LocalDateTime notValidBefore;
@@ -123,10 +152,13 @@ public class BDBInfo {
 		private List<SingleType> type;
 		private List<String> subtype;
 		private ProcessedLevelType level;
-		private Long productOwner;
-		private Long productType;
+		private RegistryIDType product;
 		private PurposeType purpose;
-		private Integer quality;
+		private QualityType quality;
+		private RegistryIDType captureDevice;
+		private RegistryIDType featureExtractionAlgorithm;
+		private RegistryIDType comparisonAlgorithm;
+		private RegistryIDType compressionAlgorithm;
 
 		public BDBInfoBuilder withChallengeResponse(byte[] challengeResponse) {
 			this.challengeResponse = challengeResponse;
@@ -138,13 +170,8 @@ public class BDBInfo {
 			return this;
 		}
 
-		public BDBInfoBuilder withFormatOwner(Long formatOwner) {
-			this.formatOwner = formatOwner;
-			return this;
-		}
-
-		public BDBInfoBuilder withFormatType(Long formatType) {
-			this.formatType = formatType;
+		public BDBInfoBuilder withFormat(RegistryIDType format) {
+			this.format = format;
 			return this;
 		}
 
@@ -183,13 +210,8 @@ public class BDBInfo {
 			return this;
 		}
 
-		public BDBInfoBuilder withProductOwner(Long productOwner) {
-			this.productOwner = productOwner;
-			return this;
-		}
-
-		public BDBInfoBuilder withProductType(Long productType) {
-			this.productType = productType;
+		public BDBInfoBuilder withProduct(RegistryIDType product) {
+			this.product = product;
 			return this;
 		}
 
@@ -198,7 +220,7 @@ public class BDBInfo {
 			return this;
 		}
 
-		public BDBInfoBuilder withQuality(Integer quality) {
+		public BDBInfoBuilder withQuality(QualityType quality) {
 			this.quality = quality;
 			return this;
 		}
@@ -206,6 +228,27 @@ public class BDBInfo {
 		public BDBInfo build() {
 			return new BDBInfo(this);
 		}
+		
+		public BDBInfoBuilder withCaptureDevice(RegistryIDType captureDevice) {
+			this.captureDevice = captureDevice;
+			return this;
+		}
+		
+		public BDBInfoBuilder withFeatureExtractionAlgorithm(RegistryIDType featureExtractionAlgorithm) {
+			this.featureExtractionAlgorithm = featureExtractionAlgorithm;
+			return this;
+		}
+		
+		public BDBInfoBuilder withComparisonAlgorithm(RegistryIDType comparisonAlgorithm) {
+			this.comparisonAlgorithm = comparisonAlgorithm;
+			return this;
+		}
+		
+		public BDBInfoBuilder withCompressionAlgorithm(RegistryIDType compressionAlgorithm) {
+			this.compressionAlgorithm = compressionAlgorithm;
+			return this;
+		}
+
 	}
 
 	public BDBInfoType toBDBInfo() {
@@ -216,11 +259,8 @@ public class BDBInfo {
 		if (getIndex() != null && getIndex().length() > 0) {
 			bDBInfoType.setIndex(getIndex());
 		}
-		if (getFormatOwner() != null && getFormatOwner() > 0) {
-			bDBInfoType.setFormatOwner(getFormatOwner());
-		}
-		if (getFormatType() != null && getFormatType() > 0) {
-			bDBInfoType.setFormatType(getFormatType());
+		if (getFormat() != null) {
+			bDBInfoType.setFormat(getFormat());
 		}
 		if (getEncryption() != null) {
 			bDBInfoType.setEncryption(getEncryption());
@@ -243,17 +283,29 @@ public class BDBInfo {
 		if (getLevel() != null) {
 			bDBInfoType.setLevel(getLevel());
 		}
-		if (getProductOwner() != null && getProductOwner() > 0) {
-			bDBInfoType.setProductOwner(getProductOwner());
+		if (getProduct() != null) {
+			bDBInfoType.setProduct(getProduct());
 		}
-		if (getProductType() != null && getProductType() > 0) {
-			bDBInfoType.setProductType(getProductType());
+		if (getFormat() != null) {
+			bDBInfoType.setFormat(getFormat());
 		}
 		if (getPurpose() != null) {
 			bDBInfoType.setPurpose(getPurpose());
 		}
 		if (getQuality() != null) {
 			bDBInfoType.setQuality(getQuality());
+		}
+		if (getCaptureDevice() != null) {
+			bDBInfoType.setCaptureDevice(getCaptureDevice());
+		}
+		if (getFeatureExtractionAlgorithm() != null) {
+			bDBInfoType.setFeatureExtractionAlgorithm(getFeatureExtractionAlgorithm());
+		}
+		if (getComparisonAlgorithm() != null) {
+			bDBInfoType.setComparisonAlgorithm(getComparisonAlgorithm());
+		}
+		if (getCompressionAlgorithm() != null) {
+			bDBInfoType.setCompressionAlgorithm(getCompressionAlgorithm());
 		}
 		return bDBInfoType;
 	}

@@ -47,14 +47,14 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 		// Creating first version of Cbeff
 		birType = new BIRType();
 		// Initial Version
-		VersionType versionType = new VersionType();
-		versionType.setMajor(1);
-		versionType.setMinor(1);
-		VersionType cbeffVersion = new VersionType();
-		cbeffVersion.setMajor(1);
-		cbeffVersion.setMinor(1);
-		birType.setVersion(versionType);
-		birType.setCBEFFVersion(cbeffVersion);
+//		VersionType versionType = new VersionType();
+//		versionType.setMajor(1);
+//		versionType.setMinor(1);
+//		VersionType cbeffVersion = new VersionType();
+//		cbeffVersion.setMajor(1);
+//		cbeffVersion.setMinor(1);
+//		birType.setVersion(versionType);
+//		birType.setCBEFFVersion(cbeffVersion);
 		BIRInfoType birInfo = new BIRInfoType();
 		birInfo.setIntegrity(false);
 		birType.setBIRInfo(birInfo);
@@ -72,8 +72,8 @@ public class CbeffContainerImpl extends CbeffContainerI<BIR, BIRType> {
 	@Override
 	public BIRType updateBIRType(List<BIR> birList, byte[] fileBytes) throws Exception {
 		BIRType birType = CbeffValidator.getBIRFromXML(fileBytes);
-		birType.getVersion().setMajor(birType.getVersion().getMajor() + 1);
-		birType.getCBEFFVersion().setMajor(birType.getCBEFFVersion().getMajor());
+		//birType.getVersion().setMajor(birType.getVersion().getMajor() + 1);
+		//birType.getCBEFFVersion().setMajor(birType.getCBEFFVersion().getMajor());
 		for (BIR bir : birList) {
 			birType.getBIR().add(bir.toBIRType(bir));
 		}

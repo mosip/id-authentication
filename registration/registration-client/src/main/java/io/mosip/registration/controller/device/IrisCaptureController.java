@@ -314,7 +314,7 @@ public class IrisCaptureController extends BaseController {
 	private void enableScan(MouseEvent mouseEvent) {
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Enabling scan button for user registration");
+					"Enable scan button for user registration");
 
 			Pane sourcePane = (Pane) mouseEvent.getSource();
 			sourcePane.requestFocus();
@@ -374,7 +374,7 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Enabling scan button for user registration completed");
+					"Enable scan button for user registration is completed");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s -> Exception while enabling scan button for user registration  %s %s",
@@ -672,7 +672,7 @@ public class IrisCaptureController extends BaseController {
 	private boolean validateIris() {
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Validating the captured irises of individual");
+					"Validating the captured iris of individual");
 
 			boolean isValid = false;
 			boolean isLeftEyeCaptured = false;
@@ -718,7 +718,7 @@ public class IrisCaptureController extends BaseController {
 			}
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Validating the captured irises of individual completed");
+					"Validating the captured iris of individual is completed");
 
 			return isValid;
 		} catch (RuntimeException runtimeException) {

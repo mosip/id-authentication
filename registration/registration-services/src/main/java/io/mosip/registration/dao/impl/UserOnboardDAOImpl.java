@@ -165,7 +165,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			userBiometricRepository.saveAll(bioMetricsList);
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"Biometric information insertion succesful");
+					"Biometric information insertion successful");
 
 			response = RegistrationConstants.SUCCESS;
 

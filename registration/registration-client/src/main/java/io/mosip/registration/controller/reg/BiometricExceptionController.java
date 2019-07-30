@@ -24,6 +24,7 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.controller.device.FingerPrintCaptureController;
 import io.mosip.registration.controller.device.GuardianBiometricsController;
 import io.mosip.registration.controller.device.IrisCaptureController;
@@ -155,6 +156,9 @@ public class BiometricExceptionController extends BaseController implements Init
 
 	@Autowired
 	private GuardianBiometricsController guardianBiometricsController;
+	
+	@Autowired
+	private FaceCaptureController faceCaptureController;
 
 	@FXML
 	private Label registrationNavlabel;
@@ -295,8 +299,8 @@ public class BiometricExceptionController extends BaseController implements Init
 	private void fingerExceptionListener(ImageView fingerImage) {
 
 		LOGGER.info("REGISTRATION - FINGER_LABEL_LISTENER - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME,
-				APPLICATION_ID, "It will listen the finger click funtionality");
-
+				APPLICATION_ID, "It will listen the finger on click funtionality");
+	
 		SimpleBooleanProperty toggleFunctionForFinger = new SimpleBooleanProperty(false);
 		toggleFunctionForFinger.addListener(new ChangeListener<Boolean>() {
 			/*
@@ -306,7 +310,7 @@ public class BiometricExceptionController extends BaseController implements Init
 			 * ObservableValue, java.lang.Object, java.lang.Object)
 			 */
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
+				faceCaptureController.clearExceptionImage();
 				if (newValue && !fingerList.contains(fingerImage.getId())) {
 					fingerList.add(fingerImage.getId());
 					fingerImage.setOpacity(1.0);
@@ -348,7 +352,7 @@ public class BiometricExceptionController extends BaseController implements Init
 
 		toggleFunctionForIris.addListener(new ChangeListener<Boolean>() {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
+				faceCaptureController.clearExceptionImage();
 				if (newValue && !irisList.contains(irisImage.getId())) {
 					irisList.add(irisImage.getId());
 					showExceptionList();
@@ -488,7 +492,7 @@ public class BiometricExceptionController extends BaseController implements Init
 		auditFactory.audit(AuditEvent.REG_BIO_EXCEPTION_BACK, Components.REG_BIOMETRICS, SessionContext.userId(),
 				AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
 		LOGGER.info("REGISTRATION - PREVIOUS_PAGE - BIOMETRIC_EXCEPTION_LISTENER", APPLICATION_NAME, APPLICATION_ID,
-				"It will go to the previous page");
+				"Navigate to the previous page");
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 			if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER_UPDATE)) {

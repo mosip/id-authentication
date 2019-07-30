@@ -89,7 +89,7 @@ public class MosipBioDeviceManager {
 	public void init() throws RegBaseCheckedException {
 
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-				"Entering init method for preparing device registery");
+				"Entering init method for preparing device registry");
 
 		String url;
 		ObjectMapper mapper = new ObjectMapper();
@@ -125,7 +125,7 @@ public class MosipBioDeviceManager {
 			}
 		}
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-				"Exit init method for preparing device registery");
+				"Exit init method for preparing device registry");
 	}
 
 	
@@ -416,7 +416,7 @@ public class MosipBioDeviceManager {
 	public void deRegister(String type) {
 		deviceRegistry.remove(type);
 		LOGGER.info(MOSIP_BIO_DEVICE_MANAGER, APPLICATION_NAME, APPLICATION_ID,
-				"Removed" + type + " from Device registery");
+				"Removed" + type + " from Device registry");
 
 	}
 

@@ -425,7 +425,7 @@ public class DocumentScanController extends BaseController {
 			documents.requestFocus();
 		} else if (!vboxElement.getChildren().isEmpty()) {
 			LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "One Document can be added to the Category");
+					RegistrationConstants.APPLICATION_ID, "only One Document can be added to the Category");
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOC_CATEGORY_MULTIPLE);
 		} else if (!vboxElement.getChildren().isEmpty() && vboxElement.getChildren().stream()
@@ -636,10 +636,6 @@ public class DocumentScanController extends BaseController {
 		validateDocumentsPane();
 
 		generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.SCAN_DOC_SUCCESS);
-
-		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Setting scrollbar policy for scrollpane");
-
 	}
 
 	/**
@@ -770,7 +766,7 @@ public class DocumentScanController extends BaseController {
 	private ImageView createImageView(VBox vboxElement) {
 
 		LOGGER.info(RegistrationConstants.DOCUMNET_SCAN_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Binding OnAction event Image to delete the attached document");
+				RegistrationConstants.APPLICATION_ID, "Binding OnAction event for Image to delete the attached document");
 
 		Image image = new Image(this.getClass().getResourceAsStream(RegistrationConstants.CLOSE_IMAGE_PATH), 15, 15,
 				true, true);

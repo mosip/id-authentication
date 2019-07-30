@@ -82,6 +82,20 @@ public class ScanPopUpViewController extends BaseController {
 	private Stage popupStage;
 
 	/**
+	 * @return the popupStage
+	 */
+	public Stage getPopupStage() {
+		return popupStage;
+	}
+
+	/**
+	 * @param popupStage the popupStage to set
+	 */
+	public void setPopupStage(Stage popupStage) {
+		this.popupStage = popupStage;
+	}
+
+	/**
 	 * This method will open popup to scan
 	 * 
 	 * @param parentControllerObj

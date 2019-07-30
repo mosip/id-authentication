@@ -850,7 +850,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			}
 
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Scanning of fingersplaced ended");
+					"Scanning of fingers ended");
 
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
@@ -958,7 +958,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
-		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
+		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scanning Finger has ended");
 	}
 
 	protected String getOnboardFingertype(String fingerType) {
@@ -1051,7 +1051,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.FINGERPRINT_SCANNING_ERROR);
 		}
-		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scan Finger has ended");
+		LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Scanning Finger has ended");
 
 	}
 
@@ -1293,7 +1293,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Navigating to Demographic capture page for user registration ended");
+					"Navigating to Demographic capture page for user registration is ended");
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format(
@@ -1314,7 +1314,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	private boolean validateFingerPrints() {
 		try {
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Validating Fingerprints captured started");
+					"Validating captured Fingerprints started");
 
 			List<FingerprintDetailsDTO> segmentedFingerprintDetailsDTOs = new ArrayList<>();
 			boolean isValid = false;
@@ -1392,7 +1392,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				}
 			}
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Validating Fingerprints captured ended");
+					"Validating captured Fingerprints ended");
 			return isValid;
 		} catch (RuntimeException runtimeException) {
 			runtimeException.printStackTrace();

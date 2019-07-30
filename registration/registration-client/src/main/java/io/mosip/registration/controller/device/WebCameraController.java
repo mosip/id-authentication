@@ -125,7 +125,7 @@ public class WebCameraController extends BaseController implements Initializable
 				.getPhotoProviderFactory(getValueFromApplicationContext(RegistrationConstants.WEBCAM_LIBRARY_NAME));
 
 		if (!photoProvider.isWebcamConnected()) {
-			photoProvider.connect(480, 480);
+			photoProvider.connect(640, 480);
 		}
 		return photoProvider.isWebcamConnected();
 	}

@@ -1,2 +1,0 @@
-Cher $name,
-OTP pour le nom d'utilisateur $username est $otp et est valide pour $validTime minutes (Généré le $date à $heure hrs).
