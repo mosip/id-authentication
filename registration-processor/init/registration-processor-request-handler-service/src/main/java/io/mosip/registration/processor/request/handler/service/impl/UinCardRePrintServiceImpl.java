@@ -115,7 +115,7 @@ public class UinCardRePrintServiceImpl {
 
 					VidRequestDto vidRequestDto = new VidRequestDto();
 					RequestWrapper<VidRequestDto> request = new RequestWrapper<>();
-					ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<>();
+					VidResponseDTO response = new VidResponseDTO();
 					vidRequestDto.setUIN(uin);
 					vidRequestDto.setVidType("Temporary");
 					request.setId(env.getProperty(VID_CREATE_ID));
@@ -131,8 +131,8 @@ public class UinCardRePrintServiceImpl {
 							"UinCardRePrintServiceImpl::createPacket():: post CREATEVID service call started with request data : "
 									+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
 
-					response = (ResponseWrapper<VidResponseDTO>) restClientService.postApi(ApiName.CREATEVID, "", "",
-							request, ResponseWrapper.class);
+					response = (VidResponseDTO) restClientService.postApi(ApiName.CREATEVID, "", "",
+							request, VidResponseDTO.class);
 
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
@@ -143,7 +143,7 @@ public class UinCardRePrintServiceImpl {
 								"VID creation exception");
 
 					} else {
-						vid = response.getResponse().getVid().toString();
+						vid = response.getResponse().getVid();
 					}
 
 				}

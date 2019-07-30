@@ -1,30 +1,23 @@
 package io.mosip.registration.processor.core.packet.dto.vid;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+import java.util.List;
 
+import io.mosip.registration.processor.core.common.rest.dto.BaseRestResponseDTO;
+import io.mosip.registration.processor.core.idrepo.dto.ErrorDTO;
 import lombok.Data;
 
-/**
- * This class will provide values to hold uin,vid and vidStatus
- * 
- * @author Prem Kumar
- *
- */
 @Data
-public class VidResponseDTO {
+public class VidResponseDTO extends BaseRestResponseDTO implements Serializable{
+	
+	private static final long serialVersionUID = -3604571018699722626L;
 
-	/** The Value Of UIN in Decrypted value */
-	@JsonProperty("UIN")
-	private Long uin;
-
-	/** The Value to hold vid */
-	@JsonProperty("VID")
-	private Long vid;
-
-	/** The Value to hold vidStatus */
-	private String vidStatus;
-
-	/** The Value to hold updatedVid */
-	private VidResponseDTO restoredVid;
+	private String str;
+	
+	private String metadata;
+	
+	private VidResDTO response;
+	
+	private List<ErrorDTO> errors;
 
 }

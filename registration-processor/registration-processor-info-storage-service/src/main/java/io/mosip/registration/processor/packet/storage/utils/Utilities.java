@@ -47,7 +47,7 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
-import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResDTO;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -581,11 +581,11 @@ public class Utilities {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(vid);
 		String uin = null;
-		ResponseWrapper<VidResponseDTO> response = new ResponseWrapper<>();
+		ResponseWrapper<VidResDTO> response = new ResponseWrapper<>();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"Stage::methodname():: RETRIEVEIUINBYVID GET service call Started");
 
-		response = (ResponseWrapper<VidResponseDTO>) restClientService.getApi(ApiName.GETUINBYVID, pathSegments, "", "",
+		response = (ResponseWrapper<VidResDTO>) restClientService.getApi(ApiName.GETUINBYVID, pathSegments, "", "",
 				ResponseWrapper.class);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
 				"Utilities::getUinByVid():: RETRIEVEIUINBYVID GET service call ended successfully");
