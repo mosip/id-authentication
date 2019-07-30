@@ -99,5 +99,8 @@ public class RegistrationCenterPutReqAdmDto {
 
 	@NotNull
 	private Boolean isActive;
-
+	
+	@NotNull
+	@Size(min=1, max=36)
+	private String zoneCode;
 }

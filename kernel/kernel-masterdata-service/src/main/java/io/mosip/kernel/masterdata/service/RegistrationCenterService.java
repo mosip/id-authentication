@@ -12,7 +12,9 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -212,5 +214,23 @@ public interface RegistrationCenterService {
 	 * @return list of registration centers
 	 */
 	public PageResponseDto<RegistrationCenterSearchDto> searchRegistrationCenter(SearchDto searchDto);
+
+	/**
+	 * Method to filter registration center based on column and type provided.
+	 * 
+	 * @param filterValueDto
+	 *            the filter DTO.
+	 * @return the {@link FilterResponseDto}.
+	 */
+	public FilterResponseDto registrationCenterFilterValues(FilterValueDto filterValueDto);
+
+	/**
+	 * Service method to decommission registration center.
+	 * 
+	 * @param regCenterID
+	 *            the center ID of the reg-center which needs to be decommissioned.
+	 * @return {@link IdResponseDto}.
+	 */
+	IdResponseDto decommissionRegCenter(String regCenterID);
 
 }

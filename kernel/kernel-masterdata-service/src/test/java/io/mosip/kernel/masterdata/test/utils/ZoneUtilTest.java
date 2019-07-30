@@ -2,6 +2,7 @@ package io.mosip.kernel.masterdata.test.utils;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
@@ -89,19 +90,54 @@ public class ZoneUtilTest {
 	public void testUserZoneFailure() {
 		doThrow(DataRetrievalFailureException.class).when(zoneRepository).findAllNonDeleted();
 		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
-		List<Zone> result = zoneUtils.getUserZones();
-		assertNotNull(result);
-		assertNotEquals(0, result.size());
+		zoneUtils.getUserZones();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	@WithUserDetails("zonal-admin")
 	public void testUserZoneUserFailure() {
-		doThrow(DataRetrievalFailureException.class).when(zoneRepository).findAllNonDeleted();
-		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		doThrow(DataRetrievalFailureException.class).when(zoneUserRepository)
+				.findByUserIdNonDeleted(Mockito.anyString());
+		zoneUtils.getUserZones();
+
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	@WithUserDetails("zonal-admin")
+	public void testUserZoneNotFound() {
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
 		List<Zone> result = zoneUtils.getUserZones();
 		assertNotNull(result);
 		assertNotEquals(0, result.size());
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void testZonesNotFound() {
+		List<Zone> result = zoneUtils.getUserZones();
+		assertTrue(result.isEmpty());
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void testZoneLeafSuccess() {
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		doReturn(zoneUsers).when(zoneUserRepository).findByUserIdNonDeleted(Mockito.anyString());
+		zoneUtils.getUserLeafZones("eng");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void testZoneLeafNoUserZone() {
+		doReturn(zones).when(zoneRepository).findAllNonDeleted();
+		zoneUtils.getUserLeafZones("eng");
+	}
+
+	@WithUserDetails("zonal-admin")
+	@Test
+	public void testChildZoneNoZone() {
+		zoneUtils.getZones(zones.get(0));
 	}
 
 }

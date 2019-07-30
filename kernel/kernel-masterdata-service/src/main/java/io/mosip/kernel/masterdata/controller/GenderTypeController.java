@@ -24,6 +24,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.GenderExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.GenderTypeService;
 import io.swagger.annotations.Api;
@@ -173,6 +177,42 @@ public class GenderTypeController {
 			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
 		ResponseWrapper<PageDto<GenderExtnDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(genderTypeService.getGenderTypes(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * API to search Genders.
+	 * 
+	 * @param request
+	 *            the request DTO {@link SearchDto} wrapped in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. multiple entities based on the search values
+	 *         required.
+	 */
+	@ResponseFilter
+	@PostMapping("/gendertypes/search")
+	public ResponseWrapper<PageResponseDto<GenderExtnDto>> searchGenderTypes(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<GenderExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.searchGenderTypes(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/gendertypes/filtervalues")
+	public ResponseWrapper<FilterResponseDto> genderFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> requestWrapper) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(genderTypeService.genderFilterValues(requestWrapper.getRequest()));
 		return responseWrapper;
 	}
 }
