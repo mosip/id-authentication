@@ -100,7 +100,7 @@ public class PrintApiControllerTest {
 	@WithUserDetails("reg-admin")
 	@Test
 	public void testpdfSuccess() throws Exception {
-		Mockito.when(printservice.getDocuments(any(), any(), any())).thenReturn(map);
+		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
 
 		this.mockMvc.perform(post("/uincard").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
@@ -148,7 +148,7 @@ public class PrintApiControllerTest {
 	@WithUserDetails("reg-admin")
 	@Test
 	public void testPdfSuccessUIN() throws Exception {
-		Mockito.when(printservice.getDocuments(any(), any(), any())).thenReturn(map);
+		Mockito.when(printservice.getDocuments(any(), any())).thenReturn(map);
 		PrintRequest request = new PrintRequest();
 		request.setId("mosip.registration.print");
 		RequestDTO dto = new RequestDTO();

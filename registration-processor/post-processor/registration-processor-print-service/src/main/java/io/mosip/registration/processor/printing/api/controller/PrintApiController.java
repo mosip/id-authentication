@@ -104,8 +104,9 @@ public class PrintApiController {
 		validateRequest(printRequest.getRequest(), errors);
 		PrintServiceValidationUtil.validate(errors);
 
-		byte[] pdfbytes = printservice.getDocuments(printRequest.getRequest().getIdtype(),
-				printRequest.getRequest().getIdValue(), printRequest.getRequest().getIdValue()).get("uinPdf");
+		byte[] pdfbytes = printservice
+				.getDocuments(printRequest.getRequest().getIdtype(), printRequest.getRequest().getIdValue())
+				.get("uinPdf");
 
 		InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(pdfbytes));
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/pdf"))

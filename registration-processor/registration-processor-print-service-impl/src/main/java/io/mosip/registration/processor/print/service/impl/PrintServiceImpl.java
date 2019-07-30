@@ -13,7 +13,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -27,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.qrcodegenerator.exception.QrcodeGenerationException;
@@ -166,7 +166,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Map<String, byte[]> getDocuments(IdType idType, String idValue, String regId) {
+	public Map<String, byte[]> getDocuments(IdType idType, String idValue) {
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"PrintServiceImpl::getDocuments()::entry");
 
@@ -180,10 +180,15 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		try {
 			if (idType.toString().equalsIgnoreCase(IdType.UIN.toString())) {
 				uin = idValue;
-				response = getIdRepoResponse(idType.toString(), uin);
-			} else if (idType.toString().equalsIgnoreCase(IdType.RID.toString())
-					|| idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
-				JSONObject jsonObject = utilities.retrieveUIN(regId);
+				response = getIdRepoResponse(idType.toString(), idValue);
+			} else if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
+
+				uin = utilities.getUinByVid(idValue);
+				response = getIdRepoResponse(IdType.UIN.toString(), uin);
+			}
+
+			else {
+				JSONObject jsonObject = utilities.retrieveUIN(idValue);
 				Long value = JsonUtil.getJSONValue(jsonObject, IdType.UIN.toString());
 				if (value == null) {
 					regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -192,8 +197,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 					throw new UINNotFoundInDatabase(PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.getCode());
 				}
 				uin = Long.toString(value);
-
-				response = getIdRepoResponse(idType.toString(), regId);
+				response = getIdRepoResponse(idType.toString(), idValue);
 			}
 
 			boolean isPhotoSet = setApplicantPhoto(response, attributes);
@@ -227,7 +231,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			InputStream uinArtifact = templateGenerator.getTemplate(template, attributes, primaryLang);
 			if (uinArtifact == null) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
-						LoggerFileConstant.REGISTRATIONID.toString(), regId,
+						LoggerFileConstant.REGISTRATIONID.toString(), idType.toString(),
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name());
 				throw new TemplateProcessingFailureException(
 						PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
@@ -247,15 +251,15 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		} catch (QrcodeGenerationException e) {
 			description = "Error while QR Code Generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
+					idType.toString(), PlatformErrorMessages.RPR_PRT_QRCODE_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (UINNotFoundInDatabase e) {
-			description = "UIN not found in database for id" + regId;
+			description = "UIN not found in database for id" + idType.toString();
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
+					idType.toString(), PlatformErrorMessages.RPR_PRT_UIN_NOT_FOUND_IN_DATABASE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -263,23 +267,23 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		} catch (TemplateProcessingFailureException e) {
 			description = "Error while Template Processing";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
+					idType.toString(), PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new TemplateProcessingFailureException(PlatformErrorMessages.RPR_TEM_PROCESSING_FAILURE.getCode());
 
 		} catch (PDFGeneratorException e) {
 			description = "Error while pdf generation";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
+					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_NOT_GENERATED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 		} catch (ApisResourceAccessException | IOException | ParseException
 				| io.mosip.kernel.core.exception.IOException e) {
-			description = "Internal error occurred while processing packet id" + regId;
+			description = "Internal error occurred while processing packet id" + idType;
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
+					idType.toString(), PlatformErrorMessages.RPR_PRT_PDF_GENERATION_FAILED.name() + e.getMessage()
 							+ ExceptionUtils.getStackTrace(e));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
@@ -287,7 +291,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 		} catch (Exception ex) {
 			description = "Process stopped due to some internal error";
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					regId, description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
+					idType.toString(), description + ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					ex.getMessage() + ExceptionUtils.getStackTrace(ex));
 
@@ -454,7 +458,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			List<String> subtype = new ArrayList<>();
 			byte[] photobyte = util.getImageBytes(value, FACE, subtype);
 			if (photobyte != null) {
-				String imageString = IOUtils.toString(photobyte,"UTF-8");
+				String imageString = IOUtils.toString(photobyte, "UTF-8");
 				attributes.put(APPLICANT_PHOTO, "data:image/png;base64," + imageString);
 				isPhotoSet = true;
 			}

@@ -249,11 +249,13 @@ public class PrintStage extends MosipVerticleAPIManager {
 
 				} else {
 					idType = IdType.UIN;
-					idValue = "";
+					JSONObject jsonObject = utilities.retrieveUIN(regId);
+					Long value = JsonUtil.getJSONValue(jsonObject, IdType.UIN.toString());
+					idValue = Long.toString(value);
 
 				}
 			}
-			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId, "");
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 

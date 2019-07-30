@@ -19,6 +19,6 @@ public interface PrintService<T> {
 	 *            the reg id
 	 * @return the pdf
 	 */
-	public T getDocuments(IdType type, String idValue, String regId);
+	public T getDocuments(IdType type, String idValue);
 
 }

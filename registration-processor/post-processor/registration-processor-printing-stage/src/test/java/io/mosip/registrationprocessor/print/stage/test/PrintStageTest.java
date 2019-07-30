@@ -205,7 +205,7 @@ public class PrintStageTest {
 		Map<String, byte[]> byteMap = new HashMap<>();
 		byteMap.put("uinPdf", pdfbytes);
 		byteMap.put("textFile", textBytes);
-		Mockito.when(printService.getDocuments(any(), anyString(), anyString())).thenReturn(byteMap);
+		Mockito.when(printService.getDocuments(any(), anyString())).thenReturn(byteMap);
 
 		Mockito.when(mosipConnectionFactory.createConnection(anyString(), anyString(), anyString(), anyString()))
 				.thenReturn(queue);
@@ -333,7 +333,7 @@ public class PrintStageTest {
 	public void testPdfGenerationException() {
 
 		PDFGeneratorException e = new PDFGeneratorException(null, null);
-		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString(), anyString());
+		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -348,7 +348,7 @@ public class PrintStageTest {
 	@Test
 	public void testTemplateProcessingFailureException() {
 		TemplateProcessingFailureException e = new TemplateProcessingFailureException();
-		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString(), anyString());
+		Mockito.doThrow(e).when(printService).getDocuments(any(), anyString());
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("1234567890987654321");
@@ -663,6 +663,33 @@ public class PrintStageTest {
 		fieldValue1.setValue("1234");
 		fieldValue.setLabel("cardType");
 		fieldValue.setValue("vid");
+		List<FieldValue> metadata = new ArrayList<>();
+		metadata.add(fieldValue);
+		metadata.add(fieldValue1);
+
+		identity.setMetaData(metadata);
+		packetMetaInfo.setIdentity(identity);
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("1234567890987654321");
+		List<String> uinList = new ArrayList<>();
+		uinList.add("3051738163");
+		dto.setReg_type(RegistrationType.RES_REPRINT);
+		// Mockito.when(packetInfoManager.getUINByRid("1234567890987654321")).thenReturn(uinList);
+		Mockito.when(utilities.getPacketMetaInfo(any())).thenReturn(packetMetaInfo);
+		doNothing().when(printPostService).generatePrintandPostal(any(), any(), any());
+		MessageDTO result = stage.process(dto);
+		assertTrue(result.getIsValid());
+	}
+
+	@Test
+	public void testPrintStageSuccessForRes_ReprintUIN() throws PacketDecryptionFailureException,
+			ApisResourceAccessException, io.mosip.kernel.core.exception.IOException, IOException {
+		FieldValue fieldValue = new FieldValue();
+		FieldValue fieldValue1 = new FieldValue();
+		fieldValue1.setLabel("vid");
+		fieldValue1.setValue("1234");
+		fieldValue.setLabel("cardType");
+		fieldValue.setValue("uin");
 		List<FieldValue> metadata = new ArrayList<>();
 		metadata.add(fieldValue);
 		metadata.add(fieldValue1);
