@@ -260,7 +260,8 @@ public class MessageSenderStage extends MosipVerticleAPIManager {
 					registrationStatusDto.getRegistrationId(),
 					registrationStatusDto.getLatestRegistrationTransactionId(),
 					registrationStatusDto.getLatestTransactionTypeCode(), "updated registration status record",
-					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment());
+					registrationStatusDto.getLatestTransactionStatusCode(), registrationStatusDto.getStatusComment()
+					,registrationStatusDto.getSubStatusCode());
 
 			transactionDto.setReferenceId(registrationStatusDto.getRegistrationId());
 			transactionDto.setReferenceIdType(MessageSenderConstant.REFERENCE_TYPE_ID);
