@@ -76,6 +76,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Registration Creation Date
 		metaData.add(buildFieldValue("creationDate", DateUtils.formatToISOString(LocalDateTime.now())));
 
+		metaData.add(buildFieldValue("vid", metaDataDTO.getVid()));
+
+		metaData.add(buildFieldValue("cardType", metaDataDTO.getCardType()));
+
 		return metaData;
 	}
 
