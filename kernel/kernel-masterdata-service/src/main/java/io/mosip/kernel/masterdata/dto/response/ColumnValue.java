@@ -6,5 +6,4 @@ import lombok.Data;
 public class ColumnValue {
 	private String fieldID;
 	private String fieldValue;
-
 }
