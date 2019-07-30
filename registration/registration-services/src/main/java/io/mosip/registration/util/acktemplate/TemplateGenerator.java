@@ -1448,7 +1448,7 @@ public class TemplateGenerator extends BaseService {
 		for (FingerprintDetailsDTO availableFinger : availableFingers) {
 			List<FingerprintDetailsDTO> segmentedFingers = availableFinger.getSegmentedFingerprints();
 			for (FingerprintDetailsDTO segmentedFinger : segmentedFingers) {
-				fingersQuality.put(segmentedFinger.getFingerType(), segmentedFinger.getQualityScore());
+				fingersQuality.put(segmentedFinger.getFingerType().substring(0,1).toLowerCase()+segmentedFinger.getFingerType().substring(1).replaceAll(RegistrationConstants.SPACE, ""), segmentedFinger.getQualityScore());
 			}
 		}
 
