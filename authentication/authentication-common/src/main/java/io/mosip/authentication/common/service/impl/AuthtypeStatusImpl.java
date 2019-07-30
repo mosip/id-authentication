@@ -17,6 +17,7 @@ import io.mosip.authentication.core.authtype.dto.AuthtypeStatus;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.authtype.status.service.AuthtypeStatusService;
 import io.mosip.authentication.core.spi.id.service.IdService;
+
 /**
  * 
  * @author Dinesh Karuppiah.T
@@ -25,6 +26,8 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 
 @Component
 public class AuthtypeStatusImpl implements AuthtypeStatusService {
+
+	private static final String HYPHEN = "-";
 
 	@Autowired
 	AuthLockRepository authLockRepository;
@@ -52,10 +55,18 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 	}
 
 	private AuthtypeStatus getAuthTypeStatus(AuthtypeLock authtypeLock) {
-		AuthtypeStatus authtypeStatus=new AuthtypeStatus();
-		authtypeStatus.setAuthType(authtypeLock.getAuthtypecode());
-		authtypeStatus.setAuthSubType(authtypeStatus.getAuthSubType());
-		authtypeStatus.setLocked(false);
+		AuthtypeStatus authtypeStatus = new AuthtypeStatus();
+		String authtypecode = authtypeLock.getAuthtypecode();
+		if (authtypecode.contains(HYPHEN)) {
+			String[] authcode = authtypecode.split(HYPHEN);
+			authtypeStatus.setAuthType(authcode[0]);
+			authtypeStatus.setAuthSubType(authcode[1]);
+		} else {
+			authtypeStatus.setAuthType(authtypecode);
+			authtypeStatus.setAuthSubType(null);
+		}
+		boolean isLocked = authtypeLock.getStatuscode().equalsIgnoreCase("y") ? true : false;
+		authtypeStatus.setLocked(isLocked);
 		return authtypeStatus;
 	}
 

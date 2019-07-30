@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,6 +27,7 @@ import io.mosip.authentication.common.service.impl.AuthtypeStatusImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.repository.AuthLockRepository;
+import io.mosip.authentication.core.authtype.dto.AuthtypeResponseDto;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -85,7 +87,8 @@ public class InternalAuthTypeControllerTest {
 				.thenReturn(value);
 		List<AuthtypeLock> valueList = getAuthtypeList();
 		Mockito.when(authLockRepository.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
-		authTypeController.getAuthTypeStatus(IdType.UIN.getType(), "9172985031");
+		ResponseEntity<AuthtypeResponseDto> authTypeStatus = authTypeController.getAuthTypeStatus(IdType.UIN.getType(),
+				"9172985031");
 	}
 
 	@Test(expected = IdAuthenticationAppException.class)
@@ -115,7 +118,8 @@ public class InternalAuthTypeControllerTest {
 	private List<AuthtypeLock> getAuthtypeList() {
 		List<AuthtypeLock> authtypelocklist = new ArrayList();
 		AuthtypeLock authtypeLock = new AuthtypeLock();
-		authtypeLock.setAuthtypecode(BioAuthType.FACE_IMG.getType());
+		authtypeLock.setAuthtypecode("bio-FMR");
+		authtypeLock.setStatuscode("y");
 		authtypelocklist.add(authtypeLock);
 		return authtypelocklist;
 	}

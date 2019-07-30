@@ -43,6 +43,10 @@ public class AuthtypeLock {
 
 	@Column(name = "lock_end_datetime")
 	private LocalDateTime lockendDTtimes;
+	
+	@NotNull
+	@Column(name = "status_code")
+	private String statuscode;
 
 	@NotNull
 	@Column(name = "cr_by")

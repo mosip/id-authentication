@@ -47,10 +47,11 @@ public class AuthtypeStatusImplTest {
 				.thenReturn(value);
 		List<AuthtypeLock> valuelist = new ArrayList<>();
 		AuthtypeLock authtypeLock = new AuthtypeLock();
-		authtypeLock.setAuthtypecode("bio");
+		authtypeLock.setAuthtypecode("bio-FMR");
+		authtypeLock.setStatuscode("y");
 		valuelist.add(authtypeLock);
 		Mockito.when(authLockRepository.findByUin(Mockito.anyString(), Mockito.any())).thenReturn(valuelist);
-		authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
+		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus(authtypeRequestDto);
 	}
 
 	private AuthtypeRequestDto getAuthTypeRequestDto() {
