@@ -101,8 +101,11 @@ public class FingerprintValidatorImpl extends AuthenticationBaseValidator {
 		BIR capturedBir = new BIR(new BIRBuilder().withBdb(minutiae.getBytes()));
 
 		for (UserBiometric userBiometric : userFingerprintDetails) {
+			try {
 			registeredBir[i] = new BIR(new BIRBuilder().withBdb(userBiometric.getBioMinutia().getBytes()));
-
+			}catch(Exception e) {
+				return false;
+			}
 			i++;
 		}
 

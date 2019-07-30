@@ -1348,18 +1348,15 @@ public class FingerPrintCaptureController extends BaseController implements Init
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT_SLAB_LEFT)
 							|| leftSlapCount >= 4) {
 						isleftHandSlapCaptured = true;
-						System.out.println("true that");
 					}
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT_SLAB_RIGHT)
 							|| rightSlapCount >= 4) {
 						isrightHandSlapCaptured = true;
-						System.out.println("true that");
 
 					}
 					if (fingerprintDetailsDTO.getFingerType().equalsIgnoreCase(RegistrationConstants.FINGERPRINT_SLAB_THUMBS)
 							|| thumbCount >= 2) {
 						isthumbsCaptured = true;
-						System.out.println("true that");
 					}
 				} else {
 					return isValid;

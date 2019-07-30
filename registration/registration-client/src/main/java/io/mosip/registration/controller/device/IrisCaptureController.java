@@ -490,6 +490,9 @@ public class IrisCaptureController extends BaseController {
 
 			if (irisDetailsDTO.isCaptured()) {
 				// Display the Scanned Iris Image in the Scan pop-up screen
+				if(!bioservice.isMdmEnabled()) {
+					scanPopUpViewController.getScanImage().setImage(convertBytesToImage(irisDetailsDTO.getIrises().get(0).getIris()));
+				}
 				generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SUCCESS_MSG);
 				irisDetailsDTO.getIrises().forEach((iris) -> {
 					iris.setNumOfIrisRetry(1);

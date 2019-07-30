@@ -434,13 +434,13 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 						|| personType.equals(RegistrationConstants.INTRODUCER))
 						&& isListNotEmpty(fingerprint.getSegmentedFingerprints())) {
 					for (FingerprintDetailsDTO segmentedFingerprint : fingerprint.getSegmentedFingerprints()) {
-						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrint());
+						BIR bir = buildFingerprintBIR(segmentedFingerprint, segmentedFingerprint.getFingerPrintISOImage());
 						birs.add(bir);
 						birUUIDs.put(personType.concat(segmentedFingerprint.getFingerType()).toLowerCase(),
 								bir.getBdbInfo().getIndex());
 					}
 				} else {
-					BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrint());
+					BIR bir = buildFingerprintBIR(fingerprint, fingerprint.getFingerPrintISOImage());
 					birs.add(bir);
 					birUUIDs.put(personType.concat(fingerprint.getFingerType()).toLowerCase(),
 							bir.getBdbInfo().getIndex());
