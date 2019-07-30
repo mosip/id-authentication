@@ -187,6 +187,8 @@
                         </ImageView>
                      </graphic>
                      <items>
+                     	<MenuItem fx:id="userGuide" mnemonicParsing="false" onAction="#userGuide" text="%userGuide" />
+                        <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#uploadPacketToServer" text="%uploadpacket" />
                         <SeparatorMenuItem />
                         <MenuItem mnemonicParsing="false" onAction="#syncData" text="%syncdata" />
