@@ -32,8 +32,8 @@ public enum StatusUtil {
 	ACTIVATE_DEACTIVATE_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "007" , "Activate/Deactivate packet validation failed"),
 	UIN_NOT_FOUND_IDREPO(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "008" , "UIN not found in ID Repositary"),
 	MANDATORY_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "009" , "Mandatory fields are not present in ID object"),
-	RID_AND_TYPE_SYNC_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "010" , "RID & Type not matched from sync table"),
-	
+	RID_AND_TYPE_SYNC_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "010" , "RID and Registration Type Mismatch has Occurred"),
+
 	//External stage
 	EXTERNAL_STAGE_SUCCESS(StatusConstants.EXTERNAL_SATGE_MODULE_SUCCESS + "001" , "Packet processing in External stage is sucessful"),
 	EXTERNAL_STAGE_FAILED(StatusConstants.EXTERNAL_SATGE_MODULE_SUCCESS + "001" , "Packet processing in External stage failed"),
@@ -83,6 +83,14 @@ public enum StatusUtil {
    INSERT_IDENTIFY_RESPONSE_SUCCESS(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Recived sucessful response from ABIS"),
    INSERT_IDENTIFY_RESPONSE_FAILED(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Received failed response from ABIS - "),
 
+   //Bio dedupe stage
+   BIO_DEDUPE_INPROGRESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "001", "Biometric Deduplication In-Progress"),
+   BIO_DEDUPE_SUCCESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "002", "Biometric Deduplication is Successful"),
+   BIO_DEDUPE_POTENTIAL_MATCH(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "Potential Biometric Match Found while Processing Packet"),
+   LOST_PACKET_BIOMETRICS_NOT_FOUND(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "002", "No Match was Found for the Biometrics Received"),
+   LOST_PACKET_UNIQUE_MATCH_FOUND(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "003", "Unique Match was Found for the Biometrics Received"),
+   LOST_PACKET_MULTIPLE_MATCH_FOUND(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "003", "Multiple Match was Found for the Biometrics Received"),
+
    //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
@@ -109,6 +117,7 @@ public enum StatusUtil {
     INSERT_RESPONSE_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Insert Response Failed for Request ID - "),
     SYSTEM_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Internal error occured - "),
     
+    CBEF_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Unable to Find Applicant CBEFF for Adult"),
 	PACKET_CLEANUP_FAILED1("","");
 	
 	private final String statusComment;

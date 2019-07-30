@@ -55,6 +55,13 @@ public final class StatusConstants {
     public static final String ABIS_MIDDLEWARE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "AMW-";
     public static final String ABIS_MIDDLEWARE_MODULE_SUCCESS = ABIS_MIDDLEWARE_MODULE + SUCCESS;
     public static final String ABIS_MIDDLEWARE_MODULE_FAILED = ABIS_MIDDLEWARE_MODULE + FAILED;
+    
+    //Bio dedupe stage
+    public static final String BIO_DEDUPE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "BDP-";
+    public static final String BIO_DEDUPE_MODULE_SUCCESS = BIO_DEDUPE_MODULE + SUCCESS;
+    public static final String BIO_DEDUPE_MODULE_FAILED = BIO_DEDUPE_MODULE + FAILED;
+
+    
 
 
     
