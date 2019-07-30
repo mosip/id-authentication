@@ -608,7 +608,7 @@ public class Utilities {
 		if (uin != null) {
 
 			JSONObject identityObject = new JSONObject();
-			identityObject.put(UIN, uin);
+			identityObject.put(UIN, Long.parseLong(uin));
 
 			requestDto.setRegistrationId(registrationID);
 			requestDto.setIdentity(identityObject);
