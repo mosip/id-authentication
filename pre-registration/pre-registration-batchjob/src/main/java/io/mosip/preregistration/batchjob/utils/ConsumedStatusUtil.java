@@ -31,6 +31,11 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
 import io.mosip.preregistration.core.util.GenericUtil;
 
+/**
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
 public class ConsumedStatusUtil {
 	
 	/** The Constant LOGGER. */

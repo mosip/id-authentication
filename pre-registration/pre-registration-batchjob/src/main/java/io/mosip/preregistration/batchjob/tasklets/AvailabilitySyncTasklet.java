@@ -38,7 +38,7 @@ import io.mosip.preregistration.core.config.LoggerConfiguration;
  *
  */
 @Component
-public class BookingTasklet implements Tasklet {
+public class AvailabilitySyncTasklet implements Tasklet {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -60,7 +60,7 @@ public class BookingTasklet implements Tasklet {
 	@Value("${version}")
 	String version;
 
-	private Logger log = LoggerConfiguration.logConfig(BookingTasklet.class);
+	private Logger log = LoggerConfiguration.logConfig(AvailabilitySyncTasklet.class);
 
 	/* (non-Javadoc)
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.springframework.batch.core.StepContribution, org.springframework.batch.core.scope.context.ChunkContext)
