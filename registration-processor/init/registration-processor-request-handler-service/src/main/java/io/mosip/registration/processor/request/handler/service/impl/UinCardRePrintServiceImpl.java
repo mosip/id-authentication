@@ -128,7 +128,7 @@ public class UinCardRePrintServiceImpl {
 
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
-							"UinCardRePrintServiceImpl::methodName():: post CREATEVID service call started with request data : "
+							"UinCardRePrintServiceImpl::createPacket():: post CREATEVID service call started with request data : "
 									+ JsonUtil.objectMapperObjectToJson(vidRequestDto));
 
 					response = (ResponseWrapper<VidResponseDTO>) restClientService.postApi(ApiName.CREATEVID, "", "",
@@ -136,7 +136,7 @@ public class UinCardRePrintServiceImpl {
 
 					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), "",
-							"Stage::methodName():: post CREATEVID service call ended successfully");
+							"UinCardRePrintServiceImpl::createPacket():: post CREATEVID service call ended successfully");
 
 					if (!response.getErrors().isEmpty()) {
 						throw new VidCreationException(PlatformErrorMessages.RPR_PGS_VID_EXCEPTION.getMessage(),
@@ -146,7 +146,8 @@ public class UinCardRePrintServiceImpl {
 						vid = response.getResponse().getVid().toString();
 					}
 
-				} else if (cardType == "uin" && uin == null) {
+				}
+				if (uin == null) {
 					uin = utilities.getUinByVid(vid);
 				}
 
@@ -163,8 +164,13 @@ public class UinCardRePrintServiceImpl {
 						DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss"));
 				String creationTime = ldt.toString() + ".000Z";
 
-				packetGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(registrationDTO.getRegistrationId(),
-						creationTime, regType, packetZipBytes);
+				if (utilities.linkRegIdWrtUin(rid, uin))
+					packetGeneratorResDto = syncUploadEncryptionService.uploadUinPacket(
+							registrationDTO.getRegistrationId(), creationTime, regType, packetZipBytes);
+				else
+					regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
+							LoggerFileConstant.REGISTRATIONID.toString(), rid,
+							"UinCardRePrintServiceImpl::createPacket():: RID link to UIN failed");
 			} catch (Exception e) {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(),
@@ -229,14 +235,14 @@ public class UinCardRePrintServiceImpl {
 		try {
 
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					"", "PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call started");
+					"", "UinCardRePrintServiceImpl::generateRegistrationId():: RIDgeneration Api call started");
 			responseWrapper = (ResponseWrapper<?>) restClientService.getApi(ApiName.RIDGENERATION, pathsegments, "", "",
 					ResponseWrapper.class);
 			if (responseWrapper.getErrors() == null) {
 				ridJson = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()), JSONObject.class);
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"\"PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
+						"\"UinCardRePrintServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
 								+ JsonUtil.objectMapperObjectToJson(ridJson));
 				rid = (String) ridJson.get("rid");
 
@@ -244,7 +250,7 @@ public class UinCardRePrintServiceImpl {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), "",
-						"\"PacketGeneratorServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
+						"\"UinCardRePrintServiceImpl::generateRegistrationId():: RIDgeneration Api call  ended with response data : "
 								+ error.get(0).getMessage());
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
 						error.get(0).getMessage(), new Throwable());

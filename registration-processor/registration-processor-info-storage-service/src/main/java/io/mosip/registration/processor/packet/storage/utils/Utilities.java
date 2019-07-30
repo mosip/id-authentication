@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
@@ -38,7 +39,10 @@ import io.mosip.registration.processor.core.exception.RegistrationProcessorUnChe
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.idrepo.dto.Documents;
+import io.mosip.registration.processor.core.idrepo.dto.IdRequestDto;
+import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO;
 import io.mosip.registration.processor.core.idrepo.dto.IdResponseDTO1;
+import io.mosip.registration.processor.core.idrepo.dto.RequestDto;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -112,6 +116,12 @@ public class Utilities {
 
 	@Value("${registration.processor.abis.json}")
 	private String registrationProcessorAbisJson;
+
+	@Value("${registration.processor.id.repo.update}")
+	private String idRepoUpdate;
+
+	@Value("${registration.processor.id.repo.vidVersion}")
+	private String vidVersion;
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
@@ -588,6 +598,52 @@ public class Utilities {
 			uin = response.getResponse().getUin().toString();
 		}
 		return uin;
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean linkRegIdWrtUin(String registrationID, String uin) throws ApisResourceAccessException {
+
+		IdResponseDTO idResponse = null;
+		RequestDto requestDto = new RequestDto();
+		if (uin != null) {
+
+			JSONObject identityObject = new JSONObject();
+			identityObject.put(UIN, uin);
+
+			requestDto.setRegistrationId(registrationID);
+			requestDto.setIdentity(identityObject);
+
+			IdRequestDto idRequestDTO = new IdRequestDto();
+			idRequestDTO.setId(idRepoUpdate);
+			idRequestDTO.setRequest(requestDto);
+			idRequestDTO.setMetadata(null);
+			idRequestDTO.setRequesttime(DateUtils.getUTCCurrentDateTimeString());
+			idRequestDTO.setVersion(vidVersion);
+
+			idResponse = (IdResponseDTO) restClientService.patchApi(ApiName.IDREPOSITORY, null, "", "", idRequestDTO,
+					IdResponseDTO.class);
+
+			if (idResponse != null && idResponse.getResponse() != null) {
+
+				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationID, " UIN Linked with the RegID");
+
+				return true;
+			} else {
+
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), registrationID,
+						" UIN not Linked with the RegID ");
+				return false;
+			}
+
+		} else {
+
+			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationID, " UIN is null ");
+		}
+
+		return false;
 	}
 
 }
