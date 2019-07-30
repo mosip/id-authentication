@@ -75,6 +75,13 @@ public enum StatusUtil {
    PDF_ADDED_TO_QUEUE_FAILED(StatusConstants.PRINT_STAGE_MODULE_FAILED + "001" , "PDF was not added to Queue due to Queue Failure"),
    PRINT_POST_COMPLETED(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "002" , "Printing and Post Completed"),
    RESEND_UIN_CARD(StatusConstants.PRINT_STAGE_MODULE_SUCCESS + "003" , "Re-Sent UIN Card for Printing"),
+  
+   //Abis middleware stage
+   INSERT_IDENTIFY_REQUEST_SUCCESS(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "001", "Insert or Identify Request sent to ABIS Queue is succesful"),
+   INSERT_IDENTIFY_REQUEST_FAILED(StatusConstants.ABIS_MIDDLEWARE_MODULE_FAILED + "001", "Insert or Identify Request sent to ABIS Queue is Unsuccesful"),
+   INSERT_IDENTIFY_RESPONSE_SUCCESS(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Recived sucessful response from ABIS"),
+   INSERT_IDENTIFY_RESPONSE_FAILED(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Received failed response from ABIS - "),
+
    //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
@@ -96,7 +103,10 @@ public enum StatusUtil {
     
     OFFICER_AUTHENTICATION_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Officer Authentication Failed: "),
     SUPERVISOR_AUTHENTICATION_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Supervisor Authentication Failed: "),
-
+    
+    IDENTIFY_RESPONSE_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Identify Response Failed for Request ID - "),
+    INSERT_RESPONSE_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Insert Response Failed for Request ID - "),
+    SYSTEM_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Internal error occured - "),
     
 	PACKET_CLEANUP_FAILED1("","");
 	
