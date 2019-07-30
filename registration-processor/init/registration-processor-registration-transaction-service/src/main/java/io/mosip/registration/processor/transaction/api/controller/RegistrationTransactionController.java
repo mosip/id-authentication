@@ -67,7 +67,7 @@ public class RegistrationTransactionController {
 	private static final String DATETIME_PATTERN = "mosip.registration.processor.datetime.pattern";
 	private static final String RESPONSE_SIGNATURE = "Response-Signature";
 	
-	@GetMapping(path = "/search/{rid}/{langCode}")
+	@GetMapping(path = "/search/{langCode}/{rid}")
 	@ApiOperation(value = "Get the transaction entity/entities")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Transaction Entity/Entities successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch Transaction Entity/Entities") })
