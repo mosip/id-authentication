@@ -112,4 +112,4 @@ This request will authenticate an Individual based on provided OTP and respond w
 
 ## 4. REST API Specs
 
-[Refer Wiki for Resident Services APIs](https://github.com/mosip/mosip/wiki/Resident-Service-APIs) 
+[Refer Wiki for Resident Services APIs](https://github.com/mosip/mosip-docs/wiki/Resident-Service-APIs) 
