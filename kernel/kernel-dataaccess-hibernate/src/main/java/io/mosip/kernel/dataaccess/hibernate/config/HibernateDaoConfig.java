@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -25,11 +24,13 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.core.dataaccess.spi.config.BaseDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
+import io.mosip.kernel.dataaccess.hibernate.repository.impl.EncryptionDao;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 
 /**
@@ -39,7 +40,7 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
  * 
  * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
- * @author Raj Jha 
+ * @author Raj Jha
  * @since 1.0.0
  * 
  *
@@ -77,11 +78,11 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	@Override
 	@Bean
 	public DataSource dataSource() {
-//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-//		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
-//		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
-//		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
+		// DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		// dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
+		// dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+		// dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
+		// dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
 
 		HikariConfig hikariConfig = new HikariConfig();
 		hikariConfig.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
@@ -195,9 +196,12 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	 * If the map previously contained a mapping for the key, the old value is
 	 * replaced.
 	 * 
-	 * @param jpaProperties The map of jpa properties
-	 * @param property      The property whose value is to be set
-	 * @param defaultValue  The default value to set
+	 * @param jpaProperties
+	 *            The map of jpa properties
+	 * @param property
+	 *            The property whose value is to be set
+	 * @param defaultValue
+	 *            The default value to set
 	 * @return The map of jpa properties with properties set
 	 */
 	private HashMap<String, Object> getProperty(HashMap<String, Object> jpaProperties, String property,
@@ -223,6 +227,16 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 					environment.containsProperty(property) ? environment.getProperty(property) : defaultValue);
 		}
 		return jpaProperties;
+	}
+
+	@Bean
+	public EncryptionDao encryptionDao() {
+		return new EncryptionDao();
+	}
+
+	@Bean
+	public SimpleAES simpleAES() {
+		return new SimpleAES(encryptionDao());
 	}
 
 }
