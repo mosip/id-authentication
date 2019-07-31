@@ -1,4 +1,4 @@
-package io.mosip.authentication.otp.service.validator;
+package io.mosip.authentication.common.service.validator;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import io.mosip.authentication.common.service.validator.IdAuthValidator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
@@ -30,10 +29,9 @@ import io.mosip.kernel.core.util.DateUtils;
  */
 @Component
 public class OTPRequestValidator extends IdAuthValidator {
-	
-	
+
 	private static final String OTP_CHANNEL = "otpChannel";
-	
+
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
 	private static final String OTP_VALIDATOR = "OTP_VALIDATOR";
@@ -95,6 +93,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 					.filter(channel -> !NotificationType.getNotificationTypeForChannel(channel).isPresent())
 					.collect(Collectors.joining(","));
 			if (!channels.isEmpty()) {
+				
 				errors.rejectValue(OTP_CHANNEL,
 						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						new String[] {"otpChannel - ".concat(channels)},

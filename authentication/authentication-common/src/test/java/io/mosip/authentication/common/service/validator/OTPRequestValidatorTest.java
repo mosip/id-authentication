@@ -1,5 +1,5 @@
 
-package io.mosip.authentication.service.validator;
+package io.mosip.authentication.common.service.validator;
 
 
 
@@ -32,9 +32,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
-import io.mosip.authentication.otp.service.validator.OTPRequestValidator;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;

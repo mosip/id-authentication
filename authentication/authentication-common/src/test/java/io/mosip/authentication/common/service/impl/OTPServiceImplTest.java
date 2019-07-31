@@ -1,4 +1,4 @@
-package io.mosip.authentication.otp.service.impl;
+package io.mosip.authentication.common.service.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,6 +34,7 @@ import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
+import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.integration.IdTemplateManager;
 import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;

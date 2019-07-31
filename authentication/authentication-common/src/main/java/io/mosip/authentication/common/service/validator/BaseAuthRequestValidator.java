@@ -148,7 +148,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * validates the Static Pin Details.
 	 *
 	 * @param authRequestDTO the auth request DTO
-	 * @param errors the errors
+	 * @param errors         the errors
 	 */
 	protected void validateAdditionalFactorsDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getRequestedAuth();
@@ -203,8 +203,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * Validate Biometric details i.e validating fingers,iris,face and device
 	 * information.
 	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param errors         the errors
+	 * @param authRequestDTO  the auth request DTO
+	 * @param errors          the errors
 	 * @param allowedAuthType the allowed auth type
 	 */
 	protected void validateBioMetadataDetails(AuthRequestDTO authRequestDTO, Errors errors,
@@ -274,7 +274,11 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 			availableAuthTypeInfos.add(authType.getConfigKey().toLowerCase());
 		}
 		Set<String> allowedAvailableAuthTypes = allowedAuthTypesFromConfig.stream().filter(authTypeFromConfig -> {
-			boolean contains = availableAuthTypeInfos.contains(authTypeFromConfig.toLowerCase());
+			String authType = authTypeFromConfig.toLowerCase();
+			boolean contains = (authType.equalsIgnoreCase(MatchType.Category.DEMO.getType())
+					|| authType.equalsIgnoreCase(MatchType.Category.OTP.getType())) ? true
+							: availableAuthTypeInfos.contains(authType);
+			//TODO	handle invalid bio authtype cases
 			if (!contains) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "Invalid bio type config: " + authTypeFromConfig);
@@ -857,7 +861,7 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * Validates the AuthType.
 	 *
 	 * @param authType the auth type
-	 * @param errors the errors
+	 * @param errors   the errors
 	 */
 	protected void validateAuthType(AuthTypeDTO authType, Errors errors) {
 		if (!(authType.isDemo() || authType.isBio() || authType.isOtp() || authType.isPin())) {
@@ -871,8 +875,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * Method to validate auth type.
 	 *
 	 * @param requestDTO the request DTO
-	 * @param errors the errors
-	 * @param configKey the config key
+	 * @param errors     the errors
+	 * @param configKey  the config key
 	 */
 	protected void validateAllowedAuthTypes(AuthRequestDTO requestDTO, Errors errors, String configKey) {
 		AuthTypeDTO authTypeDTO = requestDTO.getRequestedAuth();
@@ -961,8 +965,8 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	 * request.
 	 *
 	 * @param langCode the lang code
-	 * @param errors the errors
-	 * @param field  the field
+	 * @param errors   the errors
+	 * @param field    the field
 	 */
 	protected void validateLangCode(String langCode, Errors errors, String field) {
 		if (Objects.nonNull(langCode)) {

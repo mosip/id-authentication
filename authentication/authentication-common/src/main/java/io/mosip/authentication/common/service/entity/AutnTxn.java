@@ -88,4 +88,21 @@ public class AutnTxn {
 	
 	@Column(name = "del_dtimes")
 	private LocalDateTime delDTimes;
+	
+	@Column(name = "uin")
+	private String uin;
+	
+	@Column(name = "uin_hash")
+	private String uinHash;
+	
+	@Column(name = "requested_entity_type")
+	private String entitytype;
+	
+	@Column(name = "requested_entity_id")
+	private String entityId;
+	
+	@Column(name = "requested_entity_name")
+	private String entityName;
+	
+	
 }
