@@ -5,7 +5,7 @@
 **1. Background**
 
 
-Static Pin Auth REST service can be used to authenticate an Individual using the static pin that is stored already for the individual using [Static Pin Storage](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#3-static-pin-storage).
+Static Pin Auth REST service can be used to authenticate an Individual using the static pin that is stored already for the individual.
 
 
 ***1.1.Target users -***  
@@ -49,7 +49,7 @@ TSP can use Auth service to authenticate an Individual by using one or more type
 7.	Retrieve mode of communication with Individual using admin config to send authentication success/failure information
 8.	When the Individual is successfully authenticated based on one or more of the above authentication types, a sms/email notification is sent to them using Kernel's SmsNotifier and EmailNotifier to their stored phone/email respectively.
 9.	Respond to TSP with below success Auth response - 
-[ID Authentication API - Sample Response] https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#sample-response
+[ID Authentication API - Sample Response](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#sample-response)
 
 
 **2.1. Class Diagram:**   
