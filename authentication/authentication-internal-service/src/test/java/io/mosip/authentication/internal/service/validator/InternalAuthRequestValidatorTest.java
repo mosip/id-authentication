@@ -33,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.core.authtype.dto.AuthtypeRequestDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.AuthTypeDTO;
@@ -74,6 +75,9 @@ public class InternalAuthRequestValidatorTest {
 
 	@InjectMocks
 	private InternalAuthRequestValidator internalAuthRequestValidator;
+	
+	@InjectMocks
+	private AuthtypeStatusValidator authtypeStatusValidator;
 
 	@InjectMocks
 	private AuthRequestValidator baseAuthRequestValidator;
@@ -104,6 +108,11 @@ public class InternalAuthRequestValidatorTest {
 	@Test
 	public void testSupportTrue() {
 		assertTrue(internalAuthRequestValidator.supports(AuthRequestDTO.class));
+	}
+	
+	@Test
+	public void TestAuthTypeSupportTrue() {
+		assertTrue(authtypeStatusValidator.supports(AuthtypeRequestDto.class));
 	}
 
 	@Test

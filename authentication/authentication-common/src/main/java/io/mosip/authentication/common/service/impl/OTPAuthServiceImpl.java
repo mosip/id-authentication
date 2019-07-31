@@ -162,7 +162,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		boolean validOtpAuth;
 		String hashedIdvid = HMACUtils.digestAsPlainText(HMACUtils.generateHash(idvid.getBytes()));
 		Optional<AutnTxn> authTxn = autntxnrepository
-				.findByUinorVid(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
+				.findByTxnId(txnId, PageRequest.of(0, 1), RequestType.OTP_REQUEST.getType()).stream().findFirst();
 		if (!authTxn.isPresent()) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), AUTHENTICATE,
 					"Invalid TransactionID");

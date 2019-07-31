@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
 
@@ -119,15 +120,22 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Validates a JSON object passed as string with the schema provided.
 	 *
-	 * @param idObject            JSON as string that has to be Validated against the schema.
-	 * @param operation the operation
+	 * @param idObject
+	 *            JSON as string that has to be Validated against the schema.
+	 * @param operation
+	 *            the operation
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
-	 * @throws IdObjectValidationFailedException             JsonValidationProcessingException
-	 * @throws IdObjectIOException             JsonIOException
-	 * @throws HttpRequestException             HttpRequestException
-	 * @throws NullJsonNodeException             NullJsonNodeException
-	 * @throws ConfigServerConnectionException             ConfigServerConnectionException
+	 * @throws IdObjectValidationFailedException
+	 *             JsonValidationProcessingException
+	 * @throws IdObjectIOException
+	 *             JsonIOException
+	 * @throws HttpRequestException
+	 *             HttpRequestException
+	 * @throws NullJsonNodeException
+	 *             NullJsonNodeException
+	 * @throws ConfigServerConnectionException
+	 *             ConfigServerConnectionException
 	 */
 	@Override
 	public boolean validateIdObject(Object idObject, IdObjectValidatorSupportedOperations operation)
@@ -179,10 +187,14 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	/**
 	 * Validate mandatory fields.
 	 *
-	 * @param jsonObjectNode the json object node
-	 * @param operation the operation
-	 * @param errorList the error list
-	 * @throws IdObjectIOException the id object IO exception
+	 * @param jsonObjectNode
+	 *            the json object node
+	 * @param operation
+	 *            the operation
+	 * @param errorList
+	 *            the error list
+	 * @throws IdObjectIOException
+	 *             the id object IO exception
 	 */
 	private void validateMandatoryFields(JsonNode jsonObjectNode, IdObjectValidatorSupportedOperations operation,
 			List<ServiceError> errorList) throws IdObjectIOException {
@@ -196,30 +208,49 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 					String.format(MISSING_INPUT_PARAMETER.getMessage(), APPLICATION_ID.getValue()));
 		}
 		String fields = env.getProperty(String.format(FIELD_LIST.getValue(), appId, operation.getOperation()));
-		Optional.ofNullable(fields).ifPresent(fieldList -> 
-			Arrays.asList(StringUtils.split(fields, ',')).parallelStream().map(StringUtils::normalizeSpace)
-				.forEach(field -> {
+		Optional.ofNullable(fields).ifPresent(fieldList -> Arrays.asList(StringUtils.split(fields, ','))
+				.parallelStream().map(StringUtils::normalizeSpace).forEach(field -> {
 					List<String> fieldNames = Arrays.asList(field.split("\\|"));
 					if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
 							.noneMatch(fieldName -> jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
 						errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
 								String.format(MISSING_INPUT_PARAMETER.getMessage(),
 										fieldNames
-											.parallelStream()
-											.map(fieldName -> ROOT_PATH.getValue()
-													.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
-											.collect(Collectors.joining(" | ")))));
+												.parallelStream().map(fieldName -> ROOT_PATH.getValue()
+														.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
+												.collect(Collectors.joining(" | ")))));
 					}
-				})
-		);
+
+					if (jsonObjectNode.hasNonNull(ROOT_PATH.getValue())
+							&& fieldNames.parallelStream().anyMatch(fieldName -> {
+								return jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName)
+										&& jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName).isArray()
+												? StreamSupport
+														.stream(jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName)
+																.elements().next().spliterator(), false)
+														.anyMatch(element -> element.asText().isEmpty())
+												: jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName).asText()
+														.isEmpty();
+							})) {
+						errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(INVALID_INPUT_PARAMETER.getMessage(),
+										fieldNames
+												.parallelStream().map(fieldName -> ROOT_PATH.getValue()
+														.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
+												.collect(Collectors.joining(" | ")))));
+					}
+				}));
 	}
 
 	/**
 	 * Builds the error message.
 	 *
-	 * @param processingMessageAsJson the processing message as json
-	 * @param messageBody the message body
-	 * @param field the field
+	 * @param processingMessageAsJson
+	 *            the processing message as json
+	 * @param messageBody
+	 *            the message body
+	 * @param field
+	 *            the field
 	 * @return the string
 	 */
 	private String buildErrorMessage(JsonNode processingMessageAsJson, String messageBody, String field) {
@@ -235,7 +266,8 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 	 * Gets the json schema node.
 	 *
 	 * @return the json schema node
-	 * @throws IdObjectIOException the id object IO exception
+	 * @throws IdObjectIOException
+	 *             the id object IO exception
 	 */
 	private JsonNode getJsonSchemaNode() throws IdObjectIOException {
 		JsonNode jsonSchemaNode = null;

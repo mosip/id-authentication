@@ -12,7 +12,7 @@ The key requirements are -
 
 - Pre-Registration Id should get generated and assigned to demographic details and it should be stored in encrypted JSON in database.
 
-- Once the pre-registation form is stored in database then it should be in "Pending Appointment" status.
+- Once the pre-registration form is stored in database then it should be in "Pending Appointment" status.
 
 - The API should return the success / failure status code along with the respective message.
 
@@ -20,9 +20,9 @@ The key requirements are -
 The key non-functional requirements are
 
 - Security :
-    - The Pre-Registartion JSON form should be encrypted.
+    - The Pre-Registration JSON form should be encrypted.
 	- Generate hash out of encrypted JSON.
-	- Compare hash while reteriving the data.
+	- Compare hash while retrieving the data.
 
 -   Log the each state of the pre-registration creation:
     -   As a security measures the Pre-Id or applicant information should not be logged.
@@ -40,7 +40,7 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![Pre-Registration Demographic_Service](_images/_class_diagram/demographic-service.png)
+![Pre-Registration-Demographic-Service](_images/_class_diagram/demographic-service.png)
 
 **Create a new pre-registration :**
 - Create a REST API as '/applications' with POST method which accept the ID Definition JSON object (#id-definition-structure) from the request body.
@@ -49,17 +49,17 @@ The key non-functional requirements are
 
 - Generate the pre-registration id and assign to the requested ID JSON object and set it to the database entity.
 
-- Encrypte the ID JSON with current timestamp and set it to the database entity. If the encryption is successful continue otherwise throw an respective error message. 
+- Encrypt the ID JSON with current time-stamp and set it to the database entity. If the encryption is successful continue otherwise throw an respective error message. 
 
 - Generate hash out of encrypted ID JSON and set it to the database entity. If the hash function is successful continue otherwise throw an respective error message. 
 
-- Save the per-registartion entity in the database. If data save successful in database render the successful response otherwise any database exception occures then rollback the current transaction and throw the respective exception otherwise.
+- Save the per-registration entity in the database. If data save successful in database render the successful response otherwise any database exception occurs then rollback the current transaction and throw the respective exception otherwise.
 
 - Audit the exception/start/exit of the each stages of the Pre-registration save mechanism using AuditManager component.
 
 
 **Sequence Diagram**
-![Pre-Registration Demographic Create](_images/_sequence_diagram/demographic-create.png)
+![Pre-Registration-Demographic-Create](_images/_sequence_diagram/demographic-create.png)
 
 
 
@@ -67,100 +67,100 @@ The key non-functional requirements are
 **Update existing pre-registration :**
 - Create a REST API as '/applications' with PUT method which accept the ID Definition JSON object (#id-definition-structure) from the request body and pre-registration id from request parameter.
 
-- Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
+- Get the existing per-registration entity from database by pre-reg id. If data is not present in the database throw an respective exception.
 
 - Validate the requested ID JSON against the ID Definition schema, If the requested ID JSON is valid then continue otherwise throw an respective error message.
 
-- Encrypte the ID JSON with current timestamp and set it to the database entity. If the encryption is successful continue otherwise throw an respective error message. 
+- Encrypt the ID JSON with current time-stamp and set it to the database entity. If the encryption is successful continue otherwise throw an respective error message. 
 
 - Generate hash out of encrypted ID JSON and sand set it to the database entity. If the hash function is successful continue otherwise throw an respective error message. 
 
-- Update the per-registartion entity in the database. If data update successful in database render the sucessful response otherwise any database exception occures then rollback the current transaction and throw the respective exception otherwise.
+- Update the per-registration entity in the database. If data update successful in database render the successful response otherwise any database exception occurs then rollback the current transaction and throw the respective exception otherwise.
 
 - Audit the exception/start/exit of the each stages of the Pre-registration update mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Demographic Update](_images/_sequence_diagram/demographic-update.png)
+![Pre-Registration-Demographic-Update](_images/_sequence_diagram/demographic-update.png)
 
 
 
 **Update existing pre-registration status:**
 - Create a REST API as '/applications/status' with PUT method which accept the pre-registration id from request parameter and status in query parameter.
 
-- Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
+- Get the existing per-registration entity from database by pre-reg id. If data is not present in the database throw an respective exception.
 
-- Set the per-registartion entity with new status.
+- Set the per-registration entity with new status.
 
-- Update the per-registartion entity in the database. If data update successful in database render the sucessful response otherwise any database exception occures then rollback the current transaction and throw the respective exception otherwise.
+- Update the per-registration entity in the database. If data update successful in database render the successful response otherwise any database exception occurs then rollback the current transaction and throw the respective exception otherwise.
 
 - Audit the exception/start/exit of the each stages of the Pre-registration update status mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Demographic Update Status](_images/_sequence_diagram/demographic-update-status.png)
+![Pre-Registration-Demographic-Update-Status](_images/_sequence_diagram/demographic-update-status.png)
 
 
-**Reterive existing pre-registration :**
+**Retrieve existing pre-registration :**
 - Create a REST API as '/applications' with GET method which accept the pre-registration id from request parameter.
 
-- Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
+- Get the existing per-registration entity from database by pre-reg id. If data is not present in the database throw an respective exception.
 
-- Reterive the user-id from the authorization token and compare with user-id present in entity, if it success then proceed with next operation otherwise throw an respective exception.
+- Retrieve the user-id from the authorization token and compare with user-id present in entity, if it success then proceed with next operation otherwise throw an respective exception.
 
 - Generate hash out of encrypted ID JSON and compare with the existing hash from the entity, if it success then proceed with next operation otherwise throw an respective exception.
 
-- Then decrypt ID JSON using timestamp of encryption by using KERNEL API, send a successful response with ID JSON otherwise throw an respective exception.
+- Then decrypt ID JSON using time-stamp of encryption by using KERNEL API, send a successful response with ID JSON otherwise throw an respective exception.
 
-- Audit the exception/start/exit of the each stages of the Pre-registration reterive mechanism using AuditManager component.
+- Audit the exception/start/exit of the each stages of the Pre-registration retrieve mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Demographic Reterive](_images/_sequence_diagram/demographic-reterive-by-preRegId.png)
+![Pre-Registration-Demographic-Retrieve](_images/_sequence_diagram/demographic-retrieve-by-preRegId.png)
 
 
 
-**Reterive existing pre-registration status:**
+**Retrieve existing pre-registration status:**
 - Create a REST API as '/applications/status' with GET method which accept the pre-registration id from request parameter.
 
-- Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
+- Get the existing per-registration entity from database by pre-reg id. If data is not present in the database throw an respective exception.
 
 - Then status of the pre-registration given into the response.
 
-- Audit the exception/start/exit of the each stages of the Pre-registration reterive mechanism using AuditManager component.
+- Audit the exception/start/exit of the each stages of the Pre-registration retrieve mechanism using AuditManager component.
 
 
 **Sequence Diagram**
 
-![Pre-Registration Demographic Reterive Status](_images/_sequence_diagram/demographic-reterive-status.png)
+![Pre-Registration-Demographic-Retrieve-Status](_images/_sequence_diagram/demographic-retrieve-status.png)
 
 
-**Reterive All existing pre-registration for the User:**
+**Retrieve All existing pre-registration for the User:**
 - Create a REST API as '/applications' with GET method.
 
-- Reterive the user-id from the authorization token.
+- Retrieve the user-id from the authorization token.
 
-- Get the all per-registartion entity from database by user-id. If data is not present in the database throw an respective exception.
+- Get the all per-registration entity from database by user-id. If data is not present in the database throw an respective exception.
 
-- Loop all per-registartion entities and generate hash out of encrypted ID JSON and compare with the existing hash from the entity, if it success then proceed with next operation otherwise throw an respective exception.
+- Loop all per-registration entities and generate hash out of encrypted ID JSON and compare with the existing hash from the entity, if it success then proceed with next operation otherwise throw an respective exception.
 
-- Then decrypt ID JSON using timestamp of encryption by using KERNEL API, Get the required field values from the entity and construct an object and assign to the list with ID JSON otherwise throw an respective exception.
+- Then decrypt ID JSON using time-stamp of encryption by using KERNEL API, Get the required field values from the entity and construct an object and assign to the list with ID JSON otherwise throw an respective exception.
 
 - Send the list of object into the response.
 
-- Audit the exception/start/exit of the each stages of the Pre-registration reterive all mechanism using AuditManager component.
+- Audit the exception/start/exit of the each stages of the Pre-registration retrieve all mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Demographic Reterive All](_images/_sequence_diagram/demographic-reterive-by-userId.png)
+![Pre-Registration-Demographic-Retrieve-All](_images/_sequence_diagram/demographic-retrieve-by-userId.png)
 
 
 **Discard Pre-Registration:**
 - Create a REST API as '/applications' with DELETE method which accept the pre-registration id from request parameter.
 
-- Reterive the user-id from the authorization token.
+- Retrieve the user-id from the authorization token.
 
-- Get the existing per-registartion entity from database by pre-reg id. If data is not present in the database throw an respective exception.
+- Get the existing per-registration entity from database by pre-reg id. If data is not present in the database throw an respective exception.
 
 - Compare user-id with entity's user-id. if it matches then delete the record from the database and send the success response otherwise throw an respective exception.
 
@@ -168,7 +168,7 @@ The key non-functional requirements are
 
 **Sequence Diagram**
 
-![Pre-Registration Demographic Delete](_images/_sequence_diagram/demographic-delete.png)
+![Pre-Registration-Demographic-Delete](_images/_sequence_diagram/demographic-delete.png)
 
 
 
@@ -184,13 +184,13 @@ The key non-functional requirements are
   PRG_PAM_APP_002  | Error   |   Pre-Registration table not accessible
   PRG_PAM_APP_003 |  Error   |   Delete operation not allowed
   PRG_PAM_APP_004  | Error   |   Failed to delete the registration
-  PRG_PAM_APP_005 |  Error    |  Unable to fetch the registartions
+  PRG_PAM_APP_005 |  Error    |  Unable to fetch the registrations
 
 **Dependency Modules**
 
 Component Name | Module Name | Description | 
 -----|----------|-------------|
-  Audit Manager     |   Kernel        |    To audit the process while creating the pre-registation.
+  Audit Manager     |   Kernel        |    To audit the process while creating the pre-registration.
   Exception Manager  |  Kernel     |       To prepare the user defined exception and render to the user.
   Log        |          Kernel         |   To log the process.
   JOSN Utility    |     Kernel       |     To validate the ID definition JSON object over ID Definition Schema

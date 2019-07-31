@@ -1,4 +1,4 @@
-package io.mosip.authentication.otp.service.impl;
+package io.mosip.authentication.common.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -122,7 +122,10 @@ public class OTPServiceImpl implements OTPService {
 			valueMap.put(IdAuthCommonConstants.NAME_PRI, namePri);
 			valueMap.put(IdAuthCommonConstants.NAME_SEC, nameSec);
 			boolean isOtpGenerated = otpManager.sendOtp(otpRequestDto, uin, valueMap);
-			Boolean staticTokenRequired = env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class);
+			Boolean staticTokenRequired = partnerId != null
+					&& !partnerId.equalsIgnoreCase(IdAuthCommonConstants.INTERNAL)
+							? env.getProperty(IdAuthConfigKeyConstants.STATIC_TOKEN_ENABLE, Boolean.class)
+							: false;
 			String staticTokenId = staticTokenRequired ? tokenIdManager.generateTokenId(uin, partnerId) : null;
 			if (isOtpGenerated) {
 				otpResponseDTO.setId(otpRequestDto.getId());
@@ -170,8 +173,7 @@ public class OTPServiceImpl implements OTPService {
 	private void auditTxn(OtpRequestDTO otpRequestDto, String uin, String staticTokenId, boolean status)
 			throws IdAuthenticationBusinessException {
 		AutnTxn authTxn = AuthTransactionBuilder.newInstance().withOtpRequest(otpRequestDto)
-				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId)
-				.withStatus(status).withUin(uin)
+				.withRequestType(RequestType.OTP_REQUEST).withStaticToken(staticTokenId).withStatus(status).withUin(uin)
 				.build(env);
 		idAuthService.saveAutnTxn(authTxn);
 	}
@@ -200,7 +202,8 @@ public class OTPServiceImpl implements OTPService {
 		try {
 			String strUTCDate = DateUtils.getUTCTimeFromDate(
 					DateUtils.parseToDate(requestTime, env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
-			reqTime = LocalDateTime.parse(strUTCDate, DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
+			reqTime = LocalDateTime.parse(strUTCDate,
+					DateTimeFormatter.ofPattern(env.getProperty(IdAuthConfigKeyConstants.DATE_TIME_PATTERN)));
 
 		} catch (ParseException e) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getClass().getName(),

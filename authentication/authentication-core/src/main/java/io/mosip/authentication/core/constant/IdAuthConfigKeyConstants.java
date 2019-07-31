@@ -77,5 +77,7 @@ public final class IdAuthConfigKeyConstants {
 	public static final String MOSIP_IDA_API_ID = "ida.api.id.";
 	public static final String MOSIP_IDA_API_VERSION = "ida.api.version.";
 	public static final String IDA_BASIC_NORMALISER = "ida.demo.%s.normalization.regex.%s[%s]";
-	public static final String IDA_NORMALISER_SEP="ida.norm.sep";
+	public static final String IDA_NORMALISER_SEP = "ida.norm.sep";
+	public static final String AUTH_TRANSACTION = "auth.transactions";
+	public static final String AUTH_TYPE = "authtype.status";
 }

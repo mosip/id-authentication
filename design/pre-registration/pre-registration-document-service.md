@@ -8,17 +8,17 @@ The target users are -
    
 The key requirements are -
 
-- Create the APIs to store, modify, delete and reterive the supporting document of the citizen for a pre-registration.
+- Create the APIs to store, modify, delete and retrieve the supporting document of the citizen for a pre-registration.
 
 - For each document upload it should hit the rest api to store the document in database.
 
-- There should be a copy document option in the UI prospective, Once it get checked then an REST API call should happen with source pre-registation id, destination pre-registartion id and document catageory type, with this parameter document get copied to the destination pre-registartion id in database.
+- There should be a copy document option in the UI prospective, Once it get checked then an REST API call should happen with source pre-registration id, destination pre-registration id and document category type, with this parameter document get copied to the destination pre-registration id in database.
 
-- Get all the documents associated with pre-registartion id. 
+- Get all the documents associated with pre-registration id. 
 
 - Get particular document associated with document id. 
 
-- Delete particular document by providing the document id and pre-registartion id.
+- Delete particular document by providing the document id and pre-registration id.
 
 
 The key non-functional requirements are
@@ -27,7 +27,7 @@ The key non-functional requirements are
     - Document should be encrypted.
 	- Generate hash out of encrypted document.
 	- Store the encrypted document in HDFS.
-	- Compare hash while reteriving the data.
+	- Compare hash while retrieving the data.
 
 -   Log the each state of the pre-registration creation:
     -   As a security measures the Pre-Id or applicant information should
@@ -45,78 +45,78 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![Document Service](_images/_class_diagram/document-service.png)
+![Document-Service](_images/_class_diagram/document-service.png)
 
 **Document Upload:**
 
-- Create a REST API as '/documents' with POST method which accept the pre-registartion id from the request path parameter, document and document's JSON object from the request part parameter.
+- Create a REST API as '/documents' with POST method which accept the pre-registration id from the request path parameter, document and document's JSON object from the request part parameter.
 
-- Encrypte the document with current timestamp and set the timestamp to the document entity. If the encryption is successful continue otherwise throw an respective error message. 
+- Encrypt the document with current time stamp and set the time stamp to the document entity. If the encryption is successful continue otherwise throw an respective error message. 
 
 - Generate hash out of encrypted document and set it to the document entity. If the hash function is successful continue otherwise throw an respective error message. 
 
 - Save the encrypted document into the file system using KERNEL API. If file system store is successful continue otherwise throw an respective error message. 
 
-- Save new per-registartion document entity in the database. If data save successful in database render the successful response otherwise any database exception occures then rollback the current transaction and throw the respective exception otherwise.
+- Save new per-registration document entity in the database. If data save successful in database render the successful response otherwise any database exception occurs then rollback the current transaction and throw the respective exception otherwise.
 
 - Audit the exception/start/exit of the each stages of the document save mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Document Upload](_images/_sequence_diagram/document-upload.png)
+![Pre-Registration-Document-Upload](_images/_sequence_diagram/document-upload.png)
 
 
 **Document Copy:**
 
-- Create a REST API as '/documents' with PUT method which accept the pre-registartion id from the request path parameter, document catageory code and source pre-registartion id from the request query parameter.
+- Create a REST API as '/documents' with PUT method which accept the pre-registration id from the request path parameter, document category code and source pre-registration id from the request query parameter.
 
-- Get the existing source per-registartion document entity from database by source pre-registartion id and catageory code. If data is not present in the database throw an respective exception.
+- Get the existing source per-registration document entity from database by source pre-registration id and category code. If data is not present in the database throw an respective exception.
 
-- Create an document entity for the specified pre-registartion id and set the values from the source per-registartion document entity.
+- Create an document entity for the specified pre-registration id and set the values from the source per-registration document entity.
 
-- Save new per-registartion document entity in the database. If data save successful in database render the successful response otherwise any database exception occures then rollback the current transaction and throw the respective exception otherwise.
+- Save new per-registration document entity in the database. If data save successful in database render the successful response otherwise any database exception occurs then rollback the current transaction and throw the respective exception otherwise.
 
 - Audit the exception/start/exit of the each stages of the document copy mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Document Copy](_images/_sequence_diagram/document-copy.png)
+![Pre-Registration-document-Copy](_images/_sequence_diagram/document-copy.png)
 
-**Reterive All documents metadata for the pre-registartion:**
+**Retrieve All documents metadata for the pre-registration:**
 
 - Create a REST API as '/documents' with GET method which accept the pre-registration id from request parameter.
 
-- Get the all document entity from database by pre-registartion-id. If data is not present in the database throw an respective exception.
+- Get the all document entity from database by pre-registration-id. If data is not present in the database throw an respective exception.
 
-- Loop all document entities and reterive the required field values from the entity and construct an object and assign to the list otherwise throw an respective exception.
+- Loop all document entities and retrieve the required field values from the entity and construct an object and assign to the list otherwise throw an respective exception.
 
 - Send the list of object into the response.
 
-- Audit the exception/start/exit of the each stages of the Pre-registration reterive all documents metadata mechanism using AuditManager component.
+- Audit the exception/start/exit of the each stages of the Pre-registration retrieve all documents metadata mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Document Reterive All Metadata](_images/_sequence_diagram/document-reterive-by-preRegId.png)
+![Pre-Registration-Document-Retrieve-All-Metadata](_images/_sequence_diagram/document-retrieve-by-preRegId.png)
 
-**Reterive document :**
+**Retrieve document :**
 
-- Create a REST API as '/documents' with GET method which accept the document id from request parameter and pre-registartion-id from query parameter.
+- Create a REST API as '/documents' with GET method which accept the document id from request parameter and pre-registration-id from query parameter.
 
 - Get the existing document entity from database by document id. If data is not present in the database throw an respective exception.
 
-- Get the pre-registartion-id from the query parameter and compare with pre-registartion-id present in entity, if it success then proceed with next operation otherwise throw an respective exception.
+- Get the pre-registration-id from the query parameter and compare with pre-registration-id present in entity, if it success then proceed with next operation otherwise throw an respective exception.
 
-- Reterive the encrypted document from the FileSystemManager, if it success then proceed with next operation otherwise throw an respective exception.
+- Retrieve the encrypted document from the FileSystemManager, if it success then proceed with next operation otherwise throw an respective exception.
 
 - Generate hash out of encrypted document and compare with the existing hash from the entity, if it success then proceed with next operation otherwise throw an respective exception.
 
-- Then decrypt document using timestamp of encryption by using KERNEL API, send a successful response with document bytearray otherwise throw an respective exception.
+- Then decrypt document using time stamp of encryption by using KERNEL API, send a successful response with document bytearray otherwise throw an respective exception.
 
-- Audit the exception/start/exit of the each stages of the Pre-registration reterive document mechanism using AuditManager component.
+- Audit the exception/start/exit of the each stages of the Pre-registration retrieve document mechanism using AuditManager component.
 
 **Sequence Diagram**
 
-![Pre-Registration Document Reterive](_images/_sequence_diagram/document-reterive-by-documentId.png)
+![Pre-Registration-Document-Retrieve](_images/_sequence_diagram/document-retrieve-by-documentId.png)
 
 
 **Discard Document:**
@@ -132,7 +132,7 @@ The key non-functional requirements are
 
 **Sequence Diagram**
 
-![Pre-Registration Document Delete](_images/_sequence_diagram/document-delete-by-documentId.png)
+![Pre-Registration-Document-Delete](_images/_sequence_diagram/document-delete-by-documentId.png)
 
 
 **Discard All Document:**
@@ -148,7 +148,7 @@ The key non-functional requirements are
 
 **Sequence Diagram**
 
-![Pre-Registration Document Delete All](_images/_sequence_diagram/document-delete-preRegId.png)
+![Pre-Registration-Document-Delete-All](_images/_sequence_diagram/document-delete-preRegId.png)
 
 
 **Success / Error Code** 

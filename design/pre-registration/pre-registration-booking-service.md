@@ -8,9 +8,9 @@ The target users are -
 
 The key requirements are -
 
--   Create Booking APIs to book an appointment for the selectd Registration center and the availability time slot for the Registration center, rebook an appointment, cancel an appointment, reterive appointment details, reterive availability for the registration center.
+-   Create Booking APIs to book an appointment for the selected Registration center and the availability time slot for the Registration center, rebook an appointment, cancel an appointment, retrieve appointment details, retrieve availability for the registration center.
 
-- This ablove details need to store in a pre-registration database. Once storing the data is completed then system need to update the availability time slots for the particular registration center.
+- This above details need to store in a pre-registration database. Once storing the data is completed then system need to update the availability time slots for the particular registration center.
 
 - Once the availability time slots for the particular registration center get updated successfully then an status need to update the pre-registration status as "Booked".
 
@@ -46,17 +46,17 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration booking service ](_images/_class_diagram/booking-book.png)
+![pre-registration-booking-service](_images/_class_diagram/booking-book.png)
 
 **Sequence Diagram**
 
-![pre-registration booking service](_images/_sequence_diagram/booking-book.png)
+![pre-registration-booking-service](_images/_sequence_diagram/booking-book.png)
 
 **Booking an multiple appointment :**
 
 - Create a REST API as '/appointment/' POST method, which accept the json object from request body which contains PreRegistrationId, registration center id, booking date, from slot and to slot.
 
-- Itrate the booikng request and check for the pre-registration whether it is existing or not.
+- Iterate the booking request and check for the pre-registration whether it is existing or not.
 
 - Check for the pre-registration whether it is existing or not and check for availability slot for the requested details.
 
@@ -68,11 +68,11 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration booking service ](_images/_class_diagram/booking-book.png)
+![pre-registration booking service](_images/_class_diagram/booking-book.png)
 
 **Sequence Diagram**
 
-![pre-registration booking service](_images/_sequence_diagram/booking-book-multiple.png)
+![pre-registration booking service](_images/_sequence_diagram/booking-book.png)
 
 
 **Cancel an appointment :**
@@ -87,18 +87,18 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration cancel booking service](_images/_class_diagram/booking-cancel.png)
+![pre-registration-cancel-booking-service](_images/_class_diagram/booking-cancel.png)
 
 **Sequence Diagram**
 
-![pre-registration cancel booking service](_images/_sequence_diagram/booking-cancel.png)
+![pre-registration-cancel-booking-service](_images/_sequence_diagram/booking-cancel.png)
 
 
 **Re-Booking an appointment :**
 
 - Create a REST API as '/appointment/{preRegistrationId}' POST method, which accept the PreRegistrationId as path parameter and in request body json object contains registration center id, booking date, from slot and to slot.
 
-- Reterive the existing booking details and update the availability by incrementing the value by 1.
+- Retrieve the existing booking details and update the availability by incrementing the value by 1.
 
 - Delete the booking data in the pre-registration booking table. after deletion of booking data, system need to update the main table (applicant_demographic) with the status code "Pending_Appointment"
 
@@ -110,30 +110,30 @@ The key non-functional requirements are
 
 **Class Diagram**
 
-![pre-registration re-booking service](_images/_class_diagram/booking-rebook.png)
+![pre-registration-re-booking-service](_images/_class_diagram/booking-rebook.png)
 
 **Sequence Diagram**
 
-![pre-registration re-booking service](_images/_sequence_diagram/booking-rebook.png)
+![pre-registration-re-booking-service](_images/_sequence_diagram/booking-rebook.png)
 
 
 **Get appointment details :**
 
 - Create a REST API as '/appointment/{preRegistrationId}' GET method, which accept the Pre-Registration Id as path parameter 
 
-- Reterive the booking details from database based on the requested Pre-Registration Id.
+- Retrieve the booking details from database based on the requested Pre-Registration Id.
 
-- Prepare an response with the fetched values and send this reponse to this API call.
+- Prepare an response with the fetched values and send this response to this API call.
 
 - Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
 
 **Class Diagram**
 
-![pre-registration, registration center availability sevice ](_images/_class_diagram/booking-book.png)
+![pre-registration-registration-center-availability-service ](_images/_class_diagram/booking-book.png)
 
 **Sequence Diagram**
 
-![pre-registration, registration center availability sevice](_images/_sequence_diagram/booking-reterive-bookingDetails.png)
+![pre-registration-registration-center-availability-service](_images/_sequence_diagram/booking-retrieve-bookingDetails.png)
 
 
 
@@ -143,19 +143,19 @@ The key non-functional requirements are
 
 - Get the configured offset from the properties file and prepare the date range
 
-- Reterive the availability time slots from database based on the requested registration center id and the date range.
+- Retrieve the availability time slots from database based on the requested registration center id and the date range.
 
-- Prepare an response with the fetched values and send this reponse to this API call.
+- Prepare an response with the fetched values and send this response to this API call.
 
 - Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
 
 **Class Diagram**
 
-![pre-registration, registration center availability sevice ](_images/_class_diagram/pre-registration-regCenter-avilability.png)
+![pre-registration-registration-center-availability -service](_images/_class_diagram/booking-regCenter-avilability.png)
 
 **Sequence Diagram**
 
-![pre-registration, registration center availability sevice](_images/_sequence_diagram/pre-registration-regCenter-avilability.png)
+![pre-registration, registration center availability service](_images/_sequence_diagram/booking-RC-availability.png)
 
 
 
@@ -165,21 +165,21 @@ The key non-functional requirements are
 
 - Get the current system date time from the pre-registration application portal.
 
-- Need to calaculate "To Date" from the configuration and the requested Date.
+- Need to calculate "To Date" from the configuration and the requested Date.
 
-- Reterive the pre-registration IDs from database based on the requested registration center id and the date.
+- Retrieve the pre-registration IDs from database based on the requested registration center id and the date.
 
-- Prepare an response with the fetched values and send this reponse to this API call.
+- Prepare an response with the fetched values and send this response to this API call.
 
 - Audit the exception/start/exit of the each stages of the Registration center availability mechanism using AuditManager component.
 
 **Class Diagram**
 
-![pre-registration, Get Pre-Registration IDs ](_images/_class_diagram/pre-registration-regCenter-avilability.png)
+![pre-registration-Get-Pre-Registration-IDs ](_images/_class_diagram/booking-book.png)
 
 **Sequence Diagram**
 
-![pre-registration, Get Pre-Registration IDs](_images/_sequence_diagram/pre-registration-regCenter-avilability.png)
+![pre-registration-Get-Pre-Registration-IDs](_images/_sequence_diagram/booking-reterive-preRegIds.png)
 
 
 **Success / Error Code** 
@@ -192,7 +192,7 @@ The key non-functional requirements are
   PRG_PAM_RCI_002  | Error   |   Appointment time slot is already booked.
   PRG_PAM_RCI_003  | Error   |   Appointment time slot is already canceled.
   PRG_PAM_RCI_004  | Error   |   Appointment can not be canceled.
-  PRG_PAM_RCI_005  | Error   |   Appointment Rebooking cannot be done.
+  PRG_PAM_RCI_005  | Error   |   Appointment Re-booking cannot be done.
   PRG_PAM_RCI_006  | Error   |   Registration Center data not found.
   
 **Dependency Modules**

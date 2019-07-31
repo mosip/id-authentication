@@ -30,11 +30,12 @@ The key non-functional requirements are
 - Get the app-id value defined in global configuration and prepare the request object.
 
 - Then do the REST call to send OTP from Authentication service.
-refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
+refer : https://github.com/mosip/mosip-docs/wiki/AuthN-&-AuthZ-APIs
 
 
 **Class Diagram**
 ![pre-registration login service sendOTP ](_images/_class_diagram/login-sendOtp.png)
+
 **Sequence Diagram**
 ![pre-registration login service sendOTP](_images/_sequence_diagram/login-sendOtp.png)
 
@@ -53,12 +54,13 @@ PRG_AUTH-001 |  Error   |   Failed to send the OTP.
 - Create a REST API as '/login/validateOtp' POST method, which accept the login validate JSON object in request body.
 
 - Then do the REST call to validate OTP from Authentication service.
-refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
+refer : https://github.com/mosip/mosip-docs/wiki/AuthN-&-AuthZ-APIs
 
 **Class Diagram**
 ![pre-registration login service - validateOTP](_images/_class_diagram/login-validateOtp.png)
+
 **Sequence Diagram**
-![pre-registration login service - validateOTP](_images/_sequence_diagram/login-validateOtp.png)
+![pre-registration login service - validateOTP](_images/_sequence_diagram/login-validateOTP.png)
 
 **Error Code** 
 
@@ -76,7 +78,7 @@ refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
 - Create a REST API as '/login/invalidateToken' POST method, which accept the AuthToken from the request header.
 
 - Then do the REST call to invalidate the authentication token from Authentication service.
-refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
+refer : https://github.com/mosip/mosip-docs/wiki/AuthN-&-AuthZ-APIs
 
 **Class Diagram**
 ![pre-registration login service logout](_images/_class_diagram/login-invalidateToken.png)
@@ -95,7 +97,7 @@ refer : https://github.com/mosip/mosip/wiki/AuthN-&-AuthZ-APIs
   
   
   
-**Reterive Config Parameters :**
+**Retrieve Configuration Parameters :**
 
 - Create a REST API as 'login/config' GET Method.
 
