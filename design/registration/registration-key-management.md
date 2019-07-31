@@ -16,15 +16,15 @@
      
   It is stored into the database table [key_store] along with the start and expiry date of the key. Based on which the key would be rendered during packet encryption. There is no key maintained for decryption of packet.  
 
-  - Refer [Policy sync](_registration-policy-sync.md) for more detail. 
+  - Refer [Policy sync](registration-policy-sync.md) for more detail. 
 
   **Pre-Registration Packet :**   
    The pre-registration packet downloaded from remote server should be stored into the local hard disk after encrypting with the session based symmetric key. For each packet, different key would be generated and store the same into the database table along with packet related information. The same key would be used during decryption of packet to display the respective detail in the screen.  
     
-  -  Refer [Pre-Registration sync](_registration-Pre-Registration-Sync.md)  for more detail.
+  -  Refer [Pre-Registration sync](registration-Pre-Registration-Sync.md)  for more detail.
   
   **Database Key :**  
    The derby database used in the local machine to store the transaction performed by the operators. The data stored [encrypted] into the db are secured using the 'bootpassword', which is further secured with the TPM public key. The encrypted DB key won't be useful at any other machine other than the right TPM installed machine. This key is stored into the property file.   
    
-   - Refer [TPM Design](_registration-TPM-integration.md) for more detail.
+   - Refer [TPM Design](registration-TPM-integration.md) for more detail.
    
