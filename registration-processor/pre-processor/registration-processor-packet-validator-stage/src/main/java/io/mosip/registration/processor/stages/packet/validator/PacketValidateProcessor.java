@@ -425,14 +425,15 @@ public class PacketValidateProcessor {
 	}
 
 	private boolean validate(InternalRegistrationStatusDto registrationStatusDto, PacketMetaInfo packetMetaInfo,
-			MessageDTO object, IdentityIteratorUtil identityIteratorUtil, PacketValidationDto packetValidationDto) throws IOException, ApisResourceAccessException, JSONException,
-			org.json.simple.parser.ParseException, RegistrationProcessorCheckedException,
-			IdObjectValidationFailedException, IdObjectIOException , PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
+			MessageDTO object, IdentityIteratorUtil identityIteratorUtil, PacketValidationDto packetValidationDto)
+			throws IOException, ApisResourceAccessException, JSONException, org.json.simple.parser.ParseException,
+			RegistrationProcessorCheckedException, IdObjectValidationFailedException, IdObjectIOException,
+			PacketDecryptionFailureException, io.mosip.kernel.core.exception.IOException {
 		Long uin = null;
-		JSONObject demographicIdentity= null;
+		JSONObject demographicIdentity = null;
 		String registrationId = registrationStatusDto.getRegistrationId();
 
-		if(!fileValidation(packetMetaInfo, registrationStatusDto, packetValidationDto)) {
+		if (!fileValidation(packetMetaInfo, registrationStatusDto, packetValidationDto)) {
 			return false;
 		}
 
@@ -442,8 +443,8 @@ public class PacketValidateProcessor {
 
 		byte[] bytearray = IOUtils.toByteArray(idJsonStream);
 		String jsonString = new String(bytearray);
-		ObjectMapper mapper=new ObjectMapper();
-		JSONObject idObject=mapper.readValue(bytearray, JSONObject.class);
+		ObjectMapper mapper = new ObjectMapper();
+		JSONObject idObject = mapper.readValue(bytearray, JSONObject.class);
 
 		if (!schemaValidation(idObject, registrationStatusDto, packetValidationDto)) {
 			return false;
@@ -457,9 +458,7 @@ public class PacketValidateProcessor {
 			return false;
 
 		List<FieldValue> metadataList = identity.getMetaData();
-		if (object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())
-				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString())
+		if (object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString())
 				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.RES_UPDATE.toString())) {
 			uin = utility.getUIn(registrationId);
 			if (uin == null)
@@ -468,30 +467,17 @@ public class PacketValidateProcessor {
 			if (jsonObject == null)
 				throw new IdRepoAppException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 		}
-		boolean regTypeCheck = object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString());
-
-		if (!regTypeCheck) {
-			if (!applicantDocumentValidation(jsonString, registrationId, packetValidationDto)) {
-				packetValidationDto.setPacketValidaionFailure(" applicant document validation failed ");
-				return false;
-			}
-			if (!masterDataValidation(jsonString, packetValidationDto)) {
-				packetValidationDto.setPacketValidaionFailure(" master data validation failed ");
-				return false;
-			}
-
-		} else {
-			if (!activateDeactivatePacketValidation(demographicIdentity)) {
-				packetValidationDto.setPacketValidaionFailure("activate/deactivate packet validation failed ");
-				return false;
-			}
+		if (!applicantDocumentValidation(jsonString, registrationId, packetValidationDto)) {
+			packetValidationDto.setPacketValidaionFailure(" applicant document validation failed ");
+			return false;
+		}
+		if (!masterDataValidation(jsonString, packetValidationDto)) {
+			packetValidationDto.setPacketValidaionFailure(" master data validation failed ");
+			return false;
 		}
 		// check if uin is in idrepisitory
 		if (RegistrationType.UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
-				|| RegistrationType.RES_UPDATE.name().equalsIgnoreCase(object.getReg_type().name())
-				|| RegistrationType.ACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())
-				|| RegistrationType.DEACTIVATED.name().equalsIgnoreCase(object.getReg_type().name())) {
+				|| RegistrationType.RES_UPDATE.name().equalsIgnoreCase(object.getReg_type().name())) {
 
 			if (!uinPresentInIdRepo(String.valueOf(uin))) {
 				packetValidationDto.setPacketValidaionFailure("uin is not present in idrepo");
@@ -506,7 +492,8 @@ public class PacketValidateProcessor {
 		}
 		// Check RegId & regType are same or not From PacketMetaInfo by comparing with
 		// Sync list table
-		return validateRegIdAndTypeFromSyncTable(object.getRid(),metadataList, identityIteratorUtil, packetValidationDto);
+		return validateRegIdAndTypeFromSyncTable(object.getRid(), metadataList, identityIteratorUtil,
+				packetValidationDto);
 	}
 
 	private boolean uinPresentInIdRepo(String uin) throws ApisResourceAccessException, IOException {
@@ -514,7 +501,7 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean validateRegIdAndTypeFromSyncTable(String regId,List<FieldValue> metadataList,
+	private boolean validateRegIdAndTypeFromSyncTable(String regId, List<FieldValue> metadataList,
 			IdentityIteratorUtil identityIteratorUtil, PacketValidationDto packetValidationDto) {
 		String regType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.REGISTRATIONTYPE);
 		List<SyncRegistrationEntity> syncRecordList = registrationRepositary.getSyncRecordsByRegIdAndRegType(regId,
@@ -564,13 +551,16 @@ public class PacketValidateProcessor {
 
 	}
 
-	private boolean fileValidation(PacketMetaInfo packetMetaInfo, InternalRegistrationStatusDto registrationStatusDto, PacketValidationDto packetValidationDto) throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
+	private boolean fileValidation(PacketMetaInfo packetMetaInfo, InternalRegistrationStatusDto registrationStatusDto,
+			PacketValidationDto packetValidationDto)
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException {
 		if (env.getProperty(VALIDATEFILE).trim().equalsIgnoreCase(VALIDATIONFALSE)) {
 			packetValidationDto.setFilesValidated(true);
 			return packetValidationDto.isFilesValidated();
 		}
 		FilesValidation filesValidation = new FilesValidation(fileSystemManager, registrationStatusDto);
-		packetValidationDto.setFilesValidated(filesValidation.filesValidation(registrationStatusDto.getRegistrationId(), packetMetaInfo));
+		packetValidationDto.setFilesValidated(
+				filesValidation.filesValidation(registrationStatusDto.getRegistrationId(), packetMetaInfo));
 		if (!packetValidationDto.isFilesValidated())
 			packetValidationDto.setPacketValidaionFailure(" fileValidation failed ");
 		return packetValidationDto.isFilesValidated();
@@ -591,12 +581,6 @@ public class PacketValidateProcessor {
 			packetValidationDto.setPacketValidaionFailure(" ChecksumValidation falied ");
 
 		return packetValidationDto.isCheckSumValidated();
-
-	}
-
-	private boolean activateDeactivatePacketValidation(JSONObject demographicIdentity) {
-		String[] activateDeactivate = "UIN,IDSchemaVersion".split(",");
-		return CollectionUtils.isEqualCollection(demographicIdentity.keySet(), Arrays.asList(activateDeactivate));
 
 	}
 
