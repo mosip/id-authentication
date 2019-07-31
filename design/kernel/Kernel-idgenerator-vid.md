@@ -34,9 +34,4 @@ An alternate id needs to be generated for UIN to be used for authentication.
 ![Class Diagram](_images/kernel-idgenerator-cd.png)
 
 
-## Implementation
-
-
-**kernel-idgenerator-vid** [README](../../../kernel/kernel-idgenerator-vid/README.md)
-
 

@@ -45,6 +45,3 @@ The key solution considerations are -
 **2.2. Sequence Diagram:**    
 ![kernel_idobjectvalidator_classdiagram](_images/kernel-idobjectvalidator-sd.PNG)
 
-
-**2.3. Implementation**
-WIP

@@ -34,9 +34,4 @@ The admin should be able to adminster the master data from the Admin application
 
 
 
-## Implementation
-
-
-**admin-masterdata-fetcher** [README](../../../kernel/admin-masterdata-fetcher/README.md)
-
 

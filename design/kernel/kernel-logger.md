@@ -37,10 +37,3 @@ This application can be used to log execution steps and errors with customized m
 
 ![Class Diagram](_images/kernel-logger-cd.png)
 
-
-
-
-## Implementation
-
-
-**kernel-logger-logback** [README](../../../kernel/kernel-logger-logback/README.md)

@@ -41,8 +41,3 @@ This application can be used as an alternative of SFTP server to upload files/pa
 
 ![Class Diagram](_images/kernel-packetserver-http-cd.png)
 
-
-## Implementation
-
-
-**kernel-packetserver-http** [README](../../../kernel/kernel-packetserver-http/README.md)

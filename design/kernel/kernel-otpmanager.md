@@ -66,8 +66,4 @@ This service can be used to generate and validate OTP based on configured busine
 
 ![ERD](_images/kernel-otpmanager-erd.png)
 
-## Implementation
-
-
-**kernel-otpmanager-service** [README](../../../kernel/kernel-otpmanager-service/README.md)
 

@@ -23,9 +23,4 @@ The login module first decides the roles and their corresponding login factors. 
 ![Sequence Diagram](_images/admin-login.jpg)
 
 
-## Implementation
-
-
-**admin-login** [README](../../../admin/admin-login/README.md)
-
 

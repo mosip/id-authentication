@@ -27,8 +27,3 @@ This service can be used for Create, Fetch, Update and Delete operation on Maste
 
 ![Module Diagram](_images/kernel-masterdata-erd.png)
 
-
-## Implementation
-
-
-**kernel-masterdata-service** [README](../../../kernel/kernel-masterdata-service/README.md)

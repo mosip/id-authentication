@@ -35,8 +35,3 @@ This application can be used converting plain/html template to PDF. It contains 
 
 ![Class Diagram](_images/kernel-pdfgenerator-cd.png)
 
-
-## Implementation
-
-
-**kernel-pdfgenerator-itext** [README](../../../kernel/kernel-pdfgenerator-itext/README.md)

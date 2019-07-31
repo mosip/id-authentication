@@ -35,7 +35,4 @@ A Token ID can be requested by an Indivudual against his UIN. A library should b
 
 ![Class Diagram](_images/kernel-idgenerator-cd.png)
 
-## Implementation
 
-
-**kernel-tokenidgenerator** [README](../../../kernel/kernel-idgenerator-tokenid/README.md)

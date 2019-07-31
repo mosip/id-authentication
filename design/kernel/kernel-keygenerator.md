@@ -28,8 +28,3 @@ This library can be used to generate symmetric secret key and asymmetric public-
 
 ![Class Diagram](_images/kernel-keygenerator-cd.png)
 
-
-## Implementation
-
-
-**kernel-keygenerator-bouncycastle** [README](../../../kernel/kernel-keygenerator-bouncycastle/README.md)
