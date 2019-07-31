@@ -368,7 +368,17 @@ public class FingerPrintCaptureController extends BaseController implements Init
 						scanBtn.setDisable(false);
 					}
 					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-						fpProgress.setProgress(fpDetailsDTO != null ? fpDetailsDTO.getQualityScore() / 100 : 0);
+						if (leftHandPalmPane.getId().equals(selectedPane.getId())){
+							fpProgress.setProgress(fpDetailsDTO != null ? fpDetailsDTO.getQualityScore() / Double.parseDouble(getValueFromApplicationContext(
+									RegistrationConstants.LEFTSLAP_FINGERPRINT_THRESHOLD)) : 0);
+						} else if(rightHandPalmPane.getId().equals(selectedPane.getId())) {
+							fpProgress.setProgress(fpDetailsDTO != null ? fpDetailsDTO.getQualityScore() / Double.parseDouble(getValueFromApplicationContext(
+									RegistrationConstants.RIGHTSLAP_FINGERPRINT_THRESHOLD)) : 0);
+						} else if(thumbPane.getId().equals(selectedPane.getId())) {
+							fpProgress.setProgress(fpDetailsDTO != null ? fpDetailsDTO.getQualityScore() / Double.parseDouble(getValueFromApplicationContext(
+									RegistrationConstants.THUMBS_FINGERPRINT_THRESHOLD)) : 0);
+						}
+						
 						qualityText.setText(fpDetailsDTO != null ? String.valueOf((int) fpDetailsDTO.getQualityScore())
 								.concat(RegistrationConstants.PERCENTAGE) : RegistrationConstants.EMPTY);
 
@@ -1111,7 +1121,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 				fpProgress.setProgress(Double.valueOf(
 						getQualityScore(detailsDTO.getQualityScore()).split(RegistrationConstants.PERCENTAGE)[0])
-						/ 100);
+						/ thresholdValue);
 				qualityText.setText(getQualityScore(detailsDTO.getQualityScore()));
 				if (Double.valueOf(getQualityScore(detailsDTO.getQualityScore())
 						.split(RegistrationConstants.PERCENTAGE)[0]) >= thresholdValue) {

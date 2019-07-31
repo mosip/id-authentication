@@ -365,7 +365,7 @@ public class IrisCaptureController extends BaseController {
 				scanIris.setDisable(false);
 			}
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore() / 100 : 0);
+				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore() / Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)) : 0);
 				irisQuality.setText(irisDetailsDTO != null ? String.valueOf((int) irisDetailsDTO.getQualityScore())
 						.concat(RegistrationConstants.PERCENTAGE) : RegistrationConstants.EMPTY);
 
@@ -507,7 +507,7 @@ public class IrisCaptureController extends BaseController {
 				}
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					irisProgress.setProgress(Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
-							.split(RegistrationConstants.PERCENTAGE)[0]) / 100);
+							.split(RegistrationConstants.PERCENTAGE)[0]) / Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 					irisQuality.setText(getQualityScore(irisDetailsDTO.getQualityScore()));
 					if (Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
 							.split(RegistrationConstants.PERCENTAGE)[0]) >= Double
