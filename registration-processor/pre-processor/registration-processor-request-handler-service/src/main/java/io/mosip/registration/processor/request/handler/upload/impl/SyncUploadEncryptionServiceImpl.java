@@ -57,11 +57,14 @@ import io.mosip.registration.processor.status.sync.response.dto.RegSyncResponseD
  * @author Rishabh Keshari
  */
 @Service
-public class SyncUploadEncryptionServiceImpl implements io.mosip.registration.processor.request.handler.upload.SyncUploadEncryptionService {
+public class SyncUploadEncryptionServiceImpl
+		implements io.mosip.registration.processor.request.handler.upload.SyncUploadEncryptionService {
 
 	private static final String PACKET_RECEIVED = "PACKET_RECEIVED";
 
 	private static final String SUCCESS = "SUCCESS";
+
+	private static final String FAILURE = "FAILURE";
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(SyncUploadEncryptionServiceImpl.class);
@@ -174,6 +177,12 @@ public class SyncUploadEncryptionServiceImpl implements io.mosip.registration.pr
 
 					return packerGeneratorResDto;
 				}
+
+			} else {
+				packerGeneratorResDto.setRegistrationId(registartionId);
+				packerGeneratorResDto.setStatus(FAILURE);
+				packerGeneratorResDto.setMessage("Packet sync failure");
+				return packerGeneratorResDto;
 
 			}
 
