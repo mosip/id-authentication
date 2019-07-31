@@ -526,7 +526,7 @@ public class BioDedupeProcessor {
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_BIOMETRIC_LOST_PACKET_UNIQUE_MATCH);
+					registrationStatusDto.setStatusComment(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getMessage());
 					packetInfoManager.saveRegLostUinDet(registrationId, demoMatchedIds.get(0));
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),

@@ -91,6 +91,10 @@ public enum StatusUtil {
    LOST_PACKET_UNIQUE_MATCH_FOUND(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "003", "Unique Match was Found for the Biometrics Received"),
    LOST_PACKET_MULTIPLE_MATCH_FOUND(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "003", "Multiple Match was Found for the Biometrics Received"),
 
+   //Biometric authentication stage
+   BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "Biometric Authentication Failed - Biometric file not found"),
+   BIOMETRIC_AUTHENTICATION_SUCCESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "001", "Biometric Authentication is Successful"),
+   IDA_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "IDA authentication Failed - "),
    //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
