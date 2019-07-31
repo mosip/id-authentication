@@ -204,6 +204,10 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	/** The iris capture controller. */
 	@Autowired
 	private IrisCaptureController irisCaptureController;
+	
+	/** The face capture controller. */
+	@Autowired
+	private FaceCaptureController faceCaptureController;
 
 	/** The user onboard parent controller. */
 	@Autowired
@@ -258,7 +262,6 @@ public class FingerPrintCaptureController extends BaseController implements Init
 				"Loading of FingerprintCapture screen started");
 
 		setImagesOnHover();
-
 		try {
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
@@ -688,6 +691,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		clearingProgressBar();
 		singleBiomtericCaptureCheck();
+		faceCaptureController.clearExceptionImage();
 	}
 
 	private void clearingProgressBar() {
@@ -1389,7 +1393,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 	 *            the fingerprint details DTO
 	 * @return true, if successful
 	 */
-	private boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
+	protected boolean validateQualityScore(FingerprintDetailsDTO fingerprintDetailsDTO) {
 		try {
 			LOGGER.info(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Validating quality score of captured fingerprints started");
