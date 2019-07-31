@@ -208,14 +208,7 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 			}
 			String jsonString = new JSONObject((Map) response.getResponse().getIdentity()).toString();
 			setTemplateAttributes(jsonString, attributes);
-			if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
-				template = MASKED_UIN_CARD_TEMPLATE;
-				attributes.put(IdType.VID.toString(), idValue);
-				String maskedUin = maskString(uin, uinLength - unMaskedLength, '*');
-				attributes.put(IdType.UIN.toString(), maskedUin);
-			} else {
-				attributes.put(IdType.UIN.toString(), uin);
-			}
+			attributes.put(IdType.UIN.toString(), uin);
 
 			byte[] textFileByte = createTextFile(attributes);
 			byteMap.put(UIN_TEXT_FILE, textFileByte);
@@ -226,7 +219,12 @@ public class PrintServiceImpl implements PrintService<Map<String, byte[]>> {
 						LoggerFileConstant.REGISTRATIONID.toString(), uin,
 						PlatformErrorMessages.RPR_PRT_QRCODE_NOT_SET.name());
 			}
-
+			if (idType.toString().equalsIgnoreCase(IdType.VID.toString())) {
+				template = MASKED_UIN_CARD_TEMPLATE;
+				attributes.put(IdType.VID.toString(), idValue);
+				String maskedUin = maskString(uin, uinLength - unMaskedLength, '*');
+				attributes.put(IdType.UIN.toString(), maskedUin);
+			}
 			// getting template and placing original values
 			InputStream uinArtifact = templateGenerator.getTemplate(template, attributes, primaryLang);
 			if (uinArtifact == null) {
