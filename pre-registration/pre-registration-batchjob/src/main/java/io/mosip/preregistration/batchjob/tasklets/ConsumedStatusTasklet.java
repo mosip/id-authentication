@@ -106,6 +106,7 @@ public class ConsumedStatusTasklet implements Tasklet {
 
 		} catch (Exception e) {
 			log.error("Update Consumed Status ", " Tasklet ", " encountered exception ", e.getMessage());
+			throw e;
 		}
 
 		return RepeatStatus.FINISHED;

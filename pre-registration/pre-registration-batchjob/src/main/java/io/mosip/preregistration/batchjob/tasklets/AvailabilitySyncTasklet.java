@@ -105,6 +105,7 @@ public class AvailabilitySyncTasklet implements Tasklet {
 
 		} catch (Exception e) {
 			log.error("Sync master ", " Tasklet ", " encountered exception ", e.getMessage());
+			throw e;
 		}
 
 		return RepeatStatus.FINISHED;

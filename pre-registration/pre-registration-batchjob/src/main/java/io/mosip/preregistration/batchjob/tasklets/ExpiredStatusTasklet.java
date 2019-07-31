@@ -105,6 +105,7 @@ public class ExpiredStatusTasklet implements Tasklet {
 
 		} catch (Exception e) {
 			log.error("Expired Status ", " Tasklet ", " encountered exception ", e.getMessage());
+			throw e;
 		}
 
 		return RepeatStatus.FINISHED;
