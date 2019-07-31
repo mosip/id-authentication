@@ -14,6 +14,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
 
@@ -140,7 +141,7 @@ public interface LocationService {
 	 *            input from user
 	 * @return response dto containing location values
 	 */
-	public PageResponseDto<LocationExtnDto> searchLocation(SearchDto dto);
+	public PageResponseDto<LocationSearchDto> searchLocation(SearchDto dto);
 
 	/**
 	 * Service method to filter location values

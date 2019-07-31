@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import io.mosip.kernel.masterdata.validator.ValidLangCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,6 @@ public class SearchDto {
 	@NotNull
 	private Pagination pagination;
 
+	@ValidLangCode(message="Language Code is Invalid")
 	private String languageCode;
 }

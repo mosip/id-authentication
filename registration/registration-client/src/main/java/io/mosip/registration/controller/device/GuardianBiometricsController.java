@@ -548,12 +548,15 @@ public class GuardianBiometricsController extends BaseController implements Init
 			}
 		}
 		try {
-			bioService.getIrisImageAsDTO(detailsDTO, irisType.concat(RegistrationConstants.EYE));
+			bioService.getIrisImageAsDTO(detailsDTO, irisType);
 		} catch (RegBaseCheckedException runtimeException) {
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 					ExceptionUtils.getStackTrace(runtimeException)));
+			irisDetailsDTOs.remove(detailsDTO);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+			return;
 		}
 
 		if (detailsDTO.getIris() != null) {
@@ -645,6 +648,9 @@ public class GuardianBiometricsController extends BaseController implements Init
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
 							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
+			fingerprintDetailsDTOs.remove(detailsDTO);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+			return;
 		}
 
 		if (detailsDTO.getFingerPrint() != null) {
@@ -891,7 +897,8 @@ public class GuardianBiometricsController extends BaseController implements Init
 		LOGGER.info(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Clearing the captured biometric data");
 
-		if (getRegistrationDTOFromSession() != null) {
+		if (getRegistrationDTOFromSession() != null && (getRegistrationDTOFromSession().isUpdateUINChild()
+				|| (SessionContext.map().get(RegistrationConstants.IS_Child)!=null && (Boolean) SessionContext.map().get(RegistrationConstants.IS_Child)))) {
 			getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
 					.setFingerprintDetailsDTO(new ArrayList<>());
 

@@ -20,6 +20,8 @@ public enum DeviceErrorCode {
 	INVALID_DEVICE_FILTER_VALUE_EXCEPTION("KER-MSD-334","Invalid filter value"),
 	DEVICE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-335","No Device Id found for name:%s"),
 	DEVICE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-336","No Device specification id found for name:%s"),
+	DEVICE_NOT_TAGGED_TO_ZONE("KER-MSD-344","No zone assigned to the user"),
+	ZONE_NOT_EXIST("KER-MSD-345","Zone %s doesn't exist"),
 	REGISTRATION_CENTER_DEVICE_FETCH_EXCEPTION("KER-MSD-XXX",
 			"Error occurred while fetching a Device details mapped with the given Registration Center"),
 	DEVICE_REGISTRATION_CENTER_NOT_FOUND_EXCEPTION("KER-MSD-XXX", "Registration Center and Device Not Found");

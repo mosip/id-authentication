@@ -3,7 +3,10 @@ package io.mosip.registration.controller.reg;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.TimerTask;
 
@@ -52,6 +55,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -101,6 +105,9 @@ public class HeaderController extends BaseController {
 
 	@FXML
 	private Menu homeSelectionMenu;
+	
+	@FXML
+	private MenuItem userGuide;
 
 	@Autowired
 	private PreRegistrationDataSyncService preRegistrationDataSyncService;
@@ -698,5 +705,28 @@ public class HeaderController extends BaseController {
 
 		});
 
+	}
+	
+	/**
+	 * Redirecting to PacketStatusSync Page
+	 * 
+	 * @param event
+	 *            event for sync packet status
+	 */
+	public void userGuide(ActionEvent event) {
+		userGuide.setOnAction(e -> {
+		    if(Desktop.isDesktopSupported())
+		    {
+		        try {
+		            Desktop.getDesktop().browse(new URI(RegistrationConstants.MOSIP_URL));
+		        } catch (IOException ioException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+							ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+		        } catch (URISyntaxException uriSyntaxException) {
+		        	LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
+		        			uriSyntaxException.getMessage() + ExceptionUtils.getStackTrace(uriSyntaxException));
+		        }
+		    }
+		});
 	}
 }

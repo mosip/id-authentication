@@ -5,7 +5,6 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.ZIP_FILE_EXTENSION;
-import static io.mosip.registration.exception.RegistrationExceptionConstants.REG_IO_EXCEPTION;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
@@ -22,6 +21,7 @@ import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.external.StorageService;
 
 /**
@@ -48,20 +48,29 @@ public class StorageServiceImpl implements StorageService {
 	public String storeToDisk(String registrationId, byte[] packet) throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet
-			String seperator="/";
-			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION)).concat(seperator).concat(formatDate(new Date(), String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT))))
+			String seperator = "/";
+			String filePath = String.valueOf(ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_LOCATION))
+					.concat(seperator)
+					.concat(formatDate(new Date(),
+							String.valueOf(
+									ApplicationContext.map().get(RegistrationConstants.PACKET_STORE_DATE_FORMAT))))
 					.concat(seperator).concat(registrationId);
+
 			// Storing the Encrypted Registration Packet as zip
-			FileUtils.copyToFile(new ByteArrayInputStream(CryptoUtil.encodeBase64(packet).getBytes()), FileUtils.getFile(filePath.concat(ZIP_FILE_EXTENSION)));
+			FileUtils.copyToFile(new ByteArrayInputStream(CryptoUtil.encodeBase64(packet).getBytes()),
+					FileUtils.getFile(filePath.concat(ZIP_FILE_EXTENSION)));
 
 			LOGGER.info(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted packet saved");
 
 			return filePath;
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(
+					RegistrationExceptionConstants.REG_PACKET_STORAGE_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_STORAGE_EXCEPTION.getErrorMessage(), ioException);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.ENCRYPTED_PACKET_STORAGE,
-					runtimeException.toString());
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_PACKET_STORAGE_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_STORAGE_EXCEPTION.getErrorMessage(), runtimeException);
 		}
 	}
 }

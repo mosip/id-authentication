@@ -7,6 +7,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.StatusResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.GenderExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -94,5 +98,9 @@ public interface GenderTypeService {
 	 * @return the response i.e. pages containing the gender types
 	 */
 	PageDto<GenderExtnDto> getGenderTypes(int pageNumber, int pageSize, String sortBy, String orderBy);
+
+	PageResponseDto<GenderExtnDto> searchGenderTypes(SearchDto request);
+
+	FilterResponseDto genderFilterValues(FilterValueDto request);
 
 }

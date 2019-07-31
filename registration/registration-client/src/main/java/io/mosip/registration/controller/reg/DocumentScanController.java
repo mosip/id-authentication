@@ -1051,10 +1051,15 @@ public class DocumentScanController extends BaseController {
 	}
 
 	private void validateDocumentsPane() {
-		if (registrationController.validateDemographicPane(documentScanPane)) {
+		if(RegistrationConstants.DISABLE.equalsIgnoreCase(
+				String.valueOf(ApplicationContext.map().get(RegistrationConstants.DOC_DISABLE_FLAG)))) {
 			continueBtn.setDisable(false);
 		} else {
-			continueBtn.setDisable(true);
+			if (registrationController.validateDemographicPane(documentScanPane)) {
+				continueBtn.setDisable(false);
+			} else {
+				continueBtn.setDisable(true);
+			}
 		}
 	}
 

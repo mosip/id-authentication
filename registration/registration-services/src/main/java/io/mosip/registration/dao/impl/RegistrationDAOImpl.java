@@ -29,6 +29,7 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.repositories.RegistrationRepository;
 
 /**
@@ -96,8 +97,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			LOGGER.info(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID, "Save Registration has been ended");
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.CREATE_PACKET_ENTITY,
-					runtimeException.toString());
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_PACKET_SAVE_TO_DB_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_SAVE_TO_DB_EXCEPTION.getErrorMessage(), runtimeException);
 		}
 	}
 

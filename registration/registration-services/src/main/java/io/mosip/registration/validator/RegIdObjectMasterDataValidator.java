@@ -321,8 +321,6 @@ public class RegIdObjectMasterDataValidator {
 								JsonPath.compile(genderValuePathList.get(i)).read(identityString, READ_OPTIONS))));
 		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
-			System.out.println(
-					"Entry Val**" + lang + "->>>>" + genderMap.get(lang).contains(entry.getValue().getValue()));
 			return genderMap.containsKey(lang) && !genderMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
 				.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),

@@ -29,7 +29,15 @@ public enum RegistrationCenterErrorCode {
 	NO_LOCATION_DATA_AVAILABLE("KER-MSD-320","No Location found for value %s"),
 	NO_CENTERTYPE_AVAILABLE("KER-MSD-321","No Registration Center type found for value %s"),
 	NO_ZONE_AVAILABLE("KER-MSD-340","Zone %s doesn't exist"),
-	USER_ZONE_NOT_FOUND("KER-MSD-341","No zone assigned to the user");
+	INVALIDE_ZONE("KER-MSD-346", "Received Zone Code does not belong to the User"),
+	USER_ZONE_NOT_FOUND("KER-MSD-341","No zone assigned to the user"),
+	MAPPED_TO_DEVICE("KER-MSD-350","Cannot Decommission the Registration Center, as some devices are mapped to the Registration Center"),
+	MAPPED_TO_USER("KER-MSD-352","Cannot Decommission the Registration Center, as some users are mapped to the Registration Center"),
+	MAPPED_TO_MACHINE("KER-MSD-351","Cannot Decommission the Registration Center, as some machines are mapped to the Registration Center"),
+	DECOMMISSION_FAILED("KER-MSD-354","Internal Server Error"),
+	INVALID_RCID_LENGTH("KER-MSD-353","Center ID specified for decommission has invalid length");
+
+
 
 	private final String errorCode;
 	private final String errorMessage;

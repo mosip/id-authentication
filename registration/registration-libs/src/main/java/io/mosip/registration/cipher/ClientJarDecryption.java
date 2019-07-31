@@ -82,14 +82,17 @@ public class ClientJarDecryption extends Application {
 	private String ENCRYPT_PROPERTIES = "Encrypting Properties";
 	private String DB_CHECK = "Checking for DB Availability";
 	private String CHECKING_FOR_JARS = "Checking for jars";
-	protected String FAILED_TO_LAUNCH = "Failed To Launch";
-	protected String LAUNCHING_CLIENT = "Launching Mosip-Client";
+	private String FAILED_TO_LAUNCH = "Failed To Launch";
+	private String LAUNCHING_CLIENT = "Launching Mosip-Client";
 	private String RE_CHECKING_FOR_JARS = "Re-Checking Jars";
 	private String INSTALLING_JARS = "Installing Jars";
-	protected String TERMINATING_APPLICATION = "Terminating Application";
-	protected String DB_NOT_FOUND = "DB Not Found";
+	private String TERMINATING_APPLICATION = "Terminating Application";
+	private String DB_NOT_FOUND = "DB Not Found";
 
-	private static Label downloadLabel;
+	private Label downloadLabel;
+	private String MOSIP_SCREEN_LOADED = "Mosip client Screen loaded";
+
+	private String EXCEPTION_ENCOUNTERED = "Exception encountered during context initialization";
 
 	/**
 	 * Decrypt the bytes
@@ -346,11 +349,20 @@ public class ClientJarDecryption extends Application {
 
 											LOGGER.info(LoggerConstants.CLIENT_JAR_DECRYPTION, LoggerConstants.APPLICATION_NAME,
 													LoggerConstants.APPLICATION_ID, info);
-
-											if (info.contains("Mosip client Screen loaded")) {
+											
+											if (info.contains(MOSIP_SCREEN_LOADED )) {
 
 												closeStage();
 												break;
+											}
+											
+											if (info.contains(EXCEPTION_ENCOUNTERED)) {
+
+												updateMessage(TERMINATING_APPLICATION);
+												
+												process.destroyForcibly();
+
+												exit();
 											}
 
 										}
@@ -455,10 +467,7 @@ public class ClientJarDecryption extends Application {
 				&& String.valueOf(properties.get(MOSIP_CLIENT_TPM_AVAILABILITY)).equalsIgnoreCase(IS_KEY_ENCRYPTED);
 	}
 
-	private void activateProgressBar(final Task<?> task) {
-		progressIndicator.progressProperty().bind(task.progressProperty());
-		primaryStage.show();
-	}
+
 
 	private void showDialog() {
 

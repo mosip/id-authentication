@@ -70,4 +70,6 @@ public final class IdAuthCommonConstants {
 	public static final String SECONDAY_LANG = "secondayLang";
 
 	public static final String PRIMARY_LANG = "primaryLang";
+	
+	public static final String BIOMETRICS ="biometrics";
 }

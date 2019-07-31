@@ -42,6 +42,7 @@ import io.swagger.annotations.ApiResponses;
  * 
  * @author Megha Tanga
  * @author Ritesh Sinha
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -255,6 +256,22 @@ public class MachineController {
 			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
 		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(machineService.machineFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * PUT API to decommission machines
+	 * 
+	 * @param machineId
+	 *            input from user
+	 * @return machineID of decommissioned machine
+	 */
+	@ResponseFilter
+	@ApiOperation(value = "Decommission Machine")
+	@PutMapping("/machines/decommission/{machineId}")
+	public ResponseWrapper<IdResponseDto> decommissionMachine(@PathVariable("machineId") String machineId) {
+		ResponseWrapper<IdResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(machineService.decommissionMachine(machineId));
 		return responseWrapper;
 	}
 }

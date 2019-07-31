@@ -140,9 +140,12 @@ public class DateValidation extends BaseController {
 					if (localDate.compareTo(givenDate) >= 0) {
 
 						int age = Period.between(givenDate, localDate).getYears();
-						ageField.setText(age + "");
-						ageLocalField.setText(age + "");
-						dobMessage.setText("");
+
+						getRegistrationDTOFromSession().setAgeCalculatedByDOB(true);
+
+						ageField.setText(String.valueOf(age));
+						ageLocalField.setText(String.valueOf(age));
+						dobMessage.setText(RegistrationConstants.EMPTY);
 						dobMessage.setVisible(false);
 						date.getStyleClass().removeIf((s) -> {
 							return s.equals("demoGraphicTextFieldFocused");
