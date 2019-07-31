@@ -5,5 +5,5 @@
 // Generated on: 2018.12.06 at 02:49:01 PM IST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://docs.oasis-open.org/bias/ns/biaspatronformat-1.0/", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://standards.iso.org/iso-iec/19785/-3/ed-2/", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package io.mosip.kernel.core.cbeffutil.jaxbclasses;

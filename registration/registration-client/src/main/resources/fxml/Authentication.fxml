@@ -361,9 +361,21 @@
 															</columnConstraints>
 															<rowConstraints>
 																<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
 															</rowConstraints>
                                              <children>
-                                                <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="contiuneButton" text="%scan" GridPane.halignment="CENTER" GridPane.valignment="TOP" />
+                                                <Button fx:id="fpScanBtn" mnemonicParsing="false" onAction="#validateFingerprint" styleClass="scanButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
+                                             		<graphic>
+														<ImageView fx:id="fpScanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@../images/scan.png" />
+															</image>
+														</ImageView>
+													</graphic>
+												</Button>
                                              </children>
 														</GridPane>
 													</children>
@@ -507,7 +519,15 @@
                                              </rowConstraints>
                                           </GridPane>
                                           <TextField fx:id="irisUserId" promptText="%username" styleClass="authenticationStyle" />
-                                          <Button mnemonicParsing="false" onAction="#validateIris" styleClass="contiuneButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+                                          <Button fx:id="irisScanBtn" mnemonicParsing="false" onAction="#validateIris" styleClass="scanButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
+                                          		<graphic>
+													<ImageView fx:id="irisScanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@../images/scan.png" />
+															</image>
+													</ImageView>
+												</graphic>
+											</Button>
                                        </children>
                                     </GridPane>
                                  </children>
@@ -628,7 +648,15 @@
                                              </children>
                                           </GridPane>
                                           <TextField fx:id="faceUserId" promptText="%username" styleClass="authenticationStyle" />
-                                          <Button mnemonicParsing="false" onAction="#validateFace" styleClass="contiuneButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP" />
+                                          <Button fx:id="faceScanBtn" mnemonicParsing="false" onAction="#validateFace" styleClass="scanButton" text="%scan" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="TOP">
+                                          	<graphic>
+													<ImageView fx:id="faceScanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+														<image>
+																<Image url="@../images/scan.png" />
+														</image>
+													</ImageView>
+											</graphic>
+										</Button>
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -775,6 +803,15 @@
 						<RowConstraints minHeight="10.0" percentHeight="80.0" prefHeight="30.0" vgrow="SOMETIMES" />
 					</rowConstraints>
 				</GridPane>
+            <Button fx:id="backBtn" mnemonicParsing="false" text="Button" visible="false" GridPane.rowIndex="1">
+            	<graphic>
+                    <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                         <image>
+                               <Image url="@../images/arrowLeft.png" />
+                         </image>
+                    </ImageView>
+                </graphic>
+           </Button>
 			</children>
 		</GridPane>
 	</children>

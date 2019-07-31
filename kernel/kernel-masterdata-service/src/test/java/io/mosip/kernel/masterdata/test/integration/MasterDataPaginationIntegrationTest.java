@@ -43,7 +43,6 @@ import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.ValidDocument;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
@@ -296,7 +295,8 @@ public class MasterDataPaginationIntegrationTest {
 		individualType.setName("TEST_IND_TYPE");
 		individualType.setUpdatedBy(null);
 		individualType.setUpdatedDateTime(null);
-		individualType.setIndividualTypeID(codeAndLanguageCodeID);
+		individualType.setCode("TEST_CODE");
+		individualType.setLangCode("eng");
 
 		individualTypelist = new ArrayList<>();
 		individualTypelist.add(individualType);
@@ -370,11 +370,11 @@ public class MasterDataPaginationIntegrationTest {
 	}
 
 	private void holidaySetUp() {
-		HolidayID holidayID = new HolidayID();
-		holidayID.setHolidayDate(LocalDate.now());
-		holidayID.setHolidayName("HOLI");
-		holidayID.setLangCode("eng");
-		holidayID.setLocationCode("LOC");
+		// HolidayID holidayID = new HolidayID();
+		// holidayID.setHolidayDate(LocalDate.now());
+		// holidayID.setHolidayName("HOLI");
+		// holidayID.setLangCode("eng");
+		// holidayID.setLocationCode("LOC");
 		holiday = new Holiday();
 		holiday.setCreatedBy("TEST_CREATOR");
 		holiday.setCreatedDateTime(LocalDateTime.of(2019, 01, 2, 14, 5));
@@ -383,9 +383,13 @@ public class MasterDataPaginationIntegrationTest {
 		holiday.setIsDeleted(false);
 		holiday.setUpdatedBy(null);
 		holiday.setUpdatedDateTime(null);
-		holiday.setId(1);
+		holiday.setHolidayId(1);
 		holiday.setHolidayDesc("HOLIDAY_DESC");
-		holiday.setHolidayId(holidayID);
+		// holiday.setHolidayId(holidayID);
+		holiday.setHolidayDate(LocalDate.now());
+		holiday.setHolidayName("HOLI");
+		holiday.setLangCode("eng");
+		holiday.setLocationCode("LOC");
 
 		holidaylist = new ArrayList<>();
 		holidaylist.add(holiday);

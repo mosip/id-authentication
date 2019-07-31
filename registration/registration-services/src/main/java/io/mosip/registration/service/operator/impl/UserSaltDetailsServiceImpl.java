@@ -77,14 +77,14 @@ public class UserSaltDetailsServiceImpl extends BaseService implements UserSaltD
 								.findAny();
 						if (filteredMap.isPresent()) {
 							LOGGER.info(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
-									"Added Salt to user details succesfully.....");
+									"Added Salt to user details successfully.....");
 							usrDtl.setSalt((String) filteredMap.get().get("salt"));
 						}
 
 					});
 					userDetailRepository.saveAll(userDtlsSyncDto);
 					LOGGER.info(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,
-							"user Salt Details saved succesfull.....");
+							"user Salt Details saved succesful.....");
 					setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
 				} else {
 					LOGGER.info(LOG_REG_USER_SALT_SYNC, APPLICATION_NAME, APPLICATION_ID,

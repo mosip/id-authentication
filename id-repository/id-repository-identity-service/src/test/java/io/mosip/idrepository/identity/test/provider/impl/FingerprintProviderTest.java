@@ -25,6 +25,8 @@ import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.QualityType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 
@@ -47,10 +49,15 @@ public class FingerprintProviderTest {
 
 	@Test
 	public void testConvertFIRtoFMR() {
+		RegistryIDType registryIDType = new RegistryIDType();
+		registryIDType.setOrganization("257");
+		registryIDType.setType("7");
+		QualityType quality = new QualityType();
+		quality.setScore(95l);
 		BIR rFinger = new BIR.BIRBuilder().withBdb("3".getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(registryIDType)
+						.withQuality(quality).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
 								SingleAnySubtypeType.INDEX_FINGER.value()))
 						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
@@ -60,15 +67,20 @@ public class FingerprintProviderTest {
 		birType.setBDB(rFinger.getBdb());
 		Mockito.when(bioApiImpl.extractTemplate(Mockito.any(), Mockito.any())).thenReturn(rFinger);
 		List<BIR> data = fp.convertFIRtoFMR(Collections.singletonList(rFinger));
-		assertTrue(data.get(0).getBdbInfo().getFormatType() == 2);
+		assertTrue(data.get(0).getBdbInfo().getFormat().getType().contentEquals("2"));
 	}
 
 	@Test
 	public void testConvertFIRtoFMRUpdate() {
+		RegistryIDType registryIDType = new RegistryIDType();
+		registryIDType.setOrganization("257");
+		registryIDType.setType("7");
+		QualityType quality = new QualityType();
+		quality.setScore(95l);
 		BIR rFinger = new BIR.BIRBuilder().withBdb("3".getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(registryIDType)
+						.withQuality(quality).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
 								SingleAnySubtypeType.INDEX_FINGER.value()))
 						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
@@ -76,8 +88,8 @@ public class FingerprintProviderTest {
 				.build();
 		BIR rFinger2 = new BIR.BIRBuilder().withBdb("3".getBytes())
 				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-						.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(registryIDType)
+						.withQuality(quality).withType(Arrays.asList(SingleType.FINGER))
 						.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
 								SingleAnySubtypeType.INDEX_FINGER.value()))
 						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
@@ -88,6 +100,6 @@ public class FingerprintProviderTest {
 		Mockito.when(bioApiImpl.extractTemplate(Mockito.any(), Mockito.any())).thenReturn(rFinger);
 		List<BIR> data = fp
 				.convertFIRtoFMR(Lists.newArrayList(rFinger, rFinger2));
-		assertTrue(data.get(0).getBdbInfo().getFormatType() == 2);
+		assertTrue(data.get(0).getBdbInfo().getFormat().getType().contentEquals("2"));
 	}
 }

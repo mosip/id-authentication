@@ -101,7 +101,7 @@ public class CenterMachineReMapServiceImpl implements CenterMachineReMapService 
 		Boolean isMachineReMapped = isMachineRemapped();
 		if (isMachineReMapped) {
 			LOGGER.info("REGISTRATION CENTER MACHINE REMAP : ", APPLICATION_NAME, APPLICATION_ID,
-					"handleReMapProcess called and machine has been remaped");
+					"handleReMapProcess called and machine has been remapped");
 
 			auditFactory.audit(AuditEvent.MACHINE_REMAPPED, Components.CENTER_MACHINE_REMAP, "REGISTRATION",
 					AuditReferenceIdTypes.APPLICATION_ID.getReferenceTypeId());

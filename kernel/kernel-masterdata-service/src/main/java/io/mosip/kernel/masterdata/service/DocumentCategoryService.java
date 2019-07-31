@@ -5,6 +5,10 @@ import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
@@ -13,6 +17,7 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
  * 
  * @author Neha
  * @author Ritesh Sinha
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -90,4 +95,21 @@ public interface DocumentCategoryService {
 	 */
 	public PageDto<DocumentCategoryExtnDto> getAllDocCategories(int pageNumber, int pageSize, String sortBy,
 			String orderBy);
+    /**
+	 * Method to search Document Category.
+	 * 
+	 * @param dto
+	 *            the searchDTO
+	 * @return {@link PageResponseDto} containing pages of the searched values.
+	 */
+	public PageResponseDto<DocumentCategoryExtnDto> searchDocCategories(SearchDto dto);
+
+	/**
+	 * Method that returns the column values of specific filter column name.
+	 * 
+	 * @param filterValueDto
+	 *            the request DTO that provides the column name.
+	 * @return the response containing the filter values.
+	 */
+	public FilterResponseDto docCategoriesFilterValues(FilterValueDto filterValueDto);
 }

@@ -30,6 +30,7 @@ import io.mosip.registration.dto.json.metadata.Identity;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.dto.json.metadata.Photograph;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.util.checksum.CheckSumUtil;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import ma.glasnost.orika.CustomConverter;
@@ -166,8 +167,10 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 				identity.setPrintingName(source.getRegistrationMetaDataDTO().getFullName());
 			}
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_META_CONVERTOR,
-					runtimeException.getMessage(), runtimeException);
+			throw new RegBaseUncheckedException(
+					RegistrationExceptionConstants.REG_PACKET_METAINFO_CONVERSION_EXCEPTION.getErrorCode(),
+					RegistrationExceptionConstants.REG_PACKET_METAINFO_CONVERSION_EXCEPTION.getErrorMessage(),
+					runtimeException);
 		}
 		return packetMetaInfo;
 	}

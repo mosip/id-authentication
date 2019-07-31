@@ -18,18 +18,6 @@
 	 -fx-background-insets : 0;
 }
 
-.demoGraphicTextFieldFocused{
-	-fx-border-color: red;
-  	-fx-border-width: 0.0 0.0 1.0 0.0;	
-  	-fx-background-color: #FFFFFF;
-	-fx-prompt-text-fill: #000000;	
-	-fx-font-size: 1.2em;
-}
-
-.demoGraphicTextField:focused{
-	-fx-border-color: blue;
-}
-
 .dividerTypeOne{
 	-fx-border-width : 0.0 0.0 1.0 0.0;
 	-fx-border-color : #C9C9C9;
@@ -410,6 +398,13 @@
 	-fx-pref-width: 221.0px;
 }
 
+.hyperLinkStyle{
+	-fx-text-fill: #E63A74;
+	-fx-underline: false;
+	-fx-border-color: transparent;
+	-fx-font-size : 10.0px;
+}
+
 .loginSubmitStyle{
 	-fx-pref-height: 30.0px;
 	-fx-pref-width: 81.0px;
@@ -420,7 +415,16 @@
     -fx-font-size: 10.0px;
     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
 }
-
+.loginSubmitStyle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.loginSubmitStyle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .loginOtpValidStyle{
 	-fx-pref-height: 18.0px;
 	-fx-pref-width: 136.0px;
@@ -447,7 +451,6 @@
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;
 }
-
 .reRegCantInformToggle{
 	-fx-pref-height: 30.0px; 
 	-fx-pref-width: 120.0px;
@@ -455,6 +458,15 @@
 	-fx-text-fill: #FFFFFF;
 	-fx-font-family: Roboto;
 }
+.reRegCantInformToggle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+.reRegCantInformToggle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+
 .operatorAuthenticationAnchorPaneStyle{
 	-fx-pref-height: 550.0px; 
 	-fx-pref-width: 850.0px;
@@ -528,7 +540,6 @@ Working on new Css by taleev
 
 }
 
-
 .loginTextStyle{
 	-fx-pref-height: 35.0px;
 	-fx-pref-width: 312.0px;
@@ -541,8 +552,15 @@ Working on new Css by taleev
 .searchBoxTextStyle{
 	-fx-pref-height: 30.0px;
 	-fx-pref-width: 312.0px;
-	-fx-border-width: 0.0 0.0 2.0 0.0;
-    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.3) , 5.0, 0.0 , 0.0 , 1.0 );
+	-fx-border-width: 0.0 0.0 0.0 0.0;
+	-fx-border-color: #C9C9C9;   
+	-fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+
+.searchBoxTextStyle:focused{
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
 }
 
 .higlightedLoginLable{
@@ -625,7 +643,16 @@ Working on new Css by taleev
 	-fx-background-color : #FFFFFF;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size : 1.1em;
-	 
+}
+.demoGraphicPaneContentButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.demoGraphicPaneContentButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 
 .paneAtDisplayDemoGraphic{
@@ -640,13 +667,45 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-font-size : 1.2em;
 }
+.documentContentButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.documentContentButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.documentContentButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
 
 .contiuneButton{
 	-fx-background-color:#FF4081;
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
+	-fx-text-fill: #FFFFFF;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;	
 	-fx-font-size: 1.2em;
+}
+
+.contiuneButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+
+.contiuneButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+
+.contiuneButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
 }
 
 .backButton{
@@ -658,6 +717,18 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;	
 }
 
+.backButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.backButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+
 .demoGraphicTextField{
 	-fx-border-color: #C9C9C9;
   	-fx-border-width: 0.0 0.0 1.0 0.0;	
@@ -666,6 +737,7 @@ Working on new Css by taleev
 	-fx-font-size: 1.2em;
 	-fx-text-fill : #000000;
 }
+
 
 
 .demographicLangHeader{
@@ -679,21 +751,72 @@ Working on new Css by taleev
 	-fx-font-size: 1.3em;
 }
 
+.demoGraphicFieldLabelOnType{
+		-fx-background-color:#ffffff;
+		-fx-border-width: 0.0;
+		-fx-text-fill : #22A8C9;
+		-fx-prompt-text-fill: #000000;	
+		-fx-font-size: 1em;
+}
+
 .demoGraphicFieldLabel{
 		-fx-background-color:#ffffff;
 		-fx-border-width: 0.0;
 		-fx-text-fill : #666666;
 		-fx-font-size: 1em;
-		
 }
+
+.demoGraphicTextFieldFocused{
+	-fx-border-color: #FF0000;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #FF0000;
+	-fx-text-fill: #FF0000;	
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextFieldFocused:focused{
+	-fx-border-color: #FF0000;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #FF0000;	
+	-fx-text-fill: #FF0000;
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextField{
+	-fx-border-color: #C9C9C9;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: #000000;	
+	-fx-font-size: 1.2em;
+	-fx-text-fill : #000000;
+}
+
+.demoGraphicTextFieldOnType{
+	-fx-border-color: #C9C9C9;
+  	-fx-border-width: 0.0 0.0 1.0 0.0;	 	 	 	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: black;	
+	-fx-text-fill: #000000;
+	-fx-font-size: 1.2em;
+}
+
+.demoGraphicTextFieldOnType:focused{
+	-fx-border-color: #22A8C9;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+  	-fx-background-color: #FFFFFF;
+	-fx-prompt-text-fill: gray;	
+	-fx-text-fill: #000000;
+	-fx-font-size: 1.2em;
+} 
 
 .scanPage{
 	-fx-background-color : white;
 	-fx-text-fill : black;
 	-fx-font-size: 1.3em;
 	-fx-border-width : 1.0;
-	-fx-border-color : black;
-	
+	-fx-border-color : black;	
 }
 
 .demoGraphicFieldMessageLabel{
@@ -721,16 +844,35 @@ Working on new Css by taleev
 	-fx-pref-width: 190.0px;
 }
 
-.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
-    -fx-background-color: #FF4081;
-    -fx-text-fill: #FFFFFF;
+.demographicCombobox:focused {
+	-fx-background-color: #ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 14.0px;
+	-fx-pref-height: 10.0px;
+	-fx-pref-width: 190.0px;
 }
+
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
+    -fx-background-color: #E63A74;
+    -fx-text-fill: #FFFFFF;
+    
+}
+
+.demographicCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
+    -fx-text-fill: #FFFFFF;
+    
+}
+
+
 .documentCombobox{
 	-fx-background-color:#ffffff;
 	-fx-border-width: 0.0 0.0 1.0 0.0;
 	-fx-border-color: black;
 	-fx-font-size: 1.2em;
 }
+
 
 #docPreviewImgViewPane{
 	-fx-border-width : 1.0;
@@ -739,8 +881,20 @@ Working on new Css by taleev
 }
 
 .documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
-    -fx-background-color: #FF4081;
+    -fx-background-color: #E63A74;
     -fx-text-fill: #FFFFFF;
+}
+
+.documentCombobox .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
+    -fx-text-fill: #FFFFFF;
+}
+
+.documentCombobox:focused{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+	-fx-border-color: #FF4081;
+	-fx-font-size: 1.2em;
 }
 
 .toggleButton{
@@ -912,6 +1066,12 @@ Working on new Css by taleev
 .operatorAuthenticationStyleTextTypeOne{
 	-fx-text-fill: #666666;
 }
+.operatorAuthenticationStyleTextTypeOne:focused{
+	-fx-text-fill: #666666;
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
 
 .attempts{
 	-fx-pref-height: 39.0px; 
@@ -926,10 +1086,18 @@ Working on new Css by taleev
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-pref-height: 2.0px;	
 	-fx-pref-width: 120.0px;
-	-fx-text-fill: #FF4081;
-	
+	-fx-text-fill: #FF4081;	
 }
-
+.scanButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.scanButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 
 .registrationHeaderBorder{
 	-fx-border-width: 0.0 0.0 1.0 0.0;
@@ -1093,8 +1261,14 @@ Working on new Css by taleev
 	-fx-font-size: 14.0px;
 }
 
+
 #rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
-    -fx-background-color: #FF4081;
+    -fx-background-color: #E63A74;
+    -fx-text-fill: #FFFFFF;
+}
+
+#rejectionAnchorPane .combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: #B32D5A;
     -fx-text-fill: #FFFFFF;
 }
 
@@ -1145,6 +1319,13 @@ Working on new Css by taleev
 }
 	
 /*Upload Packet page design starts*/
+.uploadCheckBox > .box{
+	-fx-background-color: #FFFFFF;
+    -fx-text-fill: -fx-text-background-color;
+    -fx-border-color: #B0B0B0;
+	-fx-border-radius: 3px;	
+	-fx-padding: 0.25px;
+}
 .uploadPacketparentPane{
 	-fx-background-color:#F4F4F4;
 }
@@ -1182,6 +1363,12 @@ Working on new Css by taleev
 	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
   	-fx-border-width: 0.0 0.0 1.0 0.0;	
 }
+.uinUpdateTextFiledStyle:focused{
+	-fx-background-color: white;
+	-fx-border-color:#FD528C;
+	-fx-background-insets: 0.0,0.0 0.0 1.0 0.0;
+  	-fx-border-width: 0.0 0.0 2.0 0.0;	
+}
 .uinUpdateLabelsTypeTwo{
 	-fx-text-fill : #666666;
 	-fx-font-size : 15.0px;
@@ -1198,7 +1385,7 @@ Working on new Css by taleev
 .updateUinCheckBox {
     -fx-background-color : #FFFFFF;
     -fx-border-width : 1.0 1.0 1.0 1.0;
-    -fx-border-color : #FD528C;
+    -fx-border-color : #FD518C;
     -fx-padding : 3.0 10.0 5.0 3.0;
     -fx-text-fill : #FD518C;    
 }
@@ -1230,12 +1417,36 @@ Working on new Css by taleev
 	-fx-text-fill: #FFFFFF;
 	-fx-font-family: Roboto;
 }
+.approveButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+.approveButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+}
+.approveButton:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
 .rejectButton{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color:#FFFFFF;
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;		
+}
+.rejectButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.rejectButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 .pendingApprovalHeader{
 	-fx-background-color:#FFFFFF;
@@ -1253,6 +1464,14 @@ Working on new Css by taleev
 	-fx-pref-height: 39.0px; 
 	-fx-pref-width: 269.0px;
 }
+
+.authenticationStyle:focused{
+	-fx-text-fill: #666666;
+	-fx-border-width: 0.2 0.2 2.0 0.2;
+    -fx-border-color: #C9C9C9 #C9C9C9 #22A8C9 #C9C9C9;
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+}
+    
 .RegbuttonStyle {
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6.0,5.0;
@@ -1262,6 +1481,17 @@ Working on new Css by taleev
     -fx-pref-height:20.0px;
     -fx-pref-width:60.0px;
     -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.6) , 5.0, 0.0 , 0.0 , 1.0 );
+}
+.RegbuttonStyle:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.RegbuttonStyle:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 /*Authentication page design ends */
 
@@ -1278,12 +1508,32 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-font-family: Roboto;	
 }
+.ackBackButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+
+.ackBackButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .ackPageButton {
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-radius: 3.0,3.0,3.0,3.0;
 	-fx-background-color: #FF4081;
 	-fx-text-fill: white;
 	-fx-font-family: Roboto;
+}
+.ackPageButton:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+}
+
+.ackPageButton:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
 }
 .ackMenu{
 	-fx-border-width: 0.0 0.0 1.0 0.0;
@@ -1407,6 +1657,16 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
+.uinUpdateStyle:hover, .uinUpdateStyle:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.uinUpdateStyle:pressed, .uinUpdateStyle:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .uinUpdateBtnStyle{
 	-fx-font-size: 16.0px;
 	-fx-text-fill: #FF4081;
@@ -1420,6 +1680,16 @@ Working on new Css by taleev
 	-fx-background-color:#FFFFFF;
 	 -fx-border-radius: 4.0 4.0 0.0 0.0;
   	 -fx-background-radius: 4.0 4.0 0.0 0.0;
+}
+.operationalPaneDetailsSync:hover, .operationalPaneDetailsSync:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsSync:pressed, .operationalPaneDetailsSync:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 .operationalTitle{
 	-fx-text-fill: #FF4081;
@@ -1436,19 +1706,47 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
-
+.operationalPaneDetailsPreReg:hover, .operationalPaneDetailsPreReg:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsPreReg:pressed, .operationalPaneDetailsPreReg:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .operationalPaneDetails{
 	-fx-border-width: 1.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 }
-
+.operationalPaneDetails:hover, .operationalPaneDetails:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetails:pressed, .operationalPaneDetails:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .operationalPaneDetailsBioUpdate{
 	-fx-border-width: 0.0 1.0 1.0 1.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;
 	 -fx-border-radius: 0.0 0.0 4.0 4.0;
   	 -fx-background-radius: 0.0 0.0 4.0 4.0;
+}
+.operationalPaneDetailsBioUpdate:hover, .operationalPaneDetailsBioUpdate:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.operationalPaneDetailsBioUpdate:pressed, .operationalPaneDetailsBioUpdate:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 .newsUpdates{
 	-fx-background-color:#FFFFFF;
@@ -1497,6 +1795,16 @@ Working on new Css by taleev
 	-fx-border-radius: 4.0,4.0,4.0,4.0;
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;	
+}
+.onboardUserPaneStyle:hover, .onboardUserPaneStyle:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardUserPaneStyle:pressed, .onboardUserPaneStyle:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
 }
 .useronBoardLink{
 	-fx-text-fill: #FF4081;
@@ -1559,6 +1867,22 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-font-size: 12.0px;
 }
+.onboardScanBtn:hover {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardScanBtn:pressed {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardScanBtn:disabled {
+   -fx-background-color: #C9C9C9;
+   -fx-border-color: #C9C9C9;
+   -fx-text-fill: #666666;
+}
+
 .userOnboardHeader{
 	-fx-background-color:#FFFFFF;
 	-fx-effect: dropshadow( three-pass-box , #000000 , 1.0, 0.0 , 0.0 , 0.0 );
@@ -1716,18 +2040,19 @@ Working on new Css by taleev
 
  
  .dialog-pane{
-  -fx-background-color : #FFFFFF;
- }
+-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1); }
  
  .dialog-pane .button{
    -fx-background-color:#FF4081;
    -fx-text-fill:white;
    -fx-wrap-text: true;
    -fx-cursor:hand;
- }
- 
+ } 
  .dialog-pane:header .header-panel {
-  -fx-background-color: #FFFFFF;
+    -fx-background-color: #FFFFFF;
+    -fx-background-insets: 1;
 }
 
 .schedulerMsg{
@@ -1773,4 +2098,48 @@ Working on new Css by taleev
 	-fx-font-size: 18.0px;
 	-fx-text-fill: white;
 }
+.DocumentViewIcon{
+		-fx-background-image : url('/images/normal.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+		
+}
+.DocumentViewIcon:focused{
+	-fx-background-image : url('/images/pressed.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+	-fx-border-width:0;	
+} 
+.DocumentViewIcon:hover{
+	-fx-background-image : url('/images/hover.png');
+			-fx-pref-height: 20;
+	-fx-pref-width: 20;
+}
 
+.alertBox{
+	-fx-background-color: #FFFFFF;
+	-fx-background-insets: 1.5;
+	-fx-effect: dropshadow(three-pass-box, grey, 10, 0, 0, 1);
+}
+.dialog-pane:header .header-panel .label{
+  -fx-text-fill:#FF4081;
+  -fx-font-size:28.0px;
+  -fx-padding:20.0 0.0 0.0 10.0
+}
+.dialog-pane > .content.label {
+   -fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+   -fx-padding:0.0 0.0 20.0 20.0
+}
+
+.alertHeader{
+	-fx-text-fill:#FF4081;
+    -fx-font-size:28.0px;
+}
+.alertContext{
+	-fx-text-fill:#666666;
+   -fx-font-size:14.0px;
+}
+#alertImage{
+	-fx-background-size: 90.0px 90.0px;
+}

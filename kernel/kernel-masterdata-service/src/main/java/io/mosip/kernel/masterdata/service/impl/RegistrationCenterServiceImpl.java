@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
@@ -45,8 +46,12 @@ import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterExtnDto
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPostResponseDto;
 import io.mosip.kernel.masterdata.dto.postresponse.RegistrationCenterPutResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
+import io.mosip.kernel.masterdata.dto.response.ColumnValue;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.dto.response.RegistrationCenterSearchDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -68,15 +73,18 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineDeviceRepo
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterMachineUserRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
 import io.mosip.kernel.masterdata.utils.LocationUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
+import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.RegistrationCenterServiceHelper;
 import io.mosip.kernel.masterdata.utils.ZoneUtils;
+import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeValidator;
 
 /**
@@ -123,6 +131,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
 
 	@Autowired
+	RegistrationCenterUserRepository registrationCenterUserRepository;
+
+	@Autowired
 	RegistrationCenterIdGenerator<String> registrationCenterIdGenerator;
 
 	/**
@@ -146,14 +157,23 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	@Autowired
 	private RegistrationCenterServiceHelper serviceHelper;
 
+	@Autowired
+	private MasterDataFilterHelper masterDataFilterHelper;
+
+	@Autowired
+	private FilterColumnValidator filterColumnValidator;
+
 	/**
-	 * get list of languages supported by MOSIP from configuration file
+	 * get list of secondary languages supported by MOSIP from configuration file
+	 */
+	@Value("${mosip.primary-language}")
+	private String primaryLang;
+
+	/**
+	 * get list of secondary languages supported by MOSIP from configuration file
 	 */
 	@Value("${mosip.secondary-language}")
 	private String secondaryLang;
-
-	@Value("${mosip.primary-language}")
-	private String primaryLang;
 
 	private Set<String> supportedLanguages;
 
@@ -162,6 +182,9 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 */
 	@Value("${mosip.min-digit-longitude-latitude:4}")
 	private int minDegits;
+
+	@Value("${mosip.kernel.registrationcenterid.length}")
+	private int regCenterIDLength;
 
 	private String negRegex;
 	private String posRegex;
@@ -679,6 +702,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * createRegistrationCenterAdmin(io.mosip.kernel.masterdata.dto.
 	 * RegistrationCenterDto)
 	 */
+
 	@Override
 	@Transactional
 	public RegistrationCenterPostResponseDto createRegistrationCenterAdmin(
@@ -759,10 +783,19 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	private void validateRegCenterCreateReq(List<RegistrationCenterReqAdmDto> reqRegistarionCenterReqDto,
 			List<String> inputLangCodeList) {
+		List<Zone> zones = zoneUtils.getUserZones();
+		List<String> zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
 		for (RegistrationCenterReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 			String latitude = registrationCenterDto.getLatitude();
 			String longitude = registrationCenterDto.getLongitude();
 
+			// validation to check entered zoneCode is mapped with eligible user or not and
+			// is valid zoneCode
+			if (!zoneIds.contains(registrationCenterDto.getZoneCode())) {
+				throw new RequestException(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
+						RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage());
+
+			}
 			// validation to check the RegCenter Start Time is greater than
 			// RegCenter End
 			// Time
@@ -878,9 +911,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	private void validateRegCenterUpdateReq(List<RegistrationCenterPutReqAdmDto> reqRegistarionCenterReqDto,
 			Set<String> inputLangCodeSet, List<String> inputIdList, List<String> idLangList) {
+		List<Zone> zones = zoneUtils.getUserZones();
+		List<String> zoneIds = zones.parallelStream().map(Zone::getCode).collect(Collectors.toList());
+
 		for (RegistrationCenterPutReqAdmDto registrationCenterDto : reqRegistarionCenterReqDto) {
 			String latitude = registrationCenterDto.getLatitude();
 			String longitude = registrationCenterDto.getLongitude();
+
+			// validation to check entered zoneCode is mapped with eligible user or not and
+			// is valid zoneCode
+			if (!zoneIds.contains(registrationCenterDto.getZoneCode())) {
+				throw new RequestException(RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorCode(),
+						RegistrationCenterErrorCode.INVALIDE_ZONE.getErrorMessage());
+
+			}
 
 			// validation to check the format of latitude and longitude
 			if (!((Pattern.matches(negRegex, latitude) || Pattern.matches(posRegex, latitude))
@@ -934,7 +978,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<Location> locations = null;
 		boolean flag = true;
 		// fetching locations
-		locations = serviceHelper.fetchLocations();
+		locations = serviceHelper.fetchLocations(dto.getLanguageCode());
 		for (SearchFilter filter : dto.getFilters()) {
 			String column = filter.getColumnName();
 
@@ -965,7 +1009,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		if (flag) {
 			// fetching logged in user zones
-			zones = serviceHelper.fetchUserZone(zoneFilter);
+			zones = serviceHelper.fetchUserZone(zoneFilter,dto.getLanguageCode());
 		}
 		// removing already processed filters and adding new filters
 		dto.getFilters().removeAll(removeList);
@@ -977,4 +1021,74 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		return pageDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * registrationCenterFilterValues(io.mosip.kernel.masterdata.dto.request.
+	 * FilterValueDto)
+	 */
+	@Override
+	public FilterResponseDto registrationCenterFilterValues(FilterValueDto filterValueDto) {
+		FilterResponseDto filterResponseDto = new FilterResponseDto();
+		List<ColumnValue> columnValueList = new ArrayList<>();
+		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), RegistrationCenter.class)) {
+			for (FilterDto filterDto : filterValueDto.getFilters()) {
+				List<?> filterValues = masterDataFilterHelper.filterValues(RegistrationCenter.class, filterDto,
+						filterValueDto);
+				filterValues.forEach(filterValue -> {
+					ColumnValue columnValue = new ColumnValue();
+					columnValue.setFieldID(filterDto.getColumnName());
+					columnValue.setFieldValue(filterValue.toString());
+					columnValueList.add(columnValue);
+				});
+			}
+			filterResponseDto.setFilters(columnValueList);
+		}
+		return filterResponseDto;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * decommissionRegCenter(java.lang.String)
+	 */
+	@Override
+	@Transactional
+	public IdResponseDto decommissionRegCenter(String regCenterID) {
+		if (regCenterID.length() != regCenterIDLength) {
+			throw new RequestException(RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorCode(),
+					RegistrationCenterErrorCode.INVALID_RCID_LENGTH.getErrorMessage());
+		}
+		IdResponseDto idResponseDto = new IdResponseDto();
+		int decommissionedDevices = 0;
+		try {
+			if (!registrationCenterUserRepository.registrationCenterUserMappings(regCenterID).isEmpty()) {
+				throw new RequestException(RegistrationCenterErrorCode.MAPPED_TO_USER.getErrorCode(),
+						RegistrationCenterErrorCode.MAPPED_TO_USER.getErrorMessage());
+			} else if (!registrationCenterMachineRepository.findRegCenterMachineMappings(regCenterID).isEmpty()) {
+				throw new RequestException(RegistrationCenterErrorCode.MAPPED_TO_MACHINE.getErrorCode(),
+						RegistrationCenterErrorCode.MAPPED_TO_MACHINE.getErrorMessage());
+			} else if (!registrationCenterDeviceRepository.registrationCenterDeviceMappings(regCenterID).isEmpty()) {
+				throw new RequestException(RegistrationCenterErrorCode.MAPPED_TO_DEVICE.getErrorCode(),
+						RegistrationCenterErrorCode.MAPPED_TO_DEVICE.getErrorMessage());
+			} else {
+				if (registrationCenterRepository.findByRegIdAndIsDeletedFalseOrNull(regCenterID).isEmpty()) {
+					throw new DataNotFoundException(
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+							RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+				}
+				decommissionedDevices = registrationCenterRepository.decommissionRegCenter(regCenterID,
+						MetaDataUtils.getContextUser(), MetaDataUtils.getCurrentDateTime());
+			}
+		} catch (DataAccessException | DataAccessLayerException exception) {
+			throw new MasterDataServiceException(RegistrationCenterErrorCode.DECOMMISSION_FAILED.getErrorCode(),
+					RegistrationCenterErrorCode.DECOMMISSION_FAILED.getErrorMessage() + exception.getCause());
+		}
+		if (decommissionedDevices > 0) {
+			idResponseDto.setId(regCenterID);
+		}
+		return idResponseDto;
+	}
 }

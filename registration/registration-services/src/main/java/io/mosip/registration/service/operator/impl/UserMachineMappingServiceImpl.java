@@ -144,7 +144,7 @@ public class UserMachineMappingServiceImpl extends BaseService implements UserMa
 	@Override
 	public ResponseDTO isUserNewToMachine(String userId) {
 		LOGGER.info("REGISTRATION-CENTER-USER-MACHINE-MAPPING-DETAILS- SYNC", APPLICATION_NAME, APPLICATION_ID,
-				"Started to find whether the user to machine or not");
+				"Started to find whether the user new to machine or not");
 		ResponseDTO responseDTO = new ResponseDTO();
 		boolean isExists = machineMappingDAO.isExists(userId);
 

@@ -80,4 +80,6 @@ public final class IdAuthCommonConstants {
 	public static final String AUTH_TRANSACTIONS = "authTransactions";
 
 	public static final String AUTH_TYPE = "authtypes";
+	
+	public static final String BIOMETRICS ="biometrics";
 }

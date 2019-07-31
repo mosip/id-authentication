@@ -52,7 +52,7 @@
                            <columns>
                               <TableColumn fx:id="checkBoxColumn" prefWidth="${tableContainer.width*2/100}">
                                  <graphic>
-                                    <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" onAction="#selectAllCheckBox">
+                                    <CheckBox fx:id="selectAllCheckBox" mnemonicParsing="false" onAction="#selectAllCheckBox" styleClass="uploadCheckBox">
                                        </CheckBox>
                                  </graphic>
                               </TableColumn>
@@ -113,8 +113,8 @@
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" spacing="10.0" GridPane.columnIndex="2">
                      <children>
-                        <Button fx:id="saveToDevice" mnemonicParsing="false" onAction="#packetExport" text="%saveToDevice" />
-                        <Button fx:id="uploadBtn" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="%upload" />
+                        <Button fx:id="saveToDevice" mnemonicParsing="false" onAction="#packetExport" styleClass="contiuneButton" text="%saveToDevice" />
+                        <Button fx:id="uploadBtn" mnemonicParsing="false" onAction="#syncAndUploadPacket" styleClass="contiuneButton" text="%upload" />
                      </children>
                      <GridPane.margin>
                         <Insets right="50.0" />

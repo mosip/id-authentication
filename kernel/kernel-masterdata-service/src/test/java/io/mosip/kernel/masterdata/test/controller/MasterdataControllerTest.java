@@ -66,7 +66,6 @@ import io.mosip.kernel.masterdata.entity.IdType;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
-import io.mosip.kernel.masterdata.entity.id.HolidayID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
@@ -283,8 +282,12 @@ public class MasterdataControllerTest {
 		holidays = new ArrayList<>();
 
 		Holiday holiday = new Holiday();
-		holiday.setId(1);
-		holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
+		holiday.setHolidayId(1);
+		// holiday.setHolidayId(new HolidayID("KAR", date, "eng", "Diwali"));
+		holiday.setLocationCode("KAR");
+		holiday.setHolidayDate(date);
+		holiday.setLangCode("eng");
+		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
 		holiday.setCreatedDateTime(specificDate);
 		holiday.setHolidayDesc("Diwali");

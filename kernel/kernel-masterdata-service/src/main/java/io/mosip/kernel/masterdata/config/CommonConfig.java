@@ -7,7 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
+import io.mosip.kernel.masterdata.entity.Location;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.httpfilter.ReqResFilter;
+import io.mosip.kernel.masterdata.utils.Node;
+import io.mosip.kernel.masterdata.utils.UBtree;
 
 /**
  * Config class with beans for modelmapper and request logging
@@ -47,5 +51,15 @@ public class CommonConfig {
 	@Bean
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
+	}
+
+	@Bean(name = "zoneTree")
+	public UBtree<Zone> zoneTree() {
+		return zone -> new Node<>(zone.getCode(), zone, zone.getParentZoneCode());
+	}
+
+	@Bean(name = "locationTree")
+	public UBtree<Location> locationTree() {
+		return location -> new Node<>(location.getCode(), location, location.getParentLocCode());
 	}
 }

@@ -340,7 +340,7 @@
                                                          <children>
                                                             <Button fx:id="takePhoto" disable="true" mnemonicParsing="false" onAction="#takePhoto" styleClass="onboardScanBtn" text="%takePhoto">
                                                                <graphic>
-                                                                  <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                                  <ImageView fx:id="scanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                                                      <image>
                                                                         <Image url="@../images/scan.png" />
                                                                      </image>
@@ -349,7 +349,7 @@
                                                             </Button>
                                                             <Button fx:id="startOverBtn" mnemonicParsing="false" onAction="#clearAllCapturedImages" styleClass="onboardScanBtn" text="%startOver">
                                                                <graphic>
-                                                                  <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                                                                  <ImageView fx:id="startOverImageView" fitHeight="15.0" fitWidth="15.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                                                                      <image>
                                                                         <Image url="@../images/scan.png" />
                                                                      </image>
@@ -601,7 +601,7 @@
                      <children>
                         <Button fx:id="biometricPrevBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#goToPreviousPane" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                            <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/arrowLeft.png" />
                                  </image>
