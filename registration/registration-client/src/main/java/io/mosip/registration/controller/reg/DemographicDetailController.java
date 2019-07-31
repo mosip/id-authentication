@@ -43,6 +43,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.FXUtils;
 import io.mosip.registration.controller.VirtualKeyboard;
+import io.mosip.registration.controller.device.FaceCaptureController;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.IndividualTypeDto;
 import io.mosip.registration.dto.OSIDataDTO;
@@ -683,6 +684,8 @@ public class DemographicDetailController extends BaseController {
 	private Label ageOrDOBLocalLanguageLabel;
 	@FXML
 	private Label ageOrDOBLabel;
+	@Autowired
+	private FaceCaptureController faceCaptureController;
 
 	/*
 	 * (non-Javadoc)
@@ -2112,6 +2115,12 @@ public class DemographicDetailController extends BaseController {
 
 				auditFactory.audit(AuditEvent.REG_DEMO_NEXT, Components.REG_DEMO_DETAILS, SessionContext.userId(),
 						AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
+
+				// Set Exception Photo Type Description
+				faceCaptureController
+						.setExceptionFaceDescriptionText(getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+								|| (SessionContext.map().get(RegistrationConstants.IS_Child) != null
+										&& (boolean) SessionContext.map().get(RegistrationConstants.IS_Child)));
 
 				if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 					SessionContext.map().put(RegistrationConstants.UIN_UPDATE_DEMOGRAPHICDETAIL, false);
