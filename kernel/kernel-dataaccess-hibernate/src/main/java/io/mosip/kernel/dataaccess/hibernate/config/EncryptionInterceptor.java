@@ -48,7 +48,7 @@ public class EncryptionInterceptor extends EmptyInterceptor {
 					if (reqParams.contains(propertyNames[i])) {
 						String plainText = (String) state[i];
 						if (plainText != null && !plainText.trim().isEmpty()) {
-							state[i] = SimpleAES.decrypt(plainText);
+						//	state[i] = SimpleAES.decrypt(plainText);
 							System.out.println("Encry " + state[i]);
 						}
 					}
@@ -81,7 +81,7 @@ public class EncryptionInterceptor extends EmptyInterceptor {
 					if (reqParams.contains(propertyNames[i])) {
 						String plainText = (String) state[i];
 						if (plainText != null && !plainText.trim().isEmpty()) {
-							state[i] = SimpleAES.encrypt(plainText);
+						//	state[i] = SimpleAES.encrypt(plainText);
 							System.out.println("Encry " + state[i]);
 						}
 					}
