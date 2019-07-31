@@ -52,6 +52,7 @@ import io.mosip.registration.processor.core.spi.uincardgenerator.UinCardGenerato
 import io.mosip.registration.processor.message.sender.template.TemplateGenerator;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
+import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.service.impl.PrintServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -407,13 +408,14 @@ public class PrintServiceImplTest {
 	}
 
 	@Test
-	public void testPdfGeneratedwithVIDSuccess() throws IdRepoAppException, ApisResourceAccessException, IOException {
+	public void testPdfGeneratedwithVIDSuccess() throws IdRepoAppException, ApisResourceAccessException, IOException, VidCreationException {
 		List<Long> uinList = new ArrayList<>();
 		uinList.add(2046958192L);
 		Map<String, Long> map1 = new HashMap<>();
 		map1.put("UIN", 2046958192L);
 		JSONObject jsonObject = new JSONObject(map1);
 		Mockito.when(utility.retrieveUIN(any())).thenReturn(jsonObject);
+		Mockito.when(utility.getUinByVid(any())).thenReturn("2046958192");
 		byte[] expected = outputStream.toByteArray();
 		byte[] result = printService.getDocuments(IdType.VID, "2046958192").get("uinPdf");
 		assertArrayEquals(expected, result);
