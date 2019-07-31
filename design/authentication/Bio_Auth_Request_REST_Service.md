@@ -41,7 +41,7 @@ Partner can use Auth service to authenticate an Individual by using one or more 
 
 
 **2. Solution**   
-1.	Partner needs to construct a POST request with below details and send to Request URL `/idauthentication/v1/identity/auth/` - [Sample Request](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#post-idauthenticationv1auth)
+1.	Partner needs to construct a POST request with below details and send to Request URL `/idauthentication/v1/identity/auth/` - [Sample Request]https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#authentication-service-public)
 2.	Authenticate and Authorize Partner and MISP using their Policy and LicenseKey respectively
 3.	Validate 'requestTime' for incoming Auth Requests for valid format and timestamp < 30 minutes (configurable value) from current time
 4.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. 
