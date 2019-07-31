@@ -201,7 +201,8 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 				.forEach(field -> {
 					List<String> fieldNames = Arrays.asList(field.split("\\|"));
 					if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
-							.noneMatch(fieldName -> jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
+							.noneMatch(fieldName -> jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName) 
+									&& !jsonObjectNode.get(ROOT_PATH.getValue()).toString().isEmpty())) {
 						errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
 								String.format(MISSING_INPUT_PARAMETER.getMessage(),
 										fieldNames
