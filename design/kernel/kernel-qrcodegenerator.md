@@ -25,9 +25,3 @@ This library can be used to encode data to QR Code. It contains a method to conv
 
 
 ![Class Diagram](_images/kernel-qrcodegenerator-cd.png)
-
-
-## Implementation
-
-
-**kernel-qrcodegenerator-zxing** [README](../../../kernel/kernel-qrcodegenerator-zxing/README.md)

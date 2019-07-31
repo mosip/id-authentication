@@ -38,7 +38,3 @@ The Pre-registration application needs to display an acknowledgement number when
 
 ![Class Diagram](_images/kernel-idgenerator-cd.png)
 
-## Implementation
-
-
-**kernel-pridgenerator** [README](../../../kernel/kernel-idgenerator-prid/README.md)

@@ -51,8 +51,3 @@ This library can be used to facilitate data mapping between objects. It contain 
 
 ![Class Diagram](_images/kernel-datamapper-cd.png)
 
-
-## Implementation
-
-
-**kernel-datamapper-orika** [README](../../../kernel/kernel-datamapper-orika/README.md)

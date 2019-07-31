@@ -37,15 +37,3 @@ https://mosip.io/v1//generate/rid/10002/10032
 ```
 
 
-**Class Diagram**
-
-
-
-![Class Diagram](_images/kernel-ridgenerator-cd.png)
-
-
-
-## Implementation
-
-
-**kernel-ridgenerator-service** [README](../../../kernel/kernel-ridgenerator-service/README.md)

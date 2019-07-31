@@ -34,9 +34,3 @@ This library can be used to validate several data such as Email,Phone etc based 
 ![Flow Chart](_images/kernel-datavalidator-fc.png)
 
 
-
-
-## Implementation
-
-
-**kernel-datavalidator** [README](../../../kernel/kernel-datavalidator/README.md)

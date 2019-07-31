@@ -27,10 +27,3 @@ This library can be used to validate PIN based on configured business rules.
 
 ![Class Diagram](_images/kernel-pinvalidator-cd.png)
 
-
-
-
-## Implementation
-
-
-**kernel-pinvalidator** [README](../../../kernel/kernel-pinvalidator/README.md)

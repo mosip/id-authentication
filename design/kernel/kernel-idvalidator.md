@@ -33,9 +33,3 @@ This library can be used to validate several IDs such as UIN,VID,PRID,TSPId etc 
 
 ![Flow Chart](_images/kernel-idvalidator-fc.png)
 
-
-
-## Implementation
-
-
-**kernel-idvalidator** [README](../../../kernel/kernel-idvalidator/README.md)

@@ -20,8 +20,3 @@ Admin module allows the admin to check the status of the uin is valid or not.
 ![Sequence Diagram](_images/admin-uinservices.jpg)
 
 
-## Implementation
-
-
-**admin-uinservices** [README](../../../admin/admin-uinservices/README.md)
-

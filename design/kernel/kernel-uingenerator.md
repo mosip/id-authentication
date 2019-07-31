@@ -74,7 +74,3 @@ HttpStatus: 200 OK
 ![ERD](_images/kernel-uingenerator-erd.png)
 
 
-## Implementation
-
-
-**kernel-uingenerator-service** [README](../../../kernel/kernel-uingenerator-service/README.md)

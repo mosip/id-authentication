@@ -36,9 +36,4 @@ The admin can access various functionalities available in the Admin application 
 
 
 
-## Implementation
-
-
-**admin-admin-navigation** [README](../../../admin/admin-navigation/README.md)
-
 

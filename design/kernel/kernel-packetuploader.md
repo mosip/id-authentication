@@ -35,8 +35,3 @@ This library can be used as a SFTP client to upload files/packets to SFTP server
 ![Class Diagram](_images/kernel-packetuploader-sftp-cd.png)
 
 
-
-## Implementation
-
-
-**kernel-packetuploader-sftp** [README](../../../kernel/kernel-packetuploader-sftp/README.md)

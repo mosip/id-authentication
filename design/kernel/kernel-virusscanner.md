@@ -28,8 +28,3 @@ This library can be used to scan files and folders for virus. It contains two me
 
 ![Class Diagram](_images/kernel-virusscanner-cd.png)
 
-
-## Implementation
-
-
-**kernel-virusscanner-clamav** [README](../../../kernel/kernel-virusscanner-clamav/README.md)

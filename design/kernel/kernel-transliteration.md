@@ -34,8 +34,3 @@ This library can be used for transliteration. It contains a methods that accept 
 
 ![Class Diagram](_images/kernel-transliteration-cd.png)
 
-
-## Implementation
-
-
-**kernel-transliteration-icu4j** [README](../../../kernel/kernel-transliteration-icu4j/README.md)

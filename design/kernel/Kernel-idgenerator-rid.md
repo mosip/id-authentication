@@ -43,7 +43,3 @@ The Registration client module needs to generate a RID and assign it to an indiv
 ![Class Diagram](_images/kernel-idgenerator-cd.png)
 
 
-## Implementation
-
-
-**kernel-ridgenerator** [README](../../../kernel/kernel-idgenerator-rid/README.md)
