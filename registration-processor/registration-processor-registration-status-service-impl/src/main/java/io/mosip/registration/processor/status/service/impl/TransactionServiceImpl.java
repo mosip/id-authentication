@@ -1,14 +1,20 @@
 package io.mosip.registration.processor.status.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import io.mosip.kernel.core.logger.spi.Logger;
+
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
@@ -20,7 +26,6 @@ import io.mosip.registration.processor.status.exception.TransactionTableNotAcces
 import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
-import io.mosip.registration.processor.status.utilities.TransactionUtilities;
 
 
 /**	
@@ -36,8 +41,10 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
 	
+	
+	
 	@Autowired
-	TransactionUtilities transactionUtilities;
+	Environment environment;
 
 
 	/*
@@ -116,14 +123,16 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			throw new TransactionsUnavailableException(PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getCode(),
 					PlatformErrorMessages.TRANSACTIONS_NOT_AVAILABLE.getMessage());
 		}
-		
+		ClassLoader classLoader = getClass().getClassLoader();
+		String messagesPropertiesFileName = environment.getProperty("registration.processor.status.messages."+langCode);
+		File messagesPropertiesFile = new File(classLoader.getResource(messagesPropertiesFileName).getFile());
+		InputStream inputStream = new FileInputStream(messagesPropertiesFile);
+		Properties prop = new Properties();
+		prop.load(inputStream);
 		for (TransactionEntity transactionEntity : transactionEntityList) {
-			transactionEntity.setStatusComment(transactionUtilities.
-					getMessageInPreferedLanguage(transactionEntity.getSubStatusCode(), langCode));
-			transactionEntity.setStatusCode(transactionUtilities.
-					getMessageInPreferedLanguage(transactionEntity.getStatusCode(), langCode));
-			transactionEntity.setTrntypecode(transactionUtilities.
-					getMessageInPreferedLanguage(transactionEntity.getTrntypecode(), langCode));
+			transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
+			transactionEntity.setStatusCode(prop.getProperty(transactionEntity.getStatusCode()));
+			transactionEntity.setTrntypecode(prop.getProperty(transactionEntity.getTrntypecode()));
 			
 			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
 		}
@@ -134,6 +143,8 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			throw new RegTransactionAppException(PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getCode(), 
 					PlatformErrorMessages.RPR_RTS_UNKNOWN_EXCEPTION.getMessage()+" -->"+e.getMessage());
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
+				regId, "TransactionServiceImpl::getTransactionByRegId()::exit");
 		return dtoList;
 	}
 

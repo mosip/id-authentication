@@ -35,7 +35,6 @@ import io.mosip.registration.processor.status.exception.TransactionTableNotAcces
 import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.sync.response.dto.RegTransactionResponseDTO;
-import io.mosip.registration.processor.status.utilities.TransactionUtilities;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
