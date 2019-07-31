@@ -180,6 +180,8 @@ public class BaseController {
 
 	private List<String> pageDetails = new ArrayList<>();
 
+	private Stage alertStage;
+	
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -188,6 +190,13 @@ public class BaseController {
 	@Autowired
 	private RestartController restartController;
 
+	/**
+	 * @return the alertStage
+	 */
+	public Stage getAlertStage() {
+		return alertStage;
+	}
+	
 	/**
 	 * Adding events to the stage.
 	 *
@@ -284,7 +293,7 @@ public class BaseController {
 	 */
 	protected void generateAlert(String title, String context) {
 		try {
-			Stage alertStage = new Stage();
+			alertStage = new Stage();
 			Pane authRoot = BaseController.load(getClass().getResource(RegistrationConstants.ALERT_GENERATION));
 			Scene scene = new Scene(authRoot);
 			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()

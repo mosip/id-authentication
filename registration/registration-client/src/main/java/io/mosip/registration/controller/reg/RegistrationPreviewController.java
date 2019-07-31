@@ -317,7 +317,9 @@ public class RegistrationPreviewController extends BaseController implements Ini
 					.getIrisDetailsDTO().stream().count();
 			if ((Boolean) SessionContext.userMap().get(RegistrationConstants.TOGGLE_BIO_METRIC_EXCEPTION)) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_BIOMETRICEXCEPTION, true);
-			} else if (fingerPrintCount > 0) {
+			} else if(getRegistrationDTOFromSession().isUpdateUINChild() && (fingerPrintCount > 0 || irisCount > 0)){
+				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_PARENTGUARDIAN_DETAILS, true);
+			} else  if (fingerPrintCount > 0) {
 				SessionContext.map().put(RegistrationConstants.UIN_UPDATE_FINGERPRINTCAPTURE, true);
 			} else if (irisCount > 0) {
 
