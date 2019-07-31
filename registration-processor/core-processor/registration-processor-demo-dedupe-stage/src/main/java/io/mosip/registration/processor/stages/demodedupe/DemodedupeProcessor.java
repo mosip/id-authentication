@@ -44,6 +44,8 @@ import io.mosip.registration.processor.core.packet.dto.demographicinfo.Individua
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.status.util.StatusUtil;
+import io.mosip.registration.processor.core.status.util.TrimExceptionMessage;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -123,6 +125,7 @@ public class DemodedupeProcessor {
 	 * @return the message DTO
 	 */
 	public MessageDTO process(MessageDTO object, String stageName) {
+		TrimExceptionMessage trimExceptionMessage = new TrimExceptionMessage();
 
 		String registrationId = object.getRid();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -206,7 +209,7 @@ public class DemodedupeProcessor {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
+				registrationStatusDto.setStatusComment(StatusUtil.DEMO_DEDUPE_SUCCESS.getMessage());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 
 			}
@@ -218,7 +221,7 @@ public class DemodedupeProcessor {
 		} catch (FSAdapterException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto
-					.setStatusComment(PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getMessage());
+					.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_DEMO_PACKET_STORE_NOT_ACCESSIBLE.getCode());
@@ -229,7 +232,7 @@ public class DemodedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} catch (IllegalArgumentException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(PlatformErrorMessages.RPR_SYS_ILLEGAL_ACCESS_EXCEPTION.getMessage());
+			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.IIEGAL_ARGUMENT_EXCEPTION.getMessage() + e.getMessage()));
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.ILLEGAL_ARGUMENT_EXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode());
@@ -240,7 +243,7 @@ public class DemodedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
-			registrationStatusDto.setStatusComment(ExceptionUtils.getMessage(ex));
+			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_DEMO_DEDUPE_FAILED.getCode());
@@ -259,6 +262,7 @@ public class DemodedupeProcessor {
 				registrationStatusDto.setRegistrationStageName(stageName);
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
+				registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
 				registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 				description.setMessage(DemoDedupeConstants.NO_DATA_IN_DEMO);
 				regProcLogger.error(DemoDedupeConstants.NO_DATA_IN_DEMO, "", "", ExceptionUtils.getStackTrace(e));
@@ -310,7 +314,7 @@ public class DemodedupeProcessor {
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
-			registrationStatusDto.setStatusComment(StatusMessage.POTENTIAL_MATCH_FOUND);
+			registrationStatusDto.setStatusComment(StatusUtil.POTENTIAL_MATCH_FOUND.getMessage());
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 			description.setCode(PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode());
 			description.setMessage(DemoDedupeConstants.RECORD_INSERTED_FROM_ABIS_HANDLER + " -- " + registrationId);
@@ -320,7 +324,7 @@ public class DemodedupeProcessor {
 		} else {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-			registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
+			registrationStatusDto.setStatusComment(StatusUtil.DEMO_DEDUPE_SUCCESS.getMessage());
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 
 			description.setCode(PlatformSuccessMessages.RPR_PKR_DEMO_DE_DUP.getCode());
@@ -387,7 +391,7 @@ public class DemodedupeProcessor {
 
 				registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.DEMO_DEDUPE_ABIS_RESPONSE_ERROR));
-				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_FAILED_IN_ABIS);
+				registrationStatusDto.setStatusComment(StatusUtil.DEMO_DEDUPE_FAILED_IN_ABIS.getMessage());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
@@ -401,7 +405,7 @@ public class DemodedupeProcessor {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
-				registrationStatusDto.setStatusComment(StatusMessage.DEMO_DEDUPE_SUCCESS);
+				registrationStatusDto.setStatusComment(StatusUtil.DEMO_DEDUPE_SUCCESS.getMessage());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
@@ -412,8 +416,7 @@ public class DemodedupeProcessor {
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
-				registrationStatusDto.setStatusComment(
-						StatusMessage.POTENTIAL_MATCH_FOUND_IN_ABIS + registrationStatusDto.getRegistrationId());
+				registrationStatusDto.setStatusComment(StatusUtil.POTENTIAL_MATCH_FOUND_IN_ABIS.getMessage());
 				saveManualAdjudicationData(registrationStatusDto);
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),

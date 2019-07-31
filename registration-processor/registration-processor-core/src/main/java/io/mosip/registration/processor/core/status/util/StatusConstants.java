@@ -66,7 +66,10 @@ public final class StatusConstants {
     public static final String BIO_METRIC_AUTHENTICATION_MODULE_SUCCESS = BIO_METRIC_AUTHENTICATION_MODULE + SUCCESS;
     public static final String BIO_METRIC_AUTHENTICATION_MODULE_FAILED = BIO_METRIC_AUTHENTICATION_MODULE + FAILED;
 
-    
+    //Demodedupe stage
+    public static final String DEMO_DEDUPE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "DDP-";
+    public static final String DEMO_DEDUPE_MODULE_SUCCESS = DEMO_DEDUPE_MODULE + SUCCESS;
+    public static final String DEMO_DEDUPE_MODULE_FAILED = DEMO_DEDUPE_MODULE + FAILED;
 
 
     

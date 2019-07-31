@@ -95,6 +95,11 @@ public enum StatusUtil {
    BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "Biometric Authentication Failed - Biometric file not found"),
    BIOMETRIC_AUTHENTICATION_SUCCESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "001", "Biometric Authentication is Successful"),
    IDA_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "IDA authentication Failed - "),
+   
+   //Demo dedupe stage
+   DEMO_DEDUPE_SUCCESS(StatusConstants.DEMO_DEDUPE_MODULE_SUCCESS + "001" , "Demo Dedupe is Successful"),
+   POTENTIAL_MATCH_FOUND_IN_ABIS(StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "001" , "Biometric Duplicate was Found in ABIS"),
+   POTENTIAL_MATCH_FOUND(StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "002" , "Potential Demo Match was Found"),
    //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
@@ -122,7 +127,11 @@ public enum StatusUtil {
     SYSTEM_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Internal error occured - "),
     
     CBEF_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Unable to Find Applicant CBEFF for Adult"),
-	PACKET_CLEANUP_FAILED1("","");
+	
+    IIEGAL_ARGUMENT_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Illegal Argument Exception Occurred - "),
+    DEMO_DEDUPE_FAILED_IN_ABIS(StatusConstants.SYSTEM_EXCEPTION_CODE , "Demo Dedupe Failed  in ABIS"),
+
+    PACKET_CLEANUP_FAILED1("","");
 	
 	private final String statusComment;
 	private final String statusCode;
