@@ -40,7 +40,7 @@ TSP can use Auth service to authenticate an Individual by using one or more type
 
 **2. Solution**   
 1.	TSP needs to construct a POST request with below details and send to Request URL identity/auth    
-[ID Authentication API - Sample Request](https://github.com/mosip/mosip/wiki/ID-Authentication-APIs#sample-request)
+[ID Authentication API - Sample Request](https://github.com/mosip/mosip-docs/wiki/ID-Authentication-APIs#post-idauthenticationv1auth)
 2.	Authenticate and Authorize TSP <<TBD>>
 3.	Validate *reqTime* for incoming Auth Requests for valid format and timestamp < 24 hours (configurable value) from current time
 4.	Integrate with Kernel UIN Validator and VID Validator to check UIN/VID for validity. Validate UIN/VID for authenticity in AuthDB
