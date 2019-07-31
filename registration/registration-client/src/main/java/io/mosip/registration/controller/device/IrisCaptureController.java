@@ -860,8 +860,10 @@ public class IrisCaptureController extends BaseController {
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 
 			if ((!getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-					.getFingerprintDetailsDTO().isEmpty()
-					&& isForceCapturedFingerprint())|| irisCountIntroducer == 2) {
+					.getFingerprintDetailsDTO().isEmpty() && isForceCapturedFingerprint())
+					|| !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+							.getIrisDetailsDTO().isEmpty()
+					|| irisCountIntroducer == 2) {
 				continueBtn.setDisable(false);
 			} else {
 				continueBtn.setDisable(true);
