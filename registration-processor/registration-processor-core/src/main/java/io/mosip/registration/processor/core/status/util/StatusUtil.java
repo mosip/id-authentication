@@ -100,6 +100,17 @@ public enum StatusUtil {
    DEMO_DEDUPE_SUCCESS(StatusConstants.DEMO_DEDUPE_MODULE_SUCCESS + "001" , "Demo Dedupe is Successful"),
    POTENTIAL_MATCH_FOUND_IN_ABIS(StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "001" , "Biometric Duplicate was Found in ABIS"),
    POTENTIAL_MATCH_FOUND(StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "002" , "Potential Demo Match was Found"),
+  //Manual verification stage
+   MANUAL_VERIFIER_APPROVED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE_SUCCESS + "001" , "Match Not Found by Manual Verifier"),
+   MANUAL_VERIFIER_REJECTED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE_FAILED + "001" , "Match Found by Manual Verifier"),
+
+   //Uin generator stage
+   UIN_GENERATED_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "001" , "UIN Generated Successfully"),
+   UIN_DATA_UPDATION_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "002" , "UIN Data is Updated Successfully"),
+   UIN_ALREADY_ACTIVATED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "001" , "UIN is already Activated"),
+   UIN_ACTIVATED_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "003" , "UIN is Activated"),
+   UIN_ACTIVATED_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "002" , "UIN Activation Failed"),
+
    //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),

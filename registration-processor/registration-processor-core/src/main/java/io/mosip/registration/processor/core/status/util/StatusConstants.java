@@ -70,7 +70,16 @@ public final class StatusConstants {
     public static final String DEMO_DEDUPE_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "DDP-";
     public static final String DEMO_DEDUPE_MODULE_SUCCESS = DEMO_DEDUPE_MODULE + SUCCESS;
     public static final String DEMO_DEDUPE_MODULE_FAILED = DEMO_DEDUPE_MODULE + FAILED;
+    
+    //Manual verification stage
+    public static final String MANUAL_VERIFICATION_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "MNV-";
+    public static final String MANUAL_VERIFICATION_MODULE_SUCCESS = MANUAL_VERIFICATION_MODULE + SUCCESS;
+    public static final String MANUAL_VERIFICATION_MODULE_FAILED = MANUAL_VERIFICATION_MODULE + FAILED;
 
+    //Uin generation stage
+    public static final String UIN_GENERATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "UIN-";
+    public static final String UIN_GENERATOR_MODULE_SUCCESS = UIN_GENERATOR_MODULE + SUCCESS;
+    public static final String UIN_GENERATOR_MODULE_FAILED = UIN_GENERATOR_MODULE + FAILED;
 
     
 
