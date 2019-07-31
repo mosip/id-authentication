@@ -8,6 +8,11 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import lombok.Getter;
 
+/**
+ * @author Kishan Rathore
+ * @since 1.0.0
+ *
+ */
 @Getter
 public class NoPreIdAvailableException extends BaseUncheckedException {
 

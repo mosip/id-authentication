@@ -16,7 +16,7 @@ import io.mosip.preregistration.batchjob.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjob.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.RegistrationBookingPKConsumed;
 import io.mosip.preregistration.batchjob.exception.util.BatchServiceExceptionCatcher;
-import io.mosip.preregistration.batchjob.repository.utils.BatchJpaRepository;
+import io.mosip.preregistration.batchjob.repository.utils.BatchJpaRepositoryImpl;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
@@ -60,7 +60,7 @@ public class ConsumedStatusUtil {
 	 * Autowired reference for {@link #batchServiceDAO}
 	 */
 	@Autowired
-	private BatchJpaRepository batchServiceDAO;
+	private BatchJpaRepositoryImpl batchServiceDAO;
 
 	@Autowired
 	AuditLogUtil auditLogUtil;

@@ -29,10 +29,10 @@ import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 
-public class BatchJpaRepository {
+public class BatchJpaRepositoryImpl {
 	
 	/** The Constant LOGGER. */
-	private Logger log = LoggerConfiguration.logConfig(BatchJpaRepository.class);
+	private Logger log = LoggerConfiguration.logConfig(BatchJpaRepositoryImpl.class);
 
 	/**
 	 * Autowired reference for {@link #demographicRepository}
@@ -173,10 +173,6 @@ public class BatchJpaRepository {
 			entity = regAppointmentRepository.getDemographicEntityPreRegistrationId(preRegId);
 			if (entity == null) {
 				log.info("sessionId", "idType", "id", "Deleted Invalid Pre-Registration ID");
-				/*
-				 * throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_003.getCode(),
-				 * ErrorMessages.NO_PRE_REGISTRATION_ID_FOUND_TO_UPDATE_STATUS.getMessage());
-				 */
 				processedPreIdRepository.deleteBypreRegistrationId(preRegId);
 			}
 		} catch (DataAccessLayerException e) {

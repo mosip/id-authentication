@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -25,7 +24,6 @@ import lombok.Setter;
  * @since 1.0.0
  *
  */
-@Getter
 @Setter
 @Entity
 @Table(name = "reg_appointment_consumed", schema = "prereg")

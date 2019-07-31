@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjob.exception.util.BatchServiceExceptionCatcher;
-import io.mosip.preregistration.batchjob.repository.utils.BatchJpaRepository;
+import io.mosip.preregistration.batchjob.repository.utils.BatchJpaRepositoryImpl;
 import io.mosip.preregistration.core.code.AuditLogVariables;
 import io.mosip.preregistration.core.code.EventId;
 import io.mosip.preregistration.core.code.EventName;
@@ -45,7 +45,7 @@ public class ExpiredStatusUtil {
 	String idUrl;
 
 	@Autowired
-	private BatchJpaRepository batchServiceDAO;
+	private BatchJpaRepositoryImpl batchServiceDAO;
 
 	@Autowired
 	AuditLogUtil auditLogUtil;
