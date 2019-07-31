@@ -48,6 +48,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.packet.dto.vid.VidResDTO;
+import io.mosip.registration.processor.core.packet.dto.vid.VidResponseDTO;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -584,12 +585,12 @@ public class Utilities {
 		List<String> pathSegments = new ArrayList<>();
 		pathSegments.add(vid);
 		String uin = null;
-		ResponseWrapper<VidResDTO> response = new ResponseWrapper<>();
+		VidResponseDTO response = new VidResponseDTO();
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
 				"Stage::methodname():: RETRIEVEIUINBYVID GET service call Started");
 
-		response = (ResponseWrapper<VidResDTO>) restClientService.getApi(ApiName.GETUINBYVID, pathSegments, "", "",
-				ResponseWrapper.class);
+		response = (VidResponseDTO) restClientService.getApi(ApiName.GETUINBYVID, pathSegments, "", "",
+				VidResponseDTO.class);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
 				"Utilities::getUinByVid():: RETRIEVEIUINBYVID GET service call ended successfully");
 
@@ -598,7 +599,7 @@ public class Utilities {
 					"VID creation exception");
 
 		} else {
-			uin = response.getResponse().getUin().toString();
+			uin = response.getResponse().getUin();
 		}
 		return uin;
 	}

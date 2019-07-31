@@ -97,7 +97,7 @@ public class UinCardRePrintServiceImpl {
 				uinCardRePrintRequestDto.getVersion());
 		if (validator.isValidCenter(uinCardRePrintRequestDto.getRequest().getCenterId())
 				&& validator.isValidMachine(uinCardRePrintRequestDto.getRequest().getMachineId())
-				&& validator.isValidRegistrationType(uinCardRePrintRequestDto.getRequest().getRegistrationType())
+				&& validator.isValidRePrintRegistrationType(uinCardRePrintRequestDto.getRequest().getRegistrationType())
 				&& validator.isValidIdType(uinCardRePrintRequestDto.getRequest().getIdType())
 				&& validator.isValidCardType(uinCardRePrintRequestDto.getRequest().getCardType())
 				&& isValidUinVID(uinCardRePrintRequestDto)) {

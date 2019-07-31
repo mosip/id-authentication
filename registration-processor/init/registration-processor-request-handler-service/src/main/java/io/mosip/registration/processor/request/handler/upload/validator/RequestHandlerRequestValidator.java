@@ -37,10 +37,9 @@ import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.exception.IdRepoAppException;
+import io.mosip.registration.processor.packet.storage.exception.VidCreationException;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.request.handler.service.dto.MachineResponseDto;
-import io.mosip.registration.processor.request.handler.service.dto.PackerGeneratorFailureDto;
-import io.mosip.registration.processor.request.handler.service.dto.PacketGeneratorRequestDto;
 import io.mosip.registration.processor.request.handler.service.dto.RegistrationCenterResponseDto;
 import io.mosip.registration.processor.request.handler.service.exception.RegBaseCheckedException;
 import io.mosip.registration.processor.request.handler.service.exception.RequestHandlerValidationException;
@@ -382,10 +381,8 @@ public class RequestHandlerRequestValidator {
 		return isValidUIN;
 	}
 	
-	public boolean isValidRegistrationType(String registrationType)
-			throws RegBaseCheckedException {
-		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.RES_REPRINT.toString())
-				|| registrationType.equalsIgnoreCase(RegistrationType.RES_REPRINT.toString()))) {
+	public boolean isValidRePrintRegistrationType(String registrationType) throws RegBaseCheckedException {
+		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.RES_REPRINT.toString()))) {
 			return true;
 		} else {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
@@ -394,12 +391,23 @@ public class RequestHandlerRequestValidator {
 
 	}
 	
+	public boolean isValidRegistrationType(String registrationType) throws RegBaseCheckedException {
+		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+				|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
+			return true;
+		} else {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+					"Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED", new Throwable());
+		}
+
+	}
+	
 	public boolean isValidVid(String vid) throws RegBaseCheckedException {
 		boolean isValidVID = false;
 		try {
 			isValidVID = vidValidatorImpl.validateId(vid);
-			JSONObject jsonObject = utilities.retrieveIdrepoJson(Long.parseLong(vid));
-			if (isValidVID && jsonObject != null) {
+			String result = utilities.getUinByVid(vid);
+			if (isValidVID && result != null) {
 				isValidVID = true;
 			} else {
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "VID is not valid",
@@ -415,8 +423,8 @@ public class RequestHandlerRequestValidator {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		} catch (ApisResourceAccessException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
-		} catch (IOException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
+		} catch (VidCreationException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(),e);
 		}
 		return isValidVID;
 	}
