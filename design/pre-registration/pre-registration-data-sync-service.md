@@ -158,7 +158,7 @@ Component Name | Module Name | Description |
 
 **User Story References**
 
-  **User Story No.**|**Reference Link**
-
+  **User Story No.**|**Reference Link**|
+  -----|----------|
   **MOS-668**      |     <https://mosipid.atlassian.net/browse/MOS-668>
   **MOS-1999**       |    <https://mosipid.atlassian.net/browse/MOS-1999>
