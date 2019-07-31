@@ -116,6 +116,7 @@ public class UMCValidator {
 		boolean activeRegCenter = false;
 		if (registrationCenterId == null || effectiveDate == null) {
 			registrationStatusDto.setStatusComment(StatusUtil.CENTER_ID_NOT_FOUND.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.CENTER_ID_NOT_FOUND.getCode());
 			return false;
 		}
 		List<String> pathsegments = new ArrayList<>();
@@ -141,10 +142,12 @@ public class UMCValidator {
 				activeRegCenter = rcpdto.getRegistrationCentersHistory().get(0).getIsActive();
 				if (!activeRegCenter) {
 					registrationStatusDto.setStatusComment(StatusUtil.CENTER_ID_INACTIVE.getMessage() + registrationCenterId);
+					registrationStatusDto.setSubStatusCode(StatusUtil.CENTER_ID_INACTIVE.getCode());
 				}
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				registrationStatusDto.setStatusComment(error.get(0).getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.FAILED_TO_GET_CENTER_DETAIL.getCode());
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						"UMCValidator::isValidRegistrationCenter()::CenterHistory service ended with response data : "
@@ -160,6 +163,7 @@ public class UMCValidator {
 				activeRegCenter = false;
 
 				registrationStatusDto.setStatusComment(result);
+				registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 
 			} else {
 				throw e;
@@ -195,6 +199,7 @@ public class UMCValidator {
 		boolean isActiveMachine = false;
 		if (machineId == null) {
 			registrationStatusDto.setStatusComment(StatusUtil.MACHINE_ID_NOT_FOUND.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.MACHINE_ID_NOT_FOUND.getCode());
 			return false;
 		}
 
@@ -222,10 +227,12 @@ public class UMCValidator {
 					isActiveMachine = dto.getIsActive();
 					if (!isActiveMachine) {
 						registrationStatusDto.setStatusComment(StatusUtil.MACHINE_ID_NOT_ACTIVE.getMessage() + machineId);
+						registrationStatusDto.setSubStatusCode(StatusUtil.MACHINE_ID_NOT_ACTIVE.getCode());
 					}
 
 				} else {
 					registrationStatusDto.setStatusComment(StatusUtil.MACHINE_ID_NOT_FOUND_MASTER_DB.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.MACHINE_ID_NOT_FOUND_MASTER_DB.getCode());
 				}
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
@@ -234,6 +241,7 @@ public class UMCValidator {
 						"UMCValidator::isValidMachine()::MachineHistory service ended with response data : "
 								+ error.get(0).getMessage());
 				registrationStatusDto.setStatusComment(error.get(0).getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.FAILED_TO_GET_MACHINE_DETAIL.getCode());
 			}
 		} catch (ApisResourceAccessException e) {
 			if (e.getCause() instanceof HttpClientErrorException) {
@@ -241,7 +249,7 @@ public class UMCValidator {
 				String result = httpClientException.getResponseBodyAsString();
 
 				registrationStatusDto.setStatusComment(result);
-
+				registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 				isActiveMachine = false;
 			}
 		}
@@ -295,6 +303,7 @@ public class UMCValidator {
 		}
 		if (!supervisorActive && !officerActive) {
 			registrationStatusDto.setStatusComment(StatusUtil.SUPERVISOR_OFFICER_NOT_ACTIVE.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.SUPERVISOR_OFFICER_NOT_ACTIVE.getCode());
 		}
 		return supervisorActive || officerActive;
 	}
@@ -325,6 +334,7 @@ public class UMCValidator {
 							"UMCValidator::validateMapping()::CenterUserMachineHistory service ended with response data : "
 									+ error.get(0).getMessage());
 					registrationStatusDto.setStatusComment(error.get(0).getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.CENTER_DEVICE_MAPPING_NOT_FOUND.getCode());
 				}
 			}
 		} catch (ApisResourceAccessException e) {
@@ -333,7 +343,7 @@ public class UMCValidator {
 				isValidUser = false;
 
 				registrationStatusDto.setStatusComment(httpClientException.getResponseBodyAsString());
-
+				registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 			}
 		}
 		return isValidUser;
@@ -390,6 +400,7 @@ public class UMCValidator {
 		if (rcmDto.getLatitude() == null || rcmDto.getLongitude() == null || rcmDto.getLatitude().trim().isEmpty()
 				|| rcmDto.getLongitude().trim().isEmpty()) {
 			registrationStatusDto.setStatusComment(StatusUtil.GPS_DETAILS_NOT_FOUND.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.GPS_DETAILS_NOT_FOUND.getCode());
 		}
 
 		else if (isWorkingHourValidationRequired
@@ -524,6 +535,7 @@ public class UMCValidator {
 								rcmDto.getRegId(), registrationStatusDto);
 						if (!isDeviceMappedWithCenter) {
 							registrationStatusDto.setStatusComment(StatusUtil.CENTER_DEVICE_MAPPING_NOT_FOUND.getMessage() + rcmDto.getRegcntrId() + deviceId);
+							registrationStatusDto.setSubStatusCode(StatusUtil.CENTER_DEVICE_MAPPING_NOT_FOUND.getCode());
 							break;
 						}
 					} else {
@@ -534,6 +546,7 @@ public class UMCValidator {
 								"UMCValidator::isDeviceMappedWithCenter()::CenterUserMachineHistory service ended with response data : "
 										+ error.get(0).getMessage());
 						registrationStatusDto.setStatusComment(error.get(0).getMessage());
+						registrationStatusDto.setSubStatusCode(StatusUtil.CENTER_DEVICE_MAPPING_NOT_FOUND.getCode());
 						break;
 					}
 				} catch (ApisResourceAccessException e) {
@@ -543,6 +556,7 @@ public class UMCValidator {
 
 						isDeviceMappedWithCenter = false;
 						registrationStatusDto.setStatusComment(result);
+						registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 					}
 					break;
 				}
@@ -572,7 +586,7 @@ public class UMCValidator {
 			isDeviceMappedWithCenter = true;
 		} else {
 			registrationStatusDto.setStatusComment(StatusUtil.CENTER_DEVICE_MAPPING_INACTIVE.getMessage() + centerId + " -" + deviceId);
-
+			registrationStatusDto.setStatusComment(StatusUtil.CENTER_DEVICE_MAPPING_INACTIVE.getCode());
 		}
 
 		return isDeviceMappedWithCenter;
@@ -625,6 +639,7 @@ public class UMCValidator {
 								registrationStatusDto);
 						if (!isDeviceActive) {
 							registrationStatusDto.setStatusComment(StatusUtil.DEVICE_NOT_FOUND_MASTER_DB.getMessage() + deviceId);
+							registrationStatusDto.setSubStatusCode(StatusUtil.DEVICE_NOT_FOUND_MASTER_DB.getCode());
 							break;
 
 						}
@@ -632,6 +647,7 @@ public class UMCValidator {
 						isDeviceActive = false;
 						List<ErrorDTO> error = responseWrapper.getErrors();
 						registrationStatusDto.setStatusComment(error.get(0).getMessage());
+						registrationStatusDto.setSubStatusCode(StatusUtil.DEVICE_ID_INACTIVE.getCode());
 						regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 								LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 								"UMCValidator::isDeviceActive()::CenterUserMachineHistory service ended with response data : "
@@ -646,6 +662,7 @@ public class UMCValidator {
 
 						isDeviceActive = false;
 						registrationStatusDto.setStatusComment(result);
+						registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 
 					}
 					break;
@@ -679,6 +696,7 @@ public class UMCValidator {
 				isDeviceActive = true;
 			} else {
 				registrationStatusDto.setStatusComment(StatusUtil.DEVICE_ID_INACTIVE.getMessage() + deviceId);
+				registrationStatusDto.setSubStatusCode(StatusUtil.DEVICE_ID_INACTIVE.getCode());
 
 			}
 
@@ -734,10 +752,12 @@ public class UMCValidator {
 					isValid = true;
 				} else {
 					registrationStatusDto.setStatusComment(StatusUtil.PACKET_CREATION_WORKING_HOURS.getMessage() + rcmDto.getPacketCreationDate());
+					registrationStatusDto.setSubStatusCode(StatusUtil.PACKET_CREATION_WORKING_HOURS.getCode());
 				}
 			} else {
 				List<ErrorDTO> error = responseWrapper.getErrors();
 				registrationStatusDto.setStatusComment(error.get(0).getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.REGISTRATION_CENTER_TIMESTAMP_FAILURE.getCode());
 				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(),
 						LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
 						"UMCValidator::isDeviceActive()::CenterUserMachineHistory service ended with response data : "
@@ -752,7 +772,7 @@ public class UMCValidator {
 
 				String result = httpClientException.getResponseBodyAsString();
 				registrationStatusDto.setStatusComment(result);
-
+				registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 			}
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
