@@ -180,8 +180,6 @@ public class IdObjectValidatorTest {
 			assertTrue(e.getCodes().contains(INVALID_INPUT_PARAMETER.getErrorCode()));
 			assertTrue(e.getErrorTexts()
 					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/dateOfBirth")));
-			assertTrue(e.getErrorTexts()
-					.contains(String.format(INVALID_INPUT_PARAMETER.getMessage(), "identity/CNIENumber")));
 		}
 	}
 
