@@ -193,6 +193,7 @@ public class BioDedupeProcessor {
 		} catch (DataAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.DB_NOT_ACCESSIBLE.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.DATA_ACCESS_EXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode());
@@ -205,6 +206,7 @@ public class BioDedupeProcessor {
 		} catch (ApisResourceAccessException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.API_RESOUCE_ACCESS_FAILED + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode());
@@ -218,6 +220,7 @@ public class BioDedupeProcessor {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto
 					.setStatusComment(StatusUtil.CBEF_NOT_FOUND.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.CBEF_NOT_FOUND.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.CBEFF_NOT_PRESENT_EXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode());
@@ -230,6 +233,7 @@ public class BioDedupeProcessor {
 		} catch (IdentityNotFoundException | IOException ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode());
@@ -242,6 +246,7 @@ public class BioDedupeProcessor {
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationExceptionMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			description.setCode(PlatformErrorMessages.PACKET_BIO_DEDUPE_FAILED.getCode());
@@ -291,6 +296,7 @@ public class BioDedupeProcessor {
 		if (isValidCbeff(registrationStatusDto.getRegistrationId(), registrationStatusDto.getRegistrationType())) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment(StatusUtil.BIO_DEDUPE_INPROGRESS.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_DEDUPE_INPROGRESS.getCode());
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
@@ -335,6 +341,7 @@ public class BioDedupeProcessor {
 		if (json != null && !json.isEmpty()) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 			registrationStatusDto.setStatusComment(StatusUtil.BIO_DEDUPE_INPROGRESS.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_DEDUPE_INPROGRESS.getCode());
 			registrationStatusDto
 					.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 			object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
@@ -344,6 +351,7 @@ public class BioDedupeProcessor {
 		} else {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(StatusUtil.BIO_DEDUPE_SUCCESS.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_DEDUPE_SUCCESS.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 			object.setIsValid(Boolean.TRUE);
 
@@ -379,12 +387,14 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(StatusUtil.BIO_DEDUPE_SUCCESS.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_DEDUPE_SUCCESS.getCode());
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(), BioDedupeConstants.ABIS_RESPONSE_NULL);
 
 		} else {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(StatusUtil.BIO_DEDUPE_POTENTIAL_MATCH.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_DEDUPE_POTENTIAL_MATCH.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 			packetInfoManager.saveManualAdjudicationData(matchedRegIds, registrationStatusDto.getRegistrationId(),
 					DedupeSourceName.BIO);
@@ -451,6 +461,7 @@ public class BioDedupeProcessor {
 
 		registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 		registrationStatusDto.setStatusComment(StatusUtil.BIO_DEDUPE_INPROGRESS.getMessage());
+		registrationStatusDto.setSubStatusCode(StatusUtil.BIO_DEDUPE_INPROGRESS.getCode());
 		registrationStatusDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.IN_PROGRESS.toString());
 		object.setMessageBusAddress(MessageBusAddress.ABIS_HANDLER_BUS_IN);
 
@@ -470,6 +481,7 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.FALSE);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(StatusUtil.LOST_PACKET_BIOMETRICS_NOT_FOUND.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.LOST_PACKET_BIOMETRICS_NOT_FOUND.getCode());
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
 					BioDedupeConstants.NO_MATCH_FOUND_FOR_LOST + registrationId);
@@ -480,6 +492,7 @@ public class BioDedupeProcessor {
 			object.setIsValid(Boolean.TRUE);
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getCode());
 			packetInfoManager.saveRegLostUinDet(registrationId, matchedRegIds.get(0));
 			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationStatusDto.getRegistrationId(),
@@ -527,6 +540,7 @@ public class BioDedupeProcessor {
 					object.setIsValid(Boolean.TRUE);
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 					registrationStatusDto.setStatusComment(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.LOST_PACKET_UNIQUE_MATCH_FOUND.getCode());
 					packetInfoManager.saveRegLostUinDet(registrationId, demoMatchedIds.get(0));
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), registrationStatusDto.getRegistrationId(),
@@ -534,6 +548,7 @@ public class BioDedupeProcessor {
 				} else {
 
 					registrationStatusDto.setStatusComment(StatusUtil.LOST_PACKET_MULTIPLE_MATCH_FOUND.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.LOST_PACKET_MULTIPLE_MATCH_FOUND.getCode());
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 					registrationStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
