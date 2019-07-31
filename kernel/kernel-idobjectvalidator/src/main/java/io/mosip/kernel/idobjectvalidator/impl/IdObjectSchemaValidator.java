@@ -211,8 +211,18 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 		Optional.ofNullable(fields).ifPresent(fieldList -> Arrays.asList(StringUtils.split(fields, ','))
 				.parallelStream().map(StringUtils::normalizeSpace).forEach(field -> {
 					List<String> fieldNames = Arrays.asList(field.split("\\|"));
-					if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue())
-							|| fieldNames.parallelStream().anyMatch(fieldName -> {
+					if (!jsonObjectNode.hasNonNull(ROOT_PATH.getValue()) || fieldNames.parallelStream()
+							.noneMatch(fieldName -> jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName))) {
+						errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
+								String.format(MISSING_INPUT_PARAMETER.getMessage(),
+										fieldNames
+												.parallelStream().map(fieldName -> ROOT_PATH.getValue()
+														.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
+												.collect(Collectors.joining(" | ")))));
+					}
+
+					if (jsonObjectNode.hasNonNull(ROOT_PATH.getValue())
+							&& fieldNames.parallelStream().anyMatch(fieldName -> {
 								return jsonObjectNode.get(ROOT_PATH.getValue()).hasNonNull(fieldName)
 										&& jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName).isArray()
 												? StreamSupport
@@ -222,8 +232,8 @@ public class IdObjectSchemaValidator implements IdObjectValidator {
 												: jsonObjectNode.get(ROOT_PATH.getValue()).get(fieldName).asText()
 														.isEmpty();
 							})) {
-						errorList.add(new ServiceError(MISSING_INPUT_PARAMETER.getErrorCode(),
-								String.format(MISSING_INPUT_PARAMETER.getMessage(),
+						errorList.add(new ServiceError(INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(INVALID_INPUT_PARAMETER.getMessage(),
 										fieldNames
 												.parallelStream().map(fieldName -> ROOT_PATH.getValue()
 														.concat(PATH_SEPERATOR.getValue()).concat(fieldName))
