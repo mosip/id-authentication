@@ -5,8 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,11 +20,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.exception.ServiceError;
+import io.mosip.kernel.core.http.ResponseWrapper;
 import io.mosip.kernel.core.util.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.constant.LocationErrorCode;
 import io.mosip.kernel.masterdata.constant.MasterDataConstant;
+import io.mosip.kernel.masterdata.constant.RequestErrorCode;
 import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.LocationHierarchyDto;
@@ -46,9 +54,11 @@ import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
+import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.utils.ExceptionUtils;
+import io.mosip.kernel.masterdata.utils.LanguageUtils;
 import io.mosip.kernel.masterdata.utils.MapperUtils;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
@@ -90,6 +100,12 @@ public class LocationServiceImpl implements LocationService {
 
 	@Autowired
 	private PageUtils pageUtils;
+
+	@Autowired
+	private LanguageUtils languageUtils;
+
+	@Autowired
+	private LocalValidatorFactoryBean validator;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> hierarchyChildList = null;
@@ -186,35 +202,110 @@ public class LocationServiceImpl implements LocationService {
 		return locationHierarchyResponseDto;
 	}
 
-	/**
-	 * Method creates location hierarchy data into the table based on the request
-	 * parameter sent {@inheritDoc}
-	 */
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.kernel.masterdata.service.LocationService#createLocationHierarchy(io
-	 * .mosip.kernel.masterdata.dto.RequestDto)
+	 * io.mosip.kernel.masterdata.service.LocationService#createLocation(java.util.
+	 * List)
 	 */
 	@Override
 	@Transactional
-	public PostLocationCodeResponseDto createLocationHierarchy(LocationDto locationRequestDto) {
+	public ResponseWrapper<List<PostLocationCodeResponseDto>> createLocation(List<LocationDto> request) {
+		List<ServiceError> errors = new ArrayList<>();
+		List<LocationDto> locations = new ArrayList<>();
+		List<Location> savedEntities = null;
 
-		Location location = null;
-		Location locationResultantEntity = null;
-		PostLocationCodeResponseDto locationCodeDto = null;
+		Set<String> ids = request.stream().map(LocationDto::getCode).collect(Collectors.toSet());
+		if (ids.size() > 1) {
+			throw new RequestException("KER-MSD-XXX1",
+					"Location Code should not be different for a Location in different languages");
+		}
 
-		location = MetaDataUtils.setCreateMetaData(locationRequestDto, Location.class);
+		Optional<LocationDto> defaultLanguage = request.stream()
+				.filter(i -> i.getLangCode().equals(languageUtils.getPrimaryLanguage())).findAny();
+		if (!defaultLanguage.isPresent()) {
+			throw new RequestException("KER-MSD-XXX2",
+					"Location data is not present in the default language :" + languageUtils.getPrimaryLanguage());
+		}
+
+		Set<Short> levels = request.stream().map(LocationDto::getHierarchyLevel).collect(Collectors.toSet());
+		if (levels.size() > 1) {
+			throw new RequestException("KER-MSD-XXX2",
+					"Location hierarchy level should not be different for a Location in different languages");
+		}
+
+		// Validating requests
+		for (LocationDto dto : request) {
+			if (dto.getLangCode() != null && dto.getLangCode().equals(languageUtils.getPrimaryLanguage())) {
+				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
+				if (!validations.isEmpty()) {
+					validations.forEach(
+							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
+					throw new ValidationException(errors);
+				} else {
+					locations.add(dto);
+				}
+			} else if (dto.getLangCode() != null && languageUtils.getSecondaryLanguages().contains(dto.getLangCode())) {
+				Set<ConstraintViolation<LocationDto>> validations = validator.validate(dto);
+				if (!validations.isEmpty()) {
+					validations.forEach(
+							i -> errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+									dto.getLangCode() + "." + i.getPropertyPath() + ":" + i.getMessage())));
+				} else {
+					locations.add(dto);
+				}
+
+			} else {
+				errors.add(new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(),
+						"Invalid language code : " + dto.getLangCode()));
+			}
+		}
+
+		Optional<LocationDto> optional = locations.stream().filter(dto -> dto.getIsActive().equals(true)).findAny();
+		// if data present in all the configured languages then setting isActive as
+		// true, otherwise false
+		if (optional.isPresent()) {
+			List<String> languages = new ArrayList<>();
+			locations.forEach(dto -> languages.add(dto.getLangCode()));
+			if (languages.size() == languageUtils.getConfiguredLanguages().size()
+					&& languageUtils.getConfiguredLanguages().containsAll(languages)) {
+				locations.forEach(i -> i.setIsActive(true));
+			} else {
+				throw new RequestException("KER-MSD-XXX3",
+						"Cannot Activate the Location as data is not present in all the required languages");
+			}
+		}
+
+		// Validation name already exists
+		for (LocationDto dto : locations) {
+			List<Location> list = locationRepository.findByNameAndLevel(dto.getName(), dto.getHierarchyLevel());
+			if (list != null && !list.isEmpty()) {
+				throw new RequestException("KER-MSD-XXX2",
+						String.format("Location %s already exist under the hierarchy", dto.getName()));
+			}
+		}
+
+		// setting metadata
+		List<Location> entities = new ArrayList<>();
+		for (LocationDto dto : locations) {
+			entities.add(MetaDataUtils.setCreateMetaData(dto, Location.class));
+		}
+
 		try {
-			locationResultantEntity = locationRepository.create(location);
+			savedEntities = locationRepository.saveAll(entities);
 		} catch (DataAccessLayerException | DataAccessException ex) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_INSERT_EXCEPTION.getErrorMessage() + ExceptionUtils.parseException(ex));
 		}
 
-		locationCodeDto = MapperUtils.map(locationResultantEntity, PostLocationCodeResponseDto.class);
-		return locationCodeDto;
+		List<PostLocationCodeResponseDto> dtos = MapperUtils.mapAll(savedEntities, PostLocationCodeResponseDto.class);
+
+		ResponseWrapper<List<PostLocationCodeResponseDto>> response = new ResponseWrapper<>();
+		response.setErrors(errors);
+		response.setResponse(dtos);
+		return response;
 	}
 
 	/**
