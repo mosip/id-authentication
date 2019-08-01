@@ -25,7 +25,9 @@ public enum ErrorMessages {
 	DOCUMENT_CONSUMED_TABLE_NOT_ACCESSIBLE("Document consumed table not accessible"),//PRG_PAM_BAT_010
 	MASTER_DATA_NOT_FOUND("Master data not found"),//PRG_PAM_BAT_011
 	NOTIFICATION_CALL_FAILED("Notification service call failed"),//PRG_PAM_BAT_012
-	AVAILABILITY_TABLE_NOT_ACCESSABLE("Availablity table not accessible");//PRG_PAM_BAT_013
+	AVAILABILITY_TABLE_NOT_ACCESSABLE("Availablity table not accessible"),//PRG_PAM_BAT_013
+	UNABLE_TO_FETCH_THE_PRE_REGISTRATION("Unable to fetch the pre-registration id"),//PRG_PAM_BAT_014
+	RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID("Record not found for date range and reg center id");//PRG_PAM_BAT_015
 	
 	/**
 	 * @param code

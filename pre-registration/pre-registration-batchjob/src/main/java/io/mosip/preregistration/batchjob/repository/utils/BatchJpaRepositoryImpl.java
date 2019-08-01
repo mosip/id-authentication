@@ -371,5 +371,93 @@ public class BatchJpaRepositoryImpl {
 		}
 		return localDatList;
 	}
+	
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return list of RegistrationBookingEntity
+	 */
+	public List<RegistrationBookingEntity> findAllPreIds(String regId, LocalDate regDate) {
+		List<RegistrationBookingEntity> registrationBookingEntityList = null;
+		try {
+			registrationBookingEntityList = regAppointmentRepository.findByRegistrationCenterIdAndRegDate(regId,
+					regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return registrationBookingEntityList;
+	}
+	/**
+	 * 
+	 * This method will update the booking status in applicant table.
+	 * 
+	 * @param preRegId
+	 * @return
+	 */
+	public String getDemographicStatus(String preRegId) {
+		DemographicEntity demographicEntity = null;
+
+		try {
+			demographicEntity = demographicRepository.findBypreRegistrationId(preRegId);
+
+			if (demographicEntity == null) {
+				throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_014.getCode(),
+						ErrorMessages.UNABLE_TO_FETCH_THE_PRE_REGISTRATION.getMessage());
+			}
+		} catch (DataAccessLayerException e) {
+			throw new NoPreIdAvailableException(ErrorCodes.PRG_PAM_BAT_015.getCode(),
+					ErrorMessages.RECORD_NOT_FOUND_FOR_DATE_RANGE_AND_REG_CENTER_ID.getMessage());
+		}
+		return demographicEntity.getStatusCode();
+
+	}
+	
+	/**
+	 * 
+	 * @param regId
+	 * @param date
+	 * @return list of RegistrationBookingEntity
+	 */
+	public List<RegistrationBookingEntity> findAllPreIdsByregID(String regId, LocalDate date) {
+		List<RegistrationBookingEntity> registrationBookingEntityList = null;
+		try {
+			registrationBookingEntityList = regAppointmentRepository.findByRegId(regId, date);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return registrationBookingEntityList;
+	}
+	
+	/**
+	 * 
+	 * Aparam regId
+	 * 
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteAllSlotsByRegId(String regId, LocalDate regDate) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = availabilityRepository.deleteByRegcntrIdAndRegDateGreaterThanEqual(regId, regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
+	}
+	
+	/**
+	 * @param entity
+	 * @return boolean
+	 */
+	public boolean saveAvailability(AvailibityEntity entity) {
+		return availabilityRepository.save(entity) != null;
+	}
+
+	
+	
 
 }

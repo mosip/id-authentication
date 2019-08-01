@@ -30,6 +30,12 @@ public interface RegAppointmentRepository extends BaseRepository<RegistrationBoo
 	 */
 	List<RegistrationBookingEntity> findByRegDateBetween(LocalDate currentdate, LocalDate tillDate);
 
+	public List<RegistrationBookingEntity> findByRegistrationCenterIdAndRegDate(String registrationCenterId,
+			LocalDate regDate);
+	
+	@Query("SELECT e FROM RegistrationBookingEntity e  WHERE e.registrationCenterId= ?1 and e.regDate>=?2")
+	public List<RegistrationBookingEntity> findByRegId(String registrationCenterId, LocalDate regDate);
+	
 	/**
 	 * @param preRegId
 	 * @return RegistrationBookingEntity of the given Pre Id.
