@@ -17,9 +17,6 @@ import org.springframework.format.datetime.joda.DateTimeFormatterFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -73,14 +70,17 @@ public class RequestHandlerRequestValidator {
 
 	/** The Constant ID_FIELD. */
 	private static final String ID_FIELD = "id";
-	
+
+	/** The Constant UIN. */
 	private static final String UIN = "UIN";
-	
+
+	/** The Constant VID. */
 	private static final String VID = "VID";
 
 	/** The Constant REG_PACKET_GENERATOR_SERVICE_ID. */
 	private static final String REG_PACKET_GENERATOR_SERVICE_ID = "mosip.registration.processor.registration.packetgenerator.id";
-	
+
+	/** The Constant REG_UINCARD_REPRINT_SERVICE_ID. */
 	private static final String REG_UINCARD_REPRINT_SERVICE_ID = "mosip.registration.processor.uincard.reprint.id";
 
 	/** The Constant REG_PACKET_GENERATOR_APPLICATION_VERSION. */
@@ -92,41 +92,45 @@ public class RequestHandlerRequestValidator {
 
 	/** The id. */
 	private Map<String, String> id = new HashMap<>();
-	
-	
+
 	/** The grace period. */
 	@Value("${mosip.registration.processor.grace.period}")
 	private int gracePeriod;
-	
+
 	/** The primary languagecode. */
 	@Value("${mosip.primary-language}")
 	private String primaryLanguagecode;
-	
+
 	/** The rest client service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> restClientService;
-	
+
+	/** The mapper. */
 	@Autowired
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
+	/** The uin validator impl. */
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
-	
+
+	/** The vid validator impl. */
 	@Autowired
 	private VidValidator<String> vidValidatorImpl;
-	
+
+	/** The utilities. */
 	@Autowired
 	private Utilities utilities;
 
 	/**
 	 * Validate.
 	 *
-	 * @param request
-	 *            the request
-	 * @throws RequestHandlerValidationException
-	 *             the packet generator validation exception
+	 * @param requestTime the request time
+	 * @param requestId the request id
+	 * @param requestVersion the request version
+	 * @throws RequestHandlerValidationException             the packet generator validation exception
 	 */
-	public void validate(String requestTime, String requestId, String requestVersion) throws RequestHandlerValidationException {
+	public void validate(String requestTime, String requestId, String requestVersion)
+			throws RequestHandlerValidationException {
 		id.put("packet_generator", env.getProperty(REG_PACKET_GENERATOR_SERVICE_ID));
 		id.put("uincard_reprint_status", env.getProperty(REG_UINCARD_REPRINT_SERVICE_ID));
 		validateReqTime(requestTime);
@@ -212,7 +216,7 @@ public class RequestHandlerRequestValidator {
 									.isBefore(new DateTime().plusSeconds(gracePeriod)))) {
 						regProcLogger.error(REQUEST_HANDLER_SERVICE, "PacketGeneratorRequestValidator", "validateReqTime",
 								"\n" + PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage());
-						
+
 						throw new RequestHandlerValidationException(
 								PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getCode(),
 								String.format(PlatformErrorMessages.RPR_PGS_INVALID_INPUT_PARAMETER.getMessage(),
@@ -233,23 +237,16 @@ public class RequestHandlerRequestValidator {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks if is valid center.
 	 *
-	 * @param centerId
-	 *            the center id
-	 * @param dto
-	 *            the dto
+	 * @param centerId            the center id
 	 * @return true, if is valid center
-	 * @throws RegBaseCheckedException
-	 * @throws IOException
-	 * @throws JsonProcessingException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public boolean isValidCenter(String centerId)
-			throws RegBaseCheckedException, IOException {
+	public boolean isValidCenter(String centerId) throws RegBaseCheckedException, IOException {
 		boolean isValidCenter = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(centerId);
@@ -292,23 +289,16 @@ public class RequestHandlerRequestValidator {
 		}
 		return isValidCenter;
 	}
-	
+
 	/**
 	 * Checks if is valid machine.
 	 *
-	 * @param machine
-	 *            the machine
-	 * @param dto
-	 *            the dto
+	 * @param machine            the machine
 	 * @return true, if is valid machine
-	 * @throws RegBaseCheckedException
-	 * @throws IOException
-	 * @throws JsonProcessingException
-	 * @throws JsonMappingException
-	 * @throws JsonParseException
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public boolean isValidMachine(String machine)
-			throws RegBaseCheckedException, IOException {
+	public boolean isValidMachine(String machine) throws RegBaseCheckedException, IOException {
 		boolean isValidMachine = false;
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(machine);
@@ -353,7 +343,14 @@ public class RequestHandlerRequestValidator {
 		return isValidMachine;
 
 	}
-	
+
+	/**
+	 * Checks if is valid uin.
+	 *
+	 * @param uin the uin
+	 * @return true, if is valid uin
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	public boolean isValidUin(String uin) throws RegBaseCheckedException {
 		boolean isValidUIN = false;
 		try {
@@ -380,7 +377,14 @@ public class RequestHandlerRequestValidator {
 		}
 		return isValidUIN;
 	}
-	
+
+	/**
+	 * Checks if is valid re print registration type.
+	 *
+	 * @param registrationType the registration type
+	 * @return true, if is valid re print registration type
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	public boolean isValidRePrintRegistrationType(String registrationType) throws RegBaseCheckedException {
 		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.RES_REPRINT.toString()))) {
 			return true;
@@ -390,7 +394,15 @@ public class RequestHandlerRequestValidator {
 		}
 
 	}
-	
+
+	/**
+	 * Checks if is valid registration type and uin.
+	 *
+	 * @param registrationType the registration type
+	 * @param uin the uin
+	 * @return true, if is valid registration type and uin
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException {
 		try {
 			if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
@@ -405,8 +417,8 @@ public class RequestHandlerRequestValidator {
 								"Uin is already " + status, new Throwable());
 					}
 				} else {
-					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid",
-							new Throwable());
+					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+							"UIN is not valid", new Throwable());
 				}
 			} else {
 				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
@@ -414,17 +426,18 @@ public class RequestHandlerRequestValidator {
 			}
 		} catch (InvalidIDException ex) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
-		} catch (IdRepoAppException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
-		} catch (NumberFormatException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
-		} catch (ApisResourceAccessException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
-		} catch (IOException e) {
+		} catch (NumberFormatException | IdRepoAppException | IOException | ApisResourceAccessException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		}
 	}
-	
+
+	/**
+	 * Checks if is valid vid.
+	 *
+	 * @param vid the vid
+	 * @return true, if is valid vid
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
 	public boolean isValidVid(String vid) throws RegBaseCheckedException {
 		boolean isValidVID = false;
 		try {
@@ -447,13 +460,19 @@ public class RequestHandlerRequestValidator {
 		} catch (ApisResourceAccessException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
 		} catch (VidCreationException e) {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(),e);
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
 		}
 		return isValidVID;
 	}
-	
-	public boolean isValidIdType(String idType)
-			throws RegBaseCheckedException {
+
+	/**
+	 * Checks if is valid id type.
+	 *
+	 * @param idType the id type
+	 * @return true, if is valid id type
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
+	public boolean isValidIdType(String idType) throws RegBaseCheckedException {
 		if (idType != null && (idType.equalsIgnoreCase(UIN) || idType.equalsIgnoreCase(VID))) {
 			return true;
 		} else {
@@ -462,9 +481,15 @@ public class RequestHandlerRequestValidator {
 		}
 
 	}
-	
-	public boolean isValidCardType(String cardType)
-			throws RegBaseCheckedException {
+
+	/**
+	 * Checks if is valid card type.
+	 *
+	 * @param cardType the card type
+	 * @return true, if is valid card type
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
+	public boolean isValidCardType(String cardType) throws RegBaseCheckedException {
 		if (cardType != null && (cardType.equalsIgnoreCase(UIN) || cardType.equalsIgnoreCase(VID))) {
 			return true;
 		} else {
