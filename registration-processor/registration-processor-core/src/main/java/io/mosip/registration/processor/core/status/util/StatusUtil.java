@@ -113,8 +113,12 @@ public enum StatusUtil {
     INSERT_RESPONSE_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Insert Response Failed for Request ID - "),
     SYSTEM_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Internal error occured - "),
     
-	PACKET_CLEANUP_FAILED1("","");
-	
+	PACKET_CLEANUP_FAILED1("",""), 
+	BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_FAILED+"001","Biometric Authentication has Failed"), 
+	BIOMETRIC_AUTHENTICATION_SUCCESS(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_SUCCESS+"001","Biometric Authentication is Successful"),
+	BIOMETRIC_FILE_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric File Not Found"),
+	BIOMETRIC_AUTHENTICATION_FAILED_FILE_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric Authentication Failed File is not present"),
+	INDIVIDUAL_BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_FAILED+"001","Individual authentication failed");
 	private final String statusComment;
 	private final String statusCode;
 	

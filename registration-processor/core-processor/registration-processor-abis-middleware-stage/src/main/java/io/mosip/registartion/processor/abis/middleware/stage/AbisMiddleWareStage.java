@@ -274,6 +274,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			description = e.getMessage();
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			internalRegDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
+			internalRegDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
 		} finally {
@@ -354,6 +355,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 					internalRegStatusDto
 							.setStatusComment(StatusUtil.INSERT_RESPONSE_FAILED.getMessage() + abisCommonRequestDto.getId());
+					internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 					registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
 				}
 			}
@@ -372,6 +374,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 					internalRegStatusDto
 							.setStatusComment(StatusUtil.IDENTIFY_RESPONSE_FAILED.getMessage() + abisCommonRequestDto.getId());
+					internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 					registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
 				}
 				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
@@ -400,6 +403,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				internalRegStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 				internalRegStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.IO_EXCEPTION.getMessage() + e.getMessage()));
+				internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 				registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
 			}
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -411,6 +415,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 				internalRegStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 				internalRegStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + e.getMessage()));
+				internalRegStatusDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 				registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
 			}
 
@@ -470,6 +475,7 @@ public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 			abisReqEntity.setStatusComment(StatusUtil.INSERT_IDENTIFY_REQUEST_FAILED.getMessage() + abisRequestDto.getAbisAppCode());
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 			internalRegDto.setStatusComment(StatusUtil.INSERT_IDENTIFY_REQUEST_FAILED.getMessage() + abisRequestDto.getAbisAppCode());
+			internalRegDto.setSubStatusCode(StatusUtil.SYSTEM_EXCEPTION_OCCURED.getCode());
 		}
 		abisRequestRepositary.save(abisReqEntity);
 
