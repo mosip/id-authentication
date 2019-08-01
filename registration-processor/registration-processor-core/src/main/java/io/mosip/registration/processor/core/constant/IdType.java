@@ -5,5 +5,5 @@ package io.mosip.registration.processor.core.constant;
  *
  */
 public enum IdType {
-	UIN, RID;
+	UIN, RID,VID;
 }

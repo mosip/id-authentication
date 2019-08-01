@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,17 +34,22 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.code.RegistrationTransactionStatusCode;
 import io.mosip.registration.processor.core.code.RegistrationTransactionTypeCode;
 import io.mosip.registration.processor.core.constant.IdType;
+import io.mosip.registration.processor.core.constant.JsonConstant;
 import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.constant.RegistrationType;
 import io.mosip.registration.processor.core.exception.TemplateProcessingFailureException;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.queue.factory.MosipQueue;
 import io.mosip.registration.processor.core.queue.factory.QueueListener;
 import io.mosip.registration.processor.core.queue.impl.exception.ConnectionUnavailableException;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueConnectionFactory;
 import io.mosip.registration.processor.core.spi.queue.MosipQueueManager;
+import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.print.exception.PrintGlobalExceptionHandler;
@@ -224,7 +230,32 @@ public class PrintStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setRegistrationStageName(this.getClass().getSimpleName());
 
 			regIdMap.put(regId, object);
-			Map<String, byte[]> documentBytesMap = printService.getDocuments(IdType.RID, regId);
+
+			IdType idType = IdType.RID;
+
+			String idValue = regId;
+			if (io.mosip.registration.processor.status.code.RegistrationType.RES_REPRINT.toString()
+					.equalsIgnoreCase(object.getReg_type().toString())) {
+
+				PacketMetaInfo packetMetaInfo = utilities.getPacketMetaInfo(regId);
+				Identity identity = packetMetaInfo.getIdentity();
+				List<FieldValue> metadataList = identity.getMetaData();
+				IdentityIteratorUtil identityIteratorUtil = new IdentityIteratorUtil();
+				String cardType = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.CARDTYPE);
+
+				if (cardType.equalsIgnoreCase(IdType.VID.toString())) {
+					idType = IdType.VID;
+					idValue = identityIteratorUtil.getFieldValue(metadataList, JsonConstant.VID);
+
+				} else {
+					idType = IdType.UIN;
+					JSONObject jsonObject = utilities.retrieveUIN(regId);
+					Long value = JsonUtil.getJSONValue(jsonObject, IdType.UIN.toString());
+					idValue = Long.toString(value);
+
+				}
+			}
+			Map<String, byte[]> documentBytesMap = printService.getDocuments(idType, idValue);
 
 			boolean isAddedToQueue = sendToQueue(queue, documentBytesMap, 0, regId);
 
