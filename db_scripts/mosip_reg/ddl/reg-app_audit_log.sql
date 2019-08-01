@@ -1,32 +1,38 @@
--- create table section -------------------------------------------------
--- schema 		: reg	    		- Registration schema
--- table 		: app_audit_log		- Audit log
--- table alias  : audlog
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.app_audit_log
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section -------------------------------------------------
-create table reg.app_audit_log (
-	log_id 				character varying(64) not null ,
-	log_dtimes      	timestamp not null,
-	log_desc        	character varying(2048) ,
-	event_id        	character varying(64) not null ,
-	event_type      	character varying(64) not null ,
-	event_name        	character varying(128) not null ,
-	action_dtimes    	timestamp not null ,
-	host_name         	character varying(128) not null ,
-	host_ip           	character varying(16) not null ,
-	session_user_id   	character varying(256) not null ,
-	session_user_name 	character varying(128) ,
-	app_id            	character varying(64) not null ,
-	app_name          	character varying(128) not null ,
-	module_id         	character varying(64) ,
-	module_name       	character varying(128) ,
-	ref_id            	character varying(64) ,
-	ref_id_type       	character varying(64) ,
-	cr_by             	character varying(256) not null
-)
-;
+-- object: reg.app_audit_log | type: TABLE --
+-- DROP TABLE IF EXISTS reg.app_audit_log CASCADE;
+CREATE TABLE reg.app_audit_log(
+	log_id character varying(64) NOT NULL,
+	log_dtimes timestamp NOT NULL,
+	log_desc character varying(2048),
+	event_id character varying(64) NOT NULL,
+	event_type character varying(64) NOT NULL,
+	event_name character varying(128) NOT NULL,
+	action_dtimes timestamp NOT NULL,
+	host_name character varying(128) NOT NULL,
+	host_ip character varying(16) NOT NULL,
+	session_user_id character varying(256) NOT NULL,
+	session_user_name character varying(128),
+	app_id character varying(64) NOT NULL,
+	app_name character varying(128) NOT NULL,
+	module_id character varying(64),
+	module_name character varying(128),
+	ref_id character varying(64),
+	ref_id_type character varying(64),
+	cr_by character varying(256) NOT NULL,
+	CONSTRAINT pk_audlog_log_id PRIMARY KEY (log_id)
 
--- keys section -------------------------------------------------
- alter table reg.app_audit_log add constraint pk_audlog_log_id primary key (log_id)
- ;
-
+);
+-- ddl-end --

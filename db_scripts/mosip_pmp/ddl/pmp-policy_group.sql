@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_pmp
+-- Table Name : pmp.policy_group
+-- Purpose    : Policy Group: Authentication policies are categorized into different groups/domains. These policy groups are defined and maintained in this table.
+--           
+-- Create By   : Nasir Khan / Sadanandegowda
+-- Created Date: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: pmp.policy_group | type: TABLE --
 -- DROP TABLE IF EXISTS pmp.policy_group CASCADE;
 CREATE TABLE pmp.policy_group(
@@ -41,6 +54,3 @@ COMMENT ON COLUMN pmp.policy_group.is_deleted IS 'IS_Deleted : Flag to mark whet
 -- ddl-end --
 COMMENT ON COLUMN pmp.policy_group.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
-ALTER TABLE pmp.policy_group OWNER TO sysadmin;
--- ddl-end --
-

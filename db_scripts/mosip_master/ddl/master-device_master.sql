@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_master
+-- Table Name 	: master.device_master
+-- Purpose    	: Device Master : Contains list of approved devices and  details,  like fingerprint scanner, iris scanner, scanner etc used at registration centers. Valid devices with active status only allowed at registration centers for respective functionalities. Device onboarding are handled through admin application/portal by the user who is having the device onboarding authority.
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: master.device_master | type: TABLE --
 -- DROP TABLE IF EXISTS master.device_master CASCADE;
 CREATE TABLE master.device_master(

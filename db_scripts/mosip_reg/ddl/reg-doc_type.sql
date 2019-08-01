@@ -1,32 +1,31 @@
--- create table section --------------------------------------------------------
--- schema 		: reg  - registration schema
--- table 		: doc_type  - reg doc_type list
--- table alias  : doctyp	
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_reg
+-- Table Name 	: reg.doc_type
+-- Purpose    	: 
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
 
--- table section -------------------------------------------------------------------------------
+-- object: reg.doc_type | type: TABLE --
+-- DROP TABLE IF EXISTS reg.doc_type CASCADE;
+CREATE TABLE reg.doc_type(
+	code character varying(36) NOT NULL,
+	name character varying(64) NOT NULL,
+	descr character varying(128),
+	lang_code character varying(3) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT pk_doctyp_code PRIMARY KEY (code,lang_code)
 
-	create table reg.doc_type (
-		
-		code  character varying(36) not null ,       -- PASSPORT, VOTERID, etc.
-		
-		name  character varying (64) not null ,
-		descr  character varying (128) ,
-		
-		lang_code  character varying(3) not null ,	 -- reg.language.code
-	
-		is_active 	boolean not null,
-		cr_by 		character varying (256) not null,
-		cr_dtimes 	timestamp  not null,
-		upd_by  	character varying (256),
-		upd_dtimes  timestamp ,
-		is_deleted 	boolean,
-		del_dtimes	timestamp 
-
-	)
-;
-		
-
--- keys section -------------------------------------------------------------------------------
-alter table reg.doc_type add constraint pk_doctyp_code primary key (code, lang_code)
-;
-
+);
+-- ddl-end --

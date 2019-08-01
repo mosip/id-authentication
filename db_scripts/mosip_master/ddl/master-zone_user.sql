@@ -1,3 +1,16 @@
+-- -------------------------------------------------------------------------------------------------
+-- Database Name: mosip_master
+-- Table Name 	: master.zone_user
+-- Purpose    	: Zone User : Mapping table to assign a user to a zone that will be used for the zonal administration purpose
+--           
+-- Create By   	: Nasir Khan / Sadanandegowda
+-- Created Date	: 15-Jul-2019
+-- 
+-- Modified Date        Modified By         Comments / Remarks
+-- ------------------------------------------------------------------------------------------
+-- 
+-- ------------------------------------------------------------------------------------------
+
 -- object: master.zone_user | type: TABLE --
 -- DROP TABLE IF EXISTS master.zone_user CASCADE;
 CREATE TABLE master.zone_user(
