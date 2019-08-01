@@ -87,10 +87,6 @@ public enum StatusUtil {
    INSERT_IDENTIFY_RESPONSE_SUCCESS(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Recived sucessful response from ABIS"),
    INSERT_IDENTIFY_RESPONSE_FAILED(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Received failed response from ABIS - "),
 
-   //Manual verification stage
-   MANUAL_VERIFIER_APPROVED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE + 001,"Manual verifier approved the packet"),
-   MANUAL_VERIFIER_REJECTED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE + 002,"Manual verifier rejected the packet"),
-
    //System Exceptions
    //Bio dedupe stage
    BIO_DEDUPE_INPROGRESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "001", "Biometric Deduplication In-Progress"),
