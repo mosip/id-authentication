@@ -426,7 +426,7 @@ public class RequestHandlerRequestValidator {
 			}
 		} catch (InvalidIDException ex) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
-		} catch (NumberFormatException | IdRepoAppException | IOException | ApisResourceAccessException e) {
+		} catch (NumberFormatException | IdRepoAppException | ApisResourceAccessException e) {
 			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		}
 	}

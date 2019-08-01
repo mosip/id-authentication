@@ -835,7 +835,15 @@ public class Utilities {
 		return false;
 	}
 
-	public String retrieveIdrepoJsonStatus(Long uin) throws ApisResourceAccessException, IdRepoAppException, IOException {
+	/**
+	 * Retrieve idrepo json status.
+	 *
+	 * @param uin the uin
+	 * @return the string
+	 * @throws ApisResourceAccessException the apis resource access exception
+	 * @throws IdRepoAppException the id repo app exception
+	 */
+	public String retrieveIdrepoJsonStatus(Long uin) throws ApisResourceAccessException, IdRepoAppException {
 		String response = null;
 		if (uin != null) {
 			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.UIN.toString(), "",
