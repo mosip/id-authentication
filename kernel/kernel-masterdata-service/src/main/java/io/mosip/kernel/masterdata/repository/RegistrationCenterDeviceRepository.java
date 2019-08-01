@@ -45,5 +45,8 @@ public interface RegistrationCenterDeviceRepository
 	 */
 	@Query(value = "FROM RegistrationCenterDevice rd WHERE rd.registrationCenterDevicePk.regCenterId =?1 and (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
 	public List<RegistrationCenterDevice> registrationCenterDeviceMappings(String regCenterID);
+	
+	@Query("FROM RegistrationCenterDevice rd where  (rd.isDeleted is null or rd.isDeleted =false) and rd.isActive = true")
+	List<RegistrationCenterDevice> findAllCenterDevices();
 
 }
