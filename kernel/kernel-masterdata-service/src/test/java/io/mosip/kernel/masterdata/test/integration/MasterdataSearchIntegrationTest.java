@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,9 +33,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.MachineTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
@@ -57,6 +60,7 @@ import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Gender;
+import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.IndividualType;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Machine;
@@ -72,6 +76,7 @@ import io.mosip.kernel.masterdata.entity.ZoneUser;
 import io.mosip.kernel.masterdata.exception.ValidationException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
+import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.MachineRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterDeviceRepository;
@@ -147,6 +152,9 @@ public class MasterdataSearchIntegrationTest {
 	@MockBean
 	private GenderTypeRepository genderTypeRepository;
 
+	@MockBean
+	private HolidayRepository holidayRepository;
+
 	private List<Zone> zones;
 	private ZoneUser zoneUser;
 	private RegistrationCenterType centerTypeEntity;
@@ -174,6 +182,7 @@ public class MasterdataSearchIntegrationTest {
 	private SearchFilter titleSearchFilter;
 	private SearchDto docCatTypeDto;
 	private SearchFilter docCatTypeFilter;
+	private SearchFilter holidayFilter;
 	private RequestWrapper<SearchDto> docCatTypeRequestDto;
 	private SearchSort sort;
 	private SearchDto searchDto;
@@ -183,6 +192,7 @@ public class MasterdataSearchIntegrationTest {
 	private SearchDto machineSpecificationSearchDto;
 	private SearchDto templateSearchDto;
 	private SearchDto titleSearchDto;
+	private SearchDto holidaySearchDto;
 	private RequestWrapper<SearchDto> request;
 	private RequestWrapper<SearchDto> machineRequestDto;
 	private RequestWrapper<SearchDto> deviceRequestDto;
@@ -190,6 +200,7 @@ public class MasterdataSearchIntegrationTest {
 	private RequestWrapper<SearchDto> machineSpecificationRequestDto;
 	private RequestWrapper<SearchDto> templateRequestDto;
 	private RequestWrapper<SearchDto> titleRequestDto;
+	private RequestWrapper<SearchDto> holidayRequestDto;
 
 	private DocumentType documentType;
 	private List<DocumentType> documentTypes;
@@ -313,7 +324,7 @@ public class MasterdataSearchIntegrationTest {
 		deviceTypeSearchDto.setSort(Arrays.asList());
 		deviceTypeSearchDto.setPagination(pagination);
 		deviceTypeRequestDto.setRequest(deviceTypeSearchDto);
-		
+
 		machineSpecificationRequestDto = new RequestWrapper<>();
 		machineSpecificationSearchFilter = new SearchFilter();
 		machineSpecificationSearchFilter.setColumnName("name");
@@ -361,6 +372,18 @@ public class MasterdataSearchIntegrationTest {
 		docCatTypeDto.setSort(Arrays.asList());
 		docCatTypeDto.setPagination(pagination);
 		docCatTypeRequestDto.setRequest(docCatTypeDto);
+		// TODO:
+		holidayRequestDto = new RequestWrapper<>();
+		holidayFilter = new SearchFilter();
+		holidayFilter.setColumnName("hoidayId");
+		holidayFilter.setType("equals");
+		holidayFilter.setValue("2000070");
+		holidaySearchDto = new SearchDto();
+		holidaySearchDto.setFilters(Arrays.asList(docCatTypeFilter));
+		holidaySearchDto.setLanguageCode("ara");
+		holidaySearchDto.setSort(Arrays.asList());
+		holidaySearchDto.setPagination(pagination);
+		docCatTypeRequestDto.setRequest(holidaySearchDto);
 
 		when(filterTypeValidator.validate(Mockito.eq(LocationExtnDto.class), Mockito.anyList())).thenReturn(true);
 		when(filterTypeValidator.validate(Mockito.eq(RegistrationCenterTypeExtnDto.class), Mockito.anyList()))
@@ -1877,6 +1900,141 @@ public class MasterdataSearchIntegrationTest {
 				.thenReturn(Arrays.asList("machineSpecificationName", "secondMachineSpecificationName"));
 		mockMvc.perform(
 				post("/machinespecifications/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	// TODO:
+	/* holiday search test case */
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchHolidayTest() throws Exception {
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		List<Holiday> holidays = new ArrayList<Holiday>();
+		Holiday holiday1 = new Holiday();
+		holiday1.setHolidayId(2000001);
+		holiday1.setHolidayName("New Year's Day");
+		holiday1.setHolidayDesc("National Holiday");
+		holiday1.setLangCode("eng");
+		holiday1.setHolidayDate(LocalDate.now());
+		holiday1.setLocationCode("KTA");
+		holidays.add(holiday1);
+		Holiday holiday2 = new Holiday();
+		holiday2.setHolidayId(2000001);
+		holiday2.setHolidayName("New Year's Day");
+		holiday2.setHolidayDesc("National Holiday");
+		holiday2.setLangCode("eng");
+		holiday2.setHolidayDate(LocalDate.now());
+		holiday2.setLocationCode("RBT");
+		holidays.add(holiday2);
+
+		Location location1 = new Location("KNT", "Kenitra", (short) 2, "Province", "RSK", "eng", null);
+		Location location2 = new Location("RBT", "Rabat", (short) 2, "province", "RSK", "eng", null);
+		List<Location> locations = new ArrayList<>();
+		locations.add(location1);
+		locations.add(location2);
+
+		Page<Holiday> pageContentData = new PageImpl<>(holidays);
+		Page<Location> locpageContentData = new PageImpl<>(locations);
+		when(locationRepository.findByLangCode(Mockito.anyString())).thenReturn(locations);
+		when(filterTypeValidator.validate(Mockito.eq(LocationDto.class), Mockito.anyList())).thenReturn(true);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(locpageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Holiday.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/holidays/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchHolidayByLocationNotFoundTest() throws Exception {
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		List<Holiday> holidays = new ArrayList<Holiday>();
+		Holiday holiday1 = new Holiday();
+		holiday1.setHolidayId(2000001);
+		holiday1.setHolidayName("New Year's Day");
+		holiday1.setHolidayDesc("National Holiday");
+		holiday1.setLangCode("eng");
+		holiday1.setHolidayDate(LocalDate.now());
+		holiday1.setLocationCode("KTA");
+		holidays.add(holiday1);
+		Holiday holiday2 = new Holiday();
+		holiday2.setHolidayId(2000001);
+		holiday2.setHolidayName("New Year's Day");
+		holiday2.setHolidayDesc("National Holiday");
+		holiday2.setLangCode("eng");
+		holiday2.setHolidayDate(LocalDate.now());
+		holiday2.setLocationCode("RBT");
+		holidays.add(holiday2);
+
+		List<Location> locations = new ArrayList<>();
+
+		Page<Holiday> pageContentData = new PageImpl<>(holidays);
+		Page<Location> locpageContentData = new PageImpl<>(locations);
+		when(locationRepository.findByLangCode(Mockito.anyString())).thenReturn(locations);
+		when(filterTypeValidator.validate(Mockito.eq(LocationDto.class), Mockito.anyList())).thenReturn(true);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(locpageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Holiday.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/holidays/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void searchHolidayByLocationFetchExpTest() throws Exception {
+		String json = objectMapper.writeValueAsString(machineRequestDto);
+		List<Holiday> holidays = new ArrayList<Holiday>();
+		Holiday holiday1 = new Holiday();
+		holiday1.setHolidayId(2000001);
+		holiday1.setHolidayName("New Year's Day");
+		holiday1.setHolidayDesc("National Holiday");
+		holiday1.setLangCode("eng");
+		holiday1.setHolidayDate(LocalDate.now());
+		holiday1.setLocationCode("KTA");
+		holidays.add(holiday1);
+		Holiday holiday2 = new Holiday();
+		holiday2.setHolidayId(2000001);
+		holiday2.setHolidayName("New Year's Day");
+		holiday2.setHolidayDesc("National Holiday");
+		holiday2.setLangCode("eng");
+		holiday2.setHolidayDate(LocalDate.now());
+		holiday2.setLocationCode("RBT");
+		holidays.add(holiday2);
+
+		List<Location> locations = new ArrayList<>();
+
+		Page<Holiday> pageContentData = new PageImpl<>(holidays);
+		Page<Location> locpageContentData = new PageImpl<>(locations);
+		when(locationRepository.findByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+		when(filterTypeValidator.validate(Mockito.eq(LocationDto.class), Mockito.anyList())).thenReturn(true);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Location.class), Mockito.any(), Mockito.any()))
+				.thenReturn(locpageContentData);
+		when(masterdataSearchHelper.searchMasterdata(Mockito.eq(Holiday.class), Mockito.any(), Mockito.any()))
+				.thenReturn(pageContentData);
+		mockMvc.perform(post("/holidays/search").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+	}
+
+	@Test
+	@WithUserDetails("zonal-admin")
+	public void filterHolidayTest() throws Exception {
+		FilterDto filterDto = new FilterDto();
+		filterDto.setColumnName("isActive");
+		filterDto.setType("all");
+		filterDto.setText("true");
+		FilterValueDto filterValueDto = new FilterValueDto();
+		filterValueDto.setFilters(Arrays.asList(filterDto));
+		filterValueDto.setLanguageCode("eng");
+		RequestWrapper<FilterValueDto> requestDto = new RequestWrapper<>();
+		requestDto.setRequest(filterValueDto);
+		String json = objectMapper.writeValueAsString(requestDto);
+		when(filterColumnValidator.validate(Mockito.eq(FilterDto.class), Mockito.any(), Mockito.any()))
+				.thenReturn(true);
+		when(masterDataFilterHelper.filterValues(Mockito.eq(Holiday.class), Mockito.any(), Mockito.any()))
+				.thenReturn(Arrays.asList("true", "false"));
+		mockMvc.perform(post("/holidays/filtervalues").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}
 

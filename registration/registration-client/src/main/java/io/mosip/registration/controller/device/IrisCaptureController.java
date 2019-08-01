@@ -27,6 +27,7 @@ import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.reg.RegistrationController;
 import io.mosip.registration.controller.reg.UserOnboardParentController;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
+import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -108,6 +109,9 @@ public class IrisCaptureController extends BaseController {
 	private UserOnboardParentController userOnboardParentController;
 
 	@Autowired
+	private FingerPrintCaptureController fingerPrintCaptureController;
+
+	@Autowired
 	private FaceCaptureController faceCaptureController;
 
 	@FXML
@@ -146,9 +150,9 @@ public class IrisCaptureController extends BaseController {
 		try {
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Initializing Iris Capture page for user registration");
-			
+
 			setImagesOnHover();
-			
+
 			if (getRegistrationDTOFromSession() != null
 					&& getRegistrationDTOFromSession().getSelectionListDTO() != null) {
 				registrationNavlabel.setText(ApplicationContext.applicationLanguageBundle()
@@ -303,8 +307,8 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	/**
-	 * This event handler will be invoked when left iris or right iris
-	 * {@link Pane} is clicked.
+	 * This event handler will be invoked when left iris or right iris {@link Pane}
+	 * is clicked.
 	 * 
 	 * @param mouseEvent
 	 *            the triggered {@link MouseEvent} object
@@ -356,12 +360,12 @@ public class IrisCaptureController extends BaseController {
 			// 4. If iris is an exception iris
 			if (!isExceptionIris && (irisDetailsDTO == null
 					|| (irisDetailsDTO.getNumOfIrisRetry() < Integer
-									.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
+							.parseInt(getValueFromApplicationContext(RegistrationConstants.IRIS_RETRY_COUNT)))
 					|| irisDetailsDTO.isForceCaptured())) {
 				scanIris.setDisable(false);
 			}
 			if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore() / 100 : 0);
+				irisProgress.setProgress(irisDetailsDTO != null ? irisDetailsDTO.getQualityScore() / Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)) : 0);
 				irisQuality.setText(irisDetailsDTO != null ? String.valueOf((int) irisDetailsDTO.getQualityScore())
 						.concat(RegistrationConstants.PERCENTAGE) : RegistrationConstants.EMPTY);
 
@@ -410,8 +414,8 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	/**
-	 * This method displays the Biometric Scan pop-up window. This method will
-	 * be invoked when Scan button is clicked.
+	 * This method displays the Biometric Scan pop-up window. This method will be
+	 * invoked when Scan button is clicked.
 	 */
 	@FXML
 	private void scan() {
@@ -503,7 +507,7 @@ public class IrisCaptureController extends BaseController {
 				}
 				if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
 					irisProgress.setProgress(Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
-							.split(RegistrationConstants.PERCENTAGE)[0]) / 100);
+							.split(RegistrationConstants.PERCENTAGE)[0]) / Double.parseDouble(getValueFromApplicationContext(RegistrationConstants.IRIS_THRESHOLD)));
 					irisQuality.setText(getQualityScore(irisDetailsDTO.getQualityScore()));
 					if (Double.valueOf(getQualityScore(irisDetailsDTO.getQualityScore())
 							.split(RegistrationConstants.PERCENTAGE)[0]) >= Double
@@ -784,7 +788,7 @@ public class IrisCaptureController extends BaseController {
 						.setIrisDetailsDTO(new ArrayList<>());
 			}
 		}
-
+		faceCaptureController.clearExceptionImage();
 		singleBiometricCaptureCheck();
 	}
 
@@ -837,11 +841,10 @@ public class IrisCaptureController extends BaseController {
 	}
 
 	private void singleBiometricCaptureCheck() {
-		
+
 		if (!(validateIris() && validateIrisLocalDedup())) {
 			continueBtn.setDisable(true);
 		}
-		
 
 		long irisCountIntroducer = 0;
 
@@ -852,18 +855,31 @@ public class IrisCaptureController extends BaseController {
 					.filter(bio -> bio.getBiometricType().equalsIgnoreCase(RegistrationConstants.IRIS)).count();
 
 		}
-		
-		if (getRegistrationDTOFromSession() != null
-				&& getRegistrationDTOFromSession().getSelectionListDTO() != null
+
+		if (getRegistrationDTOFromSession() != null && getRegistrationDTOFromSession().getSelectionListDTO() != null
 				&& !getRegistrationDTOFromSession().getSelectionListDTO().isBiometrics()) {
 
-			if (!getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFingerprintDetailsDTO()
-					.isEmpty() || irisCountIntroducer == 2) {
+			if ((!getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+					.getFingerprintDetailsDTO().isEmpty() && isForceCapturedFingerprint())
+					|| !getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+							.getIrisDetailsDTO().isEmpty()
+					|| irisCountIntroducer == 2) {
 				continueBtn.setDisable(false);
 			} else {
 				continueBtn.setDisable(true);
 			}
 		}
+	}
+	
+	private boolean isForceCapturedFingerprint() {
+		List<FingerprintDetailsDTO> fingerprintDetailsDTOs = getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+		.getFingerprintDetailsDTO();
+		for (FingerprintDetailsDTO fingerprintDetailsDTO : fingerprintDetailsDTOs) {
+			if (fingerPrintCaptureController.validateQualityScore(fingerprintDetailsDTO)){
+					return true;		
+			}
+		}
+		return false;
 	}
 
 	private void clearAttemptsBox(String styleClass, int retries) {

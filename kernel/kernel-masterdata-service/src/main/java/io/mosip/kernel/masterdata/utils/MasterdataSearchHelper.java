@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -195,7 +196,7 @@ public class MasterdataSearchHelper {
 		if (FilterTypeEnum.CONTAINS.name().equalsIgnoreCase(filterType)) {
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
 			if (value.startsWith("*") && value.endsWith("*")) {
-				String replacedValue = value.substring(1).substring(0, value.length() - 1);
+				String replacedValue = (value.substring(1)).substring(0, value.length() - 2);
 				return builder.like(lowerCase,
 						builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue + WILD_CARD_CHARACTER)));
 			} else if (value.startsWith("*")) {
@@ -312,6 +313,9 @@ public class MasterdataSearchHelper {
 				return builder.between(root.get(columnName), DateUtils.parseToLocalDateTime(fromValue),
 						DateUtils.convertUTCToLocalDateTime(toValue));
 			}
+			if (LocalDate.class.getName().equals(fieldType)) {
+				return builder.between(root.get(columnName), LocalDate.parse(fromValue), LocalDate.parse(toValue));
+			}
 			if (Long.class.getName().equals(fieldType)) {
 				return builder.between(root.get(columnName), Long.parseLong(fromValue), Long.parseLong(toValue));
 			}
@@ -354,6 +358,9 @@ public class MasterdataSearchHelper {
 			String fieldType = type.getTypeName();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
 				return DateUtils.parseToLocalDateTime(value);
+			}
+			if (LocalDate.class.getName().equals(fieldType)) {
+				return LocalDate.parse(value);
 			}
 			if (Long.class.getName().equals(fieldType)) {
 				return Long.parseLong(value);

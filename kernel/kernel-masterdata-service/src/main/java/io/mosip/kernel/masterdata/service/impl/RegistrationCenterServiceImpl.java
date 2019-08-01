@@ -1009,7 +1009,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		if (flag) {
 			// fetching logged in user zones
-			zones = serviceHelper.fetchUserZone(zoneFilter);
+			zones = serviceHelper.fetchUserZone(zoneFilter,dto.getLanguageCode());
 		}
 		// removing already processed filters and adding new filters
 		dto.getFilters().removeAll(removeList);

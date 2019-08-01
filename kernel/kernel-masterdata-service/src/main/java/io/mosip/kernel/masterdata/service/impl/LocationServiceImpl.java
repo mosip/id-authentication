@@ -55,6 +55,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.Node;
 import io.mosip.kernel.masterdata.utils.PageUtils;
 import io.mosip.kernel.masterdata.utils.UBtree;
+import io.mosip.kernel.masterdata.validator.FilterColumnEnum;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -816,27 +817,76 @@ public class LocationServiceImpl implements LocationService {
 	public FilterResponseDto locationFilterValues(FilterValueDto filterValueDto) {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
-		List<String> getValues = null;
-		if (filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Location.class)) {
-			for (FilterDto filterDto : filterValueDto.getFilters()) {
-				if (filterDto.getType().equals("unique")) {
-					getValues = locationRepository.filterByDistinctHierarchyLevel(
-							Integer.parseInt(filterDto.getColumnName()), filterValueDto.getLanguageCode());
+		List<String> hierarchyNames = null;
+		try {
+			hierarchyNames = locationRepository.findLocationAllHierarchyNames();
+			String langCode = filterValueDto.getLanguageCode();
+			for (FilterDto filter : filterValueDto.getFilters()) {
+				String columnName = filter.getColumnName();
+				String type = filter.getType();
+				if (!type.equals(FilterColumnEnum.UNIQUE.toString()) && !type.equals(FilterColumnEnum.ALL.toString())) {
+					throw new RequestException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
+							ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
+				}
+				if (!hierarchyNames.contains(columnName)) {
+					throw new RequestException(ValidationErrorCode.INVALID_COLUMN_NAME.getErrorCode(),
+							ValidationErrorCode.INVALID_COLUMN_NAME.getErrorMessage());
+				}
+				if (filter.getType().equals(FilterColumnEnum.UNIQUE.toString())) {
+					if (filter.getText().isEmpty() || filter.getText() == null) {
+						List<String> locationNames = locationRepository
+								.findDistinctHierarchyNameAndNameValueForEmptyTextFilter(filter.getColumnName(),
+										langCode);
+						locationNames.forEach(locationName -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filter.getColumnName());
+							columnValue.setFieldValue(locationName);
+							columnValueList.add(columnValue);
+						});
+
+					} else {
+						List<String> locationNames = locationRepository
+								.findDistinctHierarchyNameAndNameValueForTextFilter(filter.getColumnName(),
+										"%" + filter.getText().toLowerCase() + "%", langCode);
+						locationNames.forEach(locationName -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filter.getColumnName());
+							columnValue.setFieldValue(locationName);
+							columnValueList.add(columnValue);
+						});
+					}
+
 				} else {
-					getValues = locationRepository.filterByHierarchyLevel(Integer.parseInt(filterDto.getColumnName()),
-							filterValueDto.getLanguageCode());
+					if (filter.getText().isEmpty() || filter.getText() == null) {
+						List<Location> locations = locationRepository
+								.findAllHierarchyNameAndNameValueForEmptyTextFilter(filter.getColumnName(), langCode);
+						locations.forEach(loc -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filter.getColumnName());
+							columnValue.setFieldValue(loc.getName());
+							columnValueList.add(columnValue);
+						});
+
+					} else {
+						List<Location> locations = locationRepository.findAllHierarchyNameAndNameValueForTextFilter(
+								filter.getColumnName(), "%" + filter.getText().toLowerCase() + "%", langCode);
+						locations.forEach(loc -> {
+							ColumnValue columnValue = new ColumnValue();
+							columnValue.setFieldID(filter.getColumnName());
+							columnValue.setFieldValue(loc.getName());
+							columnValueList.add(columnValue);
+						});
+					}
+
 				}
 
-				getValues.forEach(value -> {
-					ColumnValue columnValue = new ColumnValue();
-					columnValue.setFieldID(filterDto.getColumnName());
-					columnValue.setFieldValue(value.toString());
-					columnValueList.add(columnValue);
-
-				});
 			}
 			filterResponseDto.setFilters(columnValueList);
+		} catch (DataAccessLayerException e) {
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 		}
+
 		return filterResponseDto;
 	}
 
