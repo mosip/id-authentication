@@ -25,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjob.model.LoginUser;
 import io.mosip.preregistration.batchjob.model.ResponseWrapper;
+import io.mosip.preregistration.batchjob.utils.ConsumedStatusUtil;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
@@ -69,7 +70,7 @@ public class ConsumedStatusTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
 
 		try {
-			/* Get the token from auth-manager service */
+			/* Get the token from auth-manager service 
 			LoginUser loginUser=new LoginUser();
 			loginUser.setAppId(appId);
 			loginUser.setPassword(password);
@@ -92,7 +93,7 @@ public class ConsumedStatusTasklet implements Tasklet {
 					tokenEntity,new ParameterizedTypeReference<ResponseWrapper<AuthNResponse>>() {
 					});
 
-			/* Rest call to Batch service API of expired appointments */
+			 Rest call to Batch service API of expired appointments 
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(updateConsumedUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Cookie", tokenResponse.getHeaders().get("Set-Cookie").get(0));
@@ -102,7 +103,10 @@ public class ConsumedStatusTasklet implements Tasklet {
 
 			log.info("sessionId", "idType", "id",
 					"In UpdateConsumedStatusTasklet method of Batch Service URL- " + uriBuilder);
-			restTemplate.exchange(uriBuilder, HttpMethod.PUT, entity, MainResponseDTO.class);
+			restTemplate.exchange(uriBuilder, HttpMethod.PUT, entity, MainResponseDTO.class);*/
+			
+			ConsumedStatusUtil consumeJob=new ConsumedStatusUtil();
+			consumeJob.demographicConsumedStatus();
 
 		} catch (Exception e) {
 			log.error("Update Consumed Status ", " Tasklet ", " encountered exception ", e.getMessage());

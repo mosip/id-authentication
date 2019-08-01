@@ -25,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjob.model.LoginUser;
 import io.mosip.preregistration.batchjob.model.ResponseWrapper;
+import io.mosip.preregistration.batchjob.utils.ExpiredStatusUtil;
 import io.mosip.preregistration.core.common.dto.AuthNResponse;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
@@ -70,7 +71,7 @@ public class ExpiredStatusTasklet implements Tasklet {
 
 		try {
 
-			/* Get the token from auth-manager service */
+			/* Get the token from auth-manager service 
 			LoginUser loginUser=new LoginUser();
 			loginUser.setAppId(appId);
 			loginUser.setPassword(password);
@@ -92,7 +93,7 @@ public class ExpiredStatusTasklet implements Tasklet {
 					tokenEntity,new ParameterizedTypeReference<ResponseWrapper<AuthNResponse>>() {
 					});
 
-			/* Rest call to Batch service API of expired appointments */
+			 Rest call to Batch service API of expired appointments 
 			UriComponentsBuilder regbuilder = UriComponentsBuilder.fromHttpUrl(expiredStatusUrl);
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Cookie", tokenResponse.getHeaders().get("Set-Cookie").get(0));
@@ -101,7 +102,9 @@ public class ExpiredStatusTasklet implements Tasklet {
 			String uriBuilder = regbuilder.build().encode().toUriString();
 
 			log.info("sessionId", "idType", "id", "In ExpiredStatusTasklet method of Batch Service URL- " + uriBuilder);
-			restTemplate.exchange(uriBuilder, HttpMethod.PUT, entity, MainResponseDTO.class);
+			restTemplate.exchange(uriBuilder, HttpMethod.PUT, entity, MainResponseDTO.class);*/
+			ExpiredStatusUtil expiredUtil=new ExpiredStatusUtil();
+			expiredUtil.expireAppointments();
 
 		} catch (Exception e) {
 			log.error("Expired Status ", " Tasklet ", " encountered exception ", e.getMessage());

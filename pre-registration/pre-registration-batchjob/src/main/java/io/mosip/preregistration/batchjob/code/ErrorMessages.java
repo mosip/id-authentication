@@ -22,7 +22,10 @@ public enum ErrorMessages {
 	DOCUMENT_TABLE_NOT_ACCESSIBLE("Document table not accessible"), //PRG_PAM_BAT_007
 	REG_APPOINTMENT_CONSUMED_TABLE_NOT_ACCESSIBLE("Reg appointment consumed table not accessible"), //PRG_PAM_BAT_008
 	DEMOGRAPHIC_CONSUMED_TABLE_NOT_ACCESSIBLE("Demographic consumed table not accessible"),//PRG_PAM_BAT_009
-	DOCUMENT_CONSUMED_TABLE_NOT_ACCESSIBLE("Document consumed table not accessible");//PRG_PAM_BAT_010
+	DOCUMENT_CONSUMED_TABLE_NOT_ACCESSIBLE("Document consumed table not accessible"),//PRG_PAM_BAT_010
+	MASTER_DATA_NOT_FOUND("Master data not found"),//PRG_PAM_BAT_011
+	NOTIFICATION_CALL_FAILED("Notification service call failed"),//PRG_PAM_BAT_012
+	AVAILABILITY_TABLE_NOT_ACCESSABLE("Availablity table not accessible");//PRG_PAM_BAT_013
 	
 	/**
 	 * @param code

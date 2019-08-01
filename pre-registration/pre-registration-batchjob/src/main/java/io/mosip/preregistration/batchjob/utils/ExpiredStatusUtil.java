@@ -95,7 +95,7 @@ public class ExpiredStatusUtil {
 			isSaveSuccess = true;
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e, response);
+			new BatchServiceExceptionCatcher().handle(e);
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_413.toString(), EventName.EXPIREDSTATUS.toString(),

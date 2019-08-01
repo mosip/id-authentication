@@ -44,8 +44,8 @@ public class PreregistrationBatchJobScheduler {
 	@Autowired
 	private JobLauncher jobLauncher;
 
-	@Autowired
-	private Job availabilitySyncJob;
+	/*@Autowired
+	private Job availabilitySyncJob;*/
 
 	@Autowired
 	private Job consumedStatusJob;
@@ -70,7 +70,7 @@ public class PreregistrationBatchJobScheduler {
 		}
 	}
 
-	@Scheduled(cron = "${preregistration.job.schedule.cron.slotavailability}")
+	/*@Scheduled(cron = "${preregistration.job.schedule.cron.slotavailability}")
 	public void availabilitySyncScheduler() {
 
 		JobParameters jobParam = new JobParametersBuilder().addLong("bookingJobTime", System.currentTimeMillis())
@@ -87,7 +87,7 @@ public class PreregistrationBatchJobScheduler {
 			LOGGER.error(LOGDISPLAY, "Availability Sync Job failed to read data from master data service", e.getMessage(),null);
 		}
 
-	}
+	}*/
 
 	@Scheduled(cron = "${preregistration.job.schedule.cron.expiredStatusJob}")
 	public void expiredStatusScheduler() {

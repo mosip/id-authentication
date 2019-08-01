@@ -22,7 +22,7 @@ import io.mosip.preregistration.batchjob.entity.ProcessedPreRegEntity;
 @Repository("processedPreIdRepository")
 public interface ProcessedPreIdRepository extends BaseRepository<ProcessedPreRegEntity, String>{
 	
-	List<ProcessedPreRegEntity> findBystatusComments(@Param("statusComment") String statusComment);
+	List<ProcessedPreRegEntity> findBystatusComments(String statusComment);
 	
 	ProcessedPreRegEntity findBypreRegistrationId(String preRegId);
 	@Modifying

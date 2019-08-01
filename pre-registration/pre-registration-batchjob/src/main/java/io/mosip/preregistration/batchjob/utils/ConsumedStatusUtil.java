@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auth.adapter.model.AuthUserDetails;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -23,13 +21,11 @@ import io.mosip.preregistration.core.code.EventName;
 import io.mosip.preregistration.core.code.EventType;
 import io.mosip.preregistration.core.code.StatusCodes;
 import io.mosip.preregistration.core.common.dto.AuditRequestDto;
-import io.mosip.preregistration.core.common.dto.MainResponseDTO;
 import io.mosip.preregistration.core.common.entity.DemographicEntity;
 import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.util.AuditLogUtil;
-import io.mosip.preregistration.core.util.GenericUtil;
 
 /**
  * @author Kishan Rathore
@@ -77,16 +73,13 @@ public class ConsumedStatusUtil {
 	 * @return Response DTO
 	 */
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
-	public MainResponseDTO<String> demographicConsumedStatus() {
+	public boolean demographicConsumedStatus() {
 
-		MainResponseDTO<String> response = new MainResponseDTO<>();
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
 		List<ProcessedPreRegEntity> preRegList = null;
 		boolean isSaveSuccess = false;
 		try {
 			preRegList = batchServiceDAO.getAllConsumedPreIds(STATUS_COMMENTS);
+			log.info("sdfsdf", "arg1", "arg2", "arg3");
 
 			preRegList.forEach(iterate -> {
 				String preRegId = iterate.getPreRegistrationId();
@@ -172,25 +165,21 @@ public class ConsumedStatusUtil {
 			isSaveSuccess = true;
 
 		} catch (Exception e) {
-			new BatchServiceExceptionCatcher().handle(e, response);
+			new BatchServiceExceptionCatcher().handle(e);
 		} finally {
 			if (isSaveSuccess) {
 				setAuditValues(EventId.PRE_412.toString(), EventName.CONSUMEDSTATUS.toString(),
 						EventType.BUSINESS.toString(),
 						"Upadted the consumed status & the consumed PreRegistration ids successfully saved in the database",
 						AuditLogVariables.PRE_REGISTRATION_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername(), null);
+						"PRE-REGISTRATION_BATCH_USER", null);
 			} else {
 				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 						"Consumed status failed to update", AuditLogVariables.NO_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername(), null);
 			}
 		}
-		response.setResponsetime(GenericUtil.getCurrentResponseTime());
-		response.setId(idUrl);
-		response.setVersion(versionUrl);
-		response.setResponse("Demographic status to consumed updated successfully");
-		return response;
+		return true;
 	}
 
 	/**

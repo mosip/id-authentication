@@ -1,6 +1,7 @@
 package io.mosip.preregistration.batchjob.repository.utils;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,13 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.preregistration.batchjob.code.ErrorCodes;
 import io.mosip.preregistration.batchjob.code.ErrorMessages;
+import io.mosip.preregistration.batchjob.entity.AvailibityEntity;
 import io.mosip.preregistration.batchjob.entity.DemographicEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.DocumentEntityConsumed;
 import io.mosip.preregistration.batchjob.entity.ProcessedPreRegEntity;
 import io.mosip.preregistration.batchjob.entity.RegistrationBookingEntityConsumed;
 import io.mosip.preregistration.batchjob.exception.NoPreIdAvailableException;
+import io.mosip.preregistration.batchjob.repository.AvailabilityRepository;
 import io.mosip.preregistration.batchjob.repository.DemographicConsumedRepository;
 import io.mosip.preregistration.batchjob.repository.DemographicRepository;
 import io.mosip.preregistration.batchjob.repository.DocumentConsumedRepository;
@@ -40,6 +43,11 @@ public class BatchJpaRepositoryImpl {
 	@Autowired
 	@Qualifier("demographicRepository")
 	private DemographicRepository demographicRepository;
+	
+	/** Autowired reference for {@link #bookingRepository}. */
+	@Autowired
+	@Qualifier("availabilityRepository")
+	private AvailabilityRepository availabilityRepository;
 
 	/**
 	 * Autowired reference for {@link #demographicConsumedRepository}
@@ -297,6 +305,71 @@ public class BatchJpaRepositoryImpl {
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_010.getCode(),
 					ErrorMessages.DOCUMENT_CONSUMED_TABLE_NOT_ACCESSIBLE.getMessage());
 		}
+	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @return list of regCenter
+	 */
+	public List<String> findRegCenter(LocalDate regDate) {
+		List<String> regCenterList = new ArrayList<>();
+		try {
+			regCenterList = availabilityRepository.findAvaialableRegCenter(regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return regCenterList;
+	}
+	/**
+	 * 
+	 * @param regDate
+	 * @param regID
+	 * @return list of date
+	 */
+	public List<LocalDate> findDistinctDate(LocalDate regDate, String regID) {
+		List<LocalDate> localDatList = null;
+		try {
+			localDatList = availabilityRepository.findAvaialableDate(regDate, regID);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
+	}
+	/**
+	 * 
+	 * @param regId
+	 * @param regDate
+	 * @return number of deleted items
+	 */
+	public int deleteSlots(String regId, LocalDate regDate) {
+		int deletedSlots = 0;
+		try {
+			deletedSlots = availabilityRepository.deleteByRegcntrIdAndRegDate(regId, regDate);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return deletedSlots;
+	}
+	
+	/**
+	 * 
+	 * @param regDate
+	 * @param regID
+	 * @return list of AvailibityEntity
+	 */
+	public List<AvailibityEntity> findSlots(LocalDate regDate, String regID) {
+		List<AvailibityEntity> localDatList = null;
+		try {
+			localDatList = availabilityRepository.findAvaialableSlots(regDate, regID);
+		} catch (DataAccessLayerException e) {
+			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_BAT_013.getCode(),
+					ErrorMessages.AVAILABILITY_TABLE_NOT_ACCESSABLE.getMessage());
+		}
+		return localDatList;
 	}
 
 }
