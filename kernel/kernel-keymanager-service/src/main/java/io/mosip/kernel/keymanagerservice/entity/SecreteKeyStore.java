@@ -1,4 +1,4 @@
-package io.mosip.kernel.dataaccess.hibernate.entity;
+package io.mosip.kernel.keymanagerservice.entity;
 
 import java.time.LocalDateTime;
 
@@ -61,4 +61,3 @@ public class SecreteKeyStore {
 	private LocalDateTime deletedtimes;
 
 }
-

@@ -1,4 +1,4 @@
-package io.mosip.kernel.dataaccess.hibernate.repository.impl;
+package io.mosip.kernel.keymanagerservice.repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -7,9 +7,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.mosip.kernel.dataaccess.hibernate.entity.SecreteKeyStore;
-
-
+import io.mosip.kernel.keymanagerservice.entity.SecreteKeyStore;
 
 @Repository
 @Transactional

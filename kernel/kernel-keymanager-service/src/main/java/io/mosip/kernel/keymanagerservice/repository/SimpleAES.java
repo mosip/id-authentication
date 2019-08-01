@@ -1,4 +1,4 @@
-package io.mosip.kernel.dataaccess.hibernate.config;
+package io.mosip.kernel.keymanagerservice.repository;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -16,8 +16,9 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.dataaccess.hibernate.entity.SecreteKeyStore;
-import io.mosip.kernel.dataaccess.hibernate.repository.impl.EncryptionDao;
+import io.mosip.kernel.keymanagerservice.entity.SecreteKeyStore;
+
+
 
 @Component
 public class SimpleAES {

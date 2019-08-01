@@ -9,11 +9,11 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanInstantiationException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaDialect;
@@ -30,7 +30,6 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.core.dataaccess.spi.config.BaseDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernatePersistenceConstant;
-import io.mosip.kernel.dataaccess.hibernate.repository.impl.EncryptionDao;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 
 /**
@@ -190,6 +189,13 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 				HibernatePersistenceConstant.EMPTY_INTERCEPTOR);
 		return jpaProperties;
 	}
+	
+	
+	@Profile("!test")
+	@Bean
+	public EncryptionInterceptor encryptionInterceptor() {
+		return new EncryptionInterceptor();
+	}
 
 	/**
 	 * Function to associate the specified value with the specified key in the map.
@@ -213,13 +219,13 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 		if (property.equals(HibernatePersistenceConstant.HIBERNATE_EJB_INTERCEPTOR)) {
 			try {
 				if (environment.containsProperty(property)) {
-					jpaProperties.put(property,
-							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
+					jpaProperties.put(property,encryptionInterceptor());
+	//						BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
 				}
 				/**
 				 * We can add a default interceptor whenever we require here.
 				 */
-			} catch (BeanInstantiationException | ClassNotFoundException e) {
+			} catch (BeanInstantiationException e) {
 				LOGGER.error("Error while configuring Interceptor.");
 			}
 		} else {
@@ -229,14 +235,5 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 		return jpaProperties;
 	}
 
-	@Bean
-	public EncryptionDao encryptionDao() {
-		return new EncryptionDao();
-	}
-
-	@Bean
-	public SimpleAES simpleAES() {
-		return new SimpleAES(encryptionDao());
-	}
 
 }
