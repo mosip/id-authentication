@@ -170,8 +170,6 @@ public class PacketValidateProcessor {
 	private static final String PRE_REG_ID = "mosip.pre-registration.datasync.store";
 	private static final String VERSION = "1.0";
 	private static final String CREATED_BY = "MOSIP_SYSTEM";
-	private static final String RESPONSE = "response";
-	private static final String STATUS ="status";
 
 	@Autowired
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
