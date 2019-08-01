@@ -1,14 +1,11 @@
 package io.mosip.registration.processor.core.packet.dto.abis;
 
-import lombok.Data;
-
 import java.util.Arrays;
 
 /**
  * The Class CandidateListDto.
  * @author M1048860 Kiran Raj
  */
-@Data
 public class CandidateListDto {
 	
 	/** The count. */
