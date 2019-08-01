@@ -1,7 +1,5 @@
 package io.mosip.kernel.masterdata.dto.request;
 
-import javax.validation.constraints.Min;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,10 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Pagination {
 
-	@Min(value = 0)
 	private int pageStart;
 
-	@Min(value = 1)
-	private int pageFetch = 20;
+	private int pageFetch = 10;
 
 }
