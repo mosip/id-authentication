@@ -4,34 +4,34 @@ public enum StatusUtil {
 	//Packet Receiver Stage
 	PACKET_RECEIVED(StatusConstants.PACKET_RECEIVER_MODULE_SUCCESS + "001" , "Packet has reached Packet Receiver"),
 	PACKET_UPLOADED_TO_LANDING_ZONE(StatusConstants.PACKET_RECEIVER_MODULE_SUCCESS + "002" , "Packet is Uploaded to Landing Zone"),
-	VIRUS_SCANNER_FAILED(StatusConstants.PACKET_RECEIVER_MODULE_FAILURE + "001" , "Packet is virus infected"),
-	PACKET_DECRYPTION_FAILED(StatusConstants.PACKET_RECEIVER_MODULE_FAILURE + "002" , "Packet decryption failed"),
+	VIRUS_SCANNER_FAILED(StatusConstants.PACKET_RECEIVER_MODULE_FAILURE + "001" , "Packet is Virus Infected"),
+	PACKET_DECRYPTION_FAILED(StatusConstants.PACKET_RECEIVER_MODULE_FAILURE + "002" , "Packet Decryption Failed"),
 	
 	//Packet uploader stage
-	PACKET_UPLOADED(StatusConstants.PACKET_UPLOADER_MODULE_SUCCESS + "001","Packet uploaded to Packet Store"),
-	PACKET_CLEANUP_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "001","Packet clean up failed from Landing Zone"),
-	PACKET_ARCHIVAL_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "002" , "Packet archival failed"),
-	PACKET_UPLOAD_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "003" , "Packet upload failed "),
-	PACKET_NOT_FOUND_LANDING_ZIONE(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "004" , "Packet not found in Landing Zone"),
-	PACKET_HASHCODE_VALIDATION_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "005" , "Packet hash code validation failed"),
-	VIRUS_SCANNER_FAILED_UPLOADER(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "006" , "Packet is virus infected"),
+	PACKET_UPLOADED(StatusConstants.PACKET_UPLOADER_MODULE_SUCCESS + "001","Packet is Uploaded to Packet Store"),
+	PACKET_CLEANUP_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "001","Packet Clean Up Failed from Landing Zone"),
+	PACKET_ARCHIVAL_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "002" , "Packet Archival Failed"),
+	PACKET_UPLOAD_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "003" , "Packet Upload Failed"),
+	PACKET_NOT_FOUND_LANDING_ZIONE(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "004" , "Packet Not Found in Landing Zone"),
+	PACKET_HASHCODE_VALIDATION_FAILED(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "005" , "Packet Hash Code Validation Failed"),
+	VIRUS_SCANNER_FAILED_UPLOADER(StatusConstants.PACKET_UPLOADER_MODULE_FAILED + "006" , "Packet is Virus Infected"),
 
 	//Quality checker stage
-	INDIVIDUAL_BIOMETRIC_NOT_FOUND(StatusConstants.QUALITY_CHECKER_MODULE_SUCCESS + "001", "Individual biometric parameter not found in ID json"),
-	BIOMETRIC_QUALITY_CHECK_SUCCESS(StatusConstants.QUALITY_CHECKER_MODULE_SUCCESS + "002" , "Biometric quality check sucessful"),
-	BIOMETRIC_QUALITY_CHECK_FAILED(StatusConstants.QUALITY_CHECKER_MODULE_FAILED + "001" , "Quality score of biometrics is below threshold"),
+	INDIVIDUAL_BIOMETRIC_NOT_FOUND(StatusConstants.QUALITY_CHECKER_MODULE_SUCCESS + "001", "Individual Biometric Parameter Not Found in ID JSON"),
+	BIOMETRIC_QUALITY_CHECK_SUCCESS(StatusConstants.QUALITY_CHECKER_MODULE_SUCCESS + "002" , "Biometric Quality Check is Successful"),
+	BIOMETRIC_QUALITY_CHECK_FAILED(StatusConstants.QUALITY_CHECKER_MODULE_FAILED + "001" , "Quality Score of Biometrics Captured is Below the Threshold"),
 	
 	//packet validator stage
-	PACKET_STRUCTURAL_VALIDATION_SUCCESS(StatusConstants.PACKET_VALIDATOR_MODULE_SUCCESS + "001" , "Packet validation sucessful"),
-	FILE_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "001", "File validation failed"),
-	SCHEMA_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "002" , "Schema validation failed"),
-	CHECKSUM_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "003" , "Checksum validation failed"),
-	INDIVIDUAL_BIOMETRIC_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "004" , "Individual biometric validation failed"),
-	APPLICANT_DOCUMENT_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "005" , "Applicant document validation failed"),
-	MASTER_DATA_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "006" , "Master data validation failed"),
-	ACTIVATE_DEACTIVATE_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "007" , "Activate/Deactivate packet validation failed"),
-	UIN_NOT_FOUND_IDREPO(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "008" , "UIN not found in ID Repositary"),
-	MANDATORY_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "009" , "Mandatory fields are not present in ID object"),
+	PACKET_STRUCTURAL_VALIDATION_SUCCESS(StatusConstants.PACKET_VALIDATOR_MODULE_SUCCESS + "001" , "Packet Validation is Successful"),
+	FILE_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "001", "File Validation Failed"),
+	SCHEMA_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "002" , "Schema Validation Failed"),
+	CHECKSUM_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "003" , "Check Sum Validation Failed"),
+	INDIVIDUAL_BIOMETRIC_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "004" , "Individual Biometric Validation Failed"),
+	APPLICANT_DOCUMENT_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "005" , "Applicant Document Validation Failed"),
+	MASTER_DATA_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "006" , "Master Data Validation Failed"),
+	ACTIVATE_DEACTIVATE_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "007" , "Packet Validation for Activate/Deactivate Packet Failed"),
+	UIN_NOT_FOUND_IDREPO(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "008" , "UIN is Not Found in ID Repository"),
+	MANDATORY_VALIDATION_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "009" , "Mandatory Fields are Not Present in ID Object"),
 	RID_AND_TYPE_SYNC_FAILED(StatusConstants.PACKET_VALIDATOR_MODULE_FAILED + "010" , "RID & Type not matched from sync table"),
 	
 	//External stage
@@ -40,11 +40,11 @@ public enum StatusUtil {
 
 	//OSI Validator  stage
 	//1.UMC Validator stage
-	GPS_DETAILS_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "001" , "GPS details are not found in packet"),
-	CENTER_ID_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "002" , "CenterId not found in packet"),
-	CENTER_ID_INACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "003" , "CenterId was inactive during packet creation - "),
-	MACHINE_ID_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "004" , "MachineId not found in packet"),
-	MACHINE_ID_NOT_ACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "005" , "MachineId was inactive during packet creation - "),
+	GPS_DETAILS_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "001" , "GPS Details are Not Found in Packet"),
+	CENTER_ID_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "002" , "Center ID Not Found in Master DB - "),
+	CENTER_ID_INACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "003" , "Center was InActive during Packet Creation - "),
+	MACHINE_ID_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "004" , "Machine ID Not Found in Master DB - "),
+	MACHINE_ID_NOT_ACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "005" , "Machine ID was InActive during Packet Creation - "),
 	SUPERVISOR_OFFICER_NOT_ACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "006" , "SupervisorId and OfficerId are inActive"),
 	CENTER_DEVICE_MAPPING_NOT_FOUND(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "007" , "Center-Device Mapping Not Found - "),
 	CENTER_DEVICE_MAPPING_INACTIVE(StatusConstants.OSI_VALIDAOR_MODULE_FAILED + "008" , "Center-Device Mapping was InActive during Packet Creation - "),
@@ -130,20 +130,20 @@ public enum StatusUtil {
   UIN_DEACTIVATION_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "007" , "UIN Deactivation  failed - "),
   LINK_RID_FOR_LOST_PACKET_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "008" , "UIn not found the the matched RID"),
   //System Exceptions
-	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
-	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
-	PACKET_NOT_FOUND_PACKET_STORE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Packet not found in file system"),
-	FS_ADAPTER_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "FileSystem adapter exception occured"),
-	JSCH_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "JSCH exception occured"),
-	SFTP_FILE_OPERATION_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "SFTP file operation exception occured"),
-	IO_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "IO exception occured"),
-	BIO_METRIC_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric exception occured in IDA"),
+	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus Scanner Service is not accessible"),
+	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Databse Not Accessible"),
+	PACKET_NOT_FOUND_PACKET_STORE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Packet not found in File System"),
+	FS_ADAPTER_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "FS Adapter Exception Occurred"),
+	JSCH_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "JSCH Connection Exception Occurred"),
+	SFTP_FILE_OPERATION_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "SFTP File Operation Exception Occurred"),
+	IO_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "IO Exception Occurred"),
+	BIO_METRIC_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric Exception Occurred in IDA "),
 	BIO_METRIC_FILE_MISSING(StatusConstants.SYSTEM_EXCEPTION_CODE , "Applicant biometric fileName/file is missing"),
 	
 	
 	UNKNOWN_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Unknown exception occured "),
 	API_RESOUCE_ACCESS_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Unable to access API resource" ),
-    JSON_PARSING_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Error occured while parsing json"),
+    JSON_PARSING_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Error Occurred while Parsing JSON"),
     BASE_CHECKED_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Packet validation failed "),
     BASE_UNCHECKED_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Packet validation failed "),
     
@@ -160,8 +160,7 @@ public enum StatusUtil {
     IIEGAL_ARGUMENT_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Illegal Argument Exception Occurred - "),
     DEMO_DEDUPE_FAILED_IN_ABIS(StatusConstants.SYSTEM_EXCEPTION_CODE , "Demo Dedupe Failed  in ABIS"),
     RE_PROCESS_FAILED(StatusConstants.RE_PROCESS_MODULE_FAILED+"001","Reprocess count has exceeded the configured attempts"),
-	RE_PROCESS_COMPLETED(StatusConstants.RE_PROCESS_MODULE_SUCCESS+"001","Reprocess Completed"),
-    PACKET_CLEANUP_FAILED1("","");
+	RE_PROCESS_COMPLETED(StatusConstants.RE_PROCESS_MODULE_SUCCESS+"001","Reprocess Completed");
 
 	private final String statusComment;
 	private final String statusCode;
