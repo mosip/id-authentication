@@ -1,14 +1,17 @@
 package io.mosip.kernel.masterdata.dto;
 
+import java.time.LocalTime;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io.mosip.kernel.masterdata.validator.ValidLangCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 /**
- * This request DTO for update Registration center by Admin
+ * This request DTO for create and update Registration center by Admin
  * 
  * @author Megha Tanga
  * 
@@ -17,21 +20,16 @@ import lombok.Data;
  */
 
 @Data
-public class RegistrationCenterPutReqAdmDto extends RegcenterBaseDto {
-
-	@NotBlank
-	@Size(min = 1, max = 10)
-	private String id;
-
-	/*@NotBlank
-	@Size(min = 1, max = 36)
-	private String centerTypeCode;*/
-	
+public class RegCenterPostReqPrimAdmDto extends RegcenterBaseDto {
 	
 	@NotBlank
 	@Size(min = 1, max = 128)
 	private String name;
-	
+
+	/*@NotBlank
+	@Size(min = 1, max = 36)
+	private String centerTypeCode;*/
+
 	@NotBlank
 	@Size(min = 1, max = 256)
 	private String addressLine1;
@@ -41,19 +39,6 @@ public class RegistrationCenterPutReqAdmDto extends RegcenterBaseDto {
 
 	@Size(min = 0, max = 256)
 	private String addressLine3;
-
-	@ValidLangCode
-	private String langCode;
-
-	private Short numberOfKiosks;
-		
-	@Size(min = 0, max = 128)
-	private String contactPerson;
-	
-	@NotNull
-	private Boolean isActive;
-	
-	
 
 	/*@NotBlank
 	@Size(min = 1, max = 32)
@@ -72,11 +57,15 @@ public class RegistrationCenterPutReqAdmDto extends RegcenterBaseDto {
 	private String holidayLocationCode;
 
 	@Size(min = 0, max = 16)
-	private String contactPhone;*/
+	private String contactPhone;
 
-	/*@NotBlank
+	@NotBlank
 	@Size(min = 1, max = 32)
 	private String workingHours;*/
+
+	@NotBlank
+	@Size(min=3)
+	private String langCode;
 
 	/*@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
@@ -91,18 +80,19 @@ public class RegistrationCenterPutReqAdmDto extends RegcenterBaseDto {
 	private LocalTime centerEndTime;
 
 	@Size(min = 0, max = 64)
-	private String timeZone;
-*/
-	
+	private String timeZone;*/
+
+	@Size(min = 0, max = 128)
+	private String contactPerson;
+
 	/*@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
 	private LocalTime lunchStartTime;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-	private LocalTime lunchEndTime;*/
+	private LocalTime lunchEndTime;
 	
-	/*@NotNull
+	@NotBlank
 	@Size(min=1, max=36)
 	private String zoneCode;*/
-	
-	
+
 }
