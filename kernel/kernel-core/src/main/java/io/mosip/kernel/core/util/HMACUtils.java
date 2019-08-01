@@ -74,10 +74,22 @@ public final class HMACUtils {
 	 * @param salt  digest bytes
 	 * @return String converted digest as plain text
 	 */
-	public static synchronized String digestAsPlainTextWithSalt(final byte[] bytes, final byte[] salt) {
-		messageDigest.update(bytes);
-		messageDigest.update(salt);
-		return DatatypeConverter.printHexBinary(messageDigest.digest());
+	public static synchronized String digestAsPlainTextWithSalt(final byte[] password, final byte[] salt) {
+//		messageDigest.update(bytes);
+//		messageDigest.update(salt);
+//		return DatatypeConverter.printHexBinary(messageDigest.digest());
+		KeySpec spec = null;
+        try {
+        	spec = new PBEKeySpec(new String(password,"UTF-8").toCharArray(), Base64.decodeBase64(salt), 27500, 512);
+            byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
+            return Base64.encodeBase64String(key);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException("Credential could not be encoded", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    
 	}
 
 	/**
@@ -157,15 +169,10 @@ public final class HMACUtils {
 	 */
 	private HMACUtils() {
 	}
+
 	
-	public static void main(String arg[])
-	{
-		String salt ="NPCA--9rCf76rRgaSeLGdg";
-		System.out.println(encode("mosip",27500,salt.getBytes()));
-	}
-	
-	 private static String encode(String rawPassword, int iterations, byte[] salt) {
-	        KeySpec spec = new PBEKeySpec(rawPassword.toCharArray(), Base64.decodeBase64(salt), iterations, 512);
+	 private static String encode(String password, byte[] salt) {
+	        KeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.decodeBase64(salt), 27500, 512);
 
 	        try {
 	            byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
