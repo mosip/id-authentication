@@ -80,6 +80,10 @@ public final class StatusConstants {
     public static final String UIN_GENERATOR_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "UIN-";
     public static final String UIN_GENERATOR_MODULE_SUCCESS = UIN_GENERATOR_MODULE + SUCCESS;
     public static final String UIN_GENERATOR_MODULE_FAILED = UIN_GENERATOR_MODULE + FAILED;
+    
+    public static final String RE_PROCESS_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RPS-";
+    public static final String RE_PROCESS_MODULE_SUCCESS = RE_PROCESS_MODULE+ SUCCESS;
+    public static final String RE_PROCESS_MODULE_FAILED = RE_PROCESS_MODULE+ FAILED;
 
     
 

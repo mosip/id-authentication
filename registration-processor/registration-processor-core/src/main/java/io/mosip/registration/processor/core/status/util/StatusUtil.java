@@ -97,9 +97,11 @@ public enum StatusUtil {
    LOST_PACKET_MULTIPLE_MATCH_FOUND(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "003", "Multiple Match was Found for the Biometrics Received"),
 
    //Biometric authentication stage
-   BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "Biometric Authentication Failed - Biometric file not found"),
-   BIOMETRIC_AUTHENTICATION_SUCCESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "001", "Biometric Authentication is Successful"),
-   IDA_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "IDA authentication Failed - "),
+   BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_FAILED+"001","Biometric Authentication has Failed"), 
+	BIOMETRIC_AUTHENTICATION_SUCCESS(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_SUCCESS+"001","Biometric Authentication is Successful"),
+	BIOMETRIC_FILE_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric File Not Found"),
+	BIOMETRIC_AUTHENTICATION_FAILED_FILE_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric Authentication Failed File is not present"),
+	INDIVIDUAL_BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_FAILED+"001","Individual authentication failed"),
 
    //Demo dedupe stage
    DEMO_DEDUPE_SUCCESS(StatusConstants.DEMO_DEDUPE_MODULE_SUCCESS + "001" , "Demo Dedupe is Successful"),
@@ -157,7 +159,8 @@ public enum StatusUtil {
 
     IIEGAL_ARGUMENT_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Illegal Argument Exception Occurred - "),
     DEMO_DEDUPE_FAILED_IN_ABIS(StatusConstants.SYSTEM_EXCEPTION_CODE , "Demo Dedupe Failed  in ABIS"),
-
+    RE_PROCESS_FAILED(StatusConstants.RE_PROCESS_MODULE_FAILED+"001","Reprocess count has exceeded the configured attempts"),
+	RE_PROCESS_COMPLETED(StatusConstants.RE_PROCESS_MODULE_SUCCESS+"001","Reprocess Completed"),
     PACKET_CLEANUP_FAILED1("","");
 
 	private final String statusComment;
