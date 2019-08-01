@@ -156,6 +156,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 	@Autowired
 	ABISHandlerUtil aBISHandlerUtil;
+	
+	private TrimExceptionMessage trimExceptionMessage = new TrimExceptionMessage();
 
 	/*
 	 * (non-Javadoc)
@@ -167,7 +169,6 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 	@SuppressWarnings("unchecked")
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		TrimExceptionMessage trimExceptionMessage = new TrimExceptionMessage();
 		boolean isTransactionSuccessful = Boolean.FALSE;
 		object.setMessageBusAddress(MessageBusAddress.UIN_GENERATION_BUS_IN);
 		object.setInternalError(Boolean.FALSE);
@@ -221,12 +222,12 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 					if (idResponseDTO != null && idResponseDTO.getResponse() != null) {
 						generateVid(registrationId, uinResponseDto.getResponse().getUin());
 						registrationStatusDto.setStatusComment(StatusUtil.UIN_GENERATED_SUCCESS.getMessage());
-
+						registrationStatusDto.setSubStatusCode(StatusUtil.UIN_GENERATED_SUCCESS.getCode());
 						sendResponseToUinGenerator(registrationId, uinResponseDto.getResponse().getUin(),
 								UINConstants.UIN_ASSIGNED);
 						isTransactionSuccessful = true;
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSED.toString());
-						description.setMessage("UIN updated successfully for registrationId " + registrationId);
+						description.setMessage(StatusUtil.UIN_GENERATED_SUCCESS.getMessage() + registrationId);
 						registrationStatusDto
 								.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 
@@ -234,7 +235,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						String statusComment = idResponseDTO.getErrors() != null
 								? idResponseDTO.getErrors().get(0).getMessage()
 								: UINConstants.NULL_IDREPO_RESPONSE;
-						registrationStatusDto.setStatusComment(statusComment);
+						registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UIN_GENERATION_FAILED.getMessage() + statusComment));
+						registrationStatusDto.setSubStatusCode(StatusUtil.UIN_GENERATION_FAILED.getCode());
 						object.setInternalError(Boolean.TRUE);
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 						registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
@@ -279,6 +281,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto
 					.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.FS_ADAPTER_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -292,6 +295,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		} catch (ApisResourceAccessException ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.API_RESOUCE_ACCESS_FAILED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.API_RESOUCE_ACCESS_FAILED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.APIS_RESOURCE_ACCESS_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -305,6 +309,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		} catch (IOException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.IO_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.IO_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.IOEXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -317,6 +322,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -329,6 +335,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		} finally {
 			if (description.getStatusComment() != null)
 				registrationStatusDto.setStatusComment(description.getStatusComment());
+			registrationStatusDto.setSubStatusCode(description.getSubStatusCode());
 			if (description.getCode() != null)
 				registrationStatusDto.setStatusCode(description.getCode());
 
@@ -514,6 +521,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 				isTransactionSuccessful = true;
 				description.setCode(RegistrationStatusCode.PROCESSED.toString());
 				description.setStatusComment(StatusUtil.UIN_DATA_UPDATION_SUCCESS.getMessage());
+				description.setSubStatusCode(StatusUtil.UIN_DATA_UPDATION_SUCCESS.getCode());
 				description.setMessage(StatusUtil.UIN_DATA_UPDATION_SUCCESS.getMessage() +  " for registration Id: " + regId);
 				object.setIsValid(Boolean.TRUE);
 			}
@@ -521,7 +529,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			String statusComment = result != null && result.getErrors() != null ? result.getErrors().get(0).getMessage()
 					: UINConstants.NULL_IDREPO_RESPONSE;
 			description.setCode(RegistrationStatusCode.FAILED.toString());
-			description.setStatusComment(statusComment);
+			description.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UIN_DATA_UPDATION_FAILED.getMessage() + statusComment));
+			description.setSubStatusCode(StatusUtil.UIN_DATA_UPDATION_FAILED.getCode());
 			description
 					.setMessage(UINConstants.UIN_FAILURE + regId + "::" + result != null && result.getErrors() != null
 							? result.getErrors().get(0).getMessage()
@@ -605,6 +614,7 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 				description.setCode(RegistrationStatusCode.FAILED.toString());
 				description.setStatusComment(StatusUtil.UIN_ALREADY_ACTIVATED.getMessage());
+				description.setSubStatusCode(StatusUtil.UIN_ALREADY_ACTIVATED.getCode());
 				description.setMessage(StatusUtil.UIN_ALREADY_ACTIVATED.getMessage()  + regId);
 				object.setIsValid(Boolean.FALSE);
 				return isTransactionSuccessful;
@@ -632,14 +642,14 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						isTransactionSuccessful = true;
 						description.setCode(RegistrationStatusCode.PROCESSED.toString());
 						description.setStatusComment(StatusUtil.UIN_ACTIVATED_SUCCESS.getMessage());
+						description.setSubStatusCode(StatusUtil.UIN_ACTIVATED_SUCCESS.getCode());
 						description.setMessage(StatusUtil.UIN_ACTIVATED_SUCCESS.getMessage()+ regId);
 						object.setIsValid(Boolean.TRUE);
 					} else {
 						description.setCode(RegistrationStatusCode.FAILED.toString());
-						description.setStatusComment(UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE
-								+ " for registration Id:  " + regId);
-						description.setMessage(UinStatusMessage.UIN_UPDATION_RE_ACTIVATION_FAILURE
-								+ " for registration Id:  " + regId);
+						description.setStatusComment(StatusUtil.UIN_ACTIVATED_FAILED.getMessage());
+						description.setSubStatusCode(StatusUtil.UIN_ACTIVATED_FAILED.getCode());
+						description.setMessage(StatusUtil.UIN_ACTIVATED_FAILED.getMessage() + regId);
 						object.setIsValid(Boolean.FALSE);
 					}
 				} else {
@@ -647,7 +657,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 							? result.getErrors().get(0).getMessage()
 							: UINConstants.NULL_IDREPO_RESPONSE;
 					description.setCode(RegistrationStatusCode.FAILED.toString());
-					description.setStatusComment(statusComment);
+					description.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UIN_REACTIVATION_FAILED.getMessage() + statusComment));
+					description.setSubStatusCode(StatusUtil.UIN_REACTIVATION_FAILED.getCode());
 					description.setMessage(
 							UINConstants.UIN_FAILURE + regId + "::" + result != null && result.getErrors() != null
 									? result.getErrors().get(0).getMessage()
@@ -688,8 +699,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		if (idResponseDto.getResponse() != null
 				&& idResponseDto.getResponse().getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
 			description.setCode(RegistrationStatusCode.FAILED.toString());
-			description.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId);
-			description.setMessage(UinStatusMessage.UIN_DEACTIVATE_FAILURE + regId);
+			description.setStatusComment(StatusUtil.UIN_ALREADY_DEACTIVATED.getMessage());
+			description.setSubStatusCode(StatusUtil.UIN_ALREADY_DEACTIVATED.getCode());
+			description.setMessage(StatusUtil.UIN_ALREADY_DEACTIVATED.getMessage() + regId);
 			object.setIsValid(Boolean.FALSE);
 			return idResponseDto;
 
@@ -712,8 +724,9 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 			if (idResponseDto != null && idResponseDto.getResponse() != null) {
 				if (idResponseDto.getResponse().getStatus().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
 					description.setCode(RegistrationStatusCode.PROCESSED.toString());
-					description.setStatusComment(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
-					description.setMessage(UinStatusMessage.UIN_DEACTIVATE_SUCCESS + regId);
+					description.setStatusComment(StatusUtil.UIN_DEACTIVATION_SUCCESS.getMessage());
+					description.setSubStatusCode(StatusUtil.UIN_DEACTIVATION_SUCCESS.getCode());
+					description.setMessage(StatusUtil.UIN_DEACTIVATION_SUCCESS.getMessage() + regId);
 					object.setIsValid(Boolean.TRUE);
 					statusComment = idResponseDto.getResponse().getStatus().toString();
 
@@ -724,7 +737,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 						? idResponseDto.getErrors().get(0).getMessage()
 						: UINConstants.NULL_IDREPO_RESPONSE;
 				description.setCode(RegistrationStatusCode.FAILED.toString());
-				description.setStatusComment(statusComment);
+				description.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.UIN_DEACTIVATION_FAILED.getMessage() + statusComment));
+				description.setSubStatusCode(StatusUtil.UIN_DEACTIVATION_FAILED.getCode());
 				description.setMessage(statusComment);
 				object.setIsValid(Boolean.FALSE);
 			}
@@ -971,7 +985,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 
 			if (idResponse != null && idResponse.getResponse() != null) {
 				description.setCode(RegistrationStatusCode.PROCESSED.toString());
-				description.setStatusComment(UinStatusMessage.PACKET_LOST_UIN_UPDATION_SUCCESS_MSG + lostPacketRegId);
+				description.setStatusComment(StatusUtil.LINK_RID_FOR_LOST_PACKET_SUCCESS.getMessage());
+				description.setSubStatusCode(StatusUtil.LINK_RID_FOR_LOST_PACKET_SUCCESS.getCode());
 				description.setMessage(UinStatusMessage.PACKET_LOST_UIN_UPDATION_SUCCESS_MSG + lostPacketRegId);
 				description.setTransactionStatusCode(RegistrationTransactionStatusCode.PROCESSED.toString());
 				object.setIsValid(Boolean.TRUE);
@@ -986,8 +1001,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 								: UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + "  "
 										+ UINConstants.NULL_IDREPO_RESPONSE + "for lostPacketRegId " + lostPacketRegId;
 				description.setCode(RegistrationStatusCode.PROCESSING.toString());
-				description.setStatusComment(statusComment);
-
+				description.setStatusComment(StatusUtil.LINK_RID_FOR_LOST_PACKET_SUCCESS.getMessage() + statusComment);
+				description.setSubStatusCode(StatusUtil.LINK_RID_FOR_LOST_PACKET_SUCCESS.getCode());
 				description.setTransactionStatusCode(registrationStatusMapperUtil
 						.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_ID_REPO_ERROR));
 				if (UINConstants.UIN_FAILURE + lostPacketRegId + "::" + idResponse != null
@@ -1004,7 +1019,8 @@ public class UinGeneratorStage extends MosipVerticleAPIManager {
 		} else {
 			statusComment = UinStatusMessage.PACKET_LOST_UIN_UPDATION_FAILURE_MSG + "  "
 					+ UINConstants.NULL_IDREPO_RESPONSE + " UIN not available for matchedRegId " + matchedRegId;
-			description.setStatusComment(statusComment);
+			description.setStatusComment(StatusUtil.LINK_RID_FOR_LOST_PACKET_FAILED.getMessage());
+			description.setSubStatusCode(StatusUtil.LINK_RID_FOR_LOST_PACKET_FAILED.getCode());
 			description.setCode(RegistrationStatusCode.REJECTED.toString());
 			description.setTransactionStatusCode(registrationStatusMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.PACKET_UIN_GENERATION_FAILED));

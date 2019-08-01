@@ -87,7 +87,46 @@ public enum StatusUtil {
    INSERT_IDENTIFY_RESPONSE_SUCCESS(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Recived sucessful response from ABIS"),
    INSERT_IDENTIFY_RESPONSE_FAILED(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Received failed response from ABIS - "),
 
-   //System Exceptions
+   //Bio dedupe stage
+   BIO_DEDUPE_INPROGRESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "001", "Biometric Deduplication In-Progress"),
+   BIO_DEDUPE_SUCCESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "002", "Biometric Deduplication is Successful"),
+   BIO_DEDUPE_POTENTIAL_MATCH(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "Potential Biometric Match Found while Processing Packet"),
+   LOST_PACKET_BIOMETRICS_NOT_FOUND(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "002", "No Match was Found for the Biometrics Received"),
+   LOST_PACKET_UNIQUE_MATCH_FOUND(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "003", "Unique Match was Found for the Biometrics Received"),
+   LOST_PACKET_MULTIPLE_MATCH_FOUND(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "003", "Multiple Match was Found for the Biometrics Received"),
+
+   //Biometric authentication stage
+   BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "Biometric Authentication Failed - Biometric file not found"),
+   BIOMETRIC_AUTHENTICATION_SUCCESS(StatusConstants.BIO_DEDUPE_MODULE_SUCCESS + "001", "Biometric Authentication is Successful"),
+   IDA_AUTHENTICATION_FAILED(StatusConstants.BIO_DEDUPE_MODULE_FAILED + "001", "IDA authentication Failed - "),
+
+   //Demo dedupe stage
+   DEMO_DEDUPE_SUCCESS(StatusConstants.DEMO_DEDUPE_MODULE_SUCCESS + "001" , "Demo Dedupe is Successful"),
+   POTENTIAL_MATCH_FOUND_IN_ABIS(StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "001" , "Biometric Duplicate was Found in ABIS"),
+   POTENTIAL_MATCH_FOUND(StatusConstants.DEMO_DEDUPE_MODULE_FAILED + "002" , "Potential Demo Match was Found"),
+  //Manual verification stage
+   MANUAL_VERIFIER_APPROVED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE_SUCCESS + "001" , "Match Not Found by Manual Verifier"),
+   MANUAL_VERIFIER_REJECTED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE_FAILED + "001" , "Match Found by Manual Verifier"),
+
+   //Uin generator stage
+   UIN_GENERATED_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "001" , "UIN Generated Successfully"),
+   UIN_DATA_UPDATION_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "002" , "UIN Data is Updated Successfully"),
+   UIN_ACTIVATED_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "003" , "UIN is Activated"),
+   UIN_DEACTIVATION_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "004" , "UIN is Deactivated"),
+   LINK_RID_FOR_LOST_PACKET_SUCCESS(StatusConstants.UIN_GENERATOR_MODULE_SUCCESS + "005" , "RID linked Successfully for Lost UIN Packet"),
+
+
+
+   UIN_ALREADY_ACTIVATED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "001" , "UIN is already Activated"),
+   UIN_ACTIVATED_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "002" , "UIN Activation Failed"),
+   UIN_ALREADY_DEACTIVATED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "003" , "UIN already deactivated"),
+
+   UIN_GENERATION_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "004" , "UIN Generation failed - "),
+   UIN_DATA_UPDATION_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "005" , "UIN Updation failed - "),
+   UIN_REACTIVATION_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "006" , "UIN Reactivation  failed - "),
+  UIN_DEACTIVATION_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "007" , "UIN Deactivation  failed - "),
+  LINK_RID_FOR_LOST_PACKET_FAILED(StatusConstants.UIN_GENERATOR_MODULE_FAILED + "008" , "UIn not found the the matched RID"),
+  //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
 	PACKET_NOT_FOUND_PACKET_STORE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Packet not found in file system"),
@@ -112,13 +151,14 @@ public enum StatusUtil {
     IDENTIFY_RESPONSE_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Identify Response Failed for Request ID - "),
     INSERT_RESPONSE_FAILED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Insert Response Failed for Request ID - "),
     SYSTEM_EXCEPTION_OCCURED(StatusConstants.SYSTEM_EXCEPTION_CODE , "Internal error occured - "),
-    
-	PACKET_CLEANUP_FAILED1("",""), 
-	BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_FAILED+"001","Biometric Authentication has Failed"), 
-	BIOMETRIC_AUTHENTICATION_SUCCESS(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_SUCCESS+"001","Biometric Authentication is Successful"),
-	BIOMETRIC_FILE_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric File Not Found"),
-	BIOMETRIC_AUTHENTICATION_FAILED_FILE_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Biometric Authentication Failed File is not present"),
-	INDIVIDUAL_BIOMETRIC_AUTHENTICATION_FAILED(StatusConstants.BIO_METRIC_AUTHENTICATION_MODULE_FAILED+"001","Individual authentication failed");
+   
+    CBEF_NOT_FOUND(StatusConstants.SYSTEM_EXCEPTION_CODE , "Unable to Find Applicant CBEFF for Adult"),
+
+    IIEGAL_ARGUMENT_EXCEPTION(StatusConstants.SYSTEM_EXCEPTION_CODE , "Illegal Argument Exception Occurred - "),
+    DEMO_DEDUPE_FAILED_IN_ABIS(StatusConstants.SYSTEM_EXCEPTION_CODE , "Demo Dedupe Failed  in ABIS"),
+
+    PACKET_CLEANUP_FAILED1("","");
+	
 	private final String statusComment;
 	private final String statusCode;
 	
