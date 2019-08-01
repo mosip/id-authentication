@@ -26,10 +26,10 @@ import io.mosip.kernel.core.http.ResponseWrapper;
 
 public class EncryptionInterceptor extends EmptyInterceptor {
 
-	@Value("${encrypt.url:http://localhost:8088/v1/keymanager/encrypt}")
+	@Value("${mosip.kernel.encrypt.url:http://localhost:8088/v1/keymanager/encrypt}")
 	String encryptUrl;
 
-	@Value("${decrypt.url:http://localhost:8088/v1/keymanager/decrypt}")
+	@Value("${mosip.kerenl.decrypt.url:http://localhost:8088/v1/keymanager/decrypt}")
 	String decryptUrl;
 
 	/**
