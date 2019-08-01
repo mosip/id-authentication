@@ -5,7 +5,11 @@ package io.mosip.kernel.core.util;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.binary.Base64;
@@ -153,4 +157,33 @@ public final class HMACUtils {
 	 */
 	private HMACUtils() {
 	}
+	
+	public static void main(String arg[])
+	{
+		String salt ="NPCA--9rCf76rRgaSeLGdg";
+		System.out.println(encode("mosip",27500,salt.getBytes()));
+	}
+	
+	 private static String encode(String rawPassword, int iterations, byte[] salt) {
+	        KeySpec spec = new PBEKeySpec(rawPassword.toCharArray(), Base64.decodeBase64(salt), iterations, 512);
+
+	        try {
+	            byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
+	            return Base64.encodeBase64String(key);
+	        } catch (InvalidKeySpecException e) {
+	            throw new RuntimeException("Credential could not be encoded", e);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new RuntimeException(e);
+	        }
+	    }
+	
+	
+	private static SecretKeyFactory getSecretKeyFactory() throws java.security.NoSuchAlgorithmException {
+        try {
+            return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("PBKDF2 algorithm not found", e);
+        }
+    }
 }
