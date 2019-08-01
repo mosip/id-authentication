@@ -1,10 +1,15 @@
 package io.mosip.kernel.auth.util;
 
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.www.NonceExpiredException;
 import org.springframework.stereotype.Component;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -15,11 +20,21 @@ import io.mosip.kernel.auth.config.MosipEnvironment;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.dto.MosipUser;
 import io.mosip.kernel.auth.dto.MosipUserDto;
-import io.mosip.kernel.auth.dto.MosipUserTokenDto;
 import io.mosip.kernel.auth.dto.MosipUserToken;
+import io.mosip.kernel.auth.dto.MosipUserTokenDto;
+import io.mosip.kernel.auth.dto.RealmAccessDto;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.service.TokenService;
+import io.mosip.kernel.core.util.DateUtils;
 
+/**
+ * Token validator
+ * 
+ * @author Raj Kumar Jha
+ * @author Ramadurai Pandian
+ * @author Urvil Joshi
+ *
+ */
 @Component
 public class TokenValidator {
 
@@ -47,6 +62,40 @@ public class TokenValidator {
 				(String) claims.get("role"));
 	}
 
+	public MosipUserDto getAdminClaims(String token) {
+		DecodedJWT decodedJWT = JWT.decode(token);
+		Claim realmAccess = decodedJWT.getClaim("realm_access");
+		RealmAccessDto access = realmAccess.as(RealmAccessDto.class);
+		String[] roles = access.getRoles();
+		StringBuilder builder = new StringBuilder();
+
+		for (String r : roles) {
+			builder.append(r);
+			builder.append(";");
+		}
+		MosipUserDto dto = new MosipUserDto();
+		dto.setUserId(decodedJWT.getClaim("preferred_username").asString());
+		dto.setMail(decodedJWT.getClaim("email").asString());
+		dto.setMobile(decodedJWT.getClaim("contactno").asString());
+		dto.setName(decodedJWT.getClaim("preferred_username").asString());
+		dto.setRId(decodedJWT.getClaim("rid").asString());
+		dto.setRole(builder.toString());
+		return dto;
+	}
+
+	/**
+	 * Returns true if token if expired else false
+	 * 
+	 * @param token the token
+	 * @return true if token if expired else false
+	 */
+	public boolean isExpired(String token) {
+		DecodedJWT decodedJWT = JWT.decode(token);
+		long expiryEpochTime = decodedJWT.getClaim("exp").asLong();
+		long currentEpoch = DateUtils.getUTCCurrentDateTime().toEpochSecond(ZoneOffset.UTC);
+		return currentEpoch < expiryEpochTime;
+	}
+
 	private Claims getClaims(String token) throws Exception {
 		String token_base = mosipEnvironment.getTokenBase();
 		String secret = mosipEnvironment.getJwtSecret();
@@ -61,16 +110,14 @@ public class TokenValidator {
 		} catch (SignatureException e) {
 			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 		} catch (JwtException e) {
-			if( e instanceof ExpiredJwtException)
-			{
-				System.out.println("Token expired message "+ e.getMessage() + " Token "+token);
-				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(), AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
-			}
-			else
-			{
+			if (e instanceof ExpiredJwtException) {
+				System.out.println("Token expired message " + e.getMessage() + " Token " + token);
+				throw new AuthManagerException(AuthErrorCode.TOKEN_EXPIRED.getErrorCode(),
+						AuthErrorCode.TOKEN_EXPIRED.getErrorMessage());
+			} else {
 				throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), e.getMessage());
 			}
-			
+
 		}
 		return claims;
 	}
@@ -82,7 +129,8 @@ public class TokenValidator {
 			MosipUser mosipUser = buildMosipUser(claims);
 			return new MosipUserToken(mosipUser, token);
 		} else {
-			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
+					AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 	}
 
@@ -93,7 +141,8 @@ public class TokenValidator {
 			MosipUser mosipUser = buildMosipUser(claims);
 			return new MosipUserToken(mosipUser, token);
 		} else {
-			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),AuthErrorCode.INVALID_TOKEN.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.INVALID_TOKEN.getErrorCode(),
+					AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 	}
 
@@ -121,7 +170,8 @@ public class TokenValidator {
 			MosipUserDto mosipUserDto = buildDto(claims);
 			return new MosipUserTokenDto(mosipUserDto, otp, null, 0, null, null);
 		} else {
-			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(), AuthErrorCode.UNAUTHORIZED.getErrorMessage());
+			throw new AuthManagerException(AuthErrorCode.UNAUTHORIZED.getErrorCode(),
+					AuthErrorCode.UNAUTHORIZED.getErrorMessage());
 		}
 	}
 
