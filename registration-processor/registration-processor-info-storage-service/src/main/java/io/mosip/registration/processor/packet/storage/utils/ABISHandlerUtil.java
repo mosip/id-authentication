@@ -91,16 +91,17 @@ public class ABISHandlerUtil {
 				for (AbisResponseDetDto abisResponseDetDto : abisResponseDetDtoList) {
 					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
-				List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
-				if (!CollectionUtils.isEmpty(matchedRegIds)) {
-					List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
-							RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-					List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
-							RegistrationTransactionStatusCode.PROCESSED.toString());
-					uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, registrationType);
-					uniqueRIDs.addAll(processingRegIds);
+				if (!CollectionUtils.isEmpty(machedRefIds)) {
+					List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
+					if (!CollectionUtils.isEmpty(matchedRegIds)) {
+						List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
+								RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+						List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
+								RegistrationTransactionStatusCode.PROCESSED.toString());
+						uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, registrationType);
+						uniqueRIDs.addAll(processingRegIds);
+					}
 				}
-
 			}
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),
