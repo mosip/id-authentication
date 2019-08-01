@@ -269,7 +269,7 @@ public class TitleServiceImpl implements TitleService {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		
-	       if(filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+	       if(filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Title.class)) {
 	    	  filterValueDto.getFilters().stream().forEach(filter ->{
 	    		  masterDataFilterHelper.filterValues(Title.class, filter, filterValueDto).forEach(filteredValue ->{
 	    			  if(filteredValue!=null) {

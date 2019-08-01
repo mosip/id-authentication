@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,7 @@ public class DOBMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
+	@Ignore
 	@Test
 	public void TestValidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
@@ -97,6 +99,7 @@ public class DOBMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
+	 @Ignore
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();

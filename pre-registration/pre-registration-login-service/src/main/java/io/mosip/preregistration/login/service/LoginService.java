@@ -164,14 +164,16 @@ public class LoginService {
 		log.info("sessionId", "idType", "id",
 				"In callsendOtp method of login service ");
 		MainResponseDTO<AuthNResponse> response  = null;
-		OtpRequestDTO otp=userOtpRequest.getRequest();
+		
 		requiredRequestMap.put("id",sendOtpId);
 		response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
-		
+		String userid=null;
+		boolean isSuccess=false;
 		try {
 			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
 				
-				
+				OtpRequestDTO otp=userOtpRequest.getRequest();
+				userid=otp.getUserId();
 				otpChannel=loginCommonUtil.validateUserId(otp.getUserId());
 				OtpUser user=new OtpUser(otp.getUserId().toLowerCase(),otpChannel, appId, useridtype,null,context);
 				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
@@ -189,8 +191,8 @@ public class LoginService {
 				ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
 				AuthNResponse responseBody=(AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class);
 				response.setResponse(responseBody);
-				}
-			
+				isSuccess=true;
+			}
 		}
 		catch(HttpServerErrorException | HttpClientErrorException ex){
 			log.info("sessionId", "idType", "id",
@@ -204,6 +206,16 @@ public class LoginService {
 		}
 		finally {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
+			if (isSuccess) {
+				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
+						"Otp send sucessfully",
+						AuditLogVariables.NO_ID.toString(), userid,
+						userid);
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Otp fail to send", AuditLogVariables.NO_ID.toString(),
+						userid, userid);
+	}
 		}
 		return response;
 	}

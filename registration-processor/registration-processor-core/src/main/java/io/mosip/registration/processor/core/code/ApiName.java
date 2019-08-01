@@ -54,7 +54,7 @@ public enum ApiName {
 
 	/** The biodedupe. */
 	BIODEDUPE,
-	
+
 	/** The idrepository. */
 	IDREPOSITORY,
 
@@ -73,16 +73,16 @@ public enum ApiName {
 	/** The ReverseDataSync *. */
 	REVERSEDATASYNC,
 
-	/**  The Device history *. */
+	/** The Device history *. */
 	DEVICESHISTORIES,
 
-	/**  The Reg center device history *. */
+	/** The Reg center device history *. */
 	REGISTRATIONCENTERDEVICEHISTORY,
 
-	/**  The registration center timestamp *. */
+	/** The registration center timestamp *. */
 	REGISTRATIONCENTERTIMESTAMP,
 
-	/**  The registration connector *. */
+	/** The registration connector *. */
 	REGISTRATIONCONNECTOR,
 
 	/** The fullname. */
@@ -161,10 +161,10 @@ public enum ApiName {
 	/** The packetreceiver. */
 	PACKETRECEIVER,
 
-	/**  The decryption api from DMZ *. */
+	/** The decryption api from DMZ *. */
 	DMZCRYPTOMANAGERDECRYPT,
 
-	/**  The AUDIT api from DMZ *. */
+	/** The AUDIT api from DMZ *. */
 	DMZAUDIT,
 
 	/** The centerdetails. */
@@ -175,32 +175,34 @@ public enum ApiName {
 
 	/** The external service. */
 	EISERVICE,
-	
-    /** The ridgeneration. */
+
+	/** The ridgeneration. */
 	RIDGENERATION,
-	
-    /** The retrieveidentity. */
-    RETRIEVEIDENTITY,
-    
-    /** The retrieveidentity using rid. */
+
+	/** The retrieveidentity. */
+	RETRIEVEIDENTITY,
+
+	/** The retrieveidentity using rid. */
 	RETRIEVEIDENTITYFROMRID,
-    
-    /**  The digitalsignature. */
+
+	/** The digitalsignature. */
 	DIGITALSIGNATURE,
-	
+
 	/** The Vid creation. */
 	CREATEVID,
-    
-    /**  The user details. */
-    USERDETAILS,
-    
-    /**  get operator rid from id. */
-    GETRIDFROMUSERID,
-    
-    /** The internalauth. */
-    INTERNALAUTH,
-	
+
+	/** The user details. */
+	USERDETAILS,
+
+	/** get operator rid from id. */
+	GETRIDFROMUSERID,
+
+	/** The internalauth. */
+	INTERNALAUTH,
+
 	/** The templates. */
-	TEMPLATES;
+	TEMPLATES,
+
+	GETUINBYVID;
 
 }

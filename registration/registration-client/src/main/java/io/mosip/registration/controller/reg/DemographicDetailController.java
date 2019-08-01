@@ -1163,7 +1163,6 @@ public class DemographicDetailController extends BaseController {
 					ageField.getStyleClass().remove("demoGraphicFieldLabelOnType");
 					dobMessage.setText(RegistrationUIConstants.INVALID_AGE + maxAge);
 					dobMessage.setVisible(true);
-					System.out.println(ageField.getStyleClass());
 					
 					generateAlert(dobParentPane, RegistrationConstants.DOB, dobMessage.getText());
 					parentFieldValidation();
@@ -2025,10 +2024,7 @@ public class DemographicDetailController extends BaseController {
 				if (old) {
 					keyboardPane.maxHeight(parentFlowPane.getHeight());
 					fullNameLocalLanguage.requestFocus();
-				} else {
-					keyboardPane.maxHeight(200);
-					keyboardNode.setManaged(false);
-				}
+				} 
 			});
 
 		} catch (RuntimeException runtimeException) {

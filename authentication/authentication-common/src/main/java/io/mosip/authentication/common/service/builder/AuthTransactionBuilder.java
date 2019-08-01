@@ -7,12 +7,14 @@ import org.springframework.core.env.PropertyResolver;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.helper.AuditHelper;
+import io.mosip.authentication.common.service.integration.IdRepoManager;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.otp.dto.OtpRequestDTO;
 import io.mosip.kernel.core.exception.ParseException;
@@ -187,6 +189,9 @@ public class AuthTransactionBuilder {
 				autnTxn.setStatusComment(comment);
 				// Setting primary code only
 				autnTxn.setLangCode(env.getProperty(IdAuthConfigKeyConstants.MOSIP_PRIMARY_LANGUAGE));
+					autnTxn.setUin(uin);
+					autnTxn.setUinHash(HMACUtils.digestAsPlainText
+							(HMACUtils.generateHash(uin.getBytes())));
 				return autnTxn;
 			} else {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "Missing arguments to build for AutnTxn",

@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="0.7"
+	 default-schema="public" default-owner="postgres">
+<role name="sysadmin"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="dbadmin"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="appadmin"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="kerneluser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="admuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<role name="repuser"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="mosip_kernel" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="sysadmin"/>
+	<tablespace name="pg_default"/>
+	<comment><![CDATA[Database to store all data which is required for kernel transaction and operations.]]></comment>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="kernel" rect-visible="true" fill-color="#83af1f">
+	<role name="sysadmin"/>
+</schema>
+
+<table name="otp_transaction">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[OTP Transaction: All OTP related data and validation details are maintained here. ]]></comment>
+	<position x="50" y="50"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[ID: Unique transaction id for each otp transaction request]]></comment>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Reference ID: Reference ID is a reference information received from OTP requester which can be used while validating the OTP.]]></comment>
+	</column>
+	<column name="ref_id_type">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Reference ID Type: Type of information in Reference ID field, used to reference this OTP request.]]></comment>
+	</column>
+	<column name="otp">
+		<type name="character varying" length="8"/>
+		<comment><![CDATA[OTP: One Time Pin which is generated based on the configuration setup and sent to the requester application / module.]]></comment>
+	</column>
+	<column name="generated_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Generated Date Time: Date and Time when the OTP was generated]]></comment>
+	</column>
+	<column name="expiry_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Expiry Date Time: Date Time when the OTP will be expired]]></comment>
+	</column>
+	<column name="validation_retry_count">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Validation Retry Count: Validation retry counts of this OTP request. If the validation retry crosses the threshold limit, then the OTP will be de-activated.]]></comment>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Status Code: Status of the OTP whether it is active or expired.]]></comment>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_otptrn_id" type="pk-constr" table="kernel.otp_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sync_job_def">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Sync Job Definition: Stores Sync jobs definition that MOSIP supports. This jobs are used to sync data from one application / module to another based on the sync frequency and other setup.]]></comment>
+	<position x="191.973" y="645.714"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Sync job id, a unique id generated for sync jobs configured.]]></comment>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Name: Name of the sync job being defined]]></comment>
+	</column>
+	<column name="api_name">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[API Name: Name of the API used for sync process.]]></comment>
+	</column>
+	<column name="parent_syncjob_id">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Parent Sync Job ID: Parent sync job id can be used to link one job to another based on the job dependencies.]]></comment>
+	</column>
+	<column name="sync_freq">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Sync Frequency: Frequency of the sync process for this job is defined in this field. It can be Daily, Monthly, hourly, etc. as defined by administrator.]]></comment>
+	</column>
+	<column name="lock_duration">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Lock Duration: Duration within which sync process has to be executed. If not done, the application can be locked.]]></comment>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_syncjob_id" type="pk-constr" table="kernel.sync_job_def">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_syncjob_name" table="kernel.sync_job_def"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="name"/>
+		</idxelement>
+</index>
+
+<table name="sync_transaction">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Sync Transaction: Sync instance table to track all the sync process that were executed. ]]></comment>
+	<position x="696.761" y="915.714"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Unique id generated for each sync transaction.]]></comment>
+	</column>
+	<column name="syncjob_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Sync Job ID: Id of the sync job definition for which the sync transaction is executed. Sync Job id refers to kernel.sync_job_def.id]]></comment>
+	</column>
+	<column name="sync_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Sync transaction Date Time: Date and time when this sync transaction happened.]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the sync transaction.]]></comment>
+	</column>
+	<column name="status_comment">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Status Comment: Comments captured as part of sync transaction (if any). This can be used in case someone wants to abort the transaction, comments can be provided as additional information.]]></comment>
+	</column>
+	<column name="trigger_point">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Trigger Point: Module / stage from where this sync transaction is triggered.]]></comment>
+	</column>
+	<column name="sync_from">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Sync From: Host application of the sync process]]></comment>
+	</column>
+	<column name="sync_to">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Sync To: Target application of the sync process]]></comment>
+	</column>
+	<column name="machine_id">
+		<type name="character varying" length="10"/>
+		<comment><![CDATA[Machine ID: Id of the machine which is used in this sync process. Machine_id refers to master.machine_list.id]]></comment>
+	</column>
+	<column name="regcntr_id">
+		<type name="character varying" length="10"/>
+		<comment><![CDATA[Registration Center ID: Id of the Registration Center which is part of the sync process. Regcntr_id refers to master.registration_center.id]]></comment>
+	</column>
+	<column name="ref_id_type">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Reference Id Type: Type of information in Reference ID field, used to reference the sync process by the host / target application.]]></comment>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="64"/>
+		<comment><![CDATA[Reference Id: Reference ID is the reference information received by the sync process triggered application / module for tracking purpose.]]></comment>
+	</column>
+	<column name="sync_param">
+		<type name="character varying" length="2048"/>
+		<comment><![CDATA[Sync Parameters: Parameters that are used to trigger the Sync process. This might contain from date, to date which can be used to get the incremental data. It can hold other parameters too.]]></comment>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_synctrn_id" type="pk-constr" table="kernel.sync_transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sync_control">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Sync Control: Kernel provides services to sync data from one application / module to another like masters data sync to registration client application. This table is used to maintain the control related information about the data that was synched. For eg. it stores information like last sync date time which can be used to sync data incrementally. ]]></comment>
+	<position x="660.092" y="560"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Unique Id used as a surrogate key.]]></comment>
+	</column>
+	<column name="syncjob_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Sync Job ID: Id of the sync job definition for which the sync controls are set / maintained.]]></comment>
+	</column>
+	<column name="machine_id">
+		<type name="character varying" length="10"/>
+		<comment><![CDATA[Machine ID: Id of the machine for which sync controls are set / maintained.]]></comment>
+	</column>
+	<column name="regcntr_id">
+		<type name="character varying" length="10"/>
+		<comment><![CDATA[Registration Center ID: Id of the Registration Center for which sync controls are set / maintained.]]></comment>
+	</column>
+	<column name="synctrn_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Sync Transaction ID: Successful transaction id of the sync process]]></comment>
+	</column>
+	<column name="last_sync_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Last Sync Date Time: Date and Time when the sync process was successfully completed. This date and time will be used to perform data sync incrementally.]]></comment>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_synctrl_id" type="pk-constr" table="kernel.sync_control">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_policy_def">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Policy Defination: Policy related to encryption key management is defined here. For eg. Expiry duration of a key generated.]]></comment>
+	<position x="584.422" y="42.8571"/>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
+	</column>
+	<column name="key_validity_duration">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Key Validity Duration: Duration for which key is valid]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_keypdef_id" type="pk-constr" table="kernel.key_policy_def">
+		<columns names="app_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_alias">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Alias: To maintain a system generated key as alias for the encryption key that will be stored in key-store devices like HSM.]]></comment>
+	<position x="567.143" y="281.536"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: Key alias id is a unique identifier (UUID) used as an alias of the encryption key stored in keystore like HSM (hardware security module).]]></comment>
+	</column>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Application ID: Application id for which the encryption key is generated]]></comment>
+	</column>
+	<column name="ref_id">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Reference ID: Reference ID is a reference inforamtion received from key requester which can be machine id, TSP id, etc.]]></comment>
+	</column>
+	<column name="key_gen_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Key Generated Date Time: Date and time when the key was generated.]]></comment>
+	</column>
+	<column name="key_expire_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Key Expiry Date Time: Date and time when the key will be expired. This will be derived based on the configuration / policy defined in Key policy definition.]]></comment>
+	</column>
+	<column name="status_code">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Status Code: Status of the key, whether it is active or expired.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<column name="lang_code">
+		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language Code : For multilanguage implementation this attribute Refers master.language.code. The value of some of the attributes in current record is stored in this respective language. ]]></comment>
+	</column>
+	<constraint name="pk_keymals_id" type="pk-constr" table="kernel.key_alias">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_policy_def_h">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Policy Definition History : This to track changes to master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ), Effective DateTimestamp is used for identifying latest or point in time information. Refer kernel.key_policy_def table description for details.   ]]></comment>
+	<position x="981.073" y="44.3929"/>
+	<column name="app_id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Application ID: Application id for which the key policy is defined]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective Date Timestamp : This to track master record whenever there is an INSERT/UPDATE/DELETE ( soft delete ).  The current record is effective from this date-time. ]]></comment>
+	</column>
+	<column name="key_validity_duration">
+		<type name="smallint" length="0"/>
+		<comment><![CDATA[Key Validity Duration: Duration for which key is valid]]></comment>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Active : Flag to mark whether the record is Active or In-active]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_keypdefh_id" type="pk-constr" table="kernel.key_policy_def_h">
+		<columns names="app_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="key_store">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[Key Store: In MOSIP, data related to an individual in stored in encrypted form. This table is to manage all the keys(private and public keys) used. ]]></comment>
+	<position x="959.861" y="330.107"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[ID: ID is a unique identifier (UUID) used for managing encryption keys]]></comment>
+	</column>
+	<column name="master_key" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Master Key: Master key is used to encrypt the other keys (Public / Private)]]></comment>
+	</column>
+	<column name="private_key" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[Private Key: Private key]]></comment>
+	</column>
+	<column name="public_key" not-null="true">
+		<type name="bytea" length="0"/>
+		<comment><![CDATA[Public Key: Public key]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_keystr_id" type="pk-constr" table="kernel.key_store">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin">
+	<schema name="kernel"/>
+	<role name="sysadmin"/>
+	<comment><![CDATA[UIN: Stores pre-generated UINs that are assigned to an individual as part of registration process.]]></comment>
+	<position x="58.6487" y="357.25"/>
+	<column name="uin" not-null="true">
+		<type name="character varying" length="28"/>
+		<comment><![CDATA[UIN: Pre-generated UINs (Unique Identification Number), which will be used to assign to an individual]]></comment>
+	</column>
+	<column name="uin_status">
+		<type name="character varying" length="16"/>
+		<comment><![CDATA[Is Used: Status of the pre-generated UIN, whether it is assigned, unassigned or issued.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Created By : ID or name of the user who create / insert record]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Created DateTimestamp : Date and Timestamp when the record is created/inserted]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Updated By : ID or name of the user who update the record with new values]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[IS_Deleted : Flag to mark whether the record is Soft deleted.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE]]></comment>
+	</column>
+	<constraint name="pk_uin_id" type="pk-constr" table="kernel.uin">
+		<columns names="uin" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="idx_keymals_id" table="kernel.key_alias"
+	 concurrent="false" unique="true" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="app_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="ref_id"/>
+		</idxelement>
+		<idxelement use-sorting="false">
+			<column name="key_gen_dtimes"/>
+		</idxelement>
+</index>
+
+<constraint name="fk_synctrn_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_job_def" table="kernel.sync_transaction">
+	<columns names="syncjob_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrl_syncjob" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_job_def" table="kernel.sync_control">
+	<columns names="syncjob_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_synctrl_synctrn" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="kernel.sync_transaction" table="kernel.sync_control">
+	<columns names="synctrn_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_sync_transaction_sync_job_def" type="relfk"
+	 custom-color="#5aa578"
+	 src-table="kernel.sync_transaction"
+	 dst-table="kernel.sync_job_def" reference-fk="fk_synctrn_syncjob"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_control_sync_job_def" type="relfk"
+	 custom-color="#4b3e56"
+	 src-table="kernel.sync_control"
+	 dst-table="kernel.sync_job_def" reference-fk="fk_synctrl_syncjob"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_sync_control_sync_transaction" type="relfk"
+	 custom-color="#9ac721"
+	 src-table="kernel.sync_control"
+	 dst-table="kernel.sync_transaction" reference-fk="fk_synctrl_synctrn"
+	 src-required="false" dst-required="false"/>
+
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<privileges connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<roles names="appadmin"/>
+	<privileges create="true" connect="true" temporary="true"/>
+</permission>
+<permission>
+	<object name="mosip_kernel" type="database"/>
+	<roles names="kerneluser"/>
+	<privileges connect="true"/>
+</permission>
+<permission>
+	<object name="kernel" type="schema"/>
+	<roles names="sysadmin"/>
+	<privileges create="true" usage="true"/>
+</permission>
+<permission>
+	<object name="kernel" type="schema"/>
+	<roles names="kerneluser"/>
+	<privileges usage="true"/>
+</permission>
+<permission>
+	<object name="kernel.otp_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.otp_transaction" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_job_def" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_job_def" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_transaction" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_transaction" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_control" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.sync_control" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_policy_def" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_policy_def" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_alias" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_alias" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_policy_def_h" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_policy_def_h" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_store" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.key_store" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+<permission>
+	<object name="kernel.uin" type="table"/>
+	<roles names="appadmin"/>
+	<privileges select="true" delete="true" insert="true" update="true" truncate="true" references="true" trigger="true"/>
+</permission>
+<permission>
+	<object name="kernel.uin" type="table"/>
+	<roles names="repuser"/>
+	<privileges select="true" references="true"/>
+</permission>
+</dbmodel>

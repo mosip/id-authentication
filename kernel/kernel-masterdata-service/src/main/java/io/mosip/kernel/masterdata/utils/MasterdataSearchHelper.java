@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,6 @@ import io.mosip.kernel.masterdata.dto.request.Pagination;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.request.SearchFilter;
 import io.mosip.kernel.masterdata.dto.request.SearchSort;
-import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 
@@ -50,8 +50,8 @@ import io.mosip.kernel.masterdata.validator.FilterTypeEnum;
 @Transactional(readOnly = true)
 public class MasterdataSearchHelper {
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
-	private static final String ENTITY_IS_NULL = "enitity is null";
-	private static final String NO_SPECIAL_CHAR_REGEX = "[^\\w\\s]";
+	private static final String ENTITY_IS_NULL = "entity is null";
+	private static final String WILD_CARD_CHARACTER = "%";
 
 	/**
 	 * Field for interface used to interact with the persistence context.
@@ -194,23 +194,26 @@ public class MasterdataSearchHelper {
 		String value = filter.getValue();
 		String filterType = filter.getType();
 		if (FilterTypeEnum.CONTAINS.name().equalsIgnoreCase(filterType)) {
-			String replacedValue = value.replaceAll(NO_SPECIAL_CHAR_REGEX, "").toLowerCase();
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
 			if (value.startsWith("*") && value.endsWith("*")) {
-				return builder.like(lowerCase, "%" + replacedValue + "%");
+				String replacedValue = (value.substring(1)).substring(0, value.length() - 2);
+				return builder.like(lowerCase,
+						builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue + WILD_CARD_CHARACTER)));
 			} else if (value.startsWith("*")) {
-				return builder.like(lowerCase, "%" + replacedValue);
+				String replacedValue = value.substring(1);
+				return builder.like(lowerCase, builder.lower(builder.literal(WILD_CARD_CHARACTER + replacedValue)));
 			} else {
-				return builder.like(lowerCase, "%" + replacedValue + "%");
+				return builder.like(lowerCase,
+						builder.lower(builder.literal(WILD_CARD_CHARACTER + value + WILD_CARD_CHARACTER)));
 			}
 		}
 		if (FilterTypeEnum.EQUALS.name().equalsIgnoreCase(filterType)) {
 			return buildPredicate(builder, root, columnName, value);
 		}
 		if (FilterTypeEnum.STARTSWITH.name().equalsIgnoreCase(filterType)) {
-			String replacedValue = value.replaceAll(NO_SPECIAL_CHAR_REGEX, "").toLowerCase();
+			String replacedValue = value.substring(0, value.length() - 1);
 			Expression<String> lowerCase = builder.lower(root.get(columnName));
-			return builder.like(lowerCase, replacedValue + "%");
+			return builder.like(lowerCase, builder.lower(builder.literal(replacedValue + WILD_CARD_CHARACTER)));
 		}
 		if (FilterTypeEnum.BETWEEN.name().equalsIgnoreCase(filterType)) {
 			return setBetweenValue(builder, root, filter);
@@ -310,6 +313,9 @@ public class MasterdataSearchHelper {
 				return builder.between(root.get(columnName), DateUtils.parseToLocalDateTime(fromValue),
 						DateUtils.convertUTCToLocalDateTime(toValue));
 			}
+			if (LocalDate.class.getName().equals(fieldType)) {
+				return builder.between(root.get(columnName), LocalDate.parse(fromValue), LocalDate.parse(toValue));
+			}
 			if (Long.class.getName().equals(fieldType)) {
 				return builder.between(root.get(columnName), Long.parseLong(fromValue), Long.parseLong(toValue));
 			}
@@ -352,6 +358,9 @@ public class MasterdataSearchHelper {
 			String fieldType = type.getTypeName();
 			if (LocalDateTime.class.getName().equals(fieldType)) {
 				return DateUtils.parseToLocalDateTime(value);
+			}
+			if (LocalDate.class.getName().equals(fieldType)) {
+				return LocalDate.parse(value);
 			}
 			if (Long.class.getName().equals(fieldType)) {
 				return Long.parseLong(value);
