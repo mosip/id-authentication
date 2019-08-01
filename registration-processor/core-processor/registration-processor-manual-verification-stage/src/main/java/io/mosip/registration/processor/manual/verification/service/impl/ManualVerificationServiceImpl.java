@@ -346,6 +346,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 				messageDTO.setIsValid(true);
 				manualVerificationStage.sendMessage(messageDTO);
 				registrationStatusDto.setStatusComment(StatusUtil.MANUAL_VERIFIER_APPROVED_PACKET.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.MANUAL_VERIFIER_APPROVED_PACKET.getCode());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
@@ -355,6 +356,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			} else {
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 				registrationStatusDto.setStatusComment(StatusUtil.MANUAL_VERIFIER_REJECTED_PACKET.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.MANUAL_VERIFIER_REJECTED_PACKET.getCode());
 				registrationStatusDto
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 
@@ -371,6 +373,7 @@ public class ManualVerificationServiceImpl implements ManualVerificationService 
 			registrationStatusDto.setLatestTransactionStatusCode(registrationExceptionMapperUtil
 					.getStatusCode(RegistrationExceptionTypeCode.TABLE_NOT_ACCESSIBLE_EXCEPTION));
 			registrationStatusDto.setStatusComment(trimExceptionMessage.trimExceptionMessage(StatusUtil.DB_NOT_ACCESSIBLE.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.DB_NOT_ACCESSIBLE.getCode());
 			description = ManualVerificationConstants.TABLE_NOT_ACCESSIBLE + registrationId + "::" + e.getMessage();
 
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

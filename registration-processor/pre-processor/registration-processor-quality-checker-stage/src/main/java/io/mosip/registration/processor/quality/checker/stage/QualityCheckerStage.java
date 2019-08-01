@@ -203,6 +203,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 						.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 				registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 				registrationStatusDto.setStatusComment(StatusUtil.INDIVIDUAL_BIOMETRIC_NOT_FOUND.getMessage());
+				registrationStatusDto.setSubStatusCode(StatusUtil.INDIVIDUAL_BIOMETRIC_NOT_FOUND.getCode());
 				regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), regId,
 						"Individual Biometric parameter is not present in ID Json");
 			} else {
@@ -241,6 +242,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 								.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.FAILED.toString());
 						registrationStatusDto.setStatusCode(RegistrationStatusCode.REJECTED.toString());
 						registrationStatusDto.setStatusComment(StatusUtil.BIOMETRIC_QUALITY_CHECK_FAILED.getMessage());
+						registrationStatusDto.setSubStatusCode(StatusUtil.BIOMETRIC_QUALITY_CHECK_FAILED.getCode());
 						description = "The Quality score of biometrics is below threshold";
 						break;
 					} else {
@@ -255,6 +257,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.SUCCESS.toString());
 					registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.toString());
 					registrationStatusDto.setStatusComment(StatusUtil.BIOMETRIC_QUALITY_CHECK_SUCCESS.getMessage());
+					registrationStatusDto.setSubStatusCode(StatusUtil.BIOMETRIC_QUALITY_CHECK_SUCCESS.getCode());
 					regProcLogger.info(LoggerFileConstant.SESSIONID.toString(),
 							LoggerFileConstant.REGISTRATIONID.toString(), regId, "QualityCheckerImpl::success");
 				}
@@ -267,6 +270,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto
 					.setStatusComment(trimExceptionMsg.trimExceptionMessage(StatusUtil.FS_ADAPTER_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.FS_ADAPTER_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.FSADAPTER_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -278,6 +282,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 		}catch(FileMissingException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(StatusUtil.BIO_METRIC_FILE_MISSING.getMessage());
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_METRIC_FILE_MISSING.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -291,6 +296,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 		catch (BiometricException e) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.PROCESSING.name());
 			registrationStatusDto.setStatusComment(trimExceptionMsg.trimExceptionMessage(StatusUtil.BIO_METRIC_EXCEPTION.getMessage() + e.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.BIO_METRIC_EXCEPTION.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.BIOMETRIC_EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -302,6 +308,7 @@ public class QualityCheckerStage extends MosipVerticleAPIManager {
 		} catch (Exception ex) {
 			registrationStatusDto.setStatusCode(RegistrationStatusCode.FAILED.name());
 			registrationStatusDto.setStatusComment(trimExceptionMsg.trimExceptionMessage(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getMessage() + ex.getMessage()));
+			registrationStatusDto.setSubStatusCode(StatusUtil.UNKNOWN_EXCEPTION_OCCURED.getCode());
 			registrationStatusDto.setLatestTransactionStatusCode(
 					registrationStatusMapperUtil.getStatusCode(RegistrationExceptionTypeCode.EXCEPTION));
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),

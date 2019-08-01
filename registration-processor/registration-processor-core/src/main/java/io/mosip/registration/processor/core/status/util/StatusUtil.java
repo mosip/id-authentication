@@ -87,6 +87,10 @@ public enum StatusUtil {
    INSERT_IDENTIFY_RESPONSE_SUCCESS(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Recived sucessful response from ABIS"),
    INSERT_IDENTIFY_RESPONSE_FAILED(StatusConstants.ABIS_MIDDLEWARE_MODULE_SUCCESS + "002", "Received failed response from ABIS - "),
 
+   //Manual verification stage
+   MANUAL_VERIFIER_APPROVED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE + 001,"Manual verifier approved the packet"),
+   MANUAL_VERIFIER_REJECTED_PACKET(StatusConstants.MANUAL_VERIFICATION_MODULE + 002,"Manual verifier rejected the packet"),
+   
    //System Exceptions
 	VIRUS_SCANNER_SERVICE_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Virus scanner service is not accessible "),
 	DB_NOT_ACCESSIBLE(StatusConstants.SYSTEM_EXCEPTION_CODE , "Database not accessible"),
