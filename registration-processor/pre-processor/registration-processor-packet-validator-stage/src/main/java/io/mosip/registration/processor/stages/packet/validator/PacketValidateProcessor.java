@@ -170,6 +170,8 @@ public class PacketValidateProcessor {
 	private static final String PRE_REG_ID = "mosip.pre-registration.datasync.store";
 	private static final String VERSION = "1.0";
 	private static final String CREATED_BY = "MOSIP_SYSTEM";
+	private static final String RESPONSE = "response";
+	private static final String STATUS ="status";
 
 	@Autowired
 	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
@@ -469,6 +471,7 @@ public class PacketValidateProcessor {
 			return false;
 
 		List<FieldValue> metadataList = identity.getMetaData();
+		
 		if (object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
 				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())
 				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString())
@@ -479,7 +482,14 @@ public class PacketValidateProcessor {
 			JSONObject jsonObject = utility.retrieveIdrepoJson(uin);
 			if (jsonObject == null)
 				throw new IdRepoAppException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
+			String status=utility.retrieveIdrepoJsonStatus(uin);
+			if(object.getReg_type().toString().equalsIgnoreCase(RegistrationType.UPDATE.toString()) && status.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString())) {
+				throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_PVM_UPDATE_DEACTIVATED.getCode(),"UIN is Deactivated");
+				
+			}
 		}
+		
+		
 		boolean regTypeCheck = object.getReg_type().toString().equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
 				|| object.getReg_type().toString().equalsIgnoreCase(RegistrationType.DEACTIVATED.toString());
 

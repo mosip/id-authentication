@@ -270,6 +270,9 @@ public enum PlatformErrorMessages {
 	/** The rpr pvm data not available. */
 	RPR_PVM_DATA_NOT_AVAILABLE(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "002",
 			"Data Not Available in Master DB"),
+	/** The rpr pvm update packet deactivated. */
+	RPR_PVM_UPDATE_DEACTIVATED(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "014",
+			"UIN is Deactivated"),
 
 	/** The rpr pvm identity not found. */
 	RPR_PVM_IDENTITY_NOT_FOUND(PlatformConstants.RPR_PACKET_VALIDATOR_MODULE + "003",
