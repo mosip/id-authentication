@@ -48,5 +48,8 @@ public interface RegistrationCenterMachineRepository
 	 */
 	@Query(value = "FROM RegistrationCenterMachine rm WHERE rm.registrationCenterMachinePk.regCenterId =?1 and (rm.isDeleted is null or rm.isDeleted =false) and rm.isActive = true")
 	List<RegistrationCenterMachine> findRegCenterMachineMappings(String regCenterID);
+	
+	@Query("FROM RegistrationCenterMachine rm where  (rm.isDeleted is null or rm.isDeleted =false) and rm.isActive = true")
+	List<RegistrationCenterMachine> findAllCenterMachines();
 
 }

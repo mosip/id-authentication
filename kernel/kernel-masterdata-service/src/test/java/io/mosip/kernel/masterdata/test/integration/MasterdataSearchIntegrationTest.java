@@ -88,6 +88,7 @@ import io.mosip.kernel.masterdata.repository.ZoneRepository;
 import io.mosip.kernel.masterdata.repository.ZoneUserRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
+import io.mosip.kernel.masterdata.utils.MachineUtil;
 import io.mosip.kernel.masterdata.utils.MasterDataFilterHelper;
 import io.mosip.kernel.masterdata.utils.MasterdataSearchHelper;
 import io.mosip.kernel.masterdata.validator.FilterColumnValidator;
@@ -154,6 +155,9 @@ public class MasterdataSearchIntegrationTest {
 
 	@MockBean
 	private HolidayRepository holidayRepository;
+	
+	@MockBean
+	private MachineUtil machineUtil;
 
 	private List<Zone> zones;
 	private ZoneUser zoneUser;
