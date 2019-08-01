@@ -207,9 +207,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<constraint name="uk_uinh" type="uq-constr" table="idrepo.uin_h">
 		<columns names="uin,eff_dtimes" ref-type="src-columns"/>
 	</constraint>
-	<constraint name="uk_uinh_regid" type="uq-constr" table="idrepo.uin_h">
-		<columns names="reg_id" ref-type="src-columns"/>
-	</constraint>
 </table>
 
 <table name="uin_document">
