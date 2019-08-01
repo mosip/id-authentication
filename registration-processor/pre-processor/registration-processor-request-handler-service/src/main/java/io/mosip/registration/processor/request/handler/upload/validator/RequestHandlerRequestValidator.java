@@ -391,15 +391,38 @@ public class RequestHandlerRequestValidator {
 
 	}
 	
-	public boolean isValidRegistrationType(String registrationType) throws RegBaseCheckedException {
-		if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
-				|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
-			return true;
-		} else {
-			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
-					"Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED", new Throwable());
+	public boolean isValidRegistrationTypeAndUin(String registrationType, String uin) throws RegBaseCheckedException {
+		try {
+			if (registrationType != null && (registrationType.equalsIgnoreCase(RegistrationType.ACTIVATED.toString())
+					|| registrationType.equalsIgnoreCase(RegistrationType.DEACTIVATED.toString()))) {
+				boolean isValidUin = uinValidatorImpl.validateId(uin);
+				if (isValidUin) {
+					String status = utilities.retrieveIdrepoJsonStatus(Long.parseLong(uin));
+					if (!status.equalsIgnoreCase(registrationType)) {
+						return true;
+					} else {
+						throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+								"Uin is already " + status, new Throwable());
+					}
+				} else {
+					throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, "UIN is not valid",
+							new Throwable());
+				}
+			} else {
+				throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION,
+						"Invalid RegistrationType:Enter ACTIVATED or DEACTIVATED", new Throwable());
+			}
+		} catch (InvalidIDException ex) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, ex.getErrorText(), ex);
+		} catch (IdRepoAppException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (NumberFormatException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
+		} catch (ApisResourceAccessException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e.getErrorText(), e);
+		} catch (IOException e) {
+			throw new RegBaseCheckedException(PlatformErrorMessages.RPR_PGS_REG_BASE_EXCEPTION, e);
 		}
-
 	}
 	
 	public boolean isValidVid(String vid) throws RegBaseCheckedException {
