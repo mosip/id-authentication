@@ -5,7 +5,7 @@
 
 [Process Flow for Registration-Processor](https://github.com/mosip/mosip/blob/master/docs/requirements/FinalProcessFlows/MOSIP_Process%20Flow%201.19%20Reg%20Processor.pdf)
 
-This service provides applicantbiometric CBEFF file for a abis reference id.
+This service provides applicantbiometric CBEFF file for a abis reference id.Based on abis reference id it will fetch registration id from Database.
 
 ##### Default Context Path and Port
 ```
