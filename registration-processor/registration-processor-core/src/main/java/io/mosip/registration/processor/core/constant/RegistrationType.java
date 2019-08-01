@@ -14,7 +14,7 @@ public enum RegistrationType {
 
 	/** The update. */
 	UPDATE("update"),
-	
+
 	/** The res update. */
 	RES_UPDATE("res_update"),
 
@@ -27,15 +27,17 @@ public enum RegistrationType {
 	/** The deactivated. */
 	DEACTIVATED("deactivated"),
 
-	/** The lost*/
-	LOST("lost");
-	
+	/** The lost */
+	LOST("lost"),
+
+	RES_REPRINT("res_reprint");
+
 	public String regType;
-	
+
 	private RegistrationType(String regType) {
-		this.regType=regType;
+		this.regType = regType;
 	}
-	
+
 	@Override
 	public String toString() {
 		return regType;

@@ -296,13 +296,13 @@ public class MasterDataPaginationIntegrationTest {
 		individualType.setName("TEST_IND_TYPE");
 		individualType.setUpdatedBy(null);
 		individualType.setUpdatedDateTime(null);
-		individualType.setIndividualTypeID(codeAndLanguageCodeID);
+		individualType.setCode("TEST_CODE");
+		individualType.setLangCode("eng");
 
 		individualTypelist = new ArrayList<>();
 		individualTypelist.add(individualType);
 
 	}
-
 	private void locationSetUp() {
 
 		codeAndLanguageCodeIdIndType = new CodeAndLanguageCodeID();

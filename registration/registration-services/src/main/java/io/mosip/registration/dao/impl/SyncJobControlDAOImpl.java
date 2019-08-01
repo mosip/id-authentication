@@ -70,7 +70,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	public SyncJobInfo getSyncStatus() {
 
 		LOGGER.info("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
-				"Fetching the last sync details from databse started");
+				"Fetching the last sync details from database started");
 
 		try {
 			List<Registration> registrationsList = registrationRepository
@@ -79,7 +79,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 					.findByClientStatusCodeInOrderByUpdDtimesDesc(LAST_EXPORT_STATUS_CODES);
 
 			LOGGER.info("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
-					"Fetching the last sync details from databse ended");
+					"Fetching the last sync details from database ended");
 
 			auditFactory.audit(AuditEvent.SYNCJOB_INFO_FETCH, Components.SYNC_VALIDATE, SessionContext.userId(),
 					AuditReferenceIdTypes.USER_ID.getReferenceTypeId());
@@ -102,7 +102,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	@Override
 	public SyncControl update(SyncControl syncControl) {
 		LOGGER.info(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"updating sync details from databse started");
+				"updating sync details from database started");
 		return syncJobRepository.update(syncControl);
 	}
 
@@ -115,7 +115,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	@Override
 	public SyncControl save(SyncControl syncControl) {
 		LOGGER.info(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"saving sync details to databse started");
+				"saving sync details to database started");
 		return syncJobRepository.save(syncControl);
 	}
 
@@ -127,7 +127,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	@Override
 	public SyncControl findBySyncJobId(String syncJobId) {
 		LOGGER.info(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetching the sync details from databse started");
+				"Fetching the sync details from database started");
 		return syncJobRepository.findBySyncJobId(syncJobId);
 	}
 
@@ -139,7 +139,7 @@ public class SyncJobControlDAOImpl implements SyncJobControlDAO {
 	@Override
 	public List<SyncControl> findAll() {
 		LOGGER.info(RegistrationConstants.SYNC_JOB_CONTROL_DAO_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"Fetching the list of sync details from databse started");
+				"Fetching the list of sync details from database started");
 		return syncJobRepository.findAll();
 	}
 

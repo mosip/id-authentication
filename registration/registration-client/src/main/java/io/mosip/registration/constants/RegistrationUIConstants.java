@@ -72,6 +72,8 @@ public class RegistrationUIConstants {
 	public static final String FP_CAPTURE_SUCCESS = bundle.getString("FP_CAPTURE_SUCCESS");
 	public static final String WEBCAM_ALERT_CONTEXT = bundle.getString("WEBCAM_ALERT_CONTEXT");
 	public static final String FACE_CAPTURE_ERROR = bundle.getString("FACE_CAPTURE_ERROR");
+	public static final String EXCEPTION_PHOTO_CAPTURE_ERROR = bundle.getString("EXCEPTION_PHOTO_CAPTURE_ERROR");
+	public static final String PARENT_FACE_CAPTURE_ERROR = bundle.getString("PARENT_FACE_CAPTURE_ERROR");
 	public static final String FACE_SCANNING_ERROR = bundle.getString("FACE_SCANNING_ERROR");
 	public static final String DEVICE_ONBOARD_NOTIFICATION = bundle.getString("DEVICE_ONBOARD_NOTIFICATION");
 
@@ -164,6 +166,9 @@ public class RegistrationUIConstants {
 	public static final String LEFT_IRIS = bundle.getString("LEFT_IRIS");
 	public static final String PHOTO = bundle.getString("PHOTO");
 	public static final String TAKE_PHOTO = bundle.getString("TAKE_PHOTO");
+	public static final String PACKET_CREATION_DISK_SPACE_CHECK = bundle.getString("PACKET_CREATION_DISK_SPACE_CHECK");
+	public static final String SECONDARY_LANG_MISSING = bundle.getString("SECONDARY_LANG_MISSING");
+	public static final String PRIMARY_LANG_MISSING = bundle.getString("PRIMARY_LANG_MISSING");
 
 	public static final String PLACEHOLDER_LABEL = bundle.getString("PLACEHOLDER_LABEL");
 	public static final String PARENT_BIO_MSG = bundle.getString("PARENT_BIO_MSG");
@@ -345,4 +350,17 @@ public static final String FINGERPRINT_SELECTION_PANE_ALERT = bundle.getString("
 
 	// AUTH TOKEN
 	public static String UNABLE_TO_GET_AUTH_TOKEN = bundle.getString("UNABLE_TO_GET_AUTH_TOKEN");
+	
+	// PAGE NAVIGATION
+	public static final String PAGE_NAVIGATION_MESSAGE = bundle.getString("PAGE_NAVIGATION_MESSAGE");
+	public static final String PAGE_NAVIGATION_CONFIRM = bundle.getString("PAGE_NAVIGATION_CONFIRM");
+	public static final String PAGE_NAVIGATION_CANCEL = bundle.getString("PAGE_NAVIGATION_CANCEL");
+	
+	// SYNC DATE TIME
+	public static final String LAST_DOWNLOADED = bundle.getString("LAST_DOWNLOADED");
+	public static final String LAST_UPDATED = bundle.getString("LAST_UPDATED");
+	
+	//Alert
+	public static final String ALERT_NOTE_LABEL = bundle.getString("ALERT_NOTE_LABEL");
+	public static final String ALERT_FAILED_LABEL = bundle.getString("ALERT_FAILED_LABEL");
 }

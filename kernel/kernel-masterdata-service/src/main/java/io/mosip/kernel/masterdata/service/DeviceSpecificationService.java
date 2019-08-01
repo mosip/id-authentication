@@ -6,6 +6,10 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DeviceSpecificationExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.IdAndLanguageCodeID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -109,5 +113,16 @@ public interface DeviceSpecificationService {
 	 */
 	public PageDto<DeviceSpecificationExtnDto> getAllDeviceSpecifications(int pageNumber, int pageSize, String sortBy,
 			String orderBy);
+
+	public PageResponseDto<DeviceSpecificationExtnDto> searchDeviceSpec(SearchDto dto);
+
+	/**
+	 * Method that returns the column values of specific filter column name.
+	 * 
+	 * @param filterValueDto
+	 *            the request DTO that provides the column name.
+	 * @return the response containing the filter values.
+	 */
+	public FilterResponseDto deviceSpecFilterValues(FilterValueDto filterValueDto);
 
 }

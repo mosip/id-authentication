@@ -85,7 +85,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 	@Override
 	public ResponseDTO synchConfigData(boolean isJob) {
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"config data synch is started");
+				"config data sync is started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
@@ -111,7 +111,7 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 		}
 
 		LOGGER.info(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"config data synch is completed");
+				"config data sync is completed");
 
 		return responseDTO;
 	}
@@ -209,12 +209,12 @@ public class GlobalParamServiceImpl extends BaseService implements GlobalParamSe
 			} catch (HttpServerErrorException | HttpClientErrorException | SocketTimeoutException
 					| RegBaseCheckedException | ClassCastException | ResourceAccessException exception) {
 				setErrorResponse(responseDTO, RegistrationConstants.POLICY_SYNC_ERROR_MESSAGE, null);
-				LOGGER.error("REGISTRATION_SYNCH_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.error("REGISTRATION_SYNC_CONFIG_DATA", APPLICATION_NAME, APPLICATION_ID,
 						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 			}
 		} else {
 			LOGGER.error(LoggerConstants.GLOBAL_PARAM_SERVICE_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-					" Unable to synch config data as no internet connection and no data in DB");
+					" Unable to sync config data as no internet connection and no data in DB");
 		}
 	}
 

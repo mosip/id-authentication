@@ -118,7 +118,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void initialize() {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Entering the Registration Controller");
 		try {
 			if (isEditPage() && getRegistrationDTOFromSession() != null) {
 				prepareEditPageContent();
@@ -173,13 +173,13 @@ public class RegistrationController extends BaseController {
 	}
 
 	/**
-	 * To detect the face part from the applicant photograph to use it for QR Code
-	 * generation
+	 * To detect the face from the captured photograph for validation.
 	 * 
-	 * @param applicantImage the image that is captured as applicant photograph
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
 	 * @return BufferedImage the face that is detected from the applicant photograph
 	 */
-	private BufferedImage detectApplicantFace(BufferedImage applicantImage) {
+	public BufferedImage detectApplicantFace(BufferedImage applicantImage) {
 		BufferedImage detectedFace = null;
 		CLMFaceDetector detector = new CLMFaceDetector();
 		List<CLMDetectedFace> faces = null;
@@ -203,7 +203,8 @@ public class RegistrationController extends BaseController {
 	 * To compress the detected face from the image of applicant and store it in DTO
 	 * to use it for QR Code generation
 	 * 
-	 * @param applicantImage the image that is captured as applicant photograph
+	 * @param applicantImage
+	 *            the image that is captured as applicant photograph
 	 */
 	private void compressImageForQRCode(BufferedImage detectedFace) {
 		try {
@@ -259,63 +260,68 @@ public class RegistrationController extends BaseController {
 			try {
 				BufferedImage detectedFace = detectApplicantFace(applicantBufferedImage);
 				if (detectedFace != null) {
-					compressImageForQRCode(detectedFace);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-							byteArrayOutputStream);
-					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-					if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
-						BiometricInfoDTO biometricDTO = getFaceDetailsDTO();
-						FaceDetailsDTO faceDetailsDTO = biometricDTO.getFace();
-						FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
-						if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
-								&& !getRegistrationDTOFromSession().isUpdateUINChild()) {
-							getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
-									.setFace(photoInBytes);
-						} else {
-							faceDetailsDTO.setFace(photoInBytes);
-							faceDetailsDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-						}
-						byteArrayOutputStream.close();
-						if (exceptionBufferedImage != null) {
-							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-							ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
-									outputStream);
-							byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-							if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
-									|| (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
-											&& !getRegistrationDTOFromSession().isUpdateUINChild())) {
-								getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
-										.getExceptionFace().setFace(exceptionPhotoInBytes);
-								biometricDTO.setHasExceptionPhoto(true);
-							} else {
-								exceptionFaceDetailsDTO.setFace(exceptionPhotoInBytes);
-								exceptionFaceDetailsDTO
-										.setPhotographName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
-								biometricDTO.setHasExceptionPhoto(true);
-							}
-							outputStream.close();
-						} else {
-							biometricDTO.setHasExceptionPhoto(false);
-						}
-
-						LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
-								RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-								"showing demographic preview");
-						if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
-							SessionContext.map().put("faceCapture", false);
-							SessionContext.map().put("registrationPreview", true);
-							registrationPreviewController.setUpPreviewContent();
-							showUINUpdateCurrentPage();
-						} else {
-							showCurrentPage(RegistrationConstants.FACE_CAPTURE,
-									getPageDetails(RegistrationConstants.FACE_CAPTURE, RegistrationConstants.NEXT));
-						}
-
+					if (exceptionBufferedImage != null && detectApplicantFace(exceptionBufferedImage) == null) {
+						isValid = false;
+						generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.EXCEPTION_PHOTO_CAPTURE_ERROR);
 					} else {
-						((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
-								.getOperatorBiometricDTO().getFace().setFace(photoInBytes);
-						byteArrayOutputStream.close();
+						compressImageForQRCode(detectedFace);
+						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+						ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+								byteArrayOutputStream);
+						byte[] photoInBytes = byteArrayOutputStream.toByteArray();
+						if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+							BiometricInfoDTO biometricDTO = getFaceDetailsDTO();
+							FaceDetailsDTO faceDetailsDTO = biometricDTO.getFace();
+							FaceDetailsDTO exceptionFaceDetailsDTO = biometricDTO.getExceptionFace();
+							if (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+									&& !getRegistrationDTOFromSession().isUpdateUINChild()) {
+								getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO().getFace()
+										.setFace(photoInBytes);
+							} else {
+								faceDetailsDTO.setFace(photoInBytes);
+								faceDetailsDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+							}
+							byteArrayOutputStream.close();
+							if (exceptionBufferedImage != null) {
+								ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+								ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+										outputStream);
+								byte[] exceptionPhotoInBytes = outputStream.toByteArray();
+								if ((boolean) SessionContext.map().get(RegistrationConstants.IS_Child)
+										|| (getRegistrationDTOFromSession().isUpdateUINNonBiometric()
+												&& !getRegistrationDTOFromSession().isUpdateUINChild())) {
+									getRegistrationDTOFromSession().getBiometricDTO().getIntroducerBiometricDTO()
+											.getExceptionFace().setFace(exceptionPhotoInBytes);
+									biometricDTO.setHasExceptionPhoto(true);
+								} else {
+									exceptionFaceDetailsDTO.setFace(exceptionPhotoInBytes);
+									exceptionFaceDetailsDTO
+											.setPhotographName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+									biometricDTO.setHasExceptionPhoto(true);
+								}
+								outputStream.close();
+							} else {
+								biometricDTO.setHasExceptionPhoto(false);
+							}
+
+							LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER,
+									RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+									"showing demographic preview");
+							if (getRegistrationDTOFromSession().getSelectionListDTO() != null) {
+								SessionContext.map().put("faceCapture", false);
+								SessionContext.map().put("registrationPreview", true);
+								registrationPreviewController.setUpPreviewContent();
+								showUINUpdateCurrentPage();
+							} else {
+								showCurrentPage(RegistrationConstants.FACE_CAPTURE,
+										getPageDetails(RegistrationConstants.FACE_CAPTURE, RegistrationConstants.NEXT));
+							}
+
+						} else {
+							((BiometricDTO) SessionContext.map().get(RegistrationConstants.USER_ONBOARD_DATA))
+									.getOperatorBiometricDTO().getFace().setFace(photoInBytes);
+							byteArrayOutputStream.close();
+						}
 					}
 				} else {
 					if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
@@ -505,7 +511,7 @@ public class RegistrationController extends BaseController {
 	 */
 	public void displayValidationMessage(String validationMessage) {
 		LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Showing the validatoin message");
+				RegistrationConstants.APPLICATION_ID, "Showing the validation message");
 		if (validationMessage.length() > 0) {
 			TextArea view = new TextArea(validationMessage);
 			view.setEditable(false);
@@ -519,7 +525,7 @@ public class RegistrationController extends BaseController {
 			primaryStage.show();
 
 			LOGGER.debug(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Validatoin message shown successfully");
+					RegistrationConstants.APPLICATION_ID, "Validation message shown successfully");
 		}
 	}
 

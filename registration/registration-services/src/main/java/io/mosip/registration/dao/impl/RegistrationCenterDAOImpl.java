@@ -67,7 +67,7 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 		}
 
 		LOGGER.info("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
-				APPLICATION_ID, "Registration Center details fetched successfulyy");
+				APPLICATION_ID, "Registration Center details fetched successfully");
 
 		return registrationCenterDetailDTO;
 	}

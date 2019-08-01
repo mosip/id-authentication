@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "Registration Center Types", description = "Registration center types")
 public class RegistrationCenterTypeExtnDto extends BaseDto {
 
+	@FilterType(types = { FilterTypeEnum.EQUALS })
 	@ApiModelProperty(value = "code", required = true, dataType = "java.lang.String")
 	private String code;
 

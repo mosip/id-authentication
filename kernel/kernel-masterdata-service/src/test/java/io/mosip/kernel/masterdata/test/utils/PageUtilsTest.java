@@ -1,10 +1,12 @@
 package io.mosip.kernel.masterdata.test.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -17,6 +19,13 @@ import io.mosip.kernel.masterdata.utils.PageUtils;
 
 @RunWith(JUnit4.class)
 public class PageUtilsTest {
+	
+	private PageUtils pageUtils;
+	
+	@Before
+	public void setup() {
+		pageUtils=new PageUtils();
+	}
 
 	@Test
 	public void pageResponseSuccess() {
@@ -31,6 +40,6 @@ public class PageUtilsTest {
 	@Test
 	public void pageResponseFailure() {
 		PageResponseDto<Object> response = PageUtils.pageResponse(null);
-		assertNull(response);
+		assertNotNull(response);
 	}
 }

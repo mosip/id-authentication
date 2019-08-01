@@ -64,6 +64,16 @@ public class WebCameraController extends BaseController implements Initializable
 	private PhotoCaptureFacade photoCaptureFacade;
 
 	private String imageType;
+	
+	private Stage webCameraStage;
+	
+	public Stage getWebCameraStage() {
+		return webCameraStage;
+	}
+
+	public void setWebCameraStage(Stage webCameraStage) {
+		this.webCameraStage = webCameraStage;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -90,7 +100,7 @@ public class WebCameraController extends BaseController implements Initializable
 				.getPhotoProviderFactory(getValueFromApplicationContext(RegistrationConstants.WEBCAM_LIBRARY_NAME));
 
 		if (!photoProvider.isWebcamConnected()) {
-			photoProvider.connect(480, 480);
+			photoProvider.connect(640, 480);
 		}
 		return photoProvider.isWebcamConnected();
 	}

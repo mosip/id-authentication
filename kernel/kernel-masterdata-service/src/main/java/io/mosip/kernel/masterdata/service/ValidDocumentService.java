@@ -3,8 +3,12 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.ValidDocCategoryAndDocTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryTypeMappingExtnDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.ValidDocumentExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.DocCategoryAndTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
 import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
 
 /**
@@ -12,6 +16,7 @@ import io.mosip.kernel.masterdata.entity.id.ValidDocumentID;
  * 
  * @author Ritesh Sinha
  * @author Neha Sinha
+ * @author Sidhant Agarwal
  * 
  * @since 1.0.0
  *
@@ -61,4 +66,22 @@ public interface ValidDocumentService {
 	 * @return the response i.e. pages containing the valid document category
 	 */
 	public PageDto<ValidDocumentExtnDto> getValidDocuments(int pageNumber, int pageSize, String sortBy, String orderBy);
+
+	/**
+	 * Service method to search document category-type mapping
+	 * 
+	 * @param dto
+	 *            input from user
+	 * @return dto containing mapped values
+	 */
+	public PageDto<DocumentCategoryTypeMappingExtnDto> searchValidDocument(SearchDto dto);
+
+	/**
+	 * Service Method to filter doc cat-type mapping
+	 * 
+	 * @param filterValueDto
+	 *            input from user
+	 * @return filter dto containing column names
+	 */
+	public FilterResponseDto categoryTypeFilterValues(FilterValueDto filterValueDto);
 }
