@@ -21,7 +21,6 @@ import lombok.Data;
  *
  */
 @Data
-
 public class LocationDto {
 
 	@Size(min = 1, max = 36)
@@ -33,9 +32,8 @@ public class LocationDto {
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	private String name;
 
-	@JsonDeserialize(using = CustomIntegerDeserializer.class)
 	@Range(min = 0)
-	private int hierarchyLevel;
+	private short hierarchyLevel;
 
 	@Size(min = 1, max = 64)
 	@NotBlank
