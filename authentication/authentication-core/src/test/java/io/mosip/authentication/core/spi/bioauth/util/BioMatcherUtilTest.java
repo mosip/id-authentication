@@ -35,7 +35,9 @@ public class BioMatcherUtilTest {
 
 	@Before
 	public void before() {
-		ReflectionTestUtils.setField(bioMatcherUtil, "bioApi", bioApiImpl);
+		ReflectionTestUtils.setField(bioMatcherUtil, "fingerApi", bioApiImpl);
+		ReflectionTestUtils.setField(bioMatcherUtil, "faceApi", bioApiImpl);
+		ReflectionTestUtils.setField(bioMatcherUtil, "irisApi", bioApiImpl);
 	}
 
 	Map<String, String> valueMap = new HashMap<>();

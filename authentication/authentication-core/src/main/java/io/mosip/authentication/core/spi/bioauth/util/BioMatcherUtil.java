@@ -1,16 +1,14 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-import com.identy.IdentyBioSDK;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -20,8 +18,10 @@ import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.bioapi.model.CompositeScore;
 import io.mosip.kernel.core.bioapi.model.Score;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
+import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIR.BIRBuilder;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
@@ -37,15 +37,22 @@ import io.mosip.kernel.core.util.CryptoUtil;
 public class BioMatcherUtil {
 
 	@Autowired
-	IBioApi bioApi;
+	@Qualifier("finger")
+	IBioApi fingerApi;
+	
+//	@Autowired
+//	@Qualifier("face")
+	IBioApi faceApi;
+	
+//	@Autowired
+//	@Qualifier("iris")
+	IBioApi irisApi;
 
 	@Autowired
 	CbeffUtil cbeffUtil;
 
 	@Autowired
 	Environment environment;
-
-	private static IdentyBioSDK identyBioSDK;
 
 	/** The logger. */
 	private static Logger logger = IdaLogger.getLogger(BioMatcherUtil.class);
@@ -73,7 +80,8 @@ public class BioMatcherUtil {
 		if (reqBIR.isPresent()) {
 			Score[] match;
 			try {
-				match = getBioSdkInstance().match(reqBIR.get(), entityBIR, null);
+				match = getBioSdkInstance().match(reqBIR.get(), entityBIR,
+						null);
 				internalScore = match.length == 1 ? match[0].getInternalScore()
 						: Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
@@ -98,9 +106,14 @@ public class BioMatcherUtil {
 	private BIR getBir(Object info) {
 		BIRBuilder birBuilder = new BIRBuilder();
 		if (info instanceof String) {
+			RegistryIDType format = new RegistryIDType();
+			format.setOrganization("257");
+			format.setType("7");
+			BDBInfo bdbInfo = new BDBInfo.BDBInfoBuilder().withFormat(format).build();
 			String reqInfoStr = (String) info;
 			byte[] decodedrefInfo = decodeValue(reqInfoStr);
 			birBuilder.withBdb(decodedrefInfo);
+			birBuilder.withBdbInfo(bdbInfo);
 		}
 		return birBuilder.build();
 	}
@@ -121,7 +134,8 @@ public class BioMatcherUtil {
 		BIR[] entityBIR = Stream.of(entityInfo).map(this::getBir).toArray(size -> new BIR[size]);
 		CompositeScore compositeScore;
 		try {
-			compositeScore = bioApi.compositeMatch(reqBIR, entityBIR, null);
+			compositeScore = getBioSdkInstance().compositeMatch(reqBIR,
+					entityBIR, null);
 			logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchScoreCalculator",
 					"Threshold Value >>>" + compositeScore.getInternalScore());
 		} catch (BiometricException e) {
@@ -210,16 +224,8 @@ public class BioMatcherUtil {
 		return CryptoUtil.decodeBase64(value);
 	}
 
-	private IdentyBioSDK getBioSdkInstance() throws IdAuthenticationBusinessException {
-		if (identyBioSDK == null) {
-			try {
-				return IdentyBioSDK.getInstance(
-						"QUVTAgAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACjflQMgyiRj1MzSrgDqPu91hzG8e3xcorFOWnzP6ooyATOJOJ/YVTApZLUUzSdQb5yuCccxK+VKbmQY/I/wauQK4GDDWA4yqSohhP8xM46jaK4Lkyv6/U88wSGBhkcaE9uo1mYc5J+AxhlWSPyEg2ZA8CggwvlYoupTU1DUOTrRwdYtEPuZmum+5XPoIqKVZBB");
-			} catch (NoSuchAlgorithmException e) {
-				throw new IdAuthenticationBusinessException();
-			}
-		}
-		return identyBioSDK;
+	private IBioApi getBioSdkInstance() throws IdAuthenticationBusinessException {
+		return fingerApi;
 	}
 
 }

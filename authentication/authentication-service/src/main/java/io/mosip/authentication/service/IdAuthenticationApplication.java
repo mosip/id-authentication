@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.common.service.builder.MatchInputBuilder;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
+import io.mosip.authentication.common.service.config.IdAuthConfig;
 import io.mosip.authentication.common.service.config.SwaggerConfig;
 import io.mosip.authentication.common.service.exception.IdAuthExceptionHandler;
 import io.mosip.authentication.common.service.facade.AuthFacadeImpl;
@@ -58,7 +59,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 		PinAuthServiceImpl.class, KeyManager.class, PinValidatorImpl.class, AuthRequestValidator.class,
 		AuthFacadeImpl.class, MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class,
 		BioAuthServiceImpl.class, TokenIdManager.class, SwaggerConfig.class, IdObjectPatternValidator.class,
-		BioMatcherUtil.class, BioApiImpl.class,DemoNormalizerImpl.class })
+		BioMatcherUtil.class, BioApiImpl.class,DemoNormalizerImpl.class, IdAuthConfig.class })
 public class IdAuthenticationApplication {
 
 	/**
