@@ -79,12 +79,12 @@ public class AlertController extends BaseController implements Initializable {
 		String[] split = contextString.split(RegistrationConstants.SPLITTER);
 		String contextSecondMsg = RegistrationConstants.EMPTY;
 		Image image;
-		if (split[1].contains(RegistrationConstants.SUCCESS.toUpperCase())) {
+		if (split.length > 1 && split[1].contains(RegistrationConstants.SUCCESS.toUpperCase())) {
 			image = new Image(RegistrationConstants.SUCCESS_IMG_PTH);
 			header.setText(RegistrationUIConstants.SUCCESS);
 			alertImage.setImage(image);
 			contextSecondMsg = gettingSecondErrorMessage(split, RegistrationConstants.SUCCESS.toUpperCase());
-		} else if (split[1].contains(RegistrationConstants.ERROR.toUpperCase())) {
+		} else if (split.length > 1 && split[1].contains(RegistrationConstants.ERROR.toUpperCase())) {
 			image = new Image(RegistrationConstants.FAILURE_IMG_PTH);
 			header.setText(RegistrationUIConstants.ALERT_FAILED_LABEL);
 			alertImage.setImage(image);

@@ -1,7 +1,12 @@
 package io.mosip.kernel.masterdata.utils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -15,8 +20,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.mosip.kernel.masterdata.constant.ValidationErrorCode;
+import io.mosip.kernel.masterdata.dto.FilterData;
 import io.mosip.kernel.masterdata.dto.request.FilterDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 
 /**
  * Class that provides generic methods for implementation of filter values
@@ -24,6 +32,8 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
  * 
  * @author Sagar Mahapatra
  * @author Ritesh Sinha
+ * @author Urvil Joshi
+ * 
  * @since 1.0
  *
  */
@@ -31,12 +41,24 @@ import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 @Transactional(readOnly = true)
 public class MasterDataFilterHelper {
 
+	private static List<Class<?>> classes = null;
+
+	@PostConstruct
+	private static void init() {
+		classes = new ArrayList<>();
+		classes.add(LocalDateTime.class);
+		classes.add(LocalDate.class);
+		classes.add(LocalTime.class);
+		classes.add(Short.class);
+		classes.add(Integer.class);
+		classes.add(Double.class);
+		classes.add(Float.class);
+	}
+
 	private static final String LANGCODE_COLUMN_NAME = "langCode";
 	private static final String FILTER_VALUE_UNIQUE = "unique";
 	private static final String FILTER_VALUE_ALL = "all";
 	private static final String WILD_CARD_CHARACTER = "%";
-	private static final String STATUS_ATTRIBUTE = "isActive";
-	private static final String STATUS_TRUE_FLAG = "true";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -51,85 +73,109 @@ public class MasterDataFilterHelper {
 	@SuppressWarnings("unchecked")
 	public <E, T> List<T> filterValues(Class<E> entity, FilterDto filterDto, FilterValueDto filterValueDto) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
-		Root<E> root = criteriaQuery.from(entity);
+		CriteriaQuery<String> criteriaQueryByString = criteriaBuilder.createQuery(String.class);
+		Root<E> root = criteriaQueryByString.from(entity);
 		Path<Object> path = root.get(filterDto.getColumnName());
-		return (List<T>) filterValuesByType(entity, path.getJavaType(), filterDto, filterValueDto.getLanguageCode());
-	}
-
-	private <E, T> List<T> filterValuesByType(Class<E> entity, Class<T> type, FilterDto filterDto,
-			String languageCode) {
 		String columnName = filterDto.getColumnName();
-		String text = filterDto.getText();
 		String columnType = filterDto.getType();
 		List<T> results;
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
 
-		Root<E> root = criteriaQuery.from(entity);
+		CriteriaQuery<T> criteriaQueryByType = criteriaBuilder.createQuery((Class<T>) path.getJavaType());
+		Root<E> rootType = criteriaQueryByType.from(entity);
 
-		Predicate langCodePredicate = criteriaBuilder.equal(root.get(LANGCODE_COLUMN_NAME), languageCode);
-		Predicate wildCardPredicate = criteriaBuilder.like(root.get(filterDto.getColumnName()),
-				WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER);
-		Predicate caseInsensitiveWildCardPredicate = criteriaBuilder.like(root.get(filterDto.getColumnName()),
-				WILD_CARD_CHARACTER + filterDto.getText().toLowerCase() + WILD_CARD_CHARACTER);
+		Predicate langCodePredicate = criteriaBuilder.equal(rootType.get(LANGCODE_COLUMN_NAME),
+				filterValueDto.getLanguageCode());
+		Predicate caseSensitivePredicate = criteriaBuilder.and(criteriaBuilder
+				.like(criteriaBuilder.lower(rootType.get(filterDto.getColumnName())), criteriaBuilder.lower(
+						criteriaBuilder.literal(WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER))));
 
-		criteriaQuery.select(root.get(columnName));
+		criteriaQueryByType.select(rootType.get(columnName));
 
-		if (!(root.get(columnName).getJavaType().equals(Boolean.class))) {
-			criteriaQuery.where(criteriaBuilder.and(langCodePredicate,
-					criteriaBuilder.or(wildCardPredicate, caseInsensitiveWildCardPredicate)));
+		columnTypeValidator(rootType, columnName);
+
+		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			criteriaQueryByType.where(criteriaBuilder.and(langCodePredicate, caseSensitivePredicate));
 		}
-		criteriaQuery.orderBy(criteriaBuilder.asc(root.get(columnName)));
+		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
 
-		if (root.get(columnName).getJavaType().equals(Boolean.class) && columnType.equals(FILTER_VALUE_UNIQUE)) {
-			buildFilterColumnListForBoolean(columnName, text, criteriaBuilder, criteriaQuery, root);
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class)
+				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+			return (List<T>) valuesForStatusColumn();
 		}
 
 		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
-			criteriaQuery.distinct(true);
+			criteriaQueryByType.distinct(true);
 		} else if (columnType.equals(FILTER_VALUE_ALL)) {
-			criteriaQuery.distinct(false);
+			criteriaQueryByType.distinct(false);
 		}
-		TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
+		TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQueryByType);
 		results = typedQuery.setMaxResults(filterValueMaxColumns).getResultList();
 		return results;
+
 	}
 
-	private <E, T> void buildFilterColumnListForBoolean(String columnName, String text, CriteriaBuilder criteriaBuilder,
-			CriteriaQuery<T> criteriaQuery, Root<E> root) {
-		boolean statusValue = false;
-		if (text.equals(STATUS_TRUE_FLAG)) {
-			statusValue = true;
-		}
-		criteriaQuery.where(criteriaBuilder.equal(root.get(columnName), statusValue));
-	}
+	public <E> List<FilterData> filterValuesWithCode(Class<E> entity, FilterDto filterDto,
+			FilterValueDto filterValueDto, String fieldCodeColumnName) {
 
-	public <E> List<E> filterValueEntities(Class<E> entity, FilterDto filterDto, String languageCode) {
-		List<E> values;
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<E> query = criteriaBuilder.createQuery(entity);
-		Root<E> rootEntity = query.from(entity);
-		Predicate langCodePredicate = criteriaBuilder.equal(rootEntity.get(LANGCODE_COLUMN_NAME), languageCode);
-		Predicate wildCardPredicate = criteriaBuilder.like(rootEntity.get(filterDto.getColumnName()),
-				WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER);
-		Predicate activeStatusPredicate = criteriaBuilder.isTrue(rootEntity.get(STATUS_ATTRIBUTE));
-		Predicate inActiveStatusPredicate = criteriaBuilder.isFalse(rootEntity.get(STATUS_ATTRIBUTE));
-		if (rootEntity.get(filterDto.getColumnName()).getJavaType().equals(Boolean.class)) {
-			if (filterDto.getText().equals(STATUS_TRUE_FLAG)) {
-				query.select(rootEntity).where(criteriaBuilder.and(langCodePredicate, activeStatusPredicate))
-						.orderBy(criteriaBuilder.asc(rootEntity.get(filterDto.getColumnName())));
-			} else {
-				query.select(rootEntity).where(criteriaBuilder.and(langCodePredicate, inActiveStatusPredicate))
-						.orderBy(criteriaBuilder.asc(rootEntity.get(filterDto.getColumnName())));
-			}
-		} else {
-			query.select(rootEntity).where(criteriaBuilder.and(langCodePredicate, wildCardPredicate))
-					.orderBy(criteriaBuilder.asc(rootEntity.get(filterDto.getColumnName())));
+		String columnName = filterDto.getColumnName();
+		String columnType = filterDto.getType();
+		List<FilterData> results;
+		CriteriaQuery<FilterData> criteriaQueryByType = criteriaBuilder.createQuery(FilterData.class);
+		Root<E> rootType = criteriaQueryByType.from(entity);
+
+		Predicate langCodePredicate = criteriaBuilder.equal(rootType.get(LANGCODE_COLUMN_NAME),
+				filterValueDto.getLanguageCode());
+		Predicate caseSensitivePredicate = criteriaBuilder.and(criteriaBuilder
+				.like(criteriaBuilder.lower(rootType.get(filterDto.getColumnName())), criteriaBuilder.lower(
+						criteriaBuilder.literal(WILD_CARD_CHARACTER + filterDto.getText() + WILD_CARD_CHARACTER))));
+
+		criteriaQueryByType.multiselect(rootType.get(fieldCodeColumnName), rootType.get(columnName));
+
+		columnTypeValidator(rootType, columnName);
+
+		if (!(rootType.get(columnName).getJavaType().equals(Boolean.class))) {
+			criteriaQueryByType.where(criteriaBuilder.and(langCodePredicate, caseSensitivePredicate));
+		}
+		criteriaQueryByType.orderBy(criteriaBuilder.asc(rootType.get(columnName)));
+
+		if (rootType.get(columnName).getJavaType().equals(Boolean.class)
+				&& (columnType.equals(FILTER_VALUE_UNIQUE) || columnType.equals(FILTER_VALUE_ALL))) {
+			return valuesForStatusColumnCode();
 		}
 
-		TypedQuery<E> results = entityManager.createQuery(query);
-		values = results.setMaxResults(filterValueMaxColumns).getResultList();
-		return values;
+		if (columnType.equals(FILTER_VALUE_UNIQUE)) {
+			criteriaQueryByType.distinct(true);
+		} else if (columnType.equals(FILTER_VALUE_ALL)) {
+			criteriaQueryByType.distinct(false);
+		}
+		TypedQuery<FilterData> typedQuery = entityManager.createQuery(criteriaQueryByType);
+		results = typedQuery.setMaxResults(filterValueMaxColumns).getResultList();
+		return results;
+
+	}
+
+	private <E> void columnTypeValidator(Root<E> root, String columnName) {
+		if (classes.contains(root.get(columnName).getJavaType())) {
+			throw new MasterDataServiceException(ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorCode(),
+					ValidationErrorCode.FILTER_COLUMN_NOT_SUPPORTED.getErrorMessage());
+
+		}
+	}
+
+	private List<FilterData> valuesForStatusColumnCode() {
+		FilterData trueFilterData = new FilterData("", "true");
+		FilterData falseFilterData = new FilterData("", "false");
+		List<FilterData> filterDataList = new ArrayList<>();
+		filterDataList.add(trueFilterData);
+		filterDataList.add(falseFilterData);
+		return filterDataList;
+	}
+
+	private List<String> valuesForStatusColumn() {
+		List<String> filterDataList = new ArrayList<>();
+		filterDataList.add("true");
+		filterDataList.add("false");
+		return filterDataList;
 	}
 }

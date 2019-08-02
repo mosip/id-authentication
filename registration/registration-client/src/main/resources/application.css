@@ -1804,6 +1804,16 @@ Working on new Css by taleev
 	-fx-border-color: #FF4081;
 	-fx-background-color:#FFFFFF;	
 }
+.onboardUserPaneStyle:hover, .onboardUserPaneStyle:hover .label {
+	-fx-background-color:#E63A74;
+	-fx-border-color: #E63A74;
+	-fx-text-fill: #FFFFFF;
+}
+.onboardUserPaneStyle:pressed, .onboardUserPaneStyle:pressed .label {
+	-fx-background-color:#B32D5A;
+	-fx-border-color: #B32D5A;
+	-fx-text-fill: #FFFFFF;
+}
 .useronBoardLink{
 	-fx-text-fill: #FF4081;
 	-fx-font-family: Roboto;

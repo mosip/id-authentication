@@ -157,6 +157,14 @@ public class RegistrationConstants {
 	public static final String VIEW_REPORTS_FOCUSED = "/images/ViewReportsFocused.png";
 	public static final String SUCCESS_IMG_PTH = "/images/success.png";
 	public static final String FAILURE_IMG_PTH = "/images/failure.png";
+	public static final String GET_ONBOARDED_IMG_PATH = "/images/GetOnboarded.png";
+	public static final String GET_ONBOARDED_FOCUSED = "/images/GetOnboardedFocus.png";
+	public static final String ONBOARDING_IMG_PATH = "/images/OnboardYourself.png";
+	public static final String ONBOARDING_FOCUSED = "/images/OnboardYourselfFocus.png";
+	public static final String REGISTERING_IMG_PATH = "/images/RegisterIndividual.png";
+	public static final String REGISTERING_FOCUSED = "/images/RegisterIndividualFocus.png";
+	public static final String UPDATE_BIOMETRICS_IMG_PATH = "/images/activeBiometricDetail.png";
+	public static final String UPDATE_BIOMETRICS_FOCUSED = "/images/UpdateBiometricsFocus.png";
 
 	// Authentication
 	public static final String SUPERVISOR_FINGERPRINT_LOGIN = "Supervisior Fingerprint Authentication";

@@ -136,6 +136,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	private ImageView startOverImageView;
 	@FXML
 	private Button startOverBtn;
+	@FXML
+	private Label exceptionImageLabel;
 
 	private BufferedImage applicantBufferedImage;
 	private byte[] applicantImageIso;
@@ -895,5 +897,28 @@ public class FaceCaptureController extends BaseController implements Initializab
 		if (!validateApplicantImage()) {
 			saveBiometricDetailsBtn.setDisable(true);
 		}
+	}
+
+	/**
+	 * Sets the value of the exception photo based on the individual whose exception
+	 * photo has to be captured. If exception photo of Parent or Guardian is
+	 * required, text will be displayed as Parent Or guardian exception photo. While
+	 * for Individual, text will be displayed as Exception photo.
+	 * 
+	 * @param isParentOrGuardianBiometricsCaptured
+	 *            boolean value indicating whose exception photo has to be captured
+	 *            either individual or parent/ guardian
+	 */
+	public void setExceptionFaceDescriptionText(boolean isParentOrGuardianBiometricsCaptured) {
+		ResourceBundle applicationLanguage = ApplicationContext.applicationLanguageBundle();
+
+		String exceptionFaceDescription = applicationLanguage.getString("exceptionimage");
+
+		if (isParentOrGuardianBiometricsCaptured) {
+			exceptionFaceDescription = applicationLanguage.getString("parentOrGuardian").concat(" ")
+					.concat(exceptionFaceDescription.toLowerCase());
+		}
+
+		exceptionImageLabel.setText(exceptionFaceDescription);
 	}
 }

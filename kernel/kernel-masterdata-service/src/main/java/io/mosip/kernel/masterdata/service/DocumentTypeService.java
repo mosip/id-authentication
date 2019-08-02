@@ -3,6 +3,7 @@ package io.mosip.kernel.masterdata.service;
 import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
@@ -98,4 +99,15 @@ public interface DocumentTypeService {
 	 * @return list of document type with all the metadata.
 	 */
 	public PageResponseDto<DocumentTypeExtnDto> searchDocumentTypes(SearchDto dto);
+
+	/**
+	 * Method to fetch all Document Type details based on language code
+	 * 
+	 * @param langCode
+	 *            The language code
+	 * 
+	 * @return DocumentTypeResponseDto
+	 */
+	public DocumentTypeResponseDto getAllDocumentTypeByLaguageCode(String langCode);
+
 }

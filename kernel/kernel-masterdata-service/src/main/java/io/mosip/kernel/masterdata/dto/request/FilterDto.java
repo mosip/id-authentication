@@ -21,6 +21,5 @@ public class FilterDto {
 	@FilterColumn(columns = { FilterColumnEnum.ALL, FilterColumnEnum.UNIQUE })
 	private String type;
 	
-	@NotBlank
 	private String text;
 }

@@ -94,8 +94,8 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
-		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getMessage());
+		ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getCause().getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
@@ -103,6 +103,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
+		e.printStackTrace();
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
@@ -137,10 +138,34 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(ValidationException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> validationException(HttpServletRequest httpServletRequest,
 			final ValidationException exception) throws IOException {
-		//ExceptionUtils.logRootCause(exception);
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		errorResponse.getErrors().addAll(exception.getErrors());
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+
+	private ResponseWrapper<ServiceError> setHttpMessageNotReadableErrors(HttpServletRequest httpServletRequest) {
+		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+		String requestBody = null;
+		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
+			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		}
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
+			return responseWrapper;
+		} else {
+			int idIndex = requestBody.indexOf("id") + 5;
+			int verIndex = requestBody.indexOf("version");
+			String arr[] = requestBody.substring(idIndex).split(",");
+			String verr[] = requestBody.substring(verIndex).split(":");
+			String id = arr[0].trim();
+			id = id.replace("\"", "");
+			String version = verr[1].split("}")[0].trim();
+			version = version.replace("\"", "");
+			responseWrapper.setId(id);
+			responseWrapper.setVersion(version);
+
+			return responseWrapper;
+		}
 	}
 
 }

@@ -517,12 +517,15 @@ public class GuardianBiometricsController extends BaseController implements Init
 			}
 		}
 		try {
-			bioService.getIrisImageAsDTO(detailsDTO, irisType.concat(RegistrationConstants.EYE));
-		} catch (RegBaseCheckedException | IOException runtimeException) {
+			bioService.getIrisImageAsDTO(detailsDTO, irisType);
+		} catch (RegBaseCheckedException|IOException runtimeException) {
 			LOGGER.error(LOG_REG_GUARDIAN_BIOMETRIC_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, String.format(
 					"%s Exception while getting the scanned iris details for user registration: %s caused by %s",
 					RegistrationConstants.USER_REG_IRIS_SAVE_EXP, runtimeException.getMessage(),
 					ExceptionUtils.getStackTrace(runtimeException)));
+			irisDetailsDTOs.remove(detailsDTO);
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.NO_DEVICE_FOUND);
+			return;
 		}
 
 		if (detailsDTO.getIris() != null) {
@@ -611,7 +614,7 @@ public class GuardianBiometricsController extends BaseController implements Init
 			LOGGER.error(LOG_REG_FINGERPRINT_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					String.format("%s Exception while getting the scanned finger details for user registration: %s ",
 							exception.getMessage(), ExceptionUtils.getStackTrace(exception)));
-			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.getMessageLanguageSpecific(exception.getMessage().substring(0, 3)+RegistrationConstants.UNDER_SCORE+RegistrationConstants.MESSAGE.toUpperCase()));
+			fingerprintDetailsDTOs.remove(detailsDTO);
 			return;
 		}
 

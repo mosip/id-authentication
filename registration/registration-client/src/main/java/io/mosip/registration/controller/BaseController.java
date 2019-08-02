@@ -325,7 +325,9 @@ public class BaseController {
 	}
 
 	private void alertTypeCheck(String title, String context, Stage alertStage) {
-		if (context.contains(RegistrationConstants.INFO)) {
+		if (context.contains(RegistrationConstants.INFO) || (!context.contains(RegistrationConstants.INFO)
+				&& !context.contains(RegistrationConstants.SUCCESS.toUpperCase())
+				&& !context.contains(RegistrationConstants.ERROR.toUpperCase()))) {
 			alertStage.show();
 			alertController.generateAlertResponse(title, context);
 		} else {

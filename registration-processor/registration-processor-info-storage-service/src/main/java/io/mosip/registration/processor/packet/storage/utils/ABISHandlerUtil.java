@@ -24,6 +24,7 @@ import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
+import org.springframework.util.CollectionUtils;
 
 /**
  * The Class ABISHandlerUtil.
@@ -90,13 +91,17 @@ public class ABISHandlerUtil {
 				for (AbisResponseDetDto abisResponseDetDto : abisResponseDetDtoList) {
 					machedRefIds.add(abisResponseDetDto.getMatchedBioRefId());
 				}
-				List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
-				List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
-						RegistrationTransactionStatusCode.IN_PROGRESS.toString());
-				List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
-						RegistrationTransactionStatusCode.PROCESSED.toString());
-				uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, registrationType);
-				uniqueRIDs.addAll(processingRegIds);
+				if (!CollectionUtils.isEmpty(machedRefIds)) {
+					List<String> matchedRegIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(machedRefIds);
+					if (!CollectionUtils.isEmpty(matchedRegIds)) {
+						List<String> processingRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
+								RegistrationTransactionStatusCode.IN_PROGRESS.toString());
+						List<String> processedRegIds = packetInfoDao.getProcessedOrProcessingRegIds(matchedRegIds,
+								RegistrationTransactionStatusCode.PROCESSED.toString());
+						uniqueRIDs = getUniqueRegIds(processedRegIds, registrationId, registrationType);
+						uniqueRIDs.addAll(processingRegIds);
+					}
+				}
 			}
 		}
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(),

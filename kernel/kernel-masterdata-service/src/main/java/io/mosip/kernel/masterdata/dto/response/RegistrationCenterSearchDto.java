@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(value = "Registration Centers", description = "Registration centers")
 public class RegistrationCenterSearchDto extends BaseDto {
-	
+
 	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	@NotBlank
 	@Size(min = 1, max = 10)
@@ -37,7 +37,7 @@ public class RegistrationCenterSearchDto extends BaseDto {
 	@Size(min = 1, max = 36)
 	@FilterType(types = { FilterTypeEnum.EQUALS })
 	private String centerTypeCode;
-	
+
 	private String centerTypeName;
 
 	@Size(min = 1, max = 256)
@@ -62,7 +62,7 @@ public class RegistrationCenterSearchDto extends BaseDto {
 
 	@Size(min = 1, max = 36)
 	private String holidayLocationCode;
-	
+
 	private String holidayLocation;
 
 	@Size(min = 1, max = 16)
@@ -105,16 +105,24 @@ public class RegistrationCenterSearchDto extends BaseDto {
 
 	private String province;
 
+	private String provinceCode;
+
 	private String region;
+
+	private String regionCode;
 
 	private String postalCode;
 
-	private String localAdminAuthority;
+	private String administrativeZone;
+
+	private String administrativeZoneCode;
 
 	private String city;
-	
+
+	private String cityCode;
+
 	private String zoneCode;
-	
+
 	private String zone;
 
 }

@@ -318,7 +318,7 @@ public class TemplateServiceImpl implements TemplateService {
 		FilterResponseDto filterResponseDto = new FilterResponseDto();
 		List<ColumnValue> columnValueList = new ArrayList<>();
 		
-	       if(filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters())) {
+	       if(filterColumnValidator.validate(FilterDto.class, filterValueDto.getFilters(), Template.class)) {
 	    	  filterValueDto.getFilters().stream().forEach(filter ->{
 	    		  masterDataFilterHelper.filterValues(Template.class, filter, filterValueDto).forEach(filteredValue ->{
 	    			  if(filteredValue!=null) {

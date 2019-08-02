@@ -2,11 +2,10 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
@@ -20,6 +19,7 @@ import lombok.NoArgsConstructor;
  * Entity for Individual type
  * 
  * @author Bal Vikash Sharma
+ * @author Sidhant Agarwal
  * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "individual_type", schema = "master")
+@IdClass(CodeAndLanguageCodeID.class)
 public class IndividualType extends BaseEntity implements Serializable {
 
 	/**
@@ -38,10 +39,13 @@ public class IndividualType extends BaseEntity implements Serializable {
 	/**
 	 * Field for individual type code
 	 */
-	@EmbeddedId
-	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code")),
-			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code")) })
-	private CodeAndLanguageCodeID individualTypeID;
+	@Id
+	@Column(name = "code")
+	private String code;
+
+	@Id
+	@Column(name = "lang_code", nullable = false)
+	private String langCode;
 
 	/**
 	 * Field for individual type name
