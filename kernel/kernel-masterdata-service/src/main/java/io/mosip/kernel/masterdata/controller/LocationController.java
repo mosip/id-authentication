@@ -29,6 +29,7 @@ import io.mosip.kernel.masterdata.dto.postresponse.PostLocationCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
 import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.LocationSearchDto;
 import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.swagger.annotations.Api;
@@ -228,9 +229,9 @@ public class LocationController {
 	 */
 	@ResponseFilter
 	@PostMapping("/search")
-	public ResponseWrapper<PageResponseDto<LocationExtnDto>> searchLocation(
+	public ResponseWrapper<PageResponseDto<LocationSearchDto>> searchLocation(
 			@RequestBody @Valid RequestWrapper<SearchDto> request) {
-		ResponseWrapper<PageResponseDto<LocationExtnDto>> responseWrapper = new ResponseWrapper<>();
+		ResponseWrapper<PageResponseDto<LocationSearchDto>> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(locationHierarchyService.searchLocation(request.getRequest()));
 		return responseWrapper;
 	}

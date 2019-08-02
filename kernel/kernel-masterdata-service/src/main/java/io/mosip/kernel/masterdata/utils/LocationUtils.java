@@ -50,6 +50,8 @@ public class LocationUtils {
 	}
 
 	private boolean isChild(Location child, Location parent) {
+		Objects.requireNonNull(child);
+		Objects.requireNonNull(parent);
 		if (child.getParentLocCode() != null)
 			return child.getParentLocCode().equals(parent.getCode())
 					&& child.getLangCode().equals(parent.getLangCode());

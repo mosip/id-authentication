@@ -120,8 +120,7 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-			AuthToken token = getAuthToken(authResponseDto);
-			customTokenServices.StoreToken(token);
+	
 		}
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
@@ -484,14 +483,14 @@ public class AuthController {
 	 *            {@link UserRegistrationRequestDto}
 	 * @return {@link UserRegistrationResponseDto}
 	 */
-	@ResponseFilter
+/*	@ResponseFilter
 	@PostMapping(value = "/user")
 	public ResponseWrapper<UserRegistrationResponseDto> registerUser(
 			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
 		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
 		return responseWrapper;
-	}
+	}*/
 
 	@ResponseFilter
 	@PostMapping(value = "/user/addpassword")

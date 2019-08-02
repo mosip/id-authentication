@@ -4,7 +4,6 @@ import io.mosip.kernel.masterdata.dto.MachineDto;
 import io.mosip.kernel.masterdata.dto.MachineRegistrationCenterDto;
 import io.mosip.kernel.masterdata.dto.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.MachineResponseDto;
-import io.mosip.kernel.masterdata.dto.getresponse.extn.MachineExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.IdResponseDto;
 import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
 import io.mosip.kernel.masterdata.dto.request.SearchDto;
@@ -21,6 +20,7 @@ import io.mosip.kernel.masterdata.exception.RequestException;
  * This interface provides methods to do CRUD operations on Machine details
  * 
  * @author Megha Tanga
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -153,4 +153,14 @@ public interface MachineService {
 	 * @return the {@link FilterResponseDto}.
 	 */
 	public FilterResponseDto machineFilterValues(FilterValueDto filterValueDto);
+
+	/**
+	 * Method to decommission machine
+	 * 
+	 * @param machineId
+	 *            input from user
+	 * @return machine ID of decommissioned machine
+	 */
+	public IdResponseDto decommissionMachine(String machineId);
+
 }

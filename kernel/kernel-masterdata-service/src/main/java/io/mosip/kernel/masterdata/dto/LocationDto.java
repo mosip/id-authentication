@@ -30,6 +30,7 @@ public class LocationDto {
 
 	@Size(min = 1, max = 128)
 	@NotBlank
+	@FilterType(types = { FilterTypeEnum.EQUALS, FilterTypeEnum.STARTSWITH, FilterTypeEnum.CONTAINS })
 	private String name;
 
 	@JsonDeserialize(using = CustomIntegerDeserializer.class)

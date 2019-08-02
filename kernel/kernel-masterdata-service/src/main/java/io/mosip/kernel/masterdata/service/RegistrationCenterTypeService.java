@@ -4,12 +4,17 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeDto;
 import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.extn.RegistrationCenterTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseCodeDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 
 /**
  * Interface that provides methods for RegistrationCenterType operations.
  * 
  * @author Sagar Mahapatra
+ * @author Megha Tanga
  * @since 1.0.0
  *
  */
@@ -58,4 +63,23 @@ public interface RegistrationCenterTypeService {
 	 */
 	public PageDto<RegistrationCenterTypeExtnDto> getAllRegistrationCenterTypes(int pageNumber, int pageSize,
 			String sortBy, String orderBy);
+
+	/**
+	 * Method that returns the column values of specific filter column name.
+	 * 
+	 * @param filterValueDto
+	 *            the request DTO that provides the column name.
+	 * @return the response containing the filter values.
+	 */
+	public FilterResponseCodeDto registrationCenterTypeFilterValues(FilterValueDto filterValueDto);
+
+	/**
+	 * Method to search and sort the filter based on the filters and sorting
+	 * provided
+	 * 
+	 * @param dto
+	 *            contains the data for searching and sorting.
+	 * @return list of document type with all the metadata.
+	 */
+	public PageResponseDto<RegistrationCenterTypeExtnDto> searchRegistrationCenterTypes(SearchDto dto);
 }
