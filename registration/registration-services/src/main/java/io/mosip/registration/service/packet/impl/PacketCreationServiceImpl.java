@@ -407,7 +407,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			int qualityScore, String imageType) {
 		if (image != null) {
 			// TODO: Replace the stub image with original image once Face SDK is implemented
-			BIR bir = buildBIR(RegistrationConstants.STUB_FACE.getBytes(), CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
+			BIR bir = buildBIR(image, CbeffConstant.FORMAT_TYPE_FACE, qualityScore,
 					Arrays.asList(SingleType.FACE), Arrays.asList());
 
 			birs.add(bir);
