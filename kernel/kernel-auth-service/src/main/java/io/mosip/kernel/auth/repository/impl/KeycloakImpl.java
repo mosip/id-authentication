@@ -497,9 +497,15 @@ public class KeycloakImpl implements DataStore {
 				}
 				JsonNode attributeNodes = jsonNode.get("attributes");
 				userPassword = getPasswordFromDatabase(userName);
-				mobile = attributeNodes.get("contact no").get(0).textValue();
-				name = attributeNodes.get("name").get(0).textValue();
-				rid = attributeNodes.get("rid").get(0).textValue();
+				if(attributeNodes.get("contact no")!=null) {
+					mobile = attributeNodes.get("contact no").get(0).textValue();
+					}
+					if(attributeNodes.get("name")!=null) {
+					name = attributeNodes.get("name").get(0).textValue();
+					}
+					if(attributeNodes.get("rid")!=null) {
+					rid = attributeNodes.get("rid").get(0).textValue();
+					} 
 
 				mosipUserDto.setMail(email);
 				mosipUserDto.setMobile(mobile);
