@@ -541,7 +541,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new AuthenticationServiceException(AuthErrorCode.INVALID_TOKEN.getErrorMessage());
 		}
 
-		token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
+		//token = token.substring(AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX.length());
 		pathparams.put(KeycloakConstants.REALM_ID, "mosip");
 		ResponseEntity<String> response = null;
 		MosipUserDto mosipUserDto = null;
