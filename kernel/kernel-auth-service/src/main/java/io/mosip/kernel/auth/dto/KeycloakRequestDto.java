@@ -28,7 +28,7 @@ public class KeycloakRequestDto {
 	private Map<String,List<Object>> attributes;
 	
 	@JsonInclude(value=Include.NON_EMPTY)
-	private Map<String,Object> credentials;
+	private List<KeycloakPasswordDTO> credentials;
 	
 	@JsonInclude(value=Include.NON_EMPTY)
 	private List<String> realmRoles;

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
@@ -65,6 +66,9 @@ public class PridGeneratorTest {
 
 	@MockBean
 	private PridSequenceRepository counterRepository;
+	
+	@MockBean
+	private RestTemplate restTemplate;
 
 	@Autowired
 	private PridValidator<String> pridValidator;
