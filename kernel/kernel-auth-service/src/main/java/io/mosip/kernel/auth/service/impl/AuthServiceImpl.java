@@ -640,6 +640,7 @@ public class AuthServiceImpl implements AuthService {
 		dto.setMobile(decodedJWT.getClaim("contactno").asString());
 		dto.setName(decodedJWT.getClaim("preferred_username").asString());
 		dto.setRId(decodedJWT.getClaim("rid").asString());
+		dto.setToken(cookie);
 		dto.setRole(builder.toString());
 		return dto;
 	}
