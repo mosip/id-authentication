@@ -131,10 +131,15 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 		Properties prop = new Properties();
 		prop.load(new InputStreamReader(inputStream,"UTF-8"));
 		for (TransactionEntity transactionEntity : transactionEntityList) {
+			if(transactionEntity.getSubStatusCode()!=null && !transactionEntity.getSubStatusCode().isEmpty()) {
 			transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
+			}
+			if(transactionEntity.getStatusCode()!=null && !transactionEntity.getStatusCode().isEmpty()) {
 			transactionEntity.setStatusCode(prop.getProperty(transactionEntity.getStatusCode()));
+			}
+			if(transactionEntity.getTrntypecode()!=null && !transactionEntity.getTrntypecode().isEmpty()) {
 			transactionEntity.setTrntypecode(prop.getProperty(transactionEntity.getTrntypecode()));
-			
+			}
 			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
 		}
 		} catch (DataAccessLayerException e) {

@@ -14,12 +14,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
+import io.mosip.registration.processor.status.dto.RegistrationTransactionDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
+import io.mosip.registration.processor.status.exception.RegTransactionAppException;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
+import io.mosip.registration.processor.status.exception.TransactionsUnavailableException;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.impl.TransactionServiceImpl;
 
@@ -31,6 +36,9 @@ public class TransactionServiceTest {
 
 	@Mock
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
+	
+	@Mock
+	Environment environment;
 
 	private TransactionEntity transcationEntity;
 	private TransactionDto transactionDto;
@@ -52,7 +60,7 @@ public class TransactionServiceTest {
 
 		transcationEntity = new TransactionEntity();
 		transcationEntity.setId("1");
-
+		transcationEntity.setSubStatusCode("RPR-PKR-SUCCESS-001");
 		transcationEntity.setLangCode("eng");
 		transcationEntity.setParentid(null);
 		transcationEntity.setRemarks("Add Enrolment operation");
@@ -96,4 +104,57 @@ public class TransactionServiceTest {
 		assertNotEquals(dto, null);
 	}
 
+	
+	@Test(expected = TransactionTableNotAccessibleException.class)
+	public void testgetTransactionByRegIdFailure() throws TransactionsUnavailableException, RegTransactionAppException {
+		DataAccessLayerException exception = new DataAccessLayerException(
+				io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
+		Mockito.when(transactionRepositary.getTransactionByRegId(any()))
+		.thenThrow(exception);
+		
+		
+		 transactionService.getTransactionByRegId("1221", "en");
+
+		
+	}
+	
+	@Test(expected = TransactionsUnavailableException.class)
+	public void testgetTransactionByRegIdException() throws TransactionsUnavailableException, RegTransactionAppException {
+		List<TransactionEntity> entities = new ArrayList<TransactionEntity>();
+		Mockito.when(transactionRepositary.getTransactionByRegId(any()))
+		.thenReturn(entities);
+		
+		
+		 transactionService.getTransactionByRegId("1221", "en");
+
+		
+	}
+	
+	@Test
+	public void testgetTransactionByRegId() throws TransactionsUnavailableException, RegTransactionAppException {
+		List<TransactionEntity> entities = new ArrayList<TransactionEntity>();
+		transcationEntity = new TransactionEntity();
+		transcationEntity.setId("1");
+		transcationEntity.setSubStatusCode("RPR-PKR-SUCCESS-001");
+		transcationEntity.setLangCode("eng");
+		transcationEntity.setParentid(null);
+		transcationEntity.setRemarks("Packet has reached Packet Receiver");
+		transcationEntity.setStatusCode("SUCCESS");
+		transcationEntity.setStatusComment("Add Enrolment started");
+		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
+		transcationEntity.setLangCode("eng");
+		transcationEntity.setTrntypecode("PACKET_RECEIVER");
+		entities.add(transcationEntity);
+		Mockito.when(transactionRepositary.getTransactionByRegId(any()))
+		.thenReturn(entities);
+		Mockito.when(environment.getProperty( any()))
+				.thenReturn("globalMessages_en.properties");
+		
+		List<RegistrationTransactionDto> dtolist = transactionService.getTransactionByRegId("1221", "en");
+
+		assertEquals(dtolist.get(0).getStatusComment(), "Packet has reached Packet Receiver");
+	}
+	
+	
 }
