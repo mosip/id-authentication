@@ -39,7 +39,7 @@ public class ScanPopUpViewController extends BaseController {
 
 	@Autowired
 	private BaseController baseController;
-	
+
 	@Autowired
 	private DocumentScanController documentScanController;
 
@@ -62,16 +62,15 @@ public class ScanPopUpViewController extends BaseController {
 	private Text scanningMsg;
 
 	private boolean isDocumentScan;
-	
+
 	@Autowired
 	private Streamer streamer;
-	
+
 	@FXML
 	private Hyperlink closeButton;
-	
+
 	public TextField streamerValue;
 
-	
 	/**
 	 * @return the scanImage
 	 */
@@ -107,7 +106,7 @@ public class ScanPopUpViewController extends BaseController {
 
 			LOGGER.info(LOG_REG_IRIS_CAPTURE_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Opening pop-up screen to scan for user registration");
-			streamerValue=new TextField();
+			streamerValue = new TextField();
 			baseController = parentControllerObj;
 			popupStage = new Stage();
 			popupStage.initStyle(StageStyle.UNDECORATED);
@@ -115,7 +114,8 @@ public class ScanPopUpViewController extends BaseController {
 			popupStage.setResizable(false);
 			popupTitle.setText(title);
 			Scene scene = new Scene(scanPopup);
-			scene.getStylesheets().add(ClassLoader.getSystemClassLoader().getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(ClassLoader.getSystemClassLoader()
+					.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			popupStage.setScene(scene);
 			popupStage.initModality(Modality.WINDOW_MODAL);
 			popupStage.initOwner(fXComponents.getStage());
@@ -144,8 +144,9 @@ public class ScanPopUpViewController extends BaseController {
 
 	/**
 	 * This method will allow to scan
-	 * @throws IOException 
-	 * @throws MalformedURLException 
+	 * 
+	 * @throws IOException
+	 * @throws MalformedURLException
 	 */
 	@FXML
 	public void scan() throws MalformedURLException, IOException {
@@ -164,28 +165,26 @@ public class ScanPopUpViewController extends BaseController {
 
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Calling exit window to close the popup");
-			
-			streamer.stop();
-			popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-			popupStage.close();
-			
-			if (documentScanController.getScannedPages() != null) {
-				documentScanController.getScannedPages().clear();
-			}	
-		
+
+		streamer.stop();
+		popupStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+		popupStage.close();
+
+		if (documentScanController.getScannedPages() != null) {
+			documentScanController.getScannedPages().clear();
+		}
 
 		LOGGER.info(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Popup is closed");
 
 	}
-	
+
 	public void enableCloseButton() {
-		if(null!=closeButton)
+		if (null != closeButton)
 			closeButton.setDisable(false);
 	}
-	
-	
+
 	public void disableCloseButton() {
-		if(null!=closeButton)
+		if (null != closeButton)
 			closeButton.setDisable(true);
 	}
 
@@ -196,7 +195,8 @@ public class ScanPopUpViewController extends BaseController {
 			try {
 				documentScanController.attachScannedDocument(popupStage);
 			} catch (IOException ioException) {
-				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, ExceptionUtils.getStackTrace(ioException));
+				LOGGER.error(LOG_REG_SCAN_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+						ExceptionUtils.getStackTrace(ioException));
 				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.SCAN_DOCUMENT_ERROR);
 			}
 		}
@@ -224,8 +224,10 @@ public class ScanPopUpViewController extends BaseController {
 	}
 
 	public void setScanningMsg(String msg) {
-		scanningMsg.setText(msg);
-		scanningMsg.getStyleClass().add("scanButton");
+		if (scanningMsg != null) {
+			scanningMsg.setText(msg);
+			scanningMsg.getStyleClass().add("scanButton");
+		}
 	}
 
 }
