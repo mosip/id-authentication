@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -128,11 +129,11 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 		File messagesPropertiesFile = new File(classLoader.getResource(messagesPropertiesFileName).getFile());
 		InputStream inputStream = new FileInputStream(messagesPropertiesFile);
 		Properties prop = new Properties();
-		prop.load(inputStream);
+		prop.load(new InputStreamReader(inputStream,"UTF-8"));
 		for (TransactionEntity transactionEntity : transactionEntityList) {
-			transactionEntity.setStatusComment(new String(prop.getProperty(transactionEntity.getSubStatusCode()).getBytes(),"UTF-8"));
-			transactionEntity.setStatusCode(new String(prop.getProperty(transactionEntity.getStatusCode()).getBytes(),"UTF-8"));
-			transactionEntity.setTrntypecode(new String(prop.getProperty(transactionEntity.getTrntypecode()).getBytes(),"UTF-8"));
+			transactionEntity.setStatusComment(prop.getProperty(transactionEntity.getSubStatusCode()));
+			transactionEntity.setStatusCode(prop.getProperty(transactionEntity.getStatusCode()));
+			transactionEntity.setTrntypecode(prop.getProperty(transactionEntity.getTrntypecode()));
 			
 			dtoList.add(convertEntityToRegistrationTransactionDto(transactionEntity));
 		}
