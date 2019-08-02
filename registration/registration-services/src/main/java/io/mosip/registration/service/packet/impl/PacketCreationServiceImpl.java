@@ -360,7 +360,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				if (isListNotEmpty(biometricInfoDTO.getIrisDetailsDTO())) {
 					for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
 
-						BIR bir = buildBIR(iris.getIris(), CbeffConstant.FORMAT_TYPE_IRIS,
+						BIR bir = buildBIR(iris.getIrisIso(), CbeffConstant.FORMAT_TYPE_IRIS,
 								(int) Math.round(iris.getQualityScore()), Arrays.asList(SingleType.IRIS),
 								Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
 										? SingleAnySubtypeType.LEFT.value()
