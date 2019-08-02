@@ -719,7 +719,7 @@ public class FingerPrintCaptureController extends BaseController implements Init
 
 		clearingProgressBar();
 		singleBiomtericCaptureCheck();
-	//	faceCaptureController.clearExceptionImage();
+		faceCaptureController.clearExceptionImage();
 	}
 
 	private void clearingProgressBar() {
