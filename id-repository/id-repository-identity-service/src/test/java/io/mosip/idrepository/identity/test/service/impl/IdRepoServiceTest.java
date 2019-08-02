@@ -75,10 +75,10 @@ import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
 import io.mosip.kernel.core.cbeffutil.entity.SBInfo;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.ProcessedLevelType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.PurposeType;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.SBInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.QualityType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -143,18 +143,10 @@ public class IdRepoServiceTest {
 
 	@Mock
 	private DefaultShardResolver shardResolver;
+	
 
-	BIR rFinger = new BIR.BIRBuilder().withBdb("3".getBytes())
-			.withVersion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
-			.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
-			.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-			.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormatOwner(new Long(257)).withFormatType(new Long(7))
-					.withQuality(95).withType(Arrays.asList(SingleType.FINGER))
-					.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
-							SingleAnySubtypeType.INDEX_FINGER.value()))
-					.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
-					.withCreationDate(LocalDateTime.now()).build())
-			.withSbInfo(new SBInfo.SBInfoBuilder().setFormatOwner(257l).setFormatType(7l).build()).build();
+
+	BIR rFinger = null;
 
 	/** The uin repo. */
 	@Mock
@@ -200,6 +192,22 @@ public class IdRepoServiceTest {
 	 */
 	@Before
 	public void setup() throws FileNotFoundException, IOException, IdRepoDataValidationException, RestServiceException {
+		RegistryIDType registryIDType = new RegistryIDType();
+		registryIDType.setOrganization("257");
+		registryIDType.setType("7");
+		QualityType quality = new QualityType();
+		quality.setScore(95l);
+		rFinger = new BIR.BIRBuilder().withBdb("3".getBytes())
+				.withVersion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
+				.withCbeffversion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build())
+				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
+				.withBdbInfo(new BDBInfo.BDBInfoBuilder().withFormat(registryIDType)
+						.withQuality(quality).withType(Arrays.asList(SingleType.FINGER))
+						.withSubtype(Arrays.asList(SingleAnySubtypeType.RIGHT.value(),
+								SingleAnySubtypeType.INDEX_FINGER.value()))
+						.withPurpose(PurposeType.ENROLL).withLevel(ProcessedLevelType.RAW)
+						.withCreationDate(LocalDateTime.now()).build())
+				.withSbInfo(new SBInfo.SBInfoBuilder().setFormatOwner(registryIDType).build()).build();;
 		ReflectionTestUtils.setField(securityManager, "env", env);
 		ReflectionTestUtils.setField(securityManager, "mapper", mapper);
 		ReflectionTestUtils.setField(service, "securityManager", securityManager);
@@ -1084,23 +1092,6 @@ public class IdRepoServiceTest {
 		request.setRequest(req);
 		IdResponseDTO updateIdentity = proxyService.updateIdentity(request, "12343");
 		assertEquals(status, updateIdentity.getResponse().getStatus());
-	}
-
-	@Test
-	public void testConvertToBIR() {
-		rFinger.getCbeffversion();
-		BIRType birType = rFinger.toBIRType(rFinger);
-		birType.setCBEFFVersion(new BIRVersion.BIRVersionBuilder().withMajor(1).withMinor(1).build().toVersion());
-		SBInfoType sbInfoType = new SBInfoType();
-		sbInfoType.setFormatOwner(257l);
-		sbInfoType.setFormatType(7l);
-		birType.setSBInfo(sbInfoType);
-		ReflectionTestUtils.invokeMethod(service, "convertToBIR", Collections.singletonList(birType));
-	}
-
-	@Test
-	public void testConvertToBIRNoData() {
-		ReflectionTestUtils.invokeMethod(service, "convertToBIR", Collections.singletonList(new BIRType()));
 	}
 
 	@Test(expected = IdRepoAppException.class)

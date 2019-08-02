@@ -18,19 +18,42 @@ import io.mosip.registration.service.BaseService;
  */
 @Component
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
-		
+
 	@Autowired
 	private BaseService baseService;
-	
+
 	/** The fp device. */
 	private MFS100 fpDevice = new MFS100(this);
 
 	private String fingerPrintType = "";
 
 	/**
-	 * This method initialize the device and capture the image from device. it waits
-	 * for the given time and quality to meet. if not met in the given time then
-	 * throw the error code and messages. outputType - minutia or ISOTemplate
+	 * This method initializes the device and captures the image from device. It
+	 * waits for the given time and quality to meet. If the quality is not met in
+	 * the given time then throws the error code and messages. The outputType will
+	 * be either minutia or ISOTemplate.
+	 * 
+	 * <p>
+	 * Returns the integer value based on the action performed.
+	 * <p>
+	 * Returns 0 if the device is initialized and fingerprint is captured with
+	 * required quality score and within given time.
+	 * </p>
+	 * <p>
+	 * Returns -1 if the device is not initialized.
+	 * </p>
+	 * <p>
+	 * Returns -2 if the device is not valid.
+	 * </p>
+	 *
+	 * @param qualityScore
+	 *            - the minimum quality score that is required
+	 * @param captureTimeOut
+	 *            - the capture time out
+	 * @param outputType
+	 *            - the output type whether minutia or ISOTemplate
+	 * @return the integer value based on the device initiation and fingerprint
+	 *         capture
 	 */
 	public int captureFingerprint(int qualityScore, int captureTimeOut, String outputType) {
 		fingerPrintType = outputType;
@@ -52,7 +75,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	}
 
 	/**
-	 * Stop and uninitialize the FP device.
+	 * This method is used to stop capture and uninitialize the FP device.
 	 */
 	public void uninitFingerPrintDevice() {
 		fpDevice.StopCapture();
@@ -60,8 +83,24 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	}
 
 	/**
-	 * Once the image captured then the respective Minutia and the ISO template
+	 * Once the image is captured, then the respective Minutia and the ISO template
 	 * would be extracted.
+	 * 
+	 * <p>
+	 * The captured image which is in byte array format and the respective Minutia
+	 * or ISO Template are extracted from the {@link FingerData} after the capture
+	 * is completed.
+	 * </p>
+	 *
+	 * @param status
+	 *            - the boolean variable which indicates the status of capture
+	 * @param erroeCode
+	 *            - the error code if any
+	 * @param errorMsg
+	 *            - the error message if any
+	 * @param fingerData
+	 *            - the {@link FingerData} which contains the captured finger
+	 *            details
 	 */
 	@Override
 	public void OnCaptureCompleted(boolean status, int erroeCode, String errorMsg, FingerData fingerData) {
@@ -74,7 +113,6 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 		} else {
 			isoTemplate = fingerData.ISOTemplate();
 		}
-
 	}
 
 	@Override

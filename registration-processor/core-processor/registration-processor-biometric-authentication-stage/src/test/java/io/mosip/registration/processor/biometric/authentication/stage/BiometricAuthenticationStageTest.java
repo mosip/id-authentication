@@ -29,6 +29,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.xml.sax.SAXException;
@@ -53,6 +54,7 @@ import io.mosip.registration.processor.core.exception.ApisResourceAccessExceptio
 import io.mosip.registration.processor.core.exception.BioTypeException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
@@ -63,6 +65,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.IdentityIteratorUtil;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.utils.AuthUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
@@ -154,8 +157,6 @@ public class BiometricAuthenticationStageTest {
 	@Mock
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	
-	
-
 	@Mock
 	private Utilities utility;
 
@@ -169,7 +170,12 @@ public class BiometricAuthenticationStageTest {
 	private RegistrationRepositary<SyncRegistrationEntity, String> registrationRepositary;
 
 	StatusResponseDto statusResponseDto;
-
+	
+	@Mock
+	LogDescription description;
+	
+	@Mock
+	RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	/**
 	 * Sets the up.
@@ -220,7 +226,8 @@ public class BiometricAuthenticationStageTest {
 		Mockito.when(filesystemManager.getFile(any(), any())).thenReturn(inputStream);
 		PowerMockito.mockStatic(IOUtils.class);
 		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
-
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(registrationStatusMapperUtil.getStatusCode(any())).thenReturn("");
 		PowerMockito.mockStatic(HMACUtils.class);
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);

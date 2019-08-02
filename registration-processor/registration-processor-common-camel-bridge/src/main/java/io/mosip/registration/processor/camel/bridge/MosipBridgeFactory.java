@@ -20,7 +20,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.vertx.camel.CamelBridge;
 import io.vertx.camel.CamelBridgeOptions;
@@ -33,7 +37,7 @@ import io.vertx.camel.CamelBridgeOptions;
  * @since 0.0.1
  */
 @Component
-public class MosipBridgeFactory extends MosipVerticleManager {
+public class MosipBridgeFactory extends MosipVerticleAPIManager {
 
 	@Autowired
 	ApplicationContext applicationContext;
@@ -41,19 +45,32 @@ public class MosipBridgeFactory extends MosipVerticleManager {
 	Environment environment;
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
+	
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
+	/** The mosip event bus. */
+	MosipEventBus mosipEventBus = null;
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
 	/**
 	 * Gets the event bus.
 	 *
 	 * @return the event bus
 	 */
 	public void getEventBus() {
-		this.getEventBus(this, clusterManagerUrl);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl);
 	}
 
 	@Override
 	public void start() throws Exception {
 		String camelRoutesFileName;
 		JndiRegistry registry=null;
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), null,null));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
 		    String[] beanNames=applicationContext.getBeanDefinitionNames();
 		    if (beanNames != null) {
 		      Map<String,String> enviroment= new HashMap<>();

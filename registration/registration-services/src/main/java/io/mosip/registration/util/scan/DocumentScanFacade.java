@@ -15,7 +15,9 @@ import io.mosip.registration.device.scanner.IMosipDocumentScannerService;
 import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 
 /**
- * Facade Class to help connect the document scanner implementation
+ * This class is used to select the document scanner provider and scan the documents with the provider.
+ * The scanned documents are in the byte array which will be converted into bufffered images.
+ * The buffered images are then converted to a single image/pdf based on the user option.
  * 
  * @author balamurugan ramamoorthy
  * @since 1.0.0
@@ -30,7 +32,8 @@ public class DocumentScanFacade {
 	private static final Logger LOGGER = AppConfig.getLogger(DocumentScanFacade.class);
 
 	/**
-	 * gets the sample scanned document
+	 * <p> This method will get the stubbed image(Image in the local path)
+	 *  as bytes and return as byte array</p>
 	 * 
 	 * @return byte[] - image file in bytes
 	 * @throws IOException
@@ -39,7 +42,7 @@ public class DocumentScanFacade {
 	public byte[] getScannedDocument() throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		InputStream inputStream = this.getClass().getResourceAsStream(RegistrationConstants.DOC_STUB_PATH);
 
@@ -51,7 +54,7 @@ public class DocumentScanFacade {
 	}
 
 	/**
-	 * gets all the possible scanner implementations
+	 * <p>Gets all the document scanner providers in which this class is implemented</p>
 	 * 
 	 * @param documentScannerServices
 	 *            - list that holds the scanner impl details
@@ -62,9 +65,12 @@ public class DocumentScanFacade {
 	}
 
 	/**
-	 * Checks the platform and selects the scanner implementation accordingly
+	 * <p>Checks the platform and selects the scanner implementation accordingly</p>
+	 * <p>Currently available Platforms:</p>
+	 * <ol><li>Windows</li>
+	 * 		<li>Linux</li></ol>
 	 * 
-	 * @return boolean - sets the scanner factory based on the os platform
+	 * @return boolean - sets the scanner factory and returns whether it is set properly or not
 	 */
 	public boolean setScannerFactory() {
 		String factoryName = "";
@@ -95,7 +101,7 @@ public class DocumentScanFacade {
 	public BufferedImage getScannedDocumentFromScanner() throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.scan();
 
@@ -113,7 +119,7 @@ public class DocumentScanFacade {
 	public byte[] getImageBytesFromBufferedImage(BufferedImage bufferedImage) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.getImageBytesFromBufferedImage(bufferedImage);
 
@@ -131,7 +137,7 @@ public class DocumentScanFacade {
 	public byte[] asImage(List<BufferedImage> bufferedImages) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.asImage(bufferedImages);
 
@@ -149,7 +155,7 @@ public class DocumentScanFacade {
 	public byte[] asPDF(List<BufferedImage> bufferedImages) throws IOException {
 
 		LOGGER.info(RegistrationConstants.REGISTRATION_CONTROLLER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Redaing byte array from Scanner");
+				RegistrationConstants.APPLICATION_ID, "Reading byte array from Scanner");
 
 		return documentScannerService.asPDF(bufferedImages);
 

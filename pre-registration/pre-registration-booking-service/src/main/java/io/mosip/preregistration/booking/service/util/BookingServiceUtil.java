@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -53,8 +55,6 @@ import io.mosip.preregistration.booking.dto.RegistrationCenterHolidayDto;
 import io.mosip.preregistration.booking.dto.RegistrationCenterResponseDto;
 import io.mosip.preregistration.booking.dto.SlotDto;
 import io.mosip.preregistration.booking.entity.AvailibityEntity;
-import io.mosip.preregistration.booking.entity.RegistrationBookingEntity;
-import io.mosip.preregistration.booking.entity.RegistrationBookingPK;
 import io.mosip.preregistration.booking.errorcodes.ErrorCodes;
 import io.mosip.preregistration.booking.errorcodes.ErrorMessages;
 import io.mosip.preregistration.booking.exception.AppointmentCannotBeCanceledException;
@@ -69,6 +69,7 @@ import io.mosip.preregistration.booking.exception.DemographicGetStatusException;
 import io.mosip.preregistration.booking.exception.DemographicStatusUpdationException;
 import io.mosip.preregistration.booking.exception.MasterDataNotAvailableException;
 import io.mosip.preregistration.booking.exception.NotificationException;
+import io.mosip.preregistration.booking.exception.RecordNotFoundException;
 import io.mosip.preregistration.booking.exception.RestCallException;
 import io.mosip.preregistration.booking.exception.TimeSpanException;
 import io.mosip.preregistration.booking.repository.impl.BookingDAO;
@@ -82,9 +83,13 @@ import io.mosip.preregistration.core.common.dto.NotificationResponseDTO;
 import io.mosip.preregistration.core.common.dto.PreRegistartionStatusDTO;
 import io.mosip.preregistration.core.common.dto.RequestWrapper;
 import io.mosip.preregistration.core.common.dto.ResponseWrapper;
+import io.mosip.preregistration.core.common.entity.DemographicEntity;
+import io.mosip.preregistration.core.common.entity.RegistrationBookingEntity;
+import io.mosip.preregistration.core.common.entity.RegistrationBookingPK;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.InvalidRequestParameterException;
 import io.mosip.preregistration.core.util.UUIDGeneratorUtil;
+import io.mosip.preregistration.core.util.ValidationUtil;
 
 /**
  * This class provides the utility methods for Booking application.
@@ -133,6 +138,9 @@ public class BookingServiceUtil {
 
 	@Value("${notification.url}")
 	private String notificationResourseurl;
+
+	@Value("${preregistration.country.specific.zoneId}")
+	private String specificZoneId;
 
 	private Logger log = LoggerConfiguration.logConfig(BookingServiceUtil.class);
 
@@ -384,27 +392,35 @@ public class BookingServiceUtil {
 	}
 
 	public boolean timeSpanCheckForCancle(LocalDateTime bookedDateTime) {
-		LocalDateTime current = LocalDateTime.now();
+
+		ZonedDateTime currentTime = ZonedDateTime.now();
+		LocalDateTime requestTimeCountrySpecific = currentTime.toInstant().atZone(ZoneId.of(specificZoneId))
+				.toLocalDateTime();
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForCancle method of Booking Service for current Date Time- " + current);
-		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+				"In timeSpanCheckForCancle method of Booking Service for request Date Time- "
+						+ requestTimeCountrySpecific);
+		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForCancel)
 			return true;
 		else
 			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+					ErrorMessages.CANCEL_BOOKING_CANNOT_BE_DONE.getMessage()+" "+timeSpanCheckForCancel+"hours");
 	}
 
-	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime) {
-		LocalDateTime current = LocalDateTime.now();
+	public boolean timeSpanCheckForRebook(LocalDateTime bookedDateTime, Date requestTime) {
+
+		LocalDateTime requestTimeCountrySpecific = requestTime.toInstant().atZone(ZoneId.of(specificZoneId))
+				.toLocalDateTime();
+
 		log.info("sessionId", "idType", "id",
-				"In timeSpanCheckForRebook method of Booking Service for current Date Time- " + current);
-		long hours = ChronoUnit.HOURS.between(current, bookedDateTime);
+				"In timeSpanCheckForRebook method of Booking Service for request Date Time- "
+						+ requestTimeCountrySpecific);
+		long hours = ChronoUnit.HOURS.between(requestTimeCountrySpecific, bookedDateTime);
 		if (hours >= timeSpanCheckForRebook)
 			return true;
 		else
 			throw new TimeSpanException(ErrorCodes.PRG_BOOK_RCI_026.getCode(),
-					ErrorMessages.BOOKING_STATUS_CANNOT_BE_ALTERED.getMessage());
+					ErrorMessages.BOOKING_CANNOT_BE_DONE.getMessage()+" "+timeSpanCheckForRebook+" hours");
 
 	}
 
@@ -557,8 +573,9 @@ public class BookingServiceUtil {
 	 * @param dateTime
 	 * @param entity
 	 */
-	public void slotSetter(List<LocalDate> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
+	public int slotSetter(List<LocalDate> dateList, List<DateTimeDto> dateTimeList, int i, DateTimeDto dateTime,
 			List<AvailibityEntity> entity) {
+		int noOfHoliday=0;
 		log.info("sessionId", "idType", "id", "In slotSetter method of Booking Service Util");
 		List<SlotDto> slotList = new ArrayList<>();
 		for (AvailibityEntity en : entity) {
@@ -572,6 +589,7 @@ public class BookingServiceUtil {
 		}
 		if (entity.size() == 1) {
 			dateTime.setHoliday(true);
+			noOfHoliday++;
 		} else {
 			dateTime.setHoliday(false);
 		}
@@ -580,6 +598,7 @@ public class BookingServiceUtil {
 			dateTime.setDate(dateList.get(i).toString());
 			dateTimeList.add(dateTime);
 		}
+		return noOfHoliday;
 
 	}
 
@@ -689,11 +708,10 @@ public class BookingServiceUtil {
 	 * @return
 	 */
 	public RegistrationBookingEntity bookingEntitySetter(String preRegistrationId,
-			BookingRequestDTO bookingRequestDTO) {
+			BookingRequestDTO bookingRequestDTO) {// should set preid
 		log.info("sessionId", "idType", "id", "In bookingEntitySetter method of Booking Service Util");
 		RegistrationBookingEntity entity = new RegistrationBookingEntity();
-		entity.setBookingPK(
-				new RegistrationBookingPK(preRegistrationId, DateUtils.parseDateToLocalDateTime(new Date())));
+		entity.setBookingPK(new RegistrationBookingPK(DateUtils.parseDateToLocalDateTime(new Date())));
 		entity.setRegistrationCenterId(bookingRequestDTO.getRegistrationCenterId());
 		entity.setId(UUIDGeneratorUtil.generateId());
 		entity.setLangCode("12L");
@@ -702,6 +720,9 @@ public class BookingServiceUtil {
 		entity.setRegDate(LocalDate.parse(bookingRequestDTO.getRegDate()));
 		entity.setSlotFromTime(LocalTime.parse(bookingRequestDTO.getSlotFromTime()));
 		entity.setSlotToTime(LocalTime.parse(bookingRequestDTO.getSlotToTime()));
+		DemographicEntity demographicEntity = new DemographicEntity();
+		demographicEntity.setPreRegistrationId(preRegistrationId);
+		entity.setDemographicEntity(demographicEntity);
 		return entity;
 	}
 
@@ -710,7 +731,7 @@ public class BookingServiceUtil {
 	 * @param notificationDTO
 	 * @param langCode
 	 * @return NotificationResponseDTO
-	 * @throws JsonProcessingException 
+	 * @throws JsonProcessingException
 	 */
 	public void emailNotification(NotificationDTO notificationDTO, String langCode) throws JsonProcessingException {
 		String emailResourseUrl = notificationResourseurl + "/notify";
@@ -718,7 +739,7 @@ public class BookingServiceUtil {
 		MainResponseDTO<NotificationResponseDTO> response = new MainResponseDTO<>();
 		HttpHeaders headers = new HttpHeaders();
 		MainRequestDTO<NotificationDTO> request = new MainRequestDTO<>();
-		ObjectMapper mapper= new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		mapper.setTimeZone(TimeZone.getDefault());
 		try {
 			request.setRequest(notificationDTO);
@@ -734,7 +755,7 @@ public class BookingServiceUtil {
 					"In emailNotification method of NotificationUtil service emailResourseUrl: " + emailResourseUrl);
 			resp = restTemplate.exchange(emailResourseUrl, HttpMethod.POST, httpEntity, String.class);
 			List<ServiceError> validationErrorList = ExceptionUtils.getServiceErrorList(resp.getBody());
-			if (validationErrorList!=null && !validationErrorList.isEmpty()) {
+			if (validationErrorList != null && !validationErrorList.isEmpty()) {
 				throw new NotificationException(validationErrorList, null);
 			}
 		} catch (HttpClientErrorException ex) {
@@ -748,10 +769,9 @@ public class BookingServiceUtil {
 	}
 
 	/**
-	 * This static method is used to check whether the appointment date is valid or
-	 * not
+	 * This method is used to check whether the appointment date is valid or not
 	 * 
-	 * @param regDate
+	 * @param requestMap
 	 * @return true if the appointment date time is not older date or false if the
 	 *         appointment date is older date
 	 */
@@ -763,16 +783,19 @@ public class BookingServiceUtil {
 				sdf.setLenient(false);
 				sdf.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
 				LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REG_DATE.getCode()));
-				if (localDate.isBefore(LocalDate.now())) {
+				Date currentDate = new Date();
+				LocalDate date = currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalDate();
+
+				if (localDate.isBefore(date)) {
 					throw new InvalidRequestParameterException(
 							ErrorCodes.PRG_BOOK_RCI_031.getCode(), ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage()
 									+ " found for - " + requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
 							null);
-				} else if (localDate.isEqual(LocalDate.now())
-						&& (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
-								&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
+				} else if (localDate.isEqual(date) && (requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()) != null
+						&& !requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()).isEmpty())) {
 					LocalTime localTime = LocalTime.parse(requestMap.get(RequestCodes.FROM_SLOT_TIME.getCode()));
-					if (localTime.isBefore(LocalTime.now())) {
+					LocalTime time = currentDate.toInstant().atZone(ZoneId.of(specificZoneId)).toLocalTime();
+					if (localTime.isBefore(time)) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_BOOK_RCI_031.getCode(),
 								ErrorMessages.INVALID_BOOKING_DATE_TIME.getMessage() + " found for - "
 										+ requestMap.get(RequestCodes.PRE_REGISTRAION_ID.getCode()),
@@ -787,6 +810,48 @@ public class BookingServiceUtil {
 					null);
 		}
 		return true;
+	}
+
+	/**
+	 * This method is used to validate from date and to date params
+	 * 
+	 * @param fromDate
+	 * @param toDate
+	 * @param format
+	 * @return true or false
+	 */
+	public boolean validateFromDateAndToDate(String fromDate, String toDate, String format) {
+		log.info("sessionId", "idType", "id", "In validateDataSyncRequest method of datasync service util");
+
+		if (isNull(fromDate) || !ValidationUtil.parseDate(fromDate, format)) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
+		} else if (!isNull(toDate) && !ValidationUtil.parseDate(toDate, format)) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_019.getCode(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.INVALID_DATE_TIME_FORMAT.getMessage(), null);
+		} else if (!isNull(fromDate) && !isNull(toDate)
+				&& ((LocalDate.parse(fromDate)).isAfter(LocalDate.parse(toDate)))) {
+			throw new InvalidRequestParameterException(
+					io.mosip.preregistration.core.errorcodes.ErrorCodes.PRG_CORE_REQ_020.toString(),
+					io.mosip.preregistration.core.errorcodes.ErrorMessages.FROM_DATE_GREATER_THAN_TO_DATE.getMessage(),
+					null);
+		}
+		return true;
+	}
+
+	public boolean isValidRegCenter(String regId) {
+		List<RegistrationCenterDto> regCenter = getRegCenterMasterData();
+		Boolean isValidRegCenter = regCenter.stream()
+				.anyMatch(iterate -> iterate.getId().contains(regId));
+
+		if (!isValidRegCenter) {
+			throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_035.getCode(),
+					ErrorMessages.REG_CENTER_ID_NOT_FOUND.getMessage());
+		}
+		return true;
+		
 	}
 
 }

@@ -46,6 +46,7 @@ public class RestClientAuthAdvice {
 
 	private static final String INVALID_TOKEN_STRING = "Invalid Token";
 	private static final String TOKEN_EXPIRED = "Token expired";
+	private static final boolean HAVE_TO_SAVE_AUTH_TOKEN = true;
 
 	private static final Logger LOGGER = AppConfig.getLogger(RestClientAuthAdvice.class);
 	@Autowired
@@ -137,28 +138,40 @@ public class RestClientAuthAdvice {
 	 * @throws RegBaseCheckedException
 	 */
 	private void getNewAuthZToken(RequestHTTPDTO requestHTTPDTO) throws RegBaseCheckedException {
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"Entering into the new auth token generation ");
 		String authZToken = RegistrationConstants.EMPTY;
 		boolean haveToAuthZByClientId = false;
+		LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
+
 		if (RegistrationConstants.JOB_TRIGGER_POINT_USER.equals(requestHTTPDTO.getTriggerPoint())) {
-			LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
 			if (loginUserDTO == null || loginUserDTO.getPassword() == null
-					|| SessionContext.isSessionContextAvailable()) {
+					|| isLoginModeOTP(loginUserDTO) || !SessionContext.isSessionContextAvailable()) {
 				haveToAuthZByClientId = true;
+				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+						"Application context or Session Context with OTP ");
 			} else {
-				serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
+				serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD, HAVE_TO_SAVE_AUTH_TOKEN);
 				authZToken = SessionContext.authTokenDTO().getCookie();
+				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+						"Session Context with password auth token generated " + authZToken);
 			}
 		}
 
 		// Get the AuthZ Token By Client ID and Secret Key if
 		if ((haveToAuthZByClientId
 				|| RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint()))) {
-			serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+			serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID, HAVE_TO_SAVE_AUTH_TOKEN);
 			authZToken = ApplicationContext.authTokenDTO().getCookie();
+			SessionContext.authTokenDTO().setCookie(authZToken);
+			
+			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+					"Application context or Session Context with OTP generated " + authZToken);
 		}
 
 		setAuthHeaders(requestHTTPDTO.getHttpHeaders(), requestHTTPDTO.getAuthZHeader(), authZToken);
-
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"Completed the new auth token generation ");
 	}
 
 	private String getAuthZToken(RequestHTTPDTO requestHTTPDTO, boolean haveToAuthZByClientId)
@@ -172,13 +185,17 @@ public class RestClientAuthAdvice {
 			if (SessionContext.isSessionContextAvailable() && null != SessionContext.authTokenDTO()
 					&& null != SessionContext.authTokenDTO().getCookie()) {
 				authZToken = SessionContext.authTokenDTO().getCookie();
+				LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+						"Session Context Auth token " + authZToken);
 			} else {
 				LoginUserDTO loginUserDTO = (LoginUserDTO) ApplicationContext.map().get(RegistrationConstants.USER_DTO);
-				if (loginUserDTO == null || loginUserDTO.getPassword() == null) {
+				if (loginUserDTO == null || loginUserDTO.getPassword() == null || !SessionContext.isSessionContextAvailable()) {
 					haveToAuthZByClientId = true;
 				} else {
-					serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD);
+					serviceDelegateUtil.getAuthToken(LoginMode.PASSWORD, HAVE_TO_SAVE_AUTH_TOKEN);
 					authZToken = SessionContext.authTokenDTO().getCookie();
+					LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+							"Session Context with password Auth token " + authZToken);
 				}
 			}
 		}
@@ -187,9 +204,11 @@ public class RestClientAuthAdvice {
 		if ((haveToAuthZByClientId
 				|| RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equals(requestHTTPDTO.getTriggerPoint()))) {
 			if (null == ApplicationContext.authTokenDTO() || null == ApplicationContext.authTokenDTO().getCookie()) {
-				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID);
+				serviceDelegateUtil.getAuthToken(LoginMode.CLIENTID, HAVE_TO_SAVE_AUTH_TOKEN);
 			}
 			authZToken = ApplicationContext.authTokenDTO().getCookie();
+			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+					"Application Context with Auth token " + authZToken);
 		}
 
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME, "Getting of authZ token completed");
@@ -259,15 +278,24 @@ public class RestClientAuthAdvice {
 	private boolean handleInvalidTokenFromResponse(Object response, ProceedingJoinPoint joinPoint)
 			throws RegBaseCheckedException {
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-				"Entering into the invlalid token check");
+				"Entering into the invalid token check");
 		if (response != null && (StringUtils.containsIgnoreCase(response.toString(), TOKEN_EXPIRED) || 
 				StringUtils.containsIgnoreCase(response.toString(), INVALID_TOKEN_STRING))) {
 			RequestHTTPDTO requestHTTPDTO = (RequestHTTPDTO) joinPoint.getArgs()[0];
 			getNewAuthZToken(requestHTTPDTO);
+			LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+					"Creating the new token ");
 			return true;
 		}
 		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
-				"leaving to this invlalid token check");
+				"Completed the invalid token check");
 		return false;
+	}
+	
+	private boolean isLoginModeOTP(LoginUserDTO loginUserDTO) {
+		LOGGER.info(LoggerConstants.AUTHZ_ADVICE, APPLICATION_ID, APPLICATION_NAME,
+				"Checking for the Session Context with OTP is available :: " + (SessionContext.isSessionContextAvailable() && 
+						loginUserDTO != null && loginUserDTO.getOtp() != null));
+		return SessionContext.isSessionContextAvailable() && loginUserDTO != null && loginUserDTO.getOtp() != null;
 	}
 }

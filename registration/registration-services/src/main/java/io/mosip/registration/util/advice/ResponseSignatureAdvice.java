@@ -74,24 +74,24 @@ public class ResponseSignatureAdvice {
 	 * method will be called.
 	 * </p>
 	 * 
+	 * Here we are passing three arguments as parameters
 	 * <ol>
-	 * * Here we are passing three arguements as parameters
-	 * </ol>
 	 * <li>SignIn Key - Public Key from Kernel</li>
 	 * <li>Response - Signature from response header</li>
 	 * <li>Response Body - Getting from the Service response</li>
+	 * </ol>
 	 * 
 	 * The above three values are passed to the {@link SignatureUtil} where the
 	 * validation will happen for the response that we send
 	 * 
-	 * @param joinPoint
-	 * @param result
-	 * @return
-	 * @throws RegBaseCheckedException
+	 * @param joinPoint - the JointPoint
+	 * @param result - the object result
+	 * @return the rest client response as {@link Map}
+	 * @throws RegBaseCheckedException - the exception class that handles all the checked exceptions
 	 */
 	@SuppressWarnings("unchecked")
 	@AfterReturning(pointcut = "execution(* io.mosip.registration.util.restclient.RestClientUtil.invoke(..))", returning = "result")
-	public Map<String, Object> responseSignatureValidation(JoinPoint joinPoint, Object result)
+	public synchronized Map<String, Object> responseSignatureValidation(JoinPoint joinPoint, Object result)
 			throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
@@ -158,7 +158,7 @@ public class ResponseSignatureAdvice {
 		}
 
 		LOGGER.info(LoggerConstants.RESPONSE_SIGNATURE_VALIDATION, APPLICATION_ID, APPLICATION_NAME,
-				"succesfully leaving response signature method...");
+				"successfully leaving response signature method...");
 
 		return restClientResponse;
 

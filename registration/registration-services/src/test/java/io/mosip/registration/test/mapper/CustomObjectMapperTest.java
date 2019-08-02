@@ -23,7 +23,7 @@ import io.mosip.registration.entity.UserRole;
 import io.mosip.registration.entity.id.RegCenterUserId;
 import io.mosip.registration.entity.id.UserBiometricId;
 import io.mosip.registration.entity.id.UserMachineMappingID;
-import io.mosip.registration.entity.id.UserRoleID;
+import io.mosip.registration.entity.id.UserRoleId;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.mapper.CustomObjectMapper;
 import io.mosip.registration.test.util.datastub.DataProvider;
@@ -92,9 +92,9 @@ public class CustomObjectMapperTest {
 		
 		Set<UserRole> roles = new HashSet<>();
 		UserRole userRole = new UserRole();
-		UserRoleID userRoleID = new UserRoleID();
+		UserRoleId userRoleID = new UserRoleId();
 		userRoleID.setRoleCode("REGISTRATION_OFFICER");
-		userRole.setUserRoleID(userRoleID);
+		userRole.setUserRoleId(userRoleID);
 		userRole.setLangCode("eng");
 		userRole.setIsActive(true);
 		roles.add(userRole);

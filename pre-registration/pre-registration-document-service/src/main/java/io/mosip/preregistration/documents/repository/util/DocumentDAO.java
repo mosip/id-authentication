@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.TableNotAccessibleException;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
-import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
@@ -42,7 +42,7 @@ public class DocumentDAO {
 	public List<DocumentEntity> findBypreregId(String preId) {
 		List<DocumentEntity> entityList = null;
 		try {
-			entityList = documentRepository.findBypreregId(preId);
+			entityList = documentRepository.findByDemographicEntityPreRegistrationId(preId);
 			if (serviceUtil.isNull(entityList)) {
 				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 						DocumentStatusMessages.DOCUMENT_IS_MISSING.getMessage());
@@ -60,7 +60,8 @@ public class DocumentDAO {
 		try {
 			entity = documentRepository.findBydocumentId(documentId);
 			if (entity == null) {
-				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),DocumentStatusMessages.DOCUMENT_IS_MISSING.getMessage());
+				throw new DocumentNotFoundException(ErrorCodes.PRG_PAM_DOC_005.toString(),
+						DocumentStatusMessages.DOCUMENT_IS_MISSING.getMessage());
 			}
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In findBydocumentId method of DocumnetDAO - " + ex);
@@ -95,7 +96,7 @@ public class DocumentDAO {
 
 	public int deleteAllBypreregId(String preregId) {
 		try {
-			return documentRepository.deleteAllBypreregId(preregId);
+			return documentRepository.deleteAllByDemographicEntityPreRegistrationId(preregId);
 		} catch (DataAccessLayerException ex) {
 			log.error("sessionId", "idType", "id", "In deleteAllBypreregId method of DocumnetDAO - " + ex);
 			throw new TableNotAccessibleException(ErrorCodes.PRG_PAM_DOC_012.toString(),
@@ -104,7 +105,7 @@ public class DocumentDAO {
 	}
 
 	public boolean existsByPreregId(String preregId) {
-		return documentRepository.existsByPreregId(preregId);
+		return documentRepository.existsByDemographicEntityPreRegistrationId(preregId);
 	}
 
 	public DocumentEntity saveDocument(DocumentEntity entity) {

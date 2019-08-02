@@ -43,6 +43,7 @@ import io.mosip.preregistration.core.common.dto.DocumentMultipartResponseDTO;
 import io.mosip.preregistration.core.common.dto.DocumentsMetaData;
 import io.mosip.preregistration.core.common.dto.MainRequestDTO;
 import io.mosip.preregistration.core.common.dto.MainResponseDTO;
+import io.mosip.preregistration.core.common.entity.DocumentEntity;
 import io.mosip.preregistration.core.config.LoggerConfiguration;
 import io.mosip.preregistration.core.exception.EncryptionFailedException;
 import io.mosip.preregistration.core.exception.HashingException;
@@ -54,7 +55,6 @@ import io.mosip.preregistration.core.util.ValidationUtil;
 import io.mosip.preregistration.documents.code.DocumentStatusMessages;
 import io.mosip.preregistration.documents.dto.DocumentRequestDTO;
 import io.mosip.preregistration.documents.dto.DocumentResponseDTO;
-import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.errorcodes.ErrorMessages;
 import io.mosip.preregistration.documents.exception.DocumentFailedToCopyException;
@@ -194,7 +194,8 @@ public class DocumentService {
 		MainResponseDTO<DocumentResponseDTO> responseDto = new MainResponseDTO<>();
 		MainRequestDTO<DocumentRequestDTO> docReqDto = null;
 		boolean isUploadSuccess = false;
-
+		responseDto.setId(uploadId);
+		responseDto.setVersion(ver);
 		try {
 			docReqDto = serviceUtil.createUploadDto(documentJsonString, preRegistrationId);
 			responseDto.setId(docReqDto.getId());
@@ -257,7 +258,7 @@ public class DocumentService {
 		if (serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
 			DocumentEntity getentity = documnetDAO.findSingleDocument(preRegistrationId, document.getDocCatCode());
 			DocumentEntity documentEntity = serviceUtil.dtoToEntity(file, document, authUserDetails().getUserId(),
-					preRegistrationId);
+					preRegistrationId,getentity);
 			if (getentity != null) {
 				documentEntity.setDocumentId(String.valueOf(getentity.getDocumentId()));
 			}
@@ -270,14 +271,14 @@ public class DocumentService {
 			if (documentEntity != null) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
 
-				boolean isStoreSuccess = fs.storeFile(documentEntity.getPreregId(), key,
+				boolean isStoreSuccess = fs.storeFile(documentEntity.getDemographicEntity().getPreRegistrationId(), key,
 						new ByteArrayInputStream(encryptedDocument));
 
 				if (!isStoreSuccess) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_009.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_UPLOAD.getMessage());
 				}
-				docResponseDto.setPreRegistrationId(documentEntity.getPreregId());
+				docResponseDto.setPreRegistrationId(documentEntity.getDemographicEntity().getPreRegistrationId());
 				docResponseDto.setDocId(String.valueOf(documentEntity.getDocumentId()));
 				docResponseDto.setDocName(documentEntity.getDocName());
 				docResponseDto.setDocCatCode(documentEntity.getDocCatCode());
@@ -331,7 +332,7 @@ public class DocumentService {
 					DocumentEntity copyDocumentEntity = documnetDAO.saveDocument(
 							serviceUtil.documentEntitySetter(destinationPreId, documentEntity, destEntity));
 					sourceKey = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-					sourceBucketName = documentEntity.getPreregId();
+					sourceBucketName = documentEntity.getDemographicEntity().getPreRegistrationId();
 					copyFile(copyDocumentEntity, sourceBucketName, sourceKey);
 					DocumentResponseDTO documentResponseDTO = new DocumentResponseDTO();
 					documentResponseDTO.setPreRegistrationId(destinationPreId);
@@ -380,7 +381,7 @@ public class DocumentService {
 		String destinationBucketName;
 		String destinationKey;
 		if (copyDocumentEntity != null) {
-			destinationBucketName = copyDocumentEntity.getPreregId();
+			destinationBucketName = copyDocumentEntity.getDemographicEntity().getPreRegistrationId();
 			destinationKey = copyDocumentEntity.getDocCatCode() + "_" + copyDocumentEntity.getDocumentId();
 			boolean isStoreSuccess = fs.copyFile(sourceBucketName, sourceKey, destinationBucketName, destinationKey);
 			if (!isStoreSuccess) {
@@ -407,11 +408,12 @@ public class DocumentService {
 		responseDto.setId(fetchMetaDataId);
 		responseDto.setVersion(ver);
 		boolean isRetrieveSuccess = false;
-		boolean isDocNotFound=false;
+		boolean isDocNotFound = false;
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
-			if (ValidationUtil.requstParamValidator(requestParamMap)) {
+			if (ValidationUtil.requstParamValidator(requestParamMap) &&
+				serviceUtil.getPreRegInfoRestService(preId)){
 				List<DocumentEntity> documentEntities = documnetDAO.findBypreregId(preId);
 				responseDto.setResponse(createDocumentResponse(documentEntities));
 				responseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
@@ -421,8 +423,8 @@ public class DocumentService {
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getAllDocumentForPreId method of document service - " + ex.getMessage());
-			if(ex instanceof DocumentNotFoundException)
-				isDocNotFound=true;
+			if (ex instanceof DocumentNotFoundException)
+				isDocNotFound = true;
 			new DocumentExceptionCatcher().handle(ex, responseDto);
 		} finally {
 			if (isRetrieveSuccess) {
@@ -430,15 +432,16 @@ public class DocumentService {
 						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
-				if(isDocNotFound) {
-					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-							"No documents found for the application", AuditLogVariables.NO_ID.toString(),
-							authUserDetails().getUserId(), authUserDetails().getUsername());
-				}
-				else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
+				if (isDocNotFound) {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "No documents found for the application",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername());
+				} else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "Retrieval of document is failed",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername());
 				}
 			}
 		}
@@ -461,18 +464,18 @@ public class DocumentService {
 		responseDto.setId(fetchContentId);
 		responseDto.setVersion(ver);
 		boolean isRetrieveSuccess = false;
-		boolean isDocNotFound=false;
+		boolean isDocNotFound = false;
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preId);
-			if (ValidationUtil.requstParamValidator(requestParamMap)) {
+			if (ValidationUtil.requstParamValidator(requestParamMap) && serviceUtil.getPreRegInfoRestService(preId)) {
 				DocumentEntity documentEntity = documnetDAO.findBydocumentId(docId);
-				if (!documentEntity.getPreregId().equals(preId)) {
+				if (!documentEntity.getDemographicEntity().getPreRegistrationId().equals(preId)) {
 					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
 							ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 				}
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				InputStream sourcefile = fs.getFile(documentEntity.getPreregId(), key);
+				InputStream sourcefile = fs.getFile(documentEntity.getDemographicEntity().getPreRegistrationId(), key);
 				if (sourcefile == null) {
 					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_005.toString(),
 							ErrorMessages.DOCUMENT_FAILED_TO_FETCH.getMessage());
@@ -495,8 +498,8 @@ public class DocumentService {
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In getAllDocumentForPreId method of document service - " + ex.getMessage());
-			if(ex instanceof DocumentNotFoundException)
-				isDocNotFound=true;
+			if (ex instanceof DocumentNotFoundException)
+				isDocNotFound = true;
 			new DocumentExceptionCatcher().handle(ex, responseDto);
 		} finally {
 			if (isRetrieveSuccess) {
@@ -504,15 +507,16 @@ public class DocumentService {
 						"Retrieval of document is successfull", AuditLogVariables.MULTIPLE_ID.toString(),
 						authUserDetails().getUserId(), authUserDetails().getUsername());
 			} else {
-				if(isDocNotFound) {
-					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-							"No documents found for the application", AuditLogVariables.NO_ID.toString(),
-							authUserDetails().getUserId(), authUserDetails().getUsername());
-				}
-				else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Retrieval of document is failed", AuditLogVariables.NO_ID.toString(),
-						authUserDetails().getUserId(), authUserDetails().getUsername());
+				if (isDocNotFound) {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "No documents found for the application",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername());
+				} else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "Retrieval of document is failed",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername());
 				}
 			}
 		}
@@ -531,6 +535,7 @@ public class DocumentService {
 		List<DocumentMultipartResponseDTO> allDocRes = new ArrayList<>();
 		DocumentsMetaData documentsMetaData = new DocumentsMetaData();
 		for (DocumentEntity doc : entityList) {
+			System.out.println("Demographic preid: " + doc.getDemographicEntity().getStatusCode());
 			DocumentMultipartResponseDTO allDocDto = new DocumentMultipartResponseDTO();
 			allDocDto.setDocCatCode(doc.getDocCatCode());
 			allDocDto.setDocName(doc.getDocName());
@@ -557,52 +562,57 @@ public class DocumentService {
 		delResponseDto.setId(deleteSpecificId);
 		delResponseDto.setVersion(ver);
 		boolean isRetrieveSuccess = false;
-		boolean isDocNotFound=false;
+		boolean isDocNotFound = false;
+		Map<String, String> requestParamMap = new HashMap<>();
 		try {
-			DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
-			if (!documentEntity.getPreregId().equals(preRegistrationId)) {
-				throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
-						ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
-			}
-			if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
-				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				boolean isDeleted = fs.deleteFile(documentEntity.getPreregId(), key);
-				if (!isDeleted) {
-					throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
-							ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
+			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preRegistrationId);
+			if (ValidationUtil.requstParamValidator(requestParamMap)
+					&& serviceUtil.getPreRegInfoRestService(preRegistrationId)) {
+				DocumentEntity documentEntity = documnetDAO.findBydocumentId(documentId);
+				if (!documentEntity.getDemographicEntity().getPreRegistrationId().equals(preRegistrationId)) {
+					throw new InvalidDocumentIdExcepion(ErrorCodes.PRG_PAM_DOC_022.name(),
+							ErrorMessages.INVALID_DOCUMENT_ID.getMessage());
 				}
-				DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
-				deleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
-				delResponseDto.setResponse(deleteDTO);
+				if (documnetDAO.deleteAllBydocumentId(documentId) > 0) {
+					String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
+					boolean isDeleted = fs.deleteFile(documentEntity.getDemographicEntity().getPreRegistrationId(),
+							key);
+					if (!isDeleted) {
+						throw new FSServerException(ErrorCodes.PRG_PAM_DOC_006.toString(),
+								ErrorMessages.DOCUMENT_FAILED_TO_DELETE.getMessage());
+					}
+					DocumentDeleteResponseDTO deleteDTO = new DocumentDeleteResponseDTO();
+					deleteDTO.setMessage(DocumentStatusMessages.DOCUMENT_DELETE_SUCCESSFUL.getMessage());
+					delResponseDto.setResponse(deleteDTO);
+				}
 			}
-			
 			delResponseDto.setResponsetime(serviceUtil.getCurrentResponseTime());
-			isRetrieveSuccess=true;
+			isRetrieveSuccess = true;
 
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id", "In deleteDocument method of document service - " + ex.getMessage());
-			if(ex instanceof DocumentNotFoundException)
-				isDocNotFound=true;
+			if (ex instanceof DocumentNotFoundException)
+				isDocNotFound = true;
 			new DocumentExceptionCatcher().handle(ex, delResponseDto);
-		}
-		 finally {
-				if (isRetrieveSuccess) {
-					setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
-							"Document successfully deleted from the document table", AuditLogVariables.MULTIPLE_ID.toString(),
-							authUserDetails().getUserId(), authUserDetails().getUsername());
+		} finally {
+			if (isRetrieveSuccess) {
+				setAuditValues(EventId.PRE_403.toString(), EventName.DELETE.toString(), EventType.BUSINESS.toString(),
+						"Document successfully deleted from the document table",
+						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
+						authUserDetails().getUsername());
+			} else {
+				if (isDocNotFound) {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "No documents found for the application",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername());
 				} else {
-					if(isDocNotFound) {
-						setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-								"No documents found for the application", AuditLogVariables.NO_ID.toString(),
-								authUserDetails().getUserId(), authUserDetails().getUsername());
-					}
-					else {
-					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-							"Document deletion failed", AuditLogVariables.NO_ID.toString(),
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "Document deletion failed", AuditLogVariables.NO_ID.toString(),
 							authUserDetails().getUserId(), authUserDetails().getUsername());
-					}
 				}
-		 }
+			}
+		}
 		return delResponseDto;
 	}
 
@@ -617,14 +627,15 @@ public class DocumentService {
 	public MainResponseDTO<DocumentDeleteResponseDTO> deleteAllByPreId(String preregId) {
 		log.info("sessionId", "idType", "id", "In deleteAllByPreId method of document service");
 		boolean isDeleteSuccess = false;
-		boolean isDocNotFound=false;
+		boolean isDocNotFound = false;
 		MainResponseDTO<DocumentDeleteResponseDTO> deleteRes = new MainResponseDTO<>();
 		deleteRes.setId(deleteId);
 		deleteRes.setVersion(ver);
 		Map<String, String> requestParamMap = new HashMap<>();
 		try {
 			requestParamMap.put(RequestCodes.PRE_REGISTRATION_ID, preregId);
-			if (ValidationUtil.requstParamValidator(requestParamMap)) {
+			if (ValidationUtil.requstParamValidator(requestParamMap)
+					&& serviceUtil.getPreRegInfoRestService(preregId)) {
 				List<DocumentEntity> documentEntityList = documnetDAO.findBypreregId(preregId);
 				DocumentDeleteResponseDTO deleteDTO = deleteFile(documentEntityList, preregId);
 				deleteRes.setResponse(deleteDTO);
@@ -635,8 +646,8 @@ public class DocumentService {
 		} catch (Exception ex) {
 			log.error("sessionId", "idType", "id",
 					"In deleteAllByPreId method of document service - " + ex.getMessage());
-			if(ex instanceof DocumentNotFoundException)
-				isDocNotFound=true;
+			if (ex instanceof DocumentNotFoundException)
+				isDocNotFound = true;
 			new DocumentExceptionCatcher().handle(ex, deleteRes);
 		} finally {
 			if (isDeleteSuccess) {
@@ -645,15 +656,15 @@ public class DocumentService {
 						AuditLogVariables.MULTIPLE_ID.toString(), authUserDetails().getUserId(),
 						authUserDetails().getUsername());
 			} else {
-				if(isDocNotFound) {
-					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-							"No documents found for the application", AuditLogVariables.NO_ID.toString(),
+				if (isDocNotFound) {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "No documents found for the application",
+							AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
+							authUserDetails().getUsername());
+				} else {
+					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(),
+							EventType.SYSTEM.toString(), "Document deletion failed", AuditLogVariables.NO_ID.toString(),
 							authUserDetails().getUserId(), authUserDetails().getUsername());
-				}
-				else {
-				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-						"Document deletion failed", AuditLogVariables.NO_ID.toString(), authUserDetails().getUserId(),
-						authUserDetails().getUsername());
 				}
 			}
 		}
@@ -666,7 +677,7 @@ public class DocumentService {
 		if (documnetDAO.deleteAllBypreregId(preregId) >= 0) {
 			for (DocumentEntity documentEntity : documentEntityList) {
 				String key = documentEntity.getDocCatCode() + "_" + documentEntity.getDocumentId();
-				fs.deleteFile(documentEntity.getPreregId(), key);
+				fs.deleteFile(documentEntity.getDemographicEntity().getPreRegistrationId(), key);
 			}
 			deleteDTO.setMessage(DocumentStatusMessages.ALL_DOCUMENT_DELETE_SUCCESSFUL.getMessage());
 		}

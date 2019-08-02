@@ -5,8 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.annotation.PostConstruct;
 
@@ -20,10 +18,17 @@ import io.mosip.registration.constants.RegistrationUIConstants;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.config.JobConfigurationService;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Screen;
 import javafx.scene.control.ButtonType;
+import javafx.util.Duration;
 
 /**
  * Restart Controller was to restart the application
@@ -65,7 +70,6 @@ public class RestartController extends BaseController {
 
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Is to be restart check started");
-
 		/* Check any eligible restart-able jobs completed with success */
 		SuccessResponseDTO successResponseDTO = jobConfigurationService.isRestart().getSuccessResponseDTO();
 
@@ -80,12 +84,18 @@ public class RestartController extends BaseController {
 					(String) successResponseDTO.getOtherAttributes().get(RegistrationConstants.JOB_ID));
 
 			/* Generate alert */
-			Alert restartAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.SYNC_SUCCESS,
-					successResponseDTO.getMessage(), RegistrationUIConstants.RESTART_APPLICATION,
+			Alert restartAlert = createAlert(AlertType.CONFIRMATION, RegistrationUIConstants.SYNC_SUCCESS,RegistrationUIConstants.ALERT_NOTE_LABEL,
+					successResponseDTO.getMessage()+RegistrationConstants.SPACE+ RegistrationUIConstants.RESTART_APPLICATION,
 					RegistrationConstants.OK_MSG, RegistrationConstants.CANCEL_MSG);
 
 			generatedAlerts.add(restartAlert);
-
+			restartAlert.show();
+			Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();		
+			Double xValue = screenSize.getWidth()/2 - restartAlert.getWidth()+250;
+			Double yValue = screenSize.getHeight()/2 - restartAlert.getHeight();
+			restartAlert.hide();
+			restartAlert.setX(xValue);
+			restartAlert.setY(yValue);
 			restartAlert.showAndWait();
 
 			/* Get Option from user */
@@ -136,35 +146,39 @@ public class RestartController extends BaseController {
 	private void createSyncRestartTimer() {
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Creation of sync restart timer started");
-		/* Timer for sync-restart activity */
-		Timer syncRestartTimer = new Timer("Timer");
-
-		/* Defined task to restart the application */
-		TimerTask restartTask = new TimerTask() {
-			public void run() {
-
-				Platform.runLater(() -> {
-
-					/* Check whether the user wanted to restart the application */
-					while (isToBeRestarted()) {
-						/* Clear the completed job map */
-						BaseJob.clearCompletedJobMap();
-
-						/* Restart the application */
-						restart();
-					}
-
-				});
-			}
-		};
 
 		/* Get Restart time for timer */
 		SuccessResponseDTO successResponseDTO = jobConfigurationService.getRestartTime().getSuccessResponseDTO();
+
 		if (successResponseDTO != null) {
-			/* Schedule the restart timer with retrieved time */
-			syncRestartTimer.schedule(restartTask, Long.parseLong(successResponseDTO.getMessage()),
-					Long.parseLong(successResponseDTO.getMessage()));
+			Timeline syncRestartTimer = new Timeline(
+					new KeyFrame(Duration.seconds((int) (Integer.parseInt(successResponseDTO.getMessage()) * 0.001)),
+							new EventHandler<ActionEvent>() {
+
+								@Override
+								public void handle(ActionEvent event) {
+
+									Platform.runLater(() -> {
+
+										LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME,
+												APPLICATION_ID, "Restart Timer Task restart");
+
+										/* Check whether the user wanted to restart the application */
+										while (isToBeRestarted()) {
+											/* Clear the completed job map */
+											BaseJob.clearCompletedJobMap();
+
+											/* Restart the application */
+											restart();
+										}
+
+									});
+								}
+							}));
+			syncRestartTimer.setCycleCount(Timeline.INDEFINITE);
+			syncRestartTimer.play();
 		}
+
 		LOGGER.info("REGISTRATION - RESTART  - RESTART CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Creation of sync restart timer completed");
 

@@ -19,7 +19,7 @@ public class PacketReceiverResponseBuilder{
 	 * @param ex the ex
 	 * @return the string
 	 */
-	public static String buildPacketReceiverResponse(String statusCode,List<String> l) {
+	public static PacketReceiverResponseDTO buildPacketReceiverResponse(String statusCode,List<String> l) {
 
 		PacketReceiverResponseDTO response = new PacketReceiverResponseDTO();
 		if (Objects.isNull(response.getId())) {
@@ -31,8 +31,7 @@ public class PacketReceiverResponseBuilder{
 		ResponseDTO responseDTO=new ResponseDTO();
 		responseDTO.setStatus(statusCode);
 		response.setResponse(responseDTO);
-		Gson gson = new GsonBuilder().create();
-		return gson.toJson(response);
+		return response;
 	}
 
 }

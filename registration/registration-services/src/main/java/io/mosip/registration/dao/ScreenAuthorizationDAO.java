@@ -5,7 +5,8 @@ import java.util.List;
 import io.mosip.registration.dto.AuthorizationDTO;
 
 /**
- * DAO class for RegistrationScreenAuthorization
+ * This DAO class will fetch the screen ids of each screens that needs to be 
+ * displayed for a particular user based on that user's role.
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
@@ -14,12 +15,14 @@ import io.mosip.registration.dto.AuthorizationDTO;
 public interface ScreenAuthorizationDAO {
 
 	/**
-	 * This method is used to get the screen authorization
+	 * This method will fetch the screen ids of each screens that needs to be 
+	 * displayed for a particular user based on that user's role.
 	 * 
 	 * @param roleCode
-	 *            user role
+	 *            - Role codes of a particular user
 	 * 
-	 * @return AuthorizationDTO of authorization details
+	 * @return AuthorizationDTO {@link AuthorizationDTO} object contains the screen 
+	 * 			details of that particular user
 	 */
 	AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode);
 }

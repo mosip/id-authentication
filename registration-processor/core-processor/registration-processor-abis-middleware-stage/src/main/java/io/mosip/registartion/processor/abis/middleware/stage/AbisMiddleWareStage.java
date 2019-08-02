@@ -21,7 +21,8 @@ import io.mosip.registration.processor.abis.queue.dto.AbisQueueDetails;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
-import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.abstractverticle.MosipRouter;
+import io.mosip.registration.processor.core.abstractverticle.MosipVerticleAPIManager;
 import io.mosip.registration.processor.core.code.AbisStatusCode;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -69,7 +70,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationUtility;
  * @since v1.0
  *
  */
-public class AbisMiddleWareStage extends MosipVerticleManager {
+public class AbisMiddleWareStage extends MosipVerticleAPIManager {
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AbisMiddleWareStage.class);
 
 	/** The mosip queue manager. */
@@ -106,11 +107,21 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 	@Value("${vertx.cluster.configuration}")
 	private String clusterManagerUrl;
+
+	/** server port number. */
+	@Value("${server.port}")
+	private String port;
+
+	/** The mosip event bus. */
+	MosipEventBus mosipEventBus = null;
+
+	/** Mosip router for APIs */
+	@Autowired
+	MosipRouter router;
+
 	/** The url. */
 	private static final String SYSTEM = "SYSTEM";
-	private Map<Integer, String> failureReason = new HashMap<>();
-	private List<AbisQueueDetails> abisQueueDetails;
-	private String registrationId;
+	private static List<AbisQueueDetails> abisQueueDetails;
 	private static final String REQUESTID = "requestId";
 	private static final String DEMOGRAPHIC_VERIFICATION = "DEMOGRAPHIC_VERIFICATION";
 	private static final String BIOGRAPHIC_VERIFICATION = "BIOGRAPHIC_VERIFICATION";
@@ -121,7 +132,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	 */
 	public void deployVerticle() {
 		try {
-			MosipEventBus mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
+			mosipEventBus = this.getEventBus(this, clusterManagerUrl, 50);
 			this.consume(mosipEventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 			abisQueueDetails = utility.getAbisQueueDetails();
 			for (AbisQueueDetails abisQueue : abisQueueDetails) {
@@ -146,7 +157,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, ExceptionUtils.getStackTrace(e));
+					"", ExceptionUtils.getStackTrace(e));
 			throw new RegistrationProcessorUnCheckedException(PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getCode(),
 					PlatformErrorMessages.UNKNOWN_EXCEPTION_OCCURED.getMessage(), e);
 
@@ -154,16 +165,23 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	}
 
 	@Override
+	public void start() {
+		router.setRoute(this.postUrl(mosipEventBus.getEventbus(), MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN,
+				MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT));
+		this.createServer(router.getRouter(), Integer.parseInt(port));
+	}
+
+	@Override
 	public MessageDTO process(MessageDTO object) {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisMiddlewareStage::process()::entry");
 		object.setMessageBusAddress(MessageBusAddress.ABIS_MIDDLEWARE_BUS_IN);
 		object.setIsValid(false);
 		object.setInternalError(false);
 		boolean isTransactionSuccessful = false;
 		String description = "";
-		registrationId = object.getRid();
+		String registrationId = object.getRid();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				registrationId, "AbisMiddlewareStage::process()::entry");
 		InternalRegistrationStatusDto internalRegDto = registrationStatusService.getRegistrationStatus(registrationId);
 		try {
 			List<String> abisRefList = packetInfoManager.getReferenceIdByRid(registrationId);
@@ -237,14 +255,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			object.setInternalError(false);
 			isTransactionSuccessful = true;
 			description = "Abis insertRequests sucessfully sent to Queue";
-			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+					registrationId, "AbisMiddlewareStage::process()::Abis insertRequests sucessfully sent to Queue");
 		} catch (RegistrationProcessorUnCheckedException | RegistrationProcessorCheckedException e) {
 			object.setInternalError(true);
 			object.setIsValid(false);
 			description = e.getMessage();
 			internalRegDto.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
-			internalRegDto.setStatusComment(e.getMessage());
+			internalRegDto.setStatusComment(e.getClass().getSimpleName());
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					registrationId, ExceptionUtils.getStackTrace(e));
 		} catch (Exception e) {
@@ -276,15 +294,14 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, moduleId,
 					moduleName, registrationId);
 		}
-		regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-				"AbisMiddlewareStage::process()::Exit");
+
 		return object;
 	}
 
 	public void consumerListener(Message message, String abisInBoundAddress, MosipQueue queue, MosipEventBus eventBus)
 			throws RegistrationProcessorCheckedException {
 		InternalRegistrationStatusDto internalRegStatusDto = null;
-
+		String registrationId = null;
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"AbisMiddlewareStage::consumerListener()::entry");
 
@@ -299,14 +316,17 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			validateNullCheck(bioRefId, "ABIS_REFERENCE_ID_NOT_FOUND");
 			List<String> registrationIds = packetInfoDao.getAbisRefRegIdsByMatchedRefIds(bioRefId);
 			internalRegStatusDto = registrationStatusService.getRegistrationStatus(registrationIds.get(0));
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+			registrationId = internalRegStatusDto.getRegistrationId();
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 					"AbisMiddlewareStage::consumerListener()::response from abis for requestId ::" + requestId);
 
 			AbisRequestDto abisCommonRequestDto = packetInfoManager.getAbisRequestByRequestId(requestId);
 			// check for insert response,if success send corresponding identify request to
 			// queue
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.INSERT.toString())) {
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+						"AbisMiddlewareStage::consumerListener()::Insert Response received from abis ::"
+								+ inserOrIdentifyResponse);
 				AbisInsertResponseDto abisInsertResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisInsertResponseDto.class);
 
@@ -337,13 +357,17 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			// to abis handler
 			if (abisCommonRequestDto.getRequestType().equals(AbisStatusCode.IDENTIFY.toString())) {
 
+				regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+						"AbisMiddlewareStage::consumerListener()::Identify Response received from abis ::"
+								+ inserOrIdentifyResponse);
+
 				AbisIdentifyResponseDto abisIdentifyResponseDto = JsonUtil.objectMapperReadValue(response,
 						AbisIdentifyResponseDto.class);
 				if (abisIdentifyResponseDto.getReturnValue() != 1) {
 					internalRegStatusDto
 							.setLatestTransactionStatusCode(RegistrationTransactionStatusCode.REPROCESS.toString());
 					internalRegStatusDto
-							.setStatusComment("Insert response failed for request Id" + abisCommonRequestDto.getId());
+							.setStatusComment("Identify response failed for request Id" + abisCommonRequestDto.getId());
 					registrationStatusService.updateRegistrationStatus(internalRegStatusDto);
 				}
 				AbisResponseDto abisResponseDto = updateAbisResponseEntity(abisIdentifyResponseDto, response);
@@ -420,7 +444,7 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 
 		} catch (Exception e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
-					registrationId, ExceptionUtils.getStackTrace(e));
+					"", ExceptionUtils.getStackTrace(e));
 			throw new RegistrationProcessorCheckedException(PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getCode(),
 					PlatformErrorMessages.RPR_SYS_IO_EXCEPTION.getMessage(), e);
 		}
@@ -522,6 +546,8 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 	private String getFaliureReason(Integer key) {
 		if (key == null)
 			return null;
+
+		Map<Integer, String> failureReason = new HashMap<>();
 		failureReason.put(1, "Internal error - Unknown");
 		failureReason.put(2, "Aborted");
 		failureReason.put(3, "Unexpected error - Unable to access biometric data");
@@ -593,7 +619,11 @@ public class AbisMiddleWareStage extends MosipVerticleManager {
 			MessageDTO messageDto = new MessageDTO();
 			messageDto.setRid(regId);
 			messageDto.setReg_type(RegistrationType.valueOf(regType));
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"AbisMiddlewareStage::consumerListener()::sending to Abis handler");
 			this.send(eventBus, MessageBusAddress.ABIS_MIDDLEWARE_BUS_OUT, messageDto);
+			regProcLogger.info(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+					"AbisMiddlewareStage::consumerListener()::sent to Abis handler");
 		}
 
 	}

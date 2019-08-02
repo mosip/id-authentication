@@ -10,7 +10,9 @@ import javax.persistence.Table;
 import io.mosip.registration.entity.id.CodeAndLanguageCodeID;
 
 /**
- * The Entity class for IdType.
+ * This Entity class contains Id types [Registration Id, Pre Registration Id] that
+ *  are being used in Registration with respect to language code.
+ *  The data for this table will come through sync from server master table .
  * 
  * @author Sreekar chukka
  * @since 1.0.0

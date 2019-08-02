@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import io.mosip.kernel.core.logger.spi.Logger;
-
 /**
  * This class is for input logging of all parameters in HTTP requests
  * 
@@ -36,21 +34,17 @@ public class ReqResFilter implements Filter {
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		ContentCachingRequestWrapper requestWrapper = null;
 		ContentCachingResponseWrapper responseWrapper = null;
-		try {
-			// Default processing for url ends with .stream
-			if (httpServletRequest.getRequestURI().endsWith(".stream")) {
-				chain.doFilter(request, response);
-				return;
-			}
-			requestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
-			responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
-			chain.doFilter(requestWrapper, responseWrapper);
-			responseWrapper.copyBodyToResponse();
 
-		} catch (Exception e) {
-			Logger mosipLogger = LoggerConfiguration.logConfig(ReqResFilter.class);
-			mosipLogger.error("", "", "", e.getMessage());
+		// Default processing for url ends with .stream
+		if (httpServletRequest.getRequestURI().endsWith(".stream")) {
+			chain.doFilter(request, response);
+			return;
 		}
+		requestWrapper = new ContentCachingRequestWrapper(httpServletRequest);
+		responseWrapper = new ContentCachingResponseWrapper(httpServletResponse);
+		chain.doFilter(requestWrapper, responseWrapper);
+		responseWrapper.copyBodyToResponse();
+
 	}
 
 	@Override

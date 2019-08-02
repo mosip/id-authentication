@@ -1,7 +1,9 @@
 package io.mosip.preregistration.login.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -19,13 +21,17 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
@@ -69,9 +75,13 @@ public class LoginService {
 	@Autowired
 	private LoginCommonUtil loginCommonUtil;
 	
+	@Autowired
+	private Environment env;
+	
 	@Value("${global.config.file}")
 	private String globalFileName;
 
+	
 	@Value("${pre.reg.config.file}")
 	private String preRegFileName;
 
@@ -123,10 +133,19 @@ public class LoginService {
 	@Value("${secretKey}")
 	private String secretKey;
 	
+	@Autowired
+	@Qualifier("restTemplateConfig")
+	private RestTemplate restTemplate;
+	
+	private static String globalConfig;
+	private static String preregConfig;
+	
 	@PostConstruct
 	public void setupLoginService() {
+	
 		requiredRequestMap.put("version", version);
-
+		globalConfig=loginCommonUtil.getConfig(globalFileName);
+		preregConfig=loginCommonUtil.getConfig(preRegFileName);
 	}
 	/**
 	 * Reference for ${mosip.prereg.app-id} from property file
@@ -145,16 +164,18 @@ public class LoginService {
 		log.info("sessionId", "idType", "id",
 				"In callsendOtp method of login service ");
 		MainResponseDTO<AuthNResponse> response  = null;
-		OtpRequestDTO otp=userOtpRequest.getRequest();
+		
 		requiredRequestMap.put("id",sendOtpId);
 		response  =	(MainResponseDTO<AuthNResponse>) loginCommonUtil.getMainResponseDto(userOtpRequest);
-		
+		String userid=null;
+		boolean isSuccess=false;
 		try {
 			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userOtpRequest),requiredRequestMap)/*authCommonUtil.validateRequest(userOtpRequest)*/) {
 				
-				
+				OtpRequestDTO otp=userOtpRequest.getRequest();
+				userid=otp.getUserId();
 				otpChannel=loginCommonUtil.validateUserId(otp.getUserId());
-				OtpUser user=new OtpUser(otp.getUserId(),otpChannel, appId, useridtype,null,context);
+				OtpUser user=new OtpUser(otp.getUserId().toLowerCase(),otpChannel, appId, useridtype,null,context);
 				RequestWrapper<OtpUser> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(user);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
@@ -170,8 +191,8 @@ public class LoginService {
 				ResponseWrapper<?> responseKernel=loginCommonUtil.requestBodyExchange(responseEntity.getBody());
 				AuthNResponse responseBody=(AuthNResponse) loginCommonUtil.requestBodyExchangeObject(loginCommonUtil.responseToString(responseKernel.getResponse()),AuthNResponse.class);
 				response.setResponse(responseBody);
-				}
-			
+				isSuccess=true;
+			}
 		}
 		catch(HttpServerErrorException | HttpClientErrorException ex){
 			log.info("sessionId", "idType", "id",
@@ -185,6 +206,16 @@ public class LoginService {
 		}
 		finally {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
+			if (isSuccess) {
+				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
+						"Otp send sucessfully",
+						AuditLogVariables.NO_ID.toString(), userid,
+						userid);
+			} else {
+				setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+						"Otp fail to send", AuditLogVariables.NO_ID.toString(),
+						userid, userid);
+	}
 		}
 		return response;
 	}
@@ -207,9 +238,9 @@ public class LoginService {
 		try {
 			if(ValidationUtil.requestValidator(loginCommonUtil.createRequestMap(userIdOtpRequest), requiredRequestMap)/*authCommonUtil.validateRequest(userIdOtpRequest)*/) {
 				User user=userIdOtpRequest.getRequest();
-				userid=user.getUserId();
+				userid=user.getUserId().toLowerCase();
 				loginCommonUtil.validateOtpAndUserid(user);
-				UserOtp userOtp=new UserOtp(user.getUserId(), user.getOtp(), appId);
+				UserOtp userOtp=new UserOtp(user.getUserId().toLowerCase(), user.getOtp(), appId);
 				RequestWrapper<UserOtp> requestSendOtpKernel=new RequestWrapper<>();
 				requestSendOtpKernel.setRequest(userOtp);
 				requestSendOtpKernel.setRequesttime(LocalDateTime.now());
@@ -247,12 +278,12 @@ public class LoginService {
 		
 				if (isSuccess) {
 					setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-							" User sucessfully logged-in    ",
+							"User sucessfully logged-in",
 							AuditLogVariables.NO_ID.toString(), userid,
 							userid);
 				} else {
 					setAuditValues(EventId.PRE_405.toString(), EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
-							" User failed to logged-in ", AuditLogVariables.NO_ID.toString(),
+							"User failed to logged-in", AuditLogVariables.NO_ID.toString(),
 							userid, userid);
 		}
 			
@@ -307,7 +338,7 @@ public class LoginService {
 			response.setResponsetime(GenericUtil.getCurrentResponseTime());
 			if (isSuccess) {
 				setAuditValues(EventId.PRE_410.toString(), EventName.AUTHENTICATION.toString(), EventType.BUSINESS.toString(),
-						"User sucessfully logged-out ",
+						"User sucessfully logged-out",
 						AuditLogVariables.NO_ID.toString(),userId,
 						userId);
 			} else {
@@ -364,6 +395,8 @@ public class LoginService {
 	/**
 	 * This will return UI related configurations return
 	 */
+	
+	
 	public MainResponseDTO<Map<String, String>> getConfig() {
 		log.info("sessionId", "idType", "id",
 				"In login service of getConfig ");
@@ -378,13 +411,12 @@ public class LoginService {
 				reqParams.add(uiParams[i]);
 			}
 			if (globalFileName != null && preRegFileName != null) {
-				String globalParam = loginCommonUtil.getConfig(globalFileName);
-				String preregParam = loginCommonUtil.getConfig(preRegFileName);
-				Properties prop1 = loginCommonUtil.parsePropertiesString(globalParam);
-				Properties prop2 = loginCommonUtil.parsePropertiesString(preregParam);
+				
+				Properties prop1 = loginCommonUtil.parsePropertiesString(globalConfig);
+				Properties prop2 = loginCommonUtil.parsePropertiesString(preregConfig);
 				loginCommonUtil.getConfigParams(prop1,configParams,reqParams);
 				loginCommonUtil.getConfigParams(prop2,configParams,reqParams);
-		
+				
 			} else {
 				throw new ConfigFileNotFoundException(ErrorCodes.PRG_AUTH_012.getCode(),
 						ErrorMessages.CONFIG_FILE_NOT_FOUND_EXCEPTION.getMessage(),res);
@@ -396,6 +428,27 @@ public class LoginService {
 			new LoginExceptionCatcher().handle(ex,"config",res);
 		}
 		res.setResponse(configParams);
+		res.setResponsetime(GenericUtil.getCurrentResponseTime());
+		return res;
+	}
+	
+	public  MainResponseDTO<String> refreshConfig(){
+		log.info("sessionId", "idType", "id",
+				"In login service of refreshConfig ");
+		MainResponseDTO<String> res = new MainResponseDTO<>();
+		res.setId(configId);
+		res.setVersion(version);
+
+		try {
+			globalConfig=loginCommonUtil.getConfig(globalFileName);
+			preregConfig=loginCommonUtil.getConfig(preRegFileName);
+		}
+		catch(HttpServerErrorException | HttpClientErrorException ex) {
+			log.error("sessionId", "idType", "id",
+					"In login service of refreshConfig "+ex.getMessage());
+			new LoginExceptionCatcher().handle(ex,"refreshConfig",res);
+		}
+		res.setResponse("success");
 		res.setResponsetime(GenericUtil.getCurrentResponseTime());
 		return res;
 	}

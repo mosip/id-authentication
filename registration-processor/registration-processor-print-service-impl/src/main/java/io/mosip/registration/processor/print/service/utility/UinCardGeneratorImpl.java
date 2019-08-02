@@ -43,6 +43,9 @@ public class UinCardGeneratorImpl implements UinCardGenerator<ByteArrayOutputStr
 	 */
 	@Override
 	public ByteArrayOutputStream generateUinCard(InputStream in, UinCardType type) {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"UinCardGeneratorImpl::generateUinCard()::entry");
+
 		ByteArrayOutputStream out = null;
 		try {
 			out = (ByteArrayOutputStream) pdfGenerator.generate(in);
@@ -53,6 +56,8 @@ public class UinCardGeneratorImpl implements UinCardGenerator<ByteArrayOutputStr
 			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage() + ExceptionUtils.getStackTrace(e));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"UinCardGeneratorImpl::generateUinCard()::exit");
 
 		return out;
 	}

@@ -9,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -41,6 +43,7 @@ import io.mosip.kernel.masterdata.constant.RequestErrorCode;
  * @since 1.0.0
  */
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler {
 
 	@Autowired
@@ -49,14 +52,12 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(MasterDataServiceException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataServiceException(
 			final HttpServletRequest httpServletRequest, final MasterDataServiceException e) throws IOException {
-		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR, httpServletRequest);
 	}
 
 	@ExceptionHandler(DataNotFoundException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> controlDataNotFoundException(
 			final HttpServletRequest httpServletRequest, final DataNotFoundException e) throws IOException {
-		ExceptionUtils.logRootCause(e);
 		return getErrorResponseEntity(e, HttpStatus.OK, httpServletRequest);
 	}
 
@@ -93,8 +94,8 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ResponseWrapper<ServiceError>> onHttpMessageNotReadable(
 			final HttpServletRequest httpServletRequest, final HttpMessageNotReadableException e) throws IOException {
-		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
-		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getMessage());
+		ResponseWrapper<ServiceError> errorResponse = setHttpMessageNotReadableErrors(httpServletRequest);
+		ServiceError error = new ServiceError(RequestErrorCode.REQUEST_DATA_NOT_VALID.getErrorCode(), e.getCause().getMessage());
 		errorResponse.getErrors().add(error);
 		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
@@ -102,10 +103,10 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value = { Exception.class, RuntimeException.class })
 	public ResponseEntity<ResponseWrapper<ServiceError>> defaultErrorHandler(
 			final HttpServletRequest httpServletRequest, Exception e) throws IOException {
+		e.printStackTrace();
 		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 		ServiceError error = new ServiceError(RequestErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e.getMessage());
 		errorResponse.getErrors().add(error);
-		ExceptionUtils.logRootCause(e);
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -132,6 +133,39 @@ public class ApiExceptionHandler {
 		responseWrapper.setId(reqNode.path("id").asText());
 		responseWrapper.setVersion(reqNode.path("version").asText());
 		return responseWrapper;
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<ResponseWrapper<ServiceError>> validationException(HttpServletRequest httpServletRequest,
+			final ValidationException exception) throws IOException {
+		ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
+		errorResponse.getErrors().addAll(exception.getErrors());
+		return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+	}
+
+	private ResponseWrapper<ServiceError> setHttpMessageNotReadableErrors(HttpServletRequest httpServletRequest) {
+		ResponseWrapper<ServiceError> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponsetime(LocalDateTime.now(ZoneId.of("UTC")));
+		String requestBody = null;
+		if (httpServletRequest instanceof ContentCachingRequestWrapper) {
+			requestBody = new String(((ContentCachingRequestWrapper) httpServletRequest).getContentAsByteArray());
+		}
+		if (EmptyCheckUtils.isNullEmpty(requestBody)) {
+			return responseWrapper;
+		} else {
+			int idIndex = requestBody.indexOf("id") + 5;
+			int verIndex = requestBody.indexOf("version");
+			String arr[] = requestBody.substring(idIndex).split(",");
+			String verr[] = requestBody.substring(verIndex).split(":");
+			String id = arr[0].trim();
+			id = id.replace("\"", "");
+			String version = verr[1].split("}")[0].trim();
+			version = version.replace("\"", "");
+			responseWrapper.setId(id);
+			responseWrapper.setVersion(version);
+
+			return responseWrapper;
+		}
 	}
 
 }

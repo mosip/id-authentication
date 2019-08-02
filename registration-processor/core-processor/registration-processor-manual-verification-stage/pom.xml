@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>core-processor</artifactId>
-		<version>0.12.10</version>
+		<version>0.9.1</version>
 	</parent>
 
 	<artifactId>registration-processor-manual-verification-stage</artifactId>

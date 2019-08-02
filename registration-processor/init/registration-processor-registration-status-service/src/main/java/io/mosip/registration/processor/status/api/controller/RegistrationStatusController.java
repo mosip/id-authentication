@@ -71,6 +71,7 @@ public class RegistrationStatusController {
 	@Autowired
 	private Environment env;
 
+
 	@Value("${registration.processor.signature.isEnabled}")
 	private Boolean isEnabled;
 
@@ -91,7 +92,8 @@ public class RegistrationStatusController {
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<Object> search(
 			@RequestBody(required = true) RegistrationStatusRequestDTO registrationStatusRequestDTO,
-			@CookieValue(value = "Authorization") String token) throws RegStatusAppException {
+			@CookieValue(value = "Authorization") String token)
+			throws RegStatusAppException {
 		tokenValidator.validate("Authorization=" + token, "registrationstatus");
 		try {
 			registrationStatusRequestValidator.validate(registrationStatusRequestDTO,
@@ -99,11 +101,13 @@ public class RegistrationStatusController {
 			List<RegistrationStatusDto> registrations = registrationStatusService
 					.getByIds(registrationStatusRequestDTO.getRequest());
 			if (isEnabled) {
+				RegStatusResponseDTO response =buildRegistrationStatusResponse(registrations);
+				Gson gson = new GsonBuilder().create();
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE,
-						digitalSignatureUtility.getDigitalSignature(buildRegistrationStatusResponse(registrations)));
+						digitalSignatureUtility.getDigitalSignature(gson.toJson(response)));
 				return ResponseEntity.status(HttpStatus.OK).headers(headers)
-						.body(buildRegistrationStatusResponse(registrations));
+						.body(response);
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(buildRegistrationStatusResponse(registrations));
 		} catch (RegStatusAppException e) {
@@ -113,7 +117,7 @@ public class RegistrationStatusController {
 		}
 	}
 
-	public String buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
+	public RegStatusResponseDTO buildRegistrationStatusResponse(List<RegistrationStatusDto> registrations) {
 
 		RegStatusResponseDTO response = new RegStatusResponseDTO();
 		if (Objects.isNull(response.getId())) {
@@ -123,8 +127,7 @@ public class RegistrationStatusController {
 		response.setVersion(env.getProperty(REG_STATUS_APPLICATION_VERSION));
 		response.setResponse(registrations);
 		response.setErrors(null);
-		Gson gson = new GsonBuilder().create();
-		return gson.toJson(response);
+		return response;
 	}
 
 }

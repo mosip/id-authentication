@@ -113,9 +113,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 	@Autowired
 	private TPMPublicKeySyncService tpmPublicKeySyncService;
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.login.LoginService#getModesOfLogin(java.lang.String, java.util.Set)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.login.LoginService#getModesOfLogin(java.lang.
+	 * String, java.util.Set)
 	 */
 	@Override
 	public List<String> getModesOfLogin(String authType, Set<String> roleList) {
@@ -130,9 +133,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return appAuthenticationDAO.getModesOfLogin(authType, roleList);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.login.LoginService#getUserDetail(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.login.LoginService#getUserDetail(java.lang.
+	 * String)
 	 */
 	@Override
 	public UserDTO getUserDetail(String userId) {
@@ -148,9 +154,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return MAPPER_FACADE.map(userDetail, UserDTO.class);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.login.LoginService#getRegistrationCenterDetails(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.login.LoginService#getRegistrationCenterDetails
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId, String langCode) {
@@ -165,9 +174,11 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId, langCode);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.login.LoginService#getScreenAuthorizationDetails(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.login.LoginService#
+	 * getScreenAuthorizationDetails(java.util.List)
 	 */
 	@Override
 	public AuthorizationDTO getScreenAuthorizationDetails(List<String> roleCode) {
@@ -182,9 +193,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		return screenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.login.LoginService#updateLoginParams(io.mosip.registration.dto.UserDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.login.LoginService#updateLoginParams(io.mosip.
+	 * registration.dto.UserDTO)
 	 */
 	public void updateLoginParams(UserDTO userDTO) {
 
@@ -205,8 +219,9 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 	}
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.service.login.LoginService#initialSync()
 	 */
 	@Override
@@ -226,7 +241,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 				keyIndex = tpmPublicKeySyncService.syncTPMPublicKey();
 			} catch (RegBaseCheckedException regBaseCheckedException) {
 				LOGGER.error(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
-						"Exception while sync'ing the TPM public key to server");
+						"Exception while syncing the TPM public key to server");
 				val.add(RegistrationConstants.FAILURE);
 				return val;
 			}
@@ -240,21 +255,19 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 
 	}
 
-
 	/**
 	 * Performing all sync operations.
 	 *
-	 * @param val 
-	 * 				the List of values
-	 * @param keyIndex 
-	 * 				the key index
-	 * @param isInitialSetUp 
-	 * 				the isInitialSetUp flag
+	 * @param val            the List of values
+	 * @param keyIndex       the key index
+	 * @param isInitialSetUp the isInitialSetUp flag
 	 */
 	private void performingAllSyncOperations(List<String> val, String keyIndex, final boolean isInitialSetUp) {
 		ResponseDTO publicKeySyncResponse = publicKeySyncImpl
 				.getPublicKey(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		ResponseDTO responseDTO = globalParamService.synchConfigData(false);
+		ResponseDTO userResponseDTO = new ResponseDTO();
+		ResponseDTO userSaltResponse = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 		if (successResponseDTO != null && successResponseDTO.getOtherAttributes() != null) {
 			val.add(RegistrationConstants.RESTART);
@@ -268,12 +281,13 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			masterResponseDTO = masterSyncService.getMasterSync(RegistrationConstants.OPT_TO_REG_MDS_J00001,
 					RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		}
-
-		ResponseDTO userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
-		ResponseDTO userSaltResponse = userSaltDetailsService
-				.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-
+		if (null != masterResponseDTO.getSuccessResponseDTO()) {
+			userResponseDTO = userDetailService.save(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			if (null != userResponseDTO.getSuccessResponseDTO()) {
+				userSaltResponse = userSaltDetailsService
+						.getUserSaltDetails(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			}
+		}
 		if (((masterResponseDTO.getErrorResponseDTOs() != null || userResponseDTO.getErrorResponseDTOs() != null
 				|| userSaltResponse.getErrorResponseDTOs() != null) || responseDTO.getErrorResponseDTOs() != null
 				|| publicKeySyncResponse.getErrorResponseDTOs() != null)) {
@@ -283,9 +297,12 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		}
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.login.LoginService#validateInvalidLogin(io.mosip.registration.dto.UserDTO, java.lang.String, int, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.login.LoginService#validateInvalidLogin(io.
+	 * mosip.registration.dto.UserDTO, java.lang.String, int, int)
 	 */
 	public String validateInvalidLogin(UserDTO userDTO, String errorMessage, int invalidLoginCount,
 			int invalidLoginTime) {
@@ -296,13 +313,13 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 				: RegistrationConstants.PARAM_ZERO;
 
 		Timestamp loginTime = userDTO.getUserlockTillDtimes();
-		
+
 		LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 				"Comparing timestamps in case of invalid login attempts");
 
 		if (loginCount >= invalidLoginCount
 				&& TimeUnit.MILLISECONDS.toMinutes(Timestamp.valueOf(DateUtils.getUTCCurrentDateTime()).getTime()
-						- loginTime.getTime()) > invalidLoginTime) {
+						- loginTime.getTime()) >= invalidLoginTime) {
 
 			loginCount = RegistrationConstants.PARAM_ZERO;
 			userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ZERO);
@@ -316,7 +333,7 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 			LOGGER.info(LoggerConstants.LOG_REG_LOGIN, APPLICATION_NAME, APPLICATION_ID,
 					"validating login count and time ");
 
-			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) > invalidLoginTime) {
+			if (TimeUnit.MILLISECONDS.toMinutes(loginTime.getTime() - System.currentTimeMillis()) >= invalidLoginTime) {
 
 				userDTO.setUnsuccessfulLoginCount(RegistrationConstants.PARAM_ONE);
 
@@ -348,9 +365,11 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 		}
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.login.LoginService#validateUser(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.login.LoginService#validateUser(java.lang.
+	 * String)
 	 */
 	public ResponseDTO validateUser(String userId) {
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -391,9 +410,10 @@ public class LoginServiceImpl extends BaseService implements LoginService {
 						ApplicationContext.map().put(RegistrationConstants.USER_STATION_ID,
 								centerAndMachineId.get(RegistrationConstants.USER_STATION_ID));
 
-						Map<String,Object> params = new LinkedHashMap<>();
+						Map<String, Object> params = new LinkedHashMap<>();
 
 						params.put(RegistrationConstants.ROLES_LIST, roleList);
+						params.put(RegistrationConstants.USER_DTO, userDTO);
 						setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, params);
 					}
 				}

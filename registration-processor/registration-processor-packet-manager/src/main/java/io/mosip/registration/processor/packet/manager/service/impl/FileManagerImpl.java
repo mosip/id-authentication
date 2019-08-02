@@ -55,10 +55,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	@Value("${config.server.file.storage.uri}")
 	private String configServerFileStorageURL;
 
-
-	@Value("${registration.processor.vm.ppk}")
-	private String regProcPPK;
-
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(FileManagerImpl.class);
 
@@ -72,6 +68,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	Channel channel = null;
 	ChannelSftp channelSftp = null;
 
+	private String DMZ_SERVER_PASSWORD = "registration.processor.dmz.server.password";
+
+	private String REGPROC_PPK = "registration.processor.vm.ppk";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -302,9 +301,10 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
 				"FileManagerImpl::deleteFolder()::entry");
 
-		 String filepath=env.getProperty(destinationDirectory.toString());
-		 File srcFile=FileUtils.getFile(filepath, fileName);
-		//File filePath = new File(env.getProperty(destinationDirectory.toString()) + File.separator + fileName);
+		String filepath = env.getProperty(destinationDirectory.toString());
+		File srcFile = FileUtils.getFile(filepath, fileName);
+		// File filePath = new File(env.getProperty(destinationDirectory.toString()) +
+		// File.separator + fileName);
 
 		FileUtils.forceDelete(srcFile);
 		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
@@ -333,7 +333,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	public byte[] getFile(DirectoryPathDto workingDirectory, String fileName, SftpJschConnectionDto sftpConnectionDto)
 			throws JschConnectionException, SftpFileOperationException {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				fileName,
 				"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		byte[] bytedata = null;
@@ -343,9 +344,6 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 					.get(env.getProperty(workingDirectory.toString()) + "/" + getFileName(fileName))) {
 				bytedata = IOUtils.toByteArray(is);
 			}
-
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::exit");
 
 		} catch (SftpException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
@@ -357,25 +355,40 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					fileName, e.getMessage() + ExceptionUtils.getStackTrace(e));
 
-		} finally {
-
-			if (channel != null)
-				channel.disconnect();
-			if (session != null)
-				session.disconnect();
 		}
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				fileName,
+				"FileManagerImpl::getFile(DirectoryPathDto workingDirectory, String fileName,SftpJschConnectionDto sftpConnectionDto)::exit");
+
 		return bytedata;
 
 	}
 
 	public ChannelSftp getSftpConnection(SftpJschConnectionDto sftpConnectionDto) throws JschConnectionException {
 
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::getSftpConnection()::entry");
+
+		if (channelSftp != null && channelSftp.isConnected()) {
+			return channelSftp;
+		}
+		String dmzServerPwd = env.getProperty(DMZ_SERVER_PASSWORD);
+		String regProcPPK = env.getProperty(REGPROC_PPK);
 		try {
 
+			if (dmzServerPwd == null && regProcPPK == null) {
+				throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_PWD_PPK_NOT_PRESENT.getCode(),
+						PlatformErrorMessages.RPR_PKM_PWD_PPK_NOT_PRESENT.getMessage());
+			}
 			JSch jsch = new JSch();
-			jsch.addIdentity(getPPKPath());
 			session = jsch.getSession(sftpConnectionDto.getUser(), sftpConnectionDto.getHost(),
 					sftpConnectionDto.getPort());
+			if (dmzServerPwd != null && !dmzServerPwd.isEmpty()) {
+				session.setPassword(dmzServerPwd);
+			} else {
+				jsch.addIdentity(getPPKPath());
+			}
 			Properties config = new Properties();
 			config.put("StrictHostKeyChecking", "no");
 			session.setConfig(config);
@@ -384,12 +397,15 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 			channel.connect();
 			channelSftp = (ChannelSftp) channel;
 
-		} catch (JSchException |IOException e) {
+		} catch (JSchException | IOException e) {
 			regProcLogger.error(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
 					"", e.getMessage() + ExceptionUtils.getStackTrace(e));
 
 			throw new JschConnectionException(PlatformErrorMessages.RPR_PKM_JSCH_NOT_CONNECTED.getMessage());
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"FileManagerImpl::getSftpConnection()::exit");
+
 		return channelSftp;
 
 	}
@@ -397,8 +413,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	@Override
 	public boolean copy(String fileName, DirectoryPathDto sourceWorkingDirectory,
 			DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)
-					throws IOException, JschConnectionException, SftpFileOperationException {
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+			throws IOException, JschConnectionException, SftpFileOperationException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				fileName,
 				"FileManagerImpl::copy(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		boolean status = false;
@@ -420,13 +437,13 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				status = true;
 			}
 
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"FileManagerImpl::copy(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
-
 		} catch (SftpException e) {
 
 			if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
 				status = false;
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + ExceptionUtils.getStackTrace(e));
 				return status;
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -437,22 +454,21 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			}
 
-		} finally {
-			if (channel != null)
-				channel.disconnect();
-			if (session != null)
-				session.disconnect();
-
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				fileName,
+				"FileManagerImpl::copy(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
+
 		return status;
 	}
 
 	@Override
 	public boolean cleanUp(String fileName, DirectoryPathDto sourceWorkingDirectory,
 			DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)
-					throws IOException, JschConnectionException, SftpFileOperationException {
+			throws IOException, JschConnectionException, SftpFileOperationException {
 
-		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				fileName,
 				"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::entry");
 
 		boolean status = false;
@@ -470,13 +486,14 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				}
 
 			}
-			regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
-					"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
 
 		} catch (SftpException e) {
 
 			if (e.id == ChannelSftp.SSH_FX_NO_SUCH_FILE) {
 				status = false;
+				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
+						LoggerFileConstant.REGISTRATIONID.toString(), "",
+						e.getMessage() + ExceptionUtils.getStackTrace(e));
 				return status;
 			} else {
 				regProcLogger.error(LoggerFileConstant.SESSIONID.toString(),
@@ -488,24 +505,34 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 			}
 
-		} finally {
-			if (channel != null)
-				channel.disconnect();
-			if (session != null)
-				session.disconnect();
-
 		}
+
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(),
+				fileName,
+				"FileManagerImpl::cleanUpFile(String fileName, DirectoryPathDto sourceWorkingDirectory,DirectoryPathDto destinationWorkingDirectory, SftpJschConnectionDto sftpConnectionDto)::exit");
+
 		return status;
+	}
+
+	@Override
+	public void disconnectSftp() {
+		if (channelSftp != null && channelSftp.isConnected()) {
+			channelSftp.disconnect();
+		}
+		if (session != null) {
+			session.disconnect();
+		}
 	}
 
 	public String getExtension() {
 		return extension;
 	}
 
-	public String getPPKPath() throws  IOException {
+	public String getPPKPath() throws IOException {
 		RestTemplate restTemplate = new RestTemplate();
-		String data= restTemplate.getForObject(configServerFileStorageURL + regProcPPK, String.class);
-		File file = FileUtils.getFile(regProcPPK);
+		String data = restTemplate.getForObject(configServerFileStorageURL + env.getProperty(REGPROC_PPK),
+				String.class);
+		File file = FileUtils.getFile(env.getProperty(REGPROC_PPK));
 		FileOutputStream out = new FileOutputStream(file);
 		try {
 			out.write(data.getBytes());

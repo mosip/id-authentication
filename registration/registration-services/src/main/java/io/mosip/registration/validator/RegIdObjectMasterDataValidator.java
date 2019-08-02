@@ -182,7 +182,6 @@ public class RegIdObjectMasterDataValidator {
 			genderMap = new HashSetValuedHashMap<>(genderList.size());
 			genderList.forEach(gender -> {
 				genderMap.put(gender.getLangCode(), gender.getGenderName());
-				genderMap.put(gender.getLangCode(), gender.getCode().trim());
 			});
 		}
 		LOGGER.info(REG_ID_OBJECT_MASTER_DATA_VALIDATOR, APPLICATION_NAME, APPLICATION_ID,
@@ -229,7 +228,6 @@ public class RegIdObjectMasterDataValidator {
 				if (!masterDocuments.isEmpty()) {
 					masterDocuments.forEach(docType -> {
 						docTypeMap.put(docCat, docType.getName());
-						docTypeMap.put(docCat, docType.getCode());
 					});
 				}
 			}));
@@ -261,7 +259,6 @@ public class RegIdObjectMasterDataValidator {
 				locationList.forEach(location -> {
 					if (location.getHierarchyName().equalsIgnoreCase(hierarchyName)) {
 						locations.put(location.getLangCode(), location.getName());
-						locations.put(location.getLangCode(), location.getCode());
 					}
 				});
 				locationDetails.put(hierarchyName, locations);
@@ -324,8 +321,6 @@ public class RegIdObjectMasterDataValidator {
 								JsonPath.compile(genderValuePathList.get(i)).read(identityString, READ_OPTIONS))));
 		dataMap.entrySet().stream().filter(entry -> {
 			String lang = JsonPath.compile(entry.getKey()).read(identityString, READ_OPTIONS);
-			System.out.println(
-					"Entry Val**" + lang + "->>>>" + genderMap.get(lang).contains(entry.getValue().getValue()));
 			return genderMap.containsKey(lang) && !genderMap.get(lang).contains(entry.getValue().getValue());
 		}).forEach(entry -> errorList
 				.add(new ServiceError(IdObjectValidatorErrorConstant.INVALID_INPUT_PARAMETER.getErrorCode(),

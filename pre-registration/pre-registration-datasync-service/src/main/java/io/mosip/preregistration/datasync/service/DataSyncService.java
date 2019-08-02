@@ -119,7 +119,6 @@ public class DataSyncService {
 			ValidationUtil.requestValidator(dataSyncRequest);
 			if (ValidationUtil.requestValidator(serviceUtil.prepareRequestMap(dataSyncRequest), requiredRequestMap)) {
 				serviceUtil.validateDataSyncRequest(dataSyncRequest.getRequest(), responseDto);
-
 				DataSyncRequestDTO dataSyncRequestDTO = dataSyncRequest.getRequest();
 				if (serviceUtil.isNull(dataSyncRequestDTO.getToDate())) {
 					dataSyncRequestDTO.setToDate(dataSyncRequestDTO.getFromDate());
@@ -169,7 +168,7 @@ public class DataSyncService {
 		responseDto.setId(fetchId);
 		responseDto.setVersion(version);
 		try {
-			// serviceUtil.parsejson();
+//			serviceUtil.parsejson();
 			DemographicResponseDTO preRegistrationDTO = serviceUtil.getPreRegistrationData(preId.trim());
 			DocumentsMetaData documentsMetaData = serviceUtil.getDocDetails(preId.trim());
 			BookingRegistrationDTO bookingRegistrationDTO = serviceUtil.getAppointmentDetails(preId.trim());

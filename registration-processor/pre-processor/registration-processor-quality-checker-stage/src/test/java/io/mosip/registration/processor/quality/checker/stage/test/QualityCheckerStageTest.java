@@ -30,6 +30,8 @@ import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.QualityType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.fsadapter.exception.FSAdapterException;
@@ -39,6 +41,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.spi.filesystem.manager.PacketManager;
+import io.mosip.registration.processor.core.util.RegistrationExceptionMapperUtil;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.quality.checker.stage.QualityCheckerStage;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
@@ -53,6 +56,9 @@ public class QualityCheckerStageTest {
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder;
+	
+	@Mock
+	private RegistrationExceptionMapperUtil registrationStatusMapperUtil;
 
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -118,7 +124,13 @@ public class QualityCheckerStageTest {
 		List<BIRType> birTypeList = new ArrayList<>();
 		BIRType birType1 = new BIRType();
 		BDBInfoType bdbInfoType1 = new BDBInfoType();
-		bdbInfoType1.setQuality(90);
+		RegistryIDType registryIDType=new RegistryIDType();
+		registryIDType.setOrganization("Mosip");
+		registryIDType.setType("257");
+		QualityType quality=new QualityType();
+		quality.setAlgorithm(registryIDType);
+		quality.setScore(90l);
+		bdbInfoType1.setQuality(quality);
 		SingleType singleType1 = SingleType.FINGER;
 		List<SingleType> singleTypeList1 = new ArrayList<>();
 		singleTypeList1.add(singleType1);
@@ -130,7 +142,7 @@ public class QualityCheckerStageTest {
 
 		BIRType birType2 = new BIRType();
 		BDBInfoType bdbInfoType2 = new BDBInfoType();
-		bdbInfoType2.setQuality(90);
+		bdbInfoType2.setQuality(quality);
 		SingleType singleType2 = SingleType.FINGER;
 		List<SingleType> singleTypeList2 = new ArrayList<>();
 		singleTypeList2.add(singleType2);
@@ -142,7 +154,7 @@ public class QualityCheckerStageTest {
 
 		BIRType birType3 = new BIRType();
 		BDBInfoType bdbInfoType3 = new BDBInfoType();
-		bdbInfoType3.setQuality(90);
+		bdbInfoType3.setQuality(quality);
 		SingleType singleType3 = SingleType.IRIS;
 		List<SingleType> singleTypeList3 = new ArrayList<>();
 		singleTypeList3.add(singleType3);
@@ -154,7 +166,7 @@ public class QualityCheckerStageTest {
 
 		BIRType birType4 = new BIRType();
 		BDBInfoType bdbInfoType4 = new BDBInfoType();
-		bdbInfoType4.setQuality(90);
+		bdbInfoType4.setQuality(quality);
 		SingleType singleType4 = SingleType.FACE;
 		List<SingleType> singleTypeList4 = new ArrayList<>();
 		singleTypeList4.add(singleType4);

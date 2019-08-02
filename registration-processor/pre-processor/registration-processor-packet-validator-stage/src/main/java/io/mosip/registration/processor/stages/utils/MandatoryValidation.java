@@ -55,6 +55,8 @@ public class MandatoryValidation {
 	}
 
 	public boolean mandatoryFieldValidation(String regId) throws IOException, JSONException, PacketDecryptionFailureException, ApisResourceAccessException, io.mosip.kernel.core.exception.IOException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"MandatoryValidation::mandatoryFieldValidation()::entry");
 		io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.Identity identiy = getMappeedJSONIdentity()
 				.getIdentity();
 		JSONObject idJsonObj = getDemoIdentity(regId);
@@ -102,7 +104,8 @@ public class MandatoryValidation {
 				return false;
 			}
 		}
-
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.REGISTRATIONID.toString(), "",
+				"MandatoryValidation::mandatoryFieldValidation()::exit");
 		return true;
 	}
 

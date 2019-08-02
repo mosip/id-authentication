@@ -222,4 +222,8 @@ public class JsonConstant {
 
 	/** The introducer photo name. */
 	public static final String INTRODUCERPHOTONAME = "INTRODUCERPHOTONAME";
+	
+	public static final String VID = "VID";
+	
+	public static final String CARDTYPE = "CARDTYPE";
 }

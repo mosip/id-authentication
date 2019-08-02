@@ -11,25 +11,36 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.getresponse.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentCategoryExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Controller class to fetch or create document categories.
  * 
  * @author Neha
  * @author Ritesh Sinha
+ * @author Uday Kumar
  * @since 1.0.0
  *
  */
@@ -143,6 +154,74 @@ public class DocumentCategoryController {
 
 		ResponseWrapper<CodeResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(documentCategoryService.deleteDocumentCategory(code));
+		return responseWrapper;
+	}
+
+	/**
+	 * This controller method provides with all document category details.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param pageSize
+	 *            the size of each page
+	 * @param sortBy
+	 *            the attributes by which it should be ordered
+	 * @param orderBy
+	 *            the order to be used
+	 * @return the response i.e. pages containing the document category details.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/documentcategories/all")
+	@ApiOperation(value = "Retrieve all the document category with metadata", notes = "Retrieve all the document categories")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of device specifications"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving device specifications") })
+	public ResponseWrapper<PageDto<DocumentCategoryExtnDto>> getAllDocCategories(
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
+			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
+			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		ResponseWrapper<PageDto<DocumentCategoryExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(documentCategoryService.getAllDocCategories(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API to search document Category.
+	 * 
+	 * @param request
+	 *            the request DTO {@link SearchDto} wrapped in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. multiple entities based on the search values
+	 *         required.
+	 */
+	@ResponseFilter
+	@PostMapping("/documentcategories/search")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> searchDocCategories(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DocumentCategoryExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentCategoryService.searchDocCategories(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/documentcategories/filtervalues")
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN')")
+	public ResponseWrapper<FilterResponseDto> docCategoriesFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentCategoryService.docCategoriesFilterValues(request.getRequest()));
 		return responseWrapper;
 	}
 }

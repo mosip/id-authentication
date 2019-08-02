@@ -5,7 +5,7 @@ import java.util.List;
 import io.mosip.registration.entity.DocumentCategory;
 
 /**
- * Handles the Document categories related functions
+ * This class is used to fetch all the Document category related data.
  * 
  * @author Brahmnanda Reddy
  *
@@ -13,18 +13,18 @@ import io.mosip.registration.entity.DocumentCategory;
 public interface DocumentCategoryDAO {
 
 	/**
-	 * this method fetches the document categories
+	 * This method is used to fetch the document categories
 	 * 
-	 * @return List - list of document categories
+	 * @return List of document categories
 	 */
 	List<DocumentCategory> getDocumentCategories();
 
 	/**
-	 * Fetches all doc categories by lang code
+	 * This method is used to fetch all document categories by language code.
 	 * 
 	 * @param langCode
-	 *            - lamnguage code
-	 * @return List - list of doc categories
+	 *            Language code
+	 * @return List of doc categories
 	 */
 	List<DocumentCategory> getDocumentCategoriesByLangCode(String langCode);
 

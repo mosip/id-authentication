@@ -38,6 +38,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterMachineDeviceHistoryDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterPutReqAdmDto;
+import io.mosip.kernel.masterdata.dto.RegCenterPostReqPrimAdmDto;
 import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.getresponse.BiometricTypeResponseDto;
@@ -64,6 +66,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterMachineDeviceHistory;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
+import io.mosip.kernel.masterdata.entity.Zone;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.entity.id.RegistrationCenterMachineDeviceHistoryID;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -101,6 +104,7 @@ import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.test.TestBootApplication;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
+import io.mosip.kernel.masterdata.utils.ZoneUtils;
 
 /**
  * @author Bal Vikash Sharma
@@ -223,13 +227,18 @@ public class MasterDataServiceTest {
 	LocationService locationHierarchyService;
 
 	List<Location> locationHierarchies = null;
+	List<Location> locationHierarchyList = null;
 	List<Object[]> locObjList = null;
 	LocationCodeResponseDto locationCodeResponseDto = null;
 	Location locationHierarchy = null;
 	Location locationHierarchy1 = null;
 	LocationDto locationDtos = null;
+	Location locationHierarchy2 = null;
+	Location locationHierarchy3 = null;
+	
 
 	RequestWrapper<LocationDto> requestLocationDto = null;
+	RequestWrapper<LocationDto> requestLocationDto1 = null;
 
 	@MockBean
 	private TemplateRepository templateRepository;
@@ -307,6 +316,7 @@ public class MasterDataServiceTest {
 		documentTypeSetup();
 
 		registrationCenterSetup();
+		updateRegistrationCenter();
 
 		registrationCenterMachineDeviceHistorySetup();
 
@@ -383,6 +393,30 @@ public class MasterDataServiceTest {
 		locationDto.setIsActive(true);
 		requestLocationDto = new RequestWrapper<>();
 		requestLocationDto.setRequest(locationDto);
+
+		locationHierarchyList = new ArrayList<>();
+		locationHierarchy3 = new Location();
+		locationHierarchy3.setCode("KAR");
+		locationHierarchy3.setName("KARNATAKA");
+		locationHierarchy3.setHierarchyLevel((short) 1);
+		locationHierarchy3.setHierarchyName(null);
+		locationHierarchy3.setParentLocCode("IND");
+		locationHierarchy3.setLangCode("KAN");
+		locationHierarchy3.setCreatedBy("dfs");
+		locationHierarchy3.setUpdatedBy("sdfsd");
+		locationHierarchy3.setIsActive(true);
+		locationHierarchyList.add(locationHierarchy3);
+		
+		LocationDto locationDto1 = new LocationDto();
+		locationDto1.setCode("IND");
+		locationDto1.setName("INDIA");
+		locationDto1.setHierarchyLevel(1);
+		locationDto1.setHierarchyName("CONTRY");
+		locationDto1.setLangCode("HIN");
+		locationDto1.setParentLocCode(null);
+		locationDto1.setIsActive(false);
+		requestLocationDto1 = new RequestWrapper<>();
+		requestLocationDto1.setRequest(locationDto1);
 
 	}
 
@@ -609,13 +643,252 @@ public class MasterDataServiceTest {
 		templateFileFormatRequestDto.setRequest(templateFileFormatDto);
 	}
 
+	List<RegCenterPostReqPrimAdmDto> requestNotAllLang = null;
+	List<RegCenterPostReqPrimAdmDto> requestDuplicateLang = null;
+	List<RegCenterPostReqPrimAdmDto> requestSetLongitudeInvalide = null;
+	List<RegCenterPostReqPrimAdmDto> requestCenterTime = null;
+	List<RegCenterPostReqPrimAdmDto> requestLunchTime = null;
+	List<RegCenterPostReqPrimAdmDto> requestZoneCode = null;
+	RegCenterPostReqPrimAdmDto registrationCenterDto1  = null; 
+	RegCenterPostReqPrimAdmDto registrationCenterDto2  = null; 
+	RegCenterPostReqPrimAdmDto registrationCenterDto3  = null; 
+	RegCenterPostReqPrimAdmDto registrationCenterDto4  = null; 
+	RegCenterPostReqPrimAdmDto registrationCenterDto5 = null;
+	RegCenterPostReqPrimAdmDto registrationCenterDto6 = null;
+	RegCenterPostReqPrimAdmDto registrationCenterDto7 = null;
+	RegCenterPostReqPrimAdmDto registrationCenterDto8 = null;
+	
+	@MockBean
+	ZoneUtils zoneUtils;
+	List<Zone> zones = null;
 	private void registrationCenterSetup() {
+		Zone zone = new Zone();
+		zone.setCode("JRD");
+		zones = new ArrayList<>();
+		zones.add(zone);
+		
+		//----------
 		registrationCenter = new RegistrationCenter();
 		registrationCenter.setId("1");
 		registrationCenter.setName("bangalore");
 		registrationCenter.setLatitude("12.9180722");
 		registrationCenter.setLongitude("77.5028792");
 		registrationCenter.setLangCode("ENG");
+		
+		//----
+		LocalTime centerStartTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime centerEndTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime lunchStartTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime lunchEndTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
+		
+		LocalTime centerStartTimeGrt = LocalTime.parse("18:00:00");
+		LocalTime centerEndTimeSm = LocalTime.parse("17:00:00");
+		LocalTime lunchStartTimeGrt = LocalTime.parse("18:00:00");
+		LocalTime lunchEndTimeSm = LocalTime.parse("17:00:00");
+		
+		requestNotAllLang = new ArrayList<>();
+		requestDuplicateLang = new ArrayList<>();
+		requestSetLongitudeInvalide = new ArrayList<>();
+		requestCenterTime = new ArrayList<>();
+		requestLunchTime = new ArrayList<>();
+		requestZoneCode = new ArrayList<>();
+		
+		// 1st obj
+	    registrationCenterDto1 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto1.setName("TEST CENTER");
+		registrationCenterDto1.setAddressLine1("Address Line 1");
+		registrationCenterDto1.setAddressLine2("Address Line 2");
+		registrationCenterDto1.setAddressLine3("Address Line 3");
+		registrationCenterDto1.setCenterTypeCode("REG");
+		registrationCenterDto1.setContactPerson("Test");
+		registrationCenterDto1.setContactPhone("9999999999");
+		registrationCenterDto1.setHolidayLocationCode("HLC01");
+		registrationCenterDto1.setLangCode("eng");
+		registrationCenterDto1.setLatitude("12.9646818");
+		registrationCenterDto1.setLocationCode("10190");
+		registrationCenterDto1.setLongitude("77.70168");
+		registrationCenterDto1.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto1.setCenterStartTime(centerStartTime);
+		registrationCenterDto1.setCenterEndTime(centerEndTime);
+		registrationCenterDto1.setLunchStartTime(lunchStartTime);
+		registrationCenterDto1.setLunchEndTime(lunchEndTime);
+		registrationCenterDto1.setTimeZone("UTC");
+		registrationCenterDto1.setWorkingHours("9");
+		registrationCenterDto1.setZoneCode("JRD");
+		requestNotAllLang.add(registrationCenterDto1);
+		requestDuplicateLang.add(registrationCenterDto1);
+		requestCenterTime.add(registrationCenterDto1);
+		requestLunchTime.add(registrationCenterDto1);
+		requestZoneCode.add(registrationCenterDto1);
+		
+		// 2nd obj
+		registrationCenterDto2 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto2.setName("TEST CENTER");
+		registrationCenterDto2.setAddressLine1("Address Line 1");
+		registrationCenterDto2.setAddressLine2("Address Line 2");
+		registrationCenterDto2.setAddressLine3("Address Line 3");
+		registrationCenterDto2.setCenterTypeCode("REG");
+		registrationCenterDto2.setContactPerson("Test");
+		registrationCenterDto2.setContactPhone("9999999999");
+		registrationCenterDto2.setHolidayLocationCode("HLC01");
+		registrationCenterDto2.setLangCode("ara");
+		registrationCenterDto2.setLatitude("12.9646818");
+		registrationCenterDto2.setLocationCode("10190");
+		registrationCenterDto2.setLongitude("77.70168");
+		registrationCenterDto2.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto2.setCenterStartTime(centerStartTime);
+		registrationCenterDto2.setCenterEndTime(centerEndTime);
+		registrationCenterDto2.setLunchStartTime(lunchStartTime);
+		registrationCenterDto2.setLunchEndTime(lunchEndTime);
+		registrationCenterDto2.setTimeZone("UTC");
+		registrationCenterDto2.setWorkingHours("9");
+		registrationCenterDto2.setZoneCode("JRD");
+		requestNotAllLang.add(registrationCenterDto2);
+		requestDuplicateLang.add(registrationCenterDto2);
+		requestCenterTime.add(registrationCenterDto2);
+		requestLunchTime.add(registrationCenterDto2);
+		requestZoneCode.add(registrationCenterDto2);
+
+		// 3rd obj
+		registrationCenterDto3 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto3.setName("TEST CENTER");
+		registrationCenterDto3.setAddressLine1("Address Line 1");
+		registrationCenterDto3.setAddressLine2("Address Line 2");
+		registrationCenterDto3.setAddressLine3("Address Line 3");
+		registrationCenterDto3.setCenterTypeCode("REG");
+		registrationCenterDto3.setContactPerson("Test");
+		registrationCenterDto3.setContactPhone("9999999999");
+		registrationCenterDto3.setHolidayLocationCode("HLC01");
+		registrationCenterDto3.setLangCode("fra");
+		registrationCenterDto3.setLatitude("12.9646818");
+		registrationCenterDto3.setLocationCode("10190");
+		registrationCenterDto3.setLongitude("77.70168");
+		registrationCenterDto3.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto3.setCenterStartTime(centerStartTime);
+		registrationCenterDto3.setCenterEndTime(centerEndTime);
+		registrationCenterDto3.setLunchStartTime(lunchStartTime);
+		registrationCenterDto3.setLunchEndTime(lunchEndTime);
+		registrationCenterDto3.setTimeZone("UTC");
+		registrationCenterDto3.setWorkingHours("9");
+		registrationCenterDto3.setZoneCode("JRD");
+		
+		registrationCenterDto4 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto4.setName("TEST CENTER");
+		registrationCenterDto4.setAddressLine1("Address Line 1");
+		registrationCenterDto4.setAddressLine2("Address Line 2");
+		registrationCenterDto4.setAddressLine3("Address Line 3");
+		registrationCenterDto4.setCenterTypeCode("REG");
+		registrationCenterDto4.setContactPerson("Test");
+		registrationCenterDto4.setContactPhone("9999999999");
+		registrationCenterDto4.setHolidayLocationCode("HLC01");
+		registrationCenterDto4.setLangCode("eng");
+		registrationCenterDto4.setLatitude("-7.333");
+		registrationCenterDto4.setLocationCode("10190");
+		registrationCenterDto4.setLongitude("77.70168");
+		registrationCenterDto4.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto4.setCenterStartTime(centerStartTime);
+		registrationCenterDto4.setCenterEndTime(centerEndTime);
+		registrationCenterDto4.setLunchStartTime(lunchStartTime);
+		registrationCenterDto4.setLunchEndTime(lunchEndTime);
+		registrationCenterDto4.setTimeZone("UTC");
+		registrationCenterDto4.setWorkingHours("9");
+		registrationCenterDto4.setZoneCode("JRD");
+		requestSetLongitudeInvalide.add(registrationCenterDto4);
+		
+		registrationCenterDto5 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto5.setName("TEST CENTER");
+		registrationCenterDto5.setAddressLine1("Address Line 1");
+		registrationCenterDto5.setAddressLine2("Address Line 2");
+		registrationCenterDto5.setAddressLine3("Address Line 3");
+		registrationCenterDto5.setCenterTypeCode("REG");
+		registrationCenterDto5.setContactPerson("Test");
+		registrationCenterDto5.setContactPhone("9999999999");
+		registrationCenterDto5.setHolidayLocationCode("HLC01");
+		registrationCenterDto5.setLangCode("fra");
+		registrationCenterDto5.setLatitude("12.9646818");
+		registrationCenterDto5.setLocationCode("10190");
+		registrationCenterDto5.setLongitude("77.70168");
+		registrationCenterDto5.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto5.setCenterStartTime(centerStartTime);
+		registrationCenterDto5.setCenterEndTime(centerEndTime);
+		registrationCenterDto5.setLunchStartTime(lunchStartTime);
+		registrationCenterDto5.setLunchEndTime(lunchEndTime);
+		registrationCenterDto5.setTimeZone("UTC");
+		registrationCenterDto5.setWorkingHours("9");
+		registrationCenterDto5.setZoneCode("JRD");
+		requestDuplicateLang.add(registrationCenterDto5);
+		requestDuplicateLang.add(registrationCenterDto5);
+		
+		registrationCenterDto6 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto6.setName("TEST CENTER");
+		registrationCenterDto6.setAddressLine1("Address Line 1");
+		registrationCenterDto6.setAddressLine2("Address Line 2");
+		registrationCenterDto6.setAddressLine3("Address Line 3");
+		registrationCenterDto6.setCenterTypeCode("REG");
+		registrationCenterDto6.setContactPerson("Test");
+		registrationCenterDto6.setContactPhone("9999999999");
+		registrationCenterDto6.setHolidayLocationCode("HLC01");
+		registrationCenterDto6.setLangCode("eng");
+		registrationCenterDto6.setLatitude("12.9646818");
+		registrationCenterDto6.setLocationCode("10190");
+		registrationCenterDto6.setLongitude("77.70168");
+		registrationCenterDto6.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto6.setCenterStartTime(centerStartTimeGrt);
+		registrationCenterDto6.setCenterEndTime(centerEndTimeSm);
+		registrationCenterDto6.setLunchStartTime(lunchStartTime);
+		registrationCenterDto6.setLunchEndTime(lunchEndTime);
+		registrationCenterDto6.setTimeZone("UTC");
+		registrationCenterDto6.setWorkingHours("9");
+		registrationCenterDto6.setZoneCode("JRD");
+		requestCenterTime.add(registrationCenterDto6);
+		
+		registrationCenterDto7 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto7.setName("TEST CENTER");
+		registrationCenterDto7.setAddressLine1("Address Line 1");
+		registrationCenterDto7.setAddressLine2("Address Line 2");
+		registrationCenterDto7.setAddressLine3("Address Line 3");
+		registrationCenterDto7.setCenterTypeCode("REG");
+		registrationCenterDto7.setContactPerson("Test");
+		registrationCenterDto7.setContactPhone("9999999999");
+		registrationCenterDto7.setHolidayLocationCode("HLC01");
+		registrationCenterDto7.setLangCode("eng");
+		registrationCenterDto7.setLatitude("12.9646818");
+		registrationCenterDto7.setLocationCode("10190");
+		registrationCenterDto7.setLongitude("77.70168");
+		registrationCenterDto7.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto7.setCenterStartTime(centerStartTime);
+		registrationCenterDto7.setCenterEndTime(centerEndTime);
+		registrationCenterDto7.setLunchStartTime(lunchStartTimeGrt);
+		registrationCenterDto7.setLunchEndTime(lunchEndTimeSm);
+		registrationCenterDto7.setTimeZone("UTC");
+		registrationCenterDto7.setWorkingHours("9");
+		registrationCenterDto7.setZoneCode("JRD");
+		requestLunchTime.add(registrationCenterDto7);
+		
+		registrationCenterDto8 = new RegCenterPostReqPrimAdmDto();
+		registrationCenterDto8.setName("TEST CENTER");
+		registrationCenterDto8.setAddressLine1("Address Line 1");
+		registrationCenterDto8.setAddressLine2("Address Line 2");
+		registrationCenterDto8.setAddressLine3("Address Line 3");
+		registrationCenterDto8.setCenterTypeCode("REG");
+		registrationCenterDto8.setContactPerson("Test");
+		registrationCenterDto8.setContactPhone("9999999999");
+		registrationCenterDto8.setHolidayLocationCode("HLC01");
+		registrationCenterDto8.setLangCode("eng");
+		registrationCenterDto8.setLatitude("12.9646818");
+		registrationCenterDto8.setLocationCode("10190");
+		registrationCenterDto8.setLongitude("77.70168");
+		registrationCenterDto8.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterDto8.setCenterStartTime(centerStartTime);
+		registrationCenterDto8.setCenterEndTime(centerEndTime);
+		registrationCenterDto8.setLunchStartTime(lunchStartTime);
+		registrationCenterDto8.setLunchEndTime(lunchEndTime);
+		registrationCenterDto8.setTimeZone("UTC");
+		registrationCenterDto8.setWorkingHours("9");
+		registrationCenterDto8.setZoneCode("JJJ");
+		requestLunchTime.add(registrationCenterDto8);
+		
 	}
 
 	private void registrationCenterMachineDeviceHistorySetup() {
@@ -632,6 +905,272 @@ public class MasterDataServiceTest {
 		registrationCenterMachineDeviceHistory
 				.setRegistrationCenterMachineDeviceHistoryPk(registrationCenterMachineDeviceHistoryPk);
 
+	}
+	
+	
+	List<RegistrationCenterPutReqAdmDto> updRequestNotAllLang = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestInvalideID = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestDuplicateIDLang = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestSetLongitudeInvalide = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestCenterTime = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestLunchTime = null;
+	List<RegistrationCenterPutReqAdmDto> updRequestZoneCode = null;
+	
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto1 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto2 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto3 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto4 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto5 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto6 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto7 = null;
+	RegistrationCenterPutReqAdmDto registrationCenterPutReqAdmDto8 = null;
+	
+	private void updateRegistrationCenter() {
+		
+		
+		registrationCenter = new RegistrationCenter();
+		registrationCenter.setId("1");
+		registrationCenter.setName("bangalore");
+		registrationCenter.setLatitude("12.9180722");
+		registrationCenter.setLongitude("77.5028792");
+		registrationCenter.setLangCode("ENG");
+		
+		//----
+		LocalTime centerStartTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime centerEndTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime lunchStartTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime lunchEndTime = LocalTime.of(1, 10, 10, 30);
+		LocalTime perKioskProcessTime = LocalTime.of(1, 10, 10, 30);
+		
+		LocalTime centerStartTimeGrt = LocalTime.parse("18:00:00");
+		LocalTime centerEndTimeSm = LocalTime.parse("17:00:00");
+		LocalTime lunchStartTimeGrt = LocalTime.parse("18:00:00");
+		LocalTime lunchEndTimeSm = LocalTime.parse("17:00:00");
+		
+		
+		updRequestNotAllLang = new ArrayList<>();
+		updRequestInvalideID = new ArrayList<>();
+		updRequestDuplicateIDLang = new ArrayList<>();
+		updRequestSetLongitudeInvalide = new ArrayList<>();
+		updRequestCenterTime = new ArrayList<>();
+		updRequestLunchTime = new ArrayList<>();
+		updRequestZoneCode = new ArrayList<>();
+		
+		// 1st obj
+		registrationCenterPutReqAdmDto1 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto1.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto1.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto1.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto1.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto1.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto1.setContactPerson("Test");
+		registrationCenterPutReqAdmDto1.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto1.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto1.setId("676");
+		registrationCenterPutReqAdmDto1.setLangCode("eng");
+		registrationCenterPutReqAdmDto1.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto1.setLocationCode("10190");
+		registrationCenterPutReqAdmDto1.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto1.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto1.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto1.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto1.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto1.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto1.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto1.setWorkingHours("9");
+		registrationCenterPutReqAdmDto1.setIsActive(false);
+		registrationCenterPutReqAdmDto1.setZoneCode("JRD");
+		updRequestNotAllLang.add(registrationCenterPutReqAdmDto1);
+		updRequestInvalideID.add(registrationCenterPutReqAdmDto1);
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto1);
+		updRequestCenterTime.add(registrationCenterPutReqAdmDto1);
+		updRequestLunchTime.add(registrationCenterPutReqAdmDto1);
+		updRequestZoneCode.add(registrationCenterPutReqAdmDto1);
+		
+		// 2nd obj
+		registrationCenterPutReqAdmDto2 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto2.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto2.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto2.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto2.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto2.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto2.setContactPerson("Test");
+		registrationCenterPutReqAdmDto2.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto2.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto2.setId("676");
+		registrationCenterPutReqAdmDto2.setLangCode("ara");
+		registrationCenterPutReqAdmDto2.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto2.setLocationCode("10190");
+		registrationCenterPutReqAdmDto2.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto2.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto2.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto2.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto2.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto2.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto2.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto2.setWorkingHours("9");
+		registrationCenterPutReqAdmDto2.setIsActive(false);
+		registrationCenterPutReqAdmDto2.setZoneCode("JRD");
+		updRequestNotAllLang.add(registrationCenterPutReqAdmDto2);
+		updRequestInvalideID.add(registrationCenterPutReqAdmDto2);
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto2);
+		updRequestCenterTime.add(registrationCenterPutReqAdmDto2);
+		updRequestLunchTime.add(registrationCenterPutReqAdmDto2);
+		updRequestZoneCode.add(registrationCenterPutReqAdmDto2);
+
+		// 3rd obj
+		registrationCenterPutReqAdmDto3 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto3.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto3.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto3.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto3.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto3.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto3.setContactPerson("Test");
+		registrationCenterPutReqAdmDto3.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto3.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto3.setId("6767");
+		registrationCenterPutReqAdmDto3.setLangCode("fra");
+		registrationCenterPutReqAdmDto3.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto3.setLocationCode("10190");
+		registrationCenterPutReqAdmDto3.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto3.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto3.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto3.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto3.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto3.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto3.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto3.setWorkingHours("9");
+		registrationCenterPutReqAdmDto3.setIsActive(false);
+		registrationCenterPutReqAdmDto3.setZoneCode("JRD");
+		updRequestInvalideID.add(registrationCenterPutReqAdmDto3);
+		
+		
+		registrationCenterPutReqAdmDto4 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto4.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto4.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto4.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto4.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto4.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto4.setContactPerson("Test");
+		registrationCenterPutReqAdmDto4.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto4.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto4.setId("676");
+		registrationCenterPutReqAdmDto4.setLangCode("eng");
+		registrationCenterPutReqAdmDto4.setLatitude("-7.333");
+		registrationCenterPutReqAdmDto4.setLocationCode("10190");
+		registrationCenterPutReqAdmDto4.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto4.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto4.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto4.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto4.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto4.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto4.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto4.setWorkingHours("9");
+		registrationCenterPutReqAdmDto4.setIsActive(false);
+		registrationCenterPutReqAdmDto4.setZoneCode("JRD");
+		updRequestSetLongitudeInvalide.add(registrationCenterPutReqAdmDto4);
+		
+		registrationCenterPutReqAdmDto5 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto5.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto5.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto5.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto5.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto5.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto5.setContactPerson("Test");
+		registrationCenterPutReqAdmDto5.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto5.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto5.setId("676");
+		registrationCenterPutReqAdmDto5.setLangCode("fra");
+		registrationCenterPutReqAdmDto5.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto5.setLocationCode("10190");
+		registrationCenterPutReqAdmDto5.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto5.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto5.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto5.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto5.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto5.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto5.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto5.setWorkingHours("9");
+		registrationCenterPutReqAdmDto5.setIsActive(false);
+		registrationCenterPutReqAdmDto5.setZoneCode("JRD");
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto5);
+		updRequestDuplicateIDLang.add(registrationCenterPutReqAdmDto5);
+		
+		
+		registrationCenterPutReqAdmDto6 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto6.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto6.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto6.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto6.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto6.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto6.setContactPerson("Test");
+		registrationCenterPutReqAdmDto6.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto6.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto6.setId("676");
+		registrationCenterPutReqAdmDto6.setLangCode("eng");
+		registrationCenterPutReqAdmDto6.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto6.setLocationCode("10190");
+		registrationCenterPutReqAdmDto6.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto6.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto6.setCenterStartTime(centerStartTimeGrt);
+		registrationCenterPutReqAdmDto6.setCenterEndTime(centerEndTimeSm);
+		registrationCenterPutReqAdmDto6.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto6.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto6.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto6.setWorkingHours("9");
+		registrationCenterPutReqAdmDto6.setIsActive(false);
+		registrationCenterPutReqAdmDto6.setZoneCode("JRD");
+		updRequestCenterTime.add(registrationCenterPutReqAdmDto6);
+		
+		registrationCenterPutReqAdmDto7 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto7.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto7.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto7.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto7.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto7.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto7.setContactPerson("Test");
+		registrationCenterPutReqAdmDto7.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto7.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto7.setId("676");
+		registrationCenterPutReqAdmDto7.setLangCode("eng");
+		registrationCenterPutReqAdmDto7.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto7.setLocationCode("10190");
+		registrationCenterPutReqAdmDto7.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto7.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto7.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto7.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto7.setLunchStartTime(lunchStartTimeGrt);
+		registrationCenterPutReqAdmDto7.setLunchEndTime(lunchEndTimeSm);
+		registrationCenterPutReqAdmDto7.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto7.setWorkingHours("9");
+		registrationCenterPutReqAdmDto7.setIsActive(false);
+		registrationCenterPutReqAdmDto7.setZoneCode("JRD");
+		updRequestLunchTime.add(registrationCenterPutReqAdmDto7);
+		
+		registrationCenterPutReqAdmDto8 = new RegistrationCenterPutReqAdmDto();
+		registrationCenterPutReqAdmDto8.setName("TEST CENTER");
+		registrationCenterPutReqAdmDto8.setAddressLine1("Address Line 1");
+		registrationCenterPutReqAdmDto8.setAddressLine2("Address Line 2");
+		registrationCenterPutReqAdmDto8.setAddressLine3("Address Line 3");
+		registrationCenterPutReqAdmDto8.setCenterTypeCode("REG");
+		registrationCenterPutReqAdmDto8.setContactPerson("Test");
+		registrationCenterPutReqAdmDto8.setContactPhone("9999999999");
+		registrationCenterPutReqAdmDto8.setHolidayLocationCode("HLC01");
+		registrationCenterPutReqAdmDto8.setId("676");
+		registrationCenterPutReqAdmDto8.setLangCode("eng");
+		registrationCenterPutReqAdmDto8.setLatitude("12.9646818");
+		registrationCenterPutReqAdmDto8.setLocationCode("10190");
+		registrationCenterPutReqAdmDto8.setLongitude("77.70168");
+		registrationCenterPutReqAdmDto8.setPerKioskProcessTime(perKioskProcessTime);
+		registrationCenterPutReqAdmDto8.setCenterStartTime(centerStartTime);
+		registrationCenterPutReqAdmDto8.setCenterEndTime(centerEndTime);
+		registrationCenterPutReqAdmDto8.setLunchStartTime(lunchStartTime);
+		registrationCenterPutReqAdmDto8.setLunchEndTime(lunchEndTime);
+		registrationCenterPutReqAdmDto8.setTimeZone("UTC");
+		registrationCenterPutReqAdmDto8.setWorkingHours("9");
+		registrationCenterPutReqAdmDto8.setIsActive(false);
+		registrationCenterPutReqAdmDto8.setZoneCode("JJJ");
+		updRequestZoneCode.add(registrationCenterPutReqAdmDto8);
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------//
@@ -1214,6 +1753,17 @@ public class MasterDataServiceTest {
 		locationHierarchyService.createLocationHierarchy(requestLocationDto.getRequest());
 	}
 
+	@Test(expected = RequestException.class)
+	public void updateLocationDetailsIsActiveTest() {
+
+		Mockito.when(locationHierarchyRepository.findById(Mockito.any(), Mockito.any())).thenReturn(locationHierarchy2);
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByParentLocCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(locationHierarchyList);
+
+		locationHierarchyService.updateLocationDetails(requestLocationDto1.getRequest());
+	}
+
 	@Test
 	public void updateLocationDetailsTest() {
 
@@ -1661,5 +2211,83 @@ public class MasterDataServiceTest {
 		registrationCenterService.validateTimeStampWithRegistrationCenter("1", "eng", "2017-12-1217:59:59.999Z");
 
 	}
+	// ---------------------------------Registration Center TestCases----------------------------------
+	/*@Test(expected= RequestException.class)
+	public void notAllCongfLangRegCenterCreateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.createRegistrationCenterAdmin(requestNotAllLang);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void invalideLongitudeRegCenterCreateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.createRegistrationCenterAdmin(requestSetLongitudeInvalide);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void duplicateLangCodeRegCenterCreateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.createRegistrationCenterAdmin(requestDuplicateLang);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void startTimeValidationRegCenterCreateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.createRegistrationCenterAdmin(requestCenterTime);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void lunchTimeValidationRegCenterCreateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.createRegistrationCenterAdmin(requestLunchTime);
+	}
+	
+	@Test(expected= RequestException.class)
+	public void zoneCodeValidationRegCenterCreateExcpTest() {
+		registrationCenterService.createRegistrationCenterAdmin(requestZoneCode);
+	}
+	*/
+	/*// ----------------------- update Registration center-----------------------
+	@Test(expected= RequestException.class)
+	public void notAllCongfLangRegCenterUpdateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestNotAllLang);
+	}*/
+	
+	/*@Test(expected= RequestException.class)
+	public void invalideIDRegCenterUpdateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestInvalideID);
+	}*/
+	
+	/*@Test(expected= RequestException.class)
+	public void invalideLongitudeRegCenterUpdateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestSetLongitudeInvalide);
+	}*/
+	
+	/*@Test(expected= RequestException.class)
+	public void duplicateIDLangCodeRegCenterUpdateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestDuplicateIDLang);
+	}*/
+	
+	/*@Test(expected= RequestException.class)
+	public void startTimeValidationRegCenterUpdateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestCenterTime);
+	}*/
+	
+	/*@Test(expected= RequestException.class)
+	public void lunchTimeValidationRegCenterUpdateExcpTest() {
+		when(zoneUtils.getUserZones()).thenReturn(zones);
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestLunchTime);
+	}*/
+	
+	/*@Test(expected= RequestException.class)
+	public void zoneCodeValidationRegCenterUpdateExcpTest() {
+		registrationCenterService.updateRegistrationCenterAdmin(updRequestZoneCode);
+	}*/
+	
 
 }

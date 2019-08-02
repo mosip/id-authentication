@@ -12,8 +12,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import io.mosip.kernel.auth.constant.AuthConstant;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
@@ -27,12 +29,13 @@ import io.mosip.kernel.auth.dto.MosipUserSaltListDto;
 import io.mosip.kernel.auth.dto.PasswordDto;
 import io.mosip.kernel.auth.dto.RIdDto;
 import io.mosip.kernel.auth.dto.RolesListDto;
+import io.mosip.kernel.auth.dto.UserDetailsResponseDto;
 import io.mosip.kernel.auth.dto.UserNameDto;
 import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
-import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
+import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.repository.DataStore;
@@ -43,6 +46,12 @@ import io.mosip.kernel.auth.repository.DataStore;
  */
 @Component
 public class DBDataStore implements DataStore {
+
+	private int maximumPoolSize;
+	private int validationTimeout;
+	private int connectionTimeout;
+	private int idleTimeout;
+	private int minimumIdle;
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -66,12 +75,33 @@ public class DBDataStore implements DataStore {
 		setUpConnection(dataBaseConfig);
 	}
 
+	public DBDataStore(DataBaseProps dataBaseConfig, int maximumPoolSize, int validationTimeout, int connectionTimeout,
+			int idleTimeout, int minimumIdle) {
+		this.maximumPoolSize = maximumPoolSize;
+		this.validationTimeout = validationTimeout;
+		this.connectionTimeout = connectionTimeout;
+		this.idleTimeout = idleTimeout;
+		this.minimumIdle = minimumIdle;
+		setUpConnection(dataBaseConfig);
+	}
+
 	private void setUpConnection(DataBaseProps dataBaseConfig) {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(dataBaseConfig.getDriverName());
-		dataSource.setUrl(dataBaseConfig.getUrl());
-		dataSource.setUsername(dataBaseConfig.getUsername());
-		dataSource.setPassword(dataBaseConfig.getPassword());
+//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//		dataSource.setDriverClassName(dataBaseConfig.getDriverName());
+//		dataSource.setUrl(dataBaseConfig.getUrl());
+//		dataSource.setUsername(dataBaseConfig.getUsername());
+//		dataSource.setPassword(dataBaseConfig.getPassword());
+		HikariConfig hikariConfig = new HikariConfig();
+		hikariConfig.setDriverClassName(dataBaseConfig.getDriverName());
+		hikariConfig.setJdbcUrl(dataBaseConfig.getUrl());
+		hikariConfig.setUsername(dataBaseConfig.getUsername());
+		hikariConfig.setPassword(dataBaseConfig.getPassword());
+		hikariConfig.setMaximumPoolSize(maximumPoolSize);
+		hikariConfig.setValidationTimeout(validationTimeout);
+		hikariConfig.setConnectionTimeout(connectionTimeout);
+		hikariConfig.setIdleTimeout(idleTimeout);
+		hikariConfig.setMinimumIdle(minimumIdle);
+		HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 		this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
@@ -248,7 +278,7 @@ public class DBDataStore implements DataStore {
 	}
 
 	@Override
-	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userId) {
+	public MosipUserDto registerUser(UserRegistrationRequestDto userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -258,7 +288,7 @@ public class DBDataStore implements DataStore {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public AuthZResponseDto changePassword(PasswordDto passwordDto) throws Exception {
 		// TODO Auto-generated method stub
@@ -276,15 +306,27 @@ public class DBDataStore implements DataStore {
 		// TODO Auto-generated method stub
 		return null;
 	}
-  
-  @Override
+
+	@Override
 	public MosipUserDto getUserRoleByUserId(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
+	public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 @Override
-public MosipUserDto getUserDetailBasedonMobileNumber(String mobileNumber) throws Exception {
+public ValidationResponseDto validateUserName(String userId) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public UserDetailsResponseDto getUserDetailBasedOnUid(List<String> userId) {
 	// TODO Auto-generated method stub
 	return null;
 }

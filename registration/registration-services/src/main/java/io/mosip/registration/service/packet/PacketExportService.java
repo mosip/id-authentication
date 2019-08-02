@@ -7,6 +7,7 @@ import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * Service class for Exporting the Registration Packets
@@ -60,7 +61,8 @@ public interface PacketExportService {
 	 * @param exportedPackets
 	 *            The list of exported packets
 	 * @return Return the response based on the success or failure response
+	 * @throws RegBaseCheckedException 
 	 */
-	ResponseDTO updateRegistrationStatus(List<PacketStatusDTO> exportedPackets);
+	ResponseDTO updateRegistrationStatus(List<PacketStatusDTO> exportedPackets) throws RegBaseCheckedException;
 
 }

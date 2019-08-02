@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor</artifactId>
-		<version>0.12.10</version>
+		<version>0.9.1</version>
 	</parent>
 	<artifactId>pre-processor</artifactId>
 	<name>pre-processor</name>
@@ -21,5 +21,6 @@
 		<module>registration-processor-external-stage</module>
 		<module>registration-processor-external-integration-service</module>
 		<module>registration-processor-quality-checker-stage</module>
+		<module>registration-processor-request-handler-service</module>
 	</modules>
 </project>

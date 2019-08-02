@@ -21,9 +21,12 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.packet.RegistrationApprovalService;
+import io.mosip.registration.util.advice.AuthenticationAdvice;
+import io.mosip.registration.util.advice.PreAuthorizeUserId;
 
 /**
  * Implementation class of {@link RegistrationApprovalService} interface
@@ -92,7 +95,8 @@ public class RegistrationApprovalServiceImpl extends BaseService implements Regi
 	 * java.lang.String)
 	 */
 	@Override
-	public Registration updateRegistration(String registrationID, String statusComments, String clientStatusCode) {
+	@PreAuthorizeUserId(roles= {AuthenticationAdvice.OFFICER_ROLE,AuthenticationAdvice.SUPERVISOR_ROLE, AuthenticationAdvice.ADMIN_ROLE})
+	public Registration updateRegistration(String registrationID, String statusComments, String clientStatusCode) throws RegBaseCheckedException {
 
 		LOGGER.info(LoggerConstants.LOG_UPADTE_REGISTER_PKT, APPLICATION_NAME, APPLICATION_ID,
 				"Updating status of Packet");

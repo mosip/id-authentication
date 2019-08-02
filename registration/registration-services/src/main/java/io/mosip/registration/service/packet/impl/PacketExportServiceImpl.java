@@ -17,7 +17,10 @@ import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketExportService;
+import io.mosip.registration.util.advice.AuthenticationAdvice;
+import io.mosip.registration.util.advice.PreAuthorizeUserId;
 
 /**
  * Implementation class for {@link PacketExportService}
@@ -67,7 +70,8 @@ public class PacketExportServiceImpl implements PacketExportService {
 	 * updateRegistrationStatus(java.util.List)
 	 */
 	@Override
-	public ResponseDTO updateRegistrationStatus(List<PacketStatusDTO> exportedPackets) {
+	@PreAuthorizeUserId(roles= {AuthenticationAdvice.OFFICER_ROLE,AuthenticationAdvice.SUPERVISOR_ROLE, AuthenticationAdvice.ADMIN_ROLE})
+	public ResponseDTO updateRegistrationStatus(List<PacketStatusDTO> exportedPackets) throws RegBaseCheckedException{
 
 		LOGGER.debug("REGISTRATION - UPDATE_EXPORTED_PACKETS - PACKET_EXPORT_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table with the updated status");

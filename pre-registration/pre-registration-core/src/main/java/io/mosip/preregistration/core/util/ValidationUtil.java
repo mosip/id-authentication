@@ -184,7 +184,7 @@ public class ValidationUtil {
 			} else if (key.equals(RequestCodes.REQ_TIME) && requestMap.get(RequestCodes.REQ_TIME) != null) {
 				try {
 					LocalDate localDate = LocalDate.parse(requestMap.get(RequestCodes.REQ_TIME));
-					LocalDate serverDate=new Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+					LocalDate serverDate = new Date().toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
 					if (localDate.isBefore(serverDate) || localDate.isAfter(serverDate)) {
 						throw new InvalidRequestParameterException(ErrorCodes.PRG_CORE_REQ_013.getCode(),
 								ErrorMessages.INVALID_REQUEST_DATETIME_NOT_CURRENT_DATE.getMessage(), null);
@@ -354,4 +354,17 @@ public class ValidationUtil {
 		return documentTypeMap;
 	}
 
+	public static boolean parseDate(String reqDate, String format) {
+		log.info("sessionId", "idType", "id", "In parseDate method of core validation util");
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			sdf.setLenient(false);
+			sdf.parse(reqDate);
+			LocalDate.parse(reqDate);
+		} catch (Exception e) {
+			log.error("sessionId", "idType", "id", "In parseDate method of core validation util - " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
 }

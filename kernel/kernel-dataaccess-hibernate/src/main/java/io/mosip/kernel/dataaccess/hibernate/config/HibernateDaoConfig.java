@@ -9,14 +9,13 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanInstantiationException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -25,6 +24,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -39,7 +39,7 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
  * 
  * @author Dharmesh Khandelwal
  * @author Bal Vikash Sharma
- * @author Raj Jha 
+ * @author Raj Jha
  * @since 1.0.0
  * 
  *
@@ -63,7 +63,7 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	 * @see io.mosip.kernel.core.dao.config.BaseDaoConfig#dataSource()
 	 */
 
-	@Value("${hikari.maximumPoolSize:100}")
+	@Value("${hikari.maximumPoolSize:25}")
 	private int maximumPoolSize;
 	@Value("${hikari.validationTimeout:3000}")
 	private int validationTimeout;
@@ -77,11 +77,11 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 	@Override
 	@Bean
 	public DataSource dataSource() {
-//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//		dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
-//		dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
-//		dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
-//		dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
+		// DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		// dataSource.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
+		// dataSource.setUrl(environment.getProperty(HibernatePersistenceConstant.JDBC_URL));
+		// dataSource.setUsername(environment.getProperty(HibernatePersistenceConstant.JDBC_USER));
+		// dataSource.setPassword(environment.getProperty(HibernatePersistenceConstant.JDBC_PASS));
 
 		HikariConfig hikariConfig = new HikariConfig();
 		hikariConfig.setDriverClassName(environment.getProperty(HibernatePersistenceConstant.JDBC_DRIVER));
@@ -189,15 +189,25 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 				HibernatePersistenceConstant.EMPTY_INTERCEPTOR);
 		return jpaProperties;
 	}
+	
+	
+	@Profile("!test")
+	@Bean
+	public EncryptionInterceptor encryptionInterceptor() {
+		return new EncryptionInterceptor();
+	}
 
 	/**
 	 * Function to associate the specified value with the specified key in the map.
 	 * If the map previously contained a mapping for the key, the old value is
 	 * replaced.
 	 * 
-	 * @param jpaProperties The map of jpa properties
-	 * @param property      The property whose value is to be set
-	 * @param defaultValue  The default value to set
+	 * @param jpaProperties
+	 *            The map of jpa properties
+	 * @param property
+	 *            The property whose value is to be set
+	 * @param defaultValue
+	 *            The default value to set
 	 * @return The map of jpa properties with properties set
 	 */
 	private HashMap<String, Object> getProperty(HashMap<String, Object> jpaProperties, String property,
@@ -209,13 +219,13 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 		if (property.equals(HibernatePersistenceConstant.HIBERNATE_EJB_INTERCEPTOR)) {
 			try {
 				if (environment.containsProperty(property)) {
-					jpaProperties.put(property,
-							BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
+					jpaProperties.put(property,encryptionInterceptor());
+	//						BeanUtils.instantiateClass(Class.forName(environment.getProperty(property))));
 				}
 				/**
 				 * We can add a default interceptor whenever we require here.
 				 */
-			} catch (BeanInstantiationException | ClassNotFoundException e) {
+			} catch (BeanInstantiationException e) {
 				LOGGER.error("Error while configuring Interceptor.");
 			}
 		} else {
@@ -224,5 +234,6 @@ public class HibernateDaoConfig implements BaseDaoConfig {
 		}
 		return jpaProperties;
 	}
+
 
 }

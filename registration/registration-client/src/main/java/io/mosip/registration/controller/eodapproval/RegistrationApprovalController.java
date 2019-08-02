@@ -61,6 +61,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -134,6 +136,11 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@FXML
 	private ToggleButton rejectionBtn;
+	
+	@FXML
+	private ImageView approvalImageView;
+	@FXML
+	private ImageView rejectionImageView;
 
 	/** Button for authentication. */
 
@@ -175,6 +182,20 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	private Map<String, Integer> packetIds = new HashMap<>();
 
+	/**
+	 * @return the primaryStage
+	 */
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	/**
+	 * @param primaryStage the primaryStage to set
+	 */
+	public void setPrimaryStage(Stage primaryStage) {
+		this.primaryStage = primaryStage;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -183,10 +204,22 @@ public class RegistrationApprovalController extends BaseController implements In
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		Image rejectInWhite = new Image(getClass().getResourceAsStream(RegistrationConstants.WRONG_IMAGE_PATH));
+		Image rejectImage = new Image(getClass().getResourceAsStream(RegistrationConstants.REJECT_IMAGE_PATH));
+		
+		rejectionBtn.hoverProperty().addListener((ov, oldValue, newValue) -> {
+			if (newValue) {
+				rejectionImageView.setImage(rejectInWhite);
+			} else {
+				rejectionImageView.setImage(rejectImage);
+			}
+		});
+		
 		reloadTableView();
 		tableCellColorChangeListener();
 		id.setResizable(false);
 		statusComment.setResizable(false);
+		disableColumnsReorder(table);
 	}
 
 	private void tableCellColorChangeListener() {
@@ -365,6 +398,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		table.getSelectionModel().selectFirst();
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			viewAck();
+			approvalBtn.setDisable(false);
+			rejectionBtn.setDisable(false);
+		}else {
+			webView.getEngine().loadContent(RegistrationConstants.EMPTY);
+			approvalBtn.setDisable(true);
+			rejectionBtn.setDisable(true);
 		}
 	}
 
@@ -522,12 +561,21 @@ public class RegistrationApprovalController extends BaseController implements In
 				uploadPacketsInBackground(regIds);
 
 			}*/
-		} catch (RuntimeException runtimeException) {
+		} catch(RegBaseCheckedException regBaseCheckedException) {
+			
+			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
+					"unable to approve or reject packets" + regBaseCheckedException.getMessage()
+							+ ExceptionUtils.getStackTrace(regBaseCheckedException));
+
+			if(regBaseCheckedException.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+				generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_ADVICE_FAILURE);
+			}
+		}  catch (RuntimeException runtimeException) {
 			LOGGER.error(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 					"unable to sync and upload of packets" + runtimeException.getMessage()
 							+ ExceptionUtils.getStackTrace(runtimeException));
 
-			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.UNABLE_TO_SYNC_AND_UPLOAD);
+			generateAlert(RegistrationConstants.ERROR, RegistrationUIConstants.AUTH_FAILURE);
 		}
 		LOGGER.info(LOG_REG_PENDING_APPROVAL, APPLICATION_NAME, APPLICATION_ID,
 				"Updation of registration according to status ended");

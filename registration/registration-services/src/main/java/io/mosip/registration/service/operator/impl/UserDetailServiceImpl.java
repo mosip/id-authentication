@@ -63,24 +63,12 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 
 		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Entering into user detail save method...");
 
-		String regCenterId = RegistrationConstants.EMPTY;
-		Map<String, String> mapOfcenterId = userOnboardService.getMachineCenterId();
-
-		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
-				"Fetching registration center details......");
-
-		if (null != mapOfcenterId && mapOfcenterId.size() > 0) {
-			regCenterId = mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID);
-		}
-
-		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID, "Registration center id...." + regCenterId);
-
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			try {
 
-				LinkedHashMap<String, Object> userDetailSyncResponse = getUsrDetails(regCenterId, triggerPoint);
+				LinkedHashMap<String, Object> userDetailSyncResponse = centerIdNullCheck(triggerPoint);
 
-				if (userDetailSyncResponse.size() > 0
+				if (null != userDetailSyncResponse && userDetailSyncResponse.size() > 0
 						&& null != userDetailSyncResponse.get(RegistrationConstants.PACKET_STATUS_READER_RESPONSE)) {
 
 					String jsonString = new ObjectMapper().writeValueAsString(
@@ -94,7 +82,7 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 						userDetailDAO.save(userDtlsSyncDto);
 						responseDTO = setSuccessResponse(responseDTO, RegistrationConstants.SUCCESS, null);
 						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
-								"User Detail Sync SuccessFull......");
+								"User Detail Sync Success......");
 					} else {
 
 						LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
@@ -187,4 +175,34 @@ public class UserDetailServiceImpl extends BaseService implements UserDetailServ
 		return userDetailResponse;
 	}
 
+	/**
+	 * Center id null check.
+	 *
+	 * @param triggerPoint the trigger point
+	 * @return the linked hash map
+	 * @throws RegBaseCheckedException the reg base checked exception
+	 */
+	private LinkedHashMap<String, Object> centerIdNullCheck(String triggerPoint) throws RegBaseCheckedException {
+		LinkedHashMap<String, Object> userDetailSyncResponse = null;
+		Map<String, String> mapOfcenterId = userOnboardService.getMachineCenterId();
+
+		LOGGER.info(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+				"Fetching registration center details......");
+
+		if (null != mapOfcenterId && mapOfcenterId.size() > 0
+				&& null != mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID)) {
+
+			LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+					"Registration center id found....!" + mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID));
+
+			userDetailSyncResponse = getUsrDetails((String) mapOfcenterId.get(RegistrationConstants.USER_CENTER_ID),
+					triggerPoint);
+		} else {
+			LOGGER.error(LOG_REG_USER_DETAIL, APPLICATION_NAME, APPLICATION_ID,
+					"Registration center id not found....!");
+		}
+
+		return userDetailSyncResponse;
+
+	}
 }

@@ -112,10 +112,12 @@ public class RegistrationSyncController {
 				syncResponseList = syncRegistrationService.sync(registrationSyncRequestDTO.getRequest());
 			}
 			if (isEnabled) {
+				RegSyncResponseDTO responseDto = buildRegistrationSyncResponse(syncResponseList);
+				ObjectMapper objectMapper = new ObjectMapper();
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(RESPONSE_SIGNATURE,
-						digitalSignatureUtility.getDigitalSignature(buildRegistrationSyncResponse(syncResponseList)));
-				return ResponseEntity.ok().headers(headers).body(buildRegistrationSyncResponse(syncResponseList));
+						digitalSignatureUtility.getDigitalSignature(objectMapper.writeValueAsString(responseDto)));
+				return ResponseEntity.ok().headers(headers).body(responseDto);
 			}
 
 			return ResponseEntity.ok().body(buildRegistrationSyncResponse(syncResponseList));
@@ -125,7 +127,7 @@ public class RegistrationSyncController {
 		}
 	}
 
-	public String buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
+	public RegSyncResponseDTO buildRegistrationSyncResponse(List<SyncResponseDto> syncResponseDtoList)
 			throws JsonProcessingException {
 
 		RegSyncResponseDTO response = new RegSyncResponseDTO();
@@ -161,10 +163,8 @@ public class RegistrationSyncController {
 		if (!syncResponseList.isEmpty()) {
 			response.setResponse(syncResponseList);
 		}
-		ObjectMapper objectMapper = new ObjectMapper();
-		String objectMapperResponse = null;
-		objectMapperResponse = objectMapper.writeValueAsString(response);
-		return objectMapperResponse;
+
+		return response;
 	}
 
 }

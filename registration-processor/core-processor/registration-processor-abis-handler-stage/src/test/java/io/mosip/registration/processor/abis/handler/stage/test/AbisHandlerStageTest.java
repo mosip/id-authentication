@@ -25,6 +25,7 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
+import io.mosip.registration.processor.core.logger.LogDescription;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.abis.AbisApplicationDto;
 import io.mosip.registration.processor.core.packet.dto.abis.RegBioRefDto;
@@ -56,6 +57,9 @@ public class AbisHandlerStageTest {
 
 	@Mock
 	private Utilities utility;
+	
+	@Mock
+	private LogDescription description;
 
 	List<AbisApplicationDto> abisApplicationDtos = new ArrayList<>();
 	
@@ -89,6 +93,9 @@ public class AbisHandlerStageTest {
 		AbisApplicationDto dto = new AbisApplicationDto();
 		dto.setCode("ABIS1");
 		abisApplicationDtos.add(dto);
+		
+		Mockito.doNothing().when(description).setMessage(any());
+		Mockito.when(description.getMessage()).thenReturn("description");
 		
 		Mockito.doNothing().when(registrationStatusDto).setLatestTransactionStatusCode(any());
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());

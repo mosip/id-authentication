@@ -208,7 +208,7 @@
                                              <children>
                                                 <Button fx:id="scanBtn" mnemonicParsing="false" onAction="#scan" styleClass="onboardScanBtn" text="%scan" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="TOP">
                                                    <graphic>
-                                                      <ImageView fitHeight="15.0" fitWidth="15.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+                                                      <ImageView fx:id="scanImageView" fitHeight="15.0" fitWidth="15.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
                                                             <Image url="@../images/scan.png" />
                                                          </image>
@@ -432,7 +432,7 @@
                      <children>
                         <Button fx:id="backBtn" minWidth="${backButton.width/2}" mnemonicParsing="false" onAction="#previous" styleClass="backButton" text="%back" GridPane.valignment="TOP">
                            <graphic>
-                              <ImageView fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="backImageView" fitHeight="20.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/arrowLeft.png" />
                                  </image>

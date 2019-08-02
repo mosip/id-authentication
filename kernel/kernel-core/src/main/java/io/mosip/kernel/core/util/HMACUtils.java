@@ -5,8 +5,14 @@ package io.mosip.kernel.core.util;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.codec.binary.Base64;
 
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.core.util.constant.HMACUtilConstants;
@@ -68,10 +74,22 @@ public final class HMACUtils {
 	 * @param salt  digest bytes
 	 * @return String converted digest as plain text
 	 */
-	public static synchronized String digestAsPlainTextWithSalt(final byte[] bytes, final byte[] salt) {
-		messageDigest.update(bytes);
+	public static synchronized String digestAsPlainTextWithSalt(final byte[] password, final byte[] salt) {
+		messageDigest.update(password);
 		messageDigest.update(salt);
 		return DatatypeConverter.printHexBinary(messageDigest.digest());
+		/*KeySpec spec = null;
+        try {
+        	spec = new PBEKeySpec(new String(password,"UTF-8").toCharArray(), Base64.decodeBase64(salt), 27500, 512);
+            byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
+            return Base64.encodeBase64String(key);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException("Credential could not be encoded", e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }*/
+    
 	}
 
 	/**
@@ -126,9 +144,53 @@ public final class HMACUtils {
 		return randomBytes;
 	}
 
+	/**
+	 * Encodes to BASE64 String
+	 * 
+	 * @param data data to encode
+	 * @return encoded data
+	 */
+	public static String encodeBase64String(byte[] data) {
+		return Base64.encodeBase64String(data);
+	}
+
+	/**
+	 * Decodes from BASE64
+	 * 
+	 * @param data data to decode
+	 * @return decoded data
+	 */
+	public static byte[] decodeBase64(String data) {
+		return Base64.decodeBase64(data);
+	}
+
 	/*
 	 * No object initialization.
 	 */
 	private HMACUtils() {
 	}
+
+	
+	 private static String encode(String password, byte[] salt) {
+	        KeySpec spec = new PBEKeySpec(password.toCharArray(), Base64.decodeBase64(salt), 27500, 512);
+
+	        try {
+	            byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
+	            return Base64.encodeBase64String(key);
+	        } catch (InvalidKeySpecException e) {
+	            throw new RuntimeException("Credential could not be encoded", e);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new RuntimeException(e);
+	        }
+	    }
+	
+	
+	private static SecretKeyFactory getSecretKeyFactory() throws java.security.NoSuchAlgorithmException {
+        try {
+            return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("PBKDF2 algorithm not found", e);
+        }
+    }
 }

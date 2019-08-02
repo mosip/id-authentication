@@ -71,7 +71,7 @@
                         <Insets left="20.0" />
                      </GridPane.margin>
                      <children>
-                        <GridPane onMouseClicked="#createPacket" prefHeight="90.0" prefWidth="250.0" styleClass="newRegBtnStyle">
+                        <GridPane fx:id="newRegGridPane" onMouseClicked="#createPacket" prefHeight="90.0" prefWidth="250.0" styleClass="uinUpdateStyle">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="90.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="156.0" />
@@ -80,12 +80,12 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label styleClass="newRegBtnStyle" text="%newregistration" wrapText="true" GridPane.columnIndex="1" />
+                              <Label styleClass="uinUpdateBtnStyle" text="%newregistration" wrapText="true" GridPane.columnIndex="1" />
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="newRegImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/NewRegistration.png" />
+                                          <Image url="@../images/NewReg.png" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -125,7 +125,7 @@
                               <Label styleClass="uinUpdateBtnStyle" text="%lostuin" wrapText="true" GridPane.columnIndex="1" />
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="lostUINImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/LostUIN.png" />
                                        </image>
@@ -166,7 +166,7 @@
                       <RowConstraints percentHeight="33.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <GridPane onMouseClicked="#syncData" styleClass="operationalPaneDetailsSync">
+                        <GridPane fx:id="syncDataPane" onMouseClicked="#syncData" styleClass="operationalPaneDetailsSync">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="131.0" minWidth="10.0" prefWidth="90.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="178.0" />
@@ -177,13 +177,18 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%lastsynctemp" wrapText="true" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="12.0" prefWidth="205.0" spacing="2.0">
+                                       <children>
+                                          <Label alignment="TOP_LEFT" contentDisplay="TOP" styleClass="operationalDetails" text="%lastsynctemp" wrapText="true" />
+                                          <Label fx:id="lastSyncTime" styleClass="operationalDetails" />
+                                       </children>
+                                    </HBox>
                                     <Label styleClass="operationalTitle" text="%synchronizeData" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="syncDataImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/sync.png" />
                                        </image>
@@ -192,17 +197,17 @@
                               </VBox>
                            </children>
                         </GridPane>
-                        <GridPane onMouseClicked="#downloadPreRegData" styleClass="operationalPaneDetails" GridPane.rowIndex="2">
+                        <GridPane fx:id="downloadPreRegDataPane" onMouseClicked="#downloadPreRegData" styleClass="operationalPaneDetails" GridPane.rowIndex="2">
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%downloadedtemp" wrapText="true" />
+                                    <Label fx:id="lastPreRegPacketDownloadedTime" styleClass="operationalDetails" wrapText="true" />
                                     <Label styleClass="operationalTitle" text="%downloadPreregistrationData" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="downloadPreRegDataImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/DownloadPreRegData.png" />
                                        </image>
@@ -218,17 +223,17 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <GridPane onMouseClicked="#onBoardUser" styleClass="operationalPaneDetailsBioUpdate" GridPane.rowIndex="3">
+                        <GridPane fx:id="updateOperatorBiometricsPane" onMouseClicked="#onBoardUser" styleClass="operationalPaneDetailsBioUpdate" GridPane.rowIndex="3">
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="operationalDetails" text="%notuploadedtemp" wrapText="true" />
+                                    <Label fx:id="lastBiometricTime" styleClass="operationalDetails" wrapText="true" />
                                     <Label styleClass="operationalTitle" text="%updateOperatorBiometrics" wrapText="true" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="updateOperatorBiometricsImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/UpdateOperatorBiometrics.png" />
                                        </image>
@@ -264,7 +269,7 @@
                   </Label>
                   <GridPane fx:id="eodProcessGridPane" GridPane.rowIndex="4">
                      <children>
-                        <GridPane onMouseClicked="#approvePacket" styleClass="operationalPaneDetailsSync">
+                        <GridPane fx:id="eodApprovalPane" onMouseClicked="#approvePacket" styleClass="operationalPaneDetailsSync">
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
@@ -274,7 +279,7 @@
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="eodApprovalImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/PendingApproval.png" />
                                        </image>
@@ -290,7 +295,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <GridPane onMouseClicked="#loadReRegistrationScreen" styleClass="operationalPaneDetailsPreReg" GridPane.rowIndex="1">
+                        <GridPane fx:id="reRegistrationPane" onMouseClicked="#loadReRegistrationScreen" styleClass="operationalPaneDetailsPreReg" GridPane.rowIndex="1">
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
@@ -300,7 +305,7 @@
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="reRegistrationImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/Re-Registration.png" />
                                        </image>
@@ -316,7 +321,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <GridPane styleClass="operationalPaneDetailsBioUpdate" GridPane.rowIndex="2">
+                        <GridPane fx:id="viewReportsPane" styleClass="operationalPaneDetailsBioUpdate" GridPane.rowIndex="2">
                            <children>
                               <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
                                  <children>
@@ -325,7 +330,7 @@
                               </VBox>
                               <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="viewReportsImageView" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/ViewReports.png" />
                                        </image>

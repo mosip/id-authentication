@@ -12,6 +12,8 @@ import io.mosip.registration.dto.ResponseDTO;
  * This service is invoked during start of the application OR post successful login to the application based on use cases.  
  * 
  * @author Sravya Surampalli
+ * @author Yaswanth
+ * @author Brahmananda Reddy
  * @since 1.0.0
  */
 public interface GlobalParamService {

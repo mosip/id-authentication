@@ -1,6 +1,7 @@
 package io.mosip.registration.jobs;
 
 import org.quartz.JobExecutionContext;
+import org.quartz.Scheduler;
 import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
 import org.quartz.listeners.TriggerListenerSupport;
@@ -15,7 +16,13 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
- * This class gives the information of job trigger
+ * This class gives the information of job trigger {@link Trigger} such as the
+ * triggers that are fired, misfired and completed.
+ * 
+ * <p>
+ * They will be called by the {@link Scheduler} whenever a trigger operation
+ * happens.
+ * </p>
  * 
  * @author YASWANTH S
  * @since 1.0.0
@@ -46,7 +53,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	public synchronized void triggerMisfired(Trigger trigger) {
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "trigger mis-fired started");
+				RegistrationConstants.APPLICATION_ID, "trigger misfired started");
 
 		/*
 		 * ------------------Trigger MisFired ---------------
@@ -63,7 +70,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		}
 
 		LOGGER.info(LoggerConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "trigger mis-fired ended");
+				RegistrationConstants.APPLICATION_ID, "trigger misfired ended");
 
 	}
 

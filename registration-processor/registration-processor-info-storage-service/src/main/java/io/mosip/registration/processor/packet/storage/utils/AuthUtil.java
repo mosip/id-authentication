@@ -49,6 +49,7 @@ import io.mosip.registration.processor.core.http.ResponseWrapper;
 import io.mosip.registration.processor.core.logger.RegProcessorLogger;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.CbeffToBiometricUtil;
+import io.mosip.registration.processor.core.util.JsonUtil;
 
 /**
  * @author Ranjitha Siddegowda
@@ -58,7 +59,6 @@ public class AuthUtil {
 
 	/** The reg proc logger. */
 	private static Logger regProcLogger = RegProcessorLogger.getLogger(AuthUtil.class);
-
 
 	/** The key generator. */
 	@Autowired
@@ -72,8 +72,6 @@ public class AuthUtil {
 	@Autowired
 	RegistrationProcessorRestClientService<Object> registrationProcessorRestClientService;
 
-	private ObjectMapper mapper = new ObjectMapper();
-
 	/** The Constant APPLICATION_ID. */
 	public static final String IDA_APP_ID = "IDA";
 
@@ -83,21 +81,16 @@ public class AuthUtil {
 	/** The Constant RSA. */
 	public static final String PARTNER_ID = "INTERNAL";
 
-	BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
-
-	BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
-
-
-
-	
-	
 	@Value("${mosip.identity.auth.internal.requestid}")
 	private String authRequestId;
 
-	public AuthResponseDTO authByIdAuthentication(String individualId,String individualType , byte[] biometricFile) throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException, ParserConfigurationException, SAXException, BiometricException, BioTypeException {
-		
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+	public AuthResponseDTO authByIdAuthentication(String individualId, String individualType, byte[] biometricFile)
+			throws ApisResourceAccessException, InvalidKeySpecException, NoSuchAlgorithmException, IOException,
+			ParserConfigurationException, SAXException, BiometricException, BioTypeException {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
+				"AuthUtil::authByIdAuthentication()::entry");
 
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO req = new RequestDTO();
 		List<BioInfo> biometrics;
 		AuthTypeDTO authType = new AuthTypeDTO();
@@ -116,42 +109,52 @@ public class AuthUtil {
 		authRequestDTO.setTransactionID("1234567890");
 		authRequestDTO.setVersion("1.0");
 
+		ObjectMapper mapper = new ObjectMapper();
 		String identityBlock = mapper.writeValueAsString(req);
-		
+
 		final SecretKey secretKey = keyGenerator.getSymmetricKey();
 
 		byte[] encryptedIdentityBlock = encryptor.symmetricEncrypt(secretKey, identityBlock.getBytes());
 		authRequestDTO.setRequest(Base64.encodeBase64URLSafeString(encryptedIdentityBlock));
 
 		byte[] encryptedSessionKeyByte = encryptRSA(secretKey.getEncoded(), PARTNER_ID,
-				DateUtils.getUTCCurrentDateTimeString());
+				DateUtils.getUTCCurrentDateTimeString(), mapper);
 		authRequestDTO.setRequestSessionKey(Base64.encodeBase64URLSafeString(encryptedSessionKeyByte));
 
 		byte[] byteArr = encryptor.symmetricEncrypt(secretKey,
 				HMACUtils.digestAsPlainText(HMACUtils.generateHash(identityBlock.getBytes())).getBytes());
 		authRequestDTO.setRequestHMAC(Base64.encodeBase64String(byteArr));
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
+				"AuthUtil::authByIdAuthentication()::INTERNALAUTH POST service call started with request data "
+						+ JsonUtil.objectMapperObjectToJson(authRequestDTO));
+		AuthResponseDTO response = new AuthResponseDTO();
+		response = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.INTERNALAUTH, null, null,
+				authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), individualId,
+				"AuthUtil::authByIdAuthentication()::INTERNALAUTH POST service call ended with response data "
+						+ JsonUtil.objectMapperObjectToJson(response));
 
-		AuthResponseDTO response = (AuthResponseDTO) registrationProcessorRestClientService.postApi(ApiName.INTERNALAUTH,
-				null, null, authRequestDTO, AuthResponseDTO.class, MediaType.APPLICATION_JSON);
-		
 		return response;
 
 	}
 
-	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime)
+	private byte[] encryptRSA(final byte[] sessionKey, String refId, String creationTime, ObjectMapper mapper)
 			throws ApisResourceAccessException, InvalidKeySpecException, java.security.NoSuchAlgorithmException,
 			IOException {
 
 		// encrypt AES Session Key using RSA public key
 		List<String> pathsegments = new ArrayList<>();
 		pathsegments.add(IDA_APP_ID);
-		ResponseWrapper<?> responseWrapper;
-		PublicKeyResponseDto publicKeyResponsedto = null;
+		ResponseWrapper<?> responseWrapper = new ResponseWrapper<>();
+		PublicKeyResponseDto publicKeyResponsedto = new PublicKeyResponseDto();
 
 		responseWrapper = (ResponseWrapper<?>) registrationProcessorRestClientService.getApi(ApiName.ENCRYPTIONSERVICE,
 				pathsegments, "timeStamp,referenceId", creationTime + ',' + refId, ResponseWrapper.class);
 		publicKeyResponsedto = mapper.readValue(mapper.writeValueAsString(responseWrapper.getResponse()),
 				PublicKeyResponseDto.class);
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), refId,
+				"AuthUtil::encryptRSA():: ENCRYPTIONSERVICE GET service call ended with response data "
+						+ JsonUtil.objectMapperObjectToJson(responseWrapper));
 
 		PublicKey publicKey = KeyFactory.getInstance(RSA)
 				.generatePublic(new X509EncodedKeySpec(CryptoUtil.decodeBase64(publicKeyResponsedto.getPublicKey())));
@@ -161,6 +164,8 @@ public class AuthUtil {
 	}
 
 	private DataInfoDTO getBioType(DataInfoDTO dataInfoDTO, String bioType) {
+
+		BioTypeMapperUtil bioTypeMapperUtil = new BioTypeMapperUtil();
 		if (bioType.equalsIgnoreCase(BioType.FINGER.toString())) {
 			dataInfoDTO.setBioType(bioTypeMapperUtil.getStatusCode(BioType.FINGER));
 		} else if (bioType.equalsIgnoreCase(BioType.FACE.toString())) {
@@ -172,6 +177,7 @@ public class AuthUtil {
 	}
 
 	private DataInfoDTO getBioSubType(DataInfoDTO dataInfoDTO, String bioSubType) {
+		BioSubTypeMapperUtil bioSubTypeMapperUtil = new BioSubTypeMapperUtil();
 		if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_INDEX_FINGER.getBioType())) {
 			dataInfoDTO.setBioSubType(bioSubTypeMapperUtil.getStatusCode(BioSubType.LEFT_INDEX_FINGER));
 		} else if (bioSubType.equalsIgnoreCase(BioSubType.LEFT_LITTLE_FINGER.getBioType())) {
@@ -202,10 +208,9 @@ public class AuthUtil {
 		return dataInfoDTO;
 	}
 
-	private List<BioInfo> getBioValue(byte[] cbefByteFile)
-			throws BiometricException, BioTypeException {
+	private List<BioInfo> getBioValue(byte[] cbefByteFile) throws BiometricException, BioTypeException {
 		List<BIR> list;
-		CbeffToBiometricUtil CbeffToBiometricUtil=new CbeffToBiometricUtil();
+		CbeffToBiometricUtil CbeffToBiometricUtil = new CbeffToBiometricUtil();
 
 		List<BioInfo> biometrics = new ArrayList<>();
 		try {
@@ -215,20 +220,20 @@ public class AuthUtil {
 				BioInfo bioInfo = new BioInfo();
 				DataInfoDTO dataInfoDTO = new DataInfoDTO();
 				BIR birApiResponse = CbeffToBiometricUtil.extractTemplate(bir, null);
-				
+
 				getBioType(dataInfoDTO, birApiResponse.getBdbInfo().getType().get(0).toString());
 
-				StringBuilder bioSubTypeValue =new StringBuilder();  
-				
+				StringBuilder bioSubTypeValue = new StringBuilder();
+
 				List<String> bioSubType = birApiResponse.getBdbInfo().getSubtype();
 				if (!bioSubType.isEmpty()) {
 					for (String value : bioSubType) {
 						bioSubTypeValue.append(value);
 					}
 				}
-				
+
 				getBioSubType(dataInfoDTO, bioSubTypeValue.toString());
-				
+
 				dataInfoDTO.setBioValue(CryptoUtil.encodeBase64String(birApiResponse.getBdb()));
 				dataInfoDTO.setDeviceProviderID("cogent");
 				dataInfoDTO.setTimestamp(DateUtils.getUTCCurrentDateTimeString());
@@ -236,7 +241,7 @@ public class AuthUtil {
 				bioInfo.setData(dataInfoDTO);
 				biometrics.add(bioInfo);
 			}
-			
+
 			return biometrics;
 
 		} catch (Exception e) {

@@ -15,7 +15,17 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.sync.PolicySyncService;
 
 /**
- * This is a job to sync the packet status
+ * This is a job for Key Policy Sync.
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author Brahmananda Reddy
  * @since 1.0.0
@@ -25,7 +35,7 @@ import io.mosip.registration.service.sync.PolicySyncService;
 public class KeyPolicySyncJob extends BaseJob {
 
 	/**
-	 * The RegPacketStatusServiceImpl
+	 * The PolicySyncService
 	 */
 	@Autowired
 	private PolicySyncService policySyncService;

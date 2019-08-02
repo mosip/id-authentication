@@ -13,7 +13,16 @@ public enum MachineErrorCode {
 	MACHINE_INSERT_EXCEPTION("KER-MSD-063", "Error occurred while inserting Machine details"),
 	MACHINE_UPDATE_EXCEPTION("KER-MSD-087", "Error occurred while updating Machine details"),
 	MACHINE_DELETE_EXCEPTION("KER-MSD-088", "Error occurred while deleting Machine details"),
-	DEPENDENCY_EXCEPTION("KER-MSD-148", "Cannot delete as dependency found");
+	DEPENDENCY_EXCEPTION("KER-MSD-148", "Cannot delete as dependency found"),
+	REGISTRATION_CENTER_MACHINE_FETCH_EXCEPTION("KER-MSD-331",
+			"Error occurred while fetching a Machine details mapped with the given Registration Center"),
+	MAPPED_MACHINE_ID_NOT_FOUND_EXCEPTION("KER-MSD-326","No assigned Machines found"),
+	MACHINE_ID_ALREADY_MAPPED_EXCEPTION("KER-MSD-327","No unassigned Machines found"),
+	INVALID_MACHINE_FILTER_VALUE_EXCEPTION("KER-MSD-328","Invalid Filter value for Mapstatus column"),
+	MACHINE_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-329","No Machine exist for Machine Type name:%s"),
+	MACHINE_SPECIFICATION_ID_NOT_FOUND_FOR_NAME_EXCEPTION("KER-MSD-330","No Machine Specification found for the Machine Type name:%s"),
+	MACHINE_NOT_TAGGED_TO_ZONE("KER-MSD-342","No zone assigned to the user"),
+	ZONE_NOT_EXIST("KER-MSD-343","Zone %s doesn't exist"),MACHINE_DECOMMISSION_EXCEPTION("XX","Machine cannot be Decommissioned as it is assigned to a Registration Center");;
 
 	private final String errorCode;
 	private final String errorMessage;

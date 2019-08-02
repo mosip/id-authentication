@@ -167,7 +167,7 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 			userBiometricRepository.saveAll(bioMetricsList);
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"Biometric information insertion succesful");
+					"Biometric information insertion successful");
 
 			response = RegistrationConstants.SUCCESS;
 
@@ -238,7 +238,9 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "fetching mac address....");
 
-			MachineMaster macAddressOfMachineMaster = machineMasterRepository.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(macAdres, ApplicationContext.applicationLanguage());
+			MachineMaster macAddressOfMachineMaster = machineMasterRepository
+					.findByIsActiveTrueAndMacAddressAndRegMachineSpecIdLangCode(macAdres,
+							ApplicationContext.applicationLanguage());
 
 			if (macAddressOfMachineMaster != null && macAddressOfMachineMaster.getRegMachineSpecId().getId() != null) {
 
@@ -264,13 +266,12 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 	@Override
 	public String getCenterID(String stationId) throws RegBaseCheckedException {
 
-		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-				"getCenterID() stationID --> " + stationId);
+		LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID, "getCenterID() stationID --> " + stationId);
 
 		try {
 
 			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
-					"fetching center details from reposiotry....");
+					"fetching center details from repository....");
 
 			CenterMachine regCenterMachineDtls = centerMachineRepository
 					.findByIsActiveTrueAndCenterMachineIdId(stationId);
@@ -285,6 +286,20 @@ public class UserOnboardDAOImpl implements UserOnboardDAO {
 
 		} catch (RuntimeException runtimeException) {
 
+			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION,
+					runtimeException.getMessage());
+		}
+	}
+
+	@Override
+	public Timestamp getLastUpdatedTime(String usrId) {
+		try {
+			LOGGER.info(LOG_REG_USER_ONBOARD, APPLICATION_NAME, APPLICATION_ID,
+					"fetching userMachineMapping details from repository....");
+			UserMachineMapping userMachineMapping = machineMappingRepository.findByUserMachineMappingIdUserID(usrId);
+			return userMachineMapping != null ? userMachineMapping.getCrDtime() : null;
+		} catch (RuntimeException runtimeException) {
+			
 			throw new RegBaseUncheckedException(RegistrationConstants.USER_ON_BOARDING_EXCEPTION,
 					runtimeException.getMessage());
 		}

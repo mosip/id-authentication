@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -40,6 +41,7 @@ public class BioMatcherUtilTest {
 	Map<String, String> valueMap = new HashMap<>();
 	private final String value = "Rk1SACAyMAAAAAEIAAABPAFiAMUAxQEAAAAoJ4CEAOs8UICiAQGXUIBzANXIV4CmARiXUEC6AObFZIB3ALUSZEBlATPYZICIAKUCZEBmAJ4YZEAnAOvBZIDOAKTjZEBCAUbQQ0ARANu0ZECRAOC4NYBnAPDUXYCtANzIXUBhAQ7bZIBTAQvQZICtASqWZEDSAPnMZICaAUAVZEDNAS63Q0CEAVZiSUDUAT+oNYBhAVprSUAmAJyvZICiAOeyQ0CLANDSPECgAMzXQ0CKAR8OV0DEAN/QZEBNAMy9ZECaAKfwZEC9ATieUEDaAMfWUEDJAUA2NYB5AVttSUBKAI+oZECLAG0FZAAA";
 
+	@Ignore
 	@Test
 	public void TestmatchValue() throws IdAuthenticationBusinessException {
 		valueMap.put(value, value);
@@ -47,6 +49,7 @@ public class BioMatcherUtilTest {
 		assertEquals(0, Double.compare(90.0, matchValue));
 	}
 
+	@Ignore
 	@Test
 	public void TestInvalidMatchValue() throws IdAuthenticationBusinessException {
 		valueMap.put(value, value);

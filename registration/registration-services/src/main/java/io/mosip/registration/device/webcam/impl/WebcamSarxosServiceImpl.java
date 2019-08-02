@@ -34,10 +34,19 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 
 	private Webcam webcam;
 
+	private JPanel jPanelWindow;
+
 	@Override
 	public JPanel getCameraPanel() {
+		if (jPanelWindow == null) {
+			getJPanel();
+		}
+		return jPanelWindow;
+	}
+
+	private JPanel getJPanel() {
 		WebcamPanel cameraPanel = new WebcamPanel(webcam);
-		JPanel jPanelWindow = new JPanel();
+		jPanelWindow = new JPanel();
 		jPanelWindow.add(cameraPanel);
 		jPanelWindow.setVisible(true);
 		return jPanelWindow;
@@ -45,7 +54,7 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 
 	@Override
 	public boolean isWebcamConnected() {
-		return (webcam != null) ? true : false;
+		return webcam != null ? webcam.isOpen() : false;
 	}
 
 	@Override
@@ -79,10 +88,9 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 				webcam = webcams.get(0);
 			}
 			if (!webcam.isOpen()) {
-				Dimension requiredDimension = new Dimension(width, height);
-				Dimension[] nonStandardResolutions = new Dimension[] { requiredDimension };
-				webcam.setCustomViewSizes(nonStandardResolutions);
+				Dimension requiredDimension = new Dimension(640, 480);
 				webcam.setViewSize(requiredDimension);
+				webcam.getLock().disable();
 				webcam.open();
 				Webcam.getDiscoveryService().stop();
 			}
@@ -98,6 +106,10 @@ public class WebcamSarxosServiceImpl extends MosipWebcamServiceImpl {
 	@Override
 	public void close() {
 		LOGGER.info("REGISTRATION - WEBCAMDEVICE", APPLICATION_NAME, APPLICATION_ID, "closing the webcam");
-		webcam.close();
+
+		if (webcam != null && webcam.isOpen()) {
+			jPanelWindow = null;
+			webcam.close();
+		}
 	}
 }

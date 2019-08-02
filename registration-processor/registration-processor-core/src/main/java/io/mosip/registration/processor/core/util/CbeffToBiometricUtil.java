@@ -28,10 +28,15 @@ import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
 import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.RegistryIDType;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.CryptoUtil;
+import io.mosip.registration.processor.core.constant.LoggerFileConstant;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.logger.RegProcessorLogger;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.core.util.exception.BiometricTagMatchException;
 
 /**
@@ -41,6 +46,9 @@ import io.mosip.registration.processor.core.util.exception.BiometricTagMatchExce
  * @author M1030448 Jyoti
  */
 public class CbeffToBiometricUtil {
+	
+	/** The reg proc logger. */
+	private static Logger regProcLogger = RegProcessorLogger.getLogger(CbeffToBiometricUtil.class);
 
 	/** The cbeffutil. */
 	private CbeffUtil cbeffutil=new CbeffImpl();
@@ -79,11 +87,16 @@ public class CbeffToBiometricUtil {
 	 *             the exception
 	 */
 	public byte[] getImageBytes(String cbeffFileString, String type, List<String> subType) throws Exception {
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"CbeffToBiometricUtil::getImageBytes()::entry");
+
 		byte[] photoBytes = null;
 		if (cbeffFileString != null) {
 			List<BIRType> bIRTypeList = getBIRTypeList(cbeffFileString);
 			photoBytes = getPhotoByTypeAndSubType(bIRTypeList, type, subType);
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"CbeffToBiometricUtil::getImageBytes()::exit");
 
 		return photoBytes;
 	}
@@ -163,6 +176,9 @@ public class CbeffToBiometricUtil {
 	 */
 	public InputStream mergeCbeff(String cbeffFile1, String cbeffFile2) throws Exception {
 		byte[] mergedCbeffByte = null;
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"CbeffToBiometricUtil::mergeCbeff()::entry");
+
 		if(!checkFileVersions(cbeffFile1, cbeffFile2)) {
 			throw new BiometricTagMatchException(PlatformErrorMessages.RPR_UTL_CBEFF_VERSION_MISMATCH.getCode());
 		} 
@@ -177,6 +193,9 @@ public class CbeffToBiometricUtil {
 			file1BirTypeList.addAll(file2BirTypeList);
 			mergedCbeffByte = cbeffutil.createXML(convertBIRTYPEtoBIR(file1BirTypeList));
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"CbeffToBiometricUtil::mergeCbeff()::exit");
+
 		return new ByteArrayInputStream(mergedCbeffByte);
 	}
 
@@ -256,6 +275,9 @@ public class CbeffToBiometricUtil {
 	 */
 	public InputStream extractCbeffWithTypes(String cbeffFile, List<String> types) throws Exception {
 		List<BIRType> extractedType = new ArrayList<>();
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"CbeffToBiometricUtil::extractCbeffWithTypes()::entry");
+
 		byte[] newCbeffByte = null;
 		List<BIRType> file2BirTypeList = getBIRTypeList(cbeffFile);
 		for (BIRType birType : file2BirTypeList) {
@@ -271,6 +293,8 @@ public class CbeffToBiometricUtil {
 		} else {
 			return null;
 		}
+		regProcLogger.debug(LoggerFileConstant.SESSIONID.toString(), LoggerFileConstant.USERID.toString(), "",
+				"CbeffToBiometricUtil::extractCbeffWithTypes()::exit");
 
 		return new ByteArrayInputStream(newCbeffByte);
 	}
@@ -283,16 +307,8 @@ public class CbeffToBiometricUtil {
 	 * @return the list
 	 */
 	public List<BIR> convertBIRTYPEtoBIR(List<BIRType> listOfBIR) {
-		return listOfBIR.parallelStream().map(bir -> new BIR.BIRBuilder().withBdb(bir.getBDB())
-				.withBirInfo(new BIRInfo.BIRInfoBuilder().withIntegrity(false).build())
-				.withBdbInfo(Optional.ofNullable(bir.getBDBInfo())
-						.map(bdbInfo -> new BDBInfo.BDBInfoBuilder().withIndex(bdbInfo.getIndex())
-								.withFormatOwner(bdbInfo.getFormatOwner()).withFormatType(bdbInfo.getFormatType())
-								.withQuality(bdbInfo.getQuality()).withType(bdbInfo.getType())
-								.withSubtype(bdbInfo.getSubtype()).withPurpose(bdbInfo.getPurpose())
-								.withLevel(bdbInfo.getLevel()).withCreationDate(bdbInfo.getCreationDate()).build())
-						.orElseGet(() -> null))
-				.build()).collect(Collectors.toList());
+		
+		return cbeffutil.convertBIRTypeToBIR(listOfBIR);
 	}
 
 	/**

@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -48,7 +50,10 @@ import io.mosip.registration.service.BaseService;
 import io.mosip.registration.service.config.GlobalParamService;
 
 /**
- * Update the Application
+ * This class will update the application based on comapring the versions of the
+ * jars from the Manifest. The comparison will be done by comparing the Local
+ * Manifest and the meta-inf.xml file. If there is any updation available in the
+ * jar then the new jar gets downloaded and the old gets archived.
  * 
  * @author YASWANTH S
  *
@@ -56,12 +61,15 @@ import io.mosip.registration.service.config.GlobalParamService;
 @Component
 public class SoftwareUpdateHandler extends BaseService {
 
+	/**
+	 * This constructor will read the application Property file and load the
+	 * properties to the class level variable.
+	 */
 	public SoftwareUpdateHandler() {
 
-		try {
-			String propsFilePath = new File(System.getProperty("user.dir")) + "/props/mosip-application.properties";
+		propsFilePath = new File(System.getProperty("user.dir")) + props;
 
-			FileInputStream fileInputStream = new FileInputStream(propsFilePath);
+		try (FileInputStream fileInputStream = new FileInputStream(propsFilePath)) {
 			Properties properties = new Properties();
 			properties.load(fileInputStream);
 			serverRegClientURL = properties.getProperty("mosip.reg.client.url");
@@ -75,6 +83,8 @@ public class SoftwareUpdateHandler extends BaseService {
 		}
 	}
 
+	private String propsFilePath;
+	private static String props = "/props/mosip-application.properties";
 	private static String SLASH = "/";
 
 	private String manifestFile = "MANIFEST.MF";
@@ -118,11 +128,19 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	@Autowired
 	private GlobalParamService globalParamService;
+	private String SQL = "sql";
+	private String exectionSqlFile = "initial_db_scripts.sql";
+	private String rollBackSqlFile = "rollback_scripts.sql";
 
 	/**
-	 * Check for updates
+	 * It will check whether any software updates are available or not.
+	 * <p>
+	 * The check will be done by comparing the Local Manifest file version with the
+	 * version of the server meta-inf.xml file
+	 * </p>
 	 * 
-	 * @return has update
+	 * @return Boolean true - If there is any update available. false - If no
+	 *         updates available
 	 */
 	public boolean hasUpdate() {
 
@@ -137,6 +155,14 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the current version which is read from the server meta-inf
+	 *         file.
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 */
 	private String getLatestVersion() throws IOException, ParserConfigurationException, SAXException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"Checking for latest version started");
@@ -195,7 +221,30 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * update the binaries
+	 * <p>
+	 * Checks whteher the update is available or not
+	 * </p>
+	 * <p>
+	 * If the Update is available:
+	 * </p>
+	 * <p>
+	 * If the jars needs to be added/updated in the local
+	 * </p>
+	 * <ul>
+	 * <li>Take the back-up of the current jars</li>
+	 * <li>Download the jars from the server and add/update it in the local</li>
+	 * </ul>
+	 * <p>
+	 * If the jars needs to be deleted in the local
+	 * </p>
+	 * <ul>
+	 * <li>Take the back-up of the current jars</li>
+	 * <li>Delete that particular jar from the local</li>
+	 * </ul>
+	 * <p>
+	 * If there is any error occurs while updation then the restoration of the jars
+	 * will happen by taking the back-up jars
+	 * </p>
 	 * 
 	 * @throws Exception
 	 *             - IOException
@@ -372,7 +421,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 	private Manifest getLocalManifest() throws IOException {
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Geting  of local manifest started");
+				"Getting  of local manifest started");
 
 		File localManifestFile = new File(manifestFile);
 
@@ -383,7 +432,7 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		}
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Geting  of local manifest completed");
+				"Getting  of local manifest completed");
 		return localManifest;
 	}
 
@@ -467,7 +516,8 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * Get timestamp when latest version has released
+	 * The latest version timestamp will be taken from the server meta-inf.xml file.
+	 * This timestamp will the be parsed in this method.
 	 * 
 	 * @return timestamp
 	 */
@@ -491,60 +541,87 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * Execute script files
+	 * This method will check whether any updation needs to be done in the DB
+	 * structure.
+	 * <p>
+	 * If there is any updates available:
+	 * </p>
+	 * <p>
+	 * Take the back-up of the current DB
+	 * </p>
+	 * <p>
+	 * Run the Update queries from the sql file, which is downloaded from the server
+	 * and available in the local
+	 * </p>
+	 * <p>
+	 * If there is any error occurs during the update,then the rollback query will
+	 * run from the sql file
+	 * </p>
 	 * 
 	 * @param latestVersion
 	 *            latest version
 	 * @param previousVersion
 	 *            previous version
 	 * @return response of sql execution
+	 * @throws IOException
 	 */
-	public ResponseDTO executeSqlFile(String latestVersion, String previousVersion) {
+	public ResponseDTO executeSqlFile(String latestVersion, String previousVersion) throws IOException {
 
 		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
 				"DB-Script files execution started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		URL resource = this.getClass().getResource("/sql/" + latestVersion + "/");
+		// execute sql file
 
-		if (resource != null) {
+		try {
 
-			File sqlFile = getSqlFile(resource.getPath());
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Checking Started : " + latestVersion + SLASH + exectionSqlFile);
 
-			// execute sql file
+			execute(SQL + SLASH + latestVersion + SLASH + exectionSqlFile);
+
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					"Checking completed : " + latestVersion + SLASH + exectionSqlFile);
+
+		}
+
+		catch (RuntimeException | IOException runtimeException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					runtimeException.getMessage() + ExceptionUtils.getStackTrace(runtimeException));
+
+			// ROLL BACK QUERIES
 			try {
 
-				runSqlFile(sqlFile);
+				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						"Checking started : " + latestVersion + SLASH + rollBackSqlFile);
 
-			} catch (RuntimeException | IOException runtimeException) {
+				execute(SQL + SLASH + latestVersion + SLASH + rollBackSqlFile);
 
-				try {
-					File rollBackFile = getSqlFile(
-							this.getClass().getResource("/sql/" + latestVersion + "_rollback/").getPath());
+				LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						"Checking completed : " + latestVersion + SLASH + rollBackSqlFile);
 
-					if (rollBackFile.exists()) {
-						runSqlFile(rollBackFile);
-					}
-				} catch (RuntimeException | IOException exception) {
+			} catch (RuntimeException | IOException exception) {
 
-					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
-
-				}
-				// Prepare Error Response
-				setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
-
-				// Replace with backup
-				rollback(responseDTO, previousVersion);
-
-				return responseDTO;
+				LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+						exception.getMessage() + ExceptionUtils.getStackTrace(exception));
 
 			}
+			// Prepare Error Response
+			setErrorResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_FAILURE, null);
+
+			// Replace with backup
+			rollback(responseDTO, previousVersion);
+
+			return responseDTO;
+
 		}
 
 		// Update global param with current version
 		globalParamService.update(RegistrationConstants.SERVICES_VERSION_KEY, latestVersion);
+
+		addProperties(latestVersion);
 
 		setSuccessResponse(responseDTO, RegistrationConstants.SQL_EXECUTION_SUCCESS, null);
 
@@ -554,19 +631,24 @@ public class SoftwareUpdateHandler extends BaseService {
 		return responseDTO;
 	}
 
-	private File getSqlFile(String path) {
+	private void execute(String path) throws IOException {
+		try (InputStream inputStream = SoftwareUpdateHandler.class.getClassLoader().getResourceAsStream(path)) {
 
-		// Get File
-		return FileUtils.getFile(path);
-
+			LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					inputStream != null ? path + " found" : path + " Not Found");
+			
+			if (inputStream != null) {
+				runSqlFile(inputStream);
+			}
+		}
 	}
 
-	private void runSqlFile(File sqlFile) throws IOException {
+	private void runSqlFile(InputStream inputStream) throws IOException {
 
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution started sql file : " + sqlFile.getName());
-		for (File file : sqlFile.listFiles()) {
-			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Execution started sql file");
+
+		try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream)) {
+			try (BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
 				String str;
 				StringBuilder sb = new StringBuilder();
@@ -579,16 +661,18 @@ public class SoftwareUpdateHandler extends BaseService {
 				for (String stat : statments) {
 					if (!stat.trim().equals("")) {
 
+						LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+								"Executing Statment : " + stat);
+
 						jdbcTemplate.execute(stat);
 
 					}
 				}
-
 			}
 
 		}
-		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-				"Execution completed sql file : " + sqlFile.getName());
+
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID, "Execution completed sql file");
 
 	}
 
@@ -620,23 +704,29 @@ public class SoftwareUpdateHandler extends BaseService {
 
 		File file = FileUtils.getFile(backUpPath);
 
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Backup Path found : " + file.exists());
+
 		boolean isBackUpCompleted = false;
-		for (File backUpFolder : file.listFiles()) {
-			if (backUpFolder.getName().contains(previousVersion)) {
 
-				try {
-					rollBackSetup(backUpFolder);
+		if (file.exists()) {
+			for (File backUpFolder : file.listFiles()) {
+				if (backUpFolder.getName().contains(previousVersion)) {
 
-					isBackUpCompleted = true;
-					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
-				} catch (io.mosip.kernel.core.exception.IOException exception) {
-					LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
-							exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+					try {
+						rollBackSetup(backUpFolder);
 
-					setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
+						isBackUpCompleted = true;
+						setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_SUCCESS, null);
+					} catch (io.mosip.kernel.core.exception.IOException exception) {
+						LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+								exception.getMessage() + ExceptionUtils.getStackTrace(exception));
+
+						setErrorResponse(responseDTO, RegistrationConstants.BACKUP_PREVIOUS_FAILURE, null);
+					}
+					break;
+
 				}
-				break;
-
 			}
 		}
 
@@ -646,7 +736,8 @@ public class SoftwareUpdateHandler extends BaseService {
 	}
 
 	/**
-	 * Get checksum
+	 * This method will return the checksum of the jars by reading it from the
+	 * Manifest file.
 	 * 
 	 * @param jarName
 	 *            jarName
@@ -680,4 +771,34 @@ public class SoftwareUpdateHandler extends BaseService {
 		// checksum (content-type)
 		return checksum;
 	}
+
+	private void addProperties(String version) {
+
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Started updating version property in mosip-application.properties");
+
+		try {
+			Properties properties = new Properties();
+			properties.load(new FileInputStream(propsFilePath));
+
+			properties.setProperty("mosip.reg.version", version);
+
+			// update mosip-Version in mosip-application.properties file
+			try (FileOutputStream outputStream = new FileOutputStream(propsFilePath)) {
+
+				properties.store(outputStream, version);
+			}
+
+		} catch (IOException ioException) {
+
+			LOGGER.error(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
+
+		}
+
+		LOGGER.info(LoggerConstants.LOG_REG_UPDATE, APPLICATION_NAME, APPLICATION_ID,
+				"Completed updating version property in mosip-application.properties");
+
+	}
+
 }

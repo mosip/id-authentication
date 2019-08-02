@@ -14,7 +14,18 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.config.GlobalParamService;
 
 /**
- * This is a job to sync the config data
+ * This is a job to sync the config data.
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
+ * 
  * @author Sreekar Chukka
  *
  * @since 1.0.0
@@ -33,8 +44,9 @@ public class SynchConfigDataJob extends BaseJob {
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 		LOGGER.info(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
-		
-		this.responseDTO = globalParamService.synchConfigData(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equalsIgnoreCase(triggerPoint));
+
+		this.responseDTO = globalParamService
+				.synchConfigData(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM.equalsIgnoreCase(triggerPoint));
 		syncTransactionUpdate(responseDTO, triggerPoint, jobId);
 
 		LOGGER.info(RegistrationConstants.SYNCH_CONFIG_DATA_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -54,7 +66,6 @@ public class SynchConfigDataJob extends BaseJob {
 			this.jobId = loadContext(context);
 			globalParamService = applicationContext.getBean(GlobalParamService.class);
 
-			
 			// Run the Parent JOB always first
 			this.responseDTO = globalParamService.synchConfigData(true);
 

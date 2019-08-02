@@ -6,7 +6,7 @@
   <parent>
     <groupId>io.mosip.registrationprocessor</groupId>
     <artifactId>registration-processor</artifactId>
-    <version>0.12.10</version>
+    <version>0.9.1</version>
   </parent>
   <artifactId>init</artifactId>
   <properties>
@@ -14,7 +14,6 @@
   </properties>
   <modules>
     <module>registration-processor-packet-receiver-stage</module>
-  	<module>registration-processor-packet-generator-service</module>
-	<module>registration-processor-registration-status-service</module>  	
+  	<module>registration-processor-registration-status-service</module>  	
   </modules>
 </project>

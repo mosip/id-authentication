@@ -6,14 +6,12 @@ import static org.mockito.Matchers.any;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,7 +26,6 @@ import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.common.rest.dto.ErrorDTO;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.core.http.ResponseWrapper;
@@ -92,17 +89,20 @@ public class UMCValidatorTest {
 
 	List<FieldValue> metaData;
 
+	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+
 	/**
 	 * Sets the up.
-	 * @throws java.io.IOException 
-	 * @throws IOException 
-	 * @throws ApisResourceAccessException 
-	 * @throws PacketDecryptionFailureException 
+	 * 
+	 * @throws java.io.IOException
+	 * @throws IOException
+	 * @throws ApisResourceAccessException
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Before
-	public void setUp() throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
-		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
-		umcValidator.setRegistrationStatusDto(registrationStatusDto);
+	public void setUp()
+			throws PacketDecryptionFailureException, ApisResourceAccessException, IOException, java.io.IOException {
+		// umcValidator.setRegistrationStatusDto(registrationStatusDto);
 		rcmDto = new RegistrationCenterMachineDto();
 		regOsi = new RegOsiDto();
 		rcmDto.setIsActive(true);
@@ -171,7 +171,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCSuccessTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -181,7 +181,7 @@ public class UMCValidatorTest {
 		rcdto.setIsActive(true);
 		rcdto.setLongitude("80.24492");
 		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
+		rcdto.setId("12245");
 
 		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
 		FieldValue fv1 = new FieldValue();
@@ -362,7 +362,7 @@ public class UMCValidatorTest {
 		// any(), any())).thenReturn(offrepdto).thenReturn(test)
 		// .thenReturn(deviceHistoryResponsedto).thenReturn(registrationCenterDeviceHistoryResponseDto);
 		// UMC validation successfull;
-		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertTrue(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -378,7 +378,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void UMCMappingNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -433,7 +433,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mcdtosWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -449,7 +449,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void machineIdNotFoundTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -500,7 +500,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -516,7 +516,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void machineNotActiveTest() throws ApisResourceAccessException, JsonParseException, JsonMappingException,
@@ -567,7 +567,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -583,7 +583,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void WronggpsDataPresentInMasterTest() throws ApisResourceAccessException, JsonParseException,
@@ -633,7 +633,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -649,7 +649,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void gpsDatanotPresentInPacketTest() throws ApisResourceAccessException, JsonParseException,
@@ -708,7 +708,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -724,7 +724,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void registrationCenternotActiveTest() throws ApisResourceAccessException, JsonParseException,
@@ -775,7 +775,7 @@ public class UMCValidatorTest {
 		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -791,7 +791,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCFailureForTimestampTest() throws ApisResourceAccessException, JsonParseException,
@@ -853,7 +853,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(offrepdtoWrapper).thenThrow(apisResourceAccessException);
 		// UMC validation Failure;
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -869,7 +869,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCFailureForRegistrationCenterIDTest() throws ApisResourceAccessException, JsonParseException,
@@ -932,7 +932,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(offrepdtoWrapper).thenThrow(apisResourceAccessException);
 
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -948,7 +948,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void isValidUMCCenterIdValidationRejectedTest() throws ApisResourceAccessException, JsonParseException,
@@ -1024,169 +1024,7 @@ public class UMCValidatorTest {
 				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedto)
 				.thenReturn(registrationCenterDeviceHistoryResponseDto);
 
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	/**
-	 * Validate device mapped with center failure test.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
-	 */
-	@Test
-	@Ignore
-	public void validateDeviceMappedWithCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
-		identity = new Identity();
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
-
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Document Scanner");
-		// fv1.setValue("3000091");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Camera");
-		// fv1.setValue("3000071");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Finger Print Scanner");
-		// fv1.setValue("3000092");
-		// capturedRegisteredDevices.add(fv1);
-		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
-
-		metaData = new ArrayList<>();
-		FieldValue fv = new FieldValue();
-		fv.setLabel("REGISTRATIONID");
-		fv.setValue("2018782130000121112018103016");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CENTERID");
-		fv.setValue("12245");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("MACHINEID");
-		fv.setValue("yyeqy26356");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLATITUDE");
-		fv.setValue("13.0049");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLONGITUDE");
-		fv.setValue("80.24492");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CREATIONDATE");
-		fv.setValue("2018-11-28T15:34:20.122");
-		metaData.add(fv);
-
-		identity.setMetaData(metaData);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		Mockito.when(osiUtils.getOSIDetailsFromMetaInfo(any(), any())).thenReturn(regOsi);
-		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
-		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-133\",\"errorMessage\":\"Device History not found\"}]}"
-				.getBytes();
-		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request", response, StandardCharsets.UTF_8);
-		RegistrationCenterDto registrationCenterDto = new RegistrationCenterDto();
-
-		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-		registrationCenterDto.setIsActive(true);
-		registrationCenterDto.setLongitude("80.24492");
-		registrationCenterDto.setLatitude("13.0049");
-		registrationCenterDto.setId("12245");
-
-		List<RegistrationCenterDto> registrationCenterDtoList = new ArrayList<>();
-		registrationCenterDtoList.add(registrationCenterDto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(registrationCenterDtoList);
-		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
-		regrepdtoWrapper.setResponse(regrepdto);
-		regrepdtoWrapper.setErrors(null);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("yyeqy26356"); 
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
-		mhrepdtoWrapper.setResponse(mhrepdto);
-		mhrepdtoWrapper.setErrors(null);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-
-		offrepdto.setRegistrationCenters(officerucmdtos);
-		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
-		offrepdtoWrapper.setResponse(offrepdto);
-		offrepdtoWrapper.setErrors(null);
-
-		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
-		test.setStatus("Valid");
-		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
-		testWrapper.setResponse(test);
-		testWrapper.setErrors(null);
-
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
-
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(null);
-
-		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
-		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
-
-		registrationCenterDeviceHistoryDetails.setIsActive(true);
-		registrationCenterDeviceHistoryResponseDto
-				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
-
-		identity = new Identity();
-		identity.setMetaData(metaData);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
-				.thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
-				.thenThrow(apisResourceAccessException);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 	/**
@@ -1202,7 +1040,7 @@ public class UMCValidatorTest {
 	 *             Signals that an I/O exception has occurred.
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
+	 * @throws PacketDecryptionFailureException
 	 */
 	@Test
 	public void validateDeviceFailureTest() throws ApisResourceAccessException, JsonParseException,
@@ -1289,500 +1127,7 @@ public class UMCValidatorTest {
 				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenReturn(offrepdtoWrapper)
 				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenThrow(apisResourceAccessException)
 				.thenReturn(centerDeviceHistoryResponseDto);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	/**
-	 * Validate registration center failure test.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
-	 */
-	@Test
-	public void validateRegistrationCenterFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
-		identity = new Identity();
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
-
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Document Scanner");
-		// fv1.setValue("3000091");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Camera");
-		// fv1.setValue("3000071");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Finger Print Scanner");
-		// fv1.setValue("3000092");
-		// capturedRegisteredDevices.add(fv1);
-		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
-
-		metaData = new ArrayList<>();
-		FieldValue fv = new FieldValue();
-		fv.setLabel("REGISTRATIONID");
-		fv.setValue("2018782130000121112018103016");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CENTERID");
-		fv.setValue("12245");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("MACHINEID");
-		fv.setValue("yyeqy26356");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLATITUDE");
-		fv.setValue("13.0049");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLONGITUDE");
-		fv.setValue("80.24492");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CREATIONDATE");
-		fv.setValue("2018-11-28T15:34:20.122");
-		metaData.add(fv);
-
-		identity.setMetaData(metaData);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		List<ErrorDTO> errors=new ArrayList<ErrorDTO>();
-		ErrorDTO errorDto=new ErrorDTO();
-		errorDto.setMessage("");
-		errors.add(errorDto);
-		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
-		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"center History not found\"}]}"
-				.getBytes();
-		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request", response, StandardCharsets.UTF_8);
-		RegistrationCenterDto registrationCenterDto = new RegistrationCenterDto();
-
-		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245");
-
-		List<RegistrationCenterDto> registrationCenterDtos = new ArrayList<>();
-		registrationCenterDtos.add(registrationCenterDto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(registrationCenterDtos);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("12334");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
-		mhrepdtoWrapper.setResponse(mhrepdto);
-		mhrepdtoWrapper.setErrors(errors);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-
-		offrepdto.setRegistrationCenters(officerucmdtos);
-		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
-		offrepdtoWrapper.setResponse(offrepdto);
-		offrepdtoWrapper.setErrors(errors);
-
-		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
-		test.setStatus("Accepted");
-		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
-		testWrapper.setResponse(test);
-		testWrapper.setErrors(errors);
-
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
-
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(errors);
-
-		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
-		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
-
-		registrationCenterDeviceHistoryDetails.setIsActive(true);
-		registrationCenterDeviceHistoryResponseDto
-				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
-	
-		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
-		centerDeviceHistoryResponseDtoWrapper.setResponse(registrationCenterDeviceHistoryResponseDto);
-		centerDeviceHistoryResponseDtoWrapper.setErrors(errors);
-
-		identity = new Identity();
-		identity.setMetaData(metaData);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenThrow(apisResourceAccessException).thenThrow(apisResourceAccessException).thenReturn(offrepdtoWrapper)
-				.thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
-				.thenReturn(registrationCenterDeviceHistoryResponseDto);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	/**
-	 * Validate machine failure test.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
-	 */
-	@Test
-	public void validateMachineFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
-		identity = new Identity();
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
-
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Document Scanner");
-		// fv1.setValue("3000091");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Camera");
-		// fv1.setValue("3000071");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Finger Print Scanner");
-		// fv1.setValue("3000092");
-		// capturedRegisteredDevices.add(fv1);
-		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
-
-		metaData = new ArrayList<>();
-		FieldValue fv = new FieldValue();
-		fv.setLabel("REGISTRATIONID");
-		fv.setValue("2018782130000121112018103016");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CENTERID");
-		fv.setValue("12245");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("MACHINEID");
-		fv.setValue("yyeqy26356");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLATITUDE");
-		fv.setValue("13.0049");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLONGITUDE");
-		fv.setValue("80.24492");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CREATIONDATE");
-		fv.setValue("2018-11-28T15:34:20.122");
-		metaData.add(fv);
-
-		identity.setMetaData(metaData);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
-		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"center History not found\"}]}"
-				.getBytes();
-		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request", response, StandardCharsets.UTF_8);
-		RegistrationCenterDto registrationCenterDto = new RegistrationCenterDto();
-
-		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245");
-		List<ErrorDTO> errors=new ArrayList<ErrorDTO>();
-		ErrorDTO errorDto=new ErrorDTO();
-		errorDto.setMessage("");
-		errors.add(errorDto);
-		List<RegistrationCenterDto> rcdtos = new ArrayList<>();
-		rcdtos.add(rcdto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(rcdtos);
-		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
-		regrepdtoWrapper.setResponse(regrepdto);
-		regrepdtoWrapper.setErrors(null);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("12334");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-
-		offrepdto.setRegistrationCenters(officerucmdtos);
-		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
-		offrepdtoWrapper.setResponse(offrepdto);
-		offrepdtoWrapper.setErrors(null);
-
-		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
-		test.setStatus("Accepted");
-		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
-		testWrapper.setResponse(test);
-		testWrapper.setErrors(null);
-
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
-
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(errors);
-
-		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
-		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
-	
-		registrationCenterDeviceHistoryDetails.setIsActive(true);
-		registrationCenterDeviceHistoryResponseDto
-				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
-		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
-		centerDeviceHistoryResponseDtoWrapper.setResponse(registrationCenterDeviceHistoryResponseDto);
-		centerDeviceHistoryResponseDtoWrapper.setErrors(errors);
-		identity = new Identity();
-		identity.setMetaData(metaData);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(regrepdtoWrapper).thenThrow(apisResourceAccessException).thenReturn(regrepdtoWrapper)
-				.thenThrow(apisResourceAccessException).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
-				.thenReturn(centerDeviceHistoryResponseDtoWrapper);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
-	}
-
-	/**
-	 * Validate UM cmapping failure test.
-	 *
-	 * @throws ApisResourceAccessException
-	 *             the apis resource access exception
-	 * @throws JsonParseException
-	 *             the json parse exception
-	 * @throws JsonMappingException
-	 *             the json mapping exception
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 * @throws PacketDecryptionFailureException 
-	 */
-	@Test
-	public void validateUMCmappingFailureTest() throws ApisResourceAccessException, JsonParseException,
-			JsonMappingException, IOException, java.io.IOException, PacketDecryptionFailureException {
-		identity = new Identity();
-		RegistrationCenterDto rcdto = new RegistrationCenterDto();
-		rcdto.setIsActive(true);
-		rcdto.setLongitude("80.24492");
-		rcdto.setLatitude("13.0049");
-		rcdto.setId("12245"); 
-
-		List<FieldValue> capturedRegisteredDevices = new ArrayList<FieldValue>();
-		FieldValue fv1 = new FieldValue();
-		fv1.setLabel("Printer");
-		fv1.setValue("3000111");
-		capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Document Scanner");
-		// fv1.setValue("3000091");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Camera");
-		// fv1.setValue("3000071");
-		// capturedRegisteredDevices.add(fv1);
-		// fv1 = new FieldValue();
-		// fv1.setLabel("Finger Print Scanner");
-		// fv1.setValue("3000092");
-		// capturedRegisteredDevices.add(fv1);
-		identity.setCapturedRegisteredDevices(capturedRegisteredDevices);
-
-		metaData = new ArrayList<>();
-		FieldValue fv = new FieldValue();
-		fv.setLabel("REGISTRATIONID");
-		fv.setValue("2018782130000121112018103016");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CENTERID");
-		fv.setValue("12245");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("MACHINEID");
-		fv.setValue("yyeqy26356");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLATITUDE");
-		fv.setValue("13.0049");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("GEOLOCLONGITUDE");
-		fv.setValue("80.24492");
-		metaData.add(fv);
-
-		fv = new FieldValue();
-		fv.setLabel("CREATIONDATE");
-		fv.setValue("2018-11-28T15:34:20.122");
-		metaData.add(fv);
-
-		identity.setMetaData(metaData);
-		List<ErrorDTO> errors=new ArrayList<ErrorDTO>();
-		ErrorDTO errorDto=new ErrorDTO();
-		errorDto.setMessage("");
-		errors.add(errorDto);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		ApisResourceAccessException apisResourceAccessException = Mockito.mock(ApisResourceAccessException.class);
-		byte[] response = "{\"timestamp\":1548930810031,\"status\":404,\"errors\":[{\"errorCode\":\"KER-MSD-129\",\"errorMessage\":\"center History not found\"}]}"
-				.getBytes();
-		HttpClientErrorException httpClientErrorException = new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-				"Invalid request", response, StandardCharsets.UTF_8);
-		RegistrationCenterDto registrationCenterDto = new RegistrationCenterDto();
-
-		Mockito.when(apisResourceAccessException.getCause()).thenReturn(httpClientErrorException);
-		registrationCenterDto.setIsActive(true);
-		registrationCenterDto.setLongitude("80.24492");
-		registrationCenterDto.setLatitude("13.0049");
-		registrationCenterDto.setId("12245");
-
-		List<RegistrationCenterDto> registrationCenterDtoList = new ArrayList<>();
-		registrationCenterDtoList.add(registrationCenterDto);
-		RegistrationCenterResponseDto regrepdto = new RegistrationCenterResponseDto();
-		regrepdto.setRegistrationCentersHistory(registrationCenterDtoList);
-		ResponseWrapper<RegistrationCenterResponseDto> regrepdtoWrapper = new ResponseWrapper<>();
-		regrepdtoWrapper.setResponse(regrepdto);
-		regrepdtoWrapper.setErrors(null);
-
-		MachineHistoryDto mcdto = new MachineHistoryDto();
-		mcdto.setIsActive(true);
-		mcdto.setId("12334");
-
-		List<MachineHistoryDto> mcdtos = new ArrayList<>();
-		mcdtos.add(mcdto);
-		MachineHistoryResponseDto mhrepdto = new MachineHistoryResponseDto();
-		mhrepdto.setMachineHistoryDetails(mcdtos);
-		ResponseWrapper<MachineHistoryResponseDto> mhrepdtoWrapper = new ResponseWrapper<>();
-		mhrepdtoWrapper.setResponse(mhrepdto);
-		mhrepdtoWrapper.setErrors(null);
-
-		RegistrationCenterUserMachineMappingHistoryDto officerucmdto = new RegistrationCenterUserMachineMappingHistoryDto();
-		officerucmdto.setIsActive(true);
-		officerucmdto.setCntrId("12245");
-		officerucmdto.setMachineId("yyeqy26356");
-		officerucmdto.setUsrId("O1234");
-
-		List<RegistrationCenterUserMachineMappingHistoryDto> officerucmdtos = new ArrayList<>();
-		officerucmdtos.add(officerucmdto);
-
-		RegistrationCenterUserMachineMappingHistoryResponseDto offrepdto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
-
-		offrepdto.setRegistrationCenters(officerucmdtos);
-		ResponseWrapper<RegistrationCenterUserMachineMappingHistoryResponseDto> offrepdtoWrapper = new ResponseWrapper<>();
-		offrepdtoWrapper.setResponse(offrepdto);
-		offrepdtoWrapper.setErrors(errors);
-
-		RegistartionCenterTimestampResponseDto test = new RegistartionCenterTimestampResponseDto();
-		test.setStatus("Accepted");
-		ResponseWrapper<RegistartionCenterTimestampResponseDto> testWrapper = new ResponseWrapper<>();
-		testWrapper.setResponse(test);
-		testWrapper.setErrors(errors);
-
-		List<DeviceHistoryDto> deviceHistoryDetails = new ArrayList<>();
-		DeviceHistoryDto deviceHistoryDto = new DeviceHistoryDto();
-		deviceHistoryDto.setIsActive(true);
-		deviceHistoryDetails.add(deviceHistoryDto);
-
-		DeviceHistoryResponseDto deviceHistoryResponsedto = new DeviceHistoryResponseDto();
-		deviceHistoryResponsedto.setDeviceHistoryDetails(deviceHistoryDetails);
-		ResponseWrapper<DeviceHistoryResponseDto> deviceHistoryResponsedtoWrapper = new ResponseWrapper<>();
-		deviceHistoryResponsedtoWrapper.setResponse(deviceHistoryResponsedto);
-		deviceHistoryResponsedtoWrapper.setErrors(errors);
-
-		RegistrationCenterDeviceHistoryResponseDto registrationCenterDeviceHistoryResponseDto = new RegistrationCenterDeviceHistoryResponseDto();
-		RegistrationCenterDeviceHistoryDto registrationCenterDeviceHistoryDetails = new RegistrationCenterDeviceHistoryDto();
-		
-		registrationCenterDeviceHistoryDetails.setIsActive(true);
-		registrationCenterDeviceHistoryResponseDto
-				.setRegistrationCenterDeviceHistoryDetails(registrationCenterDeviceHistoryDetails);
-		ResponseWrapper<RegistrationCenterDeviceHistoryResponseDto> centerDeviceHistoryResponseDtoWrapper = new ResponseWrapper<>();
-		centerDeviceHistoryResponseDtoWrapper.setResponse(registrationCenterDeviceHistoryResponseDto);
-		centerDeviceHistoryResponseDtoWrapper.setErrors(errors);
-		identity = new Identity();
-		identity.setMetaData(metaData);
-		Mockito.when(osiUtils.getIdentity(any())).thenReturn(identity);
-		Mockito.when(registrationProcessorRestService.getApi(any(), any(), any(), any(), any()))
-				.thenReturn(regrepdtoWrapper).thenReturn(mhrepdtoWrapper).thenThrow(apisResourceAccessException)
-				.thenReturn(offrepdtoWrapper).thenReturn(testWrapper).thenReturn(deviceHistoryResponsedtoWrapper)
-				.thenReturn(centerDeviceHistoryResponseDtoWrapper);
-		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016"));
+		assertFalse(umcValidator.isValidUMC("2018782130000121112018103016", registrationStatusDto));
 	}
 
 }

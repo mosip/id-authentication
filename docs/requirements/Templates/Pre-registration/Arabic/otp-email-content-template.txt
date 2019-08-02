@@ -1,2 +1,0 @@
-عزيزي $name ،
-OTP لـ Pre-Registration $PRID هو $otp وهو صالح لمدة $validTime دقيقة. (التي تم إنشاؤها على $date في $time ساعات)

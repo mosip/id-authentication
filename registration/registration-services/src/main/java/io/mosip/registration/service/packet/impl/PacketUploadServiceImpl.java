@@ -67,8 +67,8 @@ public class PacketUploadServiceImpl extends BaseService implements PacketUpload
 	 */
 	@Override
 	public List<Registration> getSynchedPackets() {
-		LOGGER.info("REGISTRATION - GET_SYNCHED_PACKETS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"Fetching synched packets from the database");
+		LOGGER.info("REGISTRATION - GET_SYNCED_PACKETS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching synced packets from the database");
 		return registrationDAO.getRegistrationByStatus(RegistrationConstants.PACKET_UPLOAD_STATUS);
 	}
 

@@ -24,6 +24,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegistrationExceptionConstants;
 import io.mosip.registration.service.packet.PacketCreationService;
 import io.mosip.registration.service.packet.PacketEncryptionService;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -107,8 +108,13 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 					AuditReferenceIdTypes.REGISTRATION_ID.getReferenceTypeId());
 
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
-			errorResponseDTO.setMessage(exception.getErrorText());
+			if(exception.getErrorCode().equals(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode())) {
+				errorResponseDTO.setCode(RegistrationExceptionConstants.AUTH_ADVICE_USR_ERROR.getErrorCode());
+				errorResponseDTO.setMessage(RegistrationConstants.AUTH_ADVICE_FAILURE);
+			} else {
+				errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
+				errorResponseDTO.setMessage(exception.getErrorText());
+			}
 			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);

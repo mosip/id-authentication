@@ -20,11 +20,9 @@ import lombok.EqualsAndHashCode;
 public class RegSyncResponseDTO extends BaseRestResponseDTO {
 	
 	/** The response. */
-	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private List<SyncResponseDto> response;
 	
 	/** The error. */
-	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private List<SyncErrorDTO> errors;
 	
 }

@@ -11,8 +11,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -33,7 +31,6 @@ import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
 import io.mosip.kernel.auth.exception.AuthManagerServiceException;
 import io.mosip.kernel.auth.service.OTPGenerateService;
-import io.mosip.kernel.auth.service.TokenGenerationService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.RequestWrapper;
@@ -58,8 +55,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * io.mosip.kernel.auth.service.OTPGenerateService#generateOTP(io.mosip.
+	 * @see io.mosip.kernel.auth.service.OTPGenerateService#generateOTP(io.mosip.
 	 * kernel. auth.entities.MosipUserDto, java.lang.String)
 	 */
 	@Override
@@ -88,7 +84,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 						OtpGenerateResponseDto.class);
 			} catch (Exception e) {
 				throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-						AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),e);
+						AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), e);
 			}
 			return otpGenerateResponseDto;
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
@@ -99,7 +95,7 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 					throw new AuthNException(validationErrorsList);
 				} else {
 					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),ex);
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
 				}
 			}
 			if (ex.getRawStatusCode() == 403) {
@@ -107,16 +103,15 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 					throw new AuthZException(validationErrorsList);
 				} else {
 					throw new AuthManagerException(AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorCode(),
-							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(),ex);
+							AuthErrorCode.RESPONSE_PARSE_ERROR.getErrorMessage(), ex);
 				}
 			}
 			if (!validationErrorsList.isEmpty()) {
 				throw new AuthManagerServiceException(validationErrorsList);
 			} else {
-				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(),
-						AuthErrorCode.CLIENT_ERROR.getErrorMessage(),ex);
+				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 			}
-		} 
+		}
 	}
 
 	@Override
@@ -145,12 +140,12 @@ public class OTPGenerateServiceImpl implements OTPGenerateService {
 				otpGenerateResponseDto = mapper.readValue(mapper.writeValueAsString(responseObject.getResponse()),
 						OtpGenerateResponseDto.class);
 			} catch (Exception e) {
-				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(),e);
+				throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), e.getMessage(), e);
 			}
 			return otpGenerateResponseDto;
 		} catch (HttpClientErrorException | HttpServerErrorException exp) {
 			System.out.println(exp.getResponseBodyAsString());
-			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage(),exp);
+			throw new AuthManagerException(String.valueOf(HttpStatus.UNAUTHORIZED.value()), exp.getMessage(), exp);
 		}
 	}
 

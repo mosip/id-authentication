@@ -1,5 +1,8 @@
 package io.mosip.kernel.masterdata.repository;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
@@ -14,5 +17,8 @@ import io.mosip.kernel.masterdata.entity.DeviceType;
  */
 @Repository
 public interface DeviceTypeRepository extends BaseRepository<DeviceType, String> {
+	
+	@Query("FROM DeviceType d where (isDeleted is null OR isDeleted = false) AND isActive = true")
+	List<DeviceType> findAllDeviceTypeByIsActiveAndIsDeletedFalseOrNull();
 
 }

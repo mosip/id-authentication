@@ -12,19 +12,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.http.ResponseFilter;
 import io.mosip.kernel.core.http.ResponseWrapper;
+import io.mosip.kernel.masterdata.constant.OrderEnum;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.getresponse.DocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.PageDto;
 import io.mosip.kernel.masterdata.dto.getresponse.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.getresponse.extn.DocumentTypeExtnDto;
 import io.mosip.kernel.masterdata.dto.postresponse.CodeResponseDto;
+import io.mosip.kernel.masterdata.dto.request.FilterValueDto;
+import io.mosip.kernel.masterdata.dto.request.SearchDto;
+import io.mosip.kernel.masterdata.dto.response.FilterResponseDto;
+import io.mosip.kernel.masterdata.dto.response.PageResponseDto;
 import io.mosip.kernel.masterdata.entity.id.CodeAndLanguageCodeID;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Document type controller with api to get list of valid document types based
@@ -45,8 +56,10 @@ public class DocumentTypeController {
 
 	/**
 	 * 
-	 * @param langCode             input from user
-	 * @param documentCategoryCode input from user
+	 * @param langCode
+	 *            input from user
+	 * @param documentCategoryCode
+	 *            input from user
 	 * @return {@link ValidDocumentTypeResponseDto}}
 	 */
 
@@ -68,11 +81,12 @@ public class DocumentTypeController {
 	/**
 	 * Api to create document type.
 	 * 
-	 * @param types the DTO of document type.
+	 * @param types
+	 *            the DTO of document type.
 	 * 
 	 * @return {@link CodeAndLanguageCodeID }
 	 */
-	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION', 'REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER', 'REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER')")
+	@PreAuthorize("hasAnyRole('INDIVIDUAL','ID_AUTHENTICATION','REGISTRATION_ADMIN', 'REGISTRATION_SUPERVISOR', 'REGISTRATION_OFFICER','REGISTRATION_PROCESSOR','ZONAL_ADMIN','ZONAL_APPROVER','CENTRAL_ADMIN')")
 	@ResponseFilter
 	@PostMapping("/documenttypes")
 	@ApiOperation(value = "Service to create document type")
@@ -85,9 +99,10 @@ public class DocumentTypeController {
 	}
 
 	/**
-	 * Api to update document type.
-	 * .
-	 * @param types the DTO of document type.
+	 * Api to update document type. .
+	 * 
+	 * @param types
+	 *            the DTO of document type.
 	 * @return {@link CodeAndLanguageCodeID}.
 	 */
 	@PreAuthorize("hasRole('ZONAL_ADMIN')")
@@ -105,7 +120,8 @@ public class DocumentTypeController {
 	/**
 	 * Api to delete document type.
 	 * 
-	 * @param code the document type code.
+	 * @param code
+	 *            the document type code.
 	 * @return the code.
 	 */
 	@ResponseFilter
@@ -116,4 +132,88 @@ public class DocumentTypeController {
 		responseWrapper.setResponse(documentTypeService.deleteDocumentType(code));
 		return responseWrapper;
 	}
+
+	/**
+	 * This controller method provides with all document types.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param size
+	 *            the size of each page
+	 * @param sortBy
+	 *            the attributes by which it should be ordered
+	 * @param orderBy
+	 *            the order to be used
+	 * 
+	 * @return the response i.e. pages containing the document types.
+	 */
+	@PreAuthorize("hasAnyRole('ZONAL_ADMIN','CENTRAL_ADMIN')")
+	@ResponseFilter
+	@GetMapping("/documenttypes/all")
+	@ApiOperation(value = "Retrieve all the document types with additional metadata", notes = "Retrieve all the document types with additional metadata")
+	@ApiResponses({ @ApiResponse(code = 200, message = "list of document types"),
+			@ApiResponse(code = 500, message = "Error occured while retrieving document types") })
+	public ResponseWrapper<PageDto<DocumentTypeExtnDto>> getAllDocumentTypes(
+			@RequestParam(name = "pageNumber", defaultValue = "0") @ApiParam(value = "page no for the requested data", defaultValue = "0") int pageNumber,
+			@RequestParam(name = "pageSize", defaultValue = "10") @ApiParam(value = "page size for the requested data", defaultValue = "10") int pageSize,
+			@RequestParam(name = "sortBy", defaultValue = "createdDateTime") @ApiParam(value = "sort the requested data based on param value", defaultValue = "createdDateTime") String sortBy,
+			@RequestParam(name = "orderBy", defaultValue = "desc") @ApiParam(value = "order the requested data based on param", defaultValue = "desc") OrderEnum orderBy) {
+		ResponseWrapper<PageDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper
+				.setResponse(documentTypeService.getAllDocumentTypes(pageNumber, pageSize, sortBy, orderBy.name()));
+		return responseWrapper;
+	}
+
+	/**
+	 * API that returns the values required for the column filter columns.
+	 * 
+	 * @param request
+	 *            the request DTO {@link FilterResponseDto} wrapper in
+	 *            {@link RequestWrapper}.
+	 * @return the response i.e. the list of values for the specific filter column
+	 *         name and type.
+	 */
+	@ResponseFilter
+	@PostMapping("/documenttypes/filtervalues")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<FilterResponseDto> documentTypeFilterValues(
+			@RequestBody @Valid RequestWrapper<FilterValueDto> request) {
+		ResponseWrapper<FilterResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.documentTypeFilterValues(request.getRequest()));
+		return responseWrapper;
+	}
+
+	/**
+	 * Function to fetch all document types.
+	 * 
+	 * @return {@link DocumentTypeExtnDto} DocumentTypeResponseDto
+	 */
+	@ResponseFilter
+	@PostMapping("/documenttypes/search")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> searchDocumentType(
+			@RequestBody @Valid RequestWrapper<SearchDto> request) {
+		ResponseWrapper<PageResponseDto<DocumentTypeExtnDto>> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.searchDocumentTypes(request.getRequest()));
+		return responseWrapper;
+	}
+	
+	/**
+	 * API to fetch all Document type  details based on language code
+	 * 
+	 * @param langCode
+	 *            the language code
+	 * 
+	 * @return {@link DocumentTypeResponseDto}
+	 */
+	@ResponseFilter
+	@GetMapping("/documenttypes/{langcode}")
+	@PreAuthorize("hasRole('ZONAL_ADMIN')")
+	public ResponseWrapper<DocumentTypeResponseDto> getAllDocumentTypeByLaguageCode(
+			@PathVariable("langcode") String langCode) {
+		ResponseWrapper<DocumentTypeResponseDto> responseWrapper = new ResponseWrapper<>();
+		responseWrapper.setResponse(documentTypeService.getAllDocumentTypeByLaguageCode(langCode));
+		return responseWrapper;
+	}
+
 }

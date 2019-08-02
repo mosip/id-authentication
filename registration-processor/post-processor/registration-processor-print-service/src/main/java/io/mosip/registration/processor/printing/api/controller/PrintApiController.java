@@ -24,6 +24,7 @@ import io.mosip.kernel.core.idvalidator.spi.UinValidator;
 import io.mosip.registration.processor.core.constant.IdType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.print.service.PrintService;
+import io.mosip.registration.processor.core.token.validation.TokenValidator;
 import io.mosip.registration.processor.print.service.exception.RegPrintAppException;
 import io.mosip.registration.processor.printing.api.dto.PrintRequest;
 import io.mosip.registration.processor.printing.api.dto.RequestDTO;
@@ -48,11 +49,23 @@ public class PrintApiController {
 	@Autowired
 	private PrintService<Map<String, byte[]>> printservice;
 
+	/** Token validator class. */
+	@Autowired
+	TokenValidator tokenValidator;
+
+	/** The Constant ID_VALUE. */
 	private static final String ID_VALUE = "idValue";
 
+	/** The validator. */
 	@Autowired
 	private PrintServiceRequestValidator validator;
 
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder
+	 *            the binder
+	 */
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.addValidators(validator);
@@ -62,6 +75,7 @@ public class PrintApiController {
 	@Autowired
 	private RidValidator<String> ridValidator;
 
+	/** The uin validator impl. */
 	@Autowired
 	private UinValidator<String> uinValidatorImpl;
 
@@ -70,8 +84,15 @@ public class PrintApiController {
 	 *
 	 * @param printRequest
 	 *            the print request DTO
+	 * @param token
+	 *            the token
+	 * @param errors
+	 *            the errors
+	 * @param printRequest
+	 *            the print request DTO
 	 * @return the file
 	 * @throws RegPrintAppException
+	 *             the reg print app exception
 	 */
 	@PreAuthorize("hasAnyRole('REGISTRATION_ADMIN')")
 	@PostMapping(path = "/uincard", produces = "application/json")
@@ -95,6 +116,16 @@ public class PrintApiController {
 
 	}
 
+	/**
+	 * Validate request.
+	 *
+	 * @param dto
+	 *            the dto
+	 * @param errors
+	 *            the errors
+	 * @throws RegPrintAppException
+	 *             the reg print app exception
+	 */
 	private void validateRequest(RequestDTO dto, Errors errors) throws RegPrintAppException {
 		if (!errors.hasErrors()) {
 			if (Objects.isNull(dto)) {

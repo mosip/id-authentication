@@ -16,7 +16,17 @@ import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.sync.PublicKeySync;
 
 /**
- * This is a job to sync the public key
+ * This is a job to sync the public key.
+ * 
+ * <p>
+ * This Job will be automatically triggered based on sync_frequency which has in
+ * local DB.
+ * </p>
+ * 
+ * <p>
+ * If Sync_frequency = "0 0 11 * * ?" this job will be triggered everyday 11:00
+ * AM, if it was missed on 11:00 AM, trigger on immediate application launch.
+ * </p>
  * 
  * @author Sreekar Chukka
  *
@@ -38,7 +48,8 @@ public class PublicKeySyncJob extends BaseJob {
 	/**
 	 * Execute internal.
 	 *
-	 * @param context the context
+	 * @param context
+	 *            the context
 	 */
 	/*
 	 * (non-Javadoc)

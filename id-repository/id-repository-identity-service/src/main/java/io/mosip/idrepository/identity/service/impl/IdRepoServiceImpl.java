@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -64,12 +62,7 @@ import io.mosip.idrepository.identity.repository.UinEncryptSaltRepo;
 import io.mosip.idrepository.identity.repository.UinHashSaltRepo;
 import io.mosip.idrepository.identity.repository.UinHistoryRepo;
 import io.mosip.idrepository.identity.repository.UinRepo;
-import io.mosip.kernel.core.cbeffutil.entity.BDBInfo;
 import io.mosip.kernel.core.cbeffutil.entity.BIR;
-import io.mosip.kernel.core.cbeffutil.entity.BIRInfo;
-import io.mosip.kernel.core.cbeffutil.entity.BIRVersion;
-import io.mosip.kernel.core.cbeffutil.entity.SBInfo;
-import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 import io.mosip.kernel.core.cbeffutil.spi.CbeffUtil;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ParseException;
@@ -387,6 +380,19 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 	public Uin retrieveIdentityByUin(String uinHash, String type) throws IdRepoAppException {
 		return uinRepo.findByUinHash(uinHash);
 	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.idrepository.core.spi.IdRepoService#retrieveIdentityByRid(java.lang.
+	 * String, java.lang.String)
+	 */
+	@Override
+	public Uin retrieveIdentityByRid(String rid, String filter) throws IdRepoAppException {
+		return null;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -667,7 +673,7 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 								IdRepoConstants.CBEFF_FORMAT.getValue())
 								&& fileName.endsWith(IdRepoConstants.CBEFF_FORMAT.getValue())) {
 							doc.setValue(CryptoUtil.encodeBase64(cbeffUtil.updateXML(
-									convertToBIR(cbeffUtil.getBIRDataFromXML(CryptoUtil.decodeBase64(doc.getValue()))),
+									cbeffUtil.convertBIRTypeToBIR(cbeffUtil.getBIRDataFromXML(CryptoUtil.decodeBase64(doc.getValue()))),
 									data)));
 						}
 					} catch (FSAdapterException e) {
@@ -686,54 +692,6 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 										DOCUMENTS + " - " + doc.getCategory()));
 					}
 				}));
-	}
-
-	/**
-	 * Converts all BIRType to BIR.
-	 *
-	 * @param birTypeList the bir type list
-	 * @return the list
-	 */
-	private List<BIR> convertToBIR(List<BIRType> birTypeList) {
-		return birTypeList.stream().filter(
-				birType -> Objects.nonNull(birType.getBDBInfo()) && !birType.getBDBInfo().getFormatType().equals(2l))
-				.map(birType -> new BIR.BIRBuilder()
-						.withVersion(Optional.ofNullable(birType.getVersion())
-								.map(birVersion -> new BIRVersion.BIRVersionBuilder().withMajor(birVersion.getMajor())
-										.withMinor(birVersion.getMinor()).build())
-								.orElseGet(() -> null))
-						.withCbeffversion(Optional.ofNullable(birType.getCBEFFVersion())
-								.map(cbeffVersion -> new BIRVersion.BIRVersionBuilder()
-										.withMajor(cbeffVersion.getMajor()).withMinor(cbeffVersion.getMinor()).build())
-								.orElseGet(() -> null))
-						.withBirInfo(Optional.ofNullable(birType.getBIRInfo())
-								.map(birInfo -> new BIRInfo.BIRInfoBuilder().withCreator(birInfo.getCreator())
-										.withIndex(birInfo.getIndex()).withPayload(birInfo.getPayload())
-										.withIntegrity(birInfo.isIntegrity())
-										.withCreationDate(birInfo.getCreationDate())
-										.withNotValidBefore(birInfo.getNotValidBefore())
-										.withNotValidAfter(birInfo.getNotValidAfter()).build())
-								.orElseGet(() -> null))
-						.withBdbInfo(Optional.ofNullable(birType.getBDBInfo())
-								.map(bdbInfo -> new BDBInfo.BDBInfoBuilder()
-										.withChallengeResponse(bdbInfo.getChallengeResponse())
-										.withIndex(bdbInfo.getIndex()).withFormatOwner(bdbInfo.getFormatOwner())
-										.withFormatType(bdbInfo.getFormatType()).withEncryption(bdbInfo.getEncryption())
-										.withCreationDate(bdbInfo.getCreationDate())
-										.withNotValidBefore(bdbInfo.getNotValidBefore())
-										.withNotValidAfter(bdbInfo.getNotValidAfter()).withType(bdbInfo.getType())
-										.withSubtype(bdbInfo.getSubtype()).withLevel(bdbInfo.getLevel())
-										.withProductOwner(bdbInfo.getProductOwner())
-										.withProductType(bdbInfo.getProductType()).withPurpose(bdbInfo.getPurpose())
-										.withQuality(bdbInfo.getQuality()).build())
-								.orElseGet(() -> null))
-						.withBdb(birType.getBDB()).withSb(birType.getSB())
-						.withSbInfo(Optional.ofNullable(birType.getSBInfo())
-								.map(sbInfo -> new SBInfo.SBInfoBuilder().setFormatOwner(sbInfo.getFormatOwner())
-										.setFormatType(sbInfo.getFormatType()).build())
-								.orElseGet(() -> null))
-						.build())
-				.collect(Collectors.toList());
 	}
 
 	/**
@@ -787,15 +745,4 @@ public class IdRepoServiceImpl implements IdRepoService<IdRequestDTO, Uin> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.idrepository.core.spi.IdRepoService#retrieveIdentityByRid(java.lang.
-	 * String, java.lang.String)
-	 */
-	@Override
-	public Uin retrieveIdentityByRid(String rid, String filter) throws IdRepoAppException {
-		return null;
-	}
 }
