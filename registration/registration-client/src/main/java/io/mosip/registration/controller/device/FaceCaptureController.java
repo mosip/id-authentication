@@ -402,7 +402,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 
 		byte[] isoBytes=bioService.getSingleBiometricIsoTemplate(captureResponseDto);
-		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
+		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && capturedImage!=null) {
 
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			try {
@@ -429,7 +429,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 						RegistrationConstants.APPLICATION_ID,
 						ioException.getMessage() + ExceptionUtils.getStackTrace(ioException));
 			}
-		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
+		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && capturedImage!=null) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			exceptionImage.setImage(capture);
 			exceptionImagePane.getStyleClass().add(RegistrationConstants.PHOTO_CAPTUREPANES_SELECTED);
@@ -438,7 +438,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				exceptionImageIso=isoBytes;
 			}
 			exceptionImageCaptured = true;
-		} else if (photoType.equals(RegistrationConstants.GUARDIAN_IMAGE)) {
+		} else if (photoType.equals(RegistrationConstants.GUARDIAN_IMAGE) && capturedImage!=null) {
 			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
 			applicantBufferedImage = capturedImage;
 			if (null != captureResponseDto && null!=isoBytes)
@@ -465,7 +465,10 @@ public class FaceCaptureController extends BaseController implements Initializab
 			}
 		}
 
-		capturedImage.flush();
+		if(capturedImage!=null)
+			capturedImage.flush();
+		else
+			generateAlert(RegistrationConstants.ALERT_INFORMATION, RegistrationUIConstants.IRIS_SCANNING_ERROR);
 
 		if ((boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER) && validateOperatorPhoto()) {
 			saveBiometricDetailsBtn.setDisable(false);
