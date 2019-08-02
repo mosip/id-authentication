@@ -359,15 +359,16 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 				// Add Iris
 				if (isListNotEmpty(biometricInfoDTO.getIrisDetailsDTO())) {
 					for (IrisDetailsDTO iris : biometricInfoDTO.getIrisDetailsDTO()) {
-
-						BIR bir = buildBIR(iris.getIrisIso(), CbeffConstant.FORMAT_TYPE_IRIS,
-								(int) Math.round(iris.getQualityScore()), Arrays.asList(SingleType.IRIS),
-								Arrays.asList(iris.getIrisType().equalsIgnoreCase("lefteye")
+						for(IrisDetailsDTO irisDetailsDTO : iris.getIrises()) {
+						BIR bir = buildBIR(irisDetailsDTO.getIrisIso(), CbeffConstant.FORMAT_TYPE_IRIS,
+								(int) Math.round(irisDetailsDTO.getQualityScore()), Arrays.asList(SingleType.IRIS),
+								Arrays.asList(irisDetailsDTO.getIrisType().equalsIgnoreCase("lefteye")
 										? SingleAnySubtypeType.LEFT.value()
 										: SingleAnySubtypeType.RIGHT.value()));
 
 						birs.add(bir);
 						birUUIDs.put(personType.concat(iris.getIrisType()).toLowerCase(), bir.getBdbInfo().getIndex());
+						}
 					}
 				}
 
