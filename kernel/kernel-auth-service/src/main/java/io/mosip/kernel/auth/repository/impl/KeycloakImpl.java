@@ -42,6 +42,7 @@ import io.mosip.kernel.auth.adapter.exception.AuthZException;
 import io.mosip.kernel.auth.constant.AuthErrorCode;
 import io.mosip.kernel.auth.dto.AuthZResponseDto;
 import io.mosip.kernel.auth.dto.ClientSecret;
+import io.mosip.kernel.auth.dto.KeycloakPasswordDTO;
 import io.mosip.kernel.auth.dto.KeycloakRequestDto;
 import io.mosip.kernel.auth.dto.LoginUser;
 import io.mosip.kernel.auth.dto.MosipUserDto;
@@ -318,19 +319,21 @@ public class KeycloakImpl implements DataStore {
 	private KeycloakRequestDto mapUserRequestToKeycloakRequestDto(UserRegistrationRequestDto userRegDto) {
 		KeycloakRequestDto keycloakRequestDto = new KeycloakRequestDto();
 		List<String> roles = new ArrayList<>();
-		HashMap<String, Object> credentialObject = null;
+		List<KeycloakPasswordDTO> credentialObject = null;
+		KeycloakPasswordDTO dto=null;
 		if (userRegDto.getAppId().equalsIgnoreCase("preregistration")) {
 			roles.add("INDIVIDUAL");
-			credentialObject = new HashMap<>();
-			credentialObject.put("algorithm", "HmacSHA512");
-			credentialObject.put("value", "mosip");
-			credentialObject.put("salt", HMACUtils.generateSalt());
+			credentialObject = new ArrayList<>();
+			dto= new KeycloakPasswordDTO();
+			dto.setType("password");
+			dto.setValue("mosip");
 		} else if (userRegDto.getAppId().equalsIgnoreCase("registrationclient")) {
-			credentialObject = new HashMap<>();
-			credentialObject.put("algorithm", "HmacSHA512");
-			credentialObject.put("value", userRegDto.getUserPassword());
-			credentialObject.put("salt", HMACUtils.generateSalt());
+			credentialObject = new ArrayList<>();
+			dto= new KeycloakPasswordDTO();
+			dto.setType("password");
+			dto.setValue(userRegDto.getUserPassword());
 		}
+		credentialObject.add(dto);
 		List<Object> contactNoList = new ArrayList<>();
 		List<Object> genderList = new ArrayList<>();
 		genderList.add(userRegDto.getGender());
