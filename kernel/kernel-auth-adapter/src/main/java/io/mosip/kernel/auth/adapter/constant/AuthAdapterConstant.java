@@ -11,8 +11,6 @@ public class AuthAdapterConstant {
 
 	public static final String AUTH_COOOKIE_HEADER = "Authorization=";
 	
-	public static final String BEARER = "Bearer ";
-	
 	public static final String AUTH_ADMIN_COOKIE_PREFIX="Mosip-Admin-Token";
 
 	public static final String AUTH_REQUEST_COOOKIE_HEADER = "Authorization";
