@@ -258,7 +258,7 @@ public class FaceCaptureController extends BaseController implements Initializab
 				primaryStage.initModality(Modality.WINDOW_MODAL);
 				primaryStage.initOwner(fXComponents.getStage());
 				cameraController.setWebCameraStage(primaryStage);
-				primaryStage.show();				
+				primaryStage.show();
 			} catch (IOException ioException) {
 				LOGGER.error(RegistrationConstants.REGISTRATION_CONTROLLER, APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID,
@@ -529,16 +529,19 @@ public class FaceCaptureController extends BaseController implements Initializab
 	}
 
 	public void clearExceptionImage() {
-		exceptionBufferedImage = null;
-		exceptionImageCaptured=false;
-		exceptionImage.setImage(defaultExceptionImage);
-		BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
-		if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
-			applicantBiometricDTO.getExceptionFace().setFace(null);
-			applicantBiometricDTO.getExceptionFace().setPhotographName(null);
-			applicantBiometricDTO.setHasExceptionPhoto(false);
+		if (!(boolean) SessionContext.map().get(RegistrationConstants.ONBOARD_USER)) {
+
+			exceptionBufferedImage = null;
+			exceptionImageCaptured = false;
+			exceptionImage.setImage(defaultExceptionImage);
+			BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
+			if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
+				applicantBiometricDTO.getExceptionFace().setFace(null);
+				applicantBiometricDTO.getExceptionFace().setPhotographName(null);
+				applicantBiometricDTO.setHasExceptionPhoto(false);
+			}
+			disableNextButton();
 		}
-		disableNextButton();
 	}
 
 	/**
