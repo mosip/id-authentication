@@ -798,7 +798,7 @@ public class IrisCaptureController extends BaseController {
 						.setIrisDetailsDTO(new ArrayList<>());
 			}
 		}
-		faceCaptureController.clearExceptionImage();
+	//	faceCaptureController.clearExceptionImage();
 		singleBiometricCaptureCheck();
 	}
 

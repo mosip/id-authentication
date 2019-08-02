@@ -561,7 +561,8 @@ public class FaceCaptureController extends BaseController implements Initializab
 	public void clearExceptionImage() {
 		exceptionBufferedImage = null;
 		exceptionImageCaptured=false;
-		exceptionImage.setImage(defaultExceptionImage);
+		if(exceptionImage!=null)
+			exceptionImage.setImage(defaultExceptionImage);
 		BiometricInfoDTO applicantBiometricDTO = getFaceDetailsDTO();
 		if (applicantBiometricDTO != null && applicantBiometricDTO.getExceptionFace().getFace() != null) {
 			applicantBiometricDTO.getExceptionFace().setFace(null);
