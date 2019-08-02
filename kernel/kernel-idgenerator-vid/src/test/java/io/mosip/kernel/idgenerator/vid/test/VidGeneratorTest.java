@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
@@ -60,6 +61,9 @@ public class VidGeneratorTest {
 
 	@MockBean
 	private VidSequenceRepository sequenceRepository;
+	
+	@MockBean
+	private RestTemplate restTemplate;
 
 	List<VidSeed> listOfSeed = null;
 	VidSequence sequenceEntity = null;
