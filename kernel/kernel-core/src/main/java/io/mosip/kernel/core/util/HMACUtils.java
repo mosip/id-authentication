@@ -75,10 +75,10 @@ public final class HMACUtils {
 	 * @return String converted digest as plain text
 	 */
 	public static synchronized String digestAsPlainTextWithSalt(final byte[] password, final byte[] salt) {
-//		messageDigest.update(password);
-//		messageDigest.update(salt);
-//		return DatatypeConverter.printHexBinary(messageDigest.digest());
-		KeySpec spec = null;
+		messageDigest.update(password);
+		messageDigest.update(salt);
+		return DatatypeConverter.printHexBinary(messageDigest.digest());
+		/*KeySpec spec = null;
         try {
         	spec = new PBEKeySpec(new String(password,"UTF-8").toCharArray(), Base64.decodeBase64(salt), 27500, 512);
             byte[] key = getSecretKeyFactory().generateSecret(spec).getEncoded();
@@ -88,7 +88,7 @@ public final class HMACUtils {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
-        }
+        }*/
     
 	}
 

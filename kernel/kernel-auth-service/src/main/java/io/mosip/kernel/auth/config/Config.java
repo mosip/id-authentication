@@ -1,18 +1,11 @@
 package io.mosip.kernel.auth.config;
 
-import java.util.Collections;
-
 import javax.servlet.Filter;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
-
-import io.mosip.kernel.auth.dto.AccessTokenResponse;
-import io.mosip.kernel.auth.util.MemoryCache;
 
 /**
  * @author Raj Jha
@@ -22,9 +15,6 @@ import io.mosip.kernel.auth.util.MemoryCache;
  */
 @Configuration
 public class Config {
-
-	@Autowired
-	private RestInterceptor restInterceptor;
 
 	@Bean(name = "CorsFilter")
 	public FilterRegistrationBean<Filter> registerCORSFilterBean() {
@@ -51,7 +41,7 @@ public class Config {
 	public Filter getReqResFilter() {
 		return new ReqResFilter();
 	}
-
+	
 	@Bean
 	public CommonsRequestLoggingFilter logFilter() {
 		CommonsRequestLoggingFilter filter = new CommonsRequestLoggingFilter();
@@ -61,24 +51,6 @@ public class Config {
 		filter.setIncludeHeaders(true);
 		filter.setAfterMessagePrefix("REQUEST DATA : ");
 		return filter;
-	}
-
-	@Bean(name="keycloakRestTemplate")
-	public RestTemplate getRestTemplate() {
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setInterceptors(Collections.singletonList(restInterceptor));
-		return restTemplate;
-	}
-	
-	
-	@Bean(name="authRestTemplate")
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
-	
-	@Bean
-	public MemoryCache<String, AccessTokenResponse> memoryCache(){
-		return new MemoryCache<>(1);
 	}
 
 }

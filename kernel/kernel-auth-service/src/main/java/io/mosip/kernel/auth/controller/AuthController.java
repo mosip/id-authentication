@@ -120,7 +120,8 @@ public class AuthController {
 			res.addCookie(cookie);
 			authNResponse.setStatus(authResponseDto.getStatus());
 			authNResponse.setMessage(authResponseDto.getMessage());
-	
+			AuthToken token = getAuthToken(authResponseDto);
+			customTokenServices.StoreToken(token);
 		}
 		responseWrapper.setResponse(authNResponse);
 		return responseWrapper;
@@ -281,11 +282,9 @@ public class AuthController {
 	@ResponseFilter
 	@GetMapping(value = "/authorize/admin/validateToken")
 	public ResponseWrapper<MosipUserDto> validateToken(
-			@CookieValue(value = "Authorization", required = false) String token,HttpServletResponse res)
+			@CookieValue(value = "Authorization", required = false) String token)
 			throws IOException {
 		MosipUserDto mosipUserDto = authService.valdiateToken(token);
-		Cookie cookie = createCookie(mosipUserDto.getToken(), mosipEnvironment.getTokenExpiry());
-		res.addCookie(cookie);
 		ResponseWrapper<MosipUserDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(mosipUserDto);
 		return responseWrapper;
@@ -485,14 +484,14 @@ public class AuthController {
 	 *            {@link UserRegistrationRequestDto}
 	 * @return {@link UserRegistrationResponseDto}
 	 */
-/*	@ResponseFilter
+	@ResponseFilter
 	@PostMapping(value = "/user")
 	public ResponseWrapper<UserRegistrationResponseDto> registerUser(
 			@RequestBody @Valid RequestWrapper<UserRegistrationRequestDto> userCreationRequestDto) {
 		ResponseWrapper<UserRegistrationResponseDto> responseWrapper = new ResponseWrapper<>();
 		responseWrapper.setResponse(authService.registerUser(userCreationRequestDto.getRequest()));
 		return responseWrapper;
-	}*/
+	}
 
 	@ResponseFilter
 	@PostMapping(value = "/user/addpassword")

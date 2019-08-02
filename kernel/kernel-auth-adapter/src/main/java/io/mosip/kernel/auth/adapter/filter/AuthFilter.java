@@ -78,22 +78,17 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 			HttpServletResponse httpServletResponse)
 			throws AuthenticationException, JsonProcessingException, IOException {
 		String token = null;
-		Cookie[] cookies = null;
-		try
-		{
-			cookies = httpServletRequest.getCookies();
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
-						token = cookie.getValue();
-					}
+		Cookie[] cookies = httpServletRequest.getCookies();
+		//System.out.println("\nInside Auth Filter");
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().contains(AuthAdapterConstant.AUTH_REQUEST_COOOKIE_HEADER)) {
+					token = cookie.getValue();
+					//System.out.println("Cookie token with Auth header " + cookie.getValue());
 				}
 			}
-		}catch(Exception e)
-		{
-			e.printStackTrace();
 		}
-		
+		//System.out.println("Outside Auth Filter\n");
 		if (token == null) {
 			ResponseWrapper<ServiceError> errorResponse = setErrors(httpServletRequest);
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.UNAUTHORIZED.getErrorCode(),

@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+
 /**
  * This class is for input logging of all parameters in HTTP requests
  * 

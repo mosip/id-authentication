@@ -71,6 +71,7 @@ import io.mosip.kernel.auth.dto.UserOtp;
 import io.mosip.kernel.auth.dto.UserPasswordRequestDto;
 import io.mosip.kernel.auth.dto.UserPasswordResponseDto;
 import io.mosip.kernel.auth.dto.UserRegistrationRequestDto;
+import io.mosip.kernel.auth.dto.UserRegistrationResponseDto;
 import io.mosip.kernel.auth.dto.ValidationResponseDto;
 import io.mosip.kernel.auth.dto.otp.OtpUser;
 import io.mosip.kernel.auth.exception.AuthManagerException;
@@ -683,7 +684,7 @@ public class LdapDataStore implements DataStore {
 	}
 
 	@Override
-	public MosipUserDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
+	public UserRegistrationResponseDto registerUser(UserRegistrationRequestDto userCreationRequestDto) {
 		Dn userDn = null;
 		DirContext context = null;
 		try {
@@ -748,9 +749,7 @@ public class LdapDataStore implements DataStore {
 			throw new AuthManagerException(AuthErrorCode.INVALID_DN.getErrorCode(),
 					AuthErrorCode.INVALID_DN.getErrorMessage() + exception.getMessage());
 		}
-		MosipUserDto dto= new MosipUserDto();
-		dto.setUserId(userCreationRequestDto.getUserName());
-		return dto;
+		return new UserRegistrationResponseDto(userCreationRequestDto.getUserName());
 
 	}
 
