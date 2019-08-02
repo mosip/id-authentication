@@ -296,13 +296,23 @@ public class BookingService {
 				int noOfHoliday = 0;
 				List<LocalDate> dateList = bookingDAO.findDate(regID, fromDate, endDate);
 				List<DateTimeDto> dateTimeList = new ArrayList<>();
+				if (dateList == null || dateList.isEmpty()) {
+					throw new RecordNotFoundException(ErrorCodes.PRG_BOOK_RCI_015.getCode(),
+							ErrorMessages.NO_TIME_SLOTS_ASSIGNED_TO_THAT_REG_CENTER.getMessage());
+				}
 				noOfHoliday = getSlot(dateList, dateTimeList, noOfHoliday, regID);
 				while (noOfHoliday > 0) {
 					fromDate = endDate.plusDays(1);
 					endDate = endDate.plusDays(noOfHoliday);
 					dateList = bookingDAO.findDate(regID, fromDate, endDate);
-					noOfHoliday = 0;
-					noOfHoliday = getSlot(dateList, dateTimeList, noOfHoliday, regID);
+					if (dateList == null || dateList.isEmpty()) {
+						log.info("sessionId", "idType", "id",
+								"There is no data present in the database. So the response contains  "
+										+ noOfHoliday +"of days less.");
+					} else {
+						noOfHoliday = 0;
+						noOfHoliday = getSlot(dateList, dateTimeList, noOfHoliday, regID);
+					}
 				}
 				availability.setCenterDetails(dateTimeList);
 				availability.setRegCenterId(regID);
