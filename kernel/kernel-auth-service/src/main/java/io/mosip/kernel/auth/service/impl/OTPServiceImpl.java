@@ -423,13 +423,11 @@ public class OTPServiceImpl implements OTPService {
 		SmsResponseDto otpSmsSendResponseDto = null;
 		String mobileMessage = null;
 		OTPEmailTemplate emailTemplate = null;
-		String token = null;
 		AccessTokenResponse accessTokenResponse=null;
 		authOtpValidator.validateOTPUser(otpUser);
 		try {
 			//token = tokenService.getInternalTokenGenerationService();
 			 accessTokenResponse=getUserAccessToken(mosipUser.getUserId());
-				token=AuthAdapterConstant.AUTH_ADMIN_COOKIE_PREFIX+accessTokenResponse.getAccess_token();
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			List<ServiceError> validationErrorsList = ExceptionUtils.getServiceErrorList(ex.getResponseBodyAsString());
 
@@ -454,7 +452,7 @@ public class OTPServiceImpl implements OTPService {
 				throw new AuthManagerException(AuthErrorCode.CLIENT_ERROR.getErrorCode(), ex.getMessage(), ex);
 			}
 		}
-		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser, token);
+		OtpGenerateResponseDto otpGenerateResponseDto = oTPGenerateService.generateOTP(mosipUser, accessTokenResponse.getAccess_token());
 		if (otpGenerateResponseDto != null && otpGenerateResponseDto.getStatus().equals("USER_BLOCKED")) {
 			authNResponseDto = new AuthNResponseDto();
 			authNResponseDto.setStatus(AuthConstant.FAILURE_STATUS);
@@ -464,12 +462,12 @@ public class OTPServiceImpl implements OTPService {
 		for (String channel : otpUser.getOtpChannel()) {
 			switch (channel.toLowerCase()) {
 			case AuthConstant.EMAIL:
-				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser, token);
-				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(), token);
+				emailTemplate = templateUtil.getEmailTemplate(otpGenerateResponseDto.getOtp(), otpUser, accessTokenResponse.getAccess_token());
+				otpEmailSendResponseDto = sendOtpByEmail(emailTemplate, mosipUser.getMail(), accessTokenResponse.getAccess_token());
 				break;
 			case AuthConstant.PHONE:
-				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser, token);
-				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(), token);
+				mobileMessage = templateUtil.getOtpSmsMessage(otpGenerateResponseDto.getOtp(), otpUser, accessTokenResponse.getAccess_token());
+				otpSmsSendResponseDto = sendOtpBySms(mobileMessage, mosipUser.getMobile(), accessTokenResponse.getAccess_token());
 				break;
 			}
 		}
