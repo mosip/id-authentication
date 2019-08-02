@@ -537,7 +537,7 @@ public class Validations extends BaseController {
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.CNI_OR_PIN:
-				validation[0] = getValueFromApplicationContext(RegistrationConstants.CNIE_VALIDATION_REGEX);
+				validation[0] = getValueFromApplicationContext(RegistrationConstants.REFERENCE_ID_NO_VALIDATION_REGEX);
 				validation[1] = RegistrationConstants.TRUE;
 				break;
 			case RegistrationConstants.MOBILE_NUMBER:

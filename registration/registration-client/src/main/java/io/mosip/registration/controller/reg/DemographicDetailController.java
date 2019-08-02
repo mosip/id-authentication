@@ -1548,7 +1548,7 @@ public class DemographicDetailController extends BaseController {
 												province, provinceLocalLanguage, isComboBoxValueNotRequired(province))))
 								.with(identity -> identity.setCity(buildDemoComboValues(platformLanguageCode,
 										localLanguageCode, city, cityLocalLanguage, isComboBoxValueNotRequired(city))))
-								.with(identity -> identity.setLocalAdministrativeAuthority(
+								.with(identity -> identity.setZone(
 										buildDemoComboValues(platformLanguageCode, localLanguageCode,
 												localAdminAuthority, localAdminAuthorityLocalLanguage,
 												isComboBoxValueNotRequired(localAdminAuthority))))
@@ -1558,7 +1558,7 @@ public class DemographicDetailController extends BaseController {
 										.setPhone(buildDemoTextValue(mobileNo, isTextFieldNotRequired(mobileNo))))
 								.with(identity -> identity
 										.setEmail(buildDemoTextValue(emailId, isTextFieldNotRequired(emailId))))
-								.with(identity -> identity.setCnieNumber(
+								.with(identity -> identity.setReferenceIdentityNumber(
 										buildDemoTextValue(cniOrPinNumber, isTextFieldNotRequired(cniOrPinNumber))))
 								.with(identity -> identity.setParentOrGuardianRID(
 										buildDemoObjectValue(parentRegId, isTextFieldNotRequired(parentRegId))))
@@ -1806,12 +1806,12 @@ public class DemographicDetailController extends BaseController {
 			emailId.setText(individualIdentity.getEmail());
 			ageField.setText(individualIdentity.getAge() == null ? RegistrationConstants.EMPTY
 					: String.valueOf(individualIdentity.getAge()));
-			cniOrPinNumber.setText(individualIdentity.getCnieNumber());
+			cniOrPinNumber.setText(individualIdentity.getReferenceIdentityNumber());
 			postalCodeLocalLanguage.setText(individualIdentity.getPostalCode());
 			postalCodeLocalLanguage.setAccessibleHelp(individualIdentity.getPostalCode());
 			mobileNoLocalLanguage.setText(individualIdentity.getPhone());
 			emailIdLocalLanguage.setText(individualIdentity.getEmail());
-			cniOrPinNumberLocalLanguage.setText(individualIdentity.getCnieNumber());
+			cniOrPinNumberLocalLanguage.setText(individualIdentity.getReferenceIdentityNumber());
 			parentRegId.setText(individualIdentity.getParentOrGuardianRID() == null ? ""
 					: String.valueOf(individualIdentity.getParentOrGuardianRID()));
 			parentUinId.setText(individualIdentity.getParentOrGuardianUIN() == null ? ""
@@ -1838,7 +1838,7 @@ public class DemographicDetailController extends BaseController {
 			}
 
 			populateFieldValue(localAdminAuthority, localAdminAuthorityLocalLanguage,
-					individualIdentity.getLocalAdministrativeAuthority());
+					individualIdentity.getZone());
 
 			if (SessionContext.map().get(RegistrationConstants.IS_Child) != null) {
 
