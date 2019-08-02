@@ -285,7 +285,7 @@ public class AuthHandler extends AbstractUserDetailsAuthenticationProvider {
 			return "";
 		}
 		token = token.split(";")[0];
-		ResponseEntity<String> response = getValidatedUserResponse(token);
+		ResponseEntity<String> response = getKeycloakValidatedUserResponse(token);
 		if (response == null) {
 			List<ServiceError> errors = new ArrayList<>();
 			ServiceError error = new ServiceError(AuthAdapterErrorCode.CONNECT_EXCEPTION.getErrorCode(),
