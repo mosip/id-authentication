@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.spi.bioauth.util;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -82,6 +83,8 @@ public class BioMatcherUtil {
 			try {
 				match = getBioSdkInstance().match(reqBIR.get(), entityBIR,
 						null);
+				Arrays.asList(match).stream().forEach(score -> logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
+						"internal score Value >>>" +score.getInternalScore()));
 				internalScore = match.length == 1 ? match[0].getInternalScore()
 						: Stream.of(match).mapToLong(Score::getInternalScore).max().orElse(0);
 				logger.info(IdAuthCommonConstants.SESSION_ID, "IDA", "matchValue",
