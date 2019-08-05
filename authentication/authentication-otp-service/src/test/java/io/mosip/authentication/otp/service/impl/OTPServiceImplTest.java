@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -116,6 +117,7 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.setField(otpServiceImpl, "auditHelper", auditHelper);
 	}
 
+	@Ignore
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void TestgenerateOtp() throws IdAuthenticationBusinessException, RestServiceException {
@@ -204,6 +206,7 @@ public class OTPServiceImplTest {
 	   }
 	}
 
+	@Ignore
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void TestPhonenumberisNull() throws IdAuthenticationBusinessException, RestServiceException {
