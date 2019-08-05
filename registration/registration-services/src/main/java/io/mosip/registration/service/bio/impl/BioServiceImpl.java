@@ -224,9 +224,9 @@ public class BioServiceImpl extends BaseService implements BioService {
 	public void getFingerPrintImageAsDTOWithMdm(FingerprintDetailsDTO fpDetailsDTO, String fingerType)
 			throws RegBaseCheckedException, IOException {
 		CaptureResponseDto captureResponseDto = mosipBioDeviceManager.scan(fingerType);
-		if(captureResponseDto==null)
+		if(captureResponseDto ==null)
 			throw new RegBaseCheckedException("202","Decice is not available");
-		if(captureResponseDto.getError().getErrorCode().matches("202|403|404"))
+		if(captureResponseDto.getError().getErrorCode().matches("202|403|404|409"))
 			throw new RegBaseCheckedException(captureResponseDto.getError().getErrorCode(), captureResponseDto.getError().getErrorInfo());
 		fpDetailsDTO.setSegmentedFingerprints(new ArrayList<FingerprintDetailsDTO>());
 		List<CaptureResponseBioDto> mosipBioDeviceDataResponses = captureResponseDto.getMosipBioDeviceDataResponses();
